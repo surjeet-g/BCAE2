@@ -51,7 +51,7 @@ export function createInquiry(obj, resetAllStateData) {
 
       TDLog(" resultAttachment ", JSON.stringify(resultAttachment));
 
-      getDataFromDB(storageKeys.PROFILE_DETAILS)
+      await getDataFromDB(storageKeys.PROFILE_DETAILS)
         .then(function (profiledata) {
           return profiledata;
         })

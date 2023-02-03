@@ -14,7 +14,7 @@ export function getMyTicketsData(cb = () => {}) {
   return async (dispatch) => {
     dispatch(initMyTicketsData());
 
-    getDataFromDB(storageKeys.PROFILE_DETAILS)
+    await getDataFromDB(storageKeys.PROFILE_DETAILS)
       .then(function (profiledata) {
         return profiledata;
       })

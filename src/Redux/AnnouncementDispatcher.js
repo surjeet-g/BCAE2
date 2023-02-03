@@ -13,7 +13,7 @@ export function getAnnouncementsData(navigation, phoneNumber) {
   return async (dispatch) => {
     dispatch(initAnnouncementsData());
     let params = {};
-    getDataFromDB(storageKeys.PROFILE_DETAILS)
+    await getDataFromDB(storageKeys.PROFILE_DETAILS)
       .then(function (profiledata) {
         return profiledata;
       })

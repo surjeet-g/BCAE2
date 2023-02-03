@@ -10,7 +10,7 @@ import { serverCall } from "..//Utilities/API";
 export function fetchSavedProfileData() {
   return async (dispatch) => {
     dispatch(initProfile());
-    getDataFromDB(storageKeys.PROFILE_DETAILS).then((result) => {
+    await getDataFromDB(storageKeys.PROFILE_DETAILS).then((result) => {
       if (result) {
         //result.data.data
         dispatch(setProfileData(result));
