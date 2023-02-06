@@ -1,4 +1,6 @@
 #import "AppDelegate.h"
+#import <Firebase.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 #import <React/RCTBundleURLProvider.h>
 
@@ -12,7 +14,9 @@
   self.initialProps = @{};
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
+
+ [GMSServices provideAPIKey:@"AIzaSyAsF_UNXveip3zujvCbfxUVZmijQ-cLFuk"]; 
+  [FIRApp configure];}
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
