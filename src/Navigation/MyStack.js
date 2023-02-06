@@ -3,7 +3,7 @@ import { Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Login } from "../Screens/Login/Login";
-// import Splash from "../Screens/Splash/Splash";
+import Splash from "../Screens/Splash/Splash";
 // import Login from "../Screens/Login/Login";
 // import Register from "../Screens/Register/Register";
 // import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -31,7 +31,7 @@ function MyStack() {
         <Stack.Screen
           options={{ headerShown: false }}
           name="Splash"
-          component={Login}
+          component={Splash}
         />
 
         {/* <Stack.Screen

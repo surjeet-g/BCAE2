@@ -260,6 +260,7 @@ export const buttonSize = {
 };
 
 export const storageKeys = {
+  VERSION_CODE: "VERSION_CODE",
   DASHBOARD_DATA: "DASHBOARD_DATA",
   ACCESS_TOKEN: "ACCESS_TOKEN",
   REFRESH_TOKEN: "REFRESH_TOKEN",

@@ -11,6 +11,7 @@ export const PROD_BASE_URL_TENANT =
   "https://bcae-prod.comquest-brunei.com:19443/tenant/";
 
 export const endPoints = {
+  VERSIONCHECK: "api/bcae-tenant",
   NOTIFICATIONS: "api/notification/pushNotification",
   ANNOUNCEMENT: "api/announcement",
   INSERTFOLLOWUP: "api/interaction/followUp",

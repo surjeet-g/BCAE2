@@ -16,8 +16,10 @@ import LogoutReducer from "./LogoutReducer";
 import NotificationsReducer from "./NotificationsReducer";
 import InquiryNotificationsReducer from "./InquiryNotificationsReducer";
 import { LOGOUT_DATA } from "./LogoutAction";
+import VersionCheckReducer from "./VersionCheckReducer";
 
 const appReducer = combineReducers({
+  versioncheck: VersionCheckReducer,
   notifications: NotificationsReducer,
   followup: FollowUpReducer,
   attachment: AttachmentReducer,
