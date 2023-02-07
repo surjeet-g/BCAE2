@@ -19,7 +19,8 @@ export const theme = {
     myOwnColor: "blue",
   },
 };
-
+export const WEBCLIENT_ID =
+  "638155044511-6jaevsij1eisl66jeubv7qb7166ejlbs.apps.googleusercontent.com";
 export const GOOGLE_API_KEY = "AIzaSyBGKi6f1zYwwra1LVNtthEp6VPzUkvcPkk";
 const salt = "AE0DB48EBF4DDE3E59ABF92F1953F02A390B584CF65EE981E4598561D69F09D5";
 

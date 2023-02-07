@@ -4,17 +4,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   Image,
   Dimensions,
   Pressable,
   Alert,
 } from "react-native";
-import CountryPicker from "react-native-country-codes-picker";
+import { CountryPicker } from "react-native-country-codes-picker";
+import { Button, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "../../../Components/Button";
+// import { Button } from "../../../Components/Button";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
-import { EditText } from "../../../Components/EditText";
+// import { EditText } from "../../../Components/EditText";
 import {
   fontSizes,
   color,
@@ -94,34 +94,16 @@ const MobileLoging = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <CountryPicker
-        style={{ width: "100%", backgroundColor: "red" }}
-        show={show}
-        pickerButtonOnPress={(item) => {
-          setCountryCode(item.dial_code);
-          setShow(false);
-        }}
-      />
       <View>
         <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            //onPress={() => setShow(true)}
-            style={styles.countrycode}
-          >
-            <Text style={styles.countrycodetext}>{countryCode}</Text>
-          </TouchableOpacity>
-
-          <View style={{}}>
-            <EditText
-              customStyle={{ paddingLeft: width / 8 }}
-              onChangeText={(text) => onIDChange(text)}
-              value={number}
-              placeHolder={strings.mobile_no}
-              clearText={clearTextClick}
-              keyboardType="numeric"
-              isClose={number.length > 0}
-            />
-          </View>
+          <TextInput
+            style={{ width: "100%" }}
+            onChangeText={(text) => onIDChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            label={strings.mobile_no}
+          />
         </View>
         {!login.initLogin &&
           login?.loggedProfile?.errorCode == "404" &&
@@ -130,13 +112,24 @@ const MobileLoging = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <EditText
-          onChangeText={(text) => onPasswordChange(text)}
+        <TextInput
+          style={{ width: "100%" }}
           value={password}
+          label={strings.password}
           placeHolder={strings.password}
+          onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}
-          hideShowClick={hideShowClick}
-          isHideShow={password.length > 0}
+          right={
+            <TextInput.Icon
+              onPress={hideShowClick}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntry
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
         />
         {!login.initLogin &&
           login?.loggedProfile?.errorCode &&
@@ -170,22 +163,28 @@ const MobileLoging = (props) => {
           />
         ) : (
           <Button
-            type={buttonType.PRIMARY}
-            size={buttonSize.LARGE}
-            label={strings.login}
-            disabled={number == "" || password == "" ? true : false}
-            bgColor={color.BCAE_PRIMARY}
-            textColor={color.WHITE}
-            textPro={{
-              color: color.WHITE,
-              fontSize: fontSizes.FONT_16,
-              fontWeight: "400",
-              lineHeight: spacing.HEIGHT_16,
-            }}
+            mode="contained"
             onPress={submit}
-          />
+            disabled={number == "" || password == "" ? true : false}
+          >
+            {strings.login}
+          </Button>
         )}
       </View>
+      {/* <TouchableOpacity
+        onPress={() => setShow(true)}
+        style={styles.countrycode}
+      >
+        <Text style={styles.countrycodetext}>dsdsd</Text>
+      </TouchableOpacity> */}
+      <CountryPicker
+        style={{ width: "100%", backgroundColor: "red" }}
+        show={show}
+        pickerButtonOnPress={(item) => {
+          setCountryCode(item.dial_code);
+          setShow(false);
+        }}
+      />
     </View>
   );
 };

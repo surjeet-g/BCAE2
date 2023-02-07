@@ -1,22 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  Text,
+  Pressable,
+} from "react-native";
+import {
+  spacing,
+  fontSizes,
+  color,
+  buttonSize,
+  DEBUG_BUILD,
+  STAGE_FAQ,
+  PROD_FAQ,
+  WEBCLIENT_ID,
+} from "../../Utilities/Constants/Constant";
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from "react-native-google-signin";
-import { Col, Row, Grid } from "react-native-easy-grid";
-import { useTheme } from "react-native-paper";
-import { Text } from "react-native-paper";
-import { View, Button } from "react-native";
 
-export const Login = () => {
+import { strings } from "../../Utilities/Language";
+
+import CustomerEmailLogin from "./component/CustomerEmailLogin";
+import MobileLoging from "./component/MobileLoging";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "../../Components/Toast";
+import { KeyboardAwareView } from "react-native-keyboard-aware-view";
+import { resetLogin, verifyLoginData } from "./LoginDispatcher";
+import {
+  requestUserPermission,
+  notificationListener,
+} from "../../Utilities/FCM/NotificationService";
+import { SegmentedButtons } from "react-native-paper";
+
+export const Login = ({ navigation }) => {
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      requestUserPermission();
+      notificationListener(navigation);
+    });
+    return willFocusSubscription;
+  }, []);
+
   const [loggedIn, setloggedIn] = useState(false);
   const [userInfo, setuserInfo] = useState([]);
+
+  const [visible, setVisible] = React.useState(false);
+
+  const [isFirstSelected, setFirstSelected] = useState(false);
+  let login = useSelector((state) => state.login);
+  const dispatch = useDispatch([resetLogin, verifyLoginData]);
   useEffect(() => {
     GoogleSignin.configure({
       scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
-      webClientId:
-        "638155044511-6jaevsij1eisl66jeubv7qb7166ejlbs.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
+      webClientId: WEBCLIENT_ID, // client ID of type WEB for your server (needed to verify user ID and offline access)
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
   }, []);
@@ -34,6 +75,9 @@ export const Login = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const { accessToken, idToken } = await GoogleSignin.signIn();
+      console.log(accessToken, idToken);
+      // dispatch(verifyLoginData(props.navigation, "", ""));
+
       setloggedIn(true);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -50,62 +94,130 @@ export const Login = () => {
       }
     }
   };
-  const { colors } = useTheme();
+
+  const onPressFirst = () => {
+    dispatch(resetLogin());
+    setFirstSelected(true);
+  };
+  const onPressSecond = () => {
+    dispatch(resetLogin());
+    setFirstSelected(false);
+  };
+
   return (
-    <View>
-      <View>
-        <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={signIn}
+    <View style={styles.container}>
+      <KeyboardAwareView animated={false}>
+        <SegmentedButtons
+          value={isFirstSelected}
+          onValueChange={(value) => {
+            dispatch(resetLogin());
+            setFirstSelected(value);
+          }}
+          buttons={[
+            {
+              value: 1,
+              label: strings.customer_email_ID,
+            },
+            {
+              value: 0,
+              label: strings.mobile_no,
+            },
+          ]}
         />
-      </View>
-      <View>
-        {!loggedIn && <Text>You are currently logged out</Text>}
-        {loggedIn && (
-          <Button onPress={signOut} title="LogOut" color="red"></Button>
-        )}
-      </View>
+        <ScrollView
+          style={{
+            flexGrow: 1,
+            paddingHorizontal: spacing.WIDTH_30,
+            paddingTop: spacing.HEIGHT_50 * 2,
+          }}
+          nestedScrollEnabled={true}
+        >
+          {isFirstSelected ? (
+            <CustomerEmailLogin navigation={navigation} />
+          ) : (
+            <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
+          )}
+          <GoogleSigninButton
+            style={{ width: 192, height: 48 }}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={signIn}
+          />
+        </ScrollView>
+        {!login.initLogin &&
+          (login?.loggedProfile?.errorCode == "10000" ||
+            login?.loggedProfile?.errorCode == "10001") && (
+            <View style={styles.toast}>
+              <Toast
+                bgColor={color.TOAST_RED}
+                customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
+                textPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_14,
+                  fontWeight: "700",
+                }}
+                img={
+                  login?.loggedProfile?.errorCode == "10001"
+                    ? require("../../Assets/icons/ic_no_Internet.png")
+                    : require("../../Assets/icons/ci_error-warning-fill.png")
+                }
+                message={
+                  login?.loggedProfile?.errorCode == "10001"
+                    ? strings.no_network
+                    : strings.something_went_wrong
+                }
+              />
+            </View>
+          )}
+      </KeyboardAwareView>
     </View>
   );
-  return (
-    <Grid>
-      <Col>
-        <Text variant="displayLarge" style={{ color: colors.primary }}>
-          Display Large
-        </Text>
-        <Text variant="displayMedium" style={{ color: colors.secondary }}>
-          Display Medium
-        </Text>
-        <Text variant="displaySmall" style={{ color: colors.tertiary }}>
-          Display small
-        </Text>
-
-        <Text variant="headlineLarge">Headline Large</Text>
-        <Text variant="headlineMedium">Headline Medium</Text>
-        <Text variant="headlineSmall">Headline Small</Text>
-
-        <Text variant="titleLarge">Title Large</Text>
-        <Text variant="titleMedium">Title Medium</Text>
-        <Text variant="titleSmall">Title Small</Text>
-
-        <Text variant="bodyLarge">Body Large</Text>
-        <Text variant="bodyMedium">Body Medium</Text>
-        <Text variant="bodySmall">Body Small</Text>
-
-        <Text variant="labelLarge">Label Large</Text>
-        <Text variant="labelMedium">Label Medium</Text>
-        <Text variant="labelSmall">Label Small</Text>
-      </Col>
-      <Col>
-        <Row>
-          <Text variant="labelSmall">Label Small</Text>
-        </Row>
-        <Row>
-          <Text variant="labelSmall">Label Small</Text>
-        </Row>
-      </Col>
-    </Grid>
-  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: color.BCAE_OFF_WHITE,
+  },
+  logo: {
+    height: 128,
+    width: 128,
+  },
+  toast: {
+    position: "absolute",
+    bottom: spacing.HEIGHT_31 * 2,
+  },
+  orText: {
+    color: color.BCAE_LIGHT_BLUE,
+    fontSize: fontSizes.FONT_10,
+    fontWeight: "500",
+    lineHeight: spacing.WIDTH_16,
+    paddingHorizontal: spacing.WIDTH_7,
+  },
+  noAccText: {
+    marginTop: spacing.HEIGHT_32,
+    color: color.PLACEHOLDER,
+    fontSize: fontSizes.FONT_12,
+    lineHeight: spacing.WIDTH_14,
+    textAlign: "center",
+  },
+  rgisterText: {
+    marginTop: spacing.HEIGHT_6,
+    fontWeight: "500",
+    color: color.BCAE_PRIMARY,
+    fontSize: fontSizes.FONT_14,
+    lineHeight: spacing.WIDTH_17,
+    textAlign: "center",
+  },
+  upperText: {
+    color: color.PLACEHOLDER,
+    fontSize: fontSizes.FONT_12,
+    fontWeight: "500",
+    marginTop: 5,
+    lineHeight: spacing.WIDTH_14,
+  },
+  upperLogo: {
+    width: spacing.WIDTH_16,
+    height: spacing.WIDTH_16,
+  },
+});

@@ -15,7 +15,8 @@ import {
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
-// import { Button } from "../../../Components/Button";
+
+import { Button, TextInput } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 
 const CustomerEmailLogin = (props) => {
@@ -86,13 +87,20 @@ const CustomerEmailLogin = (props) => {
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        {/* <EditText
-          onChangeText={(text) => onIDChange(text)}
+        <TextInput
           value={username}
+          label={strings.customer_email_ID}
           placeHolder={strings.customer_email_ID}
-          clearText={clearTextClick}
-          isClose={username.length > 0}
-        /> */}
+          onChangeText={(text) => onIDChange(text)}
+          right={
+            <TextInput.Icon
+              onPress={clearTextClick}
+              style={{ width: 23, height: 23 }}
+              icon={require("../../../Assets/icons/ic_close.png")}
+            />
+          }
+        />
+
         {!login.initLogin &&
           login?.loggedProfile?.errorCode == "404" &&
           showErrorMessage(login?.loggedProfile?.message)}
@@ -100,14 +108,25 @@ const CustomerEmailLogin = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        {/* <EditText
-          onChangeText={(text) => onPasswordChange(text)}
+        <TextInput
           value={password}
+          label={strings.password}
           placeHolder={strings.password}
+          onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}
-          hideShowClick={hideShowClick}
-          isHideShow={password.length > 0}
-        /> */}
+          right={
+            <TextInput.Icon
+              onPress={hideShowClick}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntry
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
+        />
+
         {!login.initLogin &&
           login?.loggedProfile?.errorCode &&
           login.loggedProfile.errorCode != "404" &&
@@ -137,23 +156,13 @@ const CustomerEmailLogin = (props) => {
             loderColor={color.WHITE}
           />
         ) : (
-          {
-            /* <Button
-            type={buttonType.PRIMARY}
-            size={buttonSize.LARGE}
-            label={strings.login}
-            disabled={username == "" || password == "" ? true : false}
-            bgColor={color.BCAE_PRIMARY}
-            textColor={color.WHITE}
-            textPro={{
-              color: color.WHITE,
-              fontSize: fontSizes.FONT_16,
-              fontWeight: "400",
-              lineHeight: spacing.HEIGHT_16,
-            }}
+          <Button
+            mode="contained"
             onPress={submit}
-          /> */
-          }
+            disabled={username == "" || password == "" ? true : false}
+          >
+            {strings.login}
+          </Button>
         )}
       </View>
     </View>

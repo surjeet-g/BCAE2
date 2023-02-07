@@ -27,6 +27,7 @@
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-native": "0.71.2",
+    "react-native-country-codes-picker": "^2.2.2",
     "react-native-easy-grid": "^0.2.2",
     "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.20.0",

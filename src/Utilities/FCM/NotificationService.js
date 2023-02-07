@@ -54,7 +54,6 @@ export const notificationListener = async (navigation) => {
       });
     //application in online
     messaging().onMessage(async (remoteMessage) => {
-      console.log("hititng onMessage ", remoteMessage);
       getDataFromDB(storageKeys.PUSH_NOTIFICATION).then((result) => {
         if (result) {
           if (result.push_notification === true) {

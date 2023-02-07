@@ -2,9 +2,9 @@ import React from "react";
 import { Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { Login } from "../Screens/Login/Login";
+
 import Splash from "../Screens/Splash/Splash";
-// import Login from "../Screens/Login/Login";
+import { Login } from "../Screens/Login/Login";
 // import Register from "../Screens/Register/Register";
 // import EditProfile from "../Screens/EditProfile/EditProfile";
 // import BottomBarNavigation from "./BottomBarNavigation";
@@ -27,7 +27,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Splash"
