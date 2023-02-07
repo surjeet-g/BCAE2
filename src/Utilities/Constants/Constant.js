@@ -8,6 +8,7 @@ import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 const RNFetchBlob = require("rn-fetch-blob").default;
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
 
+export const SECERT_KEY = "(*Hnjkn2kjn";
 export const theme = {
   ...DefaultTheme, // or MD3DarkTheme
   roundness: 2,
