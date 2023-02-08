@@ -12,6 +12,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
 } from "../../Utilities/Constants/Constant";
 import { Platform } from "react-native";
+import { encryption } from "../../Utilities/Security/Encryption";
 
 export function verifyLoginData(navigation, username, password) {
   return async (dispatch) => {
@@ -38,6 +39,7 @@ export function verifyLoginData(navigation, username, password) {
           requestMethod.POST,
           params
         );
+        console.log("result", result);
         if (result.success) {
           if (
             result?.data?.data?.userDetails?.status &&
@@ -103,17 +105,24 @@ export function verifyLoginData(navigation, username, password) {
                 postCode: profileResult?.data?.data?.address?.postCode ?? "",
               };
 
-              await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+              await saveDataToDB(
+                storageKeys.PROFILE_DETAILS,
+                encryption(profileData),
+                true
+              );
 
-              getDataFromDB(storageKeys.PROFILE_DETAILS).then((resultData) => {
-                if (resultData) {
-                  //result.data.data
-                  dispatch(setLoginData(result.data));
-                  navigation.replace("BottomBar", {});
-                } else {
-                  dispatch(setLoginData([]));
+              getDataFromDB(storageKeys.PROFILE_DETAILS, true).then(
+                (resultData) => {
+                  if (resultData) {
+                    //result.data.data
+                    dispatch(setLoginData(result.data));
+                    console.log("result logged", resultData);
+                    // navigation.replace("BottomBar", {});
+                  } else {
+                    dispatch(setLoginData([]));
+                  }
                 }
-              });
+              );
             } else {
               dispatch(failureLogin(profileResult));
             }

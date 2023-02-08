@@ -51,7 +51,7 @@ export const Login = ({ navigation }) => {
 
   const [visible, setVisible] = React.useState(false);
 
-  const [isFirstSelected, setFirstSelected] = useState(false);
+  const [isFirstSelected, setFirstSelected] = useState(1);
   let login = useSelector((state) => state.login);
   const dispatch = useDispatch([resetLogin, verifyLoginData]);
   useEffect(() => {
@@ -108,7 +108,7 @@ export const Login = ({ navigation }) => {
     <View style={styles.container}>
       <KeyboardAwareView animated={false}>
         <SegmentedButtons
-          value={isFirstSelected}
+          value={1}
           onValueChange={(value) => {
             dispatch(resetLogin());
             setFirstSelected(value);

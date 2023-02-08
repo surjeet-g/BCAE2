@@ -30,22 +30,22 @@ export const getToken = async () => {
   }
 };
 
-export const saveDataToDB = async (key, obj) => {
+export const saveDataToDB = async (key, obj, isString = false) => {
   TDLog(
     "saveDataToDB",
     "==========saveDataToDB======" + key + "======" + JSON.stringify(obj)
   );
   try {
-    await saveData(key, obj);
+    await saveData(key, obj, isString);
   } catch (err) {
     TDLog("saveDataToDB", "==========catch============" + JSON.stringify(err));
     throw err;
   }
 };
 
-export const getDataFromDB = async (key) => {
+export const getDataFromDB = async (key, isString = falsae) => {
   try {
-    const data = await getData(key);
+    const data = await getData(key, isString);
     TDLog(
       "getDataFromDB",
       "==========getDataFromDB=======" + key + "=======" + JSON.stringify(data)
