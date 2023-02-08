@@ -43,7 +43,7 @@ export const saveDataToDB = async (key, obj, isString = false) => {
   }
 };
 
-export const getDataFromDB = async (key, isString = falsae) => {
+export const getDataFromDB = async (key, isString = false) => {
   try {
     const data = await getData(key, isString);
     TDLog(

@@ -37,7 +37,7 @@ import MapView, {
 import RNLocation from "react-native-location";
 import Geocoder from "@timwangdev/react-native-geocoder";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-// import { Button } from "../../Components/Button";
+
 import { Button } from "react-native-paper";
 import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
 const { height } = Dimensions.get("screen");
@@ -764,8 +764,8 @@ const AddLocation = ({ route, navigation }) => {
                     // position: "absolute",
                     // bottom: -(height * 0.15),
                     maringTop: 12,
-                    zIndex: 2,
-                    elevation: 2,
+                    zIndex: 0,
+                    elevation: 0,
                   }}
                 >
                   {initAddLocation ? (

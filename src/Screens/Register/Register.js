@@ -654,7 +654,6 @@ const Register = ({ navigation, props }) => {
                 value={firstName}
                 label={strings.first_name}
                 placeHolder={strings.first_name}
-                label={strings.first_name}
                 right={
                   <TextInput.Icon
                     onPress={clearFirstName}

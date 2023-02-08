@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { color, spacing, fontSizes } from "../Utilities/Constants/Constant";
+import { List, MD3Colors } from "react-native-paper";
 
 export const CustomDropDownAddress = (props) => {
   const {
@@ -33,16 +34,16 @@ export const CustomDropDownAddress = (props) => {
   };
 
   const renderItem = ({ item, index }) => (
-    <TouchableOpacity onPress={() => onSelected(item)}>
-      <View
-        style={{
-          paddingHorizontal: spacing.WIDTH_20,
-          paddingVertical: spacing.HEIGHT_5,
-        }}
-      >
-        <Text style={styles.dropDownText}>{item.description}</Text>
-      </View>
-    </TouchableOpacity>
+    <List.Item
+      title={item.description}
+      titleStyle={{
+        fontSize: 10,
+        padding: 0,
+        margin: 0,
+      }}
+      style={{}}
+      onPress={() => onSelected(item)}
+    />
   );
 
   return (
