@@ -1,14 +1,14 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Dashboard from "../Screens/TabScreens/Dashboard";
-import Chat from "../Screens/TabScreens/Chat";
-import Announcement from "../Screens/TabScreens/Announcement";
-import AddTickets from "../Screens/TabScreens/AddTickets";
-import MyTicketsStack from "./MyTicketsStack";
+import { Dashboard } from "../Screens/TabScreens/Dashboard";
+// import Chat from "../Screens/TabScreens/Chat";
+// import Announcement from "../Screens/TabScreens/Announcement";
+// import AddTickets from "../Screens/TabScreens/AddTickets";
+// import MyTicketsStack from "./MyTicketsStack";
 import { Image, View, Platform } from "react-native";
 import CustomBottomBar from "./CustomBottomBar";
-import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
-import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
+// import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
+// import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
 import { color } from "../Utilities/Constants/Constant";
 //import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -27,7 +27,7 @@ function BottomBarNavigation() {
         name="Dashboard"
         component={Dashboard}
       />
-
+      {/* 
       <Tab.Screen
         options={{ headerShown: false }}
         name="MyTicketsStack"
@@ -57,7 +57,7 @@ function BottomBarNavigation() {
         options={{ headerShown: false }}
         name="CreateComplaint"
         component={CreateComplaint}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

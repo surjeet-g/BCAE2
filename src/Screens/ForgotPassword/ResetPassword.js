@@ -221,8 +221,8 @@ const ResetPassword = ({ route, navigation }) => {
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntryOld
-                    ? require("../../../Assets/icons/ic_password_show.png")
-                    : require("../../../Assets/icons/ic_password_hide.png")
+                    ? require("../../Assets/icons/ic_password_show.png")
+                    : require("../../Assets/icons/ic_password_hide.png")
                 }
               />
             }
@@ -240,8 +240,8 @@ const ResetPassword = ({ route, navigation }) => {
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntry
-                    ? require("../../../Assets/icons/ic_password_show.png")
-                    : require("../../../Assets/icons/ic_password_hide.png")
+                    ? require("../../Assets/icons/ic_password_show.png")
+                    : require("../../Assets/icons/ic_password_hide.png")
                 }
               />
             }
@@ -259,8 +259,8 @@ const ResetPassword = ({ route, navigation }) => {
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntryConfim
-                    ? require("../../../Assets/icons/ic_password_show.png")
-                    : require("../../../Assets/icons/ic_password_hide.png")
+                    ? require("../../Assets/icons/ic_password_show.png")
+                    : require("../../Assets/icons/ic_password_hide.png")
                 }
               />
             }

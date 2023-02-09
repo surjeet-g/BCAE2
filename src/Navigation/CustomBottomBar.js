@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image, Text, Pressable, Modal } from "react-native";
-import { Button } from "../Components/Button";
+// import { Button } from "../Components/Button";
 import {
   spacing,
   fontSizes,
@@ -21,7 +21,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
 
   const onNavClick = (val) => {
     setModal(false);
-    console.log("val===>" + val);
+
     if (val === "Home") {
       navigation.navigate("Dashboard", {});
     } else if (val === "Interactions") {
@@ -157,7 +157,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             adjustsFontSizeToFit
             style={state.index === 3 ? styles.selectedText : styles.upperText}
           >
-            {strings.announcement}
+            {strings.announcement}dsdsd
           </Text>
         </Pressable>
 
