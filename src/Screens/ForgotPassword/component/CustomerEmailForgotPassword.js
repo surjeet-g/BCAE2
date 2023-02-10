@@ -126,9 +126,7 @@ const CustomerEmailForgotPassword = (props) => {
           label="Last Name"
           placeHolder="Last Name"
         />
-        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-          dob {JSON.stringify(dob)}
-        </Button>
+
         <DatePickerModal
           locale="en"
           mode="single"
@@ -136,6 +134,20 @@ const CustomerEmailForgotPassword = (props) => {
           onDismiss={onDismissSingle}
           date={dob}
           onConfirm={onConfirmSingle}
+        />
+        <TextInput
+          // onChangeText={(text) => onIDChange(text)}
+          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+          label={"Date of birth"}
+          onFocus={() => setOpen(true)}
+          placeHolder={"Date of birth"}
+          right={
+            <TextInput.Icon
+              onPress={() => setOpen(true)}
+              style={{ width: 23, height: 23 }}
+              icon={require("../../../Assets/icons/mail.png")}
+            />
+          }
         />
         {!forgot?.initForgotPassword &&
           (forgot?.loggedProfile?.errorCode == "404" ||
