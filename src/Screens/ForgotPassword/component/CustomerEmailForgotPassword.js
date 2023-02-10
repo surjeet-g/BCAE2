@@ -157,7 +157,9 @@ const CustomerEmailForgotPassword = (props) => {
         ) : (
           <Button
             label={strings.reset_password}
-            // disabled={username == "" ? true : false}
+            disabled={
+              username == "" && dob == "" && lastName == "" ? true : false
+            }
             onPress={submit}
           >
             {strings.reset_password}
