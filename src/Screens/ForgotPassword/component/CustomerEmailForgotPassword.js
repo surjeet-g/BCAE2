@@ -10,6 +10,7 @@ import {
   validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
+import { DatePickerModal } from "react-native-paper-dates";
 
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,20 +19,41 @@ import {
   verifyForgotPasswordData,
 } from "../ForgotPasswordDispatcher";
 import { Button, TextInput } from "react-native-paper";
+import moment from "moment";
 
 const CustomerEmailForgotPassword = (props) => {
   let forgot = useSelector((state) => state.forgot);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("vvvipindsm@gmail.com");
+  // const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
-
+  const [lastName, setlastName] = useState("vvv");
+  // const [lastName, setlastName] = useState("");
+  const [lastNameError, setlastNameError] = useState("");
+  const [dob, setDob] = useState("");
+  // const [dob, setDob] = useState("2023-02-10");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    setUsername("");
+    setUsernameError("");
+    setlastNameError("");
+    setDob("");
+    setDobError("");
+    setOpen(false);
+  }, []);
   const dispatch = useDispatch([verifyForgotPasswordData, resetForgotPassword]);
 
   const onIDChange = (textStr) => {
     setUsername(textStr);
-    if (textStr.length == 0) {
-      dispatch(resetForgotPassword());
-    }
+    // if (textStr.length == 0) {
+    //   dispatch(resetForgotPassword());
+    // }
     setUsernameError("");
+  };
+
+  const onIDChangeUsername = (textStr) => {
+    setlastName(textStr);
+    setlastNameError("");
   };
 
   const clearTextClick = () => {
@@ -43,8 +65,18 @@ const CustomerEmailForgotPassword = (props) => {
   const submit = () => {
     if (!validateEmail(username)) {
       setUsernameError(strings.emailValidError);
+    } else if (lastName == "") {
+      setlastNameError("Last Name sould be required");
+    } else if (dob == "") {
+      setDobError("Date of birth sould be required");
     } else {
-      dispatch(verifyForgotPasswordData(props.navigation, username));
+      dispatch(
+        verifyForgotPasswordData(props.navigation, {
+          loginId: username,
+          lastName,
+          dob: moment(dob).format("YYYY-MM-DD"),
+        })
+      );
     }
   };
 
@@ -59,6 +91,18 @@ const CustomerEmailForgotPassword = (props) => {
       </View>
     );
   };
+  const onDismissSingle = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirmSingle = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDob(params.date);
+      setDobError("");
+    },
+    [setOpen, setDob]
+  );
 
   return (
     <View>
@@ -76,11 +120,30 @@ const CustomerEmailForgotPassword = (props) => {
             />
           }
         />
+        <TextInput
+          onChangeText={(text) => onIDChangeUsername(text)}
+          value={lastName}
+          label="Last Name"
+          placeHolder="Last Name"
+        />
+        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+          dob {JSON.stringify(dob)}
+        </Button>
+        <DatePickerModal
+          locale="en"
+          mode="single"
+          visible={open}
+          onDismiss={onDismissSingle}
+          date={dob}
+          onConfirm={onConfirmSingle}
+        />
         {!forgot?.initForgotPassword &&
           (forgot?.loggedProfile?.errorCode == "404" ||
             forgot?.loggedProfile?.errorCode == "500") &&
           showErrorMessage(forgot?.loggedProfile?.message)}
         {usernameError !== "" && showErrorMessage(usernameError)}
+        {lastNameError !== "" && showErrorMessage(lastNameError)}
+        {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}></View>
@@ -94,7 +157,7 @@ const CustomerEmailForgotPassword = (props) => {
         ) : (
           <Button
             label={strings.reset_password}
-            disabled={username == "" ? true : false}
+            // disabled={username == "" ? true : false}
             onPress={submit}
           >
             {strings.reset_password}

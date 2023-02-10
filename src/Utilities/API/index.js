@@ -7,6 +7,7 @@ import {
   BASE_URL_TENANT,
   PROD_BASE_URL_TENANT,
   PROD_BASE_URL,
+  TENANT_ID,
 } from "./ApiConstants";
 import { strings } from "../Language/index";
 const RNFetchBlob = require("rn-fetch-blob").default;
@@ -65,12 +66,14 @@ export const serverCall = async (url, method, data) =>
 
           if (token?.accessToken) {
             headers = {
+              "x-tenant-id": TENANT_ID,
               "Content-Type": "application/json",
               authorization: token.accessToken ? token.accessToken : "",
             };
           } else {
             headers = {
               "Content-Type": "application/json",
+              "x-tenant-id": TENANT_ID,
             };
           }
 

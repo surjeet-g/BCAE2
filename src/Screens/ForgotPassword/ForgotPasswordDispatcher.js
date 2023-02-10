@@ -10,12 +10,10 @@ import { saveToken, getToken } from "../../Storage/token";
 import { passwordHash } from "../../Utilities/Constants/Constant";
 import Toast from "react-native-toast-message";
 
-export function verifyForgotPasswordData(navigation, username) {
+export function verifyForgotPasswordData(navigation, params) {
   return async (dispatch) => {
     dispatch(initForgotPasswordData());
-    let params = {
-      email: username,
-    };
+
     let result = await serverCall(
       endPoints.FORGOT_PASSWORD,
       requestMethod.POST,

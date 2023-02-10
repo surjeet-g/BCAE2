@@ -26,8 +26,8 @@ import { useSelector } from "react-redux";
 
 const ForgotPassword = ({ route, navigation }) => {
   let login = useSelector((state) => state.login);
-  const { isFirst } = route.params;
-
+  // const { isFirst } = route.params;
+  const isFirst = false;
   const [isFirstSelected, setFirstSelected] = useState(isFirst);
 
   const onPressFirst = () => {

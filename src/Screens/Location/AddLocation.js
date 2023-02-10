@@ -35,7 +35,7 @@ import MapView, {
 // import Modal from "react-native-modal";
 // import Header from "../TabScreens/Component/Header";
 import RNLocation from "react-native-location";
-import Geocoder from "@timwangdev/react-native-geocoder";
+// import Geocoder from "@timwangdev/react-native-geocoder";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 
 import { Button } from "react-native-paper";
@@ -209,30 +209,30 @@ const AddLocation = ({ route, navigation }) => {
     animateToCurrentLocation();
   };
 
-  const getLocationAddress = (latitude, longitude) => {
-    const obj = {
-      lat: latitude,
-      lng: longitude,
-      latitudeDelta: latitudeDelta,
-      longitudeDelta: longitudeDelta,
-    };
+  // const getLocationAddress = (latitude, longitude) => {
+  //   const obj = {
+  //     lat: latitude,
+  //     lng: longitude,
+  //     latitudeDelta: latitudeDelta,
+  //     longitudeDelta: longitudeDelta,
+  //   };
 
-    Geocoder.geocodePosition(obj)
-      .then((res) => {
-        console.log("res====>" + res + "---" + latitude + "===" + longitude);
+  //   Geocoder.geocodePosition(obj)
+  //     .then((res) => {
+  //       console.log("res====>" + res + "---" + latitude + "===" + longitude);
 
-        var myAddress = res["0"].formattedAddress;
-        var countryCode = res["0"].countryCode;
+  //       var myAddress = res["0"].formattedAddress;
+  //       var countryCode = res["0"].countryCode;
 
-        console.log("res====>" + myAddress + "----" + countryCode);
-        setGeoAddress(myAddress);
-      })
-      .catch(function (error) {
-        console.log(
-          "There has been a problem with your fetch operation: " + error.message
-        );
-      });
-  };
+  //       console.log("res====>" + myAddress + "----" + countryCode);
+  //       setGeoAddress(myAddress);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(
+  //         "There has been a problem with your fetch operation: " + error.message
+  //       );
+  //     });
+  // };
 
   const permissionHandle = async () => {
     try {

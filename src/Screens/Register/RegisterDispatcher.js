@@ -73,12 +73,14 @@ export function sendOtp(
       params = {
         reference: mobileno,
         firstName: firstname,
+        extn: 0,
       };
     } else {
       servicePoint = endPoints.GET_OTP_FOR_MOBILE;
       params = {
         reference: mobileno,
         firstName: firstname,
+        extn: 0,
       };
     }
 

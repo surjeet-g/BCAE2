@@ -25,7 +25,7 @@ export function verifyLoginData(navigation, username, password) {
       .then(async (fcmDeviceId) => {
         let params = {
           loginId: username,
-          loginPassword: password,
+          password: password,
           device: {
             deviceId: fcmDeviceId,
             deviceType: Platform.OS,

@@ -28,7 +28,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="BottomBar">
+      <Stack.Navigator initialRouteName="ForgotPassword">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"

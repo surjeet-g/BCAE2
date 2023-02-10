@@ -36,7 +36,8 @@ import {
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { SegmentedButtons } from "react-native-paper";
-
+const TAB_EMAIL = 1;
+const TAB_MOBILE = 0;
 export const Login = ({ navigation }) => {
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
@@ -51,7 +52,7 @@ export const Login = ({ navigation }) => {
 
   const [visible, setVisible] = React.useState(false);
 
-  const [isFirstSelected, setFirstSelected] = useState(1);
+  const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
   let login = useSelector((state) => state.login);
   const dispatch = useDispatch([resetLogin, verifyLoginData]);
   useEffect(() => {
@@ -97,29 +98,29 @@ export const Login = ({ navigation }) => {
 
   const onPressFirst = () => {
     dispatch(resetLogin());
-    setFirstSelected(true);
+    setFirstSelected(TAB_EMAIL);
   };
   const onPressSecond = () => {
     dispatch(resetLogin());
-    setFirstSelected(false);
+    setFirstSelected(TAB_MOBILE);
   };
 
   return (
     <View style={styles.container}>
       <KeyboardAwareView animated={false}>
         <SegmentedButtons
-          value={1}
+          value={isFirstSelected}
           onValueChange={(value) => {
             dispatch(resetLogin());
             setFirstSelected(value);
           }}
           buttons={[
             {
-              value: 1,
+              value: TAB_EMAIL,
               label: strings.customer_email_ID,
             },
             {
-              value: 0,
+              value: TAB_MOBILE,
               label: strings.mobile_no,
             },
           ]}
