@@ -33,7 +33,7 @@ import MapView, {
 } from "react-native-maps";
 
 // import Modal from "react-native-modal";
-// import Header from "../TabScreens/Component/Header";
+import Header from "../TabScreens/Component/Header";
 import RNLocation from "react-native-location";
 // import Geocoder from "@timwangdev/react-native-geocoder";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
@@ -213,7 +213,7 @@ const AddLocation = ({ route, navigation }) => {
   //   const obj = {
   //     lat: latitude,
   //     lng: longitude,
-  //     latitudeDelta: latitudeDelta,
+  //     latitudeDelta: latibeytudeDelta,
   //     longitudeDelta: longitudeDelta,
   //   };
 
