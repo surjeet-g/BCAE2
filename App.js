@@ -9,7 +9,7 @@ import { LogBox, SafeAreaView } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import { theme } from "./src/Utilities/Constants/Constant";
 
-let navigation = useNavigation;
+// let navigation = useNavigation;
 
 const toastConfig = {
   bctError: ({ text1, props }) => (
