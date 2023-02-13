@@ -29,11 +29,14 @@ export function fetchRegisterFormData() {
       //result.data.data.
       dispatch(setAddressLoopUpData(addressLookUpResult?.data?.data));
 
-      let params = ["LOCATION", "COUNTRY", "USER_TYPE", "GENDER", "PROD_TYPE"];
+      let bussineEntities = "LOCATION,COUNTRY,USER_TYPE,GENDER,PROD_TYPE";
       let result = await serverCall(
         endPoints.GET_REGISTER_FORM_DATA,
-        requestMethod.POST,
-        params
+        requestMethod.GET,
+        {
+          valueParam: bussineEntities,
+          searchParam: "code",
+        }
       );
       if (result.success && result?.data?.data) {
         let serviceCode = {

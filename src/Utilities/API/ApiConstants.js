@@ -19,7 +19,7 @@ export const endPoints = {
   GETFOLLOWUPWITHATTTACHMENT: "api/interaction/followUp",
   FOLLOWUP: "api/complaint",
   USER_LOGIN: "api/auth/login",
-  GET_REGISTER_FORM_DATA: "api/lookup/business-entity",
+  GET_REGISTER_FORM_DATA: "api/master/lookup",
   MY_TICKETS_API: "api/interaction/search",
   MY_TICKETS_DETAILS_API: "api/complaint",
   GET_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=REGISTER",

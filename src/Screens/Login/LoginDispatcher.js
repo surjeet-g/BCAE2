@@ -26,10 +26,11 @@ export function verifyLoginData(navigation, username, password) {
         let params = {
           loginId: username,
           password: password,
-          device: {
-            deviceId: fcmDeviceId,
-            deviceType: Platform.OS,
-          },
+          channel: "MOBILE_APP",
+          // device: {
+          //   deviceId: fcmDeviceId,
+          //   deviceType: Platform.OS,
+          // },
         };
 
         console.log("fcm token for login ", fcmDeviceId);
