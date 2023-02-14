@@ -14,8 +14,8 @@ export const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: "rgba(0, 0, 255, 1)",
-    secondary: "yellow",
+    primary: "#ea272c",
+    secondary: "#ea272c",
     tertiary: "green",
     myOwnColor: "blue",
   },

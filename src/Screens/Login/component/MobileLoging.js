@@ -97,7 +97,12 @@ const MobileLoging = (props) => {
       <View>
         <View style={{ flexDirection: "row" }}>
           <TextInput
-            style={{ width: "100%" }}
+            mode="flat"
+            style={{
+              backgroundColor: "transparent",
+              width: "100%",
+            }}
+            textColor="#ea272c"
             onChangeText={(text) => onIDChange(text)}
             value={number}
             placeHolder={strings.mobile_no}
@@ -113,7 +118,12 @@ const MobileLoging = (props) => {
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
-          style={{ width: "100%" }}
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+            width: "100%",
+          }}
+          textColor="#ea272c"
           value={password}
           label={strings.password}
           placeHolder={strings.password}

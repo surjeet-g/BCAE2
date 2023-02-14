@@ -108,6 +108,11 @@ const CustomerEmailForgotPassword = (props) => {
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+          }}
+          textColor="#ea272c"
           onChangeText={(text) => onIDChange(text)}
           value={username}
           label={strings.customer_email_ID}
@@ -121,6 +126,11 @@ const CustomerEmailForgotPassword = (props) => {
           }
         />
         <TextInput
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+          }}
+          textColor="#ea272c"
           onChangeText={(text) => onIDChangeUsername(text)}
           value={lastName}
           label="Last Name"
@@ -143,6 +153,11 @@ const CustomerEmailForgotPassword = (props) => {
           }}
         />
         <TextInput
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+          }}
+          textColor="#ea272c"
           // onChangeText={(text) => onIDChange(text)}
           value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
           label={"Date of birth"}

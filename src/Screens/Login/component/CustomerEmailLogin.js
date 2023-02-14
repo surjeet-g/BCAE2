@@ -88,6 +88,11 @@ const CustomerEmailLogin = (props) => {
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+          }}
+          textColor="#ea272c"
           value={username}
           label={strings.customer_email_ID}
           placeHolder={strings.customer_email_ID}
@@ -109,6 +114,11 @@ const CustomerEmailLogin = (props) => {
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
+          mode="flat"
+          style={{
+            backgroundColor: "transparent",
+          }}
+          textColor="#ea272c"
           value={password}
           label={strings.password}
           placeHolder={strings.password}

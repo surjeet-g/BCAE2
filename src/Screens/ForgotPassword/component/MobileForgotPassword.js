@@ -99,6 +99,11 @@ const MobileLoging = (props) => {
 
           <View style={{}}>
             <TextInput
+              mode="flat"
+              style={{
+                backgroundColor: "transparent",
+              }}
+              textColor="#ea272c"
               onChangeText={(text) => onChangeNumber(text)}
               value={number}
               placeHolder={strings.mobile_no}

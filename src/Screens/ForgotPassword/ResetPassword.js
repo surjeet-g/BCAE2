@@ -211,6 +211,11 @@ const ResetPassword = ({ route, navigation }) => {
         </View>
         <View>
           <TextInput
+            mode="flat"
+            style={{
+              backgroundColor: "transparent",
+            }}
+            textColor="#ea272c"
             onChangeText={(text) => onOldPasswordChange(text)}
             value={oldPassword}
             placeHolder={strings.old_password}
@@ -230,6 +235,11 @@ const ResetPassword = ({ route, navigation }) => {
         </View>
         <View style={{ marginBottom: 5 }}>
           <TextInput
+            mode="flat"
+            style={{
+              backgroundColor: "transparent",
+            }}
+            textColor="#ea272c"
             onChangeText={(text) => onPasswordChange(text)}
             value={password}
             placeHolder={strings.new_password}
@@ -253,6 +263,11 @@ const ResetPassword = ({ route, navigation }) => {
             value={confirmPassword}
             placeHolder={strings.confirmPassword}
             secureTextEntry={secureTextEntryConfim}
+            mode="flat"
+            style={{
+              backgroundColor: "transparent",
+            }}
+            textColor="#ea272c"
             right={
               <TextInput.Icon
                 onPress={hideShowClickConfirm}

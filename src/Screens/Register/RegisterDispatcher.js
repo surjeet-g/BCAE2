@@ -122,6 +122,7 @@ export function userRegister(params, type, cbSuccess = (_) => {}) {
     const servicePoint = endPoints.REGISTER;
 
     let result = await serverCall(servicePoint, requestMethod.POST, params);
+    console.log("result", result);
     if (result.success && result?.data?.data) {
       cbSuccess(result?.data?.message);
       dispatch(setOtpFormData(result?.data, type));

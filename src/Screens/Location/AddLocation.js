@@ -523,6 +523,11 @@ const AddLocation = ({ route, navigation }) => {
 
       <View style={styles.inputBox}>
         <TextInput
+          mode="flat"
+          // style={{
+          //   backgroundColor: "transparent",
+          // }}
+          textColor="#ea272c"
           style={styles.searchInput}
           //onChangeText={setSearchText}
           value={geoAddress}
