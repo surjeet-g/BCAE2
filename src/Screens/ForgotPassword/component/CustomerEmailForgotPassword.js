@@ -10,7 +10,7 @@ import {
   validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
-import { DatePickerModal } from "react-native-paper-dates";
+import DatePicker from "react-native-date-picker";
 
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { useDispatch, useSelector } from "react-redux";
@@ -127,13 +127,20 @@ const CustomerEmailForgotPassword = (props) => {
           placeHolder="Last Name"
         />
 
-        <DatePickerModal
-          locale="en"
-          mode="single"
-          visible={open}
-          onDismiss={onDismissSingle}
-          date={dob}
-          onConfirm={onConfirmSingle}
+        <DatePicker
+          modal
+          mode="date"
+          validRange={{ endDate: new Date() }}
+          open={open}
+          onCancel={() => setOpen(false)}
+          date={dob == "" ? new Date() : dob}
+          maximumDate={new Date()}
+          onConfirm={(params) => {
+            console.log("data", params);
+            setOpen(false);
+            setDob(params);
+            setDobError("");
+          }}
         />
         <TextInput
           // onChangeText={(text) => onIDChange(text)}

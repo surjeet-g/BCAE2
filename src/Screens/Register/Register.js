@@ -40,6 +40,7 @@ import {
 } from "./RegisterDispatcher";
 import { TextBoxWithCTA } from "../../Components/TextBoxWithCTA";
 import { Button, TextInput } from "react-native-paper";
+import DatePicker from "react-native-date-picker";
 
 import { strings } from "../../Utilities/Language/index";
 import { FullPageLoder } from "../../Components/FullPageLoder";
@@ -47,6 +48,7 @@ import { FullPageLoder } from "../../Components/FullPageLoder";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "./RegisterAction";
 import { TextBoxWithCTAEmail } from "../../Components/TextBoxWithCTAEmail";
+import moment from "moment";
 
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
@@ -103,6 +105,10 @@ const Register = ({ navigation, props }) => {
   const [state, setStateProfile] = useState("");
   const [district, setDistrict] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [dob, setDob] = useState("");
+  // const [dob, setDob] = useState("2023-02-10");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const dispatch = useDispatch([
     fetchRegisterFormData,
@@ -157,16 +163,14 @@ const Register = ({ navigation, props }) => {
     // +"<===>"+mobileNo+"<===>"+otp+"<===>"+email
     // +"<===>"+otpEmail+"<===>"+password+"<===>"+confirmPassword)
     if (
+      dob === "" ||
       firstName === "" ||
       lastName === "" ||
       gender === "" ||
-      location === "" ||
       mobileNo === "" ||
       otp === "" ||
       email === "" ||
-      otpEmail === "" ||
-      password === "" ||
-      confirmPassword === ""
+      otpEmail === ""
     ) {
       setButtomEnableDisable(true);
       //console.log("buttonEnableDiable==>1");
@@ -210,7 +214,7 @@ const Register = ({ navigation, props }) => {
 
   const onGenderClick = (textStr) => {
     // console.log(textStr.description)
-    setGender(textStr.description);
+    setGender(textStr);
     buttonEnableDiable();
   };
 
@@ -460,16 +464,16 @@ const Register = ({ navigation, props }) => {
       });
       return null;
     }
-    // console.warm("hitting", mobileOTPVerifcation);
-    console.log("userRegister===>0" + JSON.stringify(registerForm));
-    console.log("userRegister===>1");
+
     if (firstName.trim() === "") {
       setFirstNameError(strings.firstNameError);
     } else if (lastName.trim() === "") {
       setLastNameError(strings.lastNameError);
+    } else if (dob === "") {
+      dobError(strings.dobError);
     } else if (service === "") {
       setServiceError(strings.serviceError);
-    } else if (gender === "") {
+    } else if (gender?.code === "") {
       setgenderError(strings.genderError);
     } else if (!validateNumber(mobileNo)) {
       setNumberError(strings.mobileValidError);
@@ -479,61 +483,32 @@ const Register = ({ navigation, props }) => {
       setEmailError(strings.emailValidError);
     } else if (otpEmail.trim() === "") {
       setOtpEmailError(strings.emailOtpError);
-    } else if (!validatePassword(password)) {
-      setPasswordError(strings.passwordValidError);
-    } else if (!validatePassword(confirmPassword)) {
-      setConfirmPasswordError(strings.passwordValidError);
-    } else if (password !== confirmPassword) {
-      setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
     } else if (!isSelectedTerm) {
       setTermError(strings.termError);
     } else if (!isSelected) {
       setPrivaceyError(strings.privaceyError);
     } else {
-      console.log("userRegister===>1");
-      let pasHash = passwordHash(password).then((datahash) => {
-        console.log("userRegister===>2");
-        const myArray = location.split(",").reverse();
-        console.log("userRegister===>3");
-        let registerObject = {
-          firstName: firstName,
-          lastName: lastName,
-          gender: gender === "Male" ? "M" : "F",
-          country: myArray.length > 0 ? myArray[0] : "",
-          extn: countryCode,
-          contactNo: mobileNo,
-          mobileOTP: otp,
-          email: email,
-          emailOTP: otpEmail,
-          password: datahash,
-          confirmPassword: datahash,
-          deviceType: Platform.OS === "android" ? "android" : "ios",
-          profilePicture: "",
-          deviceId: "",
-          serviceCode: service,
-          address: {
-            address: location,
-            hno: "",
-            buildingName: "",
-            street: street,
-            road: "",
-            city: "",
-            state: state,
-            district: district,
-            country: country,
-            latitude: latitude,
-            longitude: longitude,
-            postCode: postcode,
-          },
-        };
+      let registerObject = {
+        firstName: firstName,
+        lastName: lastName,
+        userType: "string",
+        gender: gender.code,
+        // country: myArray.length > 0 ? myArray[0] : "",
+        extn: 0,
+        contactNo: mobileNo,
+        mobileOTP: otp,
+        email: email,
+        dob: moment(dob).format("YYYY-MM-DD"),
+        emailOTP: otpEmail,
+      };
 
-        console.warn("userRegister===>2" + JSON.stringify(registerObject));
-        dispatch(
-          userRegister(registerObject, "Register", (message) =>
-            showAlert(message)
-          )
-        );
-      });
+      console.log("userRegister===>2" + JSON.stringify(registerObject));
+      dispatch(
+        userRegister(registerObject, "Register", (message) =>
+          showAlert(message)
+        )
+      );
+      // });
     }
   };
 
@@ -686,7 +661,7 @@ const Register = ({ navigation, props }) => {
             </View>
 
             {/* Service */}
-            <View style={{ marginTop: 5 }}>
+            {/* <View style={{ marginTop: 5 }}>
               <CustomDropDown
                 selectedValue={selectedValueServ}
                 setValue={setValueServ}
@@ -697,8 +672,41 @@ const Register = ({ navigation, props }) => {
               />
 
               {serviceError !== "" && showErrorMessage(serviceError)}
-            </View>
+            </View> */}
 
+            {/* DOB */}
+            <DatePicker
+              modal
+              mode="date"
+              validRange={{ endDate: new Date() }}
+              open={open}
+              onCancel={() => setOpen(false)}
+              date={dob == "" ? new Date() : dob}
+              maximumDate={new Date()}
+              onConfirm={(params) => {
+                console.log("data", params);
+                setOpen(false);
+                setDob(params);
+                setDobError("");
+              }}
+            />
+
+            <View style={{ marginTop: 10 }}>
+              <TextInput
+                // onChangeText={(text) => onIDChange(text)}
+                value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+                label={"Date of birth"}
+                onFocus={() => setOpen(true)}
+                placeHolder={"Date of birth"}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpen(true)}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/mail.png")}
+                  />
+                }
+              />
+            </View>
             {/* Gender */}
             <View style={{ marginTop: 10 }}>
               <CustomDropDown
@@ -706,7 +714,7 @@ const Register = ({ navigation, props }) => {
                 setValue={setValueGender}
                 data={registerForm?.registerFormData?.GENDER ?? []}
                 onChangeText={(text) => onGenderClick(text)}
-                value={gender}
+                value={gender?.description}
                 placeHolder={strings.gender}
               />
 
@@ -729,7 +737,7 @@ const Register = ({ navigation, props }) => {
                             }
                         </View> */}
 
-            <View style={{ marginTop: spacing.HEIGHT_30 }}>
+            {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
               {location != "" && (
                 <Text style={styles.placeHolderText}>{strings.location}</Text>
               )}
@@ -761,7 +769,7 @@ const Register = ({ navigation, props }) => {
                   source={require("../../Assets/icons/map.png")}
                 ></Image>
               </Pressable>
-            </View>
+            </View> */}
 
             {/* Location */}
             {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
@@ -934,52 +942,6 @@ const Register = ({ navigation, props }) => {
                 showEmailErrorMessage()}
 
               {otpEmailError !== "" && showErrorMessage(otpEmailError)}
-            </View>
-            <View style={{ marginBottom: 5 }}>
-              <TextInput
-                onChangeText={(text) => onPasswordChange(text)}
-                value={password}
-                placeHolder={strings.password}
-                label={strings.password}
-                secureTextEntry={secureTextEntry}
-                right={
-                  <TextInput.Icon
-                    onPress={hideShowClick}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntry
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
-                }
-              />
-
-              {passwordError !== "" && showErrorMessage(passwordError)}
-            </View>
-
-            <View style={{ marginBottom: 5 }}>
-              <TextInput
-                onChangeText={(text) => onConfirmPasswordChange(text)}
-                value={confirmPassword}
-                placeHolder={strings.confirmPassword}
-                label={strings.confirmPassword}
-                secureTextEntry={secureTextEntryConfim}
-                right={
-                  <TextInput.Icon
-                    onPress={hideShowClickConfirm}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntryConfim
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
-                }
-              />
-
-              {passwordConfirmError !== "" &&
-                showErrorMessage(passwordConfirmError)}
             </View>
 
             <Pressable

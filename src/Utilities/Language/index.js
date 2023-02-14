@@ -233,6 +233,7 @@ export let strings = new LocalizedStrings({
     firstNameError: "Please enter first name",
     lastNameError: "Please enter last name",
     serviceError: "Please select service",
+    dobError: "Please select date of birth",
     genderError: "Please select gender",
     countryError: "Please select country",
     locationError: "Please Select location",

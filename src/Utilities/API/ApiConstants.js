@@ -28,7 +28,7 @@ export const endPoints = {
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
   PROFILE_DETAILS: "api/users",
   UPDATE_MOBILE_USER: "api/users/update",
-  REGISTER: "api/auth/register",
+  REGISTER: "api/auth/register-via-mobile",
   GET_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
   ADD_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
   DELETE_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
