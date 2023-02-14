@@ -35,9 +35,11 @@ import {
   requestUserPermission,
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
-import { SegmentedButtons } from "react-native-paper";
-const TAB_EMAIL = 1;
-const TAB_MOBILE = 0;
+import { ToggleButton } from "../../Components/ToggleButton";
+import { Button } from "react-native-paper";
+const TAB_EMAIL = true;
+const TAB_MOBILE = false;
+
 export const Login = ({ navigation }) => {
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
@@ -105,45 +107,166 @@ export const Login = ({ navigation }) => {
     setFirstSelected(TAB_MOBILE);
   };
 
+  const orSection = () => {
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: spacing.HEIGHT_32,
+        }}
+      >
+        <View
+          style={{
+            width: "43%",
+            height: 1,
+            backgroundColor: color.DISABLED_GREY,
+          }}
+        ></View>
+        <Text style={styles.orText}>{strings.or}</Text>
+        <View
+          style={{
+            width: "43%",
+            height: 1,
+            backgroundColor: color.DISABLED_GREY,
+            alignContent: "flex-end",
+          }}
+        ></View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <KeyboardAwareView animated={false}>
-        <SegmentedButtons
-          value={isFirstSelected}
-          onValueChange={(value) => {
-            dispatch(resetLogin());
-            setFirstSelected(value);
-          }}
-          buttons={[
-            {
-              value: TAB_EMAIL,
-              label: strings.customer_email_ID,
-            },
-            {
-              value: TAB_MOBILE,
-              label: strings.mobile_no,
-            },
-          ]}
-        />
         <ScrollView
           style={{
             flexGrow: 1,
             paddingHorizontal: spacing.WIDTH_30,
-            paddingTop: spacing.HEIGHT_50 * 2,
+            // paddingTop: spacing.HEIGHT_50 * 2,
+            marginBottom: spacing.HEIGHT_30,
           }}
           nestedScrollEnabled={true}
         >
+          <View
+            style={{ marginBottom: spacing.WIDTH_30, alignItems: "center" }}
+          >
+            <Image
+              style={styles.logo}
+              source={require("../../Assets/icons/ic_td123_logo.png")}
+            ></Image>
+          </View>
+
+          <View
+            style={{
+              marginTop: spacing.WIDTH_15,
+              marginBottom: spacing.WIDTH_30,
+              alignItems: "center",
+              flex: 1,
+              flexDirection: "row",
+            }}
+          >
+            <Pressable
+              onPress={() =>
+                navigation.navigate("Anouncement", { fromLogin: true })
+              }
+              style={{
+                marginTop: spacing.HEIGHT_6,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "50%",
+              }}
+            >
+              <Image
+                style={styles.upperLogo}
+                source={require("../../Assets/icons/announcement_login.png")}
+              />
+              <Text style={styles.upperText}>{strings.announcement}</Text>
+            </Pressable>
+
+            <View
+              style={{
+                width: 1,
+                height: 40,
+                backgroundColor: color.DISABLED_GREY,
+              }}
+            ></View>
+
+            <Pressable
+              onPress={() =>
+                navigation.navigate("ShowWebPage", {
+                  fromLogin: false,
+                  url: DEBUG_BUILD ? STAGE_FAQ : PROD_FAQ,
+                  title: "FAQ",
+                })
+              }
+              style={{
+                marginTop: spacing.HEIGHT_6,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "50%",
+              }}
+            >
+              <Image
+                style={styles.upperLogo}
+                source={require("../../Assets/icons/faq_login.png")}
+              />
+              <Text style={styles.upperText}>{strings.faq}</Text>
+            </Pressable>
+          </View>
+
+          <View style={{ marginBottom: spacing.WIDTH_20 }}>
+            <ToggleButton
+              isFirstSelected={isFirstSelected}
+              label={{
+                first: strings.customer_email_ID,
+                second: strings.mobile_no,
+              }}
+              bgColor={{
+                selected: color.BCAE_PRIMARY,
+                unselected: color.BCAE_LIGHT_BLUE_2,
+              }}
+              textColor={{
+                selected: color.WHITE,
+                unselected: color.BCAE_PRIMARY,
+              }}
+              textPro={{
+                fontSize: fontSizes.FONT_13,
+                fontWeight: "600",
+                lineHeight: spacing.HEIGHT_16,
+              }}
+              onPressFirst={onPressFirst}
+              onPressSecond={onPressSecond}
+            ></ToggleButton>
+          </View>
+
           {isFirstSelected ? (
             <CustomerEmailLogin navigation={navigation} />
           ) : (
             <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
           )}
-          <GoogleSigninButton
+          {/* <GoogleSigninButton
             style={{ width: 192, height: 48 }}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
             onPress={signIn}
-          />
+          /> */}
+
+          {orSection()}
+
+          <View>
+            <Text style={styles.noAccText}>{strings.dont_account}</Text>
+            <Pressable
+              onPress={() => navigation.navigate("Register with us", {})}
+            >
+              <Text style={styles.rgisterText}>
+                {strings.register_with_us.toUpperCase()}
+              </Text>
+            </Pressable>
+          </View>
         </ScrollView>
         {!login.initLogin &&
           (login?.loggedProfile?.errorCode == "10000" ||
