@@ -8,23 +8,25 @@ import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 const RNFetchBlob = require("rn-fetch-blob").default;
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
 
+export const SECERT_KEY = "(*Hnjkn2kjn";
 export const theme = {
   ...DefaultTheme, // or MD3DarkTheme
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: "rgba(0, 0, 255, 1)",
-    secondary: "yellow",
+    primary: "#ea272c",
+    secondary: "#ea272c",
     tertiary: "green",
     myOwnColor: "blue",
   },
 };
-
+export const WEBCLIENT_ID =
+  "638155044511-6jaevsij1eisl66jeubv7qb7166ejlbs.apps.googleusercontent.com";
 export const GOOGLE_API_KEY = "AIzaSyBGKi6f1zYwwra1LVNtthEp6VPzUkvcPkk";
 const salt = "AE0DB48EBF4DDE3E59ABF92F1953F02A390B584CF65EE981E4598561D69F09D5";
 
 const LOG_ENABLED = false;
-export const DEBUG_BUILD = false;
+export const DEBUG_BUILD = true;
 export const STAGE_CHAT_URL =
   "https://st-td123.comquest-brunei.com:13443/chatbot/";
 export const PROD_CHAT_URL = "https://123.comquest-brunei.com/chatbot/";

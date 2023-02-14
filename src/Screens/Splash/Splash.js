@@ -4,27 +4,30 @@ import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
 import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
-// import { Button } from "../../Components/Button";
+
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../Storage/token";
 import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
+import { Button } from "react-native-paper";
 
 const Splash = ({ route, navigation }) => {
   const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   const versioncheck = useSelector((state) => state.versioncheck);
+
   useEffect(() => {
     checkLanguage();
   }, []);
+
   const fetchVersionData = async () => {
     await dispatchVersionCheck(getVersionCheckData());
   };
 
-  useEffect(() => {
-    const willFocusSubscription = navigation.addListener("focus", () => {
-      fetchVersionData();
-    });
-    return willFocusSubscription;
-  }, []);
+  // useEffect(() => {
+  //   const willFocusSubscription = navigation.addListener("focus", () => {
+  //     fetchVersionData();
+  //   });
+  //   return willFocusSubscription;
+  // }, []);
 
   const checkLanguage = async () => {
     let language = await getLanguage();
@@ -90,20 +93,13 @@ const Splash = ({ route, navigation }) => {
             paddingRight: 20,
           }}
         >
-          {/* <Button
-            type={buttonType.PRIMARY}
-            size={buttonSize.LARGE}
+          <Button
             label={strings.get_started}
             disabled={false}
-            bgColor={color.WHITE}
-            textPro={{
-              color: color.BLACK,
-              fontSize: fontSizes.FONT_14,
-              fontWeight: "400",
-              lineHeight: spacing.HEIGHT_16,
-            }}
             onPress={checkLogin}
-          ></Button> */}
+          >
+            {strings.get_started}
+          </Button>
         </View>
       </View>
     </View>

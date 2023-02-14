@@ -1,0 +1,37 @@
+{
+    "success": true,
+    "data": {
+        "status": 200,
+        "message": "User register Successfully",
+        "data": {
+            "contactNo": "2131231",
+            "email": "tese@gmail.com",
+            "userType": "user",
+            "firstName": "tese",
+            "lastName": "tese",
+            "gender": "MALE",
+            "dob": "1987-12-06T16:00:00.000Z",
+            "country": "IND",
+            "loginid": "tese__001",
+            "loginPassword": "rnDi7RqS",
+            "status": "PENDING",
+            "inviteToken": "7e5bf2c75e4829b282994163154a3a4bdf2d3f2f3b0b695f232e9b9b9b82c979",
+            "createdBy": "1",
+            "updatedBy": "1"
+        }
+    },
+    "message": "",
+    "requestObject": {
+        "url": "api/auth/register-via-mobile",
+        "method": "POST",
+        "baseURL": "https://bcae-test.comquest-brunei.com:1443/bcae/",
+        "data": {
+            "contactNo": "2131231",
+            "email": "tese@gmail.com"
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "x-tenant-id": "a89d6593-3aa8-437b-9629-9fcbaa201da6"
+        }
+    }
+}
