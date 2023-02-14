@@ -38,13 +38,12 @@ import { Button, TextInput } from "react-native-paper";
 
 import { strings } from "../../Utilities/Language/index";
 
-// import Header from "../TabScreens/Component/Header";
+import Header from "../TabScreens/Component/Header";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "./RegisterAction";
 
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
-  //4 minute
 
   const [mobileNo, setMobileNo] = useState("");
 
@@ -199,12 +198,12 @@ const Register = ({ navigation, props }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        {/* <Header
+        <Header
           Text={myscreenmae}
           navigation={navigation}
           backIconVisibility={true}
           registerfaq={true}
-        ></Header> */}
+        ></Header>
 
         <ScrollView
           style={{
