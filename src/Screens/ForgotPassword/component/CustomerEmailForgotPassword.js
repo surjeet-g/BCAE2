@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Keyboard,
+} from "react-native";
 import {
   spacing,
   fontSizes,
@@ -23,11 +30,11 @@ import moment from "moment";
 
 const CustomerEmailForgotPassword = (props) => {
   let forgot = useSelector((state) => state.forgot);
-  const [username, setUsername] = useState("vvvipindsm@gmail.com");
-  // const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("vvvipindsm@gmail.com");
+  const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
-  const [lastName, setlastName] = useState("vvv");
-  // const [lastName, setlastName] = useState("");
+  // const [lastName, setlastName] = useState("vvv");
+  const [lastName, setlastName] = useState("");
   const [lastNameError, setlastNameError] = useState("");
   const [dob, setDob] = useState("");
   // const [dob, setDob] = useState("2023-02-10");
@@ -131,7 +138,10 @@ const CustomerEmailForgotPassword = (props) => {
             backgroundColor: "transparent",
           }}
           textColor="#ea272c"
-          onChangeText={(text) => onIDChangeUsername(text)}
+          onChangeText={(text) => {
+            Keyboard.dismiss();
+            onIDChangeUsername(text);
+          }}
           value={lastName}
           label="Last Name"
           placeHolder="Last Name"
@@ -171,10 +181,10 @@ const CustomerEmailForgotPassword = (props) => {
             />
           }
         />
-        {!forgot?.initForgotPassword &&
+        {/* {!forgot?.initForgotPassword &&
           (forgot?.loggedProfile?.errorCode == "404" ||
             forgot?.loggedProfile?.errorCode == "500") &&
-          showErrorMessage(forgot?.loggedProfile?.message)}
+          showErrorMessage(forgot?.loggedProfile?.message)} */}
         {usernameError !== "" && showErrorMessage(usernameError)}
         {lastNameError !== "" && showErrorMessage(lastNameError)}
         {dobError !== "" && showErrorMessage(dobError)}
@@ -190,6 +200,7 @@ const CustomerEmailForgotPassword = (props) => {
           />
         ) : (
           <Button
+            mode="contained"
             label={strings.reset_password}
             disabled={
               username == "" && dob == "" && lastName == "" ? true : false

@@ -8,8 +8,11 @@ import { useNavigation } from "@react-navigation/native";
 import { LogBox, SafeAreaView, AppState } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import { theme } from "./src/Utilities/Constants/Constant";
-
-// let navigation = useNavigation;
+import { getData, saveData } from "./src/Storage/DB";
+import moment from "moment";
+import { getToken } from "./src/Storage/token";
+import { logoutUserSectionTimeOut } from "./src/Redux/LogoutDispatcher";
+let navigator = useNavigation;
 
 const toastConfig = {
   bctError: ({ text1, props }) => (
@@ -27,18 +30,52 @@ const App = () => {
     const subscription = AppState.addEventListener(
       "change",
       async (nextAppState) => {
-        // if (
-        //   appState.current.match(/inactive|background/) &&
-        //   nextAppState === "active"
-        // ) {
-        //   // console.log("App has come to the foreground!");
-        // }
-        // console.log("faa", nextAppState);
-        // appState.current = nextAppState;
-        // setAppStateVisible(appState.current);
-        // console.log("AppState", appState.current);
-        if (nextAppState == "background") {
+        const token = await getToken();
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+          console.log("htting background");
+
+          if (
+            token.accessToken != null &&
+            typeof token.accessToken != "undefined"
+          ) {
+            const lastLogin = await getData("LAST_LOGIN");
+
+            if (lastLogin.length > 0) {
+              const lastLoggedDate = moment(lastLogin).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+              const currentDate = moment(new Date()).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+
+              const diffBwCurrentDate = moment.duration(
+                moment(currentDate).diff(moment(lastLoggedDate))
+              );
+
+              const hour = diffBwCurrentDate.asMinutes();
+
+              if (hour > 10) {
+                // await logoutUserSectionTimeOut(navigator);
+
+                Toast.show({
+                  type: "bctSuccess",
+                  text1: "TimeOut",
+                });
+              }
+            }
+          } else {
+            console.log("user not logged in");
+          }
+        } else {
+          await saveData(
+            "LAST_LOGIN",
+            moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+          );
         }
+        // console.log("user in background");
       }
     );
 

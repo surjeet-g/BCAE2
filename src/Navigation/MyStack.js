@@ -13,7 +13,7 @@ import SavedLocation from "../Screens/Location/SavedLocation";
 
 // import Location from "../Screens/Location/Location";
 import AddLocation from "../Screens/Location/AddLocation";
-import { Playground } from "../Screens/Playground";
+
 // import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
 
 // import Anouncement from "../Screens/TabScreens/Announcement";
@@ -28,17 +28,13 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="ForgotPassword">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
         />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Playground"
-          component={Playground}
-        />
+
         <Stack.Screen
           options={{ headerShown: false }}
           name="ConfirmForgotPassword"

@@ -84,8 +84,10 @@ export function deleteNdLogoutUser(navigation, userData) {
   };
 }
 
-export function logoutUserSectionTimeOut(navigation, userId) {
+export function logoutUserSectionTimeOut(navigation) {
   return async (dispatch) => {
+    console.log("hiting logut dispatcher");
+
     dispatch(setLogoutData("logout"));
     await removeAsyncItem(storageKeys.DASHBOARD_DATA);
     await removeAsyncItem(storageKeys.FCM_DEVICE_ID);

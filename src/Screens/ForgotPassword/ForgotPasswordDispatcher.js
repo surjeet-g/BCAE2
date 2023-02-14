@@ -26,6 +26,8 @@ export function verifyForgotPasswordData(navigation, params) {
       navigation.replace("ConfirmForgotPassword", { email: username });
     } else {
       Toast.show({
+        visibilityTime: 5000,
+        autoHide: true,
         type: "bctError",
         text1: result?.message || "",
       });
