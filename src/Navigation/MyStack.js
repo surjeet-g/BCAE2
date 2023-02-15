@@ -6,7 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import Splash from "../Screens/Splash/Splash";
 import { Login } from "../Screens/Login/Login";
 import Register from "../Screens/Register/Register";
-// import EditProfile from "../Screens/EditProfile/EditProfile";
+import EditProfile from "../Screens/EditProfile/EditProfile";
 import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import SavedLocation from "../Screens/Location/SavedLocation";
@@ -28,11 +28,16 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ForgotPassword">
+      <Stack.Navigator initialRouteName="EditProfile">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EditProfile"
+          component={EditProfile}
         />
 
         <Stack.Screen
@@ -77,18 +82,6 @@ function MyStack() {
           component={SavedLocation}
         />
 
-        {/* <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={Login}
-        />
-      
-      
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="BottomBar"
-          component={BottomBarNavigation}
-        /> */}
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="EditProfile"
