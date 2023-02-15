@@ -28,7 +28,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="EditProfile">
+      <Stack.Navigator initialRouteName="Register with us">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
