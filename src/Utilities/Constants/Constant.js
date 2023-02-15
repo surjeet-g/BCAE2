@@ -262,6 +262,7 @@ export const buttonSize = {
 };
 
 export const storageKeys = {
+  LAST_LOGINT_TIMESTAMP: "LAST_LOGINT_TIMESTAMP",
   VERSION_CODE: "VERSION_CODE",
   DASHBOARD_DATA: "DASHBOARD_DATA",
   ACCESS_TOKEN: "ACCESS_TOKEN",

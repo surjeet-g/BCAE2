@@ -34,7 +34,7 @@ export function logoutUser(navigation, userId) {
           await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
           await removeAsyncItem(storageKeys.REFRESH_TOKEN);
           await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-
+          await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
           navigation.navigate("Splash", {});
         } else {
           dispatch(setLogoutError(result));
@@ -74,6 +74,7 @@ export function deleteNdLogoutUser(navigation, userData) {
           await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
           await removeAsyncItem(storageKeys.REFRESH_TOKEN);
           await removeAsyncItem(storageKeys.ACCESS_TOKEN);
+          await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
 
           navigation.navigate("Splash", {});
         } else {
@@ -97,7 +98,7 @@ export function logoutUserSectionTimeOut(navigation) {
     await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
     await removeAsyncItem(storageKeys.REFRESH_TOKEN);
     await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-
+    await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
     navigation.navigate("Splash", {});
   };
 }
