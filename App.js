@@ -7,7 +7,7 @@ import { ToastTemplete } from "./src/Components/ToastTemplete";
 import { useNavigation } from "@react-navigation/native";
 import { LogBox, SafeAreaView, AppState } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import { theme } from "./src/Utilities/Constants/Constant";
+import { storageKeys, theme } from "./src/Utilities/Constants/Constant";
 import { getData, saveData } from "./src/Storage/DB";
 import moment from "moment";
 import { getToken } from "./src/Storage/token";
@@ -35,13 +35,11 @@ const App = () => {
           appState.current.match(/inactive|background/) &&
           nextAppState === "active"
         ) {
-          console.log("htting background");
-
           if (
             token.accessToken != null &&
             typeof token.accessToken != "undefined"
           ) {
-            const lastLogin = await getData("LAST_LOGIN");
+            const lastLogin = await getData(storageKeys.LAST_LOGINT_TIMESTAMP);
 
             if (lastLogin.length > 0) {
               const lastLoggedDate = moment(lastLogin).format(
@@ -55,27 +53,26 @@ const App = () => {
                 moment(currentDate).diff(moment(lastLoggedDate))
               );
 
-              const hour = diffBwCurrentDate.asMinutes();
+              const hour = diffBwCurrentDate.asHours();
 
-              if (hour > 10) {
-                // await logoutUserSectionTimeOut(navigator);
-
-                Toast.show({
-                  type: "bctSuccess",
-                  text1: "TimeOut",
-                });
+              if (hour > 0) {
+                await logoutUserSectionTimeOut(navigator);
               }
             }
           } else {
             console.log("user not logged in");
           }
         } else {
-          await saveData(
-            "LAST_LOGIN",
-            moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-          );
+          if (
+            token.accessToken != null &&
+            typeof token.accessToken != "undefined"
+          ) {
+            await saveData(
+              storageKeys.LAST_LOGINT_TIMESTAMP,
+              moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+            );
+          }
         }
-        // console.log("user in background");
       }
     );
 

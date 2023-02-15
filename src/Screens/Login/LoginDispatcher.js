@@ -35,7 +35,7 @@ export function verifyLoginData(navigation, username, password) {
           requestMethod.POST,
           params
         );
-        console.log("result", result);
+
         if (result.success) {
           if (
             result?.data?.data?.userDetails?.status &&
