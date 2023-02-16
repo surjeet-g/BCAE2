@@ -30,7 +30,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ForgotUserInfo">
+      <Stack.Navigator initialRouteName="Register with us">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"

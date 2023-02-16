@@ -44,7 +44,7 @@ import DatePicker from "react-native-date-picker";
 
 import { strings } from "../../Utilities/Language/index";
 import { FullPageLoder } from "../../Components/FullPageLoder";
-// import Header from "../TabScreens/Component/Header";
+import Header from "../TabScreens/Component/Header";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "./RegisterAction";
 import { TextBoxWithCTAEmail } from "../../Components/TextBoxWithCTAEmail";
@@ -56,6 +56,8 @@ const Register = ({ navigation, props }) => {
   const OTP_TIMER = 60 * 4;
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [customerID, setCustomerID] = useState("");
+  const [idNumber, setIdNumber] = useState("");
   const [gender, setGender] = useState("");
   const [service, setService] = useState("");
 
@@ -82,6 +84,10 @@ const Register = ({ navigation, props }) => {
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+
+  const [customerIDError, setCustomerIDError] = useState("");
+  const [idNumberError, setIdNumberError] = useState("");
+
   const [genderError, setgenderError] = useState("");
   const [serviceError, setServiceError] = useState("");
   const [countryError, setCountryError] = useState("");
@@ -469,6 +475,10 @@ const Register = ({ navigation, props }) => {
       setFirstNameError(strings.firstNameError);
     } else if (lastName.trim() === "") {
       setLastNameError(strings.lastNameError);
+    } else if (customerID === "") {
+      setCustomerIDError(strings.customerIDError);
+    } else if (idNumberError === "") {
+      setIdNumberError(strings.idNumberError);
     } else if (dob === "") {
       dobError(strings.dobError);
     } else if (service === "") {
@@ -625,6 +635,10 @@ const Register = ({ navigation, props }) => {
             {/* First Name */}
             <View style={{ marginTop: spacing.HEIGHT_30 }}>
               <TextInput
+                mode="flat"
+                style={{
+                  backgroundColor: "transparent",
+                }}
                 onChangeText={(text) => onFirstNameChange(text)}
                 value={firstName}
                 label={strings.first_name}
@@ -644,6 +658,10 @@ const Register = ({ navigation, props }) => {
             {/* Last Name */}
             <View style={{ marginTop: 5 }}>
               <TextInput
+                mode="flat"
+                style={{
+                  backgroundColor: "transparent",
+                }}
                 onChangeText={(text) => onLastNameChange(text)}
                 value={lastName}
                 placeHolder={strings.last_name}
@@ -693,6 +711,10 @@ const Register = ({ navigation, props }) => {
 
             <View style={{ marginTop: 10 }}>
               <TextInput
+                mode="flat"
+                style={{
+                  backgroundColor: "transparent",
+                }}
                 // onChangeText={(text) => onIDChange(text)}
                 value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
                 label={"Date of birth"}
@@ -706,6 +728,47 @@ const Register = ({ navigation, props }) => {
                   />
                 }
               />
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <TextInput
+                mode="flat"
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                onChangeText={setCustomerID}
+                value={customerID}
+                label={"Cusomer ID"}
+                placeHolder={"Cusomer ID"}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setCustomerID("")}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/ic_close.png")}
+                  />
+                }
+              />
+              {customerIDError !== "" && showErrorMessage(customerIDError)}
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <TextInput
+                mode="flat"
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                onChangeText={setIdNumber}
+                value={idNumber}
+                label={"ID Number"}
+                placeHolder={"ID Number"}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setIdNumber("")}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/ic_close.png")}
+                  />
+                }
+              />
+              {idNumberError !== "" && showErrorMessage(idNumberError)}
             </View>
             {/* Gender */}
             <View style={{ marginTop: 10 }}>
