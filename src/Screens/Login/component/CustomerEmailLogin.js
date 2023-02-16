@@ -16,11 +16,15 @@ import {
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 
-import { Button, TextInput } from "react-native-paper";
+import { Button, TextInput, RadioButton } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
-
+import { capitalizeFirstLetter } from "../../../Utilities/utils";
+export const BUSINESS = "bussiness";
+export const CONSUMER = "consumer";
 const CustomerEmailLogin = (props) => {
   let login = useSelector((state) => state.login);
+  const [checked, setChecked] = useState(BUSINESS);
+
   const [username, setUsername] = useState("vvvipindsm@gmail.com");
   const [password, setPassword] = useState("JSX2EB8E");
   const [usernameError, setUsernameError] = useState("");
@@ -63,9 +67,15 @@ const CustomerEmailLogin = (props) => {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
         //let hashpass =  hashPassword(password)
-        let pasHash = passwordHash(password).then((datahash) => {
-          dispatch(verifyLoginData(props.navigation, username, datahash));
-        });
+        // let pasHash = passwordHash(password).then((datahash) => {
+        dispatch(
+          verifyLoginData(props.navigation, {
+            username,
+            password,
+            userType: checked,
+          })
+        );
+        // });
       }
     } else {
       setUsernameError(strings.emailValidError);
@@ -145,7 +155,20 @@ const CustomerEmailLogin = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {passwordError !== "" && showErrorMessage(passwordError)}
       </View>
-
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <RadioButton
+          value={BUSINESS}
+          status={checked === BUSINESS ? "checked" : "unchecked"}
+          onPress={() => setChecked(BUSINESS)}
+        />
+        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
+        <RadioButton
+          value={CONSUMER}
+          status={checked === CONSUMER ? "checked" : "unchecked"}
+          onPress={() => setChecked(CONSUMER)}
+        />
+        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
+      </View>
       <View style={{ alignSelf: "center", marginBottom: spacing.HEIGHT_20 }}>
         <Pressable
           onPress={() =>

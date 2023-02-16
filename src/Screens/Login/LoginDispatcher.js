@@ -14,8 +14,9 @@ import {
 import { Platform } from "react-native";
 import { encryption } from "../../Utilities/Security/Encryption";
 
-export function verifyLoginData(navigation, username, password) {
+export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
+    const { username, password, userType } = params;
     dispatch(initLoginData());
 
     getDataFromDB(storageKeys.FCM_DEVICE_ID)

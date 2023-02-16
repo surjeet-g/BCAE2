@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { Button, TextInput } from "react-native-paper";
+import { Button, TextInput, RadioButton } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 // import { Button } from "../../../Components/Button";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
@@ -25,13 +25,18 @@ import {
   validatePassword,
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
+import { capitalizeFirstLetter } from "../../../Utilities/utils";
+
 import { strings } from "../../../Utilities/Language";
 import { resetLogin, verifyLoginData } from "../LoginDispatcher";
+import { BUSINESS, CONSUMER } from "./CustomerEmailLogin";
 const { height, width } = Dimensions.get("screen");
 
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
   const [number, setNumber] = useState("");
+  const [checked, setChecked] = useState(BUSINESS);
+
   const [password, setPassword] = useState("");
   const [numberError, setNumberError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -148,6 +153,20 @@ const MobileLoging = (props) => {
           login?.loggedProfile?.errorCode != "10001" &&
           showErrorMessage(login?.loggedProfile?.message)}
         {passwordError !== "" && showErrorMessage(passwordError)}
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <RadioButton
+          value={BUSINESS}
+          status={checked === BUSINESS ? "checked" : "unchecked"}
+          onPress={() => setChecked(BUSINESS)}
+        />
+        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
+        <RadioButton
+          value={CONSUMER}
+          status={checked === CONSUMER ? "checked" : "unchecked"}
+          onPress={() => setChecked(CONSUMER)}
+        />
+        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
       </View>
       <Pressable
         onPress={() => props.navigation.navigate("ForgotPassword", {})}
