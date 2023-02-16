@@ -19,8 +19,8 @@ import { strings } from "../../../Utilities/Language";
 import { Button, TextInput, RadioButton } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
-const BUSINESS = "bussiness";
-const CONSUMER = "consumer";
+export const BUSINESS = "bussiness";
+export const CONSUMER = "consumer";
 const CustomerEmailLogin = (props) => {
   let login = useSelector((state) => state.login);
   const [checked, setChecked] = useState(BUSINESS);
