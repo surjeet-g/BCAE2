@@ -20,6 +20,8 @@ import AddLocation from "../Screens/Location/AddLocation";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
 // import Notification from "../Screens/TabScreens/Notification";
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
+import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
+import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 
@@ -28,7 +30,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="ForgotUserInfo">
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
@@ -55,7 +57,11 @@ function MyStack() {
           name="Splash"
           component={Splash}
         />
-
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ForgotUserInfo"
+          component={ForgotUserinfo}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="Login"
@@ -80,6 +86,11 @@ function MyStack() {
           options={{ headerShown: false }}
           name="SavedLocation"
           component={SavedLocation}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="VerifyForgotUserInfo"
+          component={VerifyForgotUserInfo}
         />
 
         {/* <Stack.Screen

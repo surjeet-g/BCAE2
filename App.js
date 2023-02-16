@@ -82,8 +82,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
-    LogBox.ignoreAllLogs(); //Ignore all log notifications
+    // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+    // LogBox.ignoreAllLogs(); //Ignore all log notifications
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>

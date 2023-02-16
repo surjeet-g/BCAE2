@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
-import DatePicker from "react-native-date-picker";
+import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
 
 import {
   Text,
@@ -11,8 +11,8 @@ import {
   ScrollView,
   Pressable,
   SafeAreaView,
+  Platform,
   Alert,
-  Dimensions,
 } from "react-native";
 import {
   spacing,
@@ -21,6 +21,8 @@ import {
   buttonSize,
   validateNumber,
   validateEmail,
+  validatePassword,
+  passwordHash,
   TDLog,
   DEBUG_BUILD,
   STAGE_TERMS,
@@ -28,59 +30,85 @@ import {
   STAGE_PRIVACY,
   PROD_PRIVACY,
 } from "../../Utilities/Constants/Constant";
-import moment from "moment";
 
+import { CustomDropDown } from "../../Components/CustomDropDown";
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
   userRegister,
 } from "./RegisterDispatcher";
-
-import { Button, Divider, TextInput } from "react-native-paper";
+import { TextBoxWithCTA } from "../../Components/TextBoxWithCTA";
+import { Button, TextInput } from "react-native-paper";
+import DatePicker from "react-native-date-picker";
 
 import { strings } from "../../Utilities/Language/index";
-
-import Header from "../TabScreens/Component/Header";
+import { FullPageLoder } from "../../Components/FullPageLoder";
+// import Header from "../TabScreens/Component/Header";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "./RegisterAction";
-
-const STEP_INITIAL_SCREEN = 1;
-const STEP_FORM = 2;
-const STEP_VERIFY = 3;
-const STEP_OTP_VERIFY_WITHOUT_CUSTOMER_ID = 4;
+import { TextBoxWithCTAEmail } from "../../Components/TextBoxWithCTAEmail";
+import moment from "moment";
 
 const Register = ({ navigation, props }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [secureTextConfirmEntry, setsecureTextConfirmEntry] = useState(true);
-  const [dob, setDob] = useState("");
-  const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [mobileOTP, setMobileOTP] = useState("");
-  const [emailOTP, setEmailOTP] = useState("");
-  const { height, width } = Dimensions.get("screen");
   let registerForm = useSelector((state) => state.registerForm);
-  const [step, setStep] = useState(STEP_INITIAL_SCREEN);
-  const [haveCustomerId, sethaveCustomerId] = useState(true);
-  const [mobileNo, setMobileNo] = useState("");
-  const [customerID, setCustomerID] = useState("123123");
+  //4 minute
+  const OTP_TIMER = 60 * 4;
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+  const [service, setService] = useState("");
 
+  const [country, setCountry] = useState("");
+  const [location, setLocation] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+  const [mobileNo, setMobileNo] = useState("");
+  const [countryCode, setCountryCode] = useState("673");
+  const [otp, setOTP] = useState("");
+  const [otpEmail, setEmailOTP] = useState("");
   const [email, setEmail] = useState("");
   const [isSelected, setSelection] = useState(false);
   const [isSelectedTerm, setSelectionTerm] = useState(false);
 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [secureTextEntry, setsecureTextEntry] = useState(true);
+  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [isButtomDiable, setButtomEnableDisable] = useState(true);
 
   const [myscreenmae, setscreenname] = useState("Register With Us");
 
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [genderError, setgenderError] = useState("");
+  const [serviceError, setServiceError] = useState("");
+  const [countryError, setCountryError] = useState("");
+  const [locationError, setLocationError] = useState("");
+  const [numberError, setNumberError] = useState("");
+  const [otpNumberError, setOtpNumberError] = useState("");
+  const [isMobileOtpSuccess, setIsMobileOtpSuccess] = useState(false);
   const [emailError, setEmailError] = useState("");
-  const [mobileError, setMobileError] = useState("");
-
+  const [otpEmailError, setOtpEmailError] = useState("");
+  const [isEmailOtpSuccess, setIsEmailOtpSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordConfirmError, setConfirmPasswordError] = useState("");
   const [termError, setTermError] = useState("");
   const [privaceyError, setPrivaceyError] = useState("");
-  const [numberError, setNumberError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [otpTimer, setOtpTimer] = useState(OTP_TIMER);
+  const [isDisableSendOtp, setIsDisableSendOtp] = useState(false);
+  const [selectedValueServ, setValueServ] = useState("");
+  const [selectedValueGender, setValueGender] = useState("");
+
+  const [street, setStreet] = useState("");
+  const [state, setStateProfile] = useState("");
+  const [district, setDistrict] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [dob, setDob] = useState("");
+  // const [dob, setDob] = useState("2023-02-10");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const dispatch = useDispatch([
     fetchRegisterFormData,
@@ -89,12 +117,121 @@ const Register = ({ navigation, props }) => {
     getOtpForCheck,
   ]);
 
+  useEffect(() => {
+    dispatch(fetchRegisterFormData());
+
+    dispatch(setOtpFormData({}, "Register"));
+    dispatch(setOtpFormData({}, "mobile"));
+    dispatch(setOtpFormData({}, "mobileOtp"));
+    dispatch(setOtpFormData({}, "email"));
+    dispatch(setOtpFormData({}, "emailOtp"));
+  }, []);
+  useEffect(() => {
+    check(PERMISSIONS.IOS.LOCATION_ALWAYS)
+      .then((result) => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            if (Platform.OS === "ios") {
+              request(PERMISSIONS.IOS.LOCATION_ALWAYS)
+                .then((result) => console.log(result))
+                .catch((error) => console.log(error));
+            }
+            break;
+          case RESULTS.DENIED:
+            console.log(
+              "The permission has not been requested / is denied but requestable"
+            );
+            break;
+          case RESULTS.LIMITED:
+            console.log("The permission is limited: some actions are possible");
+            break;
+          case RESULTS.GRANTED:
+            console.log("The permission is granted");
+            break;
+          case RESULTS.BLOCKED:
+            console.log("The permission is denied and not requestable anymore");
+            break;
+        }
+      })
+      .catch((error) => {
+        // …
+      });
+  }, []);
+
   const buttonEnableDiable = () => {
-    if (mobileNo === "" || email === "") {
+    // console.log("buttonEnableDiable==>"+firstName+"<===>"+lastName+"<===>"+gender+"<===>"+location
+    // +"<===>"+mobileNo+"<===>"+otp+"<===>"+email
+    // +"<===>"+otpEmail+"<===>"+password+"<===>"+confirmPassword)
+    if (
+      dob === "" ||
+      firstName === "" ||
+      lastName === "" ||
+      gender === "" ||
+      mobileNo === "" ||
+      otp === "" ||
+      email === "" ||
+      otpEmail === ""
+    ) {
       setButtomEnableDisable(true);
+      //console.log("buttonEnableDiable==>1");
     } else {
+      //console.log("buttonEnableDiable==>2");
+
       setButtomEnableDisable(false);
     }
+  };
+
+  const onFirstNameChange = (textStr) => {
+    setFirstName(textStr);
+    setFirstNameError("");
+    buttonEnableDiable();
+  };
+  const onLocationChanged = (textStr) => {
+    setLocation(textStr);
+    setLocationError("");
+    buttonEnableDiable();
+  };
+
+  const clearFirstName = () => {
+    setFirstName("");
+    setFirstNameError(strings.firstNameError);
+  };
+  const locationIconClick = () => {
+    navigation.navigate("AddLocation", {
+      onPlaceChosen,
+      fromPage: "Register",
+    });
+  };
+  const onLastNameChange = (textStr) => {
+    setLastName(textStr);
+    setLastNameError("");
+    buttonEnableDiable();
+  };
+  const clearLastName = () => {
+    setLastName("");
+    setLastNameError(strings.lastNameError);
+  };
+
+  const onGenderClick = (textStr) => {
+    // console.log(textStr.description)
+    setGender(textStr);
+    buttonEnableDiable();
+  };
+
+  const onServiceClick = (textStr) => {
+    // console.log(textStr.description)
+    setService(textStr.description);
+    buttonEnableDiable();
+  };
+
+  const onCountryClick = (textStr) => {
+    setCountry(textStr.onChangeText);
+    setCountryCode(textStr?.mapping?.countryCode ?? "");
+    buttonEnableDiable();
+  };
+  const onLocationClick = (textStr) => {
+    setLocation(textStr.onChangeText);
+    buttonEnableDiable();
   };
 
   const onMobleNoChange = (textStr) => {
@@ -102,25 +239,117 @@ const Register = ({ navigation, props }) => {
     setNumberError("");
     buttonEnableDiable();
   };
-
+  const onOTPChange = (textStr) => {
+    setOTP(textStr);
+    setOtpNumberError("");
+    buttonEnableDiable();
+  };
+  const onEmailOTPChange = (textStr) => {
+    setEmailOTP(textStr);
+    setOtpEmailError("");
+    buttonEnableDiable();
+  };
   const onEmailChange = (textStr) => {
     setEmail(textStr);
     setEmailError("");
     buttonEnableDiable();
   };
 
+  const submitResndOTP = () => {
+    if (mobileNo.length !== 7) {
+      Alert.alert(strings.attention, strings.sevenDigit, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    } else {
+      if (firstName.trim() === "") {
+        Toast.show({
+          type: "bctError",
+          text1: strings.firstNameError,
+        });
+        setFirstNameError(strings.firstNameError);
+      } else if (!validateNumber(mobileNo)) {
+        Toast.show({
+          type: "bctError",
+          text1: strings.mobileValidError,
+        });
+        setNumberError(strings.mobileValidError);
+      } else {
+        //alert("submitResndOTP");
+        dispatch(
+          sendOtp(
+            countryCode + mobileNo,
+            firstName,
+            "mobile",
+            showOtpSentMessage
+          )
+        );
+        buttonEnableDiable();
+        //setIsDisableSendOtp(true);
+        //runOtpTimer(otpTimer);
+      }
+    }
+  };
+
+  const runOtpTimer = (otpTimer) => {
+    setTimeout(() => {
+      setOtpTimer(otpTimer);
+      otpTimer = otpTimer - 1;
+      if (otpTimer < 0) {
+        setIsDisableSendOtp(false);
+        setOtpTimer(OTP_TIMER);
+      } else {
+        runOtpTimer(otpTimer);
+        //alert(otpTimer);
+      }
+    }, 1000);
+  };
+
+  const submitConfirmMobileOTP = () => {
+    if (otp === "") {
+      setOtpNumberError(strings.numberOtpError);
+    } else {
+      //alert(countryCode + mobileNo);
+      dispatch(getOtpForCheck(countryCode + mobileNo, "mobileOtp")); // country code to be added to verify OTP
+      buttonEnableDiable();
+    }
+  };
+  //alert(JSON.stringify(Register));
+  const submitConfirmEmailOTP = () => {
+    if (otpEmail === "") {
+      setOtpEmailError(strings.emailOtpError);
+    } else {
+      dispatch(getOtpForCheck(email, "emailOtp"));
+      buttonEnableDiable();
+    }
+  };
+  const submitEmail = () => {
+    if (firstName.trim() === "") {
+      Toast.show({
+        type: "bctError",
+        text1: strings.firstNameError,
+      });
+      setFirstNameError(strings.firstNameError);
+    } else if (!validateEmail(email)) {
+      setEmailError(strings.emailValidError);
+    } else {
+      dispatch(sendOtp(email, firstName, "email"));
+      buttonEnableDiable();
+    }
+  };
+
   const onCheckBoxClick = () => {
+    //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
     setSelection(!isSelected);
     setTermError("");
     setPrivaceyError("");
   };
 
   const onCheckBoxClickTerm = () => {
+    //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
 
     setTermError("");
   };
-
   const showAlert = (message = "") => {
     // if (
     //   !registerForm.initRegisterForm &&
@@ -134,56 +363,179 @@ const Register = ({ navigation, props }) => {
         onPress: () => {
           dispatch(setOtpFormData({}, "Register"));
           dispatch(setOtpFormData({}, "mobile"));
-
+          dispatch(setOtpFormData({}, "mobileOtp"));
           dispatch(setOtpFormData({}, "email"));
-
+          dispatch(setOtpFormData({}, "emailOtp"));
           navigation.navigate("Login", {});
         },
       },
     ]);
+    // }
+    // if (
+    //   !registerForm.initOtpForm &&
+    //   !registerForm?.isOtpFormError &&
+    //   registerForm?.otpUsageType === "mobile"
+    // ) {
+    //   setIsDisableSendOtp(true);
+    //   runOtpTimer(otpTimer);
+    // }
   };
-  const customerIdSubmit = () => {
-    //to do api call after trigger follow instr
-    setStep(STEP_FORM);
-    sethaveCustomerId(true);
+
+  const hideShowClick = () => {
+    setsecureTextEntry(!secureTextEntry);
   };
+  const hideShowClickConfirm = () => {
+    setsecureTextEntryConfim(!secureTextEntryConfim);
+  };
+
+  const onPasswordChange = (textStr) => {
+    setPassword(textStr);
+
+    setPasswordError("");
+    buttonEnableDiable();
+  };
+
+  const onConfirmPasswordChange = (textStr) => {
+    setConfirmPassword(textStr);
+
+    setConfirmPasswordError("");
+    buttonEnableDiable();
+  };
+
+  const onPlaceChosen = (params) => {
+    // here is your callback function
+    TDLog("onPlaceChosen Edit profile", JSON.stringify(params));
+    setLocation(
+      params.street +
+        "," +
+        params.state +
+        "," +
+        params.district +
+        "," +
+        params.country +
+        "," +
+        params.postCode
+    );
+    setLatitude(params.currentLatitude);
+    setLongitude(params.currentLongitude);
+
+    setStreet(params.street);
+    setStateProfile(params.state);
+    setDistrict(params.district);
+    setCountry(params.country);
+    setPostcode(params.postCode);
+  };
+  const formatOtpTimer = (otpTmr) => {
+    let minute = 0;
+
+    let second = 0;
+
+    let finalString = "";
+
+    minute = parseInt(otpTmr / 60);
+
+    second = otpTmr % 60;
+
+    if (minute > 0) {
+      finalString = minute + "m " + second + "s";
+    } else {
+      finalString = second + "s";
+    }
+
+    return finalString;
+  };
+  const emailOTPVerification =
+    registerForm?.otpFormDataForEmail?.data?.otp === otpEmail;
+  const mobileOTPVerifcation =
+    registerForm?.otpFormDataForMobile?.data?.otp === otp;
+
   const submit = () => {
-    if (!isSelectedTerm) {
+    if (!mobileOTPVerifcation) {
+      Toast.show({
+        type: "bctError",
+        text1: strings.otpErrorMsgForMobile,
+      });
+      return null;
+    }
+    if (!emailOTPVerification) {
+      Toast.show({
+        type: "bctError",
+        text1: strings.otpErrorMsgForEmail,
+      });
+      return null;
+    }
+
+    if (firstName.trim() === "") {
+      setFirstNameError(strings.firstNameError);
+    } else if (lastName.trim() === "") {
+      setLastNameError(strings.lastNameError);
+    } else if (dob === "") {
+      dobError(strings.dobError);
+    } else if (service === "") {
+      setServiceError(strings.serviceError);
+    } else if (gender?.code === "") {
+      setgenderError(strings.genderError);
+    } else if (!validateNumber(mobileNo)) {
+      setNumberError(strings.mobileValidError);
+    } else if (otp.trim() === "") {
+      setOtpNumberError(strings.numberOtpError);
+    } else if (!validateEmail(email)) {
+      setEmailError(strings.emailValidError);
+    } else if (otpEmail.trim() === "") {
+      setOtpEmailError(strings.emailOtpError);
+    } else if (!isSelectedTerm) {
       setTermError(strings.termError);
     } else if (!isSelected) {
       setPrivaceyError(strings.privaceyError);
-    } else if (password.length < 7) {
-      setPasswordError(strings.passwordValidError);
     } else {
       let registerObject = {
+        firstName: firstName,
+        lastName: lastName,
+        userType: "string",
+        gender: gender.code,
+        // country: myArray.length > 0 ? myArray[0] : "",
+        extn: 0,
         contactNo: mobileNo,
+        mobileOTP: otp,
         email: email,
+        dob: moment(dob).format("YYYY-MM-DD"),
+        emailOTP: otpEmail,
       };
 
+      console.log("userRegister===>2" + JSON.stringify(registerObject));
       dispatch(
         userRegister(registerObject, "Register", (message) =>
           showAlert(message)
         )
       );
+      // });
     }
   };
-  const verifyOTPWithCustomerId = () => {
-    //to do api call
-    setStep(STEP_VERIFY);
-  };
-  //submit action for verify email and mobile
-  const confirmUserInfoWIthoutCustomerID = () => {
-    // if (!validateEmail(email)) {
-    //   setEmailError(strings.emailValidError);
-    //   return;
-    // }
-    // if (!validateNumber(mobileNo)) {
-    //   setMobileError(strings.mobileValidError);
-    //   return;
-    // }
 
-    setStep(STEP_OTP_VERIFY_WITHOUT_CUSTOMER_ID);
+  const showMobileErrorMessage = () => {
+    return (
+      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+        <Image
+          style={styles.errorLogo}
+          source={require("../../Assets/icons/ci_error_warning.png")}
+        />
+        <Text style={styles.errorText}>{strings.otpMobileFailed}</Text>
+      </View>
+    );
   };
+
+  const showEmailErrorMessage = () => {
+    return (
+      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+        <Image
+          style={styles.errorLogo}
+          source={require("../../Assets/icons/ci_error_warning.png")}
+        />
+        <Text style={styles.errorText}>{strings.otpEmailFailed}</Text>
+      </View>
+    );
+  };
+
   const showErrorMessage = (errMessage) => {
     if (typeof errMessage != "string") return null;
     let pattern = /Successful/i;
@@ -202,6 +554,11 @@ const Register = ({ navigation, props }) => {
         <Text style={styles.errorText}>{errMessage}</Text>
       </View>
     );
+  };
+
+  const showOtpSentMessage = () => {
+    setIsDisableSendOtp(true);
+    runOtpTimer(otpTimer);
   };
 
   const orSection = () => {
@@ -233,255 +590,7 @@ const Register = ({ navigation, props }) => {
       </View>
     );
   };
-  const renderInitialScreenWithCustomerID = () => {
-    return (
-      <View>
-        <TextInput
-          onChangeText={setCustomerID}
-          value={customerID}
-          label="Customer Id"
-          placeHolder="Customer Id"
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          right={
-            <TextInput.Icon
-              onPress={() => setMobileNo("")}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../Assets/icons/ic_close.png")}
-            />
-          }
-        />
-        <View style={{ height: 23 }} />
 
-        <Button
-          disabled={customerID == ""}
-          mode="contained"
-          onPress={customerIdSubmit}
-        >
-          CONFIRM
-        </Button>
-        <View style={{ height: 23 }} />
-        <Button
-          mode="text"
-          onPress={() => {
-            setStep(STEP_FORM);
-            sethaveCustomerId(false);
-          }}
-        >
-          Don't you remember customerID
-        </Button>
-      </View>
-    );
-  };
-  const renderUserDetailsWithOTP = () => {
-    return (
-      <View>
-        <View style={{ marginTop: 5 }}>
-          <TextInput
-            keyboardType="number-pad"
-            onChangeText={setMobileOTP}
-            value={mobileOTP}
-            label="Enter Mobile OTP"
-            placeHolder="Enter Mobile OTP"
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            right={
-              <TextInput.Icon
-                onPress={() => setmobileOTP("")}
-                style={{ width: 23, height: 23 }}
-                icon={require("../../Assets/icons/ic_close.png")}
-              />
-            }
-          />
-        </View>
-        <View style={{ marginTop: 5 }}>
-          <TextInput
-            keyboardType="number-pad"
-            onChangeText={setEmailOTP}
-            value={emailOTP}
-            label="Enter Email otp"
-            placeHolder="Enter Email otp"
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            right={
-              <TextInput.Icon
-                onPress={() => setEmailOTP("")}
-                style={{ width: 23, height: 23 }}
-                icon={require("../../Assets/icons/ic_close.png")}
-              />
-            }
-          />
-        </View>
-        <View style={{ height: 23 }} />
-        <Button
-          disabled={mobileOTP == "" || emailOTP == ""}
-          mode="contained"
-          onPress={verifyOTPWithCustomerId}
-        >
-          VERIFY
-        </Button>
-      </View>
-    );
-  };
-  const renderWithoutCustomerID = () => {
-    return (
-      <>
-        <View style={{ marginTop: 5 }}>
-          <TextInput
-            keyboardType="number-pad"
-            onChangeText={(text) => onMobleNoChange(text)}
-            value={mobileNo}
-            label={strings.mobile_number}
-            placeHolder={strings.mobile_number}
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
-            placeholderTextColor=""
-            right={
-              <TextInput.Icon
-                onPress={() => setMobileNo("")}
-                style={{ width: 23, height: 23 }}
-                icon={require("../../Assets/icons/ic_close.png")}
-              />
-            }
-          />
-          {mobileError && showErrorMessage(mobileError)}
-        </View>
-
-        <View style={{ marginTop: 5 }}>
-          <TextInput
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
-            onChangeText={(text) => onEmailChange(text)}
-            value={email}
-            label={strings.email}
-            placeHolder={strings.email}
-            right={
-              <TextInput.Icon
-                onPress={() => setEmail("")}
-                style={{ width: 23, height: 23 }}
-                icon={require("../../Assets/icons/ic_close.png")}
-              />
-            }
-          />
-          {emailError && showErrorMessage(emailError)}
-        </View>
-        <View style={{ marginTop: 5 }}>
-          <DatePicker
-            modal
-            mode="date"
-            validRange={{ endDate: new Date() }}
-            open={open}
-            onCancel={() => setOpen(false)}
-            date={dob == "" ? new Date() : dob}
-            maximumDate={new Date()}
-            onConfirm={(params) => {
-              setOpen(false);
-              setDob(params);
-            }}
-          />
-          <TextInput
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
-            // onChangeText={(text) => onIDChange(text)}
-            value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-            label={"Date of birth"}
-            onFocus={() => setOpen(true)}
-            placeHolder={"Date of birth"}
-            right={
-              <TextInput.Icon
-                onPress={() => setOpen(true)}
-                style={{ width: 23, height: 23 }}
-                icon={require("../../Assets/icons/mail.png")}
-              />
-            }
-          />
-          {passwordError && showErrorMessage(passwordError)}
-          {!registerForm.initOtpForm &&
-            registerForm?.isOtpFormError &&
-            registerForm?.otpFormDataForEmail?.errorCode > 200 &&
-            registerForm?.otpUsageType === "email" &&
-            showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
-
-          {emailError !== "" && showErrorMessage(emailError)}
-          <View style={{ height: 23 }} />
-          <Button
-            disabled={mobileNo == "" || email == "" || dob == ""}
-            mode="contained"
-            onPress={confirmUserInfoWIthoutCustomerID}
-          >
-            CONFIRM
-          </Button>
-        </View>
-      </>
-    );
-  };
-  const rendersetUserPassword = () => {
-    return (
-      <View>
-        <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
-          value={password}
-          label={strings.password}
-          placeHolder={strings.password}
-          onChangeText={setPassword}
-          secureTextEntry={secureTextEntry}
-          right={
-            <TextInput.Icon
-              onPress={() => setSecureTextEntry(!secureTextEntry)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntry
-                  ? require("../../Assets/icons/ic_password_show.png")
-                  : require("../../Assets/icons/ic_password_hide.png")
-              }
-            />
-          }
-        />
-        <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
-          value={confirmPassword}
-          label={strings.confirmPassword}
-          placeHolder={strings.confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={secureTextConfirmEntry}
-          right={
-            <TextInput.Icon
-              onPress={() => setsecureTextConfirmEntry(!secureTextConfirmEntry)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntry
-                  ? require("../../Assets/icons/ic_password_show.png")
-                  : require("../../Assets/icons/ic_password_hide.png")
-              }
-            />
-          }
-        />
-      </View>
-    );
-  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -491,125 +600,450 @@ const Register = ({ navigation, props }) => {
           backIconVisibility={true}
           registerfaq={true}
         ></Header>
-
-        <ScrollView
-          style={{
-            flexGrow: 1,
-            minHeight: height / 2,
-            paddingHorizontal: spacing.WIDTH_30,
-            paddingTop: spacing.HEIGHT_20,
-          }}
-          nestedScrollEnabled={true}
-        >
-          <View
+        {registerForm.initRegisterForm ? (
+          <FullPageLoder
+            bgColor={color.DISABLED_GREY}
+            loderColor={color.WHITE}
+          />
+        ) : (
+          <ScrollView
             style={{
-              minHeight: height / 4,
+              flexGrow: 1,
+              paddingHorizontal: spacing.WIDTH_30,
+              paddingTop: spacing.HEIGHT_20,
             }}
+            nestedScrollEnabled={true}
           >
-            {step == STEP_INITIAL_SCREEN && renderInitialScreenWithCustomerID()}
+            {/* Logo */}
+            <View style={{ alignItems: "center" }}>
+              <Image
+                style={styles.logo}
+                source={require("../../Assets/icons/ic_td123_logo.png")}
+              ></Image>
+            </View>
 
-            {step == STEP_FORM && !haveCustomerId && renderWithoutCustomerID()}
-            {step == STEP_FORM && haveCustomerId && renderUserDetailsWithOTP()}
-            {step == STEP_OTP_VERIFY_WITHOUT_CUSTOMER_ID &&
-              renderUserDetailsWithOTP()}
+            {/* First Name */}
+            <View style={{ marginTop: spacing.HEIGHT_30 }}>
+              <TextInput
+                onChangeText={(text) => onFirstNameChange(text)}
+                value={firstName}
+                label={strings.first_name}
+                placeHolder={strings.first_name}
+                right={
+                  <TextInput.Icon
+                    onPress={clearFirstName}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/ic_close.png")}
+                  />
+                }
+              />
 
-            {step == STEP_VERIFY && rendersetUserPassword()}
+              {firstNameError !== "" && showErrorMessage(firstNameError)}
+            </View>
 
-            {step == STEP_VERIFY && (
-              <>
-                <Pressable
-                  onPress={onCheckBoxClickTerm}
-                  style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+            {/* Last Name */}
+            <View style={{ marginTop: 5 }}>
+              <TextInput
+                onChangeText={(text) => onLastNameChange(text)}
+                value={lastName}
+                placeHolder={strings.last_name}
+                label={strings.last_name}
+                right={
+                  <TextInput.Icon
+                    onPress={clearLastName}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/ic_close.png")}
+                  />
+                }
+              />
+
+              {lastNameError !== "" && showErrorMessage(lastNameError)}
+            </View>
+
+            {/* Service */}
+            {/* <View style={{ marginTop: 5 }}>
+              <CustomDropDown
+                selectedValue={selectedValueServ}
+                setValue={setValueServ}
+                data={registerForm?.registerFormData?.SERVICECODE ?? []}
+                onChangeText={(text) => onServiceClick(text)}
+                value={service}
+                placeHolder={strings.service}
+              />
+
+              {serviceError !== "" && showErrorMessage(serviceError)}
+            </View> */}
+
+            {/* DOB */}
+            <DatePicker
+              modal
+              mode="date"
+              validRange={{ endDate: new Date() }}
+              open={open}
+              onCancel={() => setOpen(false)}
+              date={dob == "" ? new Date() : dob}
+              maximumDate={new Date()}
+              onConfirm={(params) => {
+                console.log("data", params);
+                setOpen(false);
+                setDob(params);
+                setDobError("");
+              }}
+            />
+
+            <View style={{ marginTop: 10 }}>
+              <TextInput
+                // onChangeText={(text) => onIDChange(text)}
+                value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+                label={"Date of birth"}
+                onFocus={() => setOpen(true)}
+                placeHolder={"Date of birth"}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpen(true)}
+                    style={{ width: 23, height: 23 }}
+                    icon={require("../../Assets/icons/mail.png")}
+                  />
+                }
+              />
+            </View>
+            {/* Gender */}
+            <View style={{ marginTop: 10 }}>
+              <CustomDropDown
+                selectedValue={selectedValueGender}
+                setValue={setValueGender}
+                data={registerForm?.registerFormData?.GENDER ?? []}
+                onChangeText={(text) => onGenderClick(text)}
+                value={gender?.description}
+                placeHolder={strings.gender}
+              />
+
+              {genderError !== "" && showErrorMessage(genderError)}
+            </View>
+
+            {/* Country */}
+            {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
+                            <CustomDropDown
+                                data={registerForm?.registerFormData?.COUNTRY ?? []}
+                                onChangeText={(text) => onCountryClick(text)}
+                                value={country}
+                                placeHolder={strings.country}
+                            />
+                            {!registerForm.initRegisterForm && registerForm?.loggedProfile?.errorCode == '404' &&
+                                showErrorMessage(registerForm?.otpFormDataForEmail?.message||registerForm?.otpFormDataForEmail?.message)
+                            }
+                            {countryError !== "" &&
+                                showErrorMessage(countryError)
+                            }
+                        </View> */}
+
+            {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
+              {location != "" && (
+                <Text style={styles.placeHolderText}>{strings.location}</Text>
+              )}
+
+              <Pressable
+                onPress={() => locationIconClick()}
+                style={styles.textLocation}
+              >
+                <Text
+                  style={{
+                    color: location != "" ? color.BLACK : color.PLACEHOLDER,
+                    fontSize: 14,
+                    marginBottom: 0,
+                    width: "90%",
+                    marginBottom: "2%",
+                  }}
+                  placeHolder={strings.location}
                 >
-                  <Image
-                    style={styles.checkBox}
-                    source={
-                      isSelectedTerm
-                        ? require("../../Assets/icons/ci_checked.png")
-                        : require("../../Assets/icons/ci_uncheck.png")
-                    }
-                  ></Image>
-                  <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-                    I have agree to your{" "}
-                  </Text>
-                  <Text
-                    onPress={() =>
-                      navigation.navigate("ShowWebPage", {
-                        fromLogin: true,
-                        title: "Terms & Conditions",
-                        url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
-                      })
-                    }
-                    style={{ color: color.BCAE_DARK_BLUE }}
-                  >
-                    Terms &amp; Conditions.
-                  </Text>
-                </Pressable>
+                  {location || strings.location}
+                </Text>
+                <Image
+                  style={{
+                    position: "absolute",
+                    right: 5,
+                    bottom: 5,
+                    height: 20,
+                    width: 20,
+                  }}
+                  source={require("../../Assets/icons/map.png")}
+                ></Image>
+              </Pressable>
+            </View> */}
 
-                {termError !== "" && showErrorMessage(termError)}
+            {/* Location */}
+            {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
+                            <CustomDropDown
+                                data={registerForm?.registerFormData?.LOCATION ?? []}
+                                onChangeText={(text) => onLocationClick(text)}
+                                value={location}
+                                placeHolder={strings.location}
+                            />
+                            {!registerForm.initRegisterForm && registerForm?.loggedProfile?.errorCode == '404' &&
+                                showErrorMessage(registerForm?.otpFormDataForEmail?.message||registerForm?.otpFormDataForEmail?.message)
+                            }
 
-                <Pressable
-                  onPress={onCheckBoxClick}
-                  style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-                >
-                  <Image
-                    style={styles.checkBox}
-                    source={
-                      isSelected
-                        ? require("../../Assets/icons/ci_checked.png")
-                        : require("../../Assets/icons/ci_uncheck.png")
-                    }
-                  ></Image>
-                  <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-                    I have read your{" "}
+                            {locationError !== "" &&
+                                showErrorMessage(locationError)
+                            }
+                        </View> */}
+
+            {/* Mobile Number */}
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onMobleNoChange(text)}
+                value={mobileNo}
+                placeHolder={strings.mobile_number}
+                isResendOTP={true}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "mobile"
+                    ? true
+                    : false
+                }
+                countryCode={countryCode}
+                label={strings.send_otp}
+                onPress={submitResndOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                isDisableButton={isDisableSendOtp}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {otpTimer > 0 && otpTimer < OTP_TIMER && (
+                <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+                  <Text style={styles.errorText}>
+                    {strings.otp_sent} {formatOtpTimer(otpTimer)}
                   </Text>
-                  <Text
-                    onPress={() =>
-                      navigation.navigate("ShowWebPage", {
-                        fromLogin: true,
-                        title: "Privacy Policy",
-                        url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
-                      })
-                    }
-                    style={{ color: color.BCAE_DARK_BLUE }}
-                  >
-                    Privacy Policy.
-                  </Text>
-                </Pressable>
-                <Button
-                  disabled={
-                    password == "" ||
-                    confirmPassword == "" ||
-                    password != confirmPassword
-                  }
-                  onPress={submit}
-                >
-                  REGISTER
-                </Button>
-              </>
-            )}
+                </View>
+              )}
+              {!registerForm.initOtpForm &&
+                registerForm?.isOtpFormError &&
+                registerForm?.otpFormDataForMobile?.errorCode > 200 &&
+                registerForm?.otpUsageType === "mobile" &&
+                showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
+              {numberError !== "" && showErrorMessage(numberError)}
+            </View>
+            {/* OTP */}
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onOTPChange(text)}
+                value={otp}
+                placeHolder={strings.otp}
+                isConfirmOTP={true}
+                label={strings.confirm_otp}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "mobileOtp"
+                    ? true
+                    : false
+                }
+                correctOtp={mobileOTPVerifcation}
+                onPress={submitConfirmMobileOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {otp !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
+                registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
+                registerForm?.otpUsageType === "mobileOtp" &&
+                showMobileErrorMessage()}
+
+              {otp !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForMobile?.data?.data === null &&
+                registerForm?.otpUsageType === "mobileOtp" &&
+                showMobileErrorMessage()}
+
+              {otpNumberError !== "" && showErrorMessage(otpNumberError)}
+            </View>
+            {/* Email */}
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTAEmail
+                onChangeText={(text) => onEmailChange(text)}
+                value={email}
+                placeHolder={strings.email}
+                isEmail={true}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "email"
+                    ? true
+                    : false
+                }
+                label={"CONFIRM EMAIL"}
+                onPress={submitEmail}
+                bgColor={color.BCAE_PRIMARY}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {!registerForm.initOtpForm &&
+                registerForm?.isOtpFormError &&
+                registerForm?.otpFormDataForEmail?.errorCode > 200 &&
+                registerForm?.otpUsageType === "email" &&
+                showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
+
+              {emailError !== "" && showErrorMessage(emailError)}
+            </View>
+
+            {/* OTP */}
+            {/* {console.log("registerForm====>"+registerForm?.otpUsageType  +"===="+registerForm?.otpFormData.data.otp)} */}
+
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onEmailOTPChange(text)}
+                value={otpEmail}
+                placeHolder={strings.otp}
+                isConfirmOTP={true}
+                label={"CONFIRM OTP"}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "emailOtp"
+                    ? true
+                    : false
+                }
+                correctOtp={emailOTPVerification}
+                onPress={submitConfirmEmailOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {/* //{ console.log("otpEmail==>"+otpEmail+"===>"+registerForm.initOtpForm+"===="+registerForm?.otpFormData?.data?.otp+"===="+registerForm?.otpUsageTyp )} */}
+              {otpEmail !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
+                registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
+                registerForm?.otpUsageType === "emailOtp" &&
+                showEmailErrorMessage()}
+
+              {otpEmail !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForEmail?.data?.data === null &&
+                registerForm?.otpUsageType === "emailOtp" &&
+                showEmailErrorMessage()}
+
+              {otpEmailError !== "" && showErrorMessage(otpEmailError)}
+            </View>
+
+            <Pressable
+              onPress={onCheckBoxClickTerm}
+              style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+            >
+              <Image
+                style={styles.checkBox}
+                source={
+                  isSelectedTerm
+                    ? require("../../Assets/icons/ci_checked.png")
+                    : require("../../Assets/icons/ci_uncheck.png")
+                }
+              ></Image>
+              <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+                I have agree to your{" "}
+              </Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ShowWebPage", {
+                    fromLogin: true,
+                    title: "Terms & Conditions",
+                    url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+                  })
+                }
+                style={{ color: color.BCAE_DARK_BLUE }}
+              >
+                Terms &amp; Conditions.
+              </Text>
+            </Pressable>
+
+            {termError !== "" && showErrorMessage(termError)}
+            <Pressable
+              onPress={onCheckBoxClick}
+              style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+            >
+              <Image
+                style={styles.checkBox}
+                source={
+                  isSelected
+                    ? require("../../Assets/icons/ci_checked.png")
+                    : require("../../Assets/icons/ci_uncheck.png")
+                }
+              ></Image>
+              <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+                I have read your{" "}
+              </Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ShowWebPage", {
+                    fromLogin: true,
+                    title: "Privacy Policy",
+                    url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+                  })
+                }
+                style={{ color: color.BCAE_DARK_BLUE }}
+              >
+                Privacy Policy.
+              </Text>
+            </Pressable>
+
             {privaceyError !== "" && showErrorMessage(privaceyError)}
 
+            {/* {
+                                    console.log("registerForm===>"+JSON.stringify(registerForm?.otpFormData))
+                                } */}
             {!registerForm.initRegisterForm &&
               registerForm?.otpFormData?.errorCode !== "200" &&
               registerForm?.otpUsageType === "Register" &&
               showErrorMessage(registerForm?.otpFormData?.message)}
-          </View>
-          {/* {showAlert()} */}
 
-          {orSection()}
+            {/* {showAlert()} */}
 
-          <View>
-            <Text style={styles.alreadyAccount}>{strings.already_acc}</Text>
-            <Pressable onPress={() => navigation.navigate("Login", {})}>
-              <Text style={styles.loginText}>
-                {strings.login.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
+            <View style={{ marginTop: spacing.HEIGHT_24 }}>
+              {registerForm?.initOtpForm &&
+              registerForm?.otpUsageType === "Register" ? (
+                <CustomActivityIndicator
+                  size={buttonSize.LARGE}
+                  bgColor={color.BLACK}
+                  loderColor={color.WHITE}
+                />
+              ) : (
+                <Button disabled={isButtomDiable} onPress={submit}>
+                  {"REGISTER"}
+                </Button>
+              )}
+            </View>
 
-          <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
-        </ScrollView>
+            {orSection()}
+
+            <View>
+              <Text style={styles.alreadyAccount}>{strings.already_acc}</Text>
+              <Pressable onPress={() => navigation.navigate("Login", {})}>
+                <Text style={styles.loginText}>
+                  {strings.login.toUpperCase()}
+                </Text>
+              </Pressable>
+            </View>
+
+            <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
