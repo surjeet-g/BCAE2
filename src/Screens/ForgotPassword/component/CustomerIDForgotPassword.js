@@ -40,6 +40,7 @@ const CustomerIDForgotPassword = (props) => {
   // const [dob, setDob] = useState("2023-02-10");
   const [dobError, setDobError] = useState("");
   const [open, setOpen] = useState(false);
+
   useEffect(() => {
     setUsername("");
     setUsernameError("");
@@ -48,6 +49,7 @@ const CustomerIDForgotPassword = (props) => {
     setDobError("");
     setOpen(false);
   }, []);
+
   const dispatch = useDispatch([verifyForgotPasswordData, resetForgotPassword]);
 
   const onIDChange = (textStr) => {
@@ -65,13 +67,13 @@ const CustomerIDForgotPassword = (props) => {
 
   const clearTextClick = () => {
     setUsername("");
-    dispatch(resetForgotPassword());
+    // dispatch(resetForgotPassword());
     setUsernameError(strings.emailValidError);
   };
 
   const submit = () => {
-    if (!validateEmail(username)) {
-      setUsernameError(strings.emailValidError);
+    if (username == "") {
+      setUsernameError(strings.customerIDError);
     } else if (lastName == "") {
       setlastNameError("Last Name sould be required");
     } else if (dob == "") {
@@ -122,8 +124,8 @@ const CustomerIDForgotPassword = (props) => {
           textColor="#ea272c"
           onChangeText={(text) => onIDChange(text)}
           value={username}
-          label={strings.customer_email_ID}
-          placeHolder={strings.customer_email_ID}
+          label={strings.customer_ID}
+          placeHolder={strings.customer_ID}
           right={
             <TextInput.Icon
               onPress={clearTextClick}
@@ -132,6 +134,7 @@ const CustomerIDForgotPassword = (props) => {
             />
           }
         />
+        {usernameError !== "" && showErrorMessage(usernameError)}
         <TextInput
           mode="flat"
           style={{
@@ -146,7 +149,7 @@ const CustomerIDForgotPassword = (props) => {
           label="Last Name"
           placeHolder="Last Name"
         />
-
+        {lastNameError !== "" && showErrorMessage(lastNameError)}
         <DatePicker
           modal
           mode="date"
@@ -185,8 +188,7 @@ const CustomerIDForgotPassword = (props) => {
           (forgot?.loggedProfile?.errorCode == "404" ||
             forgot?.loggedProfile?.errorCode == "500") &&
           showErrorMessage(forgot?.loggedProfile?.message)} */}
-        {usernameError !== "" && showErrorMessage(usernameError)}
-        {lastNameError !== "" && showErrorMessage(lastNameError)}
+
         {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
