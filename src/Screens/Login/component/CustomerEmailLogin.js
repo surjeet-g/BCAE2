@@ -15,6 +15,7 @@ import {
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
+import Icon from "react-native-vector-icons/EvilIcons";
 
 import { Button, TextInput, RadioButton } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
@@ -121,6 +122,7 @@ const CustomerEmailLogin = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {usernameError !== "" && showErrorMessage(usernameError)}
       </View>
+      <Icon name="exclamation" size={30} color="#900" />
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
@@ -180,7 +182,6 @@ const CustomerEmailLogin = (props) => {
           </Text>
         </Pressable>
       </View>
-
       <View>
         {login.initLogin ? (
           <CustomActivityIndicator

@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>EvilIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -32,14 +38,14 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>19</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-				<true/>
-			</dict>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We are using your camera to enable you to save pictures of documents</string>
 	<key>NSHumanReadableCopyright</key>
