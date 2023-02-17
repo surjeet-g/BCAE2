@@ -34,7 +34,7 @@ const ResetPassword = ({ route, navigation }) => {
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
+
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [myscreenmae, setMyscreenmae] = useState("Reset Password");

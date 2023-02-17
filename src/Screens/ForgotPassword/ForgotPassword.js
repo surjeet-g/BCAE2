@@ -23,6 +23,7 @@ import CustomerEmailForgotPassword from "./component/CustomerEmailForgotPassword
 import { Toast } from "../../Components/Toast";
 
 import { useSelector } from "react-redux";
+import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
 
 const ForgotPassword = ({ route, navigation }) => {
   let login = useSelector((state) => state.login);
@@ -167,8 +168,11 @@ const ForgotPassword = ({ route, navigation }) => {
             onPressSecond={onPressSecond}
           ></ToggleButton>
         </View>
-
-        <CustomerEmailForgotPassword navigation={navigation} />
+        {isFirstSelected ? (
+          <CustomerEmailForgotPassword navigation={navigation} />
+        ) : (
+          <CustomerIDForgotPassword navigation={navigation} />
+        )}
 
         {orSection()}
 

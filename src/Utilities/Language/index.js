@@ -2,6 +2,8 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    tab_personal: "Personal",
+    tab_existing: "Existing",
     inquiry_success: "Inquiry created successfully",
     otpErrorMsgForEmail: "Please confirm your email id with OTP and try again",
     otpErrorMsgForMobile: "Please confirm mobile number with OTP and try again",
@@ -32,6 +34,7 @@ export let strings = new LocalizedStrings({
     first_name: "First Name",
     last_name: "Last Name",
     gender: "Gender",
+    title: "Title",
     country: "Country",
     location: "Location",
     mobile_number: "Mobile Number",
@@ -53,6 +56,7 @@ export let strings = new LocalizedStrings({
     firstNameError: "Please enter first name",
     lastNameError: "Please enter last name",
     serviceError: "Please select service",
+    titleError: "Please select title",
     genderError: "Please select gender",
     idNumberError: "Please enter ID Number",
     customerIDError: "Please eneter Customer ID",
@@ -184,6 +188,8 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
+    tab_personal: "Personal",
+    tab_existing: "Existing",
     selectDepId: "Department",
     otpErrorMsgForEmail: "Please confirm your email id with OTP and try again",
     otpErrorMsgForMobile: "Please confirm mobile number with OTP and try again",
@@ -214,6 +220,7 @@ export let strings = new LocalizedStrings({
     first_name: "First Name",
     last_name: "Last Name",
     gender: "Gender",
+    title: "Title",
     country: "Country",
     location: "Location",
     mobile_number: "Mobile Number",
@@ -239,6 +246,7 @@ export let strings = new LocalizedStrings({
     serviceError: "Please select service",
     dobError: "Please select date of birth",
     genderError: "Please select gender",
+    titleError: "Please select title",
     countryError: "Please select country",
     locationError: "Please Select location",
     numberError: "Please enter number",
@@ -367,6 +375,8 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   ml: {
+    tab_personal: "Personal",
+    tab_existing: "Existing",
     checkYourMail: "Check your text message",
     inquiry_success: "Inquiry created successfully",
     welcome: "സ്വാഗതം",

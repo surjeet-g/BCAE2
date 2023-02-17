@@ -72,18 +72,17 @@ const CustomerEmailForgotPassword = (props) => {
   const submit = () => {
     if (!validateEmail(username)) {
       setUsernameError(strings.emailValidError);
-    } else if (lastName == "") {
-      setlastNameError("Last Name sould be required");
-    } else if (dob == "") {
-      setDobError("Date of birth sould be required");
     } else {
-      dispatch(
-        verifyForgotPasswordData(props.navigation, {
-          loginId: username,
-          lastName,
-          dob: moment(dob).format("YYYY-MM-DD"),
-        })
-      );
+      //to do api call
+      const params = {
+        email: username,
+      };
+      console.log("params", params);
+      // dispatch(
+      //   verifyForgotPasswordData(props.navigation, {
+
+      //   })
+      // );
     }
   };
 
@@ -98,18 +97,6 @@ const CustomerEmailForgotPassword = (props) => {
       </View>
     );
   };
-  const onDismissSingle = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const onConfirmSingle = React.useCallback(
-    (params) => {
-      setOpen(false);
-      setDob(params.date);
-      setDobError("");
-    },
-    [setOpen, setDob]
-  );
 
   return (
     <View>
@@ -132,62 +119,8 @@ const CustomerEmailForgotPassword = (props) => {
             />
           }
         />
-        {/* <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
-          onChangeText={(text) => {
-            Keyboard.dismiss();
-            onIDChangeUsername(text);
-          }}
-          value={lastName}
-          label="Last Name"
-          placeHolder="Last Name"
-        /> */}
 
-        {/* <DatePicker
-          modal
-          mode="date"
-          validRange={{ endDate: new Date() }}
-          open={open}
-          onCancel={() => setOpen(false)}
-          date={dob == "" ? new Date() : dob}
-          maximumDate={new Date()}
-          onConfirm={(params) => {
-            console.log("data", params);
-            setOpen(false);
-            setDob(params);
-            setDobError("");
-          }}
-        /> */}
-        {/* <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
-          // onChangeText={(text) => onIDChange(text)}
-          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-          label={"Date of birth"}
-          onFocus={() => setOpen(true)}
-          placeHolder={"Date of birth"}
-          right={
-            <TextInput.Icon
-              onPress={() => setOpen(true)}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/mail.png")}
-            />
-          }
-        /> */}
-        {/* {!forgot?.initForgotPassword &&
-          (forgot?.loggedProfile?.errorCode == "404" ||
-            forgot?.loggedProfile?.errorCode == "500") &&
-          showErrorMessage(forgot?.loggedProfile?.message)} */}
         {usernameError !== "" && showErrorMessage(usernameError)}
-        {/* {lastNameError !== "" && showErrorMessage(lastNameError)}
-        {dobError !== "" && showErrorMessage(dobError)} */}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}></View>
@@ -202,9 +135,7 @@ const CustomerEmailForgotPassword = (props) => {
           <Button
             mode="contained"
             label={strings.reset_password}
-            disabled={
-              username == "" && dob == "" && lastName == "" ? true : false
-            }
+            disabled={!validateEmail(username)}
             onPress={submit}
           >
             {strings.reset_password}

@@ -22,9 +22,7 @@ export function fetchRegisterFormData() {
       requestMethod.GET,
       params
     );
-    console.log(
-      "result.success outside :" + JSON.stringify(addressLookUpResult)
-    );
+
     if (addressLookUpResult) {
       //result.data.data.
       dispatch(setAddressLoopUpData(addressLookUpResult?.data?.data));
@@ -34,7 +32,7 @@ export function fetchRegisterFormData() {
         `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
         requestMethod.GET
       );
-      console.log("hiting result", result);
+
       if (result.success && result?.data?.data) {
         let serviceCode = {
           SERVICECODE: [

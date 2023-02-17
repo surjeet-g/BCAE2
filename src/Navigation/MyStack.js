@@ -22,6 +22,7 @@ import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPasswo
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
+import { SetPasswordScreen } from "../Screens/Register/components/SetPassword";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 
@@ -30,6 +31,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <NavigationContainer>
+      {/* Register with u */}
       <Stack.Navigator initialRouteName="ForgotPassword">
         <Stack.Screen
           options={{ headerShown: false }}
@@ -87,6 +89,13 @@ function MyStack() {
           name="SavedLocation"
           component={SavedLocation}
         />
+        {/* second step for user registration */}
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SetPassword"
+          component={SetPasswordScreen}
+        />
+        {/* forgot password verify step */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="VerifyForgotUserInfo"
