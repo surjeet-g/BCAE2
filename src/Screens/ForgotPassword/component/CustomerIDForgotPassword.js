@@ -28,7 +28,7 @@ import {
 import { Button, TextInput } from "react-native-paper";
 import moment from "moment";
 
-const CustomerEmailForgotPassword = (props) => {
+const CustomerIDForgotPassword = (props) => {
   let forgot = useSelector((state) => state.forgot);
   // const [username, setUsername] = useState("vvvipindsm@gmail.com");
   const [username, setUsername] = useState("");
@@ -132,7 +132,7 @@ const CustomerEmailForgotPassword = (props) => {
             />
           }
         />
-        {/* <TextInput
+        <TextInput
           mode="flat"
           style={{
             backgroundColor: "transparent",
@@ -145,9 +145,9 @@ const CustomerEmailForgotPassword = (props) => {
           value={lastName}
           label="Last Name"
           placeHolder="Last Name"
-        /> */}
+        />
 
-        {/* <DatePicker
+        <DatePicker
           modal
           mode="date"
           validRange={{ endDate: new Date() }}
@@ -161,8 +161,8 @@ const CustomerEmailForgotPassword = (props) => {
             setDob(params);
             setDobError("");
           }}
-        /> */}
-        {/* <TextInput
+        />
+        <TextInput
           mode="flat"
           style={{
             backgroundColor: "transparent",
@@ -180,14 +180,14 @@ const CustomerEmailForgotPassword = (props) => {
               icon={require("../../../Assets/icons/mail.png")}
             />
           }
-        /> */}
+        />
         {/* {!forgot?.initForgotPassword &&
           (forgot?.loggedProfile?.errorCode == "404" ||
             forgot?.loggedProfile?.errorCode == "500") &&
           showErrorMessage(forgot?.loggedProfile?.message)} */}
         {usernameError !== "" && showErrorMessage(usernameError)}
-        {/* {lastNameError !== "" && showErrorMessage(lastNameError)}
-        {dobError !== "" && showErrorMessage(dobError)} */}
+        {lastNameError !== "" && showErrorMessage(lastNameError)}
+        {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}></View>
@@ -258,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomerEmailForgotPassword;
+export default CustomerIDForgotPassword;

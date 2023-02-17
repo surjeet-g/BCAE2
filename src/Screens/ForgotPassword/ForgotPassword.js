@@ -17,7 +17,7 @@ import {
   PROD_FAQ,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-
+import { ToggleButton } from "../../Components/ToggleButton";
 import CustomerEmailForgotPassword from "./component/CustomerEmailForgotPassword";
 
 import { Toast } from "../../Components/Toast";
@@ -143,12 +143,12 @@ const ForgotPassword = ({ route, navigation }) => {
             <Text style={styles.upperText}>{strings.faq}</Text>
           </Pressable>
         </View>
-        {/* <View style={{ marginBottom: spacing.WIDTH_20 }}>
+        <View style={{ marginBottom: spacing.WIDTH_20 }}>
           <ToggleButton
             isFirstSelected={isFirstSelected}
             label={{
               first: strings.customer_email_ID,
-              second: strings.mobile_no,
+              second: "User ID",
             }}
             bgColor={{
               selected: color.BCAE_PRIMARY,
@@ -166,7 +166,7 @@ const ForgotPassword = ({ route, navigation }) => {
             onPressFirst={onPressFirst}
             onPressSecond={onPressSecond}
           ></ToggleButton>
-        </View> */}
+        </View>
 
         <CustomerEmailForgotPassword navigation={navigation} />
 
