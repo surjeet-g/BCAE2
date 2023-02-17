@@ -5,6 +5,7 @@ export const INIT_OTP_FORM = "INIT_OTP_FORM";
 export const SET_OTP_FORM = "SET_OTP_FORM";
 export const FAILURE_OTP_FORM = "FAILURE_OTP_FORM";
 export const ADDRESSLOOKUP_DATA = "ADDRESSLOOKUP_DATA";
+export const RESET = "RESET";
 
 export function initRegisterForm() {
   return { type: INIT_REGISTRE_FORM };
@@ -28,4 +29,8 @@ export function failureOtpFormData(data, usage_type) {
 
 export function setAddressLoopUpData(data, usage_type) {
   return { type: ADDRESSLOOKUP_DATA, data, usageType: usage_type };
+}
+
+export function resetRegister(data) {
+  return { type: RESET };
 }

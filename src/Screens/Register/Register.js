@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
+
 import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
@@ -15,22 +15,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import {
-  spacing,
-  color,
-  fontSizes,
-  buttonSize,
-  validateNumber,
-  validateEmail,
-  validatePassword,
-  passwordHash,
-  TDLog,
-  DEBUG_BUILD,
-  STAGE_TERMS,
-  PROD_TERMS,
-  STAGE_PRIVACY,
-  PROD_PRIVACY,
-} from "../../Utilities/Constants/Constant";
+import { spacing, color, fontSizes } from "../../Utilities/Constants/Constant";
 
 import {
   fetchRegisterFormData,
@@ -38,49 +23,25 @@ import {
   sendOtp,
   userRegister,
 } from "./RegisterDispatcher";
-
 import { strings } from "../../Utilities/Language/index";
 import { FullPageLoder } from "../../Components/FullPageLoder";
 import Header from "../TabScreens/Component/Header";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { setOtpFormData } from "./RegisterAction";
-import moment from "moment";
+import { resetRegister, setOtpFormData } from "./RegisterAction";
+
 import { RegisterPersonal } from "./components/RegisterPersonal";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
+
 const TAB_EMAIL = true;
 const TAB_MOBILE = false;
+
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
-  //4 minute
-  const OTP_TIMER = 60 * 4;
+
   const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [customerID, setCustomerID] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [service, setService] = useState("");
-
-  const [mobileNo, setMobileNo] = useState("");
-  const [countryCode, setCountryCode] = useState("673");
-  const [otp, setOTP] = useState("");
-  const [otpEmail, setEmailOTP] = useState("");
-  const [email, setEmail] = useState("");
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [secureTextEntry, setsecureTextEntry] = useState(true);
-  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  const [isButtomDiable, setButtomEnableDisable] = useState(true);
 
   const [myscreenmae, _] = useState("Register With Us");
 
-  const [dob, setDob] = useState("");
-  // const [dob, setDob] = useState("2023-02-10");
-  const [dobError, setDobError] = useState("");
-  const [open, setOpen] = useState(false);
-
+  //reseting state
   const dispatch = useDispatch([
     fetchRegisterFormData,
     sendOtp,
@@ -88,7 +49,7 @@ const Register = ({ navigation, props }) => {
     getOtpForCheck,
   ]);
 
-  useEffect(() => {
+  const preRequiredDataFetch = () => {
     dispatch(fetchRegisterFormData());
 
     dispatch(setOtpFormData({}, "Register"));
@@ -96,7 +57,11 @@ const Register = ({ navigation, props }) => {
     dispatch(setOtpFormData({}, "mobileOtp"));
     dispatch(setOtpFormData({}, "email"));
     dispatch(setOtpFormData({}, "emailOtp"));
+  };
+  useEffect(() => {
+    preRequiredDataFetch();
   }, []);
+
   useEffect(() => {
     check(PERMISSIONS.IOS.LOCATION_ALWAYS)
       .then((result) => {
@@ -190,6 +155,14 @@ const Register = ({ navigation, props }) => {
     );
   };
 
+  const renderTab = useMemo(() => {
+    return isFirstSelected ? (
+      <RegisterPersonal navigation={navigation} />
+    ) : (
+      <RegisterExistingUser navigation={navigation} />
+    );
+  }, [isFirstSelected]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -239,20 +212,19 @@ const Register = ({ navigation, props }) => {
                 fontWeight: "600",
                 lineHeight: spacing.HEIGHT_16,
               }}
-              onPressFirst={() => {
-                //todo reset reducers and state
+              onPressFirst={async () => {
+                dispatch(resetRegister());
+                preRequiredDataFetch();
                 setFirstSelected(TAB_EMAIL);
               }}
               onPressSecond={() => {
-                //todo reset reducers and state
+                dispatch(resetRegister());
+                preRequiredDataFetch();
                 setFirstSelected(TAB_MOBILE);
               }}
             ></ToggleButton>
-            {isFirstSelected ? (
-              <RegisterPersonal navigation={navigation} />
-            ) : (
-              <RegisterExistingUser navigation={navigation} />
-            )}
+
+            {renderTab}
             {/* First Name */}
 
             {orSection()}

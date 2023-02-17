@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Header from "../../TabScreens/Component/Header";
 import { Button, TextInput } from "react-native-paper";
 import {
   spacing,
   color,
   validatePassword,
+  DEBUG_BUILD,
+  STAGE_TERMS,
+  PROD_TERMS,
+  STAGE_PRIVACY,
+  PROD_PRIVACY,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import { showErrorMessage } from "./RegisterPersonal";
@@ -24,6 +29,9 @@ export const SetPasswordScreen = ({ navigation, route }) => {
     console.log("Can't parse account type");
     navigation.back();
   }
+  const [isSelected, setSelection] = useState(false);
+  const [isSelectedTerm, setSelectionTerm] = useState(false);
+
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setConfirmPasswordError] = useState("");
   const [password, setPassword] = useState("");
@@ -40,11 +48,20 @@ export const SetPasswordScreen = ({ navigation, route }) => {
       setConfirmPasswordError(strings.passwordValidError);
     } else if (password !== confirmPassword) {
       setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
+    } else if (!isSelectedTerm) {
+      setTermError(strings.termError);
+    } else if (!isSelected) {
+      setPrivaceyError(strings.privaceyError);
     } else {
       //to do api
     }
   };
+  const onCheckBoxClickTerm = () => {
+    //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
+    setSelectionTerm(!isSelectedTerm);
 
+    setTermError("");
+  };
   return (
     <View style={styles.container}>
       <Header
@@ -82,6 +99,7 @@ export const SetPasswordScreen = ({ navigation, route }) => {
         {/* {showErrorMessage("sds")} */}
         {passwordError !== "" && showErrorMessage(passwordError)}
       </View>
+
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
           mode="flat"
@@ -109,6 +127,69 @@ export const SetPasswordScreen = ({ navigation, route }) => {
 
         {passwordConfirmError !== "" && showErrorMessage(passwordConfirmError)}
       </View>
+      <Pressable
+        onPress={() => {
+          console.log("hiint g");
+          setSelection(!isSelected);
+          setTermError("");
+          setPrivaceyError("");
+        }}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelected
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Privacy Policy",
+              url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Privacy Policy.
+        </Text>
+      </Pressable>
+      {privaceyError !== "" && showErrorMessage(privaceyError)}
+
+      <Pressable
+        onPress={onCheckBoxClickTerm}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelectedTerm
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+          I have agree to your{" "}
+        </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Terms & Conditions",
+              url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Terms &amp; Conditions.
+        </Text>
+      </Pressable>
+      {termError !== "" && showErrorMessage(termError)}
+
       <Button
         disabled={password === "" || confirmPassword === ""}
         onPress={submit}

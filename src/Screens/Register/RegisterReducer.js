@@ -6,6 +6,7 @@ import {
   SET_OTP_FORM,
   FAILURE_OTP_FORM,
   ADDRESSLOOKUP_DATA,
+  RESET,
 } from "./RegisterAction";
 
 const registerInitialState = {
@@ -28,6 +29,10 @@ const RegisterFormReducer = (state = registerInitialState, action) => {
         registerFormData: {},
         addressLoopupData: [],
       };
+    case RESET: {
+      state = registerInitialState;
+      return state;
+    }
 
     case SET_REGISTRE_FORM:
       return {

@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  SafeAreaView,
-  Platform,
-  Alert,
-} from "react-native";
+import { Text, View, Image, Pressable, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
@@ -24,10 +14,9 @@ import {
   sendOtp,
   userRegister,
 } from "../RegisterDispatcher";
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import { Button, TextInput } from "react-native-paper";
-import DatePicker from "react-native-date-picker";
+
 import { styles } from "../Register";
 import {
   spacing,
@@ -36,16 +25,7 @@ import {
   buttonSize,
   validateNumber,
   validateEmail,
-  validatePassword,
-  passwordHash,
-  TDLog,
-  DEBUG_BUILD,
-  STAGE_TERMS,
-  PROD_TERMS,
-  STAGE_PRIVACY,
-  PROD_PRIVACY,
 } from "../../../Utilities/Constants/Constant";
-import { useNavigation } from "@react-navigation/native";
 
 export const showErrorMessage = (errMessage) => {
   if (typeof errMessage != "string") return null;
@@ -66,7 +46,7 @@ export const showErrorMessage = (errMessage) => {
     </View>
   );
 };
-export const RegisterPersonal = ({ navigation }) => {
+export const RegisterPersonal = React.memo(({ navigation }) => {
   // let navigation = useNavigation;
   const dispatch = useDispatch([
     fetchRegisterFormData,
@@ -77,25 +57,6 @@ export const RegisterPersonal = ({ navigation }) => {
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
   const OTP_TIMER = 60 * 4;
-  const onConfirmPasswordChange = (textStr) => {
-    setConfirmPassword(textStr);
-
-    setConfirmPasswordError("");
-    buttonEnableDiable();
-  };
-  const hideShowClick = () => {
-    setsecureTextEntry(!secureTextEntry);
-  };
-  const hideShowClickConfirm = () => {
-    setsecureTextEntryConfim(!secureTextEntryConfim);
-  };
-
-  const onPasswordChange = (textStr) => {
-    setPassword(textStr);
-
-    setPasswordError("");
-    buttonEnableDiable();
-  };
 
   const onPlaceChosen = (params) => {
     setLatitude(params.currentLatitude);
@@ -144,13 +105,7 @@ export const RegisterPersonal = ({ navigation }) => {
   const [otp, setOTP] = useState("");
   const [otpEmail, setEmailOTP] = useState("");
   const [email, setEmail] = useState("");
-  const [isSelected, setSelection] = useState(false);
-  const [isSelectedTerm, setSelectionTerm] = useState(false);
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [secureTextEntry, setsecureTextEntry] = useState(true);
-  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [isButtomDiable, setButtomEnableDisable] = useState(true);
 
   const [firstNameError, setFirstNameError] = useState("");
@@ -161,21 +116,14 @@ export const RegisterPersonal = ({ navigation }) => {
   const [genderError, setgenderError] = useState("");
   const [titleError, setTitleError] = useState("");
 
-  const [countryError, setCountryError] = useState("");
-  const [locationError, setLocationError] = useState("");
   const [numberError, setNumberError] = useState("");
   const [otpNumberError, setOtpNumberError] = useState("");
-  const [isMobileOtpSuccess, setIsMobileOtpSuccess] = useState(false);
+
   const [emailError, setEmailError] = useState("");
   const [otpEmailError, setOtpEmailError] = useState("");
-  const [isEmailOtpSuccess, setIsEmailOtpSuccess] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmError, setConfirmPasswordError] = useState("");
-  const [termError, setTermError] = useState("");
-  const [privaceyError, setPrivaceyError] = useState("");
+
   const [otpTimer, setOtpTimer] = useState(OTP_TIMER);
   const [isDisableSendOtp, setIsDisableSendOtp] = useState(false);
-  const [selectedValueServ, setValueServ] = useState("");
   const [selectedValueGender, setValueGender] = useState("");
   const [selectedValueTitle, setValueTitle] = useState("");
 
@@ -228,22 +176,32 @@ export const RegisterPersonal = ({ navigation }) => {
       setEmailError(strings.emailValidError);
     } else if (otpEmail.trim() === "") {
       setOtpEmailError(strings.emailOtpError);
-    } else if (!isSelectedTerm) {
-      setTermError(strings.termError);
-    } else if (!isSelected) {
-      setPrivaceyError(strings.privaceyError);
     } else {
+      const myArray = location.split(",").reverse();
       let registerObject = {
         firstName: firstName,
         lastName: lastName,
         userType: "string",
         gender: gender.code,
-        // country: myArray.length > 0 ? myArray[0] : "",
-        extn: 0,
+        country: myArray.length > 0 ? myArray[0] : "",
+        extn: countryCode,
         contactNo: mobileNo,
         mobileOTP: otp,
         email: email,
-
+        address: {
+          address: location,
+          hno: "",
+          buildingName: "",
+          street: street,
+          road: "",
+          city: "",
+          state: state,
+          district: district,
+          country: country,
+          latitude: latitude,
+          longitude: longitude,
+          postCode: postcode,
+        },
         emailOTP: otpEmail,
       };
 
@@ -394,17 +352,8 @@ export const RegisterPersonal = ({ navigation }) => {
 
   const onCheckBoxClick = () => {
     //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
-    setSelection(!isSelected);
-    setTermError("");
-    setPrivaceyError("");
   };
 
-  const onCheckBoxClickTerm = () => {
-    //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
-    setSelectionTerm(!isSelectedTerm);
-
-    setTermError("");
-  };
   const clearFirstName = () => {
     setFirstName("");
     setFirstNameError(strings.firstNameError);
@@ -600,72 +549,6 @@ export const RegisterPersonal = ({ navigation }) => {
           ></Image>
         </Pressable>
       </View>
-      {/* Country */}
-      {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                            <CustomDropDown
-                                data={registerForm?.registerFormData?.COUNTRY ?? []}
-                                onChangeText={(text) => onCountryClick(text)}
-                                value={country}
-                                placeHolder={strings.country}
-                            />
-                            {!registerForm.initRegisterForm && registerForm?.loggedProfile?.errorCode == '404' &&
-                                showErrorMessage(registerForm?.otpFormDataForEmail?.message||registerForm?.otpFormDataForEmail?.message)
-                            }
-                            {countryError !== "" &&
-                                showErrorMessage(countryError)
-                            }
-                        </View> */}
-
-      {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
-              {location != "" && (
-                <Text style={styles.placeHolderText}>{strings.location}</Text>
-              )}
-
-              <Pressable
-                onPress={() => locationIconClick()}
-                style={styles.textLocation}
-              >
-                <Text
-                  style={{
-                    color: location != "" ? color.BLACK : color.PLACEHOLDER,
-                    fontSize: 14,
-                    marginBottom: 0,
-                    width: "90%",
-                    marginBottom: "2%",
-                  }}
-                  placeHolder={strings.location}
-                >
-                  {location || strings.location}
-                </Text>
-                <Image
-                  style={{
-                    position: "absolute",
-                    right: 5,
-                    bottom: 5,
-                    height: 20,
-                    width: 20,
-                  }}
-                  source={require("../../../Assets/icons/map.png")}
-                ></Image>
-              </Pressable>
-            </View> */}
-
-      {/* Location */}
-      {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                            <CustomDropDown
-                                data={registerForm?.registerFormData?.LOCATION ?? []}
-                                onChangeText={(text) => onLocationClick(text)}
-                                value={location}
-                                placeHolder={strings.location}
-                            />
-                            {!registerForm.initRegisterForm && registerForm?.loggedProfile?.errorCode == '404' &&
-                                showErrorMessage(registerForm?.otpFormDataForEmail?.message||registerForm?.otpFormDataForEmail?.message)
-                            }
-
-                            {locationError !== "" &&
-                                showErrorMessage(locationError)
-                            }
-                        </View> */}
 
       {/* Mobile Number */}
       <View style={{ marginTop: 5 }}>
@@ -821,74 +704,10 @@ export const RegisterPersonal = ({ navigation }) => {
         {otpEmailError !== "" && showErrorMessage(otpEmailError)}
       </View>
 
-      <Pressable
-        onPress={onCheckBoxClickTerm}
-        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-      >
-        <Image
-          style={styles.checkBox}
-          source={
-            isSelectedTerm
-              ? require("../../../Assets/icons/ci_checked.png")
-              : require("../../../Assets/icons/ci_uncheck.png")
-          }
-        ></Image>
-        <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-          I have agree to your{" "}
-        </Text>
-        <Text
-          onPress={() =>
-            navigation.navigate("ShowWebPage", {
-              fromLogin: true,
-              title: "Terms & Conditions",
-              url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
-            })
-          }
-          style={{ color: color.BCAE_DARK_BLUE }}
-        >
-          Terms &amp; Conditions.
-        </Text>
-      </Pressable>
-
-      {termError !== "" && showErrorMessage(termError)}
-      <Pressable
-        onPress={onCheckBoxClick}
-        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-      >
-        <Image
-          style={styles.checkBox}
-          source={
-            isSelected
-              ? require("../../../Assets/icons/ci_checked.png")
-              : require("../../../Assets/icons/ci_uncheck.png")
-          }
-        ></Image>
-        <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
-        <Text
-          onPress={() =>
-            navigation.navigate("ShowWebPage", {
-              fromLogin: true,
-              title: "Privacy Policy",
-              url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
-            })
-          }
-          style={{ color: color.BCAE_DARK_BLUE }}
-        >
-          Privacy Policy.
-        </Text>
-      </Pressable>
-
-      {privaceyError !== "" && showErrorMessage(privaceyError)}
-
-      {/* {
-                                    console.log("registerForm===>"+JSON.stringify(registerForm?.otpFormData))
-                                } */}
       {!registerForm.initRegisterForm &&
         registerForm?.otpFormData?.errorCode !== "200" &&
         registerForm?.otpUsageType === "Register" &&
         showErrorMessage(registerForm?.otpFormData?.message)}
-
-      {/* {showAlert()} */}
 
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         {registerForm?.initOtpForm &&
@@ -899,11 +718,11 @@ export const RegisterPersonal = ({ navigation }) => {
             loderColor={color.WHITE}
           />
         ) : (
-          <Button disabled={isButtomDiable} onPress={submit}>
+          <Button disabled={isButtomDiable} onPress={submit} mode="contained">
             {"NEXT"}
           </Button>
         )}
       </View>
     </View>
   );
-};
+});

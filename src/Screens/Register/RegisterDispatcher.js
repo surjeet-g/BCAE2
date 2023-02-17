@@ -6,6 +6,7 @@ import {
   setOtpFormData,
   failureOtpFormData,
   setAddressLoopUpData,
+  RESET,
 } from "./RegisterAction";
 import Toast from "react-native-toast-message";
 
@@ -92,6 +93,7 @@ export function sendOtp(
       showOtpSentMessage();
       dispatch(setOtpFormData(result?.data, type));
     } else {
+      await dispatch(RESET);
       dispatch(failureOtpFormData(result, type));
     }
   };
