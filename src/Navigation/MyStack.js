@@ -26,14 +26,12 @@ import { SetPasswordScreen } from "../Screens/Register/components/SetPassword";
 import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
-
 const Stack = createStackNavigator();
-
 function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="Register with us">
+      <Stack.Navigator initialRouteName="BottomBar">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
@@ -41,7 +39,7 @@ function MyStack() {
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="S"
+          name="BottomBar"
           component={BottomBarNavigation}
         />
         <Stack.Screen
