@@ -7,11 +7,13 @@ import { ToastTemplete } from "./src/Components/ToastTemplete";
 import { useNavigation } from "@react-navigation/native";
 import { LogBox, SafeAreaView, AppState } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import { storageKeys, theme } from "./src/Utilities/Constants/Constant";
+import { storageKeys } from "./src/Utilities/Constants/Constant";
 import { getData, saveData } from "./src/Storage/DB";
 import moment from "moment";
 import { getToken } from "./src/Storage/token";
 import { logoutUserSectionTimeOut } from "./src/Redux/LogoutDispatcher";
+import theme from "./src/Utilities/themeConfig";
+
 let navigator = useNavigation;
 
 const toastConfig = {
@@ -25,7 +27,6 @@ const toastConfig = {
 
 const App = () => {
   const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   useEffect(() => {
     const subscription = AppState.addEventListener(
       "change",
