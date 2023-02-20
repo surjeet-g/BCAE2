@@ -12,6 +12,11 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
+  for (NSString *fontFamilyName in [UIFont familyNames]) {
+      for (NSString *fontName in [UIFont fontNamesForFamilyName:fontFamilyName]) {
+          NSLog(@"Family: %@    Font: %@", fontFamilyName, fontName);
+      }
+  }
   [GMSServices provideAPIKey:@"AIzaSyAsF_UNXveip3zujvCbfxUVZmijQ-cLFuk"]; 
   [FIRApp configure];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];

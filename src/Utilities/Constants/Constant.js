@@ -3,7 +3,6 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Platform } from "react-native";
-import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 
 const RNFetchBlob = require("rn-fetch-blob").default;
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
@@ -13,17 +12,7 @@ export const ACCOUNT_TYPE = {
   EXISTING: "existing",
 };
 export const SECERT_KEY = "(*Hnjkn2kjn";
-export const theme = {
-  ...DefaultTheme, // or MD3DarkTheme
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: "#ea272c",
-    secondary: "#ea272c",
-    tertiary: "green",
-    myOwnColor: "blue",
-  },
-};
+
 export const WEBCLIENT_ID =
   "638155044511-6jaevsij1eisl66jeubv7qb7166ejlbs.apps.googleusercontent.com";
 export const GOOGLE_API_KEY = "AIzaSyBGKi6f1zYwwra1LVNtthEp6VPzUkvcPkk";

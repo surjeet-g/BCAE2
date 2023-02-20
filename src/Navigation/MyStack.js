@@ -23,6 +23,7 @@ import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
 import { SetPasswordScreen } from "../Screens/Register/components/SetPassword";
+import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 
@@ -32,10 +33,15 @@ function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Register with us">
         <Stack.Screen
           options={{ headerShown: false }}
-          name="BottomBar"
+          name="Playground"
+          component={Playground}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="S"
           component={BottomBarNavigation}
         />
         <Stack.Screen

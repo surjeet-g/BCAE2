@@ -1,5 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+
 import { Dashboard } from "../Screens/TabScreens/Dashboard";
 // import Chat from "../Screens/TabScreens/Chat";
 // import Announcement from "../Screens/TabScreens/Announcement";
@@ -15,6 +17,7 @@ import { color } from "../Utilities/Constants/Constant";
 const Tab = createBottomTabNavigator();
 const initialRoutByPlat =
   Platform.OS === "android" ? "Dashboard" : "MyTicketsStack";
+
 function BottomBarNavigation() {
   return (
     <Tab.Navigator
@@ -61,4 +64,5 @@ function BottomBarNavigation() {
     </Tab.Navigator>
   );
 }
+
 export default BottomBarNavigation;

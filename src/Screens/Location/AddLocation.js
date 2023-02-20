@@ -11,7 +11,7 @@ import {
   TouchableHighlight,
   Alert,
 } from "react-native";
-// import Geocoder from "@timwangdev/react-native-geocoder";
+import Geocoder from "react-native-geocoder";
 
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +37,6 @@ import MapView, {
 // import Modal from "react-native-modal";
 import Header from "../TabScreens/Component/Header";
 import RNLocation from "react-native-location";
-// import Geocoder from "@timwangdev/react-native-geocoder";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 
 import { Button } from "react-native-paper";
@@ -219,21 +218,21 @@ const AddLocation = ({ route, navigation }) => {
       longitudeDelta: longitudeDelta,
     };
 
-    // Geocoder.geocodePosition(obj)
-    //   .then((res) => {
-    //     console.log("res====>" + res + "---" + latitude + "===" + longitude);
+    Geocoder.geocodePosition(obj)
+      .then((res) => {
+        console.log(res);
 
-    //     var myAddress = res["0"].formattedAddress;
-    //     var countryCode = res["0"].countryCode;
+        const myAddress = res["0"]?.formattedAddress;
+        const countryCode = res["0"]?.countryCode;
 
-    //     console.log("res====>" + myAddress + "----" + countryCode);
-    //     setGeoAddress(myAddress);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(
-    //       "There has been a problem with your fetch operation: " + error.message
-    //     );
-    //   });
+        console.log("res====>", myAddress, "----", countryCode);
+        setGeoAddress(myAddress);
+      })
+      .catch(function (error) {
+        console.log(
+          "There has been a problem with your fetch operation: " + error.message
+        );
+      });
   };
 
   const permissionHandle = async () => {

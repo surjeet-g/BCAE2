@@ -12,6 +12,7 @@
     "ios_build": "npx  react-native run-ios --configuration=release",
     "pod_install_m1": "cd ios && arch -x86_64 pod install",
     "build:ios": "npx react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
+    "ios:pre:dev": "rm -rf ./ios/Pods && rm -rf ./ios/Podfile.lock && rm -rf ./ios/BCAE_App.xcworkspace && rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm run pod_install_m1 && npm run ios:img-fix && npm run build:ios && cd ./ios/  &&  cd ../   && npm run ios",
     "ios:pre": "rm -rf ./ios/Pods && rm -rf ./ios/Podfile.lock && rm -rf ./ios/BCAE_App.xcworkspace && rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm run pod_install_m1 && npm run ios:img-fix && npm run build:ios && cd ./ios/ && xcrun agvtool next-version -all &&  cd ../   && npm run ios"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "@react-native-firebase/app": "^15.6.0",
     "@react-native-firebase/messaging": "^15.6.0",
     "@react-navigation/bottom-tabs": "^6.3.2",
+    "@react-navigation/drawer": "^6.6.0",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/stack": "^6.2.1",
     "axios": "^0.27.2",
@@ -37,6 +39,7 @@
     "react-native-easy-grid": "^0.2.2",
     "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.20.0",
+    "react-native-geocoder": "^0.5.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-google-signin": "^2.1.1",
     "react-native-image-picker": "^4.10.0",
