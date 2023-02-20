@@ -22,6 +22,7 @@ export const TextBoxWithCTA = (props) => {
   let bgColor = props.bgColor ?? {};
   let onClicked = props.onPress ?? null;
   let isDisableButton = props.isDisableButton ?? false;
+
   return (
     <View>
       <View style={{ marginTop: 10 }}>
@@ -79,6 +80,9 @@ export const TextBoxWithCTA = (props) => {
                 width: spacing.WIDTH_35 * 2,
                 marginTop: 5,
               }}
+              onPress={() => {
+                props?.onPressOnCountyCode && props.onPressOnCountyCode();
+              }}
             >
               <Text
                 style={{
@@ -87,13 +91,12 @@ export const TextBoxWithCTA = (props) => {
                   fontWeight: "500",
                 }}
               >
-                {" "}
-                {"+" + props.countryCode}
+                {props.countryCode}
               </Text>
-              {/* <Image
+              <Image
                 source={require("../Assets/icons/ci_dropdown.png")}
                 style={{ width: spacing.WIDTH_16, height: spacing.WIDTH_16 }}
-              /> */}
+              />
             </TouchableOpacity>
           )}
           <TextInput

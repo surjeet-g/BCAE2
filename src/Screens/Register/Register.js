@@ -63,35 +63,41 @@ const Register = ({ navigation, props }) => {
   }, []);
 
   useEffect(() => {
-    check(PERMISSIONS.IOS.LOCATION_ALWAYS)
-      .then((result) => {
-        switch (result) {
-          case RESULTS.UNAVAILABLE:
-            if (Platform.OS === "ios") {
+    if (Platform.OS === "ios") {
+      check(PERMISSIONS.IOS.LOCATION_ALWAYS)
+        .then((result) => {
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              // if (Platform.OS === "ios") {
               request(PERMISSIONS.IOS.LOCATION_ALWAYS)
                 .then((result) => console.log(result))
                 .catch((error) => console.log(error));
-            }
-            break;
-          case RESULTS.DENIED:
-            console.log(
-              "The permission has not been requested / is denied but requestable"
-            );
-            break;
-          case RESULTS.LIMITED:
-            console.log("The permission is limited: some actions are possible");
-            break;
-          case RESULTS.GRANTED:
-            console.log("The permission is granted");
-            break;
-          case RESULTS.BLOCKED:
-            console.log("The permission is denied and not requestable anymore");
-            break;
-        }
-      })
-      .catch((error) => {
-        // …
-      });
+              // }
+              break;
+            case RESULTS.DENIED:
+              console.log(
+                "The permission has not been requested / is denied but requestable"
+              );
+              break;
+            case RESULTS.LIMITED:
+              console.log(
+                "The permission is limited: some actions are possible"
+              );
+              break;
+            case RESULTS.GRANTED:
+              console.log("The permission is granted");
+              break;
+            case RESULTS.BLOCKED:
+              console.log(
+                "The permission is denied and not requestable anymore"
+              );
+              break;
+          }
+        })
+        .catch((error) => {
+          // …
+        });
+    }
   }, []);
 
   const showAlert = (message = "") => {

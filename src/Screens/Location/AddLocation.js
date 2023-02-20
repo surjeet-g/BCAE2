@@ -43,6 +43,8 @@ import { Button } from "react-native-paper";
 import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
 const { height } = Dimensions.get("screen");
 import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
+import { countryCodes } from "react-native-country-codes-picker/constants/countryCodes";
+import get from "lodash.get";
 
 const AddLocation = ({ route, navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
@@ -65,6 +67,7 @@ const AddLocation = ({ route, navigation }) => {
   const [mapOnLatitude, setMapOnLatitude] = useState(0.0);
   const [mapOnLongitude, setMapOnLongitude] = useState(0.0);
   const [geoAddress, setGeoAddress] = useState("");
+  const [dialPick, setDialPick] = useState("+673");
   const [locationGet, setCurrentLocationget] = useState(false);
 
   const mapRef = useRef(null);
@@ -135,6 +138,7 @@ const AddLocation = ({ route, navigation }) => {
           longitude: currentLongitude,
           latitude: currentLatitude,
           postCode: postcode,
+          dialPick,
         });
 
         navigation.goBack();
@@ -224,7 +228,14 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
-
+        if (countryCode != "") {
+          setDialPick(
+            get(
+              countryCodes.filter((a) => a.code == countryCode),
+              "[0].dial_code"
+            )
+          );
+        }
         console.log("res====>", myAddress, "----", countryCode);
         setGeoAddress(myAddress);
       })

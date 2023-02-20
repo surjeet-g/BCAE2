@@ -7,6 +7,7 @@ import { strings } from "../../../Utilities/Language/index";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "../RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
+import { CountryPicker } from "react-native-country-codes-picker";
 
 import {
   fetchRegisterFormData,
@@ -67,6 +68,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setDistrict(params.district);
     setCountry(params.country);
     setPostcode(params.postCode);
+    setDialPick(params.dialPick);
   };
 
   const formatOtpTimer = (otpTmr) => {
@@ -88,6 +90,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
     return finalString;
   };
+  const [dialpick, setDialPick] = useState("+673");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
@@ -131,6 +134,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [state, setStateProfile] = useState("");
   const [district, setDistrict] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [countryPickModel, setCountryPickModel] = useState(false);
 
   const onFirstNameChange = (textStr) => {
     setFirstName(textStr);
@@ -549,7 +553,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           ></Image>
         </Pressable>
       </View>
-
+      <CountryPicker
+        show={countryPickModel}
+        // when picker button press you will get the country object with dial code
+        pickerButtonOnPress={(item) => {
+          setDialPick(item.dial_code);
+          setCountryPickModel(false);
+        }}
+      />
       {/* Mobile Number */}
       <View style={{ marginTop: 5 }}>
         <TextBoxWithCTA
@@ -562,7 +573,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               ? true
               : false
           }
-          countryCode={countryCode}
+          onPressOnCountyCode={() => setCountryPickModel(true)}
+          countryCode={dialpick}
           label={strings.send_otp}
           onPress={submitResndOTP}
           bgColor={color.BCAE_PRIMARY}

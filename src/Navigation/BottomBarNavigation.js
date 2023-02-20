@@ -79,19 +79,18 @@ const Root = () => {
           activeTintColor: "#e91e63",
           // headerShown: true,
           title: "Dashboard",
-          headerLeft: () => {
-            return (
-              <Pressable
-                onPress={() => {
-                  console.log("htting", navigation);
-                  navigation.openDrawer();
-                }}
-              >
-                <Text>CLick me</Text>
-              </Pressable>
-            );
-          },
-          drawerInactiveTintColor: "red",
+          // headerLeft: () => {
+          //   return (
+          //     <Pressable
+          //       onPress={() => {
+
+          //         navigation.openDrawer();
+          //       }}
+          //     >
+
+          //     </Pressable>
+          //   );
+          // },
         })}
       />
     </Drawer.Navigator>
