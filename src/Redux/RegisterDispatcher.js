@@ -1,4 +1,7 @@
 import {
+  setLoaderPreVerify,
+  setPreVerifyUserData,
+  setPreVerifyUserData_ERROR,
   initRegisterForm,
   setRegisterFormData,
   failureRegisterFormData,
@@ -8,10 +11,11 @@ import {
   setAddressLoopUpData,
   RESET,
 } from "./RegisterAction";
+
 import Toast from "react-native-toast-message";
 
-import { serverCall } from "../../Utilities/API";
-import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
+import { serverCall } from "../Utilities/API";
+import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 export function fetchRegisterFormData() {
   return async (dispatch) => {
@@ -116,7 +120,12 @@ export function getOtpForCheck(mobileno, type) {
   };
 }
 
-export function userRegister(params, type, cbSuccess = (_) => {}) {
+export function userRegister(
+  params,
+  type,
+  cbSuccess = (_) => {},
+  cbFailed = (_) => {}
+) {
   return async (dispatch) => {
     dispatch(initOtpForm(type));
     const servicePoint = endPoints.REGISTER;
@@ -131,7 +140,33 @@ export function userRegister(params, type, cbSuccess = (_) => {}) {
         type: "bctError",
         text1: result?.message,
       });
+
+      cbFailed();
       dispatch(failureOtpFormData(result, type));
     }
   };
 }
+
+export const PreVerifyUserDataData = () => {
+  return async (dispatch) => {
+    dispatch(setLoaderPreVerify(true));
+    let params = {};
+    let result = await serverCall(
+      endPoints.PREVERIFYUSERDATA,
+      requestMethod.POST,
+      params
+    );
+    if (result.success) {
+      dispatch(setPreVerifyUserData(result?.data));
+      return { status: true, response: result?.data };
+    } else {
+      //to do remove mock response
+
+      dispatch(setPreVerifyUserData_ERROR(result));
+      return {
+        status: true, //false
+        response: { msg: result?.message || "Something wents wrong" },
+      };
+    }
+  };
+};

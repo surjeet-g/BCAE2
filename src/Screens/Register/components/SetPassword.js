@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Header from "../../TabScreens/Component/Header";
 import { Button, TextInput } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   spacing,
   color,
@@ -14,11 +16,13 @@ import {
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import { showErrorMessage } from "./RegisterPersonal";
+import { userRegister } from "../../../Redux/RegisterDispatcher";
+
 export const SetPasswordScreen = ({ navigation, route }) => {
   // const {
   //   params: { formData },
   // } = route;
-
+  const dispatch = useDispatch([userRegister]);
   const formData = '{"dummy":"dummy","accountType":"personal"}';
   let accountType = "";
 
@@ -31,7 +35,7 @@ export const SetPasswordScreen = ({ navigation, route }) => {
   }
   const [isSelected, setSelection] = useState(false);
   const [isSelectedTerm, setSelectionTerm] = useState(false);
-
+  const [loader, setLoader] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setConfirmPasswordError] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +45,24 @@ export const SetPasswordScreen = ({ navigation, route }) => {
   const [isButtomDiable, setButtomEnableDisable] = useState(true);
   const [termError, setTermError] = useState("");
   const [privaceyError, setPrivaceyError] = useState("");
-  const submit = () => {
+
+  const submit = async () => {
+    setLoader(true);
+    const resp = await dispatch(
+      userRegister(
+        { data: "123" },
+        "Register",
+        (msg) => {
+          setLoader(false);
+          alert(msg);
+        },
+        () => {
+          setLoader(false);
+        }
+      )
+    );
+
+    return;
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
     } else if (!validatePassword(confirmPassword)) {
@@ -191,9 +212,10 @@ export const SetPasswordScreen = ({ navigation, route }) => {
       {termError !== "" && showErrorMessage(termError)}
 
       <Button
-        disabled={password === "" || confirmPassword === ""}
+        // disabled={password === "" || confirmPassword === ""}
         onPress={submit}
         mode="contained"
+        loading={loader}
       >
         REGISTER
       </Button>

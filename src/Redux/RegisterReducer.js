@@ -1,4 +1,7 @@
 import {
+  PREVERIFYUSERDATA_DATA,
+  PREVERIFYUSERDATA_ERROR,
+  PREVERIFYUSERDATA_LOADER,
   INIT_REGISTRE_FORM,
   SET_REGISTRE_FORM,
   FAILURE_REGISTRE_FORM,
@@ -10,6 +13,9 @@ import {
 } from "./RegisterAction";
 
 const registerInitialState = {
+  isPreVerifyUserDataError: false,
+  preVerifyUserDataData: {},
+  preVerifyUserDataloader: false,
   initRegisterForm: false,
   isRegisterFormError: false,
   registerFormData: {},
@@ -21,6 +27,11 @@ const registerInitialState = {
 
 const RegisterFormReducer = (state = registerInitialState, action) => {
   switch (action.type) {
+    case PREVERIFYUSERDATA_LOADER:
+      return {
+        ...state,
+        preVerifyUserDataloader: action.data,
+      };
     case INIT_REGISTRE_FORM:
       return {
         ...state,
@@ -187,6 +198,23 @@ const RegisterFormReducer = (state = registerInitialState, action) => {
       } else {
         return state;
       }
+    case PREVERIFYUSERDATA_ERROR:
+      return {
+        ...state,
+        preVerifyUserDataloader: false,
+        initPreVerifyUserData: false,
+        isPreVerifyUserDataError: true,
+        preverifyuserdataData: action.data,
+      };
+
+    case PREVERIFYUSERDATA_DATA:
+      return {
+        ...state,
+
+        preVerifyUserDataloader: false,
+        isPreVerifyUserDataError: false,
+        preverifyuserdataData: action.data,
+      };
     default:
       return state;
   }

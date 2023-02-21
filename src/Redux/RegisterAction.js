@@ -1,3 +1,7 @@
+export const PREVERIFYUSERDATA_DATA = "PREVERIFYUSERDATA_DATA";
+export const PREVERIFYUSERDATA_ERROR = "PREVERIFYUSERDATA_ERROR";
+export const PREVERIFYUSERDATA_LOADER = "PREVERIFYUSERDATA_LOADER";
+
 export const INIT_REGISTRE_FORM = "INIT_REGISTRE_FORM";
 export const SET_REGISTRE_FORM = "SET_REGISTRE_FORM";
 export const FAILURE_REGISTRE_FORM = "FAILURE_REGISTRE_FORM";
@@ -34,3 +38,14 @@ export function setAddressLoopUpData(data, usage_type) {
 export function resetRegister(data) {
   return { type: RESET };
 }
+export const setPreVerifyUserData = (data) => {
+  return { type: PREVERIFYUSERDATA_DATA, data };
+};
+
+export const setPreVerifyUserData_ERROR = (data) => {
+  return { type: PREVERIFYUSERDATA_ERROR, data };
+};
+
+export const setLoaderPreVerify = (data) => {
+  return { type: PREVERIFYUSERDATA_LOADER, data };
+};

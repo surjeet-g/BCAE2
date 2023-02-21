@@ -22,11 +22,11 @@ import {
   getOtpForCheck,
   sendOtp,
   userRegister,
-} from "./RegisterDispatcher";
+} from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
 import { FullPageLoder } from "../../Components/FullPageLoder";
 import Header from "../TabScreens/Component/Header";
-import { resetRegister, setOtpFormData } from "./RegisterAction";
+import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { RegisterPersonal } from "./components/RegisterPersonal";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";

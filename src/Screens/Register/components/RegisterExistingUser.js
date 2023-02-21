@@ -5,7 +5,7 @@ import Toast from "react-native-toast-message";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { strings } from "../../../Utilities/Language/index";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
-import { setOtpFormData } from "../RegisterAction";
+import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import moment from "moment";
 
@@ -14,7 +14,8 @@ import {
   getOtpForCheck,
   sendOtp,
   userRegister,
-} from "../RegisterDispatcher";
+  PreVerifyUserDataData,
+} from "../../../Redux/RegisterDispatcher";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import { Button, TextInput } from "react-native-paper";
 import DatePicker from "react-native-date-picker";
@@ -33,6 +34,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     sendOtp,
     userRegister,
     getOtpForCheck,
+    PreVerifyUserDataData,
   ]);
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
@@ -122,8 +124,18 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
 
-  const submit = () => {
-    console.log("hiting");
+  const submit = async () => {
+    const resp = await dispatch(PreVerifyUserDataData());
+    if (resp.status) {
+      navigation.navigate("SetPassword", {
+        formData: JSON.stringify({ dummy: "dummy", accountType: "bussiness" }),
+      });
+    } else {
+      Toast.show({
+        type: "bctError",
+        text1: result.response?.msg,
+      });
+    }
     //to do bypass otp validation
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
@@ -716,7 +728,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
             loderColor={color.WHITE}
           />
         ) : (
-          <Button disabled={isButtomDiable} onPress={submit}>
+          <Button
+            // disabled={isButtomDiable}
+            loading={registerForm?.preVerifyUserDataloader}
+            onPress={submit}
+            mode="contained"
+          >
             {"NEXT"}
           </Button>
         )}

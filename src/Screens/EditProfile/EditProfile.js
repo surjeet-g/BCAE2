@@ -25,7 +25,7 @@ import { CustomDropDown } from "../../Components/CustomDropDown";
 import {
   fetchRegisterFormData,
   getOtpForNumber,
-} from "../Register/RegisterDispatcher";
+} from "../../Redux/RegisterDispatcher";
 import {
   fetchSavedProfileData,
   updateProfileData,

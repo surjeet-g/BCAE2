@@ -78,11 +78,7 @@ const CustomerEmailForgotPassword = (props) => {
         email: username,
       };
       console.log("params", params);
-      // dispatch(
-      //   verifyForgotPasswordData(props.navigation, {
-
-      //   })
-      // );
+      dispatch(verifyForgotPasswordData(props.navigation, {}));
     }
   };
 

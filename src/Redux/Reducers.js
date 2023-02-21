@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
 import LoginReducer from "../Screens/Login/LoginReducer";
-import RegisterFormReducer from "../Screens/Register/RegisterReducer";
+import RegisterFormReducer from "../Redux/RegisterReducer";
 import MyTicketsReducer from "../Redux/MyTicketsReducer";
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
 import AnnouncementsReducer from "./AnnouncementReducer";

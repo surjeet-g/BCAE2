@@ -54,6 +54,7 @@ react {
 }
 project.ext.react = [
     hermesEnabled: true,  // clean and rebuild if changing
+    enableHermes: true
 ]
 
 /**
