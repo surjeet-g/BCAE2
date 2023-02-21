@@ -4,7 +4,7 @@ export const FONT_FAMILY_MEDIUM = "Avenir-Book";
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
-  roundness: 4, //
+  roundness: 12, //
   colors: {
     ...DefaultTheme.colors,
     primary: "#3E73CB",
@@ -17,7 +17,9 @@ const theme = {
     // surface: "#ffffff",
     onSurface: "#212223",
     buttonDisableColor: "#FFFFFF",
+
     // outline: "black",
+    graylabel: "#848A93",
   },
   fonts: {
     bodyLarge: {
@@ -105,6 +107,7 @@ const theme = {
       fontSize: 13,
     },
     titleLarge: {
+      color: "#848A93",
       fontFamily: FONT_FAMILY,
       letterSpacing: 0,
       fontWeight: "400",

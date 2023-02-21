@@ -12,6 +12,7 @@ const CustomButton = (props) => {
     isDisabled = false,
     onClick = () => {},
     loading = true,
+    mode = "contained",
   } = props;
 
   return (
@@ -22,7 +23,7 @@ const CustomButton = (props) => {
     >
       <Button
         loading={loading}
-        mode="contained"
+        mode={mode}
         label={label}
         textColor={isDisabled ? colors.gray : colors.buttonDisableColor}
         buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}

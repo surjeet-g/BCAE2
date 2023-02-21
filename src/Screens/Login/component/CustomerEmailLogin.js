@@ -17,7 +17,8 @@ import {
 import { strings } from "../../../Utilities/Language";
 import Icon from "react-native-vector-icons/EvilIcons";
 
-import { Button, TextInput, RadioButton } from "react-native-paper";
+import { Button, RadioButton } from "react-native-paper";
+import { CustomInput as TextInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import CustomButton from "../../../Components/CustomButton";
@@ -100,14 +101,10 @@ const CustomerEmailLogin = (props) => {
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
+          caption="Username"
+          // error="sdfsdf"
           value={username}
-          label={strings.customer_email_ID}
-          placeHolder={strings.customer_email_ID}
+          // label={strings.customer_email_ID}
           onChangeText={(text) => onIDChange(text)}
           right={
             <TextInput.Icon
@@ -127,11 +124,6 @@ const CustomerEmailLogin = (props) => {
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
           value={password}
           label={strings.password}
           placeHolder={strings.password}
