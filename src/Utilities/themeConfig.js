@@ -7,15 +7,16 @@ const theme = {
   roundness: 4, //
   colors: {
     ...DefaultTheme.colors,
-    primary: "#375b9e",
+    primary: "#3E73CB",
     onPrimaryContainer: "#88a5da",
     secondary: "#f5ad46 ",
     tertiary: "#f5ad46",
-    // myOwnColor: "blue",
+    gray: "#C7CAD1",
     background: "#ffffff",
     surfaceVariant: "#ffffff",
     // surface: "#ffffff",
     onSurface: "#212223",
+    buttonDisableColor: "#FFFFFF",
     // outline: "black",
   },
   fonts: {

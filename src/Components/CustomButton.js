@@ -2,9 +2,18 @@ import React from "react";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
 import { spacing, color } from "../Utilities/Constants/Constant";
+import { useTheme } from "react-native-paper";
 
 const CustomButton = (props) => {
-  const { label, isDisabled, onClick } = props;
+  const { colors } = useTheme();
+
+  const {
+    label = "",
+    isDisabled = false,
+    onClick = () => {},
+    loading = true,
+  } = props;
+
   return (
     <View
       style={{
@@ -12,12 +21,12 @@ const CustomButton = (props) => {
       }}
     >
       <Button
+        loading={loading}
         mode="contained"
         label={label}
-        disabled={isDisabled}
-        textColor={isDisabled ? "#C7CAD1" : "#FFFFFF"}
-        buttonColor={isDisabled ? "#FFFFFF" : "#3E73CB"}
-        onPress={onClick}
+        textColor={isDisabled ? colors.gray : colors.buttonDisableColor}
+        buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
+        onPress={isDisabled ? () => {} : onClick}
       >
         {label}
       </Button>

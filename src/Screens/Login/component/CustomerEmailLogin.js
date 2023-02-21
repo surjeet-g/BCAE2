@@ -184,19 +184,12 @@ const CustomerEmailLogin = (props) => {
         </Pressable>
       </View>
       <View>
-        {login.initLogin ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <CustomButton
-            label={strings.login}
-            isDisabled={username == "" || password == "" ? true : false}
-            onClick={submit}
-          />
-        )}
+        <CustomButton
+          loading={login.initLogin}
+          label={strings.login}
+          isDisabled={username == "" || password == "" ? true : false}
+          onClick={submit}
+        />
       </View>
     </View>
   );

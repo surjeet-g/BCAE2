@@ -31,7 +31,7 @@ function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="ForgotPassword">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
