@@ -20,6 +20,7 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import { Button, TextInput, RadioButton } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
+import CustomButton from "../../../Components/CustomButton";
 export const BUSINESS = "bussiness";
 export const CONSUMER = "consumer";
 const CustomerEmailLogin = (props) => {
@@ -190,13 +191,11 @@ const CustomerEmailLogin = (props) => {
             loderColor={color.WHITE}
           />
         ) : (
-          <Button
-            mode="contained"
-            onPress={submit}
-            disabled={username == "" || password == "" ? true : false}
-          >
-            {strings.login}
-          </Button>
+          <CustomButton
+            label={strings.login}
+            isDisabled={username == "" || password == "" ? true : false}
+            onClick={submit}
+          />
         )}
       </View>
     </View>

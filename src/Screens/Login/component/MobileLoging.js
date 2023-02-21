@@ -30,6 +30,8 @@ import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { strings } from "../../../Utilities/Language";
 import { resetLogin, verifyLoginData } from "../LoginDispatcher";
 import { BUSINESS, CONSUMER } from "./CustomerEmailLogin";
+import CustomButton from "../../../Components/CustomButton";
+import CustomErrorText from "../../../Components/CustomErrorText";
 const { height, width } = Dimensions.get("screen");
 
 const MobileLoging = (props) => {
@@ -152,7 +154,7 @@ const MobileLoging = (props) => {
           login?.loggedProfile?.errorCode != "10000" &&
           login?.loggedProfile?.errorCode != "10001" &&
           showErrorMessage(login?.loggedProfile?.message)}
-        {passwordError !== "" && showErrorMessage(passwordError)}
+        {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <RadioButton
@@ -191,13 +193,11 @@ const MobileLoging = (props) => {
             loderColor={color.WHITE}
           />
         ) : (
-          <Button
-            mode="contained"
-            onPress={submit}
-            disabled={number == "" || password == "" ? true : false}
-          >
-            {strings.login}
-          </Button>
+          <CustomButton
+            label={strings.login}
+            isDisabled={number == "" || password == "" ? true : false}
+            onClick={submit}
+          />
         )}
       </View>
       {/* <TouchableOpacity
