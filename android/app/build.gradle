@@ -203,7 +203,7 @@ dependencies {
   // https://firebase.google.com/docs/android/setup#available-libraries
 }
 project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Name of the font files you want to copy
+    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf','MaterialCommunityIcons.ttf' ] // Name of the font files you want to copy
 ]
 
 apply plugin: 'com.google.gms.google-services' 

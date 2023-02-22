@@ -17,7 +17,9 @@ import {
   PreVerifyUserDataData,
 } from "../../../Redux/RegisterDispatcher";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
-import { Button, TextInput } from "react-native-paper";
+import { CustomInput as TextInput } from "../../../Components/CustomInput";
+import { CustomButton as Button } from "../../../Components/CustomButton";
+
 import DatePicker from "react-native-date-picker";
 import { styles } from "../Register";
 import {
@@ -28,6 +30,7 @@ import {
   validateNumber,
   validateEmail,
 } from "../../../Utilities/Constants/Constant";
+
 export const RegisterExistingUser = React.memo(({ navigation }) => {
   const dispatch = useDispatch([
     fetchRegisterFormData,
@@ -426,13 +429,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     <View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={(text) => onFirstNameChange(text)}
           value={firstName}
-          label={strings.first_name}
+          caption={strings.first_name}
           placeHolder={strings.first_name}
           right={
             <TextInput.Icon
@@ -449,14 +451,13 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       {/* Last Name */}
       <View style={{ marginTop: 5 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={(text) => onLastNameChange(text)}
           value={lastName}
           placeHolder={strings.last_name}
-          label={strings.last_name}
+          caption={strings.last_name}
           right={
             <TextInput.Icon
               onPress={clearLastName}
@@ -487,13 +488,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
       <View style={{ marginTop: 10 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           // onChangeText={(text) => onIDChange(text)}
           value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-          label={"Date of birth"}
+          caption={"Date of birth"}
           onFocus={() => setOpen(true)}
           placeHolder={"Date of birth"}
           right={
@@ -508,13 +508,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
       <View style={{ marginTop: 10 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setCustomerID}
           value={customerID}
-          label={"Cusomer ID"}
+          caption={"Cusomer ID"}
           placeHolder={"Cusomer ID"}
           right={
             <TextInput.Icon
@@ -528,13 +527,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       </View>
       <View style={{ marginTop: 10 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          label={"ID Number"}
+          caption={"ID Number"}
           placeHolder={"ID Number"}
           right={
             <TextInput.Icon
@@ -729,13 +727,16 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           />
         ) : (
           <Button
+            label="NEXT"
             // disabled={isButtomDiable}
-            loading={registerForm?.preVerifyUserDataloader}
+            loading={
+              registerForm?.initOtpForm
+                ? registerForm?.otpUsageType === "Register"
+                : false
+            }
             onPress={submit}
             mode="contained"
-          >
-            {"NEXT"}
-          </Button>
+          />
         )}
       </View>
     </View>

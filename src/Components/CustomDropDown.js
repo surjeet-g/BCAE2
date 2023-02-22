@@ -3,18 +3,19 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   Image,
   Pressable,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { color, spacing, fontSizes } from "../Utilities/Constants/Constant";
-import { List, MD3Colors } from "react-native-paper";
+import { List, MD3Colors, TextInput, useTheme } from "react-native-paper";
+import { CustomInput } from "../Components/CustomInput";
 
 export const CustomDropDown = (props) => {
   const { selectedValue, setValue } = props;
   const [hideShow, setHideShow] = useState(false);
+  const { colors } = useTheme();
 
   let customStyle = props.customStyle ?? {};
 
@@ -44,40 +45,25 @@ export const CustomDropDown = (props) => {
   return (
     <View style={{ zIndex: 0, marginTop: 10 }}>
       <View style={{ zIndex: 0, height: 50 }}>
-        <View style={{ marginTop: 5 }}>
-          <Text style={styles.placeHolderText}>
-            {selectedValue != "" ? props.placeHolder : " "}
-          </Text>
-        </View>
-        <Pressable
+        {/* <Pressable
           onPress={() => ondropDownClick()}
           style={{ flexDirection: "row" }}
-        >
-          {
-            <View
-              style={{
-                position: "absolute",
-                right: spacing.WIDTH_5,
-                zIndex: 1,
-                marginTop: selectedValue == "" ? 12 : 0,
-                height: spacing.HEIGHT_20,
-                width: spacing.WIDTH_20,
-                alignItems: "flex-end",
-              }}
-            >
-              <Image
-                source={require("../Assets/icons/ci_dropdown.png")}
-                style={{ width: spacing.WIDTH_16, height: spacing.WIDTH_16 }}
-              />
-            </View>
+        > */}
+        <CustomInput
+          editable={false}
+          caption={props.placeHolder}
+          placeholder={props.placeHolder}
+          style={{ ...styles.textInput, ...customStyle }}
+          value={selectedValue}
+          right={
+            <TextInput.Icon
+              onPress={() => ondropDownClick()}
+              style={{ width: 23, height: 23 }}
+              icon="chevron-down"
+            />
           }
-          <TextInput
-            editable={false}
-            placeholder={props.placeHolder}
-            style={{ ...styles.textInput, ...customStyle }}
-            value={selectedValue}
-          />
-        </Pressable>
+        />
+        {/* </Pressable> */}
       </View>
 
       {hideShow && (

@@ -18,7 +18,8 @@ import {
 } from "../../../Redux/RegisterDispatcher";
 
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
-import { Button, TextInput } from "react-native-paper";
+import { CustomInput as TextInput } from "../../../Components/CustomInput";
+import { CustomButton as Button } from "../../../Components/CustomButton";
 
 import { styles } from "../Register";
 import {
@@ -151,7 +152,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
   const submit = async () => {
+    alert("sdfd");
     const resp = await dispatch(PreVerifyUserDataData());
+
     if (resp.status) {
       navigation.navigate("SetPassword", {
         formData: JSON.stringify({ dummy: "dummy", accountType: "personal" }),
@@ -461,13 +464,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       </View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={(text) => onFirstNameChange(text)}
           value={firstName}
-          label={strings.first_name}
+          caption={strings.first_name}
           placeHolder={strings.first_name}
           right={
             <TextInput.Icon
@@ -484,14 +486,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       {/* Last Name */}
       <View style={{ marginTop: 5 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={(text) => onLastNameChange(text)}
           value={lastName}
           placeHolder={strings.last_name}
-          label={strings.last_name}
+          caption={strings.last_name}
           right={
             <TextInput.Icon
               onPress={clearLastName}
@@ -506,13 +507,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       <View style={{ marginTop: 10 }}>
         <TextInput
-          mode="flat"
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          label={"ID Number"}
+          caption={"ID Number"}
           placeHolder={"ID Number"}
           right={
             <TextInput.Icon
@@ -739,23 +739,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         showErrorMessage(registerForm?.otpFormData?.message)}
 
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
-        {registerForm?.initOtpForm &&
-        registerForm?.otpUsageType === "Register" ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <Button
-            //  disabled={isButtomDiable}
-            onPress={submit}
-            loading={registerForm?.preVerifyUserDataloader}
-            mode="contained"
-          >
-            {"NEXT"}
-          </Button>
-        )}
+        <Button
+          label="NEXT"
+          // isDisabled={isButtomDiable}
+          onPress={submit}
+          loading={
+            registerForm?.initOtpForm
+              ? registerForm?.otpUsageType === "Register"
+              : false
+          }
+          mode="contained"
+        />
       </View>
     </View>
   );

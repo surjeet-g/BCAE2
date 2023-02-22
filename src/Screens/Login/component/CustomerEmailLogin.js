@@ -21,7 +21,7 @@ import { Button, RadioButton } from "react-native-paper";
 import { CustomInput as TextInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
-import CustomButton from "../../../Components/CustomButton";
+import { CustomButton } from "../../../Components/CustomButton";
 export const BUSINESS = "bussiness";
 export const CONSUMER = "consumer";
 const CustomerEmailLogin = (props) => {
@@ -120,12 +120,11 @@ const CustomerEmailLogin = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {usernameError !== "" && showErrorMessage(usernameError)}
       </View>
-      <Icon name="exclamation" size={30} color="#900" />
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <TextInput
           value={password}
-          label={strings.password}
+          caption={strings.password}
           placeHolder={strings.password}
           onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}
