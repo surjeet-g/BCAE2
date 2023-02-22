@@ -4,7 +4,7 @@ import LoginReducer from "../Screens/Login/LoginReducer";
 import RegisterFormReducer from "../Redux/RegisterReducer";
 import MyTicketsReducer from "../Redux/MyTicketsReducer";
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
-import AnnouncementsReducer from "./AnnouncementReducer";
+import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
 import SavedLocationReducer from "./SavedLocationReducer";
 import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
 import ProfileReducer from "./ProfileReducer";
