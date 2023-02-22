@@ -15,11 +15,14 @@ import {
   buttonSize,
 } from "../Utilities/Constants/Constant";
 import { CustomActivityIndicator } from "./CustomActivityIndicator";
+import { useTheme } from "react-native-paper";
 
 export const TextBoxWithCTAEmail = (props) => {
+  const { roundness, colors } = useTheme();
+
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
-  let bgColor = props.bgColor ?? {};
+  let bgColor = colors.primary;
   let onClicked = props.onPress ?? null;
   let isDisableButton = props.isDisableButton ?? false;
   return (
@@ -52,6 +55,7 @@ export const TextBoxWithCTAEmail = (props) => {
             onPress={onClicked}
             disabled={isDisableButton}
             style={{
+              borderRadius: roundness,
               backgroundColor: isDisableButton ? color.BLACK : bgColor,
               ...styles.ctaStyle,
             }}
@@ -64,7 +68,11 @@ export const TextBoxWithCTAEmail = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 35,
+            height: 55,
+            backgroundColor: colors.background,
+            borderRadius: roundness,
+            alignItems: "center",
+            paddingHorizontal: 12,
           }}
         >
           {props?.isResendOTP && props?.countryCode != "" && (
@@ -107,6 +115,7 @@ export const TextBoxWithCTAEmail = (props) => {
             }
             onChangeText={(text) => props.onChangeText(text)}
             style={{
+              color: color.secondary,
               ...styles.textInput,
               ...customStyle,
               paddingLeft:
@@ -134,21 +143,20 @@ const styles = StyleSheet.create({
     marginBottom: spacing.WIDTH_5,
   },
   textInput: {
-    width: "80%",
+    width: "100%",
     height: 40,
-    borderBottomColor: color.INPUT_TEXT_BORDER,
-    borderBottomWidth: 0.8,
-    color: color.BCAE_PRIMARY,
+
     fontSize: fontSizes.FONT_14,
     fontWeight: "500",
   },
   ctaStyle: {
     position: "absolute",
+    marginRight: 12,
     right: 0,
-    bottom: spacing.HEIGHT_5,
+    bottom: spacing.HEIGHT_20,
     zIndex: 1,
     padding: spacing.WIDTH_10,
-    borderRadius: spacing.HEIGHT_3,
+
     justifyContent: "center",
     alignItems: "center",
     height: spacing.HEIGHT_38,

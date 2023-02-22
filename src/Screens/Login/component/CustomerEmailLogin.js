@@ -15,16 +15,18 @@ import {
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
-import Icon from "react-native-vector-icons/EvilIcons";
 
-import { Button, RadioButton } from "react-native-paper";
-import { CustomInput as TextInput } from "../../../Components/CustomInput";
+import { Button, RadioButton, TextInput, useTheme } from "react-native-paper";
+import { CustomInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { CustomButton } from "../../../Components/CustomButton";
 export const BUSINESS = "bussiness";
 export const CONSUMER = "consumer";
+
 const CustomerEmailLogin = (props) => {
+  const { colors } = useTheme();
+
   let login = useSelector((state) => state.login);
   const [checked, setChecked] = useState(BUSINESS);
 
@@ -100,7 +102,7 @@ const CustomerEmailLogin = (props) => {
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <TextInput
+        <CustomInput
           caption="Username"
           // error="sdfsdf"
           value={username}
@@ -110,7 +112,7 @@ const CustomerEmailLogin = (props) => {
             <TextInput.Icon
               onPress={clearTextClick}
               style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              icon="close"
             />
           }
         />
@@ -122,7 +124,7 @@ const CustomerEmailLogin = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <TextInput
+        <CustomInput
           value={password}
           caption={strings.password}
           placeHolder={strings.password}

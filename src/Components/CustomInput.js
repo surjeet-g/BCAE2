@@ -7,7 +7,7 @@ export const CustomInput = (props) => {
   const { caption = "" } = props;
   const { roundness, colors } = useTheme();
   return (
-    <View>
+    <View style={{ marginTop: 5 }}>
       <Text
         variant="labelSmall"
         style={{ marginBottom: 6, marginLeft: 8, color: colors.graylabel }}
