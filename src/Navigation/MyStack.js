@@ -24,6 +24,7 @@ import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
 import { SetPasswordScreen } from "../Screens/Register/components/SetPassword";
 import { Playground } from "../Screens/Playground";
+import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 const Stack = createStackNavigator();
@@ -31,7 +32,7 @@ function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Announcements">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
@@ -104,6 +105,12 @@ function MyStack() {
           options={{ headerShown: false }}
           name="VerifyForgotUserInfo"
           component={VerifyForgotUserInfo}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Announcements"
+          component={AnnouncementList}
         />
 
         {/* <Stack.Screen
