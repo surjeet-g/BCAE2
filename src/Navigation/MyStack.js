@@ -32,7 +32,7 @@ function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="Announcements">
+      <Stack.Navigator initialRouteName="Playground">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"

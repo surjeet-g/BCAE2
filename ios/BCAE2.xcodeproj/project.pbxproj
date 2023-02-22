@@ -16,7 +16,7 @@
 		D609E4ED29A2A2CC00F679F3 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4E729A2A0E300F679F3 /* EvilIcons.ttf */; };
 		D609E4EE29A2A43000F679F3 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4EB29A2A10A00F679F3 /* MaterialCommunityIcons.ttf */; };
 		D609E4EF29A2A43300F679F3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4E929A2A0F300F679F3 /* MaterialIcons.ttf */; };
-		D609E4F129A2A46D00F679F3 /* Fontspring-DEMO-proximanovacond-mediumit.otf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4F029A2A46D00F679F3 /* Fontspring-DEMO-proximanovacond-mediumit.otf */; };
+		D61CACEE29A66B800048ACF8 /* proxima.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D61CACED29A66B800048ACF8 /* proxima.ttf */; };
 		D67FE57F2991044500F29E22 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D67FE57E2991044500F29E22 /* libRNGoogleSignin.a */; };
 		D69DCEDB29911A9300DE4D02 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D69DCEDA29911A9300DE4D02 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
@@ -50,8 +50,8 @@
 		D609E4E729A2A0E300F679F3 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		D609E4E929A2A0F300F679F3 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		D609E4EB29A2A10A00F679F3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		D609E4F029A2A46D00F679F3 /* Fontspring-DEMO-proximanovacond-mediumit.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Fontspring-DEMO-proximanovacond-mediumit.otf"; sourceTree = "<group>"; };
 		D619DCDD2993801600DA0839 /* BCAE2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BCAE2.entitlements; path = BCAE2/BCAE2.entitlements; sourceTree = "<group>"; };
+		D61CACED29A66B800048ACF8 /* proxima.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = proxima.ttf; path = ../src/Assets/fonts/proxima.ttf; sourceTree = "<group>"; };
 		D67FE57E2991044500F29E22 /* libRNGoogleSignin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNGoogleSignin.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69DCEDA29911A9300DE4D02 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Desktop/Google File BACE2/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -166,7 +166,7 @@
 		D67BBD80299F9B37006D6424 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				D609E4F029A2A46D00F679F3 /* Fontspring-DEMO-proximanovacond-mediumit.otf */,
+				D61CACED29A66B800048ACF8 /* proxima.ttf */,
 				D609E4EB29A2A10A00F679F3 /* MaterialCommunityIcons.ttf */,
 				D609E4E929A2A0F300F679F3 /* MaterialIcons.ttf */,
 				D609E4E729A2A0E300F679F3 /* EvilIcons.ttf */,
@@ -270,11 +270,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D609E4EF29A2A43300F679F3 /* MaterialIcons.ttf in Resources */,
-				D609E4F129A2A46D00F679F3 /* Fontspring-DEMO-proximanovacond-mediumit.otf in Resources */,
 				D609E4EE29A2A43000F679F3 /* MaterialCommunityIcons.ttf in Resources */,
 				D609E4ED29A2A2CC00F679F3 /* EvilIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D69DCEDB29911A9300DE4D02 /* GoogleService-Info.plist in Resources */,
+				D61CACEE29A66B800048ACF8 /* proxima.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,7 +529,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BCAE2/BCAE2.entitlements;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BCAE2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -557,7 +557,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BCAE2/BCAE2.entitlements;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				INFOPLIST_FILE = BCAE2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

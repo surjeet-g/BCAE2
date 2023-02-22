@@ -1,6 +1,7 @@
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
-export const FONT_FAMILY = "Avenir-Book";
-export const FONT_FAMILY_MEDIUM = "Avenir-Book";
+export const FONT_FAMILY = "ProximaNova-Regular";
+export const FONT_FAMILY_MEDIUM = "ProximaNova-Regular";
+
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
