@@ -4,13 +4,13 @@ import { Button } from "react-native-paper";
 import { spacing, color } from "../Utilities/Constants/Constant";
 import { useTheme } from "react-native-paper";
 
-const CustomButton = (props) => {
+export const CustomButton = (props) => {
   const { colors } = useTheme();
 
   const {
     label = "",
     isDisabled = false,
-    onClick = () => {},
+    onPress = () => {},
     loading = true,
     mode = "contained",
   } = props;
@@ -27,12 +27,10 @@ const CustomButton = (props) => {
         label={label}
         textColor={isDisabled ? colors.gray : colors.buttonDisableColor}
         buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
-        onPress={isDisabled ? () => {} : onClick}
+        onPress={isDisabled ? () => {} : () => onPress()}
       >
         {label}
       </Button>
     </View>
   );
 };
-
-export default CustomButton;

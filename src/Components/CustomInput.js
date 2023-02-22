@@ -23,15 +23,17 @@ export const CustomInput = (props) => {
         }}
       >
         <TextInput
+          {...props}
           underlineColor="transparant"
           activeUnderlineColor="transparant"
           style={{
             height: 45,
+            padding: 0,
+            margin: 0,
             borderRadius: roundness,
           }}
           placeholderTextColor="#C7CAD1"
           placeholder={caption}
-          {...props}
         />
       </View>
     </View>
