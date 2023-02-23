@@ -45,7 +45,7 @@ function MyStack() {
             backgroundColor: "transparent",
           },
           headerTitleStyle: {
-            ...fonts.titleMedium,
+            ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
           headerRight: () => {

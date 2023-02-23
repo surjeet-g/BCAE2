@@ -10,7 +10,11 @@ export const CustomInput = (props) => {
     <View style={{ marginTop: 5 }}>
       <Text
         variant="labelSmall"
-        style={{ marginBottom: 6, marginLeft: 8, color: colors.graylabel }}
+        style={{
+          marginBottom: 6,
+          marginLeft: 8,
+          color: colors.onSurfaceVariant,
+        }}
       >
         {caption}
       </Text>

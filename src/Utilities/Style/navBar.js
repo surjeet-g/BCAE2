@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const ICON_STYLE = { width: 25, height: 25 };
+export const ICON_STYLE = { width: 30, height: 30 };
 export const navBar = StyleSheet.create({
   navRightCon: {
     flexDirection: "row",
