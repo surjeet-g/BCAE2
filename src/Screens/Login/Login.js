@@ -63,6 +63,7 @@ export const Login = ({ navigation }) => {
   const [isFirstSelected, setFirstSelected] = useState(true);
   let login = useSelector((state) => state.login);
   const dispatch = useDispatch([resetLogin, verifyLoginData]);
+
   useEffect(() => {
     GoogleSignin.configure({
       scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
@@ -70,7 +71,8 @@ export const Login = ({ navigation }) => {
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
   }, []);
-  const signOut = async () => {
+
+  const googleSignOut = async () => {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
@@ -80,7 +82,8 @@ export const Login = ({ navigation }) => {
       console.error(error);
     }
   };
-  const signIn = async () => {
+
+  const googleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const { accessToken, idToken } = await GoogleSignin.signIn();
@@ -148,127 +151,168 @@ export const Login = ({ navigation }) => {
     <View style={styles.container}>
       <SvgBG />
       <KeyboardAwareView animated={false}>
-        <ScrollView
+        <View
+          style={{
+            paddingHorizontal: spacing.WIDTH_30,
+            flex: 1,
+            justifyContent: "space-between",
+            // backgroundColor: "blue",
+          }}
+        >
+          {/* <ScrollView
           style={{
             flexGrow: 1,
             paddingHorizontal: spacing.WIDTH_30,
             paddingTop: 80,
           }}
           nestedScrollEnabled={true}
-        >
-          <View
-            style={{
-              marginTop: spacing.HEIGHT_50,
-              marginBottom: spacing.HEIGHT_30,
-            }}
-          >
-            <ToggleButton
-              isFirstSelected={isFirstSelected}
-              label={{
-                first: capitalizeFirstLetter(BUSINESS),
-                second: capitalizeFirstLetter(CONSUMER),
+        > */}
+          <View style={{ marginTop: 80, flex: 1 }}>
+            <View
+              style={{
+                marginBottom: spacing.HEIGHT_20,
               }}
-              bgColor={{
-                selected: color.BCAE_PRIMARY,
-                unselected: color.BCAE_LIGHT_BLUE_2,
-              }}
-              textColor={{
-                selected: color.WHITE,
-                unselected: color.BCAE_PRIMARY,
-              }}
-              textPro={{
-                fontSize: fontSizes.FONT_13,
-                fontWeight: "600",
-                lineHeight: spacing.HEIGHT_16,
-              }}
-              onPressFirst={onSelectBusinessUserType}
-              onPressSecond={onSelectConsumerUserType}
-            ></ToggleButton>
-          </View>
+            >
+              <ToggleButton
+                isFirstSelected={isFirstSelected}
+                label={{
+                  first: capitalizeFirstLetter(BUSINESS),
+                  second: capitalizeFirstLetter(CONSUMER),
+                }}
+                bgColor={{
+                  selected: color.BCAE_PRIMARY,
+                  unselected: color.BCAE_LIGHT_BLUE_2,
+                }}
+                textColor={{
+                  selected: color.WHITE,
+                  unselected: color.BCAE_PRIMARY,
+                }}
+                textPro={{
+                  fontSize: fontSizes.FONT_13,
+                  fontWeight: "600",
+                  lineHeight: spacing.HEIGHT_16,
+                }}
+                onPressFirst={onSelectBusinessUserType}
+                onPressSecond={onSelectConsumerUserType}
+              ></ToggleButton>
+            </View>
 
-          {/* Radio Button View */}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <RadioButton
-              value={EMAIL}
-              status={loginMode === EMAIL ? "checked" : "unchecked"}
-              onPress={() => setLoginMode(EMAIL)}
-            />
-            <Text>{capitalizeFirstLetter(EMAIL)}</Text>
-            <RadioButton
-              value={MOBILE}
-              status={loginMode === MOBILE ? "checked" : "unchecked"}
-              onPress={() => setLoginMode(MOBILE)}
-            />
-            <Text>{capitalizeFirstLetter(MOBILE)}</Text>
-          </View>
+            {/* Radio Button View */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: spacing.HEIGHT_10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <RadioButton
+                  value={EMAIL}
+                  status={loginMode === EMAIL ? "checked" : "unchecked"}
+                  onPress={() => setLoginMode(EMAIL)}
+                />
+                <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                  {capitalizeFirstLetter(EMAIL)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <RadioButton
+                  value={MOBILE}
+                  status={loginMode === MOBILE ? "checked" : "unchecked"}
+                  onPress={() => setLoginMode(MOBILE)}
+                />
+                <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                  {capitalizeFirstLetter(MOBILE)}
+                </Text>
+              </View>
+            </View>
 
-          {loginMode === EMAIL ? (
-            <CustomerEmailLogin navigation={navigation} />
-          ) : (
-            <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
-          )}
+            {loginMode === EMAIL ? (
+              <CustomerEmailLogin navigation={navigation} />
+            ) : (
+              <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
+            )}
+          </View>
 
           {/* <GoogleSigninButton
             style={{ width: 192, height: 48 }}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
-            onPress={signIn}
+            onPress={googleSignIn}
           /> */}
 
-          {/* Forgot Password View */}
-          <View
-            style={{ alignSelf: "center", marginVertical: spacing.HEIGHT_20 }}
-          >
-            <Pressable
-              onPress={() =>
-                props.navigation.navigate("ForgotPassword", { isFirst: true })
-              }
-            >
-              <Text style={styles.forgotText}>{strings.forgot_password}</Text>
-            </Pressable>
-          </View>
-
-          {/* Register View */}
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingVertical: 10,
+              marginVertical: spacing.HEIGHT_30,
+              // backgroundColor: "red",
             }}
           >
-            <Text style={styles.noAccText}>{strings.dont_account}</Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register with us", {})}
+            {/* Forgot Password View */}
+            <View
+              style={{ alignSelf: "center", marginVertical: spacing.HEIGHT_20 }}
             >
-              <Text style={styles.rgisterText}>{strings.register}</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-        {!login.initLogin &&
-          (login?.loggedProfile?.errorCode == "10000" ||
-            login?.loggedProfile?.errorCode == "10001") && (
-            <View style={styles.toast}>
-              <Toast
-                bgColor={color.TOAST_RED}
-                customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
-                textPro={{
-                  color: color.WHITE,
-                  fontSize: fontSizes.FONT_14,
-                  fontWeight: "700",
-                }}
-                img={
-                  login?.loggedProfile?.errorCode == "10001"
-                    ? require("../../Assets/icons/ic_no_Internet.png")
-                    : require("../../Assets/icons/ci_error-warning-fill.png")
+              <Pressable
+                onPress={() =>
+                  props.navigation.navigate("ForgotPassword", { isFirst: true })
                 }
-                message={
-                  login?.loggedProfile?.errorCode == "10001"
-                    ? strings.no_network
-                    : strings.something_went_wrong
-                }
-              />
+              >
+                <Text style={styles.forgotText}>{strings.forgot_password}</Text>
+              </Pressable>
             </View>
-          )}
+
+            {/* Register View */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingVertical: 10,
+              }}
+            >
+              <Text style={styles.noAccText}>{strings.dont_account}</Text>
+              <Pressable
+                onPress={() => navigation.navigate("Register with us", {})}
+              >
+                <Text style={styles.rgisterText}>{strings.register}</Text>
+              </Pressable>
+            </View>
+          </View>
+          {/* </ScrollView> */}
+          {!login.initLogin &&
+            (login?.loggedProfile?.errorCode == "10000" ||
+              login?.loggedProfile?.errorCode == "10001") && (
+              <View style={styles.toast}>
+                <Toast
+                  bgColor={color.TOAST_RED}
+                  customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
+                  textPro={{
+                    color: color.WHITE,
+                    fontSize: fontSizes.FONT_14,
+                    fontWeight: "700",
+                  }}
+                  img={
+                    login?.loggedProfile?.errorCode == "10001"
+                      ? require("../../Assets/icons/ic_no_Internet.png")
+                      : require("../../Assets/icons/ci_error-warning-fill.png")
+                  }
+                  message={
+                    login?.loggedProfile?.errorCode == "10001"
+                      ? strings.no_network
+                      : strings.something_went_wrong
+                  }
+                />
+              </View>
+            )}
+        </View>
       </KeyboardAwareView>
     </View>
   );

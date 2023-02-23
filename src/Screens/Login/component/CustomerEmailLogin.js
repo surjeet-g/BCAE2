@@ -21,6 +21,8 @@ import { CustomInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { CustomButton } from "../../../Components/CustomButton";
+import { CustomErrorText } from "../../../Components/CustomErrorText";
+
 export const BUSINESS = "bussiness";
 export const CONSUMER = "consumer";
 
@@ -103,7 +105,7 @@ const CustomerEmailLogin = (props) => {
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <CustomInput
-          caption="Username"
+          caption="Email Address"
           // error="sdfsdf"
           value={username}
           // label={strings.customer_email_ID}
@@ -117,10 +119,10 @@ const CustomerEmailLogin = (props) => {
           }
         />
 
-        {!login.initLogin &&
-          login?.loggedProfile?.errorCode == "404" &&
-          showErrorMessage(login?.loggedProfile?.message)}
-        {usernameError !== "" && showErrorMessage(usernameError)}
+        {!login.initLogin && login?.loggedProfile?.errorCode == "404" && (
+          <CustomErrorText errMessage={login?.loggedProfile?.message} />
+        )}
+        {usernameError !== "" && <CustomErrorText errMessage={usernameError} />}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
@@ -147,10 +149,24 @@ const CustomerEmailLogin = (props) => {
           login?.loggedProfile?.errorCode &&
           login.loggedProfile.errorCode != "404" &&
           login?.loggedProfile?.errorCode != "10000" &&
-          login?.loggedProfile?.errorCode != "10001" &&
-          showErrorMessage(login?.loggedProfile?.message)}
-        {passwordError !== "" && showErrorMessage(passwordError)}
+          login?.loggedProfile?.errorCode != "10001" && (
+            <CustomErrorText errMessage={login?.loggedProfile?.message} />
+          )}
+        {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
+
+      <Text
+        style={{
+          alignText: "center",
+          alignSelf: "center",
+          marginVertical: spacing.HEIGHT_15,
+          color: "#F5AD47",
+          fontWeight: "700",
+          fontSize: fontSizes.FONT_16,
+        }}
+      >
+        Login with OTP
+      </Text>
 
       <View>
         <CustomButton
