@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 
-// import LoginReducer from "../Screens/Login/LoginReducer";
-// import RegisterFormReducer from "../Screens/Register/RegisterReducer";
+import LoginReducer from "../Screens/Login/LoginReducer";
+import RegisterFormReducer from "../Redux/RegisterReducer";
 import MyTicketsReducer from "../Redux/MyTicketsReducer";
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
-import AnnouncementsReducer from "./AnnouncementReducer";
+import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
 import SavedLocationReducer from "./SavedLocationReducer";
-// import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
+import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
 import ProfileReducer from "./ProfileReducer";
 import MyDashboardReducer from "./MyDashboardReducer";
 import InquiryReducer from "./InquiryReducer";
@@ -23,15 +23,15 @@ const appReducer = combineReducers({
   notifications: NotificationsReducer,
   followup: FollowUpReducer,
   attachment: AttachmentReducer,
-  // login: LoginReducer,
-  // registerForm: RegisterFormReducer,
+  login: LoginReducer,
+  registerForm: RegisterFormReducer,
   myTickets: MyTicketsReducer,
   myTicketDetails: MyTicketDetailsReducer,
   myDashboardData: MyDashboardReducer,
   announcements: AnnouncementsReducer,
   savedLocations: SavedLocationReducer,
   profile: ProfileReducer,
-  // forgot: ForgotPasswordReducer,
+  forgot: ForgotPasswordReducer,
   enquiry: InquiryReducer,
   logout: LogoutReducer,
   inquiryNotifications: InquiryNotificationsReducer,

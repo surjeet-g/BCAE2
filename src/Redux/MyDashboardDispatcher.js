@@ -5,7 +5,7 @@ import {
 } from "./MyDashboardAction";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
-import Geocoder from "@timwangdev/react-native-geocoder";
+// import Geocoder from "@timwangdev/react-native-geocoder";
 import { GOOGLE_API_KEY, storageKeys } from "../Utilities/Constants/Constant";
 import { getDataFromDB, saveDataToDB } from "../Storage/token";
 import { Platform } from "react-native";

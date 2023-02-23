@@ -1,4 +1,4 @@
-import { LOGOUT_INIT, LOGOUT_DATA, LOGOUT_ERROR } from "./AnnouncementAction";
+import { LOGOUT_INIT, LOGOUT_DATA, LOGOUT_ERROR } from "./LogoutAction";
 
 const logoutInitialState = {
   initLogout: false,

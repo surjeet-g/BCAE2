@@ -4,17 +4,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   Image,
   Dimensions,
   Pressable,
   Alert,
 } from "react-native";
-import CountryPicker from "react-native-country-codes-picker";
+import { CountryPicker } from "react-native-country-codes-picker";
+import { Button, TextInput, RadioButton } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "../../../Components/Button";
+// import { Button } from "../../../Components/Button";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
-import { EditText } from "../../../Components/EditText";
+// import { EditText } from "../../../Components/EditText";
 import {
   fontSizes,
   color,
@@ -25,13 +25,22 @@ import {
   validatePassword,
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
+import { capitalizeFirstLetter } from "../../../Utilities/utils";
+
 import { strings } from "../../../Utilities/Language";
 import { resetLogin, verifyLoginData } from "../LoginDispatcher";
+import { BUSINESS, CONSUMER } from "./CustomerEmailLogin";
+import { CustomButton } from "../../../Components/CustomButton";
+import { CustomInput } from "../../../Components/CustomInput";
+
+import CustomErrorText from "../../../Components/CustomErrorText";
 const { height, width } = Dimensions.get("screen");
 
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
   const [number, setNumber] = useState("");
+  const [checked, setChecked] = useState(BUSINESS);
+
   const [password, setPassword] = useState("");
   const [numberError, setNumberError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -94,34 +103,15 @@ const MobileLoging = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <CountryPicker
-        style={{ width: "100%", backgroundColor: "red" }}
-        show={show}
-        pickerButtonOnPress={(item) => {
-          setCountryCode(item.dial_code);
-          setShow(false);
-        }}
-      />
       <View>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            //onPress={() => setShow(true)}
-            style={styles.countrycode}
-          >
-            <Text style={styles.countrycodetext}>{countryCode}</Text>
-          </TouchableOpacity>
-
-          <View style={{}}>
-            <EditText
-              customStyle={{ paddingLeft: width / 8 }}
-              onChangeText={(text) => onIDChange(text)}
-              value={number}
-              placeHolder={strings.mobile_no}
-              clearText={clearTextClick}
-              keyboardType="numeric"
-              isClose={number.length > 0}
-            />
-          </View>
+        <View>
+          <CustomInput
+            caption={strings.mobile_no}
+            onChangeText={(text) => onIDChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+          />
         </View>
         {!login.initLogin &&
           login?.loggedProfile?.errorCode == "404" &&
@@ -130,13 +120,23 @@ const MobileLoging = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <EditText
-          onChangeText={(text) => onPasswordChange(text)}
+        <CustomInput
           value={password}
+          caption={strings.password}
           placeHolder={strings.password}
+          onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}
-          hideShowClick={hideShowClick}
-          isHideShow={password.length > 0}
+          right={
+            <TextInput.Icon
+              onPress={hideShowClick}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntry
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
         />
         {!login.initLogin &&
           login?.loggedProfile?.errorCode &&
@@ -144,7 +144,21 @@ const MobileLoging = (props) => {
           login?.loggedProfile?.errorCode != "10000" &&
           login?.loggedProfile?.errorCode != "10001" &&
           showErrorMessage(login?.loggedProfile?.message)}
-        {passwordError !== "" && showErrorMessage(passwordError)}
+        {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <RadioButton
+          value={BUSINESS}
+          status={checked === BUSINESS ? "checked" : "unchecked"}
+          onPress={() => setChecked(BUSINESS)}
+        />
+        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
+        <RadioButton
+          value={CONSUMER}
+          status={checked === CONSUMER ? "checked" : "unchecked"}
+          onPress={() => setChecked(CONSUMER)}
+        />
+        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
       </View>
       <Pressable
         onPress={() => props.navigation.navigate("ForgotPassword", {})}
@@ -169,23 +183,27 @@ const MobileLoging = (props) => {
             loderColor={color.WHITE}
           />
         ) : (
-          <Button
-            type={buttonType.PRIMARY}
-            size={buttonSize.LARGE}
+          <CustomButton
             label={strings.login}
-            disabled={number == "" || password == "" ? true : false}
-            bgColor={color.BCAE_PRIMARY}
-            textColor={color.WHITE}
-            textPro={{
-              color: color.WHITE,
-              fontSize: fontSizes.FONT_16,
-              fontWeight: "400",
-              lineHeight: spacing.HEIGHT_16,
-            }}
-            onPress={submit}
+            isDisabled={number == "" || password == "" ? true : false}
+            onClick={submit}
           />
         )}
       </View>
+      {/* <TouchableOpacity
+        onPress={() => setShow(true)}
+        style={styles.countrycode}
+      >
+        <Text style={styles.countrycodetext}>dsdsd</Text>
+      </TouchableOpacity> */}
+      <CountryPicker
+        style={{ width: "100%", backgroundColor: "red" }}
+        show={show}
+        pickerButtonOnPress={(item) => {
+          setCountryCode(item.dial_code);
+          setShow(false);
+        }}
+      />
     </View>
   );
 };

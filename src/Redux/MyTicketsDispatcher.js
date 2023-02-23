@@ -5,7 +5,7 @@ import {
 } from "./MyTicketsAction";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
-import Geocoder from "@timwangdev/react-native-geocoder";
+// import Geocoder from "@timwangdev/react-native-geocoder";
 import { storageKeys } from "../Utilities/Constants/Constant";
 import { getDataFromDB, saveDataToDB } from "../Storage/token";
 import get from "lodash.get";

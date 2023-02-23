@@ -15,13 +15,23 @@ import {
   passwordHash,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
-// import { Button } from "../../../Components/Button";
+
+import { Button, RadioButton, TextInput, useTheme } from "react-native-paper";
+import { CustomInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
+import { capitalizeFirstLetter } from "../../../Utilities/utils";
+import { CustomButton } from "../../../Components/CustomButton";
+export const BUSINESS = "bussiness";
+export const CONSUMER = "consumer";
 
 const CustomerEmailLogin = (props) => {
+  const { colors } = useTheme();
+
   let login = useSelector((state) => state.login);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [checked, setChecked] = useState(BUSINESS);
+
+  const [username, setUsername] = useState("vvvipindsm@gmail.com");
+  const [password, setPassword] = useState("JSX2EB8E");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -62,9 +72,15 @@ const CustomerEmailLogin = (props) => {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
         //let hashpass =  hashPassword(password)
-        let pasHash = passwordHash(password).then((datahash) => {
-          dispatch(verifyLoginData(props.navigation, username, datahash));
-        });
+        // let pasHash = passwordHash(password).then((datahash) => {
+        dispatch(
+          verifyLoginData(props.navigation, {
+            username,
+            password,
+            userType: checked,
+          })
+        );
+        // });
       }
     } else {
       setUsernameError(strings.emailValidError);
@@ -86,13 +102,21 @@ const CustomerEmailLogin = (props) => {
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        {/* <EditText
-          onChangeText={(text) => onIDChange(text)}
+        <CustomInput
+          caption="Username"
+          // error="sdfsdf"
           value={username}
-          placeHolder={strings.customer_email_ID}
-          clearText={clearTextClick}
-          isClose={username.length > 0}
-        /> */}
+          // label={strings.customer_email_ID}
+          onChangeText={(text) => onIDChange(text)}
+          right={
+            <TextInput.Icon
+              onPress={clearTextClick}
+              style={{ width: 23, height: 23 }}
+              icon="close"
+            />
+          }
+        />
+
         {!login.initLogin &&
           login?.loggedProfile?.errorCode == "404" &&
           showErrorMessage(login?.loggedProfile?.message)}
@@ -100,14 +124,25 @@ const CustomerEmailLogin = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        {/* <EditText
-          onChangeText={(text) => onPasswordChange(text)}
+        <CustomInput
           value={password}
+          caption={strings.password}
           placeHolder={strings.password}
+          onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}
-          hideShowClick={hideShowClick}
-          isHideShow={password.length > 0}
-        /> */}
+          right={
+            <TextInput.Icon
+              onPress={hideShowClick}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntry
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
+        />
+
         {!login.initLogin &&
           login?.loggedProfile?.errorCode &&
           login.loggedProfile.errorCode != "404" &&
@@ -116,7 +151,20 @@ const CustomerEmailLogin = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {passwordError !== "" && showErrorMessage(passwordError)}
       </View>
-
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <RadioButton
+          value={BUSINESS}
+          status={checked === BUSINESS ? "checked" : "unchecked"}
+          onPress={() => setChecked(BUSINESS)}
+        />
+        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
+        <RadioButton
+          value={CONSUMER}
+          status={checked === CONSUMER ? "checked" : "unchecked"}
+          onPress={() => setChecked(CONSUMER)}
+        />
+        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
+      </View>
       <View style={{ alignSelf: "center", marginBottom: spacing.HEIGHT_20 }}>
         <Pressable
           onPress={() =>
@@ -128,33 +176,13 @@ const CustomerEmailLogin = (props) => {
           </Text>
         </Pressable>
       </View>
-
       <View>
-        {login.initLogin ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          {
-            /* <Button
-            type={buttonType.PRIMARY}
-            size={buttonSize.LARGE}
-            label={strings.login}
-            disabled={username == "" || password == "" ? true : false}
-            bgColor={color.BCAE_PRIMARY}
-            textColor={color.WHITE}
-            textPro={{
-              color: color.WHITE,
-              fontSize: fontSizes.FONT_16,
-              fontWeight: "400",
-              lineHeight: spacing.HEIGHT_16,
-            }}
-            onPress={submit}
-          /> */
-          }
-        )}
+        <CustomButton
+          loading={login.initLogin}
+          label={strings.login}
+          isDisabled={username == "" || password == "" ? true : false}
+          onClick={submit}
+        />
       </View>
     </View>
   );
