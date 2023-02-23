@@ -25,7 +25,7 @@ import {
 } from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
 import { FullPageLoder } from "../../Components/FullPageLoder";
-import Header from "../TabScreens/Component/Header";
+
 import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { RegisterPersonal } from "./components/RegisterPersonal";
@@ -39,8 +39,6 @@ const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
 
   const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
-
-  const [myscreenmae, _] = useState("Register With Us");
 
   //reseting state
   const dispatch = useDispatch([
@@ -101,37 +99,6 @@ const Register = ({ navigation, props }) => {
     }
   }, []);
 
-  const showAlert = (message = "") => {
-    // if (
-    //   !registerForm.initRegisterForm &&
-    //   registerForm?.otpFormData?.status == "200" &&
-    //   registerForm?.otpUsageType === "Register"
-    // ) {
-    //showErrorMessage(registerForm?.otpFormData?.message)
-    Alert.alert("Info", message, [
-      {
-        text: "OK",
-        onPress: () => {
-          dispatch(setOtpFormData({}, "Register"));
-          dispatch(setOtpFormData({}, "mobile"));
-          dispatch(setOtpFormData({}, "mobileOtp"));
-          dispatch(setOtpFormData({}, "email"));
-          dispatch(setOtpFormData({}, "emailOtp"));
-          navigation.navigate("Login", {});
-        },
-      },
-    ]);
-    // }
-    // if (
-    //   !registerForm.initOtpForm &&
-    //   !registerForm?.isOtpFormError &&
-    //   registerForm?.otpUsageType === "mobile"
-    // ) {
-    //   setIsDisableSendOtp(true);
-    //   runOtpTimer(otpTimer);
-    // }
-  };
-
   const orSection = () => {
     return (
       <View
@@ -181,7 +148,8 @@ const Register = ({ navigation, props }) => {
           style={{
             flexGrow: 1,
             paddingHorizontal: spacing.WIDTH_30,
-            paddingTop: 80,
+            marginTop: 50,
+            paddingTop: 10,
           }}
           nestedScrollEnabled={true}
         >

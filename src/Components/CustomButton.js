@@ -11,7 +11,7 @@ export const CustomButton = (props) => {
     label = "",
     isDisabled = false,
     onPress = () => {},
-    loading = true,
+    loading = false,
     mode = "contained",
   } = props;
 

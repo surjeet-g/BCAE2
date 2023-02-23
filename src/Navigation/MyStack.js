@@ -23,7 +23,6 @@ import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPasswo
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
-import { SetPasswordScreen } from "../Screens/Register/components/SetPassword";
 import { Playground } from "../Screens/Playground";
 import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import About from "../Screens/TabScreens/About";
@@ -121,7 +120,20 @@ function MyStack() {
           component={Register}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Add Location" }}
+          options={{
+            headerTintColor: colors.inverseSecondary,
+
+            headerTransparent: false,
+            title: "Location on map",
+            headerRight: () => {},
+            headerStyle: {
+              backgroundColor: colors.secondary,
+            },
+            headerTitleStyle: {
+              ...fonts.titleMedium,
+              ...{ color: colors.inverseSecondary, fontWeight: "700" },
+            },
+          }}
           name="AddLocation"
           component={AddLocation}
         />
@@ -131,11 +143,7 @@ function MyStack() {
           component={SavedLocation}
         />
         {/* second step for user registration */}
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="SetPassword"
-          component={SetPasswordScreen}
-        />
+
         {/* forgot password verify step */}
         <Stack.Screen
           options={{ headerShown: false }}

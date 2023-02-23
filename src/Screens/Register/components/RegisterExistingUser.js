@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image, Alert } from "react-native";
+import { Text, View, Pressable, Image, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
@@ -15,7 +15,6 @@ import {
   getOtpForCheck,
   sendOtp,
   userRegister,
-  PreVerifyUserDataData,
 } from "../../../Redux/RegisterDispatcher";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import { CustomButton as Button } from "../../../Components/CustomButton";
@@ -39,7 +38,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     sendOtp,
     userRegister,
     getOtpForCheck,
-    PreVerifyUserDataData,
   ]);
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
@@ -130,32 +128,21 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const submit = async () => {
-    const resp = await dispatch(PreVerifyUserDataData());
-    if (resp.status) {
-      navigation.navigate("SetPassword", {
-        formData: JSON.stringify({ dummy: "dummy", accountType: "bussiness" }),
-      });
-    } else {
+    //to do bypass otp validation
+    if (!mobileOTPVerifcation) {
       Toast.show({
         type: "bctError",
-        text1: result.response?.msg,
+        text1: strings.otpErrorMsgForMobile,
       });
+      return null;
     }
-    //to do bypass otp validation
-    // if (!mobileOTPVerifcation) {
-    //   Toast.show({
-    //     type: "bctError",
-    //     text1: strings.otpErrorMsgForMobile,
-    //   });
-    //   return null;
-    // }
-    // if (!emailOTPVerification) {
-    //   Toast.show({
-    //     type: "bctError",
-    //     text1: strings.otpErrorMsgForEmail,
-    //   });
-    //   return null;
-    // }
+    if (!emailOTPVerification) {
+      Toast.show({
+        type: "bctError",
+        text1: strings.otpErrorMsgForEmail,
+      });
+      return null;
+    }
 
     if (firstName.trim() === "") {
       setFirstNameError(strings.firstNameError);
@@ -177,32 +164,58 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       setEmailError(strings.emailValidError);
     } else if (otpEmail.trim() === "") {
       setOtpEmailError(strings.emailOtpError);
+    } else if (!isSelectedTerm) {
+      setTermError(strings.termError);
+    } else if (!isSelected) {
+      setPrivaceyError(strings.privaceyError);
     } else {
-      //to do   API call and verify if response 200 redirect to Set password
-      // let registerObject = {
-      //   firstName: firstName,
-      //   lastName: lastName,
-      //   userType: "string",
-      //   gender: gender.code,
-      //   // country: myArray.length > 0 ? myArray[0] : "",
-      //   extn: 0,
-      //   contactNo: mobileNo,
-      //   mobileOTP: otp,
-      //   email: email,
-      //   dob: moment(dob).format("YYYY-MM-DD"),
-      //   emailOTP: otpEmail,
-      // };
-      // console.log("userRegister===>2" + JSON.stringify(registerObject));
-      // dispatch(
-      //   userRegister(registerObject, "Register", (message) =>
-      //     showAlert(message)
-      //   )
-      // );
-      // });
-      navigation.navigate("SetPassword", {
-        formData: JSON.stringify({ dummy: "dummy", accountType: "personal" }),
-      });
+      let registerObject = {
+        accountType: "existing",
+        firstName: firstName,
+        lastName: lastName,
+        customerNo: customerID,
+        idValue: idValue,
+        birthDate: dob,
+        gender: gender.code,
+        country: myArray.length > 0 ? myArray[0] : "",
+        extn: countryCode,
+        mobileNo: mobileNo,
+        mobileOTP: otp,
+        emailId: email,
+        isVerified: true,
+        emailOTP: otpEmail,
+      };
+      console.log("userRegister===>2", registerObject);
+      dispatch(
+        userRegister(registerObject, "Register", (message) =>
+          showAlert(message)
+        ),
+        () => {
+          console.log("callback for ");
+        }
+      );
     }
+  };
+  const showAlert = (message = "") => {
+    // if (
+    //   !registerForm.initRegisterForm &&
+    //   registerForm?.otpFormData?.status == "200" &&
+    //   registerForm?.otpUsageType === "Register"
+    // ) {
+    //showErrorMessage(registerForm?.otpFormData?.message)
+    Alert.alert("Info", message, [
+      {
+        text: "OK",
+        onPress: () => {
+          dispatch(setOtpFormData({}, "Register"));
+          dispatch(setOtpFormData({}, "mobile"));
+          dispatch(setOtpFormData({}, "mobileOtp"));
+          dispatch(setOtpFormData({}, "email"));
+          dispatch(setOtpFormData({}, "emailOtp"));
+          navigation.navigate("Login", {});
+        },
+      },
+    ]);
   };
 
   const showMobileErrorMessage = () => {
@@ -471,43 +484,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
         {lastNameError !== "" && showErrorMessage(lastNameError)}
       </View>
-
-      <DatePicker
-        modal
-        mode="date"
-        validRange={{ endDate: new Date() }}
-        open={open}
-        onCancel={() => setOpen(false)}
-        date={dob == "" ? new Date() : dob}
-        maximumDate={new Date()}
-        onConfirm={(params) => {
-          console.log("data", params);
-          setOpen(false);
-          setDob(params);
-          setDobError("");
-        }}
-      />
-
-      <View style={{ marginTop: 10 }}>
-        <CustomInput
-          style={{
-            backgroundColor: "transparent",
-          }}
-          // onChangeText={(text) => onIDChange(text)}
-          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-          caption={"Date of birth"}
-          onFocus={() => setOpen(true)}
-          placeHolder={"Date of birth"}
-          right={
-            <TextInput.Icon
-              onPress={() => setOpen(true)}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/mail.png")}
-            />
-          }
-        />
-      </View>
-
       <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
@@ -527,6 +503,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         />
         {customerIDError !== "" && showErrorMessage(customerIDError)}
       </View>
+
       <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
@@ -534,8 +511,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          caption={"ID Number"}
-          placeHolder={"ID Number"}
+          caption={"User ID"}
+          placeHolder={"User ID"}
           right={
             <TextInput.Icon
               onPress={() => setIdNumber("")}
@@ -561,7 +538,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       </View>
 
       {/* Mobile Number */}
-      <View style={{ marginTop: 5 }}>
+      <View style={{ marginTop: 25 }}>
         <TextBoxWithCTA
           onChangeText={(text) => onMobleNoChange(text)}
           value={mobileNo}
@@ -718,6 +695,102 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         registerForm?.otpFormData?.errorCode !== "200" &&
         registerForm?.otpUsageType === "Register" &&
         showErrorMessage(registerForm?.otpFormData?.message)}
+      <DatePicker
+        modal
+        mode="date"
+        validRange={{ endDate: new Date() }}
+        open={open}
+        onCancel={() => setOpen(false)}
+        date={dob == "" ? new Date() : dob}
+        maximumDate={new Date()}
+        onConfirm={(params) => {
+          console.log("data", params);
+          setOpen(false);
+          setDob(params);
+          setDobError("");
+        }}
+      />
+
+      <View style={{ marginTop: 10 }}>
+        <CustomInput
+          style={{
+            backgroundColor: "transparent",
+          }}
+          // onChangeText={(text) => onIDChange(text)}
+          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+          caption={"Date of birth"}
+          onFocus={() => setOpen(true)}
+          placeHolder={"Date of birth"}
+          right={
+            <TextInput.Icon
+              onPress={() => setOpen(true)}
+              theme={{ colors: { onSurfaceVariant: colors.primary } }}
+              icon="calendar"
+            />
+          }
+        />
+      </View>
+      <Pressable
+        onPress={() => {
+          console.log("hiint g");
+          setSelection(!isSelected);
+          setTermError("");
+          setPrivaceyError("");
+        }}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelected
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Privacy Policy",
+              url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Privacy Policy.
+        </Text>
+      </Pressable>
+      {privaceyError !== "" && showErrorMessage(privaceyError)}
+      <Pressable
+        onPress={onCheckBoxClickTerm}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelectedTerm
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+          I have agree to your{" "}
+        </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Terms & Conditions",
+              url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Terms &amp; Conditions.
+        </Text>
+      </Pressable>
+      {termError !== "" && showErrorMessage(termError)}
 
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         {registerForm?.initOtpForm &&
@@ -729,7 +802,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           />
         ) : (
           <Button
-            label="NEXT"
+            label={strings.register}
             // disabled={isButtomDiable}
             loading={
               registerForm?.initOtpForm

@@ -75,7 +75,7 @@ export const TextBoxWithCTA = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 55,
+            height: 45,
             backgroundColor: colors.background,
             borderRadius: roundness,
             alignItems: "center",
@@ -105,20 +105,11 @@ export const TextBoxWithCTA = (props) => {
                 }}
               >
                 {props.countryCode}{" "}
-                <Text
-                  style={{
-                    color: colors.onSurfaceVariant,
-                    marginLeft: 10,
-                    fontSize: 18,
-                  }}
-                >
-                  |
-                </Text>
+                <Image
+                  source={require("../Assets/icons/ci_dropdown.png")}
+                  style={{ width: spacing.WIDTH_16, height: spacing.WIDTH_16 }}
+                />
               </Text>
-              {/* <Image
-                source={require("../Assets/icons/ci_dropdown.png")}
-                style={{ width: spacing.WIDTH_16, height: spacing.WIDTH_16 }}
-              /> */}
             </TouchableOpacity>
           )}
           <TextInput
@@ -175,7 +166,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginRight: 12,
     right: 0,
-    bottom: spacing.HEIGHT_20,
+    bottom: 10,
     zIndex: 1,
     padding: spacing.WIDTH_10,
     // borderRadius: spacing.HEIGHT_3,

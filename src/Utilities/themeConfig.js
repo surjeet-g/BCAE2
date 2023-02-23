@@ -11,6 +11,7 @@ const theme = {
     primary: "#F5AD47",
     onPrimaryContainer: "#88a5da",
     secondary: "#474747",
+    inverseSecondary: "#fff",
     tertiary: "#DADADA",
     gray: "#C7CAD1",
     background: "#ffffff",
