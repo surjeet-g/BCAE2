@@ -17,6 +17,7 @@ import {
 import { strings } from "../../../Utilities/Language";
 import { showErrorMessage } from "./RegisterPersonal";
 import { userRegister } from "../../../Redux/RegisterDispatcher";
+import { CustomInput } from "../../../Components/CustomInput";
 
 export const SetPasswordScreen = ({ navigation, route }) => {
   // const {
@@ -85,22 +86,10 @@ export const SetPasswordScreen = ({ navigation, route }) => {
   };
   return (
     <View style={styles.container}>
-      <Header
-        Text={"Set Password"}
-        navigation={navigation}
-        backIconVisibility={true}
-        registerfaq={true}
-      />
-
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
+        <CustomInput
           value={password}
-          label={strings.password}
+          caption={strings.password}
           placeHolder={strings.password}
           onChangeText={setPassword}
           secureTextEntry={secureTextEntry}
