@@ -45,13 +45,13 @@ function MyStack() {
             backgroundColor: "transparent",
           },
           headerTitleStyle: {
-            ...fonts.titleMedium,
+            ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
           headerRight: () => {
             return (
               <View style={navBar.navRightCon}>
-                <Pressable onPress={() => alert("to do nav to term")}>
+                <Pressable onPress={() => alert("sdf")}>
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
