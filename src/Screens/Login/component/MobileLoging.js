@@ -32,17 +32,15 @@ import { resetLogin, verifyLoginData } from "../LoginDispatcher";
 import { BUSINESS, CONSUMER } from "./CustomerEmailLogin";
 import { CustomButton } from "../../../Components/CustomButton";
 import { CustomInput } from "../../../Components/CustomInput";
-
-import CustomErrorText from "../../../Components/CustomErrorText";
+import { CustomErrorText } from "../../../Components/CustomErrorText";
 const { height, width } = Dimensions.get("screen");
 
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
+  const { userType } = props;
   const [number, setNumber] = useState("");
-  const [checked, setChecked] = useState(BUSINESS);
-
-  const [password, setPassword] = useState("");
   const [numberError, setNumberError] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState("+673");
@@ -59,9 +57,15 @@ const MobileLoging = (props) => {
         { text: strings.ok, onPress: () => {} },
       ]);
     } else {
-      let pasHash = passwordHash(password).then((datahash) => {
-        dispatch(verifyLoginData(props.navigation, number, datahash));
-      });
+      // let pasHash = passwordHash(password).then((datahash) => {
+      dispatch(
+        verifyLoginData(props.navigation, {
+          username: number,
+          password: password,
+          userType,
+        })
+      );
+      // });
     }
   };
 
@@ -89,22 +93,10 @@ const MobileLoging = (props) => {
     dispatch(resetLogin());
   };
 
-  const showErrorMessage = (errMessage) => {
-    return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
-        <Image
-          style={styles.errorLogo}
-          source={require("../../../Assets/icons/ci_error_warning.png")}
-        />
-        <Text style={styles.errorText}>{errMessage}</Text>
-      </View>
-    );
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <View>
+        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
           <CustomInput
             caption={strings.mobile_no}
             onChangeText={(text) => onIDChange(text)}
@@ -113,10 +105,10 @@ const MobileLoging = (props) => {
             keyboardType="numeric"
           />
         </View>
-        {!login.initLogin &&
-          login?.loggedProfile?.errorCode == "404" &&
-          showErrorMessage(login?.loggedProfile?.message)}
-        {numberError !== "" && showErrorMessage(numberError)}
+        {!login.initLogin && login?.loggedProfile?.errorCode == "404" && (
+          <CustomErrorText errMessage={login?.loggedProfile?.message} />
+        )}
+        {numberError !== "" && <CustomErrorText errMessage={numberError} />}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
@@ -142,16 +134,31 @@ const MobileLoging = (props) => {
           login?.loggedProfile?.errorCode &&
           login.loggedProfile.errorCode != "404" &&
           login?.loggedProfile?.errorCode != "10000" &&
-          login?.loggedProfile?.errorCode != "10001" &&
-          showErrorMessage(login?.loggedProfile?.message)}
+          login?.loggedProfile?.errorCode != "10001" && (
+            <CustomErrorText errMessage={login?.loggedProfile?.message} />
+          )}
         {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
+
+      <Text
+        style={{
+          textAlign: "center",
+          alignSelf: "center",
+          marginVertical: spacing.HEIGHT_15,
+          color: "#F5AD47",
+          fontWeight: "700",
+          fontSize: fontSizes.FONT_16,
+        }}
+      >
+        {strings.login_with_otp}
+      </Text>
+
       <View>
         <CustomButton
           loading={login.initLogin}
           label={strings.login}
           isDisabled={number == "" || password == "" ? true : false}
-          onClick={submit}
+          onPress={submit}
         />
       </View>
       {/* <TouchableOpacity

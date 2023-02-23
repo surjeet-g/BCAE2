@@ -23,14 +23,10 @@ import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { CustomButton } from "../../../Components/CustomButton";
 import { CustomErrorText } from "../../../Components/CustomErrorText";
 
-export const BUSINESS = "bussiness";
-export const CONSUMER = "consumer";
-
 const CustomerEmailLogin = (props) => {
   const { colors } = useTheme();
-
+  const { userType } = props;
   let login = useSelector((state) => state.login);
-  const [checked, setChecked] = useState(BUSINESS);
 
   const [username, setUsername] = useState("vvvipindsm@gmail.com");
   const [password, setPassword] = useState("JSX2EB8E");
@@ -67,6 +63,7 @@ const CustomerEmailLogin = (props) => {
   };
 
   const submit = () => {
+    console.log("$$$-", { username, password, userType });
     if (username.includes("@")) {
       if (username === "") {
         setUsernameError(strings.emailValidError);
@@ -79,7 +76,7 @@ const CustomerEmailLogin = (props) => {
           verifyLoginData(props.navigation, {
             username,
             password,
-            userType: checked,
+            userType,
           })
         );
         // });
@@ -89,26 +86,12 @@ const CustomerEmailLogin = (props) => {
     }
   };
 
-  const showErrorMessage = (errMessage) => {
-    return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
-        <Image
-          style={styles.errorLogo}
-          source={require("../../../Assets/icons/ci_error_warning.png")}
-        />
-        <Text style={styles.errorText}>{errMessage}</Text>
-      </View>
-    );
-  };
-
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <CustomInput
           caption="Email Address"
-          // error="sdfsdf"
           value={username}
-          // label={strings.customer_email_ID}
           onChangeText={(text) => onIDChange(text)}
           right={
             <TextInput.Icon
@@ -157,15 +140,16 @@ const CustomerEmailLogin = (props) => {
 
       <Text
         style={{
-          alignText: "center",
+          textAlign: "center",
           alignSelf: "center",
           marginVertical: spacing.HEIGHT_15,
           color: "#F5AD47",
           fontWeight: "700",
           fontSize: fontSizes.FONT_16,
         }}
+        onPress={() => navigation.navigate("VerifyLoginOTP")}
       >
-        Login with OTP
+        {strings.login_with_otp}
       </Text>
 
       <View>
@@ -173,7 +157,7 @@ const CustomerEmailLogin = (props) => {
           loading={login.initLogin}
           label={strings.login}
           isDisabled={username == "" || password == "" ? true : false}
-          onClick={submit}
+          onPress={submit}
         />
       </View>
     </View>

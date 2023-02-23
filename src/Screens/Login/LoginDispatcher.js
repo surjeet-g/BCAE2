@@ -29,6 +29,7 @@ export function verifyLoginData(navigation, params) {
           password: password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
+          userType,
         };
 
         let result = await serverCall(
