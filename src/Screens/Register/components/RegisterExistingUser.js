@@ -8,6 +8,7 @@ import { CustomActivityIndicator } from "../../../Components/CustomActivityIndic
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import moment from "moment";
+import { CustomInput } from "../../../Components/CustomInput";
 
 import {
   fetchRegisterFormData,
@@ -17,7 +18,6 @@ import {
   PreVerifyUserDataData,
 } from "../../../Redux/RegisterDispatcher";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
-import { CustomInput as TextInput } from "../../../Components/CustomInput";
 import { CustomButton as Button } from "../../../Components/CustomButton";
 
 import DatePicker from "react-native-date-picker";
@@ -30,8 +30,10 @@ import {
   validateNumber,
   validateEmail,
 } from "../../../Utilities/Constants/Constant";
+import { TextInput, useTheme } from "react-native-paper";
 
 export const RegisterExistingUser = React.memo(({ navigation }) => {
+  const { colors } = useTheme();
   const dispatch = useDispatch([
     fetchRegisterFormData,
     sendOtp,
@@ -428,7 +430,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   return (
     <View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -439,8 +441,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={clearFirstName}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
@@ -450,7 +452,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
       {/* Last Name */}
       <View style={{ marginTop: 5 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -461,8 +463,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={clearLastName}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
@@ -487,7 +489,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       />
 
       <View style={{ marginTop: 10 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -507,7 +509,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       </View>
 
       <View style={{ marginTop: 10 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -518,15 +520,15 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={() => setCustomerID("")}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
         {customerIDError !== "" && showErrorMessage(customerIDError)}
       </View>
       <View style={{ marginTop: 10 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -537,8 +539,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={() => setIdNumber("")}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />

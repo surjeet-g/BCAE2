@@ -30,7 +30,9 @@ import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { strings } from "../../../Utilities/Language";
 import { resetLogin, verifyLoginData } from "../LoginDispatcher";
 import { BUSINESS, CONSUMER } from "./CustomerEmailLogin";
-import CustomButton from "../../../Components/CustomButton";
+import { CustomButton } from "../../../Components/CustomButton";
+import { CustomInput } from "../../../Components/CustomInput";
+
 import CustomErrorText from "../../../Components/CustomErrorText";
 const { height, width } = Dimensions.get("screen");
 
@@ -102,19 +104,13 @@ const MobileLoging = (props) => {
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <View style={{ flexDirection: "row" }}>
-          <TextInput
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-              width: "100%",
-            }}
-            textColor="#ea272c"
+        <View>
+          <CustomInput
+            caption={strings.mobile_no}
             onChangeText={(text) => onIDChange(text)}
             value={number}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
-            label={strings.mobile_no}
           />
         </View>
         {!login.initLogin &&
@@ -124,15 +120,9 @@ const MobileLoging = (props) => {
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-            width: "100%",
-          }}
-          textColor="#ea272c"
+        <CustomInput
           value={password}
-          label={strings.password}
+          caption={strings.password}
           placeHolder={strings.password}
           onChangeText={(text) => onPasswordChange(text)}
           secureTextEntry={secureTextEntry}

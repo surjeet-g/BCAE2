@@ -18,9 +18,9 @@ import {
 } from "../../../Redux/RegisterDispatcher";
 
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
-import { CustomInput as TextInput } from "../../../Components/CustomInput";
+import { CustomInput } from "../../../Components/CustomInput";
 import { CustomButton as Button } from "../../../Components/CustomButton";
-
+import { TextInput } from "react-native-paper";
 import { styles } from "../Register";
 import {
   spacing,
@@ -30,6 +30,7 @@ import {
   validateNumber,
   validateEmail,
 } from "../../../Utilities/Constants/Constant";
+import { useTheme } from "react-native-paper";
 
 export const showErrorMessage = (errMessage) => {
   if (typeof errMessage != "string") return null;
@@ -59,7 +60,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     getOtpForCheck,
     PreVerifyUserDataData,
   ]);
-
+  const { colors } = useTheme();
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
   const OTP_TIMER = 60 * 4;
@@ -463,7 +464,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         {titleError !== "" && showErrorMessage(titleError)}
       </View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -474,8 +475,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={clearFirstName}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              // style={{ width: 15, height: 15 }}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
@@ -485,7 +487,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       {/* Last Name */}
       <View style={{ marginTop: 5 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -496,8 +498,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={clearLastName}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
@@ -506,7 +508,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       </View>
 
       <View style={{ marginTop: 10 }}>
-        <TextInput
+        <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
@@ -517,8 +519,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           right={
             <TextInput.Icon
               onPress={() => setIdNumber("")}
-              style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              icon="close"
             />
           }
         />
@@ -538,37 +540,23 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         {genderError !== "" && showErrorMessage(genderError)}
       </View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
-        {location != "" && (
-          <Text style={styles.placeHolderText}>{strings.location}</Text>
-        )}
-
-        <Pressable
-          onPress={() => locationIconClick()}
-          style={styles.textLocation}
-        >
-          <Text
+        <View style={{ marginTop: 10 }}>
+          <CustomInput
             style={{
-              color: location != "" ? color.BLACK : color.PLACEHOLDER,
-              fontSize: 14,
-              marginBottom: 0,
-              width: "90%",
-              marginBottom: "2%",
+              backgroundColor: "transparent",
             }}
+            value={location || strings.location}
+            caption={strings.location}
             placeHolder={strings.location}
-          >
-            {location || strings.location}
-          </Text>
-          <Image
-            style={{
-              position: "absolute",
-              right: 5,
-              bottom: 5,
-              height: 20,
-              width: 20,
-            }}
-            source={require("../../../Assets/icons/map.png")}
-          ></Image>
-        </Pressable>
+            right={
+              <TextInput.Icon
+                onPress={() => locationIconClick()}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            }
+          />
+        </View>
       </View>
       <CountryPicker
         show={countryPickModel}
@@ -690,7 +678,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       </View>
 
       {/* OTP */}
-      {/* {console.log("registerForm====>"+registerForm?.otpUsageType  +"===="+registerForm?.otpFormData.data.otp)} */}
 
       <View style={{ marginTop: 5 }}>
         <TextBoxWithCTA
@@ -716,7 +703,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
             lineHeight: spacing.HEIGHT_14,
           }}
         />
-        {/* //{ console.log("otpEmail==>"+otpEmail+"===>"+registerForm.initOtpForm+"===="+registerForm?.otpFormData?.data?.otp+"===="+registerForm?.otpUsageTyp )} */}
         {otpEmail !== "" &&
           !registerForm.initOtpForm &&
           registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&

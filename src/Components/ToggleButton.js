@@ -1,8 +1,11 @@
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { color, spacing } from "../Utilities/Constants/Constant";
+import { useTheme } from "react-native-paper";
 
 export const ToggleButton = (props) => {
+  const { colors } = useTheme();
+
   let label = props.label ?? {};
   let onPressFirst = props.onPressFirst ?? null;
   let onPressSecond = props.onPressSecond ?? null;
@@ -18,7 +21,7 @@ export const ToggleButton = (props) => {
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: bgColor.unselected,
+        backgroundColor: colors.tertiary,
         borderRadius: spacing.HEIGHT_24,
       }}
     >
@@ -27,9 +30,7 @@ export const ToggleButton = (props) => {
         activeOpacity={activeOpacity}
         style={{
           paddingHorizontal: spacing.WIDTH_5,
-          backgroundColor: isFirstSelected
-            ? bgColor.selected
-            : bgColor.unselected,
+          backgroundColor: isFirstSelected ? colors.secondary : colors.tertiary,
           borderRadius: spacing.HEIGHT_24,
           justifyContent: "center",
           alignItems: "center",
@@ -42,9 +43,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
-              color: isFirstSelected
-                ? textColor.selected
-                : textColor.unselected,
+              color: isFirstSelected ? colors.tertiary : colors.secondary,
             }}
           >
             {label.first}
@@ -58,8 +57,8 @@ export const ToggleButton = (props) => {
         style={{
           paddingHorizontal: spacing.WIDTH_5,
           backgroundColor: !isFirstSelected
-            ? bgColor.selected
-            : bgColor.unselected,
+            ? colors.secondary
+            : colors.tertiary,
           borderRadius: spacing.HEIGHT_24,
           justifyContent: "center",
           alignItems: "center",
@@ -72,9 +71,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
-              color: !isFirstSelected
-                ? textColor.selected
-                : textColor.unselected,
+              color: !isFirstSelected ? colors.tertiary : colors.secondary,
             }}
           >
             {label.second}

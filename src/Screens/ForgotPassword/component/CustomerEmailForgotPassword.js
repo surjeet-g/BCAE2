@@ -18,6 +18,7 @@ import {
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import DatePicker from "react-native-date-picker";
+import { CustomInput } from "../../../Components/CustomInput";
 
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,10 +26,12 @@ import {
   resetForgotPassword,
   verifyForgotPasswordData,
 } from "../ForgotPasswordDispatcher";
-import { Button, TextInput } from "react-native-paper";
+import { Button, TextInput, useTheme } from "react-native-paper";
 import moment from "moment";
 
 const CustomerEmailForgotPassword = (props) => {
+  const { colors } = useTheme();
+
   let forgot = useSelector((state) => state.forgot);
   // const [username, setUsername] = useState("vvvipindsm@gmail.com");
   const [username, setUsername] = useState("");
@@ -97,21 +100,17 @@ const CustomerEmailForgotPassword = (props) => {
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <TextInput
-          mode="flat"
-          style={{
-            backgroundColor: "transparent",
-          }}
-          textColor="#ea272c"
+        <CustomInput
           onChangeText={(text) => onIDChange(text)}
           value={username}
-          label={strings.customer_email_ID}
+          caption={strings.customer_email_ID}
           placeHolder={strings.customer_email_ID}
           right={
             <TextInput.Icon
               onPress={clearTextClick}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
               style={{ width: 23, height: 23 }}
-              icon={require("../../../Assets/icons/ic_close.png")}
+              icon="close"
             />
           }
         />
