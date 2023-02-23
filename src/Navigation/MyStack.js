@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, Button } from "react-native";
+import { Text, Button, View, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-
+import AnnouIcon from "../Assets/svg/anno.svg";
+import TermIcon from "../Assets/svg/terms.svg";
 import Splash from "../Screens/Splash/Splash";
 import { Login } from "../Screens/Login/Login";
 import Register from "../Screens/Register/Register";
@@ -27,30 +28,40 @@ import { Playground } from "../Screens/Playground";
 import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
+import { useTheme } from "react-native-paper";
+import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 const Stack = createStackNavigator();
 function MyStack() {
+  const { colors, fonts } = useTheme();
+
   return (
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
         initialRouteName="Register with us"
-        screenOptions={{
-          // headerShown: true,
+        screenOptions={({ navigation }) => ({
+          headerTransparent: true,
           headerStyle: {
-            backgroundColor: "#474747",
+            backgroundColor: "transparent",
           },
           headerTitleStyle: {
-            fontWeight: "bold",
+            ...fonts.titleMedium,
+            ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
-          headerTintColor: "#fff",
-          headerRight: () => (
-            <Button
-              onPress={() => alert("This is a button!")}
-              title="Info"
-              color="red"
-            />
-          ),
-        }}
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable onPress={() => alert("to do nav to term")}>
+                  <TermIcon {...ICON_STYLE} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => alert("to do nav to term")}>
+                  <AnnouIcon {...ICON_STYLE} />
+                </Pressable>
+              </View>
+            );
+          },
+        })}
       >
         <Stack.Screen
           options={{ headerShown: false }}
@@ -63,7 +74,7 @@ function MyStack() {
           component={BottomBarNavigation}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Edit Profile" }}
+          options={{ headerShown: false, title: "Edit Profile" }}
           name="EditProfile"
           component={EditProfile}
         />
@@ -105,7 +116,7 @@ function MyStack() {
           component={ForgotPassword}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Register" }}
+          options={{ headerShown: true, title: "Registration" }}
           name="Register with us"
           component={Register}
         />

@@ -30,6 +30,7 @@ import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { RegisterPersonal } from "./components/RegisterPersonal";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
+import { SvgBG } from "../../Components/SvgBG";
 
 const TAB_EMAIL = true;
 const TAB_MOBILE = false;
@@ -170,97 +171,77 @@ const Register = ({ navigation, props }) => {
   }, [isFirstSelected]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Header
-          Text={myscreenmae}
-          navigation={navigation}
-          backIconVisibility={true}
-          registerfaq={true}
-        ></Header>
-        {registerForm.initRegisterForm ? (
-          <FullPageLoder
-            bgColor={color.DISABLED_GREY}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <ScrollView
-            style={{
-              flexGrow: 1,
-              paddingHorizontal: spacing.WIDTH_30,
-              paddingTop: spacing.HEIGHT_20,
+    <View style={styles.container}>
+      <SvgBG />
+
+      {registerForm.initRegisterForm ? (
+        <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
+      ) : (
+        <ScrollView
+          style={{
+            flexGrow: 1,
+            paddingHorizontal: spacing.WIDTH_30,
+            paddingTop: 80,
+          }}
+          nestedScrollEnabled={true}
+        >
+          <ToggleButton
+            isFirstSelected={isFirstSelected}
+            label={{
+              first: strings.tab_personal,
+              second: strings.tab_existing,
             }}
-            nestedScrollEnabled={true}
-          >
-            {/* Logo */}
-            <View style={{ alignItems: "center" }}>
-              <Image
-                style={styles.logo}
-                source={require("../../Assets/icons/ic_td123_logo.png")}
-              ></Image>
-            </View>
-            <ToggleButton
-              isFirstSelected={isFirstSelected}
-              label={{
-                first: strings.tab_personal,
-                second: strings.tab_existing,
-              }}
-              bgColor={{
-                selected: color.BCAE_PRIMARY,
-                unselected: color.BCAE_LIGHT_BLUE_2,
-              }}
-              textColor={{
-                selected: color.WHITE,
-                unselected: color.BCAE_PRIMARY,
-              }}
-              textPro={{
-                fontSize: fontSizes.FONT_13,
-                fontWeight: "600",
-                lineHeight: spacing.HEIGHT_16,
-              }}
-              onPressFirst={async () => {
-                dispatch(resetRegister());
-                preRequiredDataFetch();
-                setFirstSelected(TAB_EMAIL);
-              }}
-              onPressSecond={() => {
-                dispatch(resetRegister());
-                preRequiredDataFetch();
-                setFirstSelected(TAB_MOBILE);
-              }}
-            ></ToggleButton>
+            bgColor={{
+              selected: color.BCAE_PRIMARY,
+              unselected: color.BCAE_LIGHT_BLUE_2,
+            }}
+            textColor={{
+              selected: color.WHITE,
+              unselected: color.BCAE_PRIMARY,
+            }}
+            textPro={{
+              fontSize: fontSizes.FONT_13,
+              fontWeight: "600",
+              lineHeight: spacing.HEIGHT_16,
+            }}
+            onPressFirst={async () => {
+              dispatch(resetRegister());
+              preRequiredDataFetch();
+              setFirstSelected(TAB_EMAIL);
+            }}
+            onPressSecond={() => {
+              dispatch(resetRegister());
+              preRequiredDataFetch();
+              setFirstSelected(TAB_MOBILE);
+            }}
+          ></ToggleButton>
 
-            {renderTab}
-            {/* First Name */}
+          {renderTab}
+          {/* First Name */}
 
-            {orSection()}
+          {orSection()}
 
-            <View>
-              <Text style={styles.alreadyAccount}>{strings.already_acc}</Text>
-              <Pressable onPress={() => navigation.navigate("Login", {})}>
-                <Text style={styles.loginText}>
-                  {strings.login.toUpperCase()}
-                </Text>
-              </Pressable>
-            </View>
+          <View>
+            <Text style={styles.alreadyAccount}>{strings.already_acc}</Text>
+            <Pressable onPress={() => navigation.navigate("Login", {})}>
+              <Text style={styles.loginText}>
+                {strings.login.toUpperCase()}
+              </Text>
+            </Pressable>
+          </View>
 
-            <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
-          </ScrollView>
-        )}
-      </View>
-    </SafeAreaView>
+          <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
+        </ScrollView>
+      )}
+    </View>
   );
 };
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
   },
-  logo: {
-    height: 128,
-    width: 128,
-  },
+
   orText: {
     color: color.BCAE_LIGHT_BLUE,
     fontSize: fontSizes.FONT_10,
