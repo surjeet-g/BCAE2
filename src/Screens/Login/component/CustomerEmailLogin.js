@@ -151,31 +151,7 @@ const CustomerEmailLogin = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {passwordError !== "" && showErrorMessage(passwordError)}
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <RadioButton
-          value={BUSINESS}
-          status={checked === BUSINESS ? "checked" : "unchecked"}
-          onPress={() => setChecked(BUSINESS)}
-        />
-        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
-        <RadioButton
-          value={CONSUMER}
-          status={checked === CONSUMER ? "checked" : "unchecked"}
-          onPress={() => setChecked(CONSUMER)}
-        />
-        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
-      </View>
-      <View style={{ alignSelf: "center", marginBottom: spacing.HEIGHT_20 }}>
-        <Pressable
-          onPress={() =>
-            props.navigation.navigate("ForgotPassword", { isFirst: true })
-          }
-        >
-          <Text style={styles.forgotText}>
-            {strings.forgot_password.toUpperCase()}
-          </Text>
-        </Pressable>
-      </View>
+
       <View>
         <CustomButton
           loading={login.initLogin}
@@ -189,11 +165,6 @@ const CustomerEmailLogin = (props) => {
 };
 
 const styles = StyleSheet.create({
-  forgotText: {
-    color: color.BCAE_PRIMARY,
-    fontSize: fontSizes.FONT_14,
-    fontWeight: "500",
-  },
   errorText: {
     color: color.ERROR_TEXT_RED,
     fontSize: fontSizes.FONT_14,

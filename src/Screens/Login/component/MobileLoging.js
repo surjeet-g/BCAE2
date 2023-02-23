@@ -146,49 +146,13 @@ const MobileLoging = (props) => {
           showErrorMessage(login?.loggedProfile?.message)}
         {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <RadioButton
-          value={BUSINESS}
-          status={checked === BUSINESS ? "checked" : "unchecked"}
-          onPress={() => setChecked(BUSINESS)}
-        />
-        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
-        <RadioButton
-          value={CONSUMER}
-          status={checked === CONSUMER ? "checked" : "unchecked"}
-          onPress={() => setChecked(CONSUMER)}
-        />
-        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
-      </View>
-      <Pressable
-        onPress={() => props.navigation.navigate("ForgotPassword", {})}
-      >
-        <View
-          style={{
-            alignSelf: "center",
-            marginBottom: spacing.HEIGHT_20,
-            marginTop: 20,
-          }}
-        >
-          <Text style={styles.forgotText}>
-            {strings.forgot_password.toUpperCase()}
-          </Text>
-        </View>
-      </Pressable>
       <View>
-        {login.initLogin ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <CustomButton
-            label={strings.login}
-            isDisabled={number == "" || password == "" ? true : false}
-            onClick={submit}
-          />
-        )}
+        <CustomButton
+          loading={login.initLogin}
+          label={strings.login}
+          isDisabled={number == "" || password == "" ? true : false}
+          onClick={submit}
+        />
       </View>
       {/* <TouchableOpacity
         onPress={() => setShow(true)}

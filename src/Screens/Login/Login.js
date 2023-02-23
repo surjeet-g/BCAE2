@@ -22,7 +22,7 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "react-native-google-signin";
-
+import { capitalizeFirstLetter } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 
 import CustomerEmailLogin from "./component/CustomerEmailLogin";
@@ -36,9 +36,13 @@ import {
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { Button } from "react-native-paper";
-const TAB_EMAIL = true;
-const TAB_MOBILE = false;
+import { Button, RadioButton } from "react-native-paper";
+import { SvgBG } from "../../Components/SvgBG";
+
+const BUSINESS = "business";
+const CONSUMER = "consumer";
+const EMAIL = "Email Address";
+const MOBILE = "Mobile Number";
 
 export const Login = ({ navigation }) => {
   useEffect(() => {
@@ -49,12 +53,14 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
+  const [userType, setUserType] = useState(BUSINESS);
+  const [loginMode, setLoginMode] = useState(EMAIL);
   const [loggedIn, setloggedIn] = useState(false);
   const [userInfo, setuserInfo] = useState([]);
 
   const [visible, setVisible] = React.useState(false);
 
-  const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
+  const [isFirstSelected, setFirstSelected] = useState(true);
   let login = useSelector((state) => state.login);
   const dispatch = useDispatch([resetLogin, verifyLoginData]);
   useEffect(() => {
@@ -98,13 +104,14 @@ export const Login = ({ navigation }) => {
     }
   };
 
-  const onPressFirst = () => {
-    dispatch(resetLogin());
-    setFirstSelected(TAB_EMAIL);
+  const onSelectBusinessUserType = () => {
+    setFirstSelected(true);
+    setUserType(BUSINESS);
   };
-  const onPressSecond = () => {
-    dispatch(resetLogin());
-    setFirstSelected(TAB_MOBILE);
+
+  const onSelectConsumerUserType = () => {
+    setFirstSelected(false);
+    setUserType(CONSUMER);
   };
 
   const orSection = () => {
@@ -139,91 +146,27 @@ export const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <SvgBG />
       <KeyboardAwareView animated={false}>
         <ScrollView
           style={{
             flexGrow: 1,
             paddingHorizontal: spacing.WIDTH_30,
-            // paddingTop: spacing.HEIGHT_50 * 2,
-            marginBottom: spacing.HEIGHT_30,
+            paddingTop: 80,
           }}
           nestedScrollEnabled={true}
         >
           <View
-            style={{ marginBottom: spacing.WIDTH_30, alignItems: "center" }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../Assets/icons/ic_td123_logo.png")}
-            ></Image>
-          </View>
-
-          <View
             style={{
-              marginTop: spacing.WIDTH_15,
-              marginBottom: spacing.WIDTH_30,
-              alignItems: "center",
-              flex: 1,
-              flexDirection: "row",
+              marginTop: spacing.HEIGHT_50,
+              marginBottom: spacing.HEIGHT_30,
             }}
           >
-            <Pressable
-              onPress={() =>
-                navigation.navigate("Anouncement", { fromLogin: true })
-              }
-              style={{
-                marginTop: spacing.HEIGHT_6,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "50%",
-              }}
-            >
-              <Image
-                style={styles.upperLogo}
-                source={require("../../Assets/icons/announcement_login.png")}
-              />
-              <Text style={styles.upperText}>{strings.announcement}</Text>
-            </Pressable>
-
-            <View
-              style={{
-                width: 1,
-                height: 40,
-                backgroundColor: color.DISABLED_GREY,
-              }}
-            ></View>
-
-            <Pressable
-              onPress={() =>
-                navigation.navigate("ShowWebPage", {
-                  fromLogin: false,
-                  url: DEBUG_BUILD ? STAGE_FAQ : PROD_FAQ,
-                  title: "FAQ",
-                })
-              }
-              style={{
-                marginTop: spacing.HEIGHT_6,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "50%",
-              }}
-            >
-              <Image
-                style={styles.upperLogo}
-                source={require("../../Assets/icons/faq_login.png")}
-              />
-              <Text style={styles.upperText}>{strings.faq}</Text>
-            </Pressable>
-          </View>
-
-          <View style={{ marginBottom: spacing.WIDTH_20 }}>
             <ToggleButton
               isFirstSelected={isFirstSelected}
               label={{
-                first: strings.customer_email_ID,
-                second: strings.mobile_no,
+                first: capitalizeFirstLetter(BUSINESS),
+                second: capitalizeFirstLetter(CONSUMER),
               }}
               bgColor={{
                 selected: color.BCAE_PRIMARY,
@@ -238,16 +181,33 @@ export const Login = ({ navigation }) => {
                 fontWeight: "600",
                 lineHeight: spacing.HEIGHT_16,
               }}
-              onPressFirst={onPressFirst}
-              onPressSecond={onPressSecond}
+              onPressFirst={onSelectBusinessUserType}
+              onPressSecond={onSelectConsumerUserType}
             ></ToggleButton>
           </View>
 
-          {isFirstSelected ? (
+          {/* Radio Button View */}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <RadioButton
+              value={EMAIL}
+              status={loginMode === EMAIL ? "checked" : "unchecked"}
+              onPress={() => setLoginMode(EMAIL)}
+            />
+            <Text>{capitalizeFirstLetter(EMAIL)}</Text>
+            <RadioButton
+              value={MOBILE}
+              status={loginMode === MOBILE ? "checked" : "unchecked"}
+              onPress={() => setLoginMode(MOBILE)}
+            />
+            <Text>{capitalizeFirstLetter(MOBILE)}</Text>
+          </View>
+
+          {loginMode === EMAIL ? (
             <CustomerEmailLogin navigation={navigation} />
           ) : (
             <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
           )}
+
           {/* <GoogleSigninButton
             style={{ width: 192, height: 48 }}
             size={GoogleSigninButton.Size.Wide}
@@ -255,16 +215,32 @@ export const Login = ({ navigation }) => {
             onPress={signIn}
           /> */}
 
-          {orSection()}
+          {/* Forgot Password View */}
+          <View
+            style={{ alignSelf: "center", marginVertical: spacing.HEIGHT_20 }}
+          >
+            <Pressable
+              onPress={() =>
+                props.navigation.navigate("ForgotPassword", { isFirst: true })
+              }
+            >
+              <Text style={styles.forgotText}>{strings.forgot_password}</Text>
+            </Pressable>
+          </View>
 
-          <View>
+          {/* Register View */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingVertical: 10,
+            }}
+          >
             <Text style={styles.noAccText}>{strings.dont_account}</Text>
             <Pressable
               onPress={() => navigation.navigate("Register with us", {})}
             >
-              <Text style={styles.rgisterText}>
-                {strings.register_with_us.toUpperCase()}
-              </Text>
+              <Text style={styles.rgisterText}>{strings.register}</Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -318,17 +294,20 @@ const styles = StyleSheet.create({
     lineHeight: spacing.WIDTH_16,
     paddingHorizontal: spacing.WIDTH_7,
   },
+  forgotText: {
+    color: "#E22D2D",
+    fontSize: fontSizes.FONT_14,
+    fontWeight: "500",
+  },
   noAccText: {
-    marginTop: spacing.HEIGHT_32,
     color: color.PLACEHOLDER,
     fontSize: fontSizes.FONT_12,
     lineHeight: spacing.WIDTH_14,
     textAlign: "center",
   },
   rgisterText: {
-    marginTop: spacing.HEIGHT_6,
-    fontWeight: "500",
-    color: color.BCAE_PRIMARY,
+    fontWeight: "700",
+    color: color.gray,
     fontSize: fontSizes.FONT_14,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",

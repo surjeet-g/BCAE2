@@ -38,7 +38,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Register with us"
+        initialRouteName="Login"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -51,11 +51,15 @@ function MyStack() {
           headerRight: () => {
             return (
               <View style={navBar.navRightCon}>
-                <Pressable onPress={() => alert("to do nav to term")}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                >
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
-                <Pressable onPress={() => alert("to do nav to term")}>
+                <Pressable onPress={() => navigation.navigate("Announcements")}>
                   <AnnouIcon {...ICON_STYLE} />
                 </Pressable>
               </View>
