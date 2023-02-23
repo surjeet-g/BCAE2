@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, Button } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -32,7 +32,26 @@ function MyStack() {
   return (
     <NavigationContainer>
       {/* Register with u */}
-      <Stack.Navigator initialRouteName="Announcements">
+      <Stack.Navigator
+        initialRouteName="Register with us"
+        screenOptions={{
+          // headerShown: true,
+          headerStyle: {
+            backgroundColor: "#474747",
+          },
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerTintColor: "#fff",
+          headerRight: () => (
+            <Button
+              onPress={() => alert("This is a button!")}
+              title="Info"
+              color="red"
+            />
+          ),
+        }}
+      >
         <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
@@ -44,7 +63,7 @@ function MyStack() {
           component={BottomBarNavigation}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Edit Profile" }}
           name="EditProfile"
           component={EditProfile}
         />
@@ -55,7 +74,7 @@ function MyStack() {
           component={ConfirmForgotPassword}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Reset Password" }}
           name="ResetPassword"
           component={ResetPassword}
         />
@@ -70,27 +89,33 @@ function MyStack() {
           component={ForgotUserinfo}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
           name="Login"
           component={Login}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            title: "Forgot Password",
+          }}
           name="ForgotPassword"
           component={ForgotPassword}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Register" }}
           name="Register with us"
           component={Register}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Add Location" }}
           name="AddLocation"
           component={AddLocation}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Saved Locations" }}
           name="SavedLocation"
           component={SavedLocation}
         />
@@ -108,7 +133,10 @@ function MyStack() {
         />
 
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            title: "Announcements",
+          }}
           name="Announcements"
           component={AnnouncementList}
         />
