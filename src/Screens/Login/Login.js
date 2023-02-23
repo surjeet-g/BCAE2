@@ -261,11 +261,7 @@ export const Login = ({ navigation }) => {
             <View
               style={{ alignSelf: "center", marginVertical: spacing.HEIGHT_20 }}
             >
-              <Pressable
-                onPress={() =>
-                  props.navigation.navigate("ForgotPassword", { isFirst: true })
-                }
-              >
+              <Pressable onPress={() => navigation.navigate("ForgotPassword")}>
                 <Text style={styles.forgotText}>{strings.forgot_password}</Text>
               </Pressable>
             </View>
