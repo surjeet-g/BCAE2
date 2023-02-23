@@ -25,7 +25,7 @@ import { CustomErrorText } from "../../../Components/CustomErrorText";
 
 const CustomerEmailLogin = (props) => {
   const { colors } = useTheme();
-  const { userType } = props;
+  const { userType, navigation } = props;
   let login = useSelector((state) => state.login);
 
   const [username, setUsername] = useState("vvvipindsm@gmail.com");
@@ -73,7 +73,7 @@ const CustomerEmailLogin = (props) => {
         //let hashpass =  hashPassword(password)
         // let pasHash = passwordHash(password).then((datahash) => {
         dispatch(
-          verifyLoginData(props.navigation, {
+          verifyLoginData(navigation, {
             username,
             password,
             userType,

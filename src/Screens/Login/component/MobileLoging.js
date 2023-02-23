@@ -37,7 +37,7 @@ const { height, width } = Dimensions.get("screen");
 
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
-  const { userType } = props;
+  const { userType, navigation } = props;
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [password, setPassword] = useState("");
@@ -59,7 +59,7 @@ const MobileLoging = (props) => {
     } else {
       // let pasHash = passwordHash(password).then((datahash) => {
       dispatch(
-        verifyLoginData(props.navigation, {
+        verifyLoginData(navigation, {
           username: number,
           password: password,
           userType,
@@ -149,6 +149,7 @@ const MobileLoging = (props) => {
           fontWeight: "700",
           fontSize: fontSizes.FONT_16,
         }}
+        onPress={() => navigation.navigate("VerifyLoginOTP")}
       >
         {strings.login_with_otp}
       </Text>
