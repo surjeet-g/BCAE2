@@ -3,12 +3,14 @@ import { Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Login } from "../Screens/Login/Login";
+import AnnouIcon from "../Assets/svg/anno.svg";
+import TermIcon from "../Assets/svg/terms.svg";
 import Splash from "../Screens/Splash/Splash";
 // import Login from "../Screens/Login/Login";
-// import Register from "../Screens/Register/Register";
+import Register from "../Screens/Register/Register";
 // import EditProfile from "../Screens/EditProfile/EditProfile";
 // import BottomBarNavigation from "./BottomBarNavigation";
-// import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
+import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 // import SavedLocation from "../Screens/Location/SavedLocation";
 
 // import Location from "../Screens/Location/Location";
@@ -16,7 +18,7 @@ import Splash from "../Screens/Splash/Splash";
 // import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
 
 // import Anouncement from "../Screens/TabScreens/Announcement";
-// import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
+import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
 // import Notification from "../Screens/TabScreens/Notification";
 // import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 // import About from "../Screens/TabScreens/About";
@@ -34,11 +36,25 @@ function MyStack() {
           component={Splash}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          // options={{ headerShown: false }}
           name="Login"
           component={Login}
         />
-
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Register with us"
+          component={Register}
+        />
+        <Stack.Screen
+          //options={{ headerShown: false }}
+          name="ForgotPassword"
+          component={ForgotPassword}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ConfirmForgotPassword"
+          component={ConfirmForgotPassword}
+        />
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="Login"

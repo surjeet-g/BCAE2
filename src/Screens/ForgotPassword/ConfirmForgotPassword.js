@@ -9,6 +9,7 @@ import {
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { Button, Text } from "react-native-paper";
+import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 
 const ConfirmForgotPassword = ({ route, navigation }) => {
   const [myscreenmae, setscreenname] = useState("Forgot Password");
@@ -27,19 +28,25 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
         }}
         nestedScrollEnabled={true}
       >
-        <Text style={styles.headline}>
-          {isEMail ? strings.checkYourMail : strings.checkYourMob}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 35,
+            marginBottom: 70,
+          }}
+        >
+          <BCAE_LOGO />
+        </View>
 
-        <Text style={styles.subtext}>
-          {isEMail ? strings.wesent : strings.wesend_mob}
-        </Text>
+        <Text style={styles.headline}>{strings.checkYourMail}</Text>
+
+        <Text style={styles.subtext}>{strings.wesent}</Text>
 
         <Text style={styles.email}>{route?.params?.email}</Text>
 
-        <Text style={styles.didtntrec}>
-          {isEMail ? strings.didntRecive : strings.didntRecive_mob}
-        </Text>
+        <Text style={styles.didtntrec}>{strings.didNotReceive_email}</Text>
 
         <Text style={styles.clicktoresend}>
           {strings.clicktoresend.toUpperCase()}

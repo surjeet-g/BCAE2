@@ -29,6 +29,7 @@ import {
   buttonSize,
   validateNumber,
   validateEmail,
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { useTheme } from "react-native-paper";
 
@@ -135,13 +136,27 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [isDisableSendOtp, setIsDisableSendOtp] = useState(false);
   const [selectedValueGender, setValueGender] = useState("");
   const [selectedValueTitle, setValueTitle] = useState("");
-
+  const [isSelected, setSelection] = useState(false);
+  const [isSelectedTerm, setSelectionTerm] = useState(false);
   const [street, setStreet] = useState("");
   const [state, setStateProfile] = useState("");
   const [district, setDistrict] = useState("");
   const [postcode, setPostcode] = useState("");
   const [countryPickModel, setCountryPickModel] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordConfirmError, setConfirmPasswordError] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [secureTextEntry, setsecureTextEntry] = useState(true);
+  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
+  const [termError, setTermError] = useState("");
+  const [privaceyError, setPrivaceyError] = useState("");
+  const onCheckBoxClickTerm = () => {
+    //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
+    setSelectionTerm(!isSelectedTerm);
 
+    setTermError("");
+  };
   const onFirstNameChange = (textStr) => {
     setFirstName(textStr);
     setFirstNameError("");
@@ -153,21 +168,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
   const submit = async () => {
-    alert("sdfd");
-    const resp = await dispatch(PreVerifyUserDataData());
+    // alert("sdfd");
+    // const resp = await dispatch(PreVerifyUserDataData());
 
-    if (resp.status) {
-      navigation.navigate("SetPassword", {
-        formData: JSON.stringify({ dummy: "dummy", accountType: "personal" }),
-      });
-    } else {
-      Toast.show({
-        type: "bctError",
-        text1: result.response?.msg,
-      });
-    }
     //to do remove this bypass
-    return false;
+    // return false;
     if (!mobileOTPVerifcation) {
       Toast.show({
         type: "bctError",
@@ -185,6 +190,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
     if (firstName.trim() === "") {
       setFirstNameError(strings.firstNameError);
+    }
+    if (!validatePassword(password)) {
+      setPasswordError(strings.passwordValidError);
+    } else if (!validatePassword(confirmPassword)) {
+      setConfirmPasswordError(strings.passwordValidError);
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
+    } else if (!isSelectedTerm) {
+      setTermError(strings.termError);
+    } else if (!isSelected) {
+      setPrivaceyError(strings.privaceyError);
     } else if (lastName.trim() === "") {
       setLastNameError(strings.lastNameError);
     } else if (idNumberError === "") {
@@ -442,7 +458,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   );
   return (
     <View>
-      <View style={{ marginTop: 5 }}>
+      <View style={{ marginVertical: 5 }}>
         <CustomDropDown
           selectedValue={selectedValueTitle?.description}
           setValue={setValueTitle}
@@ -506,8 +522,21 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
         {lastNameError !== "" && showErrorMessage(lastNameError)}
       </View>
+      {/* Gender */}
+      <View style={{ marginTop: 5 }}>
+        <CustomDropDown
+          selectedValue={selectedValueGender}
+          setValue={setValueGender}
+          data={registerForm?.registerFormData?.GENDER ?? []}
+          onChangeText={(text) => onGenderClick(text)}
+          value={gender?.description}
+          placeHolder={strings.gender}
+        />
 
-      <View style={{ marginTop: 10 }}>
+        {genderError !== "" && showErrorMessage(genderError)}
+      </View>
+
+      {/* <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -525,20 +554,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           }
         />
         {idNumberError !== "" && showErrorMessage(idNumberError)}
-      </View>
-      {/* Gender */}
-      <View style={{ marginTop: 10 }}>
-        <CustomDropDown
-          selectedValue={selectedValueGender}
-          setValue={setValueGender}
-          data={registerForm?.registerFormData?.GENDER ?? []}
-          onChangeText={(text) => onGenderClick(text)}
-          value={gender?.description}
-          placeHolder={strings.gender}
-        />
+      </View> */}
 
-        {genderError !== "" && showErrorMessage(genderError)}
-      </View>
       <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <View style={{ marginTop: 10 }}>
           <CustomInput
@@ -611,7 +628,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onOTPChange(text)}
           value={otp}
-          placeHolder={strings.otp}
+          placeHolder={strings.mobile_otp}
           isConfirmOTP={true}
           label={strings.confirm_otp}
           loader={
@@ -683,7 +700,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onEmailOTPChange(text)}
           value={otpEmail}
-          placeHolder={strings.otp}
+          placeHolder={strings.email_otp}
           isConfirmOTP={true}
           label={"CONFIRM OTP"}
           loader={
@@ -724,9 +741,117 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         registerForm?.otpUsageType === "Register" &&
         showErrorMessage(registerForm?.otpFormData?.message)}
 
+      <View style={{ marginTop: 5 }}>
+        <CustomInput
+          value={password}
+          caption={strings.password}
+          placeHolder={strings.password}
+          onChangeText={setPassword}
+          secureTextEntry={secureTextEntry}
+          right={
+            <TextInput.Icon
+              onPress={() => setsecureTextEntry(!secureTextEntry)}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntry
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
+        />
+
+        {/* {showErrorMessage("sds")} */}
+        {passwordError !== "" && showErrorMessage(passwordError)}
+      </View>
+      <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+        <CustomInput
+          value={confirmPassword}
+          caption={strings.confirmPassword}
+          placeHolder={strings.confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={secureTextEntryConfim}
+          right={
+            <TextInput.Icon
+              onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
+              style={{ width: 23, height: 23 }}
+              icon={
+                secureTextEntryConfim
+                  ? require("../../../Assets/icons/ic_password_show.png")
+                  : require("../../../Assets/icons/ic_password_hide.png")
+              }
+            />
+          }
+        />
+
+        {passwordConfirmError !== "" && showErrorMessage(passwordConfirmError)}
+      </View>
+      <Pressable
+        onPress={() => {
+          console.log("hiint g");
+          setSelection(!isSelected);
+          setTermError("");
+          setPrivaceyError("");
+        }}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelected
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Privacy Policy",
+              url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Privacy Policy.
+        </Text>
+      </Pressable>
+      {privaceyError !== "" && showErrorMessage(privaceyError)}
+
+      <Pressable
+        onPress={onCheckBoxClickTerm}
+        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
+      >
+        <Image
+          style={styles.checkBox}
+          source={
+            isSelectedTerm
+              ? require("../../../Assets/icons/ci_checked.png")
+              : require("../../../Assets/icons/ci_uncheck.png")
+          }
+        ></Image>
+        <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+          I have agree to your{" "}
+        </Text>
+        <Text
+          onPress={() =>
+            navigation.navigate("ShowWebPage", {
+              fromLogin: true,
+              title: "Terms & Conditions",
+              url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+            })
+          }
+          style={{ color: color.BCAE_DARK_BLUE }}
+        >
+          Terms &amp; Conditions.
+        </Text>
+      </Pressable>
+      {termError !== "" && showErrorMessage(termError)}
+
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         <Button
-          label="NEXT"
+          label={strings.register}
           // isDisabled={isButtomDiable}
           onPress={submit}
           loading={
