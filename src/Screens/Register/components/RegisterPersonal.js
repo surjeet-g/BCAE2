@@ -99,48 +99,52 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     return finalString;
   };
   const [dialpick, setDialPick] = useState("+673");
+  const [emailOTPVerification, setEmailOTPVerification] = useState(false);
+  const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
+
   // real
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  // const [idNumber, setIdNumber] = useState("");
-  // const [gender, setGender] = useState("");
-  // const [title, setTitle] = useState("");
-  // const [country, setCountry] = useState("");
-  // const [location, setLocation] = useState("");
-  // const [latitude, setLatitude] = useState("");
-  // const [longitude, setLongitude] = useState("");
-  // const [mobileNo, setMobileNo] = useState("");
-  // const [countryCode, setCountryCode] = useState("673");
-  // const [otp, setOTP] = useState("");
-  // const [otpEmail, setEmailOTP] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [street, setStreet] = useState("");
-  // const [state, setStateProfile] = useState("");
-  // const [district, setDistrict] = useState("");
-  // const [postcode, setPostcode] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
-  //  mock
-  const [firstName, setFirstName] = useState("vipin");
-  const [lastName, setLastName] = useState("v");
-  const [idNumber, setIdNumber] = useState("123123");
-  const [gender, setGender] = useState({ code: "NC" });
-  const [title, setTitle] = useState("MR");
-  const [country, setCountry] = useState("india");
-  const [location, setLocation] = useState("thirssur,kerala,india");
-  const [latitude, setLatitude] = useState("1233123");
-  const [longitude, setLongitude] = useState("123123");
-  const [mobileNo, setMobileNo] = useState("1231231");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [title, setTitle] = useState("");
+  const [country, setCountry] = useState("");
+  const [location, setLocation] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
   const [countryCode, setCountryCode] = useState("673");
-  const [otp, setOTP] = useState("123123");
-  const [otpEmail, setEmailOTP] = useState("123123");
-  const [email, setEmail] = useState("vvvipinmds@gmail.com");
-  const [street, setStreet] = useState("kerala");
-  const [state, setStateProfile] = useState("kerala");
-  const [district, setDistrict] = useState("thrissur");
-  const [postcode, setPostcode] = useState("123123");
-  const [password, setPassword] = useState("Mock@123");
-  const [confirmPassword, setConfirmPassword] = useState("Mock@123");
+  const [otp, setOTP] = useState("");
+  const [otpEmail, setEmailOTP] = useState("");
+  const [email, setEmail] = useState("");
+  const [street, setStreet] = useState("");
+  const [state, setStateProfile] = useState("");
+  const [district, setDistrict] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  //  mock
+
+  // const [firstName, setFirstName] = useState("vipin");
+  // const [lastName, setLastName] = useState("v");
+  // const [idNumber, setIdNumber] = useState("123123");
+  // const [gender, setGender] = useState({ code: "NC" });
+  // const [title, setTitle] = useState("MR");
+  // const [country, setCountry] = useState("india");
+  // const [location, setLocation] = useState("thirssur,kerala,india");
+  // const [latitude, setLatitude] = useState("1233123");
+  // const [longitude, setLongitude] = useState("123123");
+  // const [mobileNo, setMobileNo] = useState("1231231");
+  // const [countryCode, setCountryCode] = useState("673");
+  // const [otp, setOTP] = useState("123123");
+  // const [otpEmail, setEmailOTP] = useState("123123");
+  // const [email, setEmail] = useState("vvvipinmds@gmail.com");
+  // const [street, setStreet] = useState("kerala");
+  // const [state, setStateProfile] = useState("kerala");
+  // const [district, setDistrict] = useState("thrissur");
+  // const [postcode, setPostcode] = useState("123123");
+  // const [password, setPassword] = useState("Mock@123");
+  // const [confirmPassword, setConfirmPassword] = useState("Mock@123");
   //  mockend
   const [isButtomDiable, setButtomEnableDisable] = useState(true);
 
@@ -201,13 +205,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     //   });
     //   return null;
     // }
-    // if (!emailOTPVerification) {
-    //   Toast.show({
-    //     type: "bctError",
-    //     text1: strings.otpErrorMsgForEmail,
-    //   });
-    //   return null;
-    // }
+    if (!emailOTPVerification) {
+      Toast.show({
+        type: "bctError",
+        text1: strings.otpErrorMsgForEmail,
+      });
+      return null;
+    }
 
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
@@ -328,10 +332,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setIsDisableSendOtp(true);
     runOtpTimer(otpTimer);
   };
-  const emailOTPVerification =
-    registerForm?.otpFormDataForEmail?.data?.otp === otpEmail;
-  const mobileOTPVerifcation =
-    registerForm?.otpFormDataForMobile?.data?.otp === otp;
+
   const submitResndOTP = () => {
     if (mobileNo.length !== 7) {
       Alert.alert(strings.attention, strings.sevenDigit, [
@@ -402,22 +403,34 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     }, 1000);
   };
 
-  const submitConfirmMobileOTP = () => {
+  const submitConfirmMobileOTP = async () => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
-      dispatch(
+      const resp = await dispatch(
         getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
       ); // country code to be added to verify OTP
+      if (resp.status) {
+        setMobileOTPVerifcation(true);
+      } else {
+        setMobileOTPVerifcation(false);
+      }
       buttonEnableDiable();
     }
   };
   //alert(JSON.stringify(Register));
-  const submitConfirmEmailOTP = () => {
+  const submitConfirmEmailOTP = async () => {
     if (otpEmail === "") {
       setOtpEmailError(strings.emailOtpError);
     } else {
-      dispatch(getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp"));
+      const resp = await dispatch(
+        getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp")
+      );
+      if (resp.status) {
+        setEmailOTPVerification(true);
+      } else {
+        setEmailOTPVerification(false);
+      }
       buttonEnableDiable();
     }
   };
@@ -616,7 +629,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
-      <View style={{ marginTop: 30 }}>
+      <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",

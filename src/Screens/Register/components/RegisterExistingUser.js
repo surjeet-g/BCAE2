@@ -75,24 +75,25 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
-  const [firstName, setFirstName] = useState("vipin");
-  const [lastName, setLastName] = useState("vv");
-  const [customerID, setCustomerID] = useState("123123");
-  const [idNumber, setIdNumber] = useState("123123");
-  const [gender, setGender] = useState("M");
-  const [mobileNo, setMobileNo] = useState("1231233");
-  const [otp, setOTP] = useState("123123");
-  const [otpEmail, setEmailOTP] = useState("123123");
-  const [email, setEmail] = useState("vipin.bahwan@gmail.com");
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  // const [customerID, setCustomerID] = useState("");
-  // const [idNumber, setIdNumber] = useState("");
-  // const [gender, setGender] = useState("");
-  // const [mobileNo, setMobileNo] = useState("");
-  // const [otp, setOTP] = useState("");
-  // const [otpEmail, setEmailOTP] = useState("");
-  // const [email, setEmail] = useState("");
+
+  // const [firstName, setFirstName] = useState("vipin");
+  // const [lastName, setLastName] = useState("vv");
+  // const [customerID, setCustomerID] = useState("123123");
+  // const [idNumber, setIdNumber] = useState("123123");
+  // const [gender, setGender] = useState("M");
+  // const [mobileNo, setMobileNo] = useState("1231233");
+  // const [otp, setOTP] = useState("123123");
+  // const [otpEmail, setEmailOTP] = useState("123123");
+  // const [email, setEmail] = useState("vipin.bahwan@gmail.com");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [customerID, setCustomerID] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
+  const [otp, setOTP] = useState("");
+  const [otpEmail, setEmailOTP] = useState("");
+  const [email, setEmail] = useState("");
 
   const [countryCode, setCountryCode] = useState("673");
 
@@ -346,7 +347,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
-      console.log("hitting ");
       //alert(countryCode + mobileNo);
       const resp = await dispatch(
         getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
