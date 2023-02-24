@@ -9,7 +9,7 @@ import { Login } from "../Screens/Login/Login";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import Register from "../Screens/Register/Register";
 import EditProfile from "../Screens/EditProfile/EditProfile";
-// import BottomBarNavigation from "./BottomBarNavigation";
+import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import SavedLocation from "../Screens/Location/SavedLocation";
 
@@ -72,11 +72,11 @@ function MyStack() {
           name="Playground"
           component={Playground}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
-        /> */}
+        />
         <Stack.Screen
           options={{ headerShown: false, title: "Edit Profile" }}
           name="EditProfile"

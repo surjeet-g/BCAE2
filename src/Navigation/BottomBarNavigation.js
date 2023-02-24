@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
+import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import { Dashboard } from "../Screens/TabScreens/Dashboard";
 // import Chat from "../Screens/TabScreens/Chat";
 // import Announcement from "../Screens/TabScreens/Announcement";
@@ -14,6 +14,8 @@ import CustomBottomBar from "./CustomBottomBar";
 import { color } from "../Utilities/Constants/Constant";
 //import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Text, Pressable } from "react-native";
+import TermIcon from "../Assets/svg/terms.svg";
+import AnnouIcon from "../Assets/svg/anno.svg";
 
 const Tab = createBottomTabNavigator();
 const initialRoutByPlat =
@@ -77,20 +79,25 @@ const Root = () => {
         options={({ navigation }, a) => ({
           drawerLabel: "First page Option",
           activeTintColor: "#e91e63",
-          // headerShown: true,
+          headerShown: true,
           title: "Dashboard",
-          // headerLeft: () => {
-          //   return (
-          //     <Pressable
-          //       onPress={() => {
-
-          //         navigation.openDrawer();
-          //       }}
-          //     >
-
-          //     </Pressable>
-          //   );
-          // },
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                >
+                  <TermIcon {...ICON_STYLE} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Announcements")}>
+                  <AnnouIcon {...ICON_STYLE} />
+                </Pressable>
+              </View>
+            );
+          },
         })}
       />
     </Drawer.Navigator>
