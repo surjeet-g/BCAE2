@@ -28,8 +28,8 @@ export const CustomInput = (props) => {
       >
         <TextInput
           {...props}
-          underlineColor="transparant"
-          activeUnderlineColor="transparant"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
           style={{
             height: 45,
             padding: 0,

@@ -3,12 +3,16 @@ import {
   FAILURE_LOGIN,
   SET_LOGIN_DATA,
   RESET_LOGIN_DATA,
+  SET_SHOW_SECOND_LOGIN_ALERT,
+  RESET_SHOW_SECOND_LOGIN_ALERT,
 } from "./LoginAction";
 
 const loginInitialState = {
   initLogin: false,
   isLoginError: false,
   loggedProfile: {},
+  showSecondLoginAlert: false,
+  secondLoginAlertInfo: {},
 };
 
 const LoginReducer = (state = loginInitialState, action) => {
@@ -19,6 +23,7 @@ const LoginReducer = (state = loginInitialState, action) => {
         initLogin: true,
         isLoginError: false,
         loggedProfile: {},
+        showSecondLoginAlert: false,
       };
 
     case FAILURE_LOGIN:
@@ -35,6 +40,7 @@ const LoginReducer = (state = loginInitialState, action) => {
         initLogin: false,
         isLoginError: false,
         loggedProfile: action.data,
+        showSecondLoginAlert: false,
       };
 
     case RESET_LOGIN_DATA:
@@ -43,6 +49,19 @@ const LoginReducer = (state = loginInitialState, action) => {
         initLogin: false,
         isLoginError: false,
         loggedProfile: {},
+        showSecondLoginAlert: false,
+      };
+    case SET_SHOW_SECOND_LOGIN_ALERT:
+      return {
+        ...state,
+        showSecondLoginAlert: true,
+        secondLoginAlertInfo: action.data,
+      };
+    case RESET_SHOW_SECOND_LOGIN_ALERT:
+      return {
+        ...state,
+        showSecondLoginAlert: false,
+        secondLoginAlertInfo: {},
       };
     default:
       return state;
