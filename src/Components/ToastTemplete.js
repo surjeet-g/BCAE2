@@ -26,7 +26,7 @@ export const ToastTemplete = ({ bgColor, text }) => {
           color: "white",
           fontWeight: "500",
           marginLeft: spacing.HEIGHT_10,
-          overflowWrap: "break-word",
+          // overflowWrap: "break-word",
           marginRight: spacing.WIDTH_19,
         }}
       >

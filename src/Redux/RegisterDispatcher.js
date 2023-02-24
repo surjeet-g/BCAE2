@@ -3966,7 +3966,7 @@ export function userRegister(
 
     let result = await serverCall(servicePoint, requestMethod.POST, params);
 
-    if (result.success && result?.data?.data) {
+    if (result.success) {
       cbSuccess(result?.data?.message);
       dispatch(setOtpFormData(result?.data, type));
     } else {

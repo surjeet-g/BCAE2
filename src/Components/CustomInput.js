@@ -4,7 +4,8 @@ import { Text, TextInput } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 
 export const CustomInput = (props) => {
-  const { caption = "" } = props;
+  const { caption = "", multiline = false } = props;
+  const MULT_LINE = multiline ? {} : { height: 45 };
   const { roundness, colors } = useTheme();
   return (
     <View style={{ marginTop: 5 }}>
@@ -31,7 +32,7 @@ export const CustomInput = (props) => {
           underlineColor="transparant"
           activeUnderlineColor="transparant"
           style={{
-            height: 45,
+            ...MULT_LINE,
             padding: 0,
             margin: 0,
             borderRadius: roundness,
