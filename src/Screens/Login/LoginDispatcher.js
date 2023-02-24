@@ -9,12 +9,7 @@ import {
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import { saveDataToDB, getDataFromDB } from "../../Storage/token";
-import {
-  storageKeys,
-  DEFAULT_PROFILE_IMAGE,
-} from "../../Utilities/Constants/Constant";
-import { Platform } from "react-native";
-import { encryption } from "../../Utilities/Security/Encryption";
+import { storageKeys } from "../../Utilities/Constants/Constant";
 
 export function verifyLoginData(navigation, params) {
   console.log("$$$-verifyLoginData", params);

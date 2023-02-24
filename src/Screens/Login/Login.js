@@ -1,28 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Text,
-  Pressable,
-} from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonSize,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-  WEBCLIENT_ID,
-} from "../../Utilities/Constants/Constant";
+import { StyleSheet, View, ScrollView, Text, Pressable } from "react-native";
+import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from "react-native-google-signin";
 import { capitalizeFirstLetter } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 
@@ -42,7 +21,7 @@ import {
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { Button, RadioButton, Modal, Portal } from "react-native-paper";
+import { RadioButton, Modal, Portal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
 
 const BUSINESS = "business";
@@ -71,49 +50,6 @@ export const Login = ({ navigation }) => {
     resetShowSecondLoginAlert,
     callLogoutAndLogin,
   ]);
-
-  useEffect(() => {
-    GoogleSignin.configure({
-      scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
-      webClientId: WEBCLIENT_ID, // client ID of type WEB for your server (needed to verify user ID and offline access)
-      offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    });
-  }, []);
-
-  const googleSignOut = async () => {
-    try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      setloggedIn(false);
-      setuserInfo([]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const googleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const { accessToken, idToken } = await GoogleSignin.signIn();
-      console.log(accessToken, idToken);
-      // dispatch(verifyLoginData(props.navigation, "", ""));
-
-      setloggedIn(true);
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-        alert("Cancel");
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        alert("Signin in progress");
-        // operation (f.e. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        alert("PLAY_SERVICES_NOT_AVAILABLE");
-        // play services not available or outdated
-      } else {
-        // some other error happened
-      }
-    }
-  };
 
   const onSelectBusinessUserType = () => {
     setFirstSelected(true);
@@ -228,13 +164,6 @@ export const Login = ({ navigation }) => {
               )}
             </View>
 
-            {/* <GoogleSigninButton
-            style={{ width: 192, height: 48 }}
-            size={GoogleSigninButton.Size.Wide}
-            color={GoogleSigninButton.Color.Dark}
-            onPress={googleSignIn}
-          /> */}
-
             <View
               style={{
                 marginVertical: spacing.HEIGHT_30,
@@ -341,20 +270,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
   },
-  logo: {
-    height: 128,
-    width: 128,
-  },
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,
-  },
-  orText: {
-    color: color.BCAE_LIGHT_BLUE,
-    fontSize: fontSizes.FONT_10,
-    fontWeight: "500",
-    lineHeight: spacing.WIDTH_16,
-    paddingHorizontal: spacing.WIDTH_7,
   },
   forgotText: {
     color: "#E22D2D",
@@ -374,16 +292,5 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_14,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
-  },
-  upperText: {
-    color: color.PLACEHOLDER,
-    fontSize: fontSizes.FONT_12,
-    fontWeight: "500",
-    marginTop: 5,
-    lineHeight: spacing.WIDTH_14,
-  },
-  upperLogo: {
-    width: spacing.WIDTH_16,
-    height: spacing.WIDTH_16,
   },
 });
