@@ -17,17 +17,19 @@ import { Platform } from "react-native";
 import { encryption } from "../../Utilities/Security/Encryption";
 
 export function verifyLoginData(navigation, params) {
+  console.log("$$$-verifyLoginData", params);
   return async (dispatch) => {
-    const { username, password, userType, loginType } = params;
+    const { username, loginId, password, userType, loginType } = params;
     dispatch(initLoginData());
-
+    console.log("$$$-verifyLoginData");
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
+        console.log("$$$-verifyLoginData-deviceId", deviceId);
         return deviceId;
       })
       .then(async (fcmDeviceId) => {
         let params = {
-          loginId: username,
+          loginId: username || loginId,
           password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
@@ -40,9 +42,10 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
+        console.log("$$$-result", result);
 
         if (result.success) {
-          console.log("$$$-data", result.data);
+          console.log("$$$-data", result);
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
             dispatch(failureLogin(result));
@@ -68,8 +71,7 @@ export function resetLogin() {
   };
 }
 
-export function callLogoutAndLogin(userId) {
-  console.log("$$$-inside callLogoutAndLogin");
+export function callLogoutAndLogin(userId, navigation, requestObject) {
   return async (dispatch) => {
     let result = await serverCall(
       endPoints.LOGOUT_USER + userId,
@@ -77,12 +79,13 @@ export function callLogoutAndLogin(userId) {
     );
     console.log("$$$-logout-result", result);
     if (result?.data?.status === 200) {
+      console.log("$$$-requestObject", requestObject);
+      dispatch(verifyLoginData(navigation, requestObject.data));
     }
   };
 }
 
 export function resetShowSecondLoginAlert() {
-  console.log("$$$-inside resetShowSecondLoginAlert");
   return async (dispatch) => {
     dispatch(resetShowSecondLoginAlertData());
   };

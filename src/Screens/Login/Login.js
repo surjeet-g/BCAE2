@@ -64,7 +64,7 @@ export const Login = ({ navigation }) => {
   const [isFirstSelected, setFirstSelected] = useState(true);
 
   let login = useSelector((state) => state.login);
-  console.log("$$$-alerInfo", login?.secondLoginAlertInfo);
+  console.log("$$$-secondLoginAlertInfo", login.secondLoginAlertInfo);
   const dispatch = useDispatch([
     resetLogin,
     verifyLoginData,
@@ -123,36 +123,6 @@ export const Login = ({ navigation }) => {
   const onSelectConsumerUserType = () => {
     setFirstSelected(false);
     setUserType(CONSUMER);
-  };
-
-  const orSection = () => {
-    return (
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: spacing.HEIGHT_32,
-        }}
-      >
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-          }}
-        ></View>
-        <Text style={styles.orText}>{strings.or}</Text>
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-            alignContent: "flex-end",
-          }}
-        ></View>
-      </View>
-    );
   };
 
   return (
@@ -338,14 +308,16 @@ export const Login = ({ navigation }) => {
                 }}
               >
                 <View>
-                  <Text>Login</Text>
+                  <Text>Login Error</Text>
                   <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
                   <CustomButton
                     label={"Ok"}
                     onPress={() =>
                       dispatch(
                         callLogoutAndLogin(
-                          login?.secondLoginAlertInfo?.data?.data?.userId
+                          login?.secondLoginAlertInfo?.data?.data?.userId,
+                          navigation,
+                          login?.secondLoginAlertInfo?.requestObject
                         )
                       )
                     }
