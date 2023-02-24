@@ -6,6 +6,7 @@ import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
 import Splash from "../Screens/Splash/Splash";
 import { Login } from "../Screens/Login/Login";
+import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import Register from "../Screens/Register/Register";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import BottomBarNavigation from "./BottomBarNavigation";
@@ -50,11 +51,15 @@ function MyStack() {
           headerRight: () => {
             return (
               <View style={navBar.navRightCon}>
-                <Pressable onPress={() => alert("sdf")}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                >
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
-                <Pressable onPress={() => alert("to do nav to term")}>
+                <Pressable onPress={() => navigation.navigate("Announcements")}>
                   <AnnouIcon {...ICON_STYLE} />
                 </Pressable>
               </View>
@@ -105,6 +110,14 @@ function MyStack() {
           }}
           name="Login"
           component={Login}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
+          name="VerifyLoginOTP"
+          component={VerifyLoginOTP}
         />
         <Stack.Screen
           options={{
