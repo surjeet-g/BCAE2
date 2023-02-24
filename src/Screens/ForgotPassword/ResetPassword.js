@@ -22,13 +22,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { strings } from "../../Utilities/Language";
 import { Toast } from "../../Components/Toast";
-
-import { Button, TextInput } from "react-native-paper";
+import { CustomInput } from "../../Components/CustomInput";
+import { Button, TextInput, useTheme } from "react-native-paper";
 
 import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 
 const ResetPassword = ({ route, navigation }) => {
+  const { colors } = useTheme();
   let login = useSelector((state) => state.login);
   let forgot = useSelector((state) => state.forgot);
   const [oldPassword, setOldPassword] = useState("");
@@ -36,6 +37,7 @@ const ResetPassword = ({ route, navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [secureTextEntry, setsecureTextEntry] = useState(true);
+  const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [myscreenmae, setMyscreenmae] = useState("Reset Password");
   const { email, inviteToken } = route.params;
@@ -143,86 +145,17 @@ const ResetPassword = ({ route, navigation }) => {
         }}
         nestedScrollEnabled={true}
       >
-        <View style={{ marginBottom: spacing.WIDTH_30, alignItems: "center" }}>
-          <Image
-            style={styles.logo}
-            source={require("../../Assets/icons/ic_td123_logo.png")}
-          ></Image>
-        </View>
-
-        <View
-          style={{
-            marginTop: spacing.WIDTH_15,
-            marginBottom: spacing.WIDTH_30,
-            alignItems: "center",
-            flex: 1,
-            flexDirection: "row",
-          }}
-        >
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Anouncement", { fromLogin: true })
-            }
-            style={{
-              marginTop: spacing.HEIGHT_6,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "50%",
-            }}
-          >
-            <Image
-              style={styles.upperLogo}
-              source={require("../../Assets/icons/announcement_login.png")}
-            />
-            <Text style={styles.upperText}>{strings.announcement}</Text>
-          </Pressable>
-
-          <View
-            style={{
-              width: 1,
-              height: 40,
-              backgroundColor: color.DISABLED_GREY,
-            }}
-          ></View>
-
-          <Pressable
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: false,
-                url: DEBUG_BUILD ? STAGE_FAQ : PROD_FAQ,
-                title: "FAQ",
-              })
-            }
-            style={{
-              marginTop: spacing.HEIGHT_6,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "50%",
-            }}
-          >
-            <Image
-              style={styles.upperLogo}
-              source={require("../../Assets/icons/faq_login.png")}
-            />
-            <Text style={styles.upperText}>{strings.faq}</Text>
-          </Pressable>
-        </View>
-        <View>
-          <TextInput
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
+        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+          <CustomInput
             onChangeText={(text) => onOldPasswordChange(text)}
             value={oldPassword}
-            placeHolder={strings.old_password}
+            caption={strings.temporary_password}
+            placeHolder={strings.temporary_password}
             secureTextEntry={secureTextEntryOld}
             right={
               <TextInput.Icon
                 onPress={hideShowClickOld}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntryOld
@@ -233,20 +166,17 @@ const ResetPassword = ({ route, navigation }) => {
             }
           />
         </View>
-        <View style={{ marginBottom: 5 }}>
-          <TextInput
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
+        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+          <CustomInput
             onChangeText={(text) => onPasswordChange(text)}
             value={password}
+            caption={strings.new_password}
             placeHolder={strings.new_password}
             secureTextEntry={secureTextEntry}
             right={
               <TextInput.Icon
-                onPress={secureTextEntry}
+                onPress={hideShowClick}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntry
@@ -257,20 +187,18 @@ const ResetPassword = ({ route, navigation }) => {
             }
           />
         </View>
-        <View style={{ marginBottom: 15 }}>
-          <TextInput
+
+        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+          <CustomInput
             onChangeText={(text) => onConfirmPasswordChange(text)}
             value={confirmPassword}
+            caption={strings.confirmPassword}
             placeHolder={strings.confirmPassword}
             secureTextEntry={secureTextEntryConfim}
-            mode="flat"
-            style={{
-              backgroundColor: "transparent",
-            }}
-            textColor="#ea272c"
             right={
               <TextInput.Icon
                 onPress={hideShowClickConfirm}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
                 style={{ width: 23, height: 23 }}
                 icon={
                   secureTextEntryConfim
@@ -282,7 +210,7 @@ const ResetPassword = ({ route, navigation }) => {
           />
         </View>
         <View>
-          {forgot.initForgotPassword ? (
+          {forgot?.initForgotPassword ? (
             <CustomActivityIndicator
               size={buttonSize.LARGE}
               bgColor={color.BLACK}
@@ -290,24 +218,17 @@ const ResetPassword = ({ route, navigation }) => {
             />
           ) : (
             <Button
-              type={buttonType.PRIMARY}
-              size={buttonSize.LARGE}
-              label={strings.ok}
+              mode="contained"
+              label={strings.reset_password}
               disabled={
                 password == "" || oldPassword == "" || confirmPassword == ""
                   ? true
                   : false
               }
-              bgColor={color.BCAE_PRIMARY}
-              textColor={color.WHITE}
-              textPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_16,
-                fontWeight: "400",
-                lineHeight: spacing.HEIGHT_16,
-              }}
               onPress={onSubmitPasswordChanged}
-            />
+            >
+              {strings.reset_password}
+            </Button>
           )}
           {!forgot.initForgotPassword &&
             forgot?.loggedProfile.status == "200" &&
@@ -316,6 +237,7 @@ const ResetPassword = ({ route, navigation }) => {
             forgot?.loggedProfile.status != "200" &&
             showErrorMessage(forgot?.loggedProfile?.message)}
         </View>
+
         {orSection()}
 
         <View>

@@ -75,6 +75,8 @@ export let strings = new LocalizedStrings({
     wesent: "We have sent a password reset link to",
     wesend_mob:
       "We understand you are facing a challenge while login. Kindly use this new temporary password.",
+    reset_temp_password:
+      "You need to update your password because this is the first time you are signing in with temporary password.",
     didntRecive: "Didn't receive the email?",
     didNotReceive_email: "Didn't receive the email link?",
     clicktoresend: "Click to resend",
@@ -138,6 +140,7 @@ export let strings = new LocalizedStrings({
     email: "E-mail",
     whatsapp: "Whatsapp",
     old_password: "Old Password",
+    temporary_password: "Temporary Password",
     new_password: "New Password",
     refresh_chat: "Do you want to start a new chat?",
     password_not_match: "Passwords are not matching!!",

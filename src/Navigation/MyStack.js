@@ -20,7 +20,7 @@ import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 // import Anouncement from "../Screens/TabScreens/Announcement";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
 // import Notification from "../Screens/TabScreens/Notification";
-// import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
+import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 
@@ -54,6 +54,11 @@ function MyStack() {
           options={{ headerShown: false }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ResetPassword"
+          component={ResetPassword}
         />
         {/* <Stack.Screen
           options={{ headerShown: false }}

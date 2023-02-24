@@ -113,9 +113,7 @@ const ForgotPassword = ({ route, navigation }) => {
 
         <View>
           <Text style={styles.noAccText}>{strings.dont_account}</Text>
-          <Pressable
-            onPress={() => navigation.navigate("Register with us", {})}
-          >
+          <Pressable onPress={() => navigation.navigate("ResetPassword", {})}>
             <Text style={styles.rgisterText}>
               {strings.register_with_us.toUpperCase()}
             </Text>
