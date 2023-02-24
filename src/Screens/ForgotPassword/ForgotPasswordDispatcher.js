@@ -22,8 +22,12 @@ export function verifyForgotPasswordData(navigation, params, type) {
 
     // navigation.replace("ConfirmForgotPassword", { email: params.loginId });
     if (result.success) {
-      dispatch(setForgotPasswordData(result.data));
+      dispatch(setForgotPasswordData(result?.data));
       dispatch(resetForgotPasswordData());
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.message || "",
+      });
       navigation.replace("ConfirmForgotPassword", { email: username });
     } else {
       Toast.show({
@@ -71,6 +75,10 @@ export function changePassword(
     console.log(JSON.stringify(result));
     if (result.success) {
       dispatch(setForgotPasswordData(result.data));
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.message || "",
+      });
     } else {
       dispatch(failureForgotPassword(result));
     }

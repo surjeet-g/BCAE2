@@ -28,6 +28,7 @@ import {
 } from "../ForgotPasswordDispatcher";
 import { Button, TextInput, useTheme } from "react-native-paper";
 import moment from "moment";
+import { CustomButton } from "../../../Components/CustomButton";
 
 const CustomerIDForgotPassword = (props) => {
   const { colors } = useTheme();
@@ -93,7 +94,7 @@ const CustomerIDForgotPassword = (props) => {
           props.navigation,
           {
             loginId: username,
-            lastname: lastName,
+            lastName: lastName,
             dob: moment(dob).format("YYYY-MM-DD"),
           },
           "customerID"
@@ -201,24 +202,14 @@ const CustomerIDForgotPassword = (props) => {
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}></View>
       <View>
-        {forgot?.initForgotPassword ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <Button
-            mode="contained"
-            label={strings.reset_password}
-            disabled={
-              username == "" && dob == "" && lastName == "" ? true : false
-            }
-            onPress={submit}
-          >
-            {strings.reset_password}
-          </Button>
-        )}
+        <CustomButton
+          loading={forgot?.initForgotPassword}
+          label={strings.reset_password}
+          isDisabled={
+            username == "" && dob == "" && lastName == "" ? true : false
+          }
+          onPress={submit}
+        />
       </View>
 
       <Pressable onPress={() => props.navigation.goBack()}>
