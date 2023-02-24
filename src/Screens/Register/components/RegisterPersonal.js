@@ -198,6 +198,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
   const submit = async () => {
+    console.log(">>", title);
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",
@@ -271,7 +272,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         confirmPassword: confirmPassword,
         isVerified: true,
       };
-
+      console.log("submit validation success", registerObject);
       dispatch(
         userRegister(registerObject, "Register", (message) =>
           showAlert(message)
@@ -426,6 +427,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       const resp = await dispatch(
         getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp")
       );
+      console.log("hitting", resp);
       if (resp.status) {
         setEmailOTPVerification(true);
       } else {
@@ -519,7 +521,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginVertical: 5 }}>
         <CustomDropDown
           selectedValue={selectedValueTitle?.description}
-          setValue={setValueTitle}
+          setValue={setTitle}
           data={[
             { code: "Mr", description: "Mr" },
             { code: "Mrs", description: "Mrs" },
@@ -939,7 +941,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         <Button
           label={strings.register}
-          // isDisabled={isButtomDiable}
+          isDisabled={isButtomDiable}
           onPress={submit}
           loading={
             registerForm?.initOtpForm

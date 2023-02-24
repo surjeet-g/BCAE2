@@ -3939,8 +3939,8 @@ export function getOtpForCheck({ otp, reference }, type) {
     const refType = type == "mobileOtp" ? "mobile" : "email";
     servicePoint = `${endPoints.CHECK_OTP}${reference}?type=${refType}&otp=${otp}`;
     let result = await serverCall(servicePoint, requestMethod.GET);
-    console.log("result", result);
-    if (result.success && result?.data?.data) {
+
+    if (result.success) {
       dispatch(setOtpFormData(result?.data, type));
       return { status: true };
     } else {

@@ -137,20 +137,20 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const submit = async () => {
     console.log("submit buttom pressed");
     //to do bypass otp validation
-    if (!mobileOTPVerifcation) {
-      Toast.show({
-        type: "bctError",
-        text1: strings.otpErrorMsgForMobile,
-      });
-      return null;
-    }
-    if (!emailOTPVerification) {
-      Toast.show({
-        type: "bctError",
-        text1: strings.otpErrorMsgForEmail,
-      });
-      return null;
-    }
+    // if (!mobileOTPVerifcation) {
+    //   Toast.show({
+    //     type: "bctError",
+    //     text1: strings.otpErrorMsgForMobile,
+    //   });
+    //   return null;
+    // }
+    // if (!emailOTPVerification) {
+    //   Toast.show({
+    //     type: "bctError",
+    //     text1: strings.otpErrorMsgForEmail,
+    //   });
+    //   return null;
+    // }
 
     if (firstName.trim() === "") {
       setFirstNameError(strings.firstNameError);
@@ -158,7 +158,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       setLastNameError(strings.lastNameError);
     } else if (customerID === "") {
       setCustomerIDError(strings.customerIDError);
-    } else if (idNumberError === "") {
+    } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
     } else if (dob === "") {
       dobError(strings.dobError);
@@ -705,10 +705,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         {otpEmailError !== "" && showErrorMessage(otpEmailError)}
       </View>
 
-      {!registerForm.initRegisterForm &&
-        registerForm?.otpFormData?.errorCode !== "200" &&
-        registerForm?.otpUsageType === "Register" &&
-        showErrorMessage(registerForm?.otpFormData?.message)}
       <DatePicker
         modal
         mode="date"
@@ -817,7 +813,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         ) : (
           <Button
             label={strings.register}
-            // disabled={isButtomDiable}
+            disabled={isButtomDiable}
             loading={
               registerForm?.initOtpForm
                 ? registerForm?.otpUsageType === "Register"
