@@ -78,10 +78,10 @@ const CustomerEmailForgotPassword = (props) => {
     } else {
       //to do api call
       const params = {
-        email: username,
+        loginId: username,
       };
-      console.log("params", params);
-      dispatch(verifyForgotPasswordData(props.navigation, {}));
+
+      dispatch(verifyForgotPasswordData(props.navigation, params));
     }
   };
 

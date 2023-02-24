@@ -10,7 +10,7 @@ import { saveToken, getToken } from "../../Storage/token";
 import { passwordHash } from "../../Utilities/Constants/Constant";
 import Toast from "react-native-toast-message";
 
-export function verifyForgotPasswordData(navigation, params) {
+export function verifyForgotPasswordData(navigation, params, type) {
   return async (dispatch) => {
     dispatch(initForgotPasswordData());
 
@@ -19,7 +19,8 @@ export function verifyForgotPasswordData(navigation, params) {
       requestMethod.POST,
       params
     );
-    console.log("===success===", result);
+
+    // navigation.replace("ConfirmForgotPassword", { email: params.loginId });
     if (result.success) {
       dispatch(setForgotPasswordData(result.data));
       dispatch(resetForgotPasswordData());

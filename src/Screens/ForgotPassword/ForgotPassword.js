@@ -19,11 +19,12 @@ import {
 import { strings } from "../../Utilities/Language";
 import { ToggleButton } from "../../Components/ToggleButton";
 import CustomerEmailForgotPassword from "./component/CustomerEmailForgotPassword";
-
+import { SvgBG } from "../../Components/SvgBG";
 import { Toast } from "../../Components/Toast";
 
 import { useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ForgotPassword = ({ route, navigation }) => {
   let login = useSelector((state) => state.login);
@@ -70,80 +71,15 @@ const ForgotPassword = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <SvgBG />
       <ScrollView
         style={{
           flexGrow: 1,
           paddingHorizontal: spacing.WIDTH_30,
-          paddingTop: spacing.HEIGHT_50 * 2,
+          ...HEADER_MARGIN,
         }}
         nestedScrollEnabled={true}
       >
-        <View style={{ marginBottom: spacing.WIDTH_30, alignItems: "center" }}>
-          <Image
-            style={styles.logo}
-            source={require("../../Assets/icons/ic_td123_logo.png")}
-          ></Image>
-        </View>
-
-        <View
-          style={{
-            marginTop: spacing.WIDTH_15,
-            marginBottom: spacing.WIDTH_30,
-            alignItems: "center",
-            flex: 1,
-            flexDirection: "row",
-          }}
-        >
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Anouncement", { fromLogin: true })
-            }
-            style={{
-              marginTop: spacing.HEIGHT_6,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "50%",
-            }}
-          >
-            <Image
-              style={styles.upperLogo}
-              source={require("../../Assets/icons/announcement_login.png")}
-            />
-            <Text style={styles.upperText}>{strings.announcement}</Text>
-          </Pressable>
-
-          <View
-            style={{
-              width: 1,
-              height: 40,
-              backgroundColor: color.DISABLED_GREY,
-            }}
-          ></View>
-
-          <Pressable
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: false,
-                url: DEBUG_BUILD ? STAGE_FAQ : PROD_FAQ,
-                title: "FAQ",
-              })
-            }
-            style={{
-              marginTop: spacing.HEIGHT_6,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "50%",
-            }}
-          >
-            <Image
-              style={styles.upperLogo}
-              source={require("../../Assets/icons/faq_login.png")}
-            />
-            <Text style={styles.upperText}>{strings.faq}</Text>
-          </Pressable>
-        </View>
         <View style={{ marginBottom: spacing.WIDTH_20 }}>
           <ToggleButton
             isFirstSelected={isFirstSelected}
@@ -186,33 +122,6 @@ const ForgotPassword = ({ route, navigation }) => {
             </Text>
           </Pressable>
         </View>
-
-        {/* {
-          orSection()
-        }
-
-        <View style={{ marginTop: spacing.HEIGHT_32 }}>
-          <Button
-            size={buttonSize.LARGE}
-            img={require('../../Assets/icons/ic_goole_logo.png')}
-            imgPro={{ marginRight: spacing.HEIGHT_5, height: spacing.WIDTH_16, width: spacing.WIDTH_16, }}
-            label={strings.sign_up_with_google}
-            bgColor={color.BCAE_LIGHT_BLUE_3}
-            textPro={{ color: color.WHITE, fontSize: fontSizes.FONT_16, fontWeight: '500', lineHeight: spacing.HEIGHT_19 }}
-          />
-        </View>
-
-        <View style={{ marginTop: spacing.HEIGHT_10 }}>
-          <Button
-            size={buttonSize.LARGE}
-            img={require('../../Assets/icons/ic_apple_logo.png')}
-            imgPro={{ marginRight: spacing.HEIGHT_5, height: spacing.WIDTH_16, width: spacing.WIDTH_16, }}
-            label={strings.sign_up_with_apple}
-            bgColor={color.BLACK}
-            textPro={{ color: color.WHITE, fontSize: fontSizes.FONT_16, fontWeight: '500', lineHeight: spacing.HEIGHT_19 }}
-          />
-        </View> */}
-
         <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
       </ScrollView>
 

@@ -37,7 +37,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Register with us"
+        initialRouteName="Forgot Password"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
