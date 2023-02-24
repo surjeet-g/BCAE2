@@ -16,7 +16,7 @@ import { encryption } from "../../Utilities/Security/Encryption";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { username, password, userType } = params;
+    const { username, password, userType, loginType } = params;
     dispatch(initLoginData());
 
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
@@ -26,10 +26,11 @@ export function verifyLoginData(navigation, params) {
       .then(async (fcmDeviceId) => {
         let params = {
           loginId: username,
-          password: password,
+          password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
           userType,
+          loginType,
         };
 
         let result = await serverCall(
@@ -39,91 +40,18 @@ export function verifyLoginData(navigation, params) {
         );
 
         if (result.success) {
-          if (
-            result?.data?.data?.userDetails?.status &&
-            (result?.data?.data?.userDetails?.status).includes("TEMP")
-          ) {
-            dispatch(setLoginData(result.data));
-            navigation.navigate("ResetPassword", {
-              email: result?.data?.data?.userDetails?.email,
-              inviteToken: result?.data?.data?.userDetails?.inviteToken,
-            });
+          console.log("$$$-data", result.data);
+          if (result.data?.data?.anotherSession) {
+            // Todo - Show alert to the user with OK and Cancel
+            // If Ok - call logout and call login api again
+            // If cancel - close alert and stay in same screen
           } else {
-            let userId = result?.data?.data?.userDetails?.user?.userId;
-            let customerId = result?.data?.data?.userDetails?.user?.customerId;
-
             let accessTokenData = {
-              accessToken: result?.data?.data?.userDetails?.accessToken ?? "",
+              accessToken: result.data?.data?.accessToken ?? "",
             };
-            let refreshTokenData = {
-              refreshToken: result?.data?.data?.userDetails?.refreshToken ?? "",
-            };
-            //alert(JSON.stringify(result?.data?.data?.userDetails))
             await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
-            await saveDataToDB(storageKeys.REFRESH_TOKEN, refreshTokenData);
-
-            let profileParams = {};
-
-            let profileResult = await serverCall(
-              endPoints.PROFILE_DETAILS +
-                "/" +
-                result?.data?.data?.userDetails?.user?.userId,
-              requestMethod.GET,
-              profileParams
-            );
-
-            if (profileResult.success) {
-              let profileData = {
-                currDeptId: result?.data?.data?.userDetails?.currDeptId ?? "",
-                userId: profileResult?.data?.data?.userId ?? "",
-                customerId: profileResult?.data?.data?.customerId ?? "",
-                contactNo: profileResult?.data?.data?.contactNo ?? "",
-                email: profileResult?.data?.data?.email ?? "",
-                profilePicture: profileResult?.data?.data?.profilePicture
-                  ? profileResult?.data?.data?.profilePicture
-                  : DEFAULT_PROFILE_IMAGE,
-                firstName: profileResult?.data?.data?.firstName ?? "",
-                lastName: profileResult?.data?.data?.lastName ?? "",
-                gender: profileResult?.data?.data?.gender ?? "",
-                status: profileResult?.data?.data?.status ?? "",
-                location: profileResult?.data?.data?.location,
-                hno: profileResult?.data?.data?.address?.hno ?? "",
-                block: profileResult?.data?.data?.address?.block ?? "",
-                street: profileResult?.data?.data?.address?.street ?? "",
-                buildingName:
-                  profileResult?.data?.data?.address?.buildingName ?? "",
-                road: profileResult?.data?.data?.address?.road ?? "",
-                city: profileResult?.data?.data?.address?.city ?? "",
-                town: profileResult?.data?.data?.address?.town ?? "",
-                state: profileResult?.data?.data?.address?.state ?? "",
-                district: profileResult?.data?.data?.address?.district ?? "",
-                country: profileResult?.data?.data?.address?.country ?? "",
-                latitude: profileResult?.data?.data?.address?.latitude ?? "",
-                longitude: profileResult?.data?.data?.address?.longitude ?? "",
-                postCode: profileResult?.data?.data?.address?.postCode ?? "",
-              };
-
-              await saveDataToDB(
-                storageKeys.PROFILE_DETAILS,
-                encryption(profileData),
-                true
-              );
-
-              getDataFromDB(storageKeys.PROFILE_DETAILS, true).then(
-                (resultData) => {
-                  if (resultData) {
-                    //result.data.data
-                    dispatch(setLoginData(result.data));
-                    console.log("result logged", resultData);
-                    // navigation.replace("BottomBar", {});
-                  } else {
-                    dispatch(setLoginData([]));
-                  }
-                }
-              );
-            } else {
-              dispatch(failureLogin(profileResult));
-            }
+            dispatch(setLoginData(result.data?.data));
+            navigation.replace("BottomBar", {});
           }
         } else {
           dispatch(failureLogin(result));
