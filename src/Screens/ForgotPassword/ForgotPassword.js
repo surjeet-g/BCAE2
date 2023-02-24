@@ -24,6 +24,7 @@ import { Toast } from "../../Components/Toast";
 
 import { useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ForgotPassword = ({ route, navigation }) => {
   let login = useSelector((state) => state.login);
@@ -75,7 +76,7 @@ const ForgotPassword = ({ route, navigation }) => {
         style={{
           flexGrow: 1,
           paddingHorizontal: spacing.WIDTH_30,
-          paddingTop: spacing.HEIGHT_10 * 2,
+          ...HEADER_MARGIN,
         }}
         nestedScrollEnabled={true}
       >
@@ -113,7 +114,9 @@ const ForgotPassword = ({ route, navigation }) => {
 
         <View>
           <Text style={styles.noAccText}>{strings.dont_account}</Text>
-          <Pressable onPress={() => navigation.navigate("ResetPassword", {})}>
+          <Pressable
+            onPress={() => navigation.navigate("Register with us", {})}
+          >
             <Text style={styles.rgisterText}>
               {strings.register_with_us.toUpperCase()}
             </Text>

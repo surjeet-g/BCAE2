@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import BG from "../Assets/svg/bg.svg";
+import BG_SPLASH from "../Assets/svg/bg_splash.svg";
+import BG_OTHERS from "../Assets/svg/bg_others.svg";
 
 export const SvgBG = () => {
   return (
@@ -13,7 +14,7 @@ export const SvgBG = () => {
         zIndex: -99999,
       }}
     >
-      <BG />
+      <BG_SPLASH />
     </View>
   );
 };

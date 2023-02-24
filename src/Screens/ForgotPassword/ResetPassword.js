@@ -4,7 +4,6 @@ import {
   View,
   Image,
   ScrollView,
-  Text,
   Pressable,
   Alert,
 } from "react-native";
@@ -23,10 +22,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { strings } from "../../Utilities/Language";
 import { Toast } from "../../Components/Toast";
 import { CustomInput } from "../../Components/CustomInput";
-import { Button, TextInput, useTheme } from "react-native-paper";
+import { Button, TextInput, useTheme, Text, Divider } from "react-native-paper";
 
 import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
+import { ClearSpace } from "../../Components/ClearSpace";
 
 const ResetPassword = ({ route, navigation }) => {
   const { colors } = useTheme();
@@ -39,9 +39,11 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  const [myscreenmae, setMyscreenmae] = useState("Reset Password");
-  const { email, inviteToken } = route.params;
-
+  // const { email, inviteToken } = route.params;
+  const { email, inviteToken } = {
+    email: "vipin.bahwan@gmail.com",
+    inviteToken: "234",
+  };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -145,6 +147,14 @@ const ResetPassword = ({ route, navigation }) => {
         }}
         nestedScrollEnabled={true}
       >
+        <View style={{ marginBottom: 30 }}>
+          <Text variant="bodyMedium">Email Address : {email}</Text>
+          <ClearSpace />
+          <ClearSpace />
+          <ClearSpace />
+          <Text variant="bodyMedium">User ID : </Text>
+        </View>
+
         <View style={{ marginBottom: spacing.HEIGHT_20 }}>
           <CustomInput
             onChangeText={(text) => onOldPasswordChange(text)}

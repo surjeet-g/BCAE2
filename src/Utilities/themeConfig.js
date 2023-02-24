@@ -1,7 +1,7 @@
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
-export const FONT_FAMILY = "ProximaNova-Regular";
-export const FONT_FAMILY_MEDIUM = "ProximaNova-Regular";
-
+export const FONT_FAMILY = "";
+export const FONT_FAMILY_MEDIUM = "";
+export const HEADER_MARGIN = { marginTop: 50, paddingTop: 20 };
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
@@ -11,6 +11,7 @@ const theme = {
     primary: "#F5AD47",
     onPrimaryContainer: "#88a5da",
     secondary: "#474747",
+    inverseSecondary: "#fff",
     tertiary: "#DADADA",
     gray: "#C7CAD1",
     background: "#ffffff",

@@ -1,85 +1,178 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, Button, View, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { Login } from "../Screens/Login/Login";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
 import Splash from "../Screens/Splash/Splash";
-// import Login from "../Screens/Login/Login";
+import { Login } from "../Screens/Login/Login";
+import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import Register from "../Screens/Register/Register";
-// import EditProfile from "../Screens/EditProfile/EditProfile";
+import EditProfile from "../Screens/EditProfile/EditProfile";
 // import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
-// import SavedLocation from "../Screens/Location/SavedLocation";
+import SavedLocation from "../Screens/Location/SavedLocation";
 
 // import Location from "../Screens/Location/Location";
-// import AddLocation from "../Screens/Location/AddLocation";
+import AddLocation from "../Screens/Location/AddLocation";
+
 // import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
 
 // import Anouncement from "../Screens/TabScreens/Announcement";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
 // import Notification from "../Screens/TabScreens/Notification";
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
+import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
+import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
+import { Playground } from "../Screens/Playground";
+import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
-
+import { useTheme } from "react-native-paper";
+import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 const Stack = createStackNavigator();
-
 function MyStack() {
+  const { colors, fonts } = useTheme();
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      {/* Register with u */}
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={({ navigation }) => ({
+          headerTransparent: true,
+          headerStyle: {
+            backgroundColor: "transparent",
+          },
+          headerTitleStyle: {
+            ...fonts.titleLarge,
+            ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
+          },
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                >
+                  <TermIcon {...ICON_STYLE} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Announcements")}>
+                  <AnnouIcon {...ICON_STYLE} />
+                </Pressable>
+              </View>
+            );
+          },
+        })}
+      >
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Splash"
-          component={Splash}
+          name="Playground"
+          component={Playground}
         />
-        <Stack.Screen
-          // options={{ headerShown: false }}
-          name="Login"
-          component={Login}
-        />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false }}
-          name="Register with us"
-          component={Register}
-        />
+          name="BottomBar"
+          component={BottomBarNavigation}
+        /> */}
         <Stack.Screen
-          //options={{ headerShown: false }}
-          name="ForgotPassword"
-          component={ForgotPassword}
+          options={{ headerShown: false, title: "Edit Profile" }}
+          name="EditProfile"
+          component={EditProfile}
         />
+
         <Stack.Screen
           options={{ headerShown: false }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true, title: "Reset Password" }}
           name="ResetPassword"
           component={ResetPassword}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
+          name="Splash"
+          component={Splash}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ForgotUserInfo"
+          component={ForgotUserinfo}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
           name="Login"
           component={Login}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
-          name="Register with us"
-          component={Register}
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
+          name="VerifyLoginOTP"
+          component={VerifyLoginOTP}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            title: "Forgot Password",
+          }}
           name="ForgotPassword"
           component={ForgotPassword}
         />
         <Stack.Screen
+          options={{ headerShown: true, title: "Registration" }}
+          name="Register with us"
+          component={Register}
+        />
+        <Stack.Screen
+          options={{
+            headerTintColor: colors.inverseSecondary,
+
+            headerTransparent: false,
+            title: "Location on map",
+            headerRight: () => {},
+            headerStyle: {
+              backgroundColor: colors.secondary,
+            },
+            headerTitleStyle: {
+              ...fonts.titleMedium,
+              ...{ color: colors.inverseSecondary, fontWeight: "700" },
+            },
+          }}
+          name="AddLocation"
+          component={AddLocation}
+        />
+        <Stack.Screen
+          options={{ headerShown: true, title: "Saved Locations" }}
+          name="SavedLocation"
+          component={SavedLocation}
+        />
+        {/* second step for user registration */}
+
+        {/* forgot password verify step */}
+        <Stack.Screen
           options={{ headerShown: false }}
-          name="BottomBar"
-          component={BottomBarNavigation}
-        /> */}
+          name="VerifyForgotUserInfo"
+          component={VerifyForgotUserInfo}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Announcements",
+          }}
+          name="Announcements"
+          component={AnnouncementList}
+        />
+
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="EditProfile"
@@ -97,11 +190,7 @@ function MyStack() {
           component={Location}
         />
 
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="AddLocation"
-          component={AddLocation}
-        />
+       
         <Stack.Screen
           options={{ headerShown: false }}
           name="ShowWebPage"

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import { spacing, fontSizes, color } from "../Utilities/Constants/Constant";
 
-const CustomErrorText = (props) => {
+export const CustomErrorText = (props) => {
   const { errMessage } = props;
   return (
     <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
@@ -29,5 +29,3 @@ const styles = StyleSheet.create({
     marginRight: spacing.WIDTH_4,
   },
 });
-
-export default CustomErrorText;

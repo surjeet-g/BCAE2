@@ -12,6 +12,7 @@ import {
   Alert,
 } from "react-native";
 import Geocoder from "react-native-geocoder";
+import { useTheme } from "react-native-paper";
 
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,8 +46,10 @@ const { height } = Dimensions.get("screen");
 import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
 import { countryCodes } from "react-native-country-codes-picker/constants/countryCodes";
 import get from "lodash.get";
+import { CustomButton } from "../../Components/CustomButton";
 
 const AddLocation = ({ route, navigation }) => {
+  const { colors, fonts, roundness } = useTheme();
   const [activeDropDown, setActiveDropDown] = useState("district");
 
   let savedLocation = useSelector((state) => state.savedLocations);
@@ -486,7 +489,7 @@ const AddLocation = ({ route, navigation }) => {
           </View>
 
           <Callout style={styles.ticketItem}>
-            <Text style={[styles.textBase, styles.description]}>
+            <Text style={[{ color: colors.primary }, styles.description]}>
               {geoAddress}
             </Text>
           </Callout>
@@ -532,14 +535,22 @@ const AddLocation = ({ route, navigation }) => {
         ></Header> */}
       </View>
 
-      <View style={styles.inputBox}>
+      <View
+        style={{
+          ...styles.inputBox,
+          ...{ borderRadius: roundness + 5 },
+        }}
+      >
         <TextInput
           mode="flat"
-          // style={{
-          //   backgroundColor: "transparent",
-          // }}
-          textColor="#ea272c"
-          style={styles.searchInput}
+          style={{
+            height: 40,
+            padding: 0,
+            margin: 0,
+            borderRadius: roundness,
+            color: colors.onSurfaceVariant,
+          }}
+          // style={styles.searchInput}
           //onChangeText={setSearchText}
           value={geoAddress}
           placeholder="Search"
@@ -633,12 +644,11 @@ const AddLocation = ({ route, navigation }) => {
           styles.bottomView,
         ]}
       >
-        <TouchableHighlight
+        <CustomButton
           style={styles.savelocBtn}
+          label={strings.save_location}
           onPress={() => onClickedSaveLocationButton()}
-        >
-          <Text style={[styles.saveLocText]}>{strings.save_location}</Text>
-        </TouchableHighlight>
+        />
       </View>
       {isAddLocationModalVisible && (
         <View style={{ position: "absolute", top: "5%", left: "5%" }}>
@@ -956,14 +966,16 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     margin: 20,
+    paddingLeft: 12,
     alignItems: "stretch",
     backgroundColor: "white",
-    borderRadius: 3,
+    elevation: 1,
     borderColor: "#9FA5AA",
     borderWidth: 1,
   },
   inputBoxModal: {
     margin: 10,
+
     marginTop: 10,
     alignItems: "stretch",
     backgroundColor: "white",

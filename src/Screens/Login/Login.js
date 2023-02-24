@@ -22,7 +22,7 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "react-native-google-signin";
-
+import { capitalizeFirstLetter } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 
 import CustomerEmailLogin from "./component/CustomerEmailLogin";
@@ -36,9 +36,13 @@ import {
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { Button } from "react-native-paper";
-const TAB_EMAIL = true;
-const TAB_MOBILE = false;
+import { Button, RadioButton } from "react-native-paper";
+import { SvgBG } from "../../Components/SvgBG";
+
+const BUSINESS = "business";
+const CONSUMER = "consumer";
+const EMAIL = "Email Address";
+const MOBILE = "Mobile Number";
 
 export const Login = ({ navigation }) => {
   useEffect(() => {
@@ -49,14 +53,13 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [loggedIn, setloggedIn] = useState(false);
-  const [userInfo, setuserInfo] = useState([]);
+  const [userType, setUserType] = useState(BUSINESS);
+  const [loginMode, setLoginMode] = useState(EMAIL);
+  const [isFirstSelected, setFirstSelected] = useState(true);
 
-  const [visible, setVisible] = React.useState(false);
-
-  const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
   let login = useSelector((state) => state.login);
   const dispatch = useDispatch([resetLogin, verifyLoginData]);
+
   useEffect(() => {
     GoogleSignin.configure({
       scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
@@ -64,7 +67,8 @@ export const Login = ({ navigation }) => {
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
   }, []);
-  const signOut = async () => {
+
+  const googleSignOut = async () => {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
@@ -74,7 +78,8 @@ export const Login = ({ navigation }) => {
       console.error(error);
     }
   };
-  const signIn = async () => {
+
+  const googleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const { accessToken, idToken } = await GoogleSignin.signIn();
@@ -98,13 +103,14 @@ export const Login = ({ navigation }) => {
     }
   };
 
-  const onPressFirst = () => {
-    dispatch(resetLogin());
-    setFirstSelected(TAB_EMAIL);
+  const onSelectBusinessUserType = () => {
+    setFirstSelected(true);
+    setUserType(BUSINESS);
   };
-  const onPressSecond = () => {
-    dispatch(resetLogin());
-    setFirstSelected(TAB_MOBILE);
+
+  const onSelectConsumerUserType = () => {
+    setFirstSelected(false);
+    setUserType(CONSUMER);
   };
 
   const orSection = () => {
@@ -139,160 +145,179 @@ export const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <SvgBG />
       <KeyboardAwareView animated={false}>
-        <ScrollView
+        <View
           style={{
-            flexGrow: 1,
             paddingHorizontal: spacing.WIDTH_30,
-            // paddingTop: spacing.HEIGHT_50 * 2,
-            marginBottom: spacing.HEIGHT_30,
+            flex: 1,
+            justifyContent: "space-between",
           }}
-          nestedScrollEnabled={true}
         >
-          <View
-            style={{ marginBottom: spacing.WIDTH_30, alignItems: "center" }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../Assets/icons/ic_td123_logo.png")}
-            ></Image>
-          </View>
+          <ScrollView nestedScrollEnabled={true}>
+            <View style={{ marginTop: 80, flex: 1 }}>
+              <View
+                style={{
+                  marginBottom: spacing.HEIGHT_20,
+                }}
+              >
+                <ToggleButton
+                  isFirstSelected={isFirstSelected}
+                  label={{
+                    first: capitalizeFirstLetter(BUSINESS),
+                    second: capitalizeFirstLetter(CONSUMER),
+                  }}
+                  bgColor={{
+                    selected: color.BCAE_PRIMARY,
+                    unselected: color.BCAE_LIGHT_BLUE_2,
+                  }}
+                  textColor={{
+                    selected: color.WHITE,
+                    unselected: color.BCAE_PRIMARY,
+                  }}
+                  textPro={{
+                    fontSize: fontSizes.FONT_13,
+                    fontWeight: "600",
+                    lineHeight: spacing.HEIGHT_16,
+                  }}
+                  onPressFirst={onSelectBusinessUserType}
+                  onPressSecond={onSelectConsumerUserType}
+                ></ToggleButton>
+              </View>
 
-          <View
-            style={{
-              marginTop: spacing.WIDTH_15,
-              marginBottom: spacing.WIDTH_30,
-              alignItems: "center",
-              flex: 1,
-              flexDirection: "row",
-            }}
-          >
-            <Pressable
-              onPress={() =>
-                navigation.navigate("Anouncement", { fromLogin: true })
-              }
-              style={{
-                marginTop: spacing.HEIGHT_6,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "50%",
-              }}
-            >
-              <Image
-                style={styles.upperLogo}
-                source={require("../../Assets/icons/announcement_login.png")}
-              />
-              <Text style={styles.upperText}>{strings.announcement}</Text>
-            </Pressable>
+              {/* Radio Button View */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginVertical: spacing.HEIGHT_10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <RadioButton
+                    value={EMAIL}
+                    status={loginMode === EMAIL ? "checked" : "unchecked"}
+                    onPress={() => setLoginMode(EMAIL)}
+                  />
+                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                    {capitalizeFirstLetter(EMAIL)}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <RadioButton
+                    value={MOBILE}
+                    status={loginMode === MOBILE ? "checked" : "unchecked"}
+                    onPress={() => setLoginMode(MOBILE)}
+                  />
+                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                    {capitalizeFirstLetter(MOBILE)}
+                  </Text>
+                </View>
+              </View>
 
-            <View
-              style={{
-                width: 1,
-                height: 40,
-                backgroundColor: color.DISABLED_GREY,
-              }}
-            ></View>
+              {loginMode === EMAIL ? (
+                <CustomerEmailLogin
+                  navigation={navigation}
+                  userType={
+                    userType === BUSINESS
+                      ? "BusinessCustomer"
+                      : "PersonalCustomer"
+                  }
+                />
+              ) : (
+                <MobileLoging
+                  navigation={navigation}
+                  userType={
+                    userType === BUSINESS
+                      ? "BusinessCustomer"
+                      : "PersonalCustomer"
+                  }
+                />
+              )}
+            </View>
 
-            <Pressable
-              onPress={() =>
-                navigation.navigate("ShowWebPage", {
-                  fromLogin: false,
-                  url: DEBUG_BUILD ? STAGE_FAQ : PROD_FAQ,
-                  title: "FAQ",
-                })
-              }
-              style={{
-                marginTop: spacing.HEIGHT_6,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "50%",
-              }}
-            >
-              <Image
-                style={styles.upperLogo}
-                source={require("../../Assets/icons/faq_login.png")}
-              />
-              <Text style={styles.upperText}>{strings.faq}</Text>
-            </Pressable>
-          </View>
-
-          <View style={{ marginBottom: spacing.WIDTH_20 }}>
-            <ToggleButton
-              isFirstSelected={isFirstSelected}
-              label={{
-                first: strings.customer_email_ID,
-                second: strings.mobile_no,
-              }}
-              bgColor={{
-                selected: color.BCAE_PRIMARY,
-                unselected: color.BCAE_LIGHT_BLUE_2,
-              }}
-              textColor={{
-                selected: color.WHITE,
-                unselected: color.BCAE_PRIMARY,
-              }}
-              textPro={{
-                fontSize: fontSizes.FONT_13,
-                fontWeight: "600",
-                lineHeight: spacing.HEIGHT_16,
-              }}
-              onPressFirst={onPressFirst}
-              onPressSecond={onPressSecond}
-            ></ToggleButton>
-          </View>
-
-          {isFirstSelected ? (
-            <CustomerEmailLogin navigation={navigation} />
-          ) : (
-            <MobileLoging navigation={navigation} isFirst={isFirstSelected} />
-          )}
-          {/* <GoogleSigninButton
+            {/* <GoogleSigninButton
             style={{ width: 192, height: 48 }}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
-            onPress={signIn}
+            onPress={googleSignIn}
           /> */}
 
-          {orSection()}
-
-          <View>
-            <Text style={styles.noAccText}>{strings.dont_account}</Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register with us", {})}
+            <View
+              style={{
+                marginVertical: spacing.HEIGHT_30,
+              }}
             >
-              <Text style={styles.rgisterText}>
-                {strings.register_with_us.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-        {!login.initLogin &&
-          (login?.loggedProfile?.errorCode == "10000" ||
-            login?.loggedProfile?.errorCode == "10001") && (
-            <View style={styles.toast}>
-              <Toast
-                bgColor={color.TOAST_RED}
-                customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
-                textPro={{
-                  color: color.WHITE,
-                  fontSize: fontSizes.FONT_14,
-                  fontWeight: "700",
+              {/* Forgot Password View */}
+              <View
+                style={{
+                  alignSelf: "center",
+                  marginVertical: spacing.HEIGHT_20,
                 }}
-                img={
-                  login?.loggedProfile?.errorCode == "10001"
-                    ? require("../../Assets/icons/ic_no_Internet.png")
-                    : require("../../Assets/icons/ci_error-warning-fill.png")
-                }
-                message={
-                  login?.loggedProfile?.errorCode == "10001"
-                    ? strings.no_network
-                    : strings.something_went_wrong
-                }
-              />
+              >
+                <Pressable
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                >
+                  <Text style={styles.forgotText}>
+                    {strings.forgot_password}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Register View */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 10,
+                }}
+              >
+                <Text style={styles.noAccText}>{strings.dont_account}</Text>
+                <Pressable
+                  onPress={() => navigation.navigate("Register with us", {})}
+                >
+                  <Text style={styles.rgisterText}>{strings.register}</Text>
+                </Pressable>
+              </View>
             </View>
-          )}
+            {/* </ScrollView> */}
+            {!login.initLogin &&
+              (login?.loggedProfile?.errorCode == "10000" ||
+                login?.loggedProfile?.errorCode == "10001") && (
+                <View style={styles.toast}>
+                  <Toast
+                    bgColor={color.TOAST_RED}
+                    customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
+                    textPro={{
+                      color: color.WHITE,
+                      fontSize: fontSizes.FONT_14,
+                      fontWeight: "700",
+                    }}
+                    img={
+                      login?.loggedProfile?.errorCode == "10001"
+                        ? require("../../Assets/icons/ic_no_Internet.png")
+                        : require("../../Assets/icons/ci_error-warning-fill.png")
+                    }
+                    message={
+                      login?.loggedProfile?.errorCode == "10001"
+                        ? strings.no_network
+                        : strings.something_went_wrong
+                    }
+                  />
+                </View>
+              )}
+          </ScrollView>
+        </View>
       </KeyboardAwareView>
     </View>
   );
@@ -318,17 +343,21 @@ const styles = StyleSheet.create({
     lineHeight: spacing.WIDTH_16,
     paddingHorizontal: spacing.WIDTH_7,
   },
+  forgotText: {
+    color: "#E22D2D",
+    fontSize: fontSizes.FONT_14,
+    fontWeight: "500",
+  },
   noAccText: {
-    marginTop: spacing.HEIGHT_32,
-    color: color.PLACEHOLDER,
+    color: "#202223",
     fontSize: fontSizes.FONT_12,
     lineHeight: spacing.WIDTH_14,
     textAlign: "center",
+    fontWeight: 400,
   },
   rgisterText: {
-    marginTop: spacing.HEIGHT_6,
-    fontWeight: "500",
-    color: color.BCAE_PRIMARY,
+    fontWeight: "600",
+    color: "#202223",
     fontSize: fontSizes.FONT_14,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",

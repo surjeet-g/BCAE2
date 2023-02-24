@@ -68,7 +68,7 @@ export const TextBoxWithCTAEmail = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 55,
+            height: 45,
             backgroundColor: colors.background,
             borderRadius: roundness,
             alignItems: "center",
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginRight: 12,
     right: 0,
-    bottom: spacing.HEIGHT_20,
+    bottom: 10,
     zIndex: 1,
     padding: spacing.WIDTH_10,
 

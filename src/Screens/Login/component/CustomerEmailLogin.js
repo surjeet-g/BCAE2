@@ -21,14 +21,12 @@ import { CustomInput } from "../../../Components/CustomInput";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { capitalizeFirstLetter } from "../../../Utilities/utils";
 import { CustomButton } from "../../../Components/CustomButton";
-export const BUSINESS = "bussiness";
-export const CONSUMER = "consumer";
+import { CustomErrorText } from "../../../Components/CustomErrorText";
 
 const CustomerEmailLogin = (props) => {
   const { colors } = useTheme();
-
+  const { userType, navigation } = props;
   let login = useSelector((state) => state.login);
-  const [checked, setChecked] = useState(BUSINESS);
 
   const [username, setUsername] = useState("vvvipindsm@gmail.com");
   const [password, setPassword] = useState("JSX2EB8E");
@@ -65,6 +63,7 @@ const CustomerEmailLogin = (props) => {
   };
 
   const submit = () => {
+    console.log("$$$-", { username, password, userType });
     if (username.includes("@")) {
       if (username === "") {
         setUsernameError(strings.emailValidError);
@@ -74,10 +73,10 @@ const CustomerEmailLogin = (props) => {
         //let hashpass =  hashPassword(password)
         // let pasHash = passwordHash(password).then((datahash) => {
         dispatch(
-          verifyLoginData(props.navigation, {
+          verifyLoginData(navigation, {
             username,
             password,
-            userType: checked,
+            userType,
           })
         );
         // });
@@ -87,26 +86,12 @@ const CustomerEmailLogin = (props) => {
     }
   };
 
-  const showErrorMessage = (errMessage) => {
-    return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
-        <Image
-          style={styles.errorLogo}
-          source={require("../../../Assets/icons/ci_error_warning.png")}
-        />
-        <Text style={styles.errorText}>{errMessage}</Text>
-      </View>
-    );
-  };
-
   return (
     <View>
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
         <CustomInput
-          caption="Username"
-          // error="sdfsdf"
+          caption="Email Address"
           value={username}
-          // label={strings.customer_email_ID}
           onChangeText={(text) => onIDChange(text)}
           right={
             <TextInput.Icon
@@ -117,10 +102,10 @@ const CustomerEmailLogin = (props) => {
           }
         />
 
-        {!login.initLogin &&
-          login?.loggedProfile?.errorCode == "404" &&
-          showErrorMessage(login?.loggedProfile?.message)}
-        {usernameError !== "" && showErrorMessage(usernameError)}
+        {!login.initLogin && login?.loggedProfile?.errorCode == "404" && (
+          <CustomErrorText errMessage={login?.loggedProfile?.message} />
+        )}
+        {usernameError !== "" && <CustomErrorText errMessage={usernameError} />}
       </View>
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}>
@@ -147,41 +132,32 @@ const CustomerEmailLogin = (props) => {
           login?.loggedProfile?.errorCode &&
           login.loggedProfile.errorCode != "404" &&
           login?.loggedProfile?.errorCode != "10000" &&
-          login?.loggedProfile?.errorCode != "10001" &&
-          showErrorMessage(login?.loggedProfile?.message)}
-        {passwordError !== "" && showErrorMessage(passwordError)}
+          login?.loggedProfile?.errorCode != "10001" && (
+            <CustomErrorText errMessage={login?.loggedProfile?.message} />
+          )}
+        {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <RadioButton
-          value={BUSINESS}
-          status={checked === BUSINESS ? "checked" : "unchecked"}
-          onPress={() => setChecked(BUSINESS)}
-        />
-        <Text>{capitalizeFirstLetter(BUSINESS)}</Text>
-        <RadioButton
-          value={CONSUMER}
-          status={checked === CONSUMER ? "checked" : "unchecked"}
-          onPress={() => setChecked(CONSUMER)}
-        />
-        <Text>{capitalizeFirstLetter(CONSUMER)}</Text>
-      </View>
-      <View style={{ alignSelf: "center", marginBottom: spacing.HEIGHT_20 }}>
-        <Pressable
-          onPress={() =>
-            props.navigation.navigate("ForgotPassword", { isFirst: true })
-          }
-        >
-          <Text style={styles.forgotText}>
-            {strings.forgot_password.toUpperCase()}
-          </Text>
-        </Pressable>
-      </View>
+
+      <Text
+        style={{
+          textAlign: "center",
+          alignSelf: "center",
+          marginVertical: spacing.HEIGHT_15,
+          color: "#F5AD47",
+          fontWeight: "700",
+          fontSize: fontSizes.FONT_16,
+        }}
+        onPress={() => navigation.navigate("VerifyLoginOTP")}
+      >
+        {strings.login_with_otp}
+      </Text>
+
       <View>
         <CustomButton
           loading={login.initLogin}
           label={strings.login}
           isDisabled={username == "" || password == "" ? true : false}
-          onClick={submit}
+          onPress={submit}
         />
       </View>
     </View>
@@ -189,11 +165,6 @@ const CustomerEmailLogin = (props) => {
 };
 
 const styles = StyleSheet.create({
-  forgotText: {
-    color: color.BCAE_PRIMARY,
-    fontSize: fontSizes.FONT_14,
-    fontWeight: "500",
-  },
   errorText: {
     color: color.ERROR_TEXT_RED,
     fontSize: fontSizes.FONT_14,
