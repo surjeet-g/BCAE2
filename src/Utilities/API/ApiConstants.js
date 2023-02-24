@@ -25,7 +25,7 @@ export const endPoints = {
   MY_TICKETS_DETAILS_API: "api/complaint",
   GET_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=REGISTER",
   GET_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=REGISTER",
-  CHECK_OTP: "api/users/verify-otp/",
+  CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
   PROFILE_DETAILS: "api/users",
   UPDATE_MOBILE_USER: "api/users/update",

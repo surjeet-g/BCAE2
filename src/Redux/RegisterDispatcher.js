@@ -3860,7 +3860,7 @@ export function fetchRegisterFormData() {
       };
       dispatch(setAddressLoopUpData(MOCK.data));
 
-      let bussineEntities = "USER_TYPE,GENDER";
+      let bussineEntities = "GENDER";
       let result = await serverCall(
         `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
         requestMethod.GET
@@ -3931,19 +3931,25 @@ export function sendOtp(
   };
 }
 
-export function getOtpForCheck(mobileno, type) {
+export function getOtpForCheck({ otp, reference }, type) {
   return async (dispatch) => {
     dispatch(initOtpForm(type));
     let servicePoint = "";
-    let params = {};
 
-    servicePoint = endPoints.CHECK_OTP + mobileno;
-
-    let result = await serverCall(servicePoint, requestMethod.GET, params);
+    const refType = type == "mobileOtp" ? "mobile" : "email";
+    servicePoint = `${endPoints.CHECK_OTP}${reference}?type=${refType}&otp=${otp}`;
+    let result = await serverCall(servicePoint, requestMethod.GET);
+    console.log("result", result);
     if (result.success && result?.data?.data) {
       dispatch(setOtpFormData(result?.data, type));
+      return { status: true };
     } else {
+      Toast.show({
+        type: "bctError",
+        text1: result?.message || "",
+      });
       dispatch(failureOtpFormData(result, type));
+      return { status: false };
     }
   };
 }

@@ -52,6 +52,8 @@ export let strings = new LocalizedStrings({
     please_wait_saving_data: "Please wait saving the data ...",
     please_wait_loading_data: "Loading data on screen...",
     emailValidError: "Please enter valid email.",
+    customerIdValidError: "Please enter valid CustomerID",
+    lastnameValidError: "Please enter valid Lastname",
     passwordValidError:
       "Password must include at least\n8 Characters \n1 Uppercase \n1 Lowercase \n1 Number \n1 Special Character \nPasswords are case sensitive.",
     mobileValidError: "Please enter valid number.",
@@ -71,11 +73,13 @@ export let strings = new LocalizedStrings({
     passwordandconfirmpasswordnotsame: "Password and confirm password not same",
     checkYourMob: "Check your text message",
     checkYourMail: "Check your email",
-    wesent: "We sent a password reset link to",
+    wesent: "We have sent a password reset link to",
     wesend_mob:
       "We understand you are facing a challenge while login. Kindly use this new temporary password.",
+    reset_temp_password:
+      "You need to update your password because this is the first time you are signing in with temporary password.",
     didntRecive: "Didn't receive the email?",
-    didntRecive_mob: "Didn't receive the text message?",
+    didNotReceive_email: "Didn't receive the email link?",
     clicktoresend: "Click to resend",
     announcement: "Announcement",
     interaction: "Interaction",
@@ -137,6 +141,7 @@ export let strings = new LocalizedStrings({
     email: "E-mail",
     whatsapp: "Whatsapp",
     old_password: "Old Password",
+    temporary_password: "Temporary Password",
     new_password: "New Password",
     refresh_chat: "Do you want to start a new chat?",
     password_not_match: "Passwords are not matching!!",

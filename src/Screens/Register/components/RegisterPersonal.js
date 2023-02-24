@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { strings } from "../../../Utilities/Language/index";
-import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "react-native-country-codes-picker";
+import moment from "moment";
+import DatePicker from "react-native-date-picker";
 
 import {
   fetchRegisterFormData,
@@ -172,6 +173,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [termError, setTermError] = useState("");
   const [privaceyError, setPrivaceyError] = useState("");
+  const [dob, setDob] = useState("");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
+
   const onCheckBoxClickTerm = () => {
     //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
@@ -236,10 +241,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         title: title,
         firstName: firstName,
         lastName: lastName,
-        gender: "NC", //gender.code
+        gender: gender?.code, //gender.code
         customerNo: "",
         mobileNo: mobileNo,
         emailId: email,
+        birthDate: moment(dob).format("YYYY-MM-DD"),
         idValue: idNumber,
         address: {
           addressType: "string",
@@ -261,7 +267,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         confirmPassword: confirmPassword,
         isVerified: true,
       };
-      console.log("payload", registerObject);
+
       dispatch(
         userRegister(registerObject, "Register", (message) =>
           showAlert(message)
@@ -400,8 +406,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
-      //alert(countryCode + mobileNo);
-      dispatch(getOtpForCheck(countryCode + mobileNo, "mobileOtp")); // country code to be added to verify OTP
+      dispatch(
+        getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
+      ); // country code to be added to verify OTP
       buttonEnableDiable();
     }
   };
@@ -410,7 +417,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (otpEmail === "") {
       setOtpEmailError(strings.emailOtpError);
     } else {
-      dispatch(getOtpForCheck(email, "emailOtp"));
+      dispatch(getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp"));
       buttonEnableDiable();
     }
   };
@@ -571,6 +578,42 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         />
 
         {genderError !== "" && showErrorMessage(genderError)}
+      </View>
+      <DatePicker
+        modal
+        mode="date"
+        validRange={{ endDate: new Date() }}
+        open={open}
+        onCancel={() => setOpen(false)}
+        date={dob == "" ? new Date() : dob}
+        maximumDate={new Date()}
+        onConfirm={(params) => {
+          console.log("data", params);
+          setOpen(false);
+          setDob(params);
+          setDobError("");
+        }}
+      />
+
+      <View style={{ marginTop: 30 }}>
+        <CustomInput
+          style={{
+            backgroundColor: "transparent",
+          }}
+          // onChangeText={(text) => onIDChange(text)}
+          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+          caption={"Date of birth"}
+          onFocus={() => setOpen(true)}
+          placeHolder={"Date of birth"}
+          right={
+            <TextInput.Icon
+              onPress={() => setOpen(true)}
+              theme={{ colors: { onSurfaceVariant: colors.primary } }}
+              icon="calendar"
+            />
+          }
+        />
+        {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
       <View style={{ marginTop: 30 }}>
