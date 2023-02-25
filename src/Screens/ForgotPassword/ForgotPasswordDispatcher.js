@@ -28,7 +28,7 @@ export function verifyForgotPasswordData(navigation, params, type) {
         type: "bctSuccess",
         text1: result?.data?.message || "",
       });
-      navigation.replace("ConfirmForgotPassword", { email: username });
+      navigation.replace("ConfirmForgotPassword", { email: params?.loginId });
     } else {
       Toast.show({
         visibilityTime: 5000,
@@ -56,15 +56,12 @@ export function changePassword(
   return async (dispatch) => {
     dispatch(initForgotPasswordData());
 
-    const oldPasswordHash = await passwordHash(oldPassword);
-    const newPasswordHash = await passwordHash(newPassword);
-    const confirmPasswordHash = await passwordHash(confirmPassword);
-
     let params = {
       email: email,
-      oldPassword: oldPasswordHash,
-      newPassword: newPasswordHash,
-      confirmPassword: confirmPasswordHash,
+      oldPassword: oldPassword,
+      password: newPassword,
+      confirmPassword: confirmPassword,
+      forceChangePwd: true,
     };
 
     let result = await serverCall(

@@ -8,7 +8,6 @@ import Splash from "../Screens/Splash/Splash";
 import { Login } from "../Screens/Login/Login";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import Register from "../Screens/Register/Register";
-import EditProfile from "../Screens/EditProfile/EditProfile";
 import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import SavedLocation from "../Screens/Location/SavedLocation";
@@ -38,7 +37,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName="ResetPassword"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -76,11 +75,6 @@ function MyStack() {
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
-        />
-        <Stack.Screen
-          options={{ headerShown: false, title: "Edit Profile" }}
-          name="EditProfile"
-          component={EditProfile}
         />
 
         <Stack.Screen

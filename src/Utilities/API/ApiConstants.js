@@ -35,7 +35,7 @@ export const endPoints = {
   DELETE_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
   CREATE_INQUIRY: "api/inquiry",
   CREATE_COMPLAINT: "api/complaint",
-  CHANGE_PASSWORD: "api/users/reset-password/mobile",
+  CHANGE_PASSWORD: "api/auth/reset-password",
   UPLOAD_ATTACHMENT: "api/attachment",
   LOGOUT_USER: "api/auth/logout/",
   DELETE_ACCOUNT: "api/users/deactivate",

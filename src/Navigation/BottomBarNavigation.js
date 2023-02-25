@@ -14,8 +14,13 @@ import CustomBottomBar from "./CustomBottomBar";
 import { color } from "../Utilities/Constants/Constant";
 //import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Text, Pressable } from "react-native";
-import TermIcon from "../Assets/svg/terms.svg";
-import AnnouIcon from "../Assets/svg/anno.svg";
+import NotiIcon from "../Assets/svg/notif.svg";
+import AvtrIcon from "../Assets/svg/avatr.svg";
+import { useTheme } from "react-native-paper";
+import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
+import EditProfile from "../Screens/EditProfile/EditProfile";
 
 const Tab = createBottomTabNavigator();
 const initialRoutByPlat =
@@ -23,17 +28,135 @@ const initialRoutByPlat =
 
 const Drawer = createDrawerNavigator();
 
-function BottomBarNavigation() {
+const BottomBarNavigation = () => {
+  const { colors, fonts } = useTheme();
+  const options = {
+    activeTintColor: "#e91e63",
+    headerShown: true,
+
+    headerStyle: {
+      backgroundColor: colors.secondary,
+    },
+    headerTitleStyle: {
+      ...fonts.titleMedium,
+      ...{ color: colors.inverseSecondary, fontWeight: "700" },
+    },
+    headerShown: true,
+  };
+
   return (
     <Tab.Navigator
       tabBar={(props) => <CustomBottomBar {...props} />}
-      initialRouteName={initialRoutByPlat}
+      initialRouteName="Profile"
       backBehavior="history"
+      options={({ navigation }) => ({
+        activeTintColor: "#e91e63",
+        headerShown: true,
+
+        headerStyle: {
+          backgroundColor: colors.secondary,
+        },
+        headerTitleStyle: {
+          ...fonts.titleMedium,
+          ...{ color: colors.inverseSecondary, fontWeight: "700" },
+        },
+        headerRight: () => {
+          return (
+            <View style={navBar.navRightCon}>
+              <Pressable
+                onPress={() => alert("ToDo - Navigate to Notifications Screen")}
+              >
+                <NotiIcon {...ICON_STYLE} />
+              </Pressable>
+              <View style={navBar.divider} />
+              <Pressable onPress={() => navigation.navigate("EditProfile")}>
+                <AvtrIcon {...ICON_STYLE} />
+              </Pressable>
+            </View>
+          );
+        },
+      })}
     >
       <Tab.Screen
         options={{ headerShown: false }}
         name="Dashboard"
         component={Dashboard}
+      />
+
+      <Tab.Screen
+        name="Changepassword"
+        component={ResetPassword}
+        options={{ ...options, ...{ title: "Change password" } }}
+      />
+      <Tab.Screen
+        options={{
+          ...options,
+          ...{
+            title: "Profile",
+            headerRight: () => {
+              return (
+                <View style={navBar.navRightCon}>
+                  <Pressable
+                    onPress={() => navigation.navigate("EditProfile")}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 26,
+                      borderWidth: 0.5,
+                      borderStyle: "solid",
+                      borderColor: colors.inverseSecondary,
+                    }}
+                  >
+                    <Icon
+                      name="pencil-outline"
+                      size={19}
+                      color={colors.inverseSecondary}
+                    />
+                  </Pressable>
+                </View>
+              );
+            },
+          },
+        }}
+        name="Profile"
+        component={ViewProfile}
+      />
+      <Tab.Screen
+        options={{
+          ...options,
+          ...{
+            title: "Edit Profile",
+            headerRight: () => {
+              return (
+                <View style={navBar.navRightCon}>
+                  <Pressable
+                    onPress={() => navigation.navigate("EditProfile")}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 26,
+                      borderWidth: 0.5,
+                      borderStyle: "solid",
+                      borderColor: colors.inverseSecondary,
+                    }}
+                  >
+                    <Icon
+                      name="content-save"
+                      size={19}
+                      color={colors.inverseSecondary}
+                    />
+                  </Pressable>
+                </View>
+              );
+            },
+          },
+        }}
+        name="EditProfile"
+        component={EditProfile}
       />
       {/* 
       <Tab.Screen
@@ -68,7 +191,7 @@ function BottomBarNavigation() {
       /> */}
     </Tab.Navigator>
   );
-}
+};
 
 const Root = () => {
   return (
@@ -76,28 +199,8 @@ const Root = () => {
       <Drawer.Screen
         name="BottomApp"
         component={BottomBarNavigation}
-        options={({ navigation }, a) => ({
-          drawerLabel: "First page Option",
-          activeTintColor: "#e91e63",
-          headerShown: true,
-          title: "Dashboard",
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                >
-                  <TermIcon {...ICON_STYLE} />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Announcements")}>
-                  <AnnouIcon {...ICON_STYLE} />
-                </Pressable>
-              </View>
-            );
-          },
+        options={({ navigation }) => ({
+          headerShown: false,
         })}
       />
     </Drawer.Navigator>

@@ -522,13 +522,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   return (
     <View>
       <View style={{ marginVertical: 5 }}>
-        <Pressable
-          onPress={() => {
-            showAlert("dfdf");
-          }}
-        >
-          <Text>This</Text>
-        </Pressable>
         <CustomDropDown
           selectedValue={selectedValueTitle?.description}
           setValue={setTitle}
@@ -815,7 +808,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               ? true
               : false
           }
-          correctOtp={emailOTPVerification}
+          correctOtp={true}
           onPress={submitConfirmEmailOTP}
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}

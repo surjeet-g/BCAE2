@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
-const ForgotPassword = ({ route, navigation }) => {
+const ForgotPassword = ({ navigation }) => {
   let login = useSelector((state) => state.login);
   // const { isFirst } = route.params;
   const isFirst = false;

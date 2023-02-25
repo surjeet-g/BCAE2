@@ -42,21 +42,30 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
-        console.log("$$$-result", result);
+        console.warn("$$$-result", result);
 
         if (result.success) {
-          console.log("$$$-data", result);
+          console.warn("$$$-data", result);
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
             dispatch(failureLogin(result));
             // If Ok - call logout and call login api again
           } else {
-            let accessTokenData = {
-              accessToken: result.data?.data?.accessToken ?? "",
-            };
-            await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
-            dispatch(setLoginData(result.data?.data));
-            navigation.replace("BottomBar", {});
+            if (result?.data?.data?.status == "TEMP") {
+              dispatch(setLoginData(result.data));
+
+              navigation.navigate("ResetPassword", {
+                email: result?.data?.data?.email,
+                inviteToken: result?.data?.data?.inviteToken,
+              });
+            } else {
+              let accessTokenData = {
+                accessToken: result.data?.data?.accessToken ?? "",
+              };
+              await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
+              dispatch(setLoginData(result.data?.data));
+              navigation.replace("BottomBar", {});
+            }
           }
         } else {
           dispatch(failureLogin(result));
