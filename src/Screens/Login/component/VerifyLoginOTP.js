@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
@@ -13,13 +13,25 @@ import {
   PROD_FAQ,
   WEBCLIENT_ID,
 } from "../../../Utilities/Constants/Constant";
+import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
+import { strings } from "../../../Utilities/Language";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, userType, loginMode = "Phone Number" } = props;
+  const [otp, setOTP] = useState("");
+
+  useEffect(() => {
+    console.log("$$$-otp", otp);
+    if (otp.length === 6) {
+      console.log("$$$-otp-length is 6 - call login endpoint");
+    }
+  }, [otp]);
 
   const clickOnRequestAgainOTP = () => {
     alert("ToDo - Call API here");
   };
+
+  const otpRef = useRef(OtpInputsRef);
 
   return (
     <View style={styles.container}>
@@ -57,7 +69,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_16,
             }}
           >
-            Enter your OTP here
+            {strings.enter_otp_here}
           </Text>
           {/* OTP Box */}
           <View
@@ -68,53 +80,35 @@ const VerifyLoginOTP = (props) => {
               marginVertical: 10,
             }}
           >
-            <TextInput
-              mode="outlined"
-              multiline={false}
+            <OtpInputs
               style={{
-                height: 50,
-                width: 50,
+                flexDirection: "row",
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
+              inputContainerStyles={{
+                backgroundColor: "white",
                 width: 50,
-              }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
                 height: 50,
-                width: 50,
+                borderWidth: 1,
+                borderColor: "#BABEC5",
+                borderRadius: 12,
+                margin: 3,
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
+              inputStyles={{
+                borderRadius: 12,
+                textAlign: "center",
+                fontSize: 20,
+                color: "#F5AD47",
+                fontWeight: "bold",
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
-              }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
-              }}
+              // focusStyles={{ backgroundColor: "#F5AD47" }}
+              // caretHidden={true}
+              autofillFromClipboard={true}
+              autofillListenerIntervalMS={2000}
+              keyboardType="phone-pad"
+              ref={otpRef}
+              selectTextOnFocus={false}
+              handleChange={(code) => setOTP(code)}
+              numberOfInputs={6}
             />
           </View>
           <Text
@@ -126,7 +120,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_16,
             }}
           >
-            Did't receive code?
+            {strings.didt_receive_code}
           </Text>
           <Text
             style={{
@@ -138,7 +132,7 @@ const VerifyLoginOTP = (props) => {
             }}
             onPress={clickOnRequestAgainOTP}
           >
-            Request again?
+            {strings.request_again}
           </Text>
         </View>
       </KeyboardAwareView>
