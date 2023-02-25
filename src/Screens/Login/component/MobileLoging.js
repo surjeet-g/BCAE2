@@ -38,9 +38,9 @@ const { height, width } = Dimensions.get("screen");
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
   const { userType, navigation } = props;
-  const [number, setNumber] = useState("");
+  const [number, setNumber] = useState("987654321");
   const [numberError, setNumberError] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("Test@123");
   const [passwordError, setPasswordError] = useState("");
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState("+673");
@@ -52,20 +52,19 @@ const MobileLoging = (props) => {
       setNumberError(strings.mobileValidError);
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
-    } else if (number.length !== 7) {
+    } else if (number.length < 7) {
       Alert.alert(strings.attention, strings.sevenDigit, [
         { text: strings.ok, onPress: () => {} },
       ]);
     } else {
-      // let pasHash = passwordHash(password).then((datahash) => {
       dispatch(
         verifyLoginData(navigation, {
           username: number,
-          password: password,
+          password,
           userType,
+          loginType: "PASSWORD",
         })
       );
-      // });
     }
   };
 

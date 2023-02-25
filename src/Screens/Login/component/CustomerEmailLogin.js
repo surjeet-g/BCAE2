@@ -28,8 +28,8 @@ const CustomerEmailLogin = (props) => {
   const { userType, navigation } = props;
   let login = useSelector((state) => state.login);
 
-  const [username, setUsername] = useState("vvvipindsm@gmail.com");
-  const [password, setPassword] = useState("JSX2EB8E");
+  const [username, setUsername] = useState("vipin.v@bahwancybertek.com");
+  const [password, setPassword] = useState("Test@123");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -63,23 +63,20 @@ const CustomerEmailLogin = (props) => {
   };
 
   const submit = () => {
-    console.log("$$$-", { username, password, userType });
     if (username.includes("@")) {
       if (username === "") {
         setUsernameError(strings.emailValidError);
       } else if (password === "") {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
-        //let hashpass =  hashPassword(password)
-        // let pasHash = passwordHash(password).then((datahash) => {
         dispatch(
           verifyLoginData(navigation, {
             username,
             password,
             userType,
+            loginType: "PASSWORD",
           })
         );
-        // });
       }
     } else {
       setUsernameError(strings.emailValidError);

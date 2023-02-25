@@ -112,7 +112,7 @@ export const serverCall = async (url, method, data) =>
                 resolve({
                   success: true,
                   data: response.data,
-                  message: "",
+                  message: response.message,
                   requestObject,
                 });
               } else {

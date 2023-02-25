@@ -34,10 +34,12 @@ import { SvgBG } from "../../Components/SvgBG";
 
 const TAB_EMAIL = true;
 const TAB_MOBILE = false;
+import { useTheme } from "react-native-paper";
+import theme from "../../Utilities/themeConfig";
 
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
-
+  const { colors } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
 
   //reseting state
@@ -190,7 +192,14 @@ const Register = ({ navigation, props }) => {
           {orSection()}
 
           <View>
-            <Text style={styles.alreadyAccount}>{strings.already_acc}</Text>
+            <Text
+              style={{
+                ...{ color: colors.secondary },
+                ...styles.alreadyAccount,
+              }}
+            >
+              {strings.already_acc}
+            </Text>
             <Pressable onPress={() => navigation.navigate("Login", {})}>
               <Text style={styles.loginText}>
                 {strings.login.toUpperCase()}
@@ -220,7 +229,6 @@ export const styles = StyleSheet.create({
   alreadyAccount: {
     marginTop: spacing.HEIGHT_30,
     fontWeight: "400",
-    color: color.PLACEHOLDER,
     fontSize: fontSizes.FONT_12,
     lineHeight: spacing.WIDTH_14,
     textAlign: "center",
@@ -228,7 +236,8 @@ export const styles = StyleSheet.create({
   loginText: {
     marginTop: spacing.HEIGHT_6,
     fontWeight: "500",
-    color: color.BCAE_PRIMARY,
+    color: theme.colors.secondary,
+
     fontSize: fontSizes.FONT_14,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",

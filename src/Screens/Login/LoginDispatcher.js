@@ -3,6 +3,8 @@ import {
   failureLogin,
   setLoginData,
   resetLoginData,
+  setShowSecondLoginAlert,
+  resetShowSecondLoginAlertData,
 } from "./LoginAction";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
@@ -15,21 +17,24 @@ import { Platform } from "react-native";
 import { encryption } from "../../Utilities/Security/Encryption";
 
 export function verifyLoginData(navigation, params) {
+  console.log("$$$-verifyLoginData", params);
   return async (dispatch) => {
-    const { username, password, userType } = params;
+    const { username, loginId, password, userType, loginType } = params;
     dispatch(initLoginData());
-
+    console.log("$$$-verifyLoginData");
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
+        console.log("$$$-verifyLoginData-deviceId", deviceId);
         return deviceId;
       })
       .then(async (fcmDeviceId) => {
         let params = {
-          loginId: username,
-          password: password,
+          loginId: username || loginId,
+          password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
           userType,
+          loginType,
         };
 
         let result = await serverCall(
@@ -37,93 +42,21 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
+        console.log("$$$-result", result);
 
         if (result.success) {
-          if (
-            result?.data?.data?.userDetails?.status &&
-            (result?.data?.data?.userDetails?.status).includes("TEMP")
-          ) {
-            dispatch(setLoginData(result.data));
-            navigation.navigate("ResetPassword", {
-              email: result?.data?.data?.userDetails?.email,
-              inviteToken: result?.data?.data?.userDetails?.inviteToken,
-            });
+          console.log("$$$-data", result);
+          if (result.data?.data?.anotherSession) {
+            dispatch(setShowSecondLoginAlert(result));
+            dispatch(failureLogin(result));
+            // If Ok - call logout and call login api again
           } else {
-            let userId = result?.data?.data?.userDetails?.user?.userId;
-            let customerId = result?.data?.data?.userDetails?.user?.customerId;
-
             let accessTokenData = {
-              accessToken: result?.data?.data?.userDetails?.accessToken ?? "",
+              accessToken: result.data?.data?.accessToken ?? "",
             };
-            let refreshTokenData = {
-              refreshToken: result?.data?.data?.userDetails?.refreshToken ?? "",
-            };
-            //alert(JSON.stringify(result?.data?.data?.userDetails))
             await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
-            await saveDataToDB(storageKeys.REFRESH_TOKEN, refreshTokenData);
-
-            let profileParams = {};
-
-            let profileResult = await serverCall(
-              endPoints.PROFILE_DETAILS +
-                "/" +
-                result?.data?.data?.userDetails?.user?.userId,
-              requestMethod.GET,
-              profileParams
-            );
-
-            if (profileResult.success) {
-              let profileData = {
-                currDeptId: result?.data?.data?.userDetails?.currDeptId ?? "",
-                userId: profileResult?.data?.data?.userId ?? "",
-                customerId: profileResult?.data?.data?.customerId ?? "",
-                contactNo: profileResult?.data?.data?.contactNo ?? "",
-                email: profileResult?.data?.data?.email ?? "",
-                profilePicture: profileResult?.data?.data?.profilePicture
-                  ? profileResult?.data?.data?.profilePicture
-                  : DEFAULT_PROFILE_IMAGE,
-                firstName: profileResult?.data?.data?.firstName ?? "",
-                lastName: profileResult?.data?.data?.lastName ?? "",
-                gender: profileResult?.data?.data?.gender ?? "",
-                status: profileResult?.data?.data?.status ?? "",
-                location: profileResult?.data?.data?.location,
-                hno: profileResult?.data?.data?.address?.hno ?? "",
-                block: profileResult?.data?.data?.address?.block ?? "",
-                street: profileResult?.data?.data?.address?.street ?? "",
-                buildingName:
-                  profileResult?.data?.data?.address?.buildingName ?? "",
-                road: profileResult?.data?.data?.address?.road ?? "",
-                city: profileResult?.data?.data?.address?.city ?? "",
-                town: profileResult?.data?.data?.address?.town ?? "",
-                state: profileResult?.data?.data?.address?.state ?? "",
-                district: profileResult?.data?.data?.address?.district ?? "",
-                country: profileResult?.data?.data?.address?.country ?? "",
-                latitude: profileResult?.data?.data?.address?.latitude ?? "",
-                longitude: profileResult?.data?.data?.address?.longitude ?? "",
-                postCode: profileResult?.data?.data?.address?.postCode ?? "",
-              };
-
-              await saveDataToDB(
-                storageKeys.PROFILE_DETAILS,
-                encryption(profileData),
-                true
-              );
-
-              getDataFromDB(storageKeys.PROFILE_DETAILS, true).then(
-                (resultData) => {
-                  if (resultData) {
-                    //result.data.data
-                    dispatch(setLoginData(result.data));
-                    console.log("result logged", resultData);
-                    // navigation.replace("BottomBar", {});
-                  } else {
-                    dispatch(setLoginData([]));
-                  }
-                }
-              );
-            } else {
-              dispatch(failureLogin(profileResult));
-            }
+            dispatch(setLoginData(result.data?.data));
+            navigation.replace("BottomBar", {});
           }
         } else {
           dispatch(failureLogin(result));
@@ -135,5 +68,25 @@ export function verifyLoginData(navigation, params) {
 export function resetLogin() {
   return async (dispatch) => {
     dispatch(resetLoginData());
+  };
+}
+
+export function callLogoutAndLogin(userId, navigation, requestObject) {
+  return async (dispatch) => {
+    let result = await serverCall(
+      endPoints.LOGOUT_USER + userId,
+      requestMethod.DELETE
+    );
+    console.log("$$$-logout-result", result);
+    if (result?.data?.status === 200) {
+      console.log("$$$-requestObject", requestObject);
+      dispatch(verifyLoginData(navigation, requestObject.data));
+    }
+  };
+}
+
+export function resetShowSecondLoginAlert() {
+  return async (dispatch) => {
+    dispatch(resetShowSecondLoginAlertData());
   };
 }

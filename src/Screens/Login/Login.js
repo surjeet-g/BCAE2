@@ -17,6 +17,7 @@ import {
   PROD_FAQ,
   WEBCLIENT_ID,
 } from "../../Utilities/Constants/Constant";
+import { CustomButton } from "../../Components/CustomButton";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -30,13 +31,18 @@ import MobileLoging from "./component/MobileLoging";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "../../Components/Toast";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { resetLogin, verifyLoginData } from "./LoginDispatcher";
+import {
+  resetLogin,
+  verifyLoginData,
+  resetShowSecondLoginAlert,
+  callLogoutAndLogin,
+} from "./LoginDispatcher";
 import {
   requestUserPermission,
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { Button, RadioButton } from "react-native-paper";
+import { Button, RadioButton, Modal, Portal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
 
 const BUSINESS = "business";
@@ -58,7 +64,13 @@ export const Login = ({ navigation }) => {
   const [isFirstSelected, setFirstSelected] = useState(true);
 
   let login = useSelector((state) => state.login);
-  const dispatch = useDispatch([resetLogin, verifyLoginData]);
+  console.log("$$$-secondLoginAlertInfo", login.secondLoginAlertInfo);
+  const dispatch = useDispatch([
+    resetLogin,
+    verifyLoginData,
+    resetShowSecondLoginAlert,
+    callLogoutAndLogin,
+  ]);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -111,36 +123,6 @@ export const Login = ({ navigation }) => {
   const onSelectConsumerUserType = () => {
     setFirstSelected(false);
     setUserType(CONSUMER);
-  };
-
-  const orSection = () => {
-    return (
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: spacing.HEIGHT_32,
-        }}
-      >
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-          }}
-        ></View>
-        <Text style={styles.orText}>{strings.or}</Text>
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-            alignContent: "flex-end",
-          }}
-        ></View>
-      </View>
-    );
   };
 
   return (
@@ -316,6 +298,37 @@ export const Login = ({ navigation }) => {
                   />
                 </View>
               )}
+            <Portal>
+              <Modal
+                visible={login?.showSecondLoginAlert}
+                dismissable={false}
+                contentContainerStyle={{
+                  backgroundColor: "white",
+                  padding: 20,
+                }}
+              >
+                <View>
+                  <Text>Login Error</Text>
+                  <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
+                  <CustomButton
+                    label={"Ok"}
+                    onPress={() =>
+                      dispatch(
+                        callLogoutAndLogin(
+                          login?.secondLoginAlertInfo?.data?.data?.userId,
+                          navigation,
+                          login?.secondLoginAlertInfo?.requestObject
+                        )
+                      )
+                    }
+                  />
+                  <CustomButton
+                    label={"Cancel"}
+                    onPress={() => dispatch(resetShowSecondLoginAlert())}
+                  />
+                </View>
+              </Modal>
+            </Portal>
           </ScrollView>
         </View>
       </KeyboardAwareView>
