@@ -4,10 +4,12 @@ import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
 import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
+import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../Storage/token";
 import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { Button } from "react-native-paper";
+import { SvgBG } from "../../Components/SvgBG";
 
 const Splash = ({ route, navigation }) => {
   const dispatchVersionCheck = useDispatch([getVersionCheckData]);
@@ -83,14 +85,25 @@ const Splash = ({ route, navigation }) => {
             backgroundColor: color.VERSION_BACKGROUND,
           }}
         >
-          <Button
-            label={strings.get_started}
-            disabled={false}
-            onPress={checkLogin}
-          >
-            {strings.get_started}
-          </Button>
-        </View>
+          {strings.version}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          marginTop: 80,
+          paddingLeft: 20,
+          paddingRight: 20,
+        }}
+      >
+        <Button
+          mode="contained"
+          label={strings.get_started}
+          disabled={false}
+          onPress={checkLogin}
+        >
+          {strings.get_started}
+        </Button>
       </View>
     </View>
   );
