@@ -28,8 +28,10 @@ const CustomerEmailLogin = (props) => {
   const { userType, navigation } = props;
   let login = useSelector((state) => state.login);
 
-  const [username, setUsername] = useState("vipin.v@bahwancybertek.com");
-  const [password, setPassword] = useState("Test@123");
+  // const [username, setUsername] = useState("vipinv0647@gmail.com");
+  // const [password, setPassword] = useState("Test@123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -125,13 +127,6 @@ const CustomerEmailLogin = (props) => {
           }
         />
 
-        {!login.initLogin &&
-          login?.loggedProfile?.errorCode &&
-          login.loggedProfile.errorCode != "404" &&
-          login?.loggedProfile?.errorCode != "10000" &&
-          login?.loggedProfile?.errorCode != "10001" && (
-            <CustomErrorText errMessage={login?.loggedProfile?.message} />
-          )}
         {passwordError !== "" && <CustomErrorText errMessage={passwordError} />}
       </View>
 
@@ -148,7 +143,13 @@ const CustomerEmailLogin = (props) => {
       >
         {strings.login_with_otp}
       </Text>
-
+      {!login.initLogin &&
+        login?.loggedProfile?.errorCode &&
+        login.loggedProfile.errorCode != "404" &&
+        login?.loggedProfile?.errorCode != "10000" &&
+        login?.loggedProfile?.errorCode != "10001" && (
+          <CustomErrorText errMessage={login?.loggedProfile?.message} />
+        )}
       <View>
         <CustomButton
           loading={login.initLogin}

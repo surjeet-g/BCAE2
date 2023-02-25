@@ -124,7 +124,7 @@ const CustomerEmailForgotPassword = (props) => {
         <CustomButton
           loading={forgot?.initForgotPassword}
           label={strings.reset_password}
-          isDisabled={!validateEmail(username)}
+          // isDisabled={!validateEmail(username)}
           onPress={submit}
         />
       </View>

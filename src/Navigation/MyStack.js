@@ -8,10 +8,10 @@ import Splash from "../Screens/Splash/Splash";
 import { Login } from "../Screens/Login/Login";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import Register from "../Screens/Register/Register";
-import EditProfile from "../Screens/EditProfile/EditProfile";
 import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import SavedLocation from "../Screens/Location/SavedLocation";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 // import Location from "../Screens/Location/Location";
 import AddLocation from "../Screens/Location/AddLocation";
@@ -30,9 +30,32 @@ import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import { useTheme } from "react-native-paper";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import EditProfile from "../Screens/EditProfile/EditProfile";
+import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+
 const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
+  const options = {
+    activeTintColor: "#e91e63",
+    headerShown: true,
+    headerTransparent: false,
+    headerStyle: {
+      backgroundColor: colors.inverseSurface,
+    },
+    headerStyle: {
+      backgroundColor: colors.secondary,
+    },
+    headerTitleStyle: {
+      ...fonts.titleLarge,
+      ...{ color: colors.inverseSecondary, fontWeight: "700" },
+    },
+    headerTitleStyle: {
+      ...fonts.titleMedium,
+      ...{ color: colors.inverseSecondary, fontWeight: "700" },
+    },
+    headerShown: true,
+  };
 
   return (
     <NavigationContainer>
@@ -68,6 +91,90 @@ function MyStack() {
         })}
       >
         <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              title: "Profile",
+              headerRight: () => {
+                return (
+                  <View style={navBar.navRightCon}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 26,
+                        borderWidth: 0.5,
+                        borderStyle: "solid",
+                        borderColor: colors.inverseSecondary,
+                      }}
+                    >
+                      <Icon
+                        name="pencil-outline"
+                        size={19}
+                        color={colors.inverseSecondary}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="Profile"
+          component={ViewProfile}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              title: "Edit Profile",
+              headerRight: () => {
+                return (
+                  <View style={navBar.navRightCon}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 26,
+                        borderWidth: 0.5,
+                        borderStyle: "solid",
+                        borderColor: colors.inverseSecondary,
+                      }}
+                    >
+                      <Icon
+                        name="content-save"
+                        size={19}
+                        color={colors.inverseSecondary}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="EditProfile"
+          component={EditProfile}
+        />
+
+        <Stack.Screen
+          name="Changepassword"
+          component={ResetPassword}
+          options={{
+            ...options,
+            ...{
+              title: "Change password",
+              headerRight: () => null,
+
+              headerTintColor: colors.inverseSecondary,
+            },
+          }}
+        />
+        <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
           component={Playground}
@@ -76,11 +183,6 @@ function MyStack() {
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
-        />
-        <Stack.Screen
-          options={{ headerShown: false, title: "Edit Profile" }}
-          name="EditProfile"
-          component={EditProfile}
         />
 
         <Stack.Screen

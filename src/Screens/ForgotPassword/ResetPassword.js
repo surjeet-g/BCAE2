@@ -27,6 +27,7 @@ import { Button, TextInput, useTheme, Text, Divider } from "react-native-paper";
 import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { ClearSpace } from "../../Components/ClearSpace";
+import { CustomButton } from "../../Components/CustomButton";
 
 const ResetPassword = ({ route, navigation }) => {
   const { colors } = useTheme();
@@ -39,11 +40,13 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  // const { email, inviteToken } = route.params;
-  const { email, inviteToken } = {
-    email: "vipin.bahwan@gmail.com",
-    inviteToken: "234",
-  };
+  const { email, inviteToken, isChangePassword } = route.params;
+  // const { email, inviteToken, isChangePassword } = {
+  //   email: "dash.surjeet@gmail.com",
+  //   inviteToken:
+  //     "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
+  //   isChangePassword: true,
+  // };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -107,6 +110,7 @@ const ResetPassword = ({ route, navigation }) => {
     );
   };
   orSection = () => {
+    if (isChangePassword) return null;
     return (
       <View
         style={{
@@ -137,29 +141,34 @@ const ResetPassword = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        ...{ marginTop: isChangePassword ? 15 : 45 },
+      }}
+    >
       {/* Header */}
       <ScrollView
         style={{
           flexGrow: 1,
           paddingHorizontal: spacing.WIDTH_30,
-          paddingTop: spacing.HEIGHT_40 * 2,
+          paddingTop: isChangePassword ? 0 : spacing.HEIGHT_40 * 2,
         }}
         nestedScrollEnabled={true}
       >
         <View style={{ marginBottom: 30 }}>
           <Text variant="bodyMedium">Email Address : {email}</Text>
-          <ClearSpace />
-          <ClearSpace />
-          <ClearSpace />
-          <Text variant="bodyMedium">User ID : </Text>
         </View>
 
         <View style={{ marginBottom: spacing.HEIGHT_20 }}>
           <CustomInput
             onChangeText={(text) => onOldPasswordChange(text)}
             value={oldPassword}
-            caption={strings.temporary_password}
+            caption={
+              isChangePassword
+                ? strings.old_password
+                : strings.temporary_password
+            }
             placeHolder={strings.temporary_password}
             secureTextEntry={secureTextEntryOld}
             right={
@@ -220,26 +229,19 @@ const ResetPassword = ({ route, navigation }) => {
           />
         </View>
         <View>
-          {forgot?.initForgotPassword ? (
-            <CustomActivityIndicator
-              size={buttonSize.LARGE}
-              bgColor={color.BLACK}
-              loderColor={color.WHITE}
-            />
-          ) : (
-            <Button
-              mode="contained"
-              label={strings.reset_password}
-              disabled={
-                password == "" || oldPassword == "" || confirmPassword == ""
-                  ? true
-                  : false
-              }
-              onPress={onSubmitPasswordChanged}
-            >
-              {strings.reset_password}
-            </Button>
-          )}
+          <CustomButton
+            loading={forgot?.initForgotPassword}
+            label={
+              isChangePassword
+                ? strings.change_password
+                : strings.reset_password
+            }
+            isDisabled={
+              oldPassword == "" || password == "" || confirmPassword == ""
+            }
+            onPress={onSubmitPasswordChanged}
+          />
+
           {!forgot.initForgotPassword &&
             forgot?.loggedProfile.status == "200" &&
             showSuccessMessage(forgot?.loggedProfile?.message)}
@@ -249,17 +251,18 @@ const ResetPassword = ({ route, navigation }) => {
         </View>
 
         {orSection()}
-
-        <View>
-          <Text style={styles.noAccText}>{strings.dont_account}</Text>
-          <Pressable
-            onPress={() => navigation.navigate("Register with us", {})}
-          >
-            <Text style={styles.rgisterText}>
-              {strings.register_with_us.toUpperCase()}
-            </Text>
-          </Pressable>
-        </View>
+        {!isChangePassword && (
+          <View>
+            <Text style={styles.noAccText}>{strings.dont_account}</Text>
+            <Pressable
+              onPress={() => navigation.navigate("Register with us", {})}
+            >
+              <Text style={styles.rgisterText}>
+                {strings.register_with_us.toUpperCase()}
+              </Text>
+            </Pressable>
+          </View>
+        )}
 
         {/* {
           orSection()
@@ -324,10 +327,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
   },
-  logo: {
-    height: 128,
-    width: 128,
-  },
+
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,

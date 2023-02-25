@@ -18,8 +18,8 @@ export function logoutUser(navigation, userId) {
           deviceId: fcmDeviceId,
         };
         let result = await serverCall(
-          endPoints.LOGOUT_USER,
-          requestMethod.POST,
+          `${endPoints.LOGOUT_USER}${userId}`,
+          requestMethod.DELETE,
           params
         );
         console.log("result====================>" + JSON.stringify(result));
