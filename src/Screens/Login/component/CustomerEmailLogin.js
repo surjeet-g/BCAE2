@@ -28,8 +28,10 @@ const CustomerEmailLogin = (props) => {
   const { userType, navigation } = props;
   let login = useSelector((state) => state.login);
 
-  const [username, setUsername] = useState("mobileapp@gmail.com");
-  const [password, setPassword] = useState("Test@123");
+  // const [username, setUsername] = useState("vipinv0647@gmail.com");
+  // const [password, setPassword] = useState("Test@123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 

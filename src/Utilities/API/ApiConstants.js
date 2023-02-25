@@ -27,7 +27,7 @@ export const endPoints = {
   GET_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=REGISTER",
   CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
-  PROFILE_DETAILS: "api/users",
+  PROFILE_DETAILS: "api/customer/",
   UPDATE_MOBILE_USER: "api/users/update",
   REGISTER: "api/customer/register",
   GET_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",

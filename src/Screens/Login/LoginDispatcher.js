@@ -13,18 +13,16 @@ import {
   storageKeys,
   DEFAULT_PROFILE_IMAGE,
 } from "../../Utilities/Constants/Constant";
-import { Platform } from "react-native";
-import { encryption } from "../../Utilities/Security/Encryption";
+// import { Platform } from "react-native";
+// import { encryption } from "../../Utilities/Security/Encryption";
 
 export function verifyLoginData(navigation, params) {
-  console.log("$$$-verifyLoginData", params);
   return async (dispatch) => {
     const { username, loginId, password, userType, loginType } = params;
     dispatch(initLoginData());
     console.log("$$$-verifyLoginData");
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
-        console.log("$$$-verifyLoginData-deviceId", deviceId);
         return deviceId;
       })
       .then(async (fcmDeviceId) => {
@@ -42,10 +40,8 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
-        console.warn("$$$-result", result);
 
         if (result.success) {
-          console.warn("$$$-data", result);
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
             dispatch(failureLogin(result));
@@ -63,8 +59,39 @@ export function verifyLoginData(navigation, params) {
                 accessToken: result.data?.data?.accessToken ?? "",
               };
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
-              dispatch(setLoginData(result.data?.data));
-              navigation.replace("BottomBar", {});
+
+              let profileResult = await serverCall(
+                endPoints.PROFILE_DETAILS +
+                  "/" +
+                  result?.data?.data?.user?.customerUuid,
+                requestMethod.GET,
+                {}
+              );
+
+              if (profileResult?.success) {
+                let profileData = {
+                  userId: result.data?.data?.user?.userId,
+                  email: profileResult.data?.data?.customerContact[0].emailId,
+                  profilePicture:
+                    result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
+                  customerId: profileResult?.data?.data?.customerId,
+                  customerNo: profileResult?.data?.data?.customerNo,
+                  birthDate: profileResult?.data?.data?.birthDate,
+                  contactNo:
+                    profileResult.data?.data?.customerContact[0]?.mobileNo,
+                  status: profileResult?.data?.data?.status,
+                  firstName:
+                    profileResult?.data?.data?.customerContact[0].firstName,
+                  lastName:
+                    profileResult?.data?.data?.customerContact[0].lastName,
+                  gender: profileResult?.data?.data?.gender,
+                  ...profileResult?.data?.data?.customerAddress[0],
+                };
+
+                await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setLoginData(result.data));
+                navigation.replace("BottomBar", {});
+              }
             }
           }
         } else {

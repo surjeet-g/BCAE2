@@ -10,12 +10,14 @@ import { serverCall } from "..//Utilities/API";
 export function fetchSavedProfileData() {
   return async (dispatch) => {
     dispatch(initProfile());
-    await getDataFromDB(storageKeys.PROFILE_DETAILS).then((result) => {
+    return await getDataFromDB(storageKeys.PROFILE_DETAILS).then((result) => {
       if (result) {
         //result.data.data
         dispatch(setProfileData(result));
+        return { data: result, status: true };
       } else {
         dispatch(setProfileError([]));
+        return { status: false };
       }
     });
   };

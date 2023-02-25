@@ -40,13 +40,13 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  // const { email, inviteToken ,isChangePassword} = route.params;
-  const { email, inviteToken, isChangePassword } = {
-    email: "dash.surjeet@gmail.com",
-    inviteToken:
-      "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
-    isChangePassword: false,
-  };
+  const { email, inviteToken, isChangePassword } = route.params;
+  // const { email, inviteToken, isChangePassword } = {
+  //   email: "dash.surjeet@gmail.com",
+  //   inviteToken:
+  //     "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
+  //   isChangePassword: true,
+  // };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -141,7 +141,12 @@ const ResetPassword = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        ...{ marginTop: isChangePassword ? 15 : 45 },
+      }}
+    >
       {/* Header */}
       <ScrollView
         style={{
@@ -151,11 +156,9 @@ const ResetPassword = ({ route, navigation }) => {
         }}
         nestedScrollEnabled={true}
       >
-        {!isChangePassword && (
-          <View style={{ marginBottom: 30 }}>
-            <Text variant="bodyMedium">Email Address : {email}</Text>
-          </View>
-        )}
+        <View style={{ marginBottom: 30 }}>
+          <Text variant="bodyMedium">Email Address : {email}</Text>
+        </View>
 
         <View style={{ marginBottom: spacing.HEIGHT_20 }}>
           <CustomInput
@@ -323,12 +326,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-    marginTop: 45,
   },
-  logo: {
-    height: 128,
-    width: 128,
-  },
+
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -7,27 +7,52 @@ import {
   Pressable,
   ScrollView,
 } from "react-native";
+
 import { Divider, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Avatr from "../../Assets/svg/avtr_full.svg";
+
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { strings } from "../../Utilities/Language";
 
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import {
-  fetchSavedProfileData,
-  logoutUser,
-} from "../../Redux/ProfileDispatcher";
+import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { getDataFromDB } from "../../Storage/token";
-import { storageKeys } from "../../Utilities/Constants/Constant";
-import { deleteNdLogoutUser } from "../../Redux/LogoutDispatcher";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  storageKeys,
+} from "../../Utilities/Constants/Constant";
+import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
 const ICON = 17;
-export const ViewProfile = () => {
+
+export const ViewProfile = ({ navigation }) => {
+  const dispatch2 = useDispatch([fetchSavedProfileData]);
+
   const { colors, fonts, roundness } = useTheme();
   let profile = useSelector((state) => state.profile);
+  const [userInfo, setUserInfo] = useState({
+    email: "",
+    profilePicture: null,
+    name: "",
+    userId: "",
+  });
 
+  useEffect(() => {
+    async function fetchMyAPI() {
+      const res = await dispatch2(fetchSavedProfileData());
+
+      if (res.status) {
+        setUserInfo({
+          email: res.data.email,
+          name: `${res.data.firstName} ${res.data.lastName}`,
+          userId: res.data.userId,
+          profilePicture: res.data.profilePicture,
+        });
+      }
+    }
+    fetchMyAPI();
+  }, []);
   const dispatch = useDispatch([
     deleteNdLogoutUser,
     fetchSavedProfileData,
@@ -64,20 +89,28 @@ export const ViewProfile = () => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Avatr />
+        <Image
+          source={{
+            uri: `data:image/jpeg;base64,${
+              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+            }`,
+          }}
+          // imageStyle={{ borderRadius: 80 }}
+          style={{ height: 110, width: 110 }}
+        />
         <ClearSpace size={2} />
         <Text
           variant="bodyMedium"
           style={{ color: "#3E60A0", fontWeight: "600" }}
         >
-          Rohit sharma
+          {userInfo.name}
         </Text>
         <ClearSpace size={1} />
         <Text
           variant="bodySmall"
           style={{ color: colors.onSurfaceDisabled, fontWeight: "500" }}
         >
-          vvvipindsm@gmail.com
+          {userInfo.email}
         </Text>
         <ClearSpace size={2} />
         <Pressable
@@ -97,20 +130,20 @@ export const ViewProfile = () => {
             variant="bodyMedium"
             style={{
               fontWeight: "600",
-
               color: colors.secondary,
+            }}
+            onPress={() => {
+              navigation.navigate("Changepassword", {
+                isChangePassword: true,
+                email: userInfo.email,
+              });
             }}
           >
             Change Password
           </Text>
         </Pressable>
         <Divider />
-        <Pressable
-          onPress={() => {
-            alert("To do");
-          }}
-          style={styles.listItem}
-        >
+        <Pressable style={styles.listItem}>
           <Icon
             name="map-marker-outline"
             size={ICON}
@@ -186,12 +219,7 @@ export const ViewProfile = () => {
               {
                 text: strings.ok,
                 onPress: () => {
-                  dispatch(
-                    logoutUser(
-                      props.navigation,
-                      profile?.savedProfileData?.userId
-                    )
-                  );
+                  dispatch(logoutUser(navigation, userInfo.userId));
                 },
               },
             ]);
