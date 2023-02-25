@@ -63,23 +63,20 @@ const CustomerEmailLogin = (props) => {
   };
 
   const submit = () => {
-    console.log("$$$-", { username, password, userType });
     if (username.includes("@")) {
       if (username === "") {
         setUsernameError(strings.emailValidError);
       } else if (password === "") {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
-        //let hashpass =  hashPassword(password)
-        // let pasHash = passwordHash(password).then((datahash) => {
         dispatch(
           verifyLoginData(navigation, {
             username,
             password,
             userType,
+            loginType: "PASSWORD",
           })
         );
-        // });
       }
     } else {
       setUsernameError(strings.emailValidError);

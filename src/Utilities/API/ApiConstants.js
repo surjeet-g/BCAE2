@@ -37,7 +37,7 @@ export const endPoints = {
   CREATE_COMPLAINT: "api/complaint",
   CHANGE_PASSWORD: "api/users/reset-password/mobile",
   UPLOAD_ATTACHMENT: "api/attachment",
-  LOGOUT_USER: "api/auth/logout/mobile",
+  LOGOUT_USER: "api/auth/logout/",
   DELETE_ACCOUNT: "api/users/deactivate",
   REFRESH_TOKEN: "api/users/refresh-token",
   INQUIRY_NOTIFICATIONS: "api/KnowledgeBase/inquiry-notification",
