@@ -229,7 +229,6 @@ export const styles = StyleSheet.create({
   alreadyAccount: {
     marginTop: spacing.HEIGHT_30,
     fontWeight: "400",
-
     fontSize: fontSizes.FONT_12,
     lineHeight: spacing.WIDTH_14,
     textAlign: "center",

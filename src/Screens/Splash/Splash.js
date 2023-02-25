@@ -4,7 +4,6 @@ import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
 import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
-
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../Storage/token";
 import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
@@ -65,32 +64,23 @@ const Splash = ({ route, navigation }) => {
         },
       ]}
     >
-      <View style={{ flex: 1.3, backgroundColor: "white", padding: 20 }}>
-        <Image
-          style={styles.logo}
-          source={require("../../Assets/icons/ic_td123_logo.png")}
-        ></Image>
+      <SvgBG></SvgBG>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 85,
+        }}
+      >
+        <BCAE_LOGO />
       </View>
-      <View style={[styles.triangleCorner]}></View>
-      <View style={{ flex: 3, backgroundColor: color.BCAE_PRIMARY }}>
-        <View style={{ width: "100%", padding: 40 }}>
-          <Text style={styles.highlightText}>{strings.brand_name}</Text>
-          <Text
-            style={{
-              alignSelf: "flex-end",
-              backgroundColor: color.VERSION_BACKGROUND,
-            }}
-          >
-            {strings.version}
-          </Text>
-        </View>
 
-        <View
+      <View style={{ marginTop: 80, alignItems: "center" }}>
+        <Text style={styles.highlightText}>{strings.brand_name}</Text>
+        <Text
           style={{
-            position: "absolute",
-            bottom: 20,
-            paddingLeft: 20,
-            paddingRight: 20,
+            backgroundColor: color.VERSION_BACKGROUND,
           }}
         >
           <Button
@@ -123,9 +113,9 @@ const styles = StyleSheet.create({
     borderTopColor: "white",
   },
   highlightText: {
-    color: color.WHITE,
+    color: "#202223",
     fontSize: fontSizes.FONT_19 * 2,
-    fontWeight: "100",
+    fontWeight: "600",
     lineHeight: spacing.HEIGHT_27 * 2,
   },
 });
