@@ -31,7 +31,7 @@ import {
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { RadioButton, Modal, Portal } from "react-native-paper";
+import { RadioButton, Modal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
 import { TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../../Components/CustomInput";
@@ -488,37 +488,35 @@ export const Login = ({ navigation }) => {
               )}
 
             {/* Modal for showing the second login alert */}
-            <Portal>
-              <Modal
-                visible={login?.showSecondLoginAlert}
-                dismissable={false}
-                contentContainerStyle={{
-                  backgroundColor: "white",
-                  padding: 20,
-                }}
-              >
-                <View>
-                  <Text>Login Error</Text>
-                  <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
-                  <CustomButton
-                    label={"Ok"}
-                    onPress={() =>
-                      dispatch(
-                        callLogoutAndLogin(
-                          login?.secondLoginAlertInfo?.data?.data?.userId,
-                          navigation,
-                          params
-                        )
+            <Modal
+              visible={login?.showSecondLoginAlert}
+              dismissable={false}
+              contentContainerStyle={{
+                backgroundColor: "white",
+                padding: 20,
+              }}
+            >
+              <View>
+                <Text>Login Error</Text>
+                <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
+                <CustomButton
+                  label={"Ok"}
+                  onPress={() =>
+                    dispatch(
+                      callLogoutAndLogin(
+                        login?.secondLoginAlertInfo?.data?.data?.userId,
+                        navigation,
+                        params
                       )
-                    }
-                  />
-                  <CustomButton
-                    label={"Cancel"}
-                    onPress={() => dispatch(resetShowSecondLoginAlert())}
-                  />
-                </View>
-              </Modal>
-            </Portal>
+                    )
+                  }
+                />
+                <CustomButton
+                  label={"Cancel"}
+                  onPress={() => dispatch(resetShowSecondLoginAlert())}
+                />
+              </View>
+            </Modal>
           </ScrollView>
         </View>
       </KeyboardAwareView>

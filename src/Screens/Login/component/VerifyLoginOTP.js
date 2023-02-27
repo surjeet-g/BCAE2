@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { TextInput } from "react-native-paper";
+import { TextInput, Modal } from "react-native-paper";
+import { CustomButton } from "../../../Components/CustomButton";
 import {
   spacing,
   fontSizes,
@@ -15,7 +16,12 @@ import {
 } from "../../../Utilities/Constants/Constant";
 import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 import { strings } from "../../../Utilities/Language";
-import { verifyLoginData, sendLoginOTPData } from ".././LoginDispatcher";
+import {
+  verifyLoginData,
+  sendLoginOTPData,
+  resetShowSecondLoginAlert,
+  callLogoutAndLogin,
+} from ".././LoginDispatcher";
 import { useDispatch, useSelector } from "react-redux";
 
 const VerifyLoginOTP = (props) => {
@@ -24,13 +30,18 @@ const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
   const { loginId, loginMode, loginType, userType } = route.params;
   const [otp, setOTP] = useState("");
-  const dispatch = useDispatch([verifyLoginData, sendLoginOTPData]);
+  const [params, setParams] = useState("");
+  const dispatch = useDispatch([
+    verifyLoginData,
+    sendLoginOTPData,
+    resetShowSecondLoginAlert,
+    callLogoutAndLogin,
+  ]);
   let login = useSelector((state) => state.login);
 
   useEffect(() => {
     console.log("$$$-otp", otp);
     if (otp.length === 6) {
-      console.log("$$$-otp-length is 6 - calling login endpoint");
       param = {
         loginId,
         password: otp,
@@ -38,6 +49,7 @@ const VerifyLoginOTP = (props) => {
         loginType: loginType.toUpperCase(),
         loginMode,
       };
+      setParams(param);
       dispatch(verifyLoginData(navigation, param));
     }
   }, [otp]);
@@ -51,6 +63,7 @@ const VerifyLoginOTP = (props) => {
       loginType,
       loginMode,
     };
+    setParams(param);
     dispatch(sendLoginOTPData(navigation, param, false));
   };
 
@@ -171,6 +184,36 @@ const VerifyLoginOTP = (props) => {
           >
             {strings.request_again}
           </Text>
+
+          <Modal
+            visible={login?.showSecondLoginAlert}
+            dismissable={false}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+            }}
+          >
+            <View>
+              <Text>Login Error</Text>
+              <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
+              <CustomButton
+                label={"Ok"}
+                onPress={() =>
+                  dispatch(
+                    callLogoutAndLogin(
+                      login?.secondLoginAlertInfo?.data?.data?.userId,
+                      navigation,
+                      params
+                    )
+                  )
+                }
+              />
+              <CustomButton
+                label={"Cancel"}
+                onPress={() => dispatch(resetShowSecondLoginAlert())}
+              />
+            </View>
+          </Modal>
         </View>
       </KeyboardAwareView>
     </View>

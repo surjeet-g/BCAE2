@@ -44,7 +44,6 @@ export function verifyLoginData(navigation, params) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
             dispatch(failureLogin(result));
-            // If Ok - call logout and call login api again
           } else {
             if (result?.data?.data?.status == "TEMP") {
               dispatch(setLoginData(result.data));
