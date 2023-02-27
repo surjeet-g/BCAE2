@@ -2,32 +2,20 @@ import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  Image,
   ScrollView,
   Text,
   Pressable,
+  Alert,
 } from "react-native";
 import {
   spacing,
   fontSizes,
   color,
-  buttonSize,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-  WEBCLIENT_ID,
+  validateNumber,
 } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-//   statusCodes,
-// } from "react-native-google-signin";
 import { capitalizeFirstLetter } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
-
-import CustomerEmailLogin from "./component/CustomerEmailLogin";
-import MobileLoging from "./component/MobileLoging";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "../../Components/Toast";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
@@ -36,19 +24,26 @@ import {
   verifyLoginData,
   resetShowSecondLoginAlert,
   callLogoutAndLogin,
+  sendLoginOTPData,
 } from "./LoginDispatcher";
 import {
   requestUserPermission,
   notificationListener,
 } from "../../Utilities/FCM/NotificationService";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { Button, RadioButton, Modal, Portal } from "react-native-paper";
+import { RadioButton, Modal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
+import { TextInput, useTheme } from "react-native-paper";
+import { CustomInput } from "../../Components/CustomInput";
+import { CustomErrorText } from "../../Components/CustomErrorText";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const BUSINESS = "business";
 const CONSUMER = "consumer";
 const EMAIL = "Email Address";
 const MOBILE = "Mobile Number";
+const PASSWORD = "password";
+const OTP = "otp";
 
 export const Login = ({ navigation }) => {
   useEffect(() => {
@@ -59,9 +54,20 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [userType, setUserType] = useState(BUSINESS);
-  const [loginMode, setLoginMode] = useState(EMAIL);
+  const [userType, setUserType] = useState(BUSINESS); // BUSINESS or CONSUMER
+  const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
+  const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
+  // const [username, setUsername] = useState("kamal@yopmail.com");
+  // const [password, setPassword] = useState("Test@123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [secureTextEntry, setsecureTextEntry] = useState(true);
+  const [number, setNumber] = useState("");
+  const [numberError, setNumberError] = useState("");
+  const [params, setParams] = useState("");
 
   let login = useSelector((state) => state.login);
 
@@ -70,50 +76,8 @@ export const Login = ({ navigation }) => {
     verifyLoginData,
     resetShowSecondLoginAlert,
     callLogoutAndLogin,
+    sendLoginOTPData,
   ]);
-
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
-  //     webClientId: WEBCLIENT_ID, // client ID of type WEB for your server (needed to verify user ID and offline access)
-  //     offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  //   });
-  // }, []);
-
-  // const googleSignOut = async () => {
-  //   try {
-  //     await GoogleSignin.revokeAccess();
-  //     await GoogleSignin.signOut();
-  //     setloggedIn(false);
-  //     setuserInfo([]);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const googleSignIn = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     const { accessToken, idToken } = await GoogleSignin.signIn();
-  //     console.log(accessToken, idToken);
-  //     // dispatch(verifyLoginData(props.navigation, "", ""));
-
-  //     setloggedIn(true);
-  //   } catch (error) {
-  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-  //       // user cancelled the login flow
-  //       alert("Cancel");
-  //     } else if (error.code === statusCodes.IN_PROGRESS) {
-  //       alert("Signin in progress");
-  //       // operation (f.e. sign in) is in progress already
-  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-  //       alert("PLAY_SERVICES_NOT_AVAILABLE");
-  //       // play services not available or outdated
-  //     } else {
-  //       // some other error happened
-  //     }
-  //   }
-  // };
 
   const onSelectBusinessUserType = () => {
     setFirstSelected(true);
@@ -123,6 +87,131 @@ export const Login = ({ navigation }) => {
   const onSelectConsumerUserType = () => {
     setFirstSelected(false);
     setUserType(CONSUMER);
+  };
+
+  const onIDChange = (textStr) => {
+    if (loginMode === EMAIL) {
+      setUsername(textStr);
+      setUsernameError("");
+    } else {
+      setNumber(textStr);
+      setNumberError("");
+    }
+
+    if (textStr.length == 0) {
+      dispatch(resetLogin());
+    }
+  };
+
+  const onPasswordChange = (textStr) => {
+    setPassword(textStr);
+    if (textStr.length == 0) {
+      dispatch(resetLogin());
+    }
+    setPasswordError("");
+  };
+
+  const clearTextClick = () => {
+    loginMode === EMAIL ? setUsername("") : setNumber("");
+    dispatch(resetLogin());
+  };
+
+  const hideShowClick = () => {
+    setsecureTextEntry(!secureTextEntry);
+  };
+
+  const submitWithEmail = (loginType) => {
+    setLoginType(loginType);
+    if (username.includes("@")) {
+      if (username === "") {
+        setUsernameError(strings.emailValidError);
+      } else if (password === "") {
+        setPasswordError(strings.passwordValidErrorLogin);
+      } else {
+        param = {
+          loginId: username,
+          password,
+          userType:
+            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          loginType: loginType.toUpperCase(),
+          loginMode,
+        };
+        setParams(param);
+        dispatch(verifyLoginData(navigation, param));
+      }
+    } else {
+      setUsernameError(strings.emailValidError);
+    }
+  };
+
+  const submitWithMobile = (loginType) => {
+    setLoginType(loginType);
+    if (!validateNumber(number)) {
+      setNumberError(strings.mobileValidError);
+    } else if (password === "") {
+      setPasswordError(strings.passwordValidErrorLogin);
+    } else if (number.length < 7) {
+      Alert.alert(strings.attention, strings.sevenDigit, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    } else {
+      param = {
+        loginId: number,
+        password,
+        userType:
+          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        loginType: loginType.toUpperCase(),
+        loginMode,
+      };
+      setParams(param);
+      dispatch(verifyLoginData(navigation, param));
+    }
+  };
+
+  const submitWithEmailOTP = (loginType) => {
+    setLoginType(loginType);
+    console.log("$$$-submitWithEmailOTP");
+    console.log("$$$-submitWithEmailOTP-loginType", loginType);
+    if (username.includes("@")) {
+      console.log("$$$-submitWithEmailOTP");
+      if (username === "") {
+        setUsernameError(strings.emailValidError);
+      } else {
+        param = {
+          loginId: username,
+          userType:
+            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          loginType: loginType.toUpperCase(),
+          loginMode,
+        };
+        console.log("$$$-submitWithEmailOTP-param", param);
+        setParams(param);
+        dispatch(sendLoginOTPData(navigation, param, true));
+      }
+    } else {
+      setUsernameError(strings.emailValidError);
+    }
+  };
+
+  const submitWithMobileOTP = (loginType) => {
+    setLoginType(loginType);
+    if (!validateNumber(number)) {
+      setNumberError(strings.mobileValidError);
+    } else if (number.length < 7) {
+      Alert.alert(strings.attention, strings.sevenDigit, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    } else {
+      param = {
+        loginId: number,
+        userType:
+          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        loginType: loginType.toUpperCase(),
+        loginMode,
+      };
+      setParams(param);
+      dispatch(sendLoginOTPData(navigation, param, true));
+    }
   };
 
   return (
@@ -137,12 +226,15 @@ export const Login = ({ navigation }) => {
           }}
         >
           <ScrollView nestedScrollEnabled={true}>
-            <View style={{ marginTop: 80, flex: 1 }}>
+            <View style={{ marginTop: 10, flex: 1 }}>
               <View
                 style={{
                   marginBottom: spacing.HEIGHT_20,
                 }}
               >
+                <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+                  {strings.check_usertype}
+                </Text>
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
@@ -208,38 +300,140 @@ export const Login = ({ navigation }) => {
               </View>
 
               {loginMode === EMAIL ? (
-                <CustomerEmailLogin
-                  navigation={navigation}
-                  userType={
-                    userType === BUSINESS
-                      ? "BusinessCustomer"
-                      : "PersonalCustomer"
-                  }
-                />
+                <View>
+                  {/* Email Address Input View */}
+                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                    <CustomInput
+                      caption="Email Address"
+                      value={username}
+                      onChangeText={(text) => onIDChange(text)}
+                      right={
+                        <TextInput.Icon
+                          onPress={clearTextClick}
+                          style={{ width: 23, height: 23 }}
+                          icon="close"
+                        />
+                      }
+                    />
+
+                    {!login.initLogin &&
+                      login?.loggedProfile?.errorCode == "404" && (
+                        <CustomErrorText
+                          errMessage={login?.loggedProfile?.message}
+                        />
+                      )}
+                    {usernameError !== "" && (
+                      <CustomErrorText errMessage={usernameError} />
+                    )}
+                  </View>
+                </View>
               ) : (
-                <MobileLoging
-                  navigation={navigation}
-                  userType={
-                    userType === BUSINESS
-                      ? "BusinessCustomer"
-                      : "PersonalCustomer"
-                  }
-                />
+                <View>
+                  {/* Mobile Number View */}
+                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                    <CustomInput
+                      caption={strings.mobile_no}
+                      onChangeText={(text) => onIDChange(text)}
+                      value={number}
+                      placeHolder={strings.mobile_no}
+                      keyboardType="numeric"
+                    />
+                    {!login.initLogin &&
+                      login?.loggedProfile?.errorCode == "404" && (
+                        <CustomErrorText
+                          errMessage={login?.loggedProfile?.message}
+                        />
+                      )}
+                    {numberError !== "" && (
+                      <CustomErrorText errMessage={numberError} />
+                    )}
+                  </View>
+                </View>
               )}
             </View>
 
-            {/* <GoogleSigninButton
-            style={{ width: 192, height: 48 }}
-            size={GoogleSigninButton.Size.Wide}
-            color={GoogleSigninButton.Color.Dark}
-            onPress={googleSignIn}
-          /> */}
+            {/* Password Input View */}
+            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              <CustomInput
+                value={password}
+                caption={strings.password}
+                placeHolder={strings.password}
+                onChangeText={(text) => onPasswordChange(text)}
+                secureTextEntry={secureTextEntry}
+                right={
+                  <TextInput.Icon
+                    onPress={hideShowClick}
+                    style={{ width: 23, height: 23 }}
+                    icon={
+                      secureTextEntry
+                        ? require("../../Assets/icons/ic_password_show.png")
+                        : require("../../Assets/icons/ic_password_hide.png")
+                    }
+                  />
+                }
+              />
 
+              {!login.initLogin &&
+                login?.loggedProfile?.errorCode &&
+                login.loggedProfile.errorCode != "404" &&
+                login?.loggedProfile?.errorCode != "10000" &&
+                login?.loggedProfile?.errorCode != "10001" && (
+                  <CustomErrorText errMessage={login?.loggedProfile?.message} />
+                )}
+              {passwordError !== "" && (
+                <CustomErrorText errMessage={passwordError} />
+              )}
+            </View>
+
+            {/* Bottom View */}
             <View
               style={{
                 marginVertical: spacing.HEIGHT_30,
               }}
             >
+              {/* Login with OTP View */}
+              <View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    alignSelf: "center",
+                    marginVertical: spacing.HEIGHT_15,
+                    color: "#F5AD47",
+                    fontWeight: "700",
+                    fontSize: fontSizes.FONT_16,
+                  }}
+                  onPress={() => {
+                    loginMode === EMAIL
+                      ? submitWithEmailOTP(OTP)
+                      : submitWithMobileOTP(OTP);
+                  }}
+                >
+                  {strings.login_with_otp}
+                </Text>
+              </View>
+
+              {/* Login View */}
+              <View>
+                <CustomButton
+                  loading={login.initLogin}
+                  label={strings.login}
+                  isDisabled={
+                    loginMode === EMAIL
+                      ? username == "" || password == ""
+                        ? true
+                        : false
+                      : number == "" || password == ""
+                      ? true
+                      : false
+                  }
+                  onPress={() => {
+                    loginMode === EMAIL
+                      ? submitWithEmail(PASSWORD)
+                      : submitWithMobile(PASSWORD);
+                  }}
+                />
+              </View>
+
               {/* Forgot Password View */}
               <View
                 style={{
@@ -298,39 +492,42 @@ export const Login = ({ navigation }) => {
                   />
                 </View>
               )}
-            <Portal>
-              <Modal
-                visible={login?.showSecondLoginAlert}
-                dismissable={false}
-                contentContainerStyle={{
-                  backgroundColor: "white",
-                  padding: 20,
-                }}
-              >
-                <View>
-                  <Text>Login Error</Text>
-                  <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
-                  <CustomButton
-                    label={"Ok"}
-                    onPress={() =>
-                      dispatch(
-                        callLogoutAndLogin(
-                          login?.secondLoginAlertInfo?.data?.data?.userId,
-                          navigation,
-                          login?.secondLoginAlertInfo?.requestObject
-                        )
-                      )
-                    }
-                  />
-                  <CustomButton
-                    label={"Cancel"}
-                    onPress={() => dispatch(resetShowSecondLoginAlert())}
-                  />
-                </View>
-              </Modal>
-            </Portal>
           </ScrollView>
         </View>
+        {/* Modal for showing the second login alert */}
+        <Modal
+          visible={login?.showSecondLoginAlert}
+          dismissable={false}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            margin: 20,
+            borderRadius: 10,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 22 }}>Login Error</Text>
+            <Text style={{ marginTop: 10, fontSize: 18 }}>
+              {login?.secondLoginAlertInfo?.data?.message}
+            </Text>
+            <CustomButton
+              label={"Ok"}
+              onPress={() =>
+                dispatch(
+                  callLogoutAndLogin(
+                    login?.secondLoginAlertInfo?.data?.data?.userId,
+                    navigation,
+                    params
+                  )
+                )
+              }
+            />
+            <CustomButton
+              label={"Cancel"}
+              onPress={() => dispatch(resetShowSecondLoginAlert())}
+            />
+          </View>
+        </Modal>
       </KeyboardAwareView>
     </View>
   );
@@ -340,21 +537,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-  },
-  logo: {
-    height: 128,
-    width: 128,
+    ...HEADER_MARGIN,
   },
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,
-  },
-  orText: {
-    color: color.BCAE_LIGHT_BLUE,
-    fontSize: fontSizes.FONT_10,
-    fontWeight: "500",
-    lineHeight: spacing.WIDTH_16,
-    paddingHorizontal: spacing.WIDTH_7,
   },
   forgotText: {
     color: "#E22D2D",
@@ -374,16 +561,5 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_14,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
-  },
-  upperText: {
-    color: color.PLACEHOLDER,
-    fontSize: fontSizes.FONT_12,
-    fontWeight: "500",
-    marginTop: 5,
-    lineHeight: spacing.WIDTH_14,
-  },
-  upperLogo: {
-    width: spacing.WIDTH_16,
-    height: spacing.WIDTH_16,
   },
 });

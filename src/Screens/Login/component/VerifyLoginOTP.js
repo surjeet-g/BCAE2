@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { TextInput } from "react-native-paper";
+import { TextInput, Modal } from "react-native-paper";
+import { CustomButton } from "../../../Components/CustomButton";
 import {
   spacing,
   fontSizes,
@@ -13,12 +14,73 @@ import {
   PROD_FAQ,
   WEBCLIENT_ID,
 } from "../../../Utilities/Constants/Constant";
+import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
+import { strings } from "../../../Utilities/Language";
+import {
+  verifyLoginData,
+  sendLoginOTPData,
+  resetShowSecondLoginAlert,
+  callLogoutAndLogin,
+} from ".././LoginDispatcher";
+import { useDispatch, useSelector } from "react-redux";
 
 const VerifyLoginOTP = (props) => {
-  const { navigation, userType, loginMode = "Phone Number" } = props;
+  console.log("$$$-VerifyLoginOTP");
+  console.log("$$$-VerifyLoginOTP-props", props);
+  const { navigation, route } = props;
+  const { loginId, loginMode, loginType, userType } = route.params;
+  const [otp, setOTP] = useState("");
+  const [params, setParams] = useState("");
+  const dispatch = useDispatch([
+    verifyLoginData,
+    sendLoginOTPData,
+    resetShowSecondLoginAlert,
+    callLogoutAndLogin,
+  ]);
+  let login = useSelector((state) => state.login);
+
+  useEffect(() => {
+    console.log("$$$-otp", otp);
+    if (otp.length === 6) {
+      param = {
+        loginId,
+        password: otp,
+        userType,
+        loginType: loginType.toUpperCase(),
+        loginMode,
+      };
+      setParams(param);
+      dispatch(verifyLoginData(navigation, param));
+    }
+  }, [otp]);
 
   const clickOnRequestAgainOTP = () => {
-    alert("ToDo - Call API here");
+    setOTP("");
+    otpRef.current.reset();
+    let param = {
+      loginId,
+      userType,
+      loginType,
+      loginMode,
+    };
+    setParams(param);
+    dispatch(sendLoginOTPData(navigation, param, false));
+  };
+
+  const otpRef = useRef(OtpInputsRef);
+
+  const maskingFunction = (text) => {
+    let maskedText = "";
+    if (loginMode.includes("Email")) {
+      let txtStart = text.toString().substring(0, 5);
+      let txtEnd = text.toString().substring(text.length - 5, text.length);
+      maskedText = txtStart + "xxxxxxxxxxxx" + txtEnd;
+    } else if (loginMode.includes("Mobile")) {
+      let txtStart = text.toString().substring(0, 2);
+      let txtEnd = text.toString().substring(text.length - 2, text.length);
+      maskedText = txtStart + "xxxxx" + txtEnd;
+    }
+    return maskedText;
   };
 
   return (
@@ -47,7 +109,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_18,
             }}
           >
-            Verify your {loginMode} {"\n"} 99******35
+            Verify your {loginMode} {"\n"} {maskingFunction(loginId)}
           </Text>
           <Text
             style={{
@@ -57,7 +119,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_16,
             }}
           >
-            Enter your OTP here
+            {strings.enter_otp_here}
           </Text>
           {/* OTP Box */}
           <View
@@ -68,53 +130,35 @@ const VerifyLoginOTP = (props) => {
               marginVertical: 10,
             }}
           >
-            <TextInput
-              mode="outlined"
-              multiline={false}
+            <OtpInputs
               style={{
-                height: 50,
-                width: 50,
+                flexDirection: "row",
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
+              inputContainerStyles={{
+                backgroundColor: "white",
                 width: 50,
-              }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
                 height: 50,
-                width: 50,
+                borderWidth: 1,
+                borderColor: "#BABEC5",
+                borderRadius: 12,
+                margin: 3,
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
+              inputStyles={{
+                borderRadius: 12,
+                textAlign: "center",
+                fontSize: 20,
+                color: "#F5AD47",
+                fontWeight: "bold",
               }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
-              }}
-            />
-            <TextInput
-              mode="outlined"
-              multiline={false}
-              style={{
-                height: 50,
-                width: 50,
-              }}
+              // focusStyles={{ backgroundColor: "#F5AD47" }}
+              // caretHidden={true}
+              autofillFromClipboard={true}
+              autofillListenerIntervalMS={2000}
+              keyboardType="phone-pad"
+              ref={otpRef}
+              selectTextOnFocus={false}
+              handleChange={(code) => setOTP(code)}
+              numberOfInputs={6}
             />
           </View>
           <Text
@@ -126,7 +170,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_16,
             }}
           >
-            Did't receive code?
+            {strings.didt_receive_code}
           </Text>
           <Text
             style={{
@@ -138,10 +182,43 @@ const VerifyLoginOTP = (props) => {
             }}
             onPress={clickOnRequestAgainOTP}
           >
-            Request again?
+            {strings.request_again}
           </Text>
         </View>
       </KeyboardAwareView>
+      <Modal
+        visible={login?.showSecondLoginAlert}
+        dismissable={false}
+        contentContainerStyle={{
+          backgroundColor: "white",
+          padding: 20,
+          margin: 20,
+          borderRadius: 10,
+        }}
+      >
+        <View>
+          <Text style={{ fontSize: 22 }}>Login Error</Text>
+          <Text style={{ marginTop: 10, fontSize: 18 }}>
+            {login?.secondLoginAlertInfo?.data?.message}
+          </Text>
+          <CustomButton
+            label={"Ok"}
+            onPress={() =>
+              dispatch(
+                callLogoutAndLogin(
+                  login?.secondLoginAlertInfo?.data?.data?.userId,
+                  navigation,
+                  params
+                )
+              )
+            }
+          />
+          <CustomButton
+            label={"Cancel"}
+            onPress={() => dispatch(resetShowSecondLoginAlert())}
+          />
+        </View>
+      </Modal>
     </View>
   );
 };

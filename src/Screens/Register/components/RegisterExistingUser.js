@@ -9,6 +9,7 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import moment from "moment";
 import { CustomInput } from "../../../Components/CustomInput";
+import { CountryPicker } from "react-native-country-codes-picker";
 
 import {
   fetchRegisterFormData,
@@ -85,6 +86,9 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   // const [otp, setOTP] = useState("123123");
   // const [otpEmail, setEmailOTP] = useState("123123");
   // const [email, setEmail] = useState("vipin.bahwan@gmail.com");
+
+  const [dialpick, setDialPick] = useState("+673");
+  const [countryPickModel, setCountryPickModel] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [customerID, setCustomerID] = useState("");
@@ -152,11 +156,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       return null;
     }
 
-    if (firstName.trim() === "") {
-      setFirstNameError(strings.firstNameError);
-    } else if (lastName.trim() === "") {
-      setLastNameError(strings.lastNameError);
-    } else if (customerID === "") {
+    if (customerID === "") {
       setCustomerIDError(strings.customerIDError);
     } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
@@ -279,13 +279,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         { text: strings.ok, onPress: () => {} },
       ]);
     } else {
-      if (firstName.trim() === "") {
-        Toast.show({
-          type: "bctError",
-          text1: strings.firstNameError,
-        });
-        setFirstNameError(strings.firstNameError);
-      } else if (!validateNumber(mobileNo)) {
+      if (!validateNumber(mobileNo)) {
         Toast.show({
           type: "bctError",
           text1: strings.mobileValidError,
@@ -294,12 +288,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       } else {
         //alert("submitResndOTP");
         dispatch(
-          sendOtp(
-            countryCode + mobileNo,
-            firstName,
-            "mobile",
-            showOtpSentMessage
-          )
+          sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage)
         );
         buttonEnableDiable();
         //setIsDisableSendOtp(true);
@@ -310,8 +299,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const buttonEnableDiable = () => {
     if (
       dob === "" ||
-      firstName === "" ||
-      lastName === "" ||
       gender === "" ||
       mobileNo === "" ||
       otp === "" ||
@@ -376,16 +363,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     }
   };
   const submitEmail = () => {
-    if (firstName.trim() === "") {
-      Toast.show({
-        type: "bctError",
-        text1: strings.firstNameError,
-      });
-      setFirstNameError(strings.firstNameError);
-    } else if (!validateEmail(email)) {
+    if (!validateEmail(email)) {
       setEmailError(strings.emailValidError);
     } else {
-      dispatch(sendOtp(email, firstName, "email"));
+      dispatch(sendOtp(email, "", "email"));
       buttonEnableDiable();
     }
   };
@@ -456,7 +437,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
   return (
     <View>
-      <View style={{ marginTop: spacing.HEIGHT_30 }}>
+      {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -475,10 +456,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         />
 
         {firstNameError !== "" && showErrorMessage(firstNameError)}
-      </View>
+      </View> */}
 
       {/* Last Name */}
-      <View style={{ marginTop: 5 }}>
+      {/* <View style={{ marginTop: 5 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -497,7 +478,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         />
 
         {lastNameError !== "" && showErrorMessage(lastNameError)}
-      </View>
+      </View> */}
       <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
@@ -551,6 +532,14 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         {genderError !== "" && showErrorMessage(genderError)}
       </View>
 
+      <CountryPicker
+        show={countryPickModel}
+        // when picker button press you will get the country object with dial code
+        pickerButtonOnPress={(item) => {
+          setDialPick(item.dial_code);
+          setCountryPickModel(false);
+        }}
+      />
       {/* Mobile Number */}
       <View style={{ marginTop: 25 }}>
         <TextBoxWithCTA
@@ -563,7 +552,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
               ? true
               : false
           }
-          countryCode={countryCode}
+          onPressOnCountyCode={() => setCountryPickModel(true)}
+          countryCode={dialpick}
           label={strings.send_otp}
           onPress={submitResndOTP}
           bgColor={color.BCAE_PRIMARY}
@@ -595,7 +585,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onOTPChange(text)}
           value={otp}
-          placeHolder={strings.otp}
+          placeHolder={strings.mobile_otp}
           isConfirmOTP={true}
           label={strings.confirm_otp}
           loader={
@@ -668,7 +658,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onEmailOTPChange(text)}
           value={otpEmail}
-          placeHolder={strings.otp}
+          placeHolder={strings.email_otp}
           isConfirmOTP={true}
           label={"CONFIRM OTP"}
           loader={

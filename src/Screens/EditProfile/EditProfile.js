@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import {
   spacing,
@@ -20,6 +21,7 @@ import {
   validateNumber,
   validateEmail,
 } from "../../Utilities/Constants/Constant";
+import Camara from "../../Assets/svg/camera_icon.svg";
 import { Text, TextInput } from "react-native-paper";
 import { CustomDropDown } from "../../Components/CustomDropDown";
 import {
@@ -42,6 +44,7 @@ import { useTheme } from "react-native-paper";
 import theme from "../../Utilities/themeConfig";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomInput } from "../../Components/CustomInput";
+import { navBar } from "../../Utilities/Style/navBar";
 
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -94,6 +97,24 @@ const EditProfile = ({ navigation, props }) => {
 
   useEffect(() => {
     dispatch1(fetchRegisterFormData());
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <View style={navBar.navRightCon}>
+            <Pressable onPress={() => alert("Todo ")} style={navBar.roundIcon}>
+              <Icon
+                name="content-save"
+                size={19}
+                color={colors.inverseSecondary}
+              />
+            </Pressable>
+          </View>
+        );
+      },
+    });
   }, []);
 
   let profile = useSelector((state) => state.profile);
@@ -488,45 +509,37 @@ const EditProfile = ({ navigation, props }) => {
               paddingTop: 20,
             }}
           >
-            <TouchableOpacity activeOpacity={0.5} onPress={changeProfileImage}>
-              <View style={[{ alignItems: "center" }]}>
-                <ImageBackground
-                  source={{ uri: `data:image/jpeg;base64,${profileImageData}` }}
-                  imageStyle={{ borderRadius: 80 }}
-                  style={{ height: 110, width: 110 }}
+            <View style={[{ alignItems: "center" }]}>
+              <ImageBackground
+                source={{ uri: `data:image/jpeg;base64,${profileImageData}` }}
+                imageStyle={{ borderRadius: 80 }}
+                style={{ height: 110, width: 110 }}
+              >
+                <Pressable
+                  onPress={changeProfileImage}
+                  style={{
+                    flex: 1,
+                    alignItems: "flex-end",
+                    justifyContent: "flex-end",
+                  }}
                 >
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: "flex-end",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <Image
-                      source={require("../../Assets/icons/ic_camera_white.png")}
-                      style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 30,
-                        marginBottom: 10,
-                      }}
-                    />
-                  </View>
-                </ImageBackground>
+                  <Camara width="20" height="20" />
+                </Pressable>
+              </ImageBackground>
 
-                <Text variant="bodyLarge" style={styles.caption}>
-                  {userId}
-                </Text>
-                <ClearSpace />
-                <Text variant="bodySmall" style={styles.caption_small}>
-                  {email}
-                </Text>
-                <ClearSpace />
-                <Text variant="bodyLarge" style={styles.caption}>
-                  {mobileNo}
-                </Text>
-              </View>
-            </TouchableOpacity>
+              <Text variant="bodyLarge" style={styles.caption}>
+                {userId}
+              </Text>
+              <ClearSpace />
+              <Text variant="bodySmall" style={styles.caption_small}>
+                {email}
+              </Text>
+              <ClearSpace />
+              <Text variant="bodyLarge" style={styles.caption}>
+                {mobileNo}
+              </Text>
+              <ClearSpace />
+            </View>
           </View>
 
           {registerForm.initRegisterForm ? (
