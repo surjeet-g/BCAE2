@@ -808,7 +808,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               ? true
               : false
           }
-          correctOtp={true}
+          correctOtp={emailOTPVerification}
           onPress={submitConfirmEmailOTP}
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}
