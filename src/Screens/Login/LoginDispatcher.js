@@ -136,7 +136,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
   console.log("$$$-sendLoginOTPData");
   console.log("$$$-sendLoginOTPData-params", params);
   return async (dispatch) => {
-    const { loginId, userType, loginType, loginMode } = params;
+    const { loginId, userType, loginType, loginMode, extn } = params;
     //dispatch(initLoginData());
     console.log("$$$-sendLoginOTPData-params-1", params);
     let param = {};
@@ -148,7 +148,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
     } else if (loginMode.includes("Mobile")) {
       param = {
         reference: loginId,
-        extn: 0,
+        extn: extn,
       };
       url = endPoints.GET_LOGIN_OTP_FOR_MOBILE;
     }
