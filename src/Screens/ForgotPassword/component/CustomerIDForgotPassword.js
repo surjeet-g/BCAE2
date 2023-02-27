@@ -28,6 +28,7 @@ import {
 } from "../ForgotPasswordDispatcher";
 import { Button, TextInput, useTheme } from "react-native-paper";
 import moment from "moment";
+import { CustomButton } from "../../../Components/CustomButton";
 
 const CustomerIDForgotPassword = (props) => {
   const { colors } = useTheme();
@@ -68,10 +69,16 @@ const CustomerIDForgotPassword = (props) => {
     setlastNameError("");
   };
 
-  const clearTextClick = () => {
+  const clearCustomerIdClick = () => {
     setUsername("");
     // dispatch(resetForgotPassword());
-    setUsernameError(strings.emailValidError);
+    setUsernameError(strings.customerIdValidError);
+  };
+
+  const clearLastnameClick = () => {
+    setlastName("");
+    // dispatch(resetForgotPassword());
+    setlastNameError(strings.lastnameValidError);
   };
 
   const submit = () => {
@@ -83,11 +90,15 @@ const CustomerIDForgotPassword = (props) => {
       setDobError("Date of birth sould be required");
     } else {
       dispatch(
-        verifyForgotPasswordData(props.navigation, {
-          loginId: username,
-          lastName,
-          dob: moment(dob).format("YYYY-MM-DD"),
-        })
+        verifyForgotPasswordData(
+          props.navigation,
+          {
+            loginId: username,
+            lastName: lastName,
+            dob: moment(dob).format("YYYY-MM-DD"),
+          },
+          "customerID"
+        )
       );
     }
   };
@@ -126,7 +137,7 @@ const CustomerIDForgotPassword = (props) => {
           placeHolder={strings.customer_ID}
           right={
             <TextInput.Icon
-              onPress={clearTextClick}
+              onPress={clearCustomerIdClick}
               theme={{ colors: { onSurfaceVariant: colors.gray } }}
               style={{ width: 23, height: 23 }}
               icon="close"
@@ -136,12 +147,19 @@ const CustomerIDForgotPassword = (props) => {
         {usernameError !== "" && showErrorMessage(usernameError)}
         <CustomInput
           onChangeText={(text) => {
-            Keyboard.dismiss();
             onIDChangeUsername(text);
           }}
           value={lastName}
           caption="Last Name"
           placeHolder="Last Name"
+          right={
+            <TextInput.Icon
+              onPress={clearLastnameClick}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              style={{ width: 23, height: 23 }}
+              icon="close"
+            />
+          }
         />
         {lastNameError !== "" && showErrorMessage(lastNameError)}
         <DatePicker
@@ -184,24 +202,14 @@ const CustomerIDForgotPassword = (props) => {
 
       <View style={{ marginBottom: spacing.HEIGHT_20 }}></View>
       <View>
-        {forgot?.initForgotPassword ? (
-          <CustomActivityIndicator
-            size={buttonSize.LARGE}
-            bgColor={color.BLACK}
-            loderColor={color.WHITE}
-          />
-        ) : (
-          <Button
-            mode="contained"
-            label={strings.reset_password}
-            disabled={
-              username == "" && dob == "" && lastName == "" ? true : false
-            }
-            onPress={submit}
-          >
-            {strings.reset_password}
-          </Button>
-        )}
+        <CustomButton
+          loading={forgot?.initForgotPassword}
+          label={strings.reset_password}
+          isDisabled={
+            username == "" && dob == "" && lastName == "" ? true : false
+          }
+          onPress={submit}
+        />
       </View>
 
       <Pressable onPress={() => props.navigation.goBack()}>

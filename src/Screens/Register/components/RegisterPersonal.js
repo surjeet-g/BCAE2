@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { strings } from "../../../Utilities/Language/index";
-import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "react-native-country-codes-picker";
+import moment from "moment";
+import DatePicker from "react-native-date-picker";
 
 import {
   fetchRegisterFormData,
@@ -52,6 +53,7 @@ export const showErrorMessage = (errMessage) => {
     </View>
   );
 };
+
 export const RegisterPersonal = React.memo(({ navigation }) => {
   // let navigation = useNavigation;
   const dispatch = useDispatch([
@@ -98,48 +100,54 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     return finalString;
   };
   const [dialpick, setDialPick] = useState("+673");
+  const [emailOTPVerification, setEmailOTPVerification] = useState(false);
+  const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
+
   // real
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  // const [idNumber, setIdNumber] = useState("");
-  // const [gender, setGender] = useState("");
-  // const [title, setTitle] = useState("");
-  // const [country, setCountry] = useState("");
-  // const [location, setLocation] = useState("");
-  // const [latitude, setLatitude] = useState("");
-  // const [longitude, setLongitude] = useState("");
-  // const [mobileNo, setMobileNo] = useState("");
-  // const [countryCode, setCountryCode] = useState("673");
-  // const [otp, setOTP] = useState("");
-  // const [otpEmail, setEmailOTP] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [street, setStreet] = useState("");
-  // const [state, setStateProfile] = useState("");
-  // const [district, setDistrict] = useState("");
-  // const [postcode, setPostcode] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
-  //  mock
-  const [firstName, setFirstName] = useState("vipin");
-  const [lastName, setLastName] = useState("v");
-  const [idNumber, setIdNumber] = useState("123123");
-  const [gender, setGender] = useState({ code: "NC" });
-  const [title, setTitle] = useState("MR");
-  const [country, setCountry] = useState("india");
-  const [location, setLocation] = useState("thirssur,kerala,india");
-  const [latitude, setLatitude] = useState("1233123");
-  const [longitude, setLongitude] = useState("123123");
-  const [mobileNo, setMobileNo] = useState("1231231");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [title, setTitle] = useState("");
+  const [country, setCountry] = useState("");
+  const [location, setLocation] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
   const [countryCode, setCountryCode] = useState("673");
-  const [otp, setOTP] = useState("123123");
-  const [otpEmail, setEmailOTP] = useState("123123");
-  const [email, setEmail] = useState("vvvipinmds@gmail.com");
-  const [street, setStreet] = useState("kerala");
-  const [state, setStateProfile] = useState("kerala");
-  const [district, setDistrict] = useState("thrissur");
-  const [postcode, setPostcode] = useState("123123");
-  const [password, setPassword] = useState("Mock@123");
-  const [confirmPassword, setConfirmPassword] = useState("Mock@123");
+  const [otp, setOTP] = useState("");
+  const [otpEmail, setEmailOTP] = useState("");
+  const [email, setEmail] = useState("");
+  const [street, setStreet] = useState("");
+  const [state, setStateProfile] = useState("");
+  const [district, setDistrict] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  //  mock
+
+  // const [firstName, setFirstName] = useState("vipin");
+  // const [lastName, setLastName] = useState("v");
+  // const [idNumber, setIdNumber] = useState("123123");
+  // const [gender, setGender] = useState({ code: "NC" });
+  // const [title, setTitle] = useState("MR");
+  // const [country, setCountry] = useState("india");
+  // const [location, setLocation] = useState(
+  //   "thirssur,kerala,india,thirssur,kerala,india"
+  // );
+  // const [latitude, setLatitude] = useState("1233123");
+  // const [longitude, setLongitude] = useState("123123");
+  // const [mobileNo, setMobileNo] = useState("1231231");
+  // const [countryCode, setCountryCode] = useState("673");
+  // const [otp, setOTP] = useState("123123");
+  // const [otpEmail, setEmailOTP] = useState("123123");
+  // const [email, setEmail] = useState("vvvipinmds@gmail.com");
+  // const [street, setStreet] = useState("kerala");
+  // const [state, setStateProfile] = useState("kerala");
+  // const [district, setDistrict] = useState("thrissur");
+  // const [postcode, setPostcode] = useState("123123");
+  // const [password, setPassword] = useState("Mock@123");
+  // const [confirmPassword, setConfirmPassword] = useState("Mock@123");
   //  mockend
   const [isButtomDiable, setButtomEnableDisable] = useState(true);
 
@@ -172,6 +180,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
   const [termError, setTermError] = useState("");
   const [privaceyError, setPrivaceyError] = useState("");
+  const [dob, setDob] = useState("");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
+
   const onCheckBoxClickTerm = () => {
     //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
@@ -189,6 +201,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
   const submit = async () => {
+    console.log(">>", title);
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",
@@ -236,10 +249,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         title: title,
         firstName: firstName,
         lastName: lastName,
-        gender: "NC", //gender.code
+        gender: gender?.code, //gender.code
         customerNo: "",
         mobileNo: mobileNo,
         emailId: email,
+        birthDate: moment(dob).format("YYYY-MM-DD"),
         idValue: idNumber,
         address: {
           addressType: "string",
@@ -253,15 +267,15 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           state: state,
           district: state,
           country: country,
-          latitude: state,
+          latitude: latitude.toString(),
           longitude: longitude.toString(),
-          postcode: postcode.toString(),
+          postcode: postcode,
         },
         password: password,
         confirmPassword: confirmPassword,
         isVerified: true,
       };
-      console.log("payload", registerObject);
+      console.log("submit validation success", registerObject);
       dispatch(
         userRegister(registerObject, "Register", (message) =>
           showAlert(message)
@@ -322,10 +336,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setIsDisableSendOtp(true);
     runOtpTimer(otpTimer);
   };
-  const emailOTPVerification =
-    registerForm?.otpFormDataForEmail?.data?.otp === otpEmail;
-  const mobileOTPVerifcation =
-    registerForm?.otpFormDataForMobile?.data?.otp === otp;
+
   const submitResndOTP = () => {
     if (mobileNo.length !== 7) {
       Alert.alert(strings.attention, strings.sevenDigit, [
@@ -396,21 +407,35 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     }, 1000);
   };
 
-  const submitConfirmMobileOTP = () => {
+  const submitConfirmMobileOTP = async () => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
-      //alert(countryCode + mobileNo);
-      dispatch(getOtpForCheck(countryCode + mobileNo, "mobileOtp")); // country code to be added to verify OTP
+      const resp = await dispatch(
+        getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
+      ); // country code to be added to verify OTP
+      if (resp.status) {
+        setMobileOTPVerifcation(true);
+      } else {
+        setMobileOTPVerifcation(false);
+      }
       buttonEnableDiable();
     }
   };
   //alert(JSON.stringify(Register));
-  const submitConfirmEmailOTP = () => {
+  const submitConfirmEmailOTP = async () => {
     if (otpEmail === "") {
       setOtpEmailError(strings.emailOtpError);
     } else {
-      dispatch(getOtpForCheck(email, "emailOtp"));
+      const resp = await dispatch(
+        getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp")
+      );
+      console.log("hitting", resp);
+      if (resp.status) {
+        setEmailOTPVerification(true);
+      } else {
+        setEmailOTPVerification(false);
+      }
       buttonEnableDiable();
     }
   };
@@ -499,7 +524,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginVertical: 5 }}>
         <CustomDropDown
           selectedValue={selectedValueTitle?.description}
-          setValue={setValueTitle}
+          setValue={setTitle}
           data={[
             { code: "Mr", description: "Mr" },
             { code: "Mrs", description: "Mrs" },
@@ -572,8 +597,44 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
         {genderError !== "" && showErrorMessage(genderError)}
       </View>
+      <DatePicker
+        modal
+        mode="date"
+        validRange={{ endDate: new Date() }}
+        open={open}
+        onCancel={() => setOpen(false)}
+        date={dob == "" ? new Date() : dob}
+        maximumDate={new Date()}
+        onConfirm={(params) => {
+          console.log("data", params);
+          setOpen(false);
+          setDob(params);
+          setDobError("");
+        }}
+      />
 
       <View style={{ marginTop: 30 }}>
+        <CustomInput
+          style={{
+            backgroundColor: "transparent",
+          }}
+          // onChangeText={(text) => onIDChange(text)}
+          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+          caption={"Date of birth"}
+          onFocus={() => setOpen(true)}
+          placeHolder={"Date of birth"}
+          right={
+            <TextInput.Icon
+              onPress={() => setOpen(true)}
+              theme={{ colors: { onSurfaceVariant: colors.primary } }}
+              icon="calendar"
+            />
+          }
+        />
+        {dobError !== "" && showErrorMessage(dobError)}
+      </View>
+
+      <View style={{ marginTop: 10 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -595,6 +656,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       <View style={{ marginTop: 10 }}>
         <CustomInput
+          multiline={true}
+          numberOfLines={2}
           style={{
             backgroundColor: "transparent",
           }}
@@ -883,7 +946,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         <Button
           label={strings.register}
-          // isDisabled={isButtomDiable}
+          isDisabled={isButtomDiable}
           onPress={submit}
           loading={
             registerForm?.initOtpForm

@@ -94,6 +94,7 @@ const AddLocation = ({ route, navigation }) => {
   const [kampongName, setKampongName] = useState("");
   const [postcode, setPostcodeName] = useState("");
   const [simpangText, setSimpangText] = useState("");
+  const [addreType, setAddrType] = useState("");
 
   const hideAddLocationModal = () => setAddLocationModalVisible(false);
   const showAddLocationModal = () => setAddLocationModalVisible(true);
@@ -726,6 +727,23 @@ const AddLocation = ({ route, navigation }) => {
                     value={simpangText}
                     placeholder={strings.simpang}
                     keyboardType="default"
+                  />
+                </View>
+
+                <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                  <CustomDropDown
+                    setDropDownEnable={() => setActiveDropDown("district")}
+                    isDisable={true}
+                    selectedValue={selectedValueDist}
+                    setValue={setAddrType}
+                    data={
+                      getUniqueDistricts() ?? []
+                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                    }
+                    onChangeText={(text) => onDistrictClick(text)}
+                    value={addreType}
+                    isDisableDropDown={activeDropDown != "district"}
+                    placeHolder={strings.address_type + "*"}
                   />
                 </View>
 

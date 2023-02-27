@@ -27,6 +27,9 @@ import {
   fontSizes,
   buttonSize,
   validateNumber,
+  DEBUG_BUILD,
+  STAGE_FAQ,
+  PROD_FAQ,
   validateEmail,
 } from "../../../Utilities/Constants/Constant";
 import { TextInput, useTheme } from "react-native-paper";
@@ -42,6 +45,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
   const OTP_TIMER = 60 * 4;
+
   const onConfirmPasswordChange = (textStr) => {
     setConfirmPassword(textStr);
 
@@ -69,24 +73,27 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     return finalString;
   };
   //to do remove dummy data
-  const [firstName, setFirstName] = useState("vipin");
-  const [lastName, setLastName] = useState("vv");
-  const [customerID, setCustomerID] = useState("123123");
-  const [idNumber, setIdNumber] = useState("123123");
-  const [gender, setGender] = useState("M");
-  const [mobileNo, setMobileNo] = useState("1231233");
-  const [otp, setOTP] = useState("123123");
-  const [otpEmail, setEmailOTP] = useState("123123");
-  const [email, setEmail] = useState("vvv@gmail.com");
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  // const [customerID, setCustomerID] = useState("");
-  // const [idNumber, setIdNumber] = useState("");
-  // const [gender, setGender] = useState("");
-  // const [mobileNo, setMobileNo] = useState("");
-  // const [otp, setOTP] = useState("");
-  // const [otpEmail, setEmailOTP] = useState("");
-  // const [email, setEmail] = useState("");
+  const [emailOTPVerification, setEmailOTPVerification] = useState(false);
+  const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
+
+  // const [firstName, setFirstName] = useState("vipin");
+  // const [lastName, setLastName] = useState("vv");
+  // const [customerID, setCustomerID] = useState("123123");
+  // const [idNumber, setIdNumber] = useState("123123");
+  // const [gender, setGender] = useState("M");
+  // const [mobileNo, setMobileNo] = useState("1231233");
+  // const [otp, setOTP] = useState("123123");
+  // const [otpEmail, setEmailOTP] = useState("123123");
+  // const [email, setEmail] = useState("vipin.bahwan@gmail.com");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [customerID, setCustomerID] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
+  const [otp, setOTP] = useState("");
+  const [otpEmail, setEmailOTP] = useState("");
+  const [email, setEmail] = useState("");
 
   const [countryCode, setCountryCode] = useState("673");
 
@@ -128,14 +135,15 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const submit = async () => {
+    console.log("submit buttom pressed");
     //to do bypass otp validation
-    if (!mobileOTPVerifcation) {
-      Toast.show({
-        type: "bctError",
-        text1: strings.otpErrorMsgForMobile,
-      });
-      return null;
-    }
+    // if (!mobileOTPVerifcation) {
+    //   Toast.show({
+    //     type: "bctError",
+    //     text1: strings.otpErrorMsgForMobile,
+    //   });
+    //   return null;
+    // }
     if (!emailOTPVerification) {
       Toast.show({
         type: "bctError",
@@ -150,7 +158,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       setLastNameError(strings.lastNameError);
     } else if (customerID === "") {
       setCustomerIDError(strings.customerIDError);
-    } else if (idNumberError === "") {
+    } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
     } else if (dob === "") {
       dobError(strings.dobError);
@@ -169,21 +177,19 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     } else if (!isSelected) {
       setPrivaceyError(strings.privaceyError);
     } else {
+      console.log("validation cleared");
       let registerObject = {
         accountType: "existing",
         firstName: firstName,
         lastName: lastName,
         customerNo: customerID,
-        idValue: idValue,
-        birthDate: dob,
+        idValue: idNumber,
+        birthDate: moment(dob).format("YYYY-MM-DD"),
         gender: gender.code,
-        country: myArray.length > 0 ? myArray[0] : "",
-        extn: countryCode,
+        // extn: countryCode,
         mobileNo: mobileNo,
-        mobileOTP: otp,
         emailId: email,
-        isVerified: true,
-        emailOTP: otpEmail,
+        isVerified: false,
       };
       console.log("userRegister===>2", registerObject);
       dispatch(
@@ -266,10 +272,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setIsDisableSendOtp(true);
     runOtpTimer(otpTimer);
   };
-  const emailOTPVerification =
-    registerForm?.otpFormDataForEmail?.data?.otp === otpEmail;
-  const mobileOTPVerifcation =
-    registerForm?.otpFormDataForMobile?.data?.otp === otp;
+
   const submitResndOTP = () => {
     if (mobileNo.length !== 7) {
       Alert.alert(strings.attention, strings.sevenDigit, [
@@ -305,9 +308,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     }
   };
   const buttonEnableDiable = () => {
-    // console.log("buttonEnableDiable==>"+firstName+"<===>"+lastName+"<===>"+gender+"<===>"+location
-    // +"<===>"+mobileNo+"<===>"+otp+"<===>"+email
-    // +"<===>"+otpEmail+"<===>"+password+"<===>"+confirmPassword)
     if (
       dob === "" ||
       firstName === "" ||
@@ -343,21 +343,35 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     }, 1000);
   };
 
-  const submitConfirmMobileOTP = () => {
+  const submitConfirmMobileOTP = async () => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
       //alert(countryCode + mobileNo);
-      dispatch(getOtpForCheck(countryCode + mobileNo, "mobileOtp")); // country code to be added to verify OTP
+      const resp = await dispatch(
+        getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
+      ); // country code to be added to verify OTP
+      if (resp.status) {
+        setMobileOTPVerifcation(true);
+      } else {
+        setMobileOTPVerifcation(false);
+      }
       buttonEnableDiable();
     }
   };
   //alert(JSON.stringify(Register));
-  const submitConfirmEmailOTP = () => {
+  const submitConfirmEmailOTP = async () => {
     if (otpEmail === "") {
       setOtpEmailError(strings.emailOtpError);
     } else {
-      dispatch(getOtpForCheck(email, "emailOtp"));
+      const resp = await dispatch(
+        getOtpForCheck({ reference: email, otp: otpEmail }, "emailOtp")
+      );
+      if (resp.status) {
+        setEmailOTPVerification(true);
+      } else {
+        setEmailOTPVerification(false);
+      }
       buttonEnableDiable();
     }
   };
@@ -691,10 +705,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         {otpEmailError !== "" && showErrorMessage(otpEmailError)}
       </View>
 
-      {!registerForm.initRegisterForm &&
-        registerForm?.otpFormData?.errorCode !== "200" &&
-        registerForm?.otpUsageType === "Register" &&
-        showErrorMessage(registerForm?.otpFormData?.message)}
       <DatePicker
         modal
         mode="date"
@@ -803,7 +813,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         ) : (
           <Button
             label={strings.register}
-            // disabled={isButtomDiable}
+            disabled={isButtomDiable}
             loading={
               registerForm?.initOtpForm
                 ? registerForm?.otpUsageType === "Register"

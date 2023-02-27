@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Text,
   StyleSheet,
   View,
   Image,
@@ -12,6 +11,7 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
+
 import {
   spacing,
   color,
@@ -20,7 +20,7 @@ import {
   validateNumber,
   validateEmail,
 } from "../../Utilities/Constants/Constant";
-import { TextInput } from "react-native-paper";
+import { Text, TextInput } from "react-native-paper";
 import { CustomDropDown } from "../../Components/CustomDropDown";
 import {
   fetchRegisterFormData,
@@ -38,13 +38,18 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { TDLog } from "../../Utilities/Constants/Constant";
+import { useTheme } from "react-native-paper";
+import theme from "../../Utilities/themeConfig";
+import { ClearSpace } from "../../Components/ClearSpace";
+import { CustomInput } from "../../Components/CustomInput";
 
 const EditProfile = ({ navigation, props }) => {
+  const { colors, fonts } = useTheme();
   let savedLocation = useSelector((state) => state.savedLocations);
   const dispatchSaveLocation = useDispatch([fetchSavedLocations]);
   const fetchSavedLocationData = () =>
     dispatchSaveLocation(fetchSavedLocations());
-
+  const [userId, setUserId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -93,44 +98,30 @@ const EditProfile = ({ navigation, props }) => {
 
   let profile = useSelector((state) => state.profile);
   const dispatch2 = useDispatch([fetchSavedProfileData, updateProfileData]);
-  console.log(
-    "profile?.savedProfileData?.country : " + profile?.savedProfileData?.country
-  );
+  console.log("res.data.country : " + profile?.savedProfileData?.country);
 
   useEffect(() => {
-    dispatch2(fetchSavedProfileData());
+    async function fetchMyAPI() {
+      const res = await dispatch2(fetchSavedProfileData());
 
-    setProfileImageData(profile?.savedProfileData?.profilePicture);
-    setFirstName(profile?.savedProfileData?.firstName);
-    setLastName(profile?.savedProfileData?.lastName);
-    setGender(profile?.savedProfileData?.gender);
-    setValueGender(profile?.savedProfileData?.gender);
-    setCountry("Brunei Darussalam");
-    setValueCountry("Brunei Darussalam");
-    setMobileNo(profile?.savedProfileData?.contactNo);
-    setEmail(profile?.savedProfileData?.email);
-    setLocation(getAddressString(profile?.savedProfileData));
-    // console.warn("useeffect", profile?.savedProfileData);
-    console.log(
-      "country===>" + profile?.savedProfileData?.hno !==
-        "" +
-          "," +
-          profile?.savedProfileData?.block +
-          "," +
-          profile?.savedProfileData?.buildingName +
-          "," +
-          profile?.savedProfileData?.road +
-          "," +
-          profile?.savedProfileData?.city +
-          "," +
-          profile?.savedProfileData?.town +
-          "," +
-          profile?.savedProfileData?.state +
-          "," +
-          profile?.savedProfileData?.district +
-          "," +
-          profile?.savedProfileData?.country
-    );
+      if (res.status) {
+        setUserId(res.data.userId);
+        setProfileImageData(res.data.profilePicture);
+        setFirstName(res.data.firstName);
+        setLastName(res.data.lastName);
+        setGender(res.data.gender);
+        setValueGender(res.data.gender);
+        setCountry(res.data.country);
+        setValueCountry(res.data.country);
+        setMobileNo(res.data.contactNo);
+        setEmail(res.data.email);
+        setLocation(getAddressString(res.data));
+      }
+
+      // console.warn("useeffect", profile?.savedProfileData);
+    }
+
+    fetchMyAPI();
   }, []);
 
   const genderLot = (gender) => {
@@ -140,21 +131,19 @@ const EditProfile = ({ navigation, props }) => {
   };
   const getAddressString = (data) => {
     let addressString = "";
-    if (data?.hno) {
-      addressString += data.hno + ",";
-    }
-    if (data?.block) {
-      addressString += data.block + ",";
-    }
-    if (data?.buildingName) {
-      addressString += data.buildingName + ",";
-    }
-    if (data?.street) {
-      addressString += data.street + ",";
-    }
-    if (data?.town) {
-      addressString += data.town + ",";
-    }
+    // if (data?.addressNo) {
+    //   addressString += data.addressNo + ",";
+    // }
+    // if (data?.address1) {
+    //   addressString += data.address1 + ",";
+    // }
+    // if (data?.address2) {
+    //   addressString += data.address2 + ",";
+    // }
+    // if (data?.address3) {
+    //   addressString += data.address3 + ",";
+    // }
+
     if (data?.city) {
       addressString += data.city + ",";
     }
@@ -172,8 +161,8 @@ const EditProfile = ({ navigation, props }) => {
       setCountry("Brunei Darussalam");
     }
 
-    if (data?.postCode) {
-      addressString += "" + data.postCode;
+    if (data?.postcode) {
+      addressString += "" + data.postcode;
     }
     return addressString;
   };
@@ -181,17 +170,7 @@ const EditProfile = ({ navigation, props }) => {
   const onPlaceChosen = (params) => {
     // here is your callback function
     TDLog("onPlaceChosen Edit profile", JSON.stringify(params));
-    setLocation(
-      params.street +
-        "," +
-        params.state +
-        "," +
-        params.district +
-        "," +
-        params.country +
-        "," +
-        params.postCode
-    );
+
     setLatitude(params.currentLatitude);
     setLongitude(params.currentLongitude);
     setStreet(params.street);
@@ -440,12 +419,18 @@ const EditProfile = ({ navigation, props }) => {
 
   const showErrorMessage = (errMessage) => {
     return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+      <View
+        style={{
+          marginTop: spacing.HEIGHT_6,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <Image
           style={styles.errorLogo}
           source={require("../../Assets/icons/ci_error_warning.png")}
         />
-        <Text style={styles.errorText}>{errMessage}</Text>
+        <Text style={styles.errorText}> {errMessage}</Text>
       </View>
     );
   };
@@ -496,16 +481,10 @@ const EditProfile = ({ navigation, props }) => {
       )}
       {!profile.initProfile && (
         <View style={styles.container}>
-          <ProfileHeader
-            Text={myscreenmae}
-            navigation={navigation}
-            backIconVisibility={true}
-            submit={submit}
-          ></ProfileHeader>
           <View
             style={{
-              height: 150,
-              backgroundColor: color.BCAE_PRIMARY,
+              // height: 150,
+              backgroundColor: colors.secondary,
               paddingTop: 20,
             }}
           >
@@ -534,6 +513,18 @@ const EditProfile = ({ navigation, props }) => {
                     />
                   </View>
                 </ImageBackground>
+
+                <Text variant="bodyLarge" style={styles.caption}>
+                  {userId}
+                </Text>
+                <ClearSpace />
+                <Text variant="bodySmall" style={styles.caption_small}>
+                  {email}
+                </Text>
+                <ClearSpace />
+                <Text variant="bodyLarge" style={styles.caption}>
+                  {mobileNo}
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -548,62 +539,14 @@ const EditProfile = ({ navigation, props }) => {
               style={{ flexGrow: 1, paddingHorizontal: spacing.WIDTH_30 }}
               nestedScrollEnabled={true}
             >
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                <View style={{ flexDirection: "column" }}>
-                  <Text
-                    style={{
-                      color: color.PLACEHOLDER,
-                      fontSize: 14,
-                      fontWeight: "500",
-                    }}
-                  >
-                    User Name
-                  </Text>
-                  <Text
-                    style={{
-                      color: color.PROFILE_NAME,
-                      fontSize: 18,
-                      fontWeight: "500",
-                    }}
-                  >
-                    {profile?.savedProfileData?.email}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                <View style={{ flexDirection: "column" }}>
-                  <Text
-                    style={{
-                      color: color.PLACEHOLDER,
-                      fontSize: 14,
-                      fontWeight: "500",
-                    }}
-                  >
-                    Customer ID
-                  </Text>
-                  <Text
-                    style={{
-                      color: color.PROFILE_NAME,
-                      fontSize: 18,
-                      fontWeight: "500",
-                    }}
-                  >
-                    {profile?.savedProfileData?.customerId}
-                  </Text>
-                </View>
-              </View>
               {/* First Name */}
               <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                <TextInput
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
-                  textColor="#ea272c"
+                <CustomInput
+                  editable={false}
+                  caption={strings.first_name}
+                  placeholder={strings.first_name}
                   onChangeText={(text) => onFirstNameChange(text)}
                   value={firstName}
-                  placeHolder={strings.first_name}
-                  label={strings.first_name}
                   right={
                     <TextInput.Icon
                       onPress={clearFirstName}
@@ -620,15 +563,12 @@ const EditProfile = ({ navigation, props }) => {
 
               {/* Last Name */}
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                <TextInput
-                  mode="flat"
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
+                <CustomInput
+                  editable={false}
+                  caption={strings.last_name}
+                  placeholder={strings.last_name}
                   onChangeText={(text) => onLastNameChange(text)}
                   value={lastName}
-                  placeHolder={strings.last_name}
-                  label={strings.label}
                   right={
                     <TextInput.Icon
                       onPress={clearLastName}
@@ -644,7 +584,7 @@ const EditProfile = ({ navigation, props }) => {
               </View>
 
               {/* Gender */}
-              <View style={{ marginTop: spacing.HEIGHT_20 }}>
+              <View style={{}}>
                 <CustomDropDown
                   selectedValue={genderLot(selectedValueGender)}
                   setValue={setValueGender}
@@ -660,38 +600,24 @@ const EditProfile = ({ navigation, props }) => {
               </View>
 
               {/* Address */}
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                {location != "" && (
-                  <Text style={styles.placeHolderText}>{strings.location}</Text>
-                )}
-
-                <Pressable
-                  onPress={() => locationIconClick()}
-                  style={styles.textLocation}
-                >
-                  <Text
-                    style={{
-                      color: location != "" ? color.BLACK : color.PLACEHOLDER,
-                      fontSize: 14,
-
-                      width: "90%",
-                      marginBottom: "2%",
-                    }}
-                    placeHolder={strings.location}
-                  >
-                    {location || strings.location}
-                  </Text>
-                  <Image
-                    style={{
-                      position: "absolute",
-                      right: 5,
-                      bottom: 5,
-                      height: 20,
-                      width: 20,
-                    }}
-                    source={require("../../Assets/icons/map.png")}
-                  ></Image>
-                </Pressable>
+              <View style={{ marginTop: spacing.HEIGHT_40 }}>
+                <CustomInput
+                  multiline={true}
+                  numberOfLines={2}
+                  style={{
+                    backgroundColor: "transparent",
+                  }}
+                  value={location || strings.location}
+                  caption={strings.location}
+                  placeHolder={strings.location}
+                  right={
+                    <TextInput.Icon
+                      onPress={() => locationIconClick()}
+                      theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                      icon="map"
+                    />
+                  }
+                />
 
                 {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
@@ -717,7 +643,7 @@ const EditProfile = ({ navigation, props }) => {
                         </View> */}
 
               {/* Country */}
-              <View style={{ marginTop: spacing.HEIGHT_20 }}>
+              <View style={{ marginTop: spacing.HEIGHT_10 }}>
                 <CustomDropDown
                   selectedValue={selectedValueCountry}
                   setValue={setValueCountry}
@@ -735,15 +661,11 @@ const EditProfile = ({ navigation, props }) => {
               </View>
 
               {/* Mobile Number */}
-              <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                <TextInput
-                  mode="flat"
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
+              {/* <View style={{ marginTop: spacing.HEIGHT_40 }}>
+                <CustomInput
                   value={mobileNo}
                   placeHolder={strings.mobile_number}
-                  label={strings.mobile_number}
+                  caption={strings.mobile_number}
                   right={
                     <TextInput.Icon
                       onPress={clearFirstName}
@@ -753,22 +675,19 @@ const EditProfile = ({ navigation, props }) => {
                   }
                   disabled={false}
                 />
+
                 {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
                 {numberError !== "" && showErrorMessage(numberError)}
-              </View>
+              </View> */}
 
               {/* Email */}
-              <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                <TextInput
-                  mode="flat"
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
+              {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
+                <CustomInput
                   value={email}
                   placeHolder={strings.email}
-                  label={strings.email}
+                  caption={strings.email}
                   right={
                     <TextInput.Icon
                       onPress={clearFirstName}
@@ -780,9 +699,11 @@ const EditProfile = ({ navigation, props }) => {
                 />
                 {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
-                  this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {emailError !== "" && showErrorMessage(emailError)}
-              </View>
+                  this.
+                  (registerForm?.loggedProfile?.message)}
+                {emailError !== "" && 
+                (emailError)}
+              </View> */}
 
               <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
             </ScrollView>
@@ -798,6 +719,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
   },
+  caption: {
+    color: theme.colors.inverseSecondary,
+    fontWeight: "700",
+  },
+  caption_small: {
+    color: theme.colors.inverseSecondary,
+  },
+
   logo: {
     height: spacing.WIDTH_40,
     width: spacing.WIDTH_50 * 2,

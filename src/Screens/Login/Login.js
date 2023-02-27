@@ -69,7 +69,7 @@ export const Login = ({ navigation }) => {
   const [params, setParams] = useState("");
 
   let login = useSelector((state) => state.login);
-  console.log("$$$-secondLoginAlertInfo", login.secondLoginAlertInfo);
+
   const dispatch = useDispatch([
     resetLogin,
     verifyLoginData,

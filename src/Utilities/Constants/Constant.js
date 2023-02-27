@@ -6,6 +6,7 @@ import { Platform } from "react-native";
 
 const RNFetchBlob = require("rn-fetch-blob").default;
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
+import theme from "../themeConfig";
 
 export const ACCOUNT_TYPE = {
   PERSONAL: "personal",
@@ -221,7 +222,7 @@ export const fontSizes = {
 };
 
 export const color = {
-  BCAE_PRIMARY: "#EA262C",
+  BCAE_PRIMARY: theme.colors.primary,
   BCAE_LIGHT_BLUE: "#365B9E",
   BCAE_LIGHT_BLUE_2: "#FFF7F7",
   BCAE_LIGHT_BLUE_3: "#4F86EC",

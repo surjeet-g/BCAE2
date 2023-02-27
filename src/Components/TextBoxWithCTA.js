@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   correctStyle: {
     position: "absolute",
     right: 0,
-    bottom: spacing.HEIGHT_5,
+    bottom: 10,
     marginRight: 120,
     zIndex: 1,
 
