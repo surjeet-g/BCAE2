@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Image,
+  ScrollView,
   SafeAreaView,
   Dimensions,
   TouchableHighlight,
@@ -55,7 +56,7 @@ const AddLocation = ({ route, navigation }) => {
   let savedLocation = useSelector((state) => state.savedLocations);
 
   let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
-
+  console.log(">>", savedLocationWithoutAuth);
   const dispatch = useDispatch([addNewLocations]);
   const { width, height } = Dimensions.get("window");
   const ASPECT_RATIO = width / height;
@@ -87,6 +88,7 @@ const AddLocation = ({ route, navigation }) => {
   }
 
   const [selectedValueDist, setValueDist] = useState("");
+  const [selectedValueAddr, setValueSelAddr] = useState("");
   const [selectedValueKampong, setValueKampong] = useState("");
   const [selectedValuePostcode, setValuePostcode] = useState("");
 
@@ -106,6 +108,8 @@ const AddLocation = ({ route, navigation }) => {
       showAddLocationModal();
       setValueDist("");
       setDistName("");
+      setAddrType("");
+      setValueSelAddr("");
       setValueKampong("");
       setKampongName("");
       setValuePostcode("");
@@ -143,6 +147,7 @@ const AddLocation = ({ route, navigation }) => {
           latitude: currentLatitude,
           postCode: postcode,
           dialPick,
+          addressType: addreType,
         });
 
         navigation.goBack();
@@ -334,6 +339,15 @@ const AddLocation = ({ route, navigation }) => {
 
     return uniqueDistrictData;
   };
+  const getAddresType = () => {
+    let result = [];
+    if (savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE?.length > 0) {
+      savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE.map((item) => {
+        result.push({ description: item.description, id: item.code });
+      });
+    }
+    return result;
+  };
 
   useEffect(() => {
     animateToCurrentLocation();
@@ -386,6 +400,7 @@ const AddLocation = ({ route, navigation }) => {
     setValuePostcode("");
     setPostcodeName("");
   };
+
   const onKampongClick = (text) => {
     setKampongName(text?.description);
     setValuePostcode("");
@@ -652,7 +667,7 @@ const AddLocation = ({ route, navigation }) => {
         />
       </View>
       {isAddLocationModalVisible && (
-        <View style={{ position: "absolute", top: "5%", left: "5%" }}>
+        <ScrollView style={{ position: "absolute", top: "-3%", left: "5%" }}>
           <View style={styles.addLocationContainer}>
             <View
               style={{
@@ -732,17 +747,19 @@ const AddLocation = ({ route, navigation }) => {
 
                 <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                   <CustomDropDown
-                    setDropDownEnable={() => setActiveDropDown("district")}
+                    setDropDownEnable={() => setActiveDropDown("setAddrType")}
                     isDisable={true}
-                    selectedValue={selectedValueDist}
-                    setValue={setAddrType}
+                    selectedValue={selectedValueAddr}
+                    setValue={setValueSelAddr}
                     data={
-                      getUniqueDistricts() ?? []
+                      getAddresType() ?? []
                       // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
                     }
-                    onChangeText={(text) => onDistrictClick(text)}
+                    onChangeText={(text) => {
+                      setAddrType(text.description);
+                    }}
                     value={addreType}
-                    isDisableDropDown={activeDropDown != "district"}
+                    isDisableDropDown={activeDropDown != "setAddrType"}
                     placeHolder={strings.address_type + "*"}
                   />
                 </View>
@@ -836,7 +853,7 @@ const AddLocation = ({ route, navigation }) => {
               </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   );

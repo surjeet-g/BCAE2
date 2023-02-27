@@ -37,6 +37,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
   const options = {
+    headerTintColor: colors.inverseSecondary,
     activeTintColor: "#e91e63",
     headerShown: true,
     headerTransparent: false,
@@ -61,7 +62,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Register with us"
+        initialRouteName="EditProfile"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
