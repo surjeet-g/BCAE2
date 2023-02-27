@@ -781,4 +781,5 @@ const styles = StyleSheet.create({
   },
 });
 
+console.log(">>nav", EditProfile);
 export default EditProfile;

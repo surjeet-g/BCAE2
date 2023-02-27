@@ -61,7 +61,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Register with us"
+        initialRouteName="EditProfile"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
