@@ -18,7 +18,6 @@ export const navBar = StyleSheet.create({
     alignItems: "center",
     borderRadius: 26,
     borderWidth: 0.5,
-    borderStyle: "solid",
     borderColor: theme.colors.inverseSecondary,
   },
 });

@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bottomcontainer: {
-    height: 50,
+    height: 60,
     width: "100%",
     backgroundColor: color.WHITE,
     flexDirection: "row",
@@ -227,8 +227,9 @@ const styles = StyleSheet.create({
     height: spacing.WIDTH_20,
   },
   addLogo: {
-    width: spacing.WIDTH_30,
-    height: spacing.WIDTH_30,
+    width: spacing.WIDTH_50,
+    height: spacing.WIDTH_50,
+    marginBottom: 60,
   },
   button: {
     width: 100,

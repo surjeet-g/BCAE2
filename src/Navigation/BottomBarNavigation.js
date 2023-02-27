@@ -101,7 +101,7 @@ const BottomBarNavigation = () => {
                       }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
-                    style={ICON_STYLE}
+                    style={navBar.roundIcon}
                   />
                 </Pressable>
               </View>

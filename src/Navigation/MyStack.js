@@ -37,6 +37,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
   const options = {
+    headerTintColor: colors.inverseSecondary,
     activeTintColor: "#e91e63",
     headerShown: true,
     headerTransparent: false,
