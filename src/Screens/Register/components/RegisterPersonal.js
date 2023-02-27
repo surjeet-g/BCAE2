@@ -78,6 +78,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setCountry(params.country);
     setPostcode(params.postCode);
     setDialPick(params.dialPick);
+    setAddrType(params.addressType);
   };
 
   const formatOtpTimer = (otpTmr) => {
@@ -183,7 +184,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [dob, setDob] = useState("");
   const [dobError, setDobError] = useState("");
   const [open, setOpen] = useState(false);
-
+  const [addreType, setAddrType] = useState("");
   const onCheckBoxClickTerm = () => {
     //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
@@ -256,7 +257,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         birthDate: moment(dob).format("YYYY-MM-DD"),
         idValue: idNumber,
         address: {
-          addressType: "string",
+          addressType: addreType,
           buildingName: "",
           houseNo: street,
           address1: street,
@@ -808,7 +809,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               ? true
               : false
           }
-          correctOtp={true}
+          correctOtp={emailOTPVerification}
           onPress={submitConfirmEmailOTP}
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}

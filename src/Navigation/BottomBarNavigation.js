@@ -12,7 +12,7 @@ import CustomBottomBar from "./CustomBottomBar";
 // import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
 // import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
 import { color, DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
-//import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Text, Pressable } from "react-native";
 import NotiIcon from "../Assets/svg/notif.svg";
 import AvtrIcon from "../Assets/svg/avatr.svg";
@@ -63,7 +63,7 @@ const BottomBarNavigation = () => {
   return (
     <Tab.Navigator
       tabBar={(props) => <CustomBottomBar {...props} />}
-      initialRouteName="Profile"
+      initialRouteName="Dashboard"
       backBehavior="history"
     >
       <Tab.Screen
@@ -88,8 +88,9 @@ const BottomBarNavigation = () => {
                   onPress={() =>
                     alert("ToDo - Navigate to Notifications Screen")
                   }
+                  style={navBar.roundIcon}
                 >
-                  <NotiIcon {...ICON_STYLE} />
+                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
                 </Pressable>
                 <View style={navBar.divider} />
                 <Pressable onPress={() => navigation.navigate("Profile")}>
@@ -100,7 +101,7 @@ const BottomBarNavigation = () => {
                       }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
-                    style={{ width: 30, height: 30, borderRadius: 30 / 2 }}
+                    style={navBar.roundIcon}
                   />
                 </Pressable>
               </View>

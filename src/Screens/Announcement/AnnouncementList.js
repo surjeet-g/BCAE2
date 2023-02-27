@@ -19,7 +19,7 @@ import Moment from "moment";
 import AnnouncementItem from "./component/AnnouncementItem";
 
 const AnnouncementList = ({ announcementItemList }) => (
-  <View>
+  <View style={{ marginTop: 60, alignItems: "center" }}>
     {announcementItemList?.length > 0 ? (
       <FlatList
         contentContainerStyle={{

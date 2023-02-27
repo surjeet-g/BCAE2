@@ -9,6 +9,7 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "#F5AD47",
+    inversePrimary: "#DBDBDB",
     onPrimaryContainer: "#88a5da",
     secondary: "#474747",
     inverseSecondary: "#fff",

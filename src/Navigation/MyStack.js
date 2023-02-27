@@ -37,6 +37,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
   const options = {
+    headerTintColor: "#ffffff",
     activeTintColor: "#e91e63",
     headerShown: true,
     headerTransparent: false,
@@ -54,7 +55,6 @@ function MyStack() {
       ...fonts.titleMedium,
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
-    headerShown: true,
   };
 
   return (
@@ -100,16 +100,7 @@ function MyStack() {
                   <View style={navBar.navRightCon}>
                     <Pressable
                       onPress={() => navigation.navigate("EditProfile")}
-                      style={{
-                        width: 26,
-                        height: 26,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderRadius: 26,
-                        borderWidth: 0.5,
-                        borderStyle: "solid",
-                        borderColor: colors.inverseSecondary,
-                      }}
+                      style={navBar.roundIcon}
                     >
                       <Icon
                         name="pencil-outline"

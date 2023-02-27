@@ -6,6 +6,7 @@ import {
   Alert,
   Pressable,
   ScrollView,
+  Switch,
 } from "react-native";
 
 import { Divider, Text, useTheme } from "react-native-paper";
@@ -18,7 +19,7 @@ import { strings } from "../../Utilities/Language";
 
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
-import { getDataFromDB } from "../../Storage/token";
+import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import {
   DEFAULT_PROFILE_IMAGE,
   storageKeys,
@@ -37,7 +38,15 @@ export const ViewProfile = ({ navigation }) => {
     name: "",
     userId: "",
   });
+  const [isNotiEnabled, setIsNotiEnabled] = useState(false);
 
+  useEffect(() => {
+    getDataFromDB(storageKeys.PUSH_NOTIFICATION).then((result) => {
+      if (result) {
+        setIsNotiEnabled(result.push_notification);
+      }
+    });
+  }, []);
   useEffect(() => {
     async function fetchMyAPI() {
       const res = await dispatch2(fetchSavedProfileData());
@@ -53,6 +62,13 @@ export const ViewProfile = ({ navigation }) => {
     }
     fetchMyAPI();
   }, []);
+
+  const toggleSwitch = () => {
+    setIsNotiEnabled(!isNotiEnabled);
+    saveDataToDB(storageKeys.PUSH_NOTIFICATION, {
+      push_notification: !isNotiEnabled,
+    }).then(function () {});
+  };
   const dispatch = useDispatch([
     deleteNdLogoutUser,
     fetchSavedProfileData,
@@ -159,34 +175,46 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Saved Location
+            {strings.saved_location}
           </Text>
         </Pressable>
         <Divider />
-        <Pressable
-          onPress={() => {
-            alert("To do");
-          }}
-          style={styles.listItem}
-        >
-          <Icon
-            name="bell-outline"
-            size={ICON}
-            color={colors.onSurfaceDisabled}
-            style={{ marginRight: 14 }}
-          />
-
-          <Text
-            variant="bodyMedium"
-            style={{
-              fontWeight: "600",
-
-              color: colors.secondary,
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Pressable
+            onPress={() => {
+              alert("To do");
             }}
+            style={styles.listItem}
           >
-            Notification Alert
-          </Text>
-        </Pressable>
+            <Icon
+              name="bell-outline"
+              size={ICON}
+              color={colors.onSurfaceDisabled}
+              style={{ marginRight: 14 }}
+            />
+
+            <Text
+              variant="bodyMedium"
+              style={{
+                fontWeight: "600",
+
+                color: colors.secondary,
+              }}
+            >
+              {strings.notification}
+            </Text>
+          </Pressable>
+          <Switch
+            trackColor={{
+              false: colors.inversePrimary,
+              true: "#ca5b5ea8",
+            }}
+            thumbColor={isNotiEnabled ? colors.primary : colors.inversePrimary}
+            // ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isNotiEnabled}
+          />
+        </View>
         <Divider />
         <Pressable onPress={onDeletePressed} style={styles.listItem}>
           <Icon
