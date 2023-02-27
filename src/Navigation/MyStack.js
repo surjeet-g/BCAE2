@@ -62,7 +62,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="EditProfile"
+        initialRouteName="ForgotPassword"
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -122,31 +122,6 @@ function MyStack() {
             ...options,
             ...{
               title: "Edit Profile",
-              headerRight: () => {
-                return (
-                  <View style={navBar.navRightCon}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                      style={{
-                        width: 26,
-                        height: 26,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderRadius: 26,
-                        borderWidth: 0.5,
-                        borderStyle: "solid",
-                        borderColor: colors.inverseSecondary,
-                      }}
-                    >
-                      <Icon
-                        name="content-save"
-                        size={19}
-                        color={colors.inverseSecondary}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
             },
           })}
           name="EditProfile"
