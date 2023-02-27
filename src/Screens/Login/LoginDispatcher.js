@@ -13,21 +13,20 @@ import {
   storageKeys,
   DEFAULT_PROFILE_IMAGE,
 } from "../../Utilities/Constants/Constant";
-// import { Platform } from "react-native";
-// import { encryption } from "../../Utilities/Security/Encryption";
+import Toast from "react-native-toast-message";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { username, loginId, password, userType, loginType } = params;
+    const { loginId, password, userType, loginType, loginMode } = params;
     dispatch(initLoginData());
-    console.log("$$$-verifyLoginData");
+    console.log("$$$-verifyLoginData-params", params);
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
         return deviceId;
       })
       .then(async (fcmDeviceId) => {
         let params = {
-          loginId: username || loginId,
+          loginId,
           password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
@@ -40,7 +39,7 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
-
+        console.log("$$$-verifyLoginData-result", result);
         if (result.success) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
@@ -75,7 +74,8 @@ export function verifyLoginData(navigation, params) {
                   profilePicture:
                     result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
                   customerId: profileResult?.data?.data?.customerId,
-                  customerNo: profileResult?.data?.data?.customerNo,
+                  customerId: profileResult?.data?.data?.customerId,
+                  customerUuid: profileResult?.data?.data?.customerUuid,
                   birthDate: profileResult?.data?.data?.birthDate,
                   contactNo:
                     profileResult.data?.data?.customerContact[0]?.mobileNo,
@@ -96,6 +96,12 @@ export function verifyLoginData(navigation, params) {
           }
         } else {
           dispatch(failureLogin(result));
+          if (result.errorCode === 422) {
+            Toast.show({
+              type: "bctError",
+              text1: result?.message || "",
+            });
+          }
         }
       });
   };
@@ -107,16 +113,16 @@ export function resetLogin() {
   };
 }
 
-export function callLogoutAndLogin(userId, navigation, requestObject) {
+export function callLogoutAndLogin(userId, navigation, params) {
   return async (dispatch) => {
     let result = await serverCall(
       endPoints.LOGOUT_USER + userId,
       requestMethod.DELETE
     );
-    console.log("$$$-logout-result", result);
+    console.log("$$$-callLogoutAndLogin-logout-result", result);
     if (result?.data?.status === 200) {
-      console.log("$$$-requestObject", requestObject);
-      dispatch(verifyLoginData(navigation, requestObject.data));
+      console.log("$$$-callLogoutAndLogin-params", params);
+      dispatch(verifyLoginData(navigation, params));
     }
   };
 }
@@ -124,5 +130,44 @@ export function callLogoutAndLogin(userId, navigation, requestObject) {
 export function resetShowSecondLoginAlert() {
   return async (dispatch) => {
     dispatch(resetShowSecondLoginAlertData());
+  };
+}
+
+export function sendLoginOTPData(navigation, params, toNavigate) {
+  console.log("$$$-sendLoginOTPData");
+  console.log("$$$-sendLoginOTPData-params", params);
+  return async (dispatch) => {
+    const { loginId, userType, loginType, loginMode } = params;
+    dispatch(initLoginData());
+    console.log("$$$-sendLoginOTPData-params-1", params);
+    let param = {};
+    if (loginMode.includes("Email")) {
+      param = {
+        reference: loginId,
+      };
+      url = endPoints.GET_LOGIN_OTP_FOR_EMAIL;
+    } else if (loginMode.includes("Mobile")) {
+      param = {
+        reference: loginId,
+        extn: 0,
+      };
+      url = endPoints.GET_LOGIN_OTP_FOR_MOBILE;
+    }
+
+    let result = await serverCall(url, requestMethod.POST, param);
+    console.log("$$$-sendLoginOTPData-result", result);
+
+    if (result.success) {
+      if (toNavigate) {
+        navigation.navigate("VerifyLoginOTP", { ...params });
+      } else {
+        Toast.show({
+          type: "bctSuccess",
+          text1: "New OTP has been sent",
+        });
+      }
+    } else {
+      dispatch(failureLogin(result));
+    }
   };
 }
