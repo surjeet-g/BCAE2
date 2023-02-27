@@ -131,7 +131,10 @@ export const ViewProfile = ({ navigation }) => {
         <ClearSpace size={2} />
         <Pressable
           onPress={() => {
-            alert("To do");
+            navigation.navigate("Changepassword", {
+              isChangePassword: true,
+              email: userInfo.email,
+            });
           }}
           style={styles.listItem}
         >
@@ -147,12 +150,6 @@ export const ViewProfile = ({ navigation }) => {
             style={{
               fontWeight: "600",
               color: colors.secondary,
-            }}
-            onPress={() => {
-              navigation.navigate("Changepassword", {
-                isChangePassword: true,
-                email: userInfo.email,
-              });
             }}
           >
             Change Password

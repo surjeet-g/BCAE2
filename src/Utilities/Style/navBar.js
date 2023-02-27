@@ -8,7 +8,7 @@ export const navBar = StyleSheet.create({
     marginRight: 15,
   },
   divider: {
-    width: 5,
+    width: 10,
     height: 1,
   },
   roundIcon: {
