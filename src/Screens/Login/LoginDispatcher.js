@@ -12,11 +12,11 @@ import { saveDataToDB, getDataFromDB } from "../../Storage/token";
 import { storageKeys } from "../../Utilities/Constants/Constant";
 
 export function verifyLoginData(navigation, params) {
-  console.log("$$$-verifyLoginData", params);
+  console.log("$$$-verifyLoginData");
   return async (dispatch) => {
-    const { username, loginId, password, userType, loginType } = params;
+    const { loginId, password, userType, loginType } = params;
     dispatch(initLoginData());
-    console.log("$$$-verifyLoginData");
+    console.log("$$$-verifyLoginData-params", params);
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
         console.log("$$$-verifyLoginData-deviceId", deviceId);
@@ -24,7 +24,7 @@ export function verifyLoginData(navigation, params) {
       })
       .then(async (fcmDeviceId) => {
         let params = {
-          loginId: username || loginId,
+          loginId,
           password,
           channel: "MOBILE_APP",
           deviceId: fcmDeviceId,
@@ -66,16 +66,16 @@ export function resetLogin() {
   };
 }
 
-export function callLogoutAndLogin(userId, navigation, requestObject) {
+export function callLogoutAndLogin(userId, navigation, params) {
   return async (dispatch) => {
     let result = await serverCall(
       endPoints.LOGOUT_USER + userId,
       requestMethod.DELETE
     );
-    console.log("$$$-logout-result", result);
+    console.log("$$$-callLogoutAndLogin-logout-result", result);
     if (result?.data?.status === 200) {
-      console.log("$$$-requestObject", requestObject);
-      dispatch(verifyLoginData(navigation, requestObject.data));
+      console.log("$$$-callLogoutAndLogin-params", params);
+      dispatch(verifyLoginData(navigation, params));
     }
   };
 }

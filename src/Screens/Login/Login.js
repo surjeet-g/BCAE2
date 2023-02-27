@@ -66,6 +66,7 @@ export const Login = ({ navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [number, setNumber] = useState("123543");
   const [numberError, setNumberError] = useState("");
+  const [params, setParams] = useState("");
 
   let login = useSelector((state) => state.login);
   console.log("$$$-secondLoginAlertInfo", login.secondLoginAlertInfo);
@@ -125,15 +126,15 @@ export const Login = ({ navigation }) => {
       } else if (password === "") {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
-        dispatch(
-          verifyLoginData(navigation, {
-            username,
-            password,
-            userType:
-              userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
-            loginType: "PASSWORD",
-          })
-        );
+        param = {
+          loginId: username,
+          password,
+          userType:
+            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          loginType: loginType.toUpperCase(),
+        };
+        setParams(param);
+        dispatch(verifyLoginData(navigation, param));
       }
     } else {
       setUsernameError(strings.emailValidError);
@@ -153,15 +154,15 @@ export const Login = ({ navigation }) => {
     //   ]);
     // }
     else {
-      dispatch(
-        verifyLoginData(navigation, {
-          username: number,
-          password,
-          userType:
-            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
-          loginType: loginType.toUpperCase(),
-        })
-      );
+      param = {
+        loginId: number,
+        password,
+        userType:
+          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        loginType: loginType.toUpperCase(),
+      };
+      setParams(param);
+      dispatch(verifyLoginData(navigation, param));
     }
   };
 
@@ -479,7 +480,7 @@ export const Login = ({ navigation }) => {
                         callLogoutAndLogin(
                           login?.secondLoginAlertInfo?.data?.data?.userId,
                           navigation,
-                          login?.secondLoginAlertInfo?.requestObject
+                          params
                         )
                       )
                     }
