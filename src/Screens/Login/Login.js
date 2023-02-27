@@ -147,13 +147,11 @@ export const Login = ({ navigation }) => {
       setNumberError(strings.mobileValidError);
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
-    }
-    // else if (number.length < 7) {
-    //   Alert.alert(strings.attention, strings.sevenDigit, [
-    //     { text: strings.ok, onPress: () => {} },
-    //   ]);
-    // }
-    else {
+    } else if (number.length < 7) {
+      Alert.alert(strings.attention, strings.sevenDigit, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    } else {
       param = {
         loginId: number,
         password,
@@ -171,9 +169,6 @@ export const Login = ({ navigation }) => {
     setLoginType(loginType);
     console.log("$$$-submitWithEmailOTP");
     console.log("$$$-submitWithEmailOTP-loginType", loginType);
-    // Dispatch action for sendOTP api
-    // After succesfull api navigate
-    // navigation.navigate("VerifyLoginOTP");
     if (username.includes("@")) {
       console.log("$$$-submitWithEmailOTP");
       if (username === "") {
@@ -199,13 +194,11 @@ export const Login = ({ navigation }) => {
     setLoginType(loginType);
     if (!validateNumber(number)) {
       setNumberError(strings.mobileValidError);
-    }
-    // else if (number.length < 7) {
-    //   Alert.alert(strings.attention, strings.sevenDigit, [
-    //     { text: strings.ok, onPress: () => {} },
-    //   ]);
-    // }
-    else {
+    } else if (number.length < 7) {
+      Alert.alert(strings.attention, strings.sevenDigit, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    } else {
       param = {
         loginId: number,
         userType:
