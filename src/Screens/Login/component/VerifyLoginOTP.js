@@ -15,23 +15,60 @@ import {
 } from "../../../Utilities/Constants/Constant";
 import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 import { strings } from "../../../Utilities/Language";
+import { verifyLoginData, sendLoginOTPData } from ".././LoginDispatcher";
+import { useDispatch, useSelector } from "react-redux";
 
 const VerifyLoginOTP = (props) => {
-  const { navigation, userType, loginMode = "Phone Number" } = props;
+  console.log("$$$-VerifyLoginOTP");
+  console.log("$$$-VerifyLoginOTP-props", props);
+  const { navigation, route } = props;
+  const { loginId, loginMode, loginType, userType } = route.params;
   const [otp, setOTP] = useState("");
+  const dispatch = useDispatch([verifyLoginData, sendLoginOTPData]);
+  let login = useSelector((state) => state.login);
 
   useEffect(() => {
     console.log("$$$-otp", otp);
     if (otp.length === 6) {
-      console.log("$$$-otp-length is 6 - call login endpoint");
+      console.log("$$$-otp-length is 6 - calling login endpoint");
+      param = {
+        loginId,
+        password: otp,
+        userType,
+        loginType: loginType.toUpperCase(),
+        loginMode,
+      };
+      dispatch(verifyLoginData(navigation, param));
     }
   }, [otp]);
 
   const clickOnRequestAgainOTP = () => {
-    alert("ToDo - Call API here");
+    setOTP("");
+    otpRef.current.reset();
+    let param = {
+      loginId,
+      userType,
+      loginType,
+      loginMode,
+    };
+    dispatch(sendLoginOTPData(navigation, param, false));
   };
 
   const otpRef = useRef(OtpInputsRef);
+
+  const maskingFunction = (text) => {
+    let maskedText = "";
+    if (loginMode.includes("Email")) {
+      let txtStart = text.toString().substring(0, 5);
+      let txtEnd = text.toString().substring(text.length - 5, text.length);
+      maskedText = txtStart + "xxxxxxxxxxxx" + txtEnd;
+    } else if (loginMode.includes("Mobile")) {
+      let txtStart = text.toString().substring(0, 2);
+      let txtEnd = text.toString().substring(text.length - 2, text.length);
+      maskedText = txtStart + "xxxxx" + txtEnd;
+    }
+    return maskedText;
+  };
 
   return (
     <View style={styles.container}>
@@ -59,7 +96,7 @@ const VerifyLoginOTP = (props) => {
               fontSize: fontSizes.FONT_18,
             }}
           >
-            Verify your {loginMode} {"\n"} 99******35
+            Verify your {loginMode} {"\n"} {maskingFunction(loginId)}
           </Text>
           <Text
             style={{

@@ -147,7 +147,7 @@ export const TextBoxWithCTA = (props) => {
 
 const styles = StyleSheet.create({
   placeHolderText: {
-    color: "C7CAD1",
+    color: "#C7CAD1",
     fontSize: fontSizes.FONT_12,
     fontWeight: "500",
     marginBottom: spacing.WIDTH_5,

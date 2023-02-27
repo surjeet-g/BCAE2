@@ -119,7 +119,7 @@ export const serverCall = async (url, method, data) =>
                 resolve({
                   success: false,
                   data: {},
-                  message: "",
+                  message: response.message,
                   requestObject,
                 });
                 TDLog(

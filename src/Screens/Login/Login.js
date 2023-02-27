@@ -16,9 +16,6 @@ import {
 import { CustomButton } from "../../Components/CustomButton";
 import { capitalizeFirstLetter } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
-
-import CustomerEmailLogin from "./component/CustomerEmailLogin";
-import MobileLoging from "./component/MobileLoging";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "../../Components/Toast";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
@@ -27,6 +24,7 @@ import {
   verifyLoginData,
   resetShowSecondLoginAlert,
   callLogoutAndLogin,
+  sendLoginOTPData,
 } from "./LoginDispatcher";
 import {
   requestUserPermission,
@@ -59,12 +57,12 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [username, setUsername] = useState("kamal@yopmail.com");
   const [password, setPassword] = useState("Test@123");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
-  const [number, setNumber] = useState("123543");
+  const [number, setNumber] = useState("4911231");
   const [numberError, setNumberError] = useState("");
   const [params, setParams] = useState("");
 
@@ -75,6 +73,7 @@ export const Login = ({ navigation }) => {
     verifyLoginData,
     resetShowSecondLoginAlert,
     callLogoutAndLogin,
+    sendLoginOTPData,
   ]);
 
   const onSelectBusinessUserType = () => {
@@ -132,6 +131,7 @@ export const Login = ({ navigation }) => {
           userType:
             userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
           loginType: loginType.toUpperCase(),
+          loginMode,
         };
         setParams(param);
         dispatch(verifyLoginData(navigation, param));
@@ -160,17 +160,62 @@ export const Login = ({ navigation }) => {
         userType:
           userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
         loginType: loginType.toUpperCase(),
+        loginMode,
       };
       setParams(param);
       dispatch(verifyLoginData(navigation, param));
     }
   };
 
-  const submitWithOTP = (loginType) => {
+  const submitWithEmailOTP = (loginType) => {
     setLoginType(loginType);
+    console.log("$$$-submitWithEmailOTP");
+    console.log("$$$-submitWithEmailOTP-loginType", loginType);
     // Dispatch action for sendOTP api
     // After succesfull api navigate
-    navigation.navigate("VerifyLoginOTP");
+    // navigation.navigate("VerifyLoginOTP");
+    if (username.includes("@")) {
+      console.log("$$$-submitWithEmailOTP");
+      if (username === "") {
+        setUsernameError(strings.emailValidError);
+      } else {
+        param = {
+          loginId: username,
+          userType:
+            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          loginType: loginType.toUpperCase(),
+          loginMode,
+        };
+        console.log("$$$-submitWithEmailOTP-param", param);
+        setParams(param);
+        dispatch(sendLoginOTPData(navigation, param, true));
+      }
+    } else {
+      setUsernameError(strings.emailValidError);
+    }
+  };
+
+  const submitWithMobileOTP = (loginType) => {
+    setLoginType(loginType);
+    if (!validateNumber(number)) {
+      setNumberError(strings.mobileValidError);
+    }
+    // else if (number.length < 7) {
+    //   Alert.alert(strings.attention, strings.sevenDigit, [
+    //     { text: strings.ok, onPress: () => {} },
+    //   ]);
+    // }
+    else {
+      param = {
+        loginId: number,
+        userType:
+          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        loginType: loginType.toUpperCase(),
+        loginMode,
+      };
+      setParams(param);
+      dispatch(sendLoginOTPData(navigation, param, true));
+    }
   };
 
   return (
@@ -256,14 +301,6 @@ export const Login = ({ navigation }) => {
               </View>
 
               {loginMode === EMAIL ? (
-                // <CustomerEmailLogin
-                //   navigation={navigation}
-                //   userType={
-                //     userType === BUSINESS
-                //       ? "BusinessCustomer"
-                //       : "PersonalCustomer"
-                //   }
-                // />
                 <View>
                   {/* Email Address Input View */}
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
@@ -292,15 +329,8 @@ export const Login = ({ navigation }) => {
                   </View>
                 </View>
               ) : (
-                // <MobileLoging
-                //   navigation={navigation}
-                //   userType={
-                //     userType === BUSINESS
-                //       ? "BusinessCustomer"
-                //       : "PersonalCustomer"
-                //   }
-                // />
                 <View>
+                  {/* Mobile Number View */}
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
                     <CustomInput
                       caption={strings.mobile_no}
@@ -373,7 +403,11 @@ export const Login = ({ navigation }) => {
                     fontWeight: "700",
                     fontSize: fontSizes.FONT_16,
                   }}
-                  onPress={() => submitWithOTP(OTP)}
+                  onPress={() => {
+                    loginMode === EMAIL
+                      ? submitWithEmailOTP(OTP)
+                      : submitWithMobileOTP(OTP);
+                  }}
                 >
                   {strings.login_with_otp}
                 </Text>
