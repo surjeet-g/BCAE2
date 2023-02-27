@@ -306,7 +306,7 @@ export async function passwordHash(password) {
 }
 
 export function validateNumber(text) {
-  if (text.length > 6) {
+  if (text.length >= 6) {
     return true;
   } else {
     return false;

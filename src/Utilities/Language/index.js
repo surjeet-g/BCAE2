@@ -2,7 +2,7 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
-    enter_otp_here: "Enter your OTP code here";
+    enter_otp_here: "Enter your OTP code here",
     didt_receive_code: "Did't receive code?",
     request_again: "Request Again",
     tab_personal: "Personal",
@@ -194,7 +194,7 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
-    enter_otp_here: "Enter your OTP code here";
+    enter_otp_here: "Enter your OTP code here",
     didt_receive_code: "Did't receive code?",
     request_again: "Request Again",
     tab_personal: "Personal",

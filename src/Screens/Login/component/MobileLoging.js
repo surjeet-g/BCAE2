@@ -18,7 +18,7 @@ import { CustomErrorText } from "../../../Components/CustomErrorText";
 const MobileLoging = (props) => {
   let login = useSelector((state) => state.login);
   const { userType, navigation } = props;
-  const [number, setNumber] = useState("987654321");
+  const [number, setNumber] = useState("123543");
   const [numberError, setNumberError] = useState("");
   const [password, setPassword] = useState("Test@123");
   const [passwordError, setPasswordError] = useState("");
