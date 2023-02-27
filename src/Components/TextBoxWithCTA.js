@@ -75,7 +75,7 @@ export const TextBoxWithCTA = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 45,
+            height: 55,
             backgroundColor: colors.background,
             borderRadius: roundness,
             alignItems: "center",

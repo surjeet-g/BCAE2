@@ -137,7 +137,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
   console.log("$$$-sendLoginOTPData-params", params);
   return async (dispatch) => {
     const { loginId, userType, loginType, loginMode } = params;
-    dispatch(initLoginData());
+    //dispatch(initLoginData());
     console.log("$$$-sendLoginOTPData-params-1", params);
     let param = {};
     if (loginMode.includes("Email")) {

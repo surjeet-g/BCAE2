@@ -36,6 +36,7 @@ import { SvgBG } from "../../Components/SvgBG";
 import { TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../../Components/CustomInput";
 import { CustomErrorText } from "../../Components/CustomErrorText";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const BUSINESS = "business";
 const CONSUMER = "consumer";
@@ -57,12 +58,14 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("kamal@yopmail.com");
-  const [password, setPassword] = useState("Test@123");
+  // const [username, setUsername] = useState("kamal@yopmail.com");
+  // const [password, setPassword] = useState("Test@123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
-  const [number, setNumber] = useState("4911231");
+  const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [params, setParams] = useState("");
 
@@ -223,12 +226,15 @@ export const Login = ({ navigation }) => {
           }}
         >
           <ScrollView nestedScrollEnabled={true}>
-            <View style={{ marginTop: 80, flex: 1 }}>
+            <View style={{ marginTop: 10, flex: 1 }}>
               <View
                 style={{
                   marginBottom: spacing.HEIGHT_20,
                 }}
               >
+                <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+                  {strings.check_usertype}
+                </Text>
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
@@ -531,6 +537,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
+    ...HEADER_MARGIN,
   },
   toast: {
     position: "absolute",

@@ -20,7 +20,7 @@ const MobileLoging = (props) => {
   const { userType, navigation } = props;
   const [number, setNumber] = useState("123543");
   const [numberError, setNumberError] = useState("");
-  const [password, setPassword] = useState("Test@123");
+  const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const dispatch = useDispatch([verifyLoginData, resetLogin]);
