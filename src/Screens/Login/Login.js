@@ -486,39 +486,42 @@ export const Login = ({ navigation }) => {
                   />
                 </View>
               )}
-
-            {/* Modal for showing the second login alert */}
-            <Modal
-              visible={login?.showSecondLoginAlert}
-              dismissable={false}
-              contentContainerStyle={{
-                backgroundColor: "white",
-                padding: 20,
-              }}
-            >
-              <View>
-                <Text>Login Error</Text>
-                <Text>{login?.secondLoginAlertInfo?.data?.message}</Text>
-                <CustomButton
-                  label={"Ok"}
-                  onPress={() =>
-                    dispatch(
-                      callLogoutAndLogin(
-                        login?.secondLoginAlertInfo?.data?.data?.userId,
-                        navigation,
-                        params
-                      )
-                    )
-                  }
-                />
-                <CustomButton
-                  label={"Cancel"}
-                  onPress={() => dispatch(resetShowSecondLoginAlert())}
-                />
-              </View>
-            </Modal>
           </ScrollView>
         </View>
+        {/* Modal for showing the second login alert */}
+        <Modal
+          visible={login?.showSecondLoginAlert}
+          dismissable={false}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            margin: 20,
+            borderRadius: 10,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 22 }}>Login Error</Text>
+            <Text style={{ marginTop: 10, fontSize: 18 }}>
+              {login?.secondLoginAlertInfo?.data?.message}
+            </Text>
+            <CustomButton
+              label={"Ok"}
+              onPress={() =>
+                dispatch(
+                  callLogoutAndLogin(
+                    login?.secondLoginAlertInfo?.data?.data?.userId,
+                    navigation,
+                    params
+                  )
+                )
+              }
+            />
+            <CustomButton
+              label={"Cancel"}
+              onPress={() => dispatch(resetShowSecondLoginAlert())}
+            />
+          </View>
+        </Modal>
       </KeyboardAwareView>
     </View>
   );
