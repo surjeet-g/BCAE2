@@ -585,7 +585,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onOTPChange(text)}
           value={otp}
-          placeHolder={strings.otp}
+          placeHolder={strings.mobile_otp}
           isConfirmOTP={true}
           label={strings.confirm_otp}
           loader={
@@ -658,7 +658,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         <TextBoxWithCTA
           onChangeText={(text) => onEmailOTPChange(text)}
           value={otpEmail}
-          placeHolder={strings.otp}
+          placeHolder={strings.email_otp}
           isConfirmOTP={true}
           label={"CONFIRM OTP"}
           loader={
