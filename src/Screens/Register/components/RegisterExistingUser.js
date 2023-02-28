@@ -198,7 +198,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     } else if (!isSelected) {
       setPrivaceyError(strings.privaceyError);
     } else {
-      console.log("validation cleared");
       let registerObject = {
         accountType: "existing",
         firstName: firstName,
