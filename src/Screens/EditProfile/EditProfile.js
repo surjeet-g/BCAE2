@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Alert,
+  Keyboard,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -20,7 +21,9 @@ import {
   buttonSize,
   validateNumber,
   validateEmail,
+  DEFAULT_PROFILE_IMAGE,
 } from "../../Utilities/Constants/Constant";
+
 import Camara from "../../Assets/svg/camera_icon.svg";
 import { Text, TextInput } from "react-native-paper";
 import { CustomDropDown } from "../../Components/CustomDropDown";
@@ -45,6 +48,12 @@ import theme from "../../Utilities/themeConfig";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomInput } from "../../Components/CustomInput";
 import { navBar } from "../../Utilities/Style/navBar";
+import get from "lodash.get";
+import {
+  setProfileFormField,
+  setProfileReset,
+} from "../../Redux/ProfileAction";
+import Toast from "react-native-toast-message";
 
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -52,42 +61,35 @@ const EditProfile = ({ navigation, props }) => {
   const dispatchSaveLocation = useDispatch([fetchSavedLocations]);
   const fetchSavedLocationData = () =>
     dispatchSaveLocation(fetchSavedLocations());
-  const [userId, setUserId] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [gender, setGender] = useState("");
 
-  const [location, setLocation] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [otp, setOTP] = useState("");
-  const [otpEmail, setEmailOTP] = useState("");
-  const [email, setEmail] = useState("");
-  const [isSelected, setSelection] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [secureTextEntry, setsecureTextEntry] = useState(true);
-  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
+  const [locationdelete, setLocation] = useState("");
+
   const [isSaveButtonDisable, setSaveButtomEnableDisable] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-  const [myscreenmae, setscreenname] = useState("Edit Profile");
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-  const [genderError, setgenderError] = useState("");
+
   const [countryError, setCountryError] = useState("");
   const [locationError, setLocationError] = useState("");
-  const [numberError, setNumberError] = useState("");
-  const [otpNumberError, setOtpNumberError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [otpEmailError, setOtpEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmError, setConfirmPasswordError] = useState("");
-  const [profileImageData, setProfileImageData] = useState("");
-  const [selectedValueGender, setValueGender] = useState("");
-  const [selectedValueCountry, setValueCountry] = useState("");
+
   let registerForm = useSelector((state) => state.registerForm);
-  const dispatch1 = useDispatch([fetchRegisterFormData]);
+  const dispatch1 = useDispatch([
+    fetchRegisterFormData,
+    setProfileReset,
+    setProfileFormField,
+  ]);
+  let profile = useSelector((state) => state.profile);
+
+  const {
+    firstName,
+    firstNameError,
+    lastName,
+    lastNameError,
+    gender,
+    genderError,
+    idValue,
+    nationality,
+    location,
+  } = profile.formData;
 
   const [street, setStreet] = useState("");
   const [state, setStateProfile] = useState("");
@@ -96,60 +98,29 @@ const EditProfile = ({ navigation, props }) => {
   const [postCode, setPostcode] = useState("");
 
   useEffect(() => {
+    // dispatch1(setProfileReset());
     dispatch1(fetchRegisterFormData());
   }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return (
-          <View style={navBar.navRightCon}>
-            <Pressable onPress={() => alert("Todo ")} style={navBar.roundIcon}>
-              <Icon
-                name="content-save"
-                size={19}
-                color={colors.inverseSecondary}
-              />
-            </Pressable>
-          </View>
-        );
+        return null;
       },
     });
-  }, []);
+  }, [navigation]);
 
-  let profile = useSelector((state) => state.profile);
   const dispatch2 = useDispatch([fetchSavedProfileData, updateProfileData]);
-  console.log("res.data.country : " + profile?.savedProfileData?.country);
+  console.log("res.data.country : ", profile.savedProfileData);
 
   useEffect(() => {
     async function fetchMyAPI() {
-      const res = await dispatch2(fetchSavedProfileData());
-
-      if (res.status) {
-        setUserId(res.data.userId);
-        setProfileImageData(res.data.profilePicture);
-        setFirstName(res.data.firstName);
-        setLastName(res.data.lastName);
-        setGender(res.data.gender);
-        setValueGender(res.data.gender);
-        setCountry(res.data.country);
-        setValueCountry(res.data.country);
-        setMobileNo(res.data.contactNo);
-        setEmail(res.data.email);
-        setLocation(getAddressString(res.data));
-      }
-
-      // console.warn("useeffect", profile?.savedProfileData);
+      await dispatch2(fetchSavedProfileData());
     }
 
     fetchMyAPI();
   }, []);
 
-  const genderLot = (gender) => {
-    if (gender === "M") return "Male";
-    if (gender === "F") return "Female";
-    return gender;
-  };
   const getAddressString = (data) => {
     let addressString = "";
     // if (data?.addressNo) {
@@ -271,27 +242,47 @@ const EditProfile = ({ navigation, props }) => {
     setLocationError("");
   };
   const onFirstNameChange = (textStr) => {
-    setFirstName(textStr);
-    setFirstNameError("");
+    dispatch1(
+      setProfileFormField({
+        field: "firstName",
+        value: textStr,
+        clearError: true,
+      })
+    );
     buttonEnableDisable();
   };
   const clearFirstName = () => {
-    setFirstName("");
-    setFirstNameError(strings.firstNameError);
+    dispatch1(
+      setProfileFormField({ field: "firstName", value: "", clearError: true })
+    );
   };
 
   const onLastNameChange = (textStr) => {
-    setLastName(textStr);
-    setLastNameError("");
+    dispatch1(
+      setProfileFormField({
+        field: "lastName",
+        value: textStr,
+        clearError: true,
+      })
+    );
+
     buttonEnableDisable();
   };
   const clearLastName = () => {
-    setLastName("");
-    setLastNameError(strings.lastNameError);
+    dispatch1(
+      setProfileFormField({ field: "lastName", value: "", clearError: true })
+    );
   };
 
   const onGenderClick = (textStr) => {
-    setGender(textStr?.description);
+    dispatch1(
+      setProfileFormField({
+        field: "gender",
+        value: textStr,
+        clearError: false,
+      })
+    );
+
     buttonEnableDisable();
   };
   const onCountryClick = (textStr) => {
@@ -304,135 +295,56 @@ const EditProfile = ({ navigation, props }) => {
     buttonEnableDisable();
   };
 
-  const onMobleNoChange = (textStr) => {
-    setMobileNo(textStr);
-    setNumberError("");
-    buttonEnableDisable();
-  };
-  const onOTPChange = (textStr) => {
-    setOTP(textStr);
-    setOtpNumberError("");
-    buttonEnableDisable();
-  };
-  const onEmailOTPChange = (textStr) => {
-    setEmailOTP(textStr);
-    setOtpEmailError("");
-    buttonEnableDisable();
-  };
-  const onEmailChange = (textStr) => {
-    setEmail(textStr);
-    setEmailError("");
-    buttonEnableDisable();
-  };
-
-  const submitResndOTP = () => {
-    if (!validateNumber(mobileNo)) {
-      setNumberError(strings.mobileValidError);
-    } else {
-      //alert('submitResndOTP')
-      dispatch1(getOtpForNumber(countryCode + mobileNo, firstName, "mobile"));
-      buttonEnableDisable();
-    }
-  };
-  const submitConfirmMobileOTP = () => {
-    if (otp === "") {
-      setOtpNumberError(strings.numberOtpError);
-    } else {
-      // dispatch(getOtpForNumber( email, firstName, "email"))
-      buttonEnableDisable();
-    }
-  };
-
-  const submitConfirmEmailOTP = () => {
-    if (otpEmail === "") {
-      setOtpEmailError(strings.emailOtpError);
-    } else {
-      //alert('submitResndOTP')
-      // dispatch(getOtpForNumber( email, firstName, "email"))
-      buttonEnableDisable();
-    }
-  };
-  const submitEmail = () => {
-    if (!validateEmail(email)) {
-      setEmailError(strings.emailValidError);
-    } else {
-      //alert('submitResndOTP')
-      dispatch1(getOtpForNumber(email, firstName, "email"));
-      buttonEnableDisable();
-    }
-  };
-
-  const onCheckBoxClick = () => {
-    setSelection(!isSelected);
-    buttonEnableDisable();
-  };
-
-  const hideShowClick = () => {
-    setsecureTextEntry(!secureTextEntry);
-  };
-  const hideShowClickConfirm = () => {
-    setsecureTextEntryConfim(!secureTextEntryConfim);
-  };
-
-  const onPasswordChange = (textStr) => {
-    setPassword(textStr);
-
-    setPasswordError("");
-  };
-
-  const onConfirmPasswordChange = (textStr) => {
-    setConfirmPassword(textStr);
-
-    setConfirmPasswordError("");
-  };
-
-  const submit = () => {
-    if (isSaveButtonDisable) {
+  const submit = async () => {
+    Keyboard.dismiss();
+    if (false) {
       Alert.alert(strings.attention, strings.field_empty_alert, [
         { text: strings.ok, onPress: () => {} },
       ]);
     } else {
-      console.warn("submit", location, street);
-      console.log("submit====>1-->" + location);
-      const myArray = location.split(",").reverse();
-      console.log("submit====>1-->" + location);
+      // const myArray = location.split(",").reverse();
+
       if (firstName?.trim() === "") {
         setFirstNameError(strings.firstNameError);
       } else if (lastName?.trim() === "") {
         setLastNameError(strings.lastNameError);
-      } else if (gender === "") {
+      } else if (gender?.code === "") {
         setgenderError(strings.genderError);
-      } else if (country === "") {
-        setCountryError(strings.countryError);
       }
+      // else if (country === "") {
+      //   setCountryError(strings.countryError);
+      // }
       //else if (location === "") { setLocationError(strings.locationError) }
       else {
         let registerObject = {
-          firstName: firstName,
-          lastName: lastName,
-          gender: gender,
-          profilePicture: profileImageData,
-          address: {
-            address: location,
-            hno: "",
-            buildingName: "",
-            street: street,
-            road: "",
-            city: "",
-            state: state,
-            district: district,
-            country: country,
-            latitude: latitude,
-            longitude: longitude,
-            postCode: postCode,
+          details: {
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender?.code,
+            idValue: idValue,
+            // nationality : country
+            // profilePicture: profileImageData,
+            // address: {
+            //   address: location,
+            //   hno: "",
+            //   buildingName: "",
+            //   street: street,
+            //   road: "",
+            //   city: "",
+            //   state: state,
+            //   district: district,
+            //   country: country,
+            //   latitude: latitude,
+            //   longitude: longitude,
+            //   postCode: postCode,
+            // },
           },
         };
-        console.log(
-          "EditProfile Object ===> " + JSON.stringify(registerObject)
-        );
-        dispatch2(
-          updateProfileData(registerObject, profile.savedProfileData.userId)
-        );
+
+        const status = await dispatch2(updateProfileData(registerObject));
+        if (status) {
+          await dispatch2(fetchSavedProfileData());
+        }
       }
       //dispatch2(updateProfileData(registerObject,profile.savedProfileData.userId));
     }
@@ -456,38 +368,31 @@ const EditProfile = ({ navigation, props }) => {
     );
   };
 
-  const orSection = () => {
-    return (
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: spacing.HEIGHT_32,
-        }}
-      >
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-          }}
-        ></View>
-        <Text style={styles.orText}>{strings.or}</Text>
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-            alignContent: "flex-end",
-          }}
-        ></View>
-      </View>
-    );
-  };
+  const customerPic =
+    get(profile, "savedProfileData.customerPhoto", null) ??
+    DEFAULT_PROFILE_IMAGE;
 
+  console.log("Initial Fetch data", profile.formData);
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Pressable
+        style={{
+          position: "absolute",
+          zIndex: 999999999,
+          elevation: 10000,
+          width: 30,
+          right: 10,
+          top: "2%",
+          ...navBar.roundIcon,
+          // backgroundColor: "red",
+        }}
+        onPress={async () => {
+          await submit();
+        }}
+      >
+        <Icon name="content-save" size={19} color={colors.inverseSecondary} />
+      </Pressable>
+
       {profile.initProfile && (
         <View
           style={{
@@ -511,7 +416,9 @@ const EditProfile = ({ navigation, props }) => {
           >
             <View style={[{ alignItems: "center" }]}>
               <ImageBackground
-                source={{ uri: `data:image/jpeg;base64,${profileImageData}` }}
+                source={{
+                  uri: "data:image/jpeg;base64," + customerPic,
+                }}
                 imageStyle={{ borderRadius: 80 }}
                 style={{ height: 110, width: 110 }}
               >
@@ -528,15 +435,23 @@ const EditProfile = ({ navigation, props }) => {
               </ImageBackground>
 
               <Text variant="bodyLarge" style={styles.caption}>
-                {userId}
+                {get(profile, "savedProfileData.customerNo", "")}
               </Text>
               <ClearSpace />
               <Text variant="bodySmall" style={styles.caption_small}>
-                {email}
+                {get(
+                  profile,
+                  "savedProfileData.customerContact[0].emailId",
+                  ""
+                )}
               </Text>
               <ClearSpace />
               <Text variant="bodyLarge" style={styles.caption}>
-                {mobileNo}
+                {get(
+                  profile,
+                  "savedProfileData.customerContact[0].mobileNo",
+                  ""
+                )}
               </Text>
               <ClearSpace />
             </View>
@@ -555,7 +470,7 @@ const EditProfile = ({ navigation, props }) => {
               {/* First Name */}
               <View style={{ marginTop: spacing.HEIGHT_30 }}>
                 <CustomInput
-                  editable={false}
+                  // editable={false}
                   caption={strings.first_name}
                   placeholder={strings.first_name}
                   onChangeText={(text) => onFirstNameChange(text)}
@@ -568,16 +483,16 @@ const EditProfile = ({ navigation, props }) => {
                     />
                   }
                 />
-                {!registerForm.initRegisterForm &&
+                {/* {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
-                  this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {firstNameError !== "" && showErrorMessage(firstNameError)}
+                  this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
+                {firstNameError && showErrorMessage(firstNameError)}
               </View>
 
               {/* Last Name */}
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
                 <CustomInput
-                  editable={false}
+                  // editable={false}
                   caption={strings.last_name}
                   placeholder={strings.last_name}
                   onChangeText={(text) => onLastNameChange(text)}
@@ -593,23 +508,23 @@ const EditProfile = ({ navigation, props }) => {
                 {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {lastNameError !== "" && showErrorMessage(lastNameError)}
+                {lastNameError && showErrorMessage(lastNameError)}
               </View>
 
               {/* Gender */}
               <View style={{}}>
                 <CustomDropDown
-                  selectedValue={genderLot(selectedValueGender)}
-                  setValue={setValueGender}
+                  selectedValue={get(gender, "description", "")}
+                  setValue={(text) => onGenderClick(text)}
                   data={registerForm?.registerFormData?.GENDER ?? []}
                   onChangeText={(text) => onGenderClick(text)}
-                  value={genderLot(gender)}
+                  value={get(gender, "description", "")}
                   placeHolder={strings.gender}
                 />
                 {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {genderError !== "" && showErrorMessage(genderError)}
+                {genderError && showErrorMessage(genderError)}
               </View>
 
               {/* Address */}
@@ -656,10 +571,12 @@ const EditProfile = ({ navigation, props }) => {
                         </View> */}
 
               {/* Country */}
-              <View style={{ marginTop: spacing.HEIGHT_10 }}>
+              {/* <View style={{ marginTop: spacing.HEIGHT_10 }}>
                 <CustomDropDown
-                  selectedValue={selectedValueCountry}
-                  setValue={setValueCountry}
+                
+                  selectedValue={nationality}
+                  // setValue={setValueCountry}
+                   setValue={setValueCountry}
                   data={registerForm?.registerFormData?.COUNTRY ?? []}
                   onChangeText={(text) => {
                     onCountryClick(text);
@@ -671,7 +588,7 @@ const EditProfile = ({ navigation, props }) => {
                   registerForm?.loggedProfile?.errorCode == "404" &&
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
                 {countryError !== "" && showErrorMessage(countryError)}
-              </View>
+              </View> */}
 
               {/* Mobile Number */}
               {/* <View style={{ marginTop: spacing.HEIGHT_40 }}>
