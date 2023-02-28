@@ -3860,7 +3860,7 @@ export function fetchRegisterFormData() {
       };
       dispatch(setAddressLoopUpData(MOCK.data));
 
-      let bussineEntities = "GENDER,ADDRESS_TYPE";
+      let bussineEntities = "GENDER,ADDRESS_TYPE,CUSTOMER_ID_TYPE";
       let result = await serverCall(
         `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
         requestMethod.GET

@@ -99,6 +99,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [otpEmail, setEmailOTP] = useState("");
   const [email, setEmail] = useState("");
 
+  const [idType, setIdType] = useState("");
+  const [idTypeError, setIdTypeError] = useState("");
+  const [selectedValueIdType, setValueIdType] = useState("");
+
   const [countryCode, setCountryCode] = useState("673");
 
   const [isSelected, setSelection] = useState(false);
@@ -158,6 +162,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     if (customerID === "") {
       setCustomerIDError(strings.customerIDError);
+    } else if (idType === "") {
+      setIdTypeError(strings.idTypeError);
     } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
     } else if (dob === "") {
@@ -183,6 +189,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         firstName: firstName,
         lastName: lastName,
         customerNo: customerID,
+        idType: idType,
         idValue: idNumber,
         birthDate: moment(dob).format("YYYY-MM-DD"),
         gender: gender.code,
@@ -305,7 +312,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       email === "" ||
       otpEmail === "" ||
       customerID === "" ||
-      idNumber === ""
+      idNumber === "" ||
+      idType === ""
     ) {
       setButtomEnableDisable(true);
       //console.log("buttonEnableDiable==>1");
@@ -489,37 +497,55 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           caption={"Cusomer ID"}
           placeHolder={"Cusomer ID"}
           right={
-            <TextInput.Icon
-              onPress={() => setCustomerID("")}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            customerID && (
+              <TextInput.Icon
+                onPress={() => setCustomerID("")}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
         {customerIDError !== "" && showErrorMessage(customerIDError)}
       </View>
 
-      <View style={{ marginTop: 10 }}>
+      {/* ID Type */}
+      <View style={{ marginTop: 1 }}>
+        <CustomDropDown
+          selectedValue={selectedValueIdType}
+          setValue={setValueIdType}
+          data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+          onChangeText={(text) => onIdTypeClick(text)}
+          value={gender?.description}
+          placeHolder={strings.id_type}
+        />
+
+        {idTypeError !== "" && showErrorMessage(idTypeError)}
+      </View>
+
+      <View style={{ marginTop: 35 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          caption={"User ID"}
-          placeHolder={"User ID"}
+          caption={strings.id_number}
+          placeHolder={strings.id_number}
           right={
-            <TextInput.Icon
-              onPress={() => setIdNumber("")}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            idNumber && (
+              <TextInput.Icon
+                onPress={() => setIdNumber("")}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
         {idNumberError !== "" && showErrorMessage(idNumberError)}
       </View>
       {/* Gender */}
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 1 }}>
         <CustomDropDown
           selectedValue={selectedValueGender}
           setValue={setValueGender}
