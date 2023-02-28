@@ -130,10 +130,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
           }}
         >
-          <Image
-            style={styles.addLogo}
-            source={require("../Assets/icons/ic_more.png")}
-          />
+          <View>
+            <Image
+              style={styles.addLogo}
+              source={require("../Assets/icons/ic_more.png")}
+            />
+          </View>
           {/* <Text style={styles.upperText}>{strings.announcement}</Text> */}
         </Pressable>
 
@@ -157,7 +159,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             adjustsFontSizeToFit
             style={state.index === 3 ? styles.selectedText : styles.upperText}
           >
-            {strings.announcement}dsdsd
+            {strings.announcement}
           </Text>
         </Pressable>
 
@@ -227,9 +229,13 @@ const styles = StyleSheet.create({
     height: spacing.WIDTH_20,
   },
   addLogo: {
-    width: spacing.WIDTH_50,
-    height: spacing.WIDTH_50,
+    width: 60,
+    height: 60,
     marginBottom: 60,
+    zIndex: 10,
+    borderRadius: 30,
+    borderColor: "#F3F3F3",
+    borderWidth: 5,
   },
   button: {
     width: 100,
