@@ -95,13 +95,13 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [customerID, setCustomerID] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [idType, setIDtype] = useState("");
   const [gender, setGender] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [otp, setOTP] = useState("");
   const [otpEmail, setEmailOTP] = useState("");
   const [email, setEmail] = useState("");
 
-  const [idType, setIdType] = useState("");
   const [idTypeError, setIdTypeError] = useState("");
   const [selectedValueIdType, setValueIdType] = useState("");
 
@@ -169,6 +169,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
+    } else if (idType === "") {
+      setIDtype(strings.idNumberError);
     } else if (!validatePassword(confirmPassword)) {
       setConfirmPasswordError(strings.passwordValidError);
     } else if (password !== confirmPassword) {
@@ -202,7 +204,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         firstName: firstName,
         lastName: lastName,
         customerNo: customerID,
-        idType: idType,
+        idType: idType?.code,
         idValue: idNumber,
         birthDate: moment(dob).format("YYYY-MM-DD"),
         gender: gender.code,
@@ -429,6 +431,11 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setGender(textStr);
     buttonEnableDiable();
   };
+  const onIdTypeClick = (textStr) => {
+    // console.log(textStr.description)
+    setIDtype(textStr);
+    buttonEnableDiable();
+  };
 
   const onCountryClick = (textStr) => {
     setCountry(textStr.onChangeText);
@@ -533,7 +540,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           setValue={setValueIdType}
           data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
           onChangeText={(text) => onIdTypeClick(text)}
-          value={gender?.description}
+          value={idType?.description}
           placeHolder={strings.id_type}
         />
 
