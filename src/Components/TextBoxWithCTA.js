@@ -31,11 +31,7 @@ export const TextBoxWithCTA = (props) => {
     <View style={{ marginTop: 10 }}>
       <View style={{ marginTop: 10 }}>
         <Text style={styles.placeHolderText}>
-          {props.value != ""
-            ? props.placeHolder
-            : props?.isResendOTP && props?.countryCode != ""
-            ? props.placeHolder
-            : " "}
+          {props.value != "" && props.placeHolder}
         </Text>
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -161,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_14,
     fontWeight: "400",
     marginBottom: spacing.WIDTH_5,
-    marginLeft: 12,
+    marginLeft: spacing.WIDTH_10,
   },
   textInput: {
     width: "100%",

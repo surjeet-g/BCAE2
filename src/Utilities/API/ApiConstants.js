@@ -30,7 +30,7 @@ export const endPoints = {
   CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
   PROFILE_DETAILS: "api/customer/",
-  UPDATE_MOBILE_USER: "api/users/update",
+  UPDATE_MOBILE_USER: "api/customer/",
   REGISTER: "api/customer/register",
   GET_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
   ADD_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",

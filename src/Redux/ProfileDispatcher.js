@@ -1,4 +1,5 @@
 import { initProfile, setProfileData, setProfileError } from "./ProfileAction";
+
 import {
   storageKeys,
   DEFAULT_PROFILE_IMAGE,
@@ -6,106 +7,78 @@ import {
 import { saveDataToDB, getDataFromDB } from "../Storage/token";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 import { serverCall } from "..//Utilities/API";
+import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
+import Toast from "react-native-toast-message";
 
 export function fetchSavedProfileData() {
   return async (dispatch) => {
     dispatch(initProfile());
-    return await getDataFromDB(storageKeys.PROFILE_DETAILS).then((result) => {
-      if (result) {
-        //result.data.data
-        dispatch(setProfileData(result));
-        return { data: result, status: true };
-      } else {
-        dispatch(setProfileError([]));
-        return { status: false };
-      }
-    });
-  };
-}
+    const customerUUDI = await getCustomerUUID();
 
-export function updateProfileData(obj, userId) {
-  return async (dispatch) => {
-    dispatch(initProfile());
-    let params = {
-      firstName: obj.firstName,
-      lastName: obj.lastName,
-      gender: obj.gender,
-      profilePicture: obj.profilePicture,
-      address: {
-        hno: obj.address.hno,
-        buildingName: obj.address.buildingName,
-        street: obj.address.street,
-        road: obj.address.road,
-        city: obj.address.city,
-        state: obj.address.state,
-        district: obj.address.district,
-        country: obj.address.country,
-        latitude: obj.address.latitude,
-        longitude: obj.address.longitude,
-        postCode: obj.address.postCode,
-      },
-    };
-
-    let result = await serverCall(
-      endPoints.UPDATE_MOBILE_USER + "/" + userId,
-      requestMethod.PUT,
-      params
+    let profileResult = await serverCall(
+      endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+      requestMethod.GET,
+      {}
     );
 
-    if (result.success) {
-      let profileParams = {};
-
-      let profileResult = await serverCall(
-        endPoints.PROFILE_DETAILS + "/" + userId,
-        requestMethod.GET,
-        profileParams
-      );
-      if (profileResult.success) {
-        let profileData = {
-          userId: profileResult?.data?.data?.userId ?? "",
-          customerId: profileResult?.data?.data?.customerId ?? "",
-          contactNo: profileResult?.data?.data?.contactNo ?? "",
-          email: profileResult?.data?.data?.email ?? "",
-          profilePicture:
-            profileResult?.data?.data?.profilePicture ?? DEFAULT_PROFILE_IMAGE,
-          title: profileResult?.data?.data?.title ?? "",
-          firstName: profileResult?.data?.data?.firstName ?? "",
-          lastName: profileResult?.data?.data?.lastName ?? "",
-          gender: profileResult?.data?.data?.gender ?? "",
-          dob: profileResult?.data?.data?.dob ?? "",
-          officeNo: profileResult?.data?.data?.officeNo ?? "",
-          extn: profileResult?.data?.data?.extn ?? "",
-          status: profileResult?.data?.data?.status ?? "",
-          location: profileResult?.data?.data?.location ?? "",
-          hno: profileResult?.data?.data?.address?.hno ?? "",
-          block: profileResult?.data?.data?.address?.block ?? "",
-          buildingName: profileResult?.data?.data?.address?.buildingName ?? "",
-          street: profileResult?.data?.data?.address?.street,
-          road: profileResult?.data?.data?.address?.road ?? "",
-          city: profileResult?.data?.data?.address?.city ?? "",
-          town: profileResult?.data?.data?.address?.town ?? "",
-          state: profileResult?.data?.data?.address?.state ?? "",
-          district: profileResult?.data?.data?.address?.district ?? "",
-          country: profileResult?.data?.data?.address?.country ?? "",
-          latitude: profileResult?.data?.data?.address?.latitude ?? "",
-          longitude: profileResult?.data?.data?.address?.longitude ?? "",
-          postCode: profileResult?.data?.data?.address?.postCode ?? "",
-        };
-        //alert("address ************************"+JSON.stringify(profileData))
-        await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
-        dispatch(setProfileData(profileData));
-        // getDataFromDB(storageKeys.PROFILE_DETAILS).then((resultData) =>{
-        //     if (resultData) {//result.data.data
-        //         dispatch(setProfileData(result));
-        //     } else{
-        //         dispatch(setProfileError([]));
-        //     }
-        // });
-      } else {
-        dispatch(setProfileError([]));
-      }
+    if (profileResult?.success) {
+      dispatch(setProfileData(profileResult?.data?.data));
     } else {
       dispatch(setProfileError([]));
     }
+  };
+}
+
+export function updateProfileData(obj) {
+  return async (dispatch) => {
+    dispatch(initProfile());
+
+    const customerUUDI = await getCustomerUUID();
+
+    let result = await serverCall(
+      endPoints.UPDATE_MOBILE_USER + customerUUDI,
+      requestMethod.PUT,
+      obj
+    );
+    console.log("res", obj);
+    if (result.success) {
+      dispatch(setProfileError([]));
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.message,
+      });
+      return true;
+    } else {
+      Toast.show({
+        type: "bctError",
+        text1: "Something wents wrong",
+      });
+      dispatch(setProfileError([]));
+      return false;
+    }
+
+    // let profileResult = await serverCall(
+    //   endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+    //   requestMethod.GET,
+    //   profileParams
+    // );
+    // if (profileResult.success) {
+    //   // await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+    //   dispatch(setProfileData(profileData.data));
+
+    //   // getDataFromDB(storageKeys.PROFILE_DETAILS).then((resultData) =>{
+    //   //     if (resultData) {//result.data.data
+    //   //         dispatch(setProfileData(result));
+    //   //     } else{
+    //   //         dispatch(setProfileError([]));
+    //   //     }
+    //   // });
+    // } else {
+    //   Toast.show({
+    //     type: "bctError",
+    //     text1: profileResult?.message,
+    //   });
+    //   dispatch(setProfileError([]));
+    // }
   };
 }

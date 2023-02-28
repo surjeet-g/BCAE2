@@ -6,7 +6,7 @@ import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { strings } from "../../../Utilities/Language/index";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
-import { CountryPicker } from "react-native-country-codes-picker";
+import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
 
@@ -719,6 +719,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           setCountryPickModel(false);
         }}
       />
+
       {/* Mobile Number */}
       <View style={{ marginTop: 5 }}>
         <TextBoxWithCTA
