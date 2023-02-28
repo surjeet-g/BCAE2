@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,6 +19,7 @@ import { useTheme } from "react-native-paper";
 
 export const TextBoxWithCTAEmail = (props) => {
   const { roundness, colors } = useTheme();
+  const [active, setActive] = useState(false);
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
@@ -71,6 +72,9 @@ export const TextBoxWithCTAEmail = (props) => {
             height: 55,
             backgroundColor: colors.background,
             borderRadius: roundness,
+            borderColor: active ? colors.gray : "transparent",
+            borderWidth: 2,
+            borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
           }}
@@ -103,6 +107,12 @@ export const TextBoxWithCTAEmail = (props) => {
             </TouchableOpacity>
           )}
           <TextInput
+            onFocus={() => {
+              setActive(true);
+            }}
+            onBlur={() => {
+              setActive(false);
+            }}
             autoCapitalize="none"
             autoCorrect={false}
             editable={

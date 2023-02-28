@@ -35,8 +35,10 @@ import { RadioButton, Modal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
 import { TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../../Components/CustomInput";
+import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { CustomErrorText } from "../../Components/CustomErrorText";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { CountryPicker } from "react-native-country-codes-picker";
 
 const BUSINESS = "business";
 const CONSUMER = "consumer";
@@ -68,6 +70,8 @@ export const Login = ({ navigation }) => {
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [params, setParams] = useState("");
+  const [countryCode, setCountryCode] = useState("+673");
+  const [countryPickModel, setCountryPickModel] = useState(false);
 
   let login = useSelector((state) => state.login);
 
@@ -183,6 +187,7 @@ export const Login = ({ navigation }) => {
             userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
           loginType: loginType.toUpperCase(),
           loginMode,
+          extn: 0,
         };
         console.log("$$$-submitWithEmailOTP-param", param);
         setParams(param);
@@ -208,6 +213,7 @@ export const Login = ({ navigation }) => {
           userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
         loginType: loginType.toUpperCase(),
         loginMode,
+        extn: countryCode.substring(1),
       };
       setParams(param);
       dispatch(sendLoginOTPData(navigation, param, true));
@@ -226,12 +232,15 @@ export const Login = ({ navigation }) => {
           }}
         >
           <ScrollView nestedScrollEnabled={true}>
-            <View style={{ marginTop: 80, flex: 1 }}>
+            <View style={{ marginTop: 10, flex: 1 }}>
               <View
                 style={{
                   marginBottom: spacing.HEIGHT_20,
                 }}
               >
+                <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+                  {strings.check_usertype}
+                </Text>
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
@@ -328,7 +337,24 @@ export const Login = ({ navigation }) => {
                 <View>
                   {/* Mobile Number View */}
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    <CustomInput
+                    {/* <CustomInput
+                      caption={strings.mobile_no}
+                      onChangeText={(text) => onIDChange(text)}
+                      value={number}
+                      placeHolder={strings.mobile_no}
+                      keyboardType="numeric"
+                    /> */}
+                    <CountryPicker
+                      show={countryPickModel}
+                      // when picker button press you will get the country object with dial code
+                      pickerButtonOnPress={(item) => {
+                        setCountryCode(item.dial_code);
+                        setCountryPickModel(false);
+                      }}
+                    />
+                    <CustomInputWithCC
+                      onPressOnCountyCode={() => setCountryPickModel(true)}
+                      countryCode={countryCode}
                       caption={strings.mobile_no}
                       onChangeText={(text) => onIDChange(text)}
                       value={number}
