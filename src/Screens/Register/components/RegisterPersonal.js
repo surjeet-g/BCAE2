@@ -712,9 +712,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       </View>
 
       <CountryPicker
-        style={{ marginTop: 120 }}
         show={countryPickModel}
-        searchMessageText="hello"
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
@@ -882,15 +880,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           onChangeText={setPassword}
           secureTextEntry={secureTextEntry}
           right={
-            <TextInput.Icon
-              onPress={() => setsecureTextEntry(!secureTextEntry)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntry
-                  ? require("../../../Assets/icons/ic_password_show.png")
-                  : require("../../../Assets/icons/ic_password_hide.png")
-              }
-            />
+            password && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntry(!secureTextEntry)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntry
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
           }
         />
 
@@ -905,15 +905,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           onChangeText={setConfirmPassword}
           secureTextEntry={secureTextEntryConfim}
           right={
-            <TextInput.Icon
-              onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntryConfim
-                  ? require("../../../Assets/icons/ic_password_show.png")
-                  : require("../../../Assets/icons/ic_password_hide.png")
-              }
-            />
+            confirmPassword && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntryConfim
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
           }
         />
 
