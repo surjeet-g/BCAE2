@@ -9,7 +9,8 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import moment from "moment";
 import { CustomInput } from "../../../Components/CustomInput";
-import { CountryPicker } from "react-native-country-codes-picker";
+
+import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 
 import {
   fetchRegisterFormData,

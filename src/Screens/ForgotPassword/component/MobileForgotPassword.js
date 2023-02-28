@@ -10,7 +10,7 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import CountryPicker from "react-native-country-codes-picker";
+import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, TextInput } from "react-native-paper";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
