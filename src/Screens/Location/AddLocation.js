@@ -527,16 +527,7 @@ const AddLocation = ({ route, navigation }) => {
         />
       </MapView>
 
-      <View>
-        {/* <Header
-          navigation={navigation}
-          Text={""}
-          backIconVisibility={true}
-          transparent={true}
-          bcae={false}
-          rightIconsVisibility={fromPage !== "Register"}
-        ></Header> */}
-      </View>
+      <View></View>
 
       <View
         style={{

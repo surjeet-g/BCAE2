@@ -23,8 +23,14 @@ import { strings } from "../Utilities/Language";
 import { navBar } from "../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
 import { addresObjToString } from "../Utilities/utils";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
+function SavedLocationItem({
+  item,
+  onDeleteClicked,
+  onItemClicked,
+  onSetPrimary,
+}) {
   const { colors } = useTheme();
 
   const dispatch = useDispatch([deleteSavedLocation]);
@@ -100,19 +106,31 @@ function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
               ]}
               source={require("../Assets/icons/ic_edit_nav.png")}
             /> */}
-
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={navBar.roundIcon}
-              onPress={() =>
-                onDeleteClicked(item.addressNo, addresObjToString(item))
-              }
-            >
-              <Image
-                style={[styles.rightArrow, styles.searchIcon]}
-                source={require("../Assets/icons/ic_delete_red.png")}
-              />
-            </TouchableOpacity>
+            {item?.isPrimary == false ? (
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={navBar.roundIcon}
+                onPress={() =>
+                  onDeleteClicked(item.addressNo, addresObjToString(item))
+                }
+              >
+                <Image
+                  style={[styles.rightArrow, styles.searchIcon]}
+                  source={require("../Assets/icons/ic_delete_red.png")}
+                />
+              </TouchableOpacity>
+            ) : (
+              <Icon name="check" size={10} color="#0e76bd" />
+            )}
+            {item?.isPrimary == false && (
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={navBar.roundIcon}
+                onPress={() => onSetPrimary(item.addressNo)}
+              >
+                <Icon name="check" size={30} color="#0e76bd" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>

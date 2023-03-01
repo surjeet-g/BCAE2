@@ -67,6 +67,7 @@ const SavedLocation = ({ route, navigation }) => {
 
     const willFocusSubscription = navigation.addListener("focus", () => {
       dispatch2(fetchRegisterFormData());
+      fetchMyProfileData();
     });
     return willFocusSubscription;
   }, []);
@@ -117,6 +118,13 @@ const SavedLocation = ({ route, navigation }) => {
     );
   };
 
+  const onSetPrimary = async (key) => {
+    const res = await dispatch(deleteSavedLocation(key));
+    if (res) {
+      fetchMyProfileData();
+    }
+  };
+
   const onItemClicked = (
     key,
     address,
@@ -164,6 +172,7 @@ const SavedLocation = ({ route, navigation }) => {
         {address.length != 0 ? (
           <View>
             <SavedLocationList
+              onSetPrimary={onSetPrimary}
               savedLocationList={address}
               onDeleteClicked={onClickedDeleteButton}
               onItemClicked={onItemClicked}

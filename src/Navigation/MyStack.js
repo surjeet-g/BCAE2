@@ -65,7 +65,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={EDIT_PROFILE}
+        initialRouteName={SAVED_LOC}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
