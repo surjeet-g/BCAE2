@@ -10,6 +10,11 @@ import {
   Pressable,
   Alert,
 } from "react-native";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+  excludedCountriesList,
+} from "../../../Utilities/utils";
 import CountryPicker from "react-native-country-codes-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, TextInput } from "react-native-paper";
@@ -76,8 +81,13 @@ const MobileLoging = (props) => {
   return (
     <View style={{ flex: 1 }}>
       <CountryPicker
-        style={{ width: "100%", backgroundColor: "red" }}
+        style={{
+          modal: {
+            height: "65%",
+          },
+        }}
         show={show}
+        excludedCountries={excludedCountriesList()}
         pickerButtonOnPress={(item) => {
           setCountryCode(item.dial_code);
           setShow(false);

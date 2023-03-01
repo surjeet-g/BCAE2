@@ -9,6 +9,11 @@ import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "react-native-country-codes-picker";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+  excludedCountriesList,
+} from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
@@ -677,6 +682,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       <CountryPicker
         show={countryPickModel}
+        excludedCountries={excludedCountriesList()}
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
