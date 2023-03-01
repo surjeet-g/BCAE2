@@ -20,7 +20,7 @@ export function fetchSavedProfileData() {
       requestMethod.GET,
       {}
     );
-
+    console.log("hiting", profileResult);
     if (profileResult?.success) {
       dispatch(setProfileData(profileResult?.data?.data));
     } else {

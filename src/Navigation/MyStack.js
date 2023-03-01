@@ -34,6 +34,9 @@ import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 const EDIT_PROFILE = "EditProfile";
 const REGISTER = "Register with us";
+const SAVED_LOC = "SavedLocation";
+const LOGIN_STACK = "Login";
+
 const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
@@ -62,7 +65,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Viewprofile"}
+        initialRouteName={SAVED_LOC}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -220,7 +223,12 @@ function MyStack() {
           component={AddLocation}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Saved Locations" }}
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              title: "Saved Locations",
+            },
+          })}
           name="SavedLocation"
           component={SavedLocation}
         />

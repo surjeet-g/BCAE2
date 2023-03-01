@@ -33,7 +33,7 @@ export const endPoints = {
   UPDATE_MOBILE_USER: "api/customer/",
   REGISTER: "api/customer/register",
   GET_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
-  ADD_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
+  ADD_FAVOURITE_LOCATION: "api/customer/address/",
   DELETE_FAVOURITE_LOCATION: "api/customer/customer-favorite-address",
   CREATE_INQUIRY: "api/inquiry",
   CREATE_COMPLAINT: "api/complaint",

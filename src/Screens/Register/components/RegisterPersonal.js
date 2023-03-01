@@ -259,7 +259,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         mobileNo: mobileNo,
         emailId: email,
         birthDate: moment(dob).format("YYYY-MM-DD"),
-        idType: idType,
+        idType: idType?.code,
         idValue: idNumber,
         address: {
           addressType: addreType,
@@ -268,10 +268,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           address1: street,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
-          city: "city",
-          town: "town",
+          city: "",
+          town: "",
           state: state,
-          district: state,
+          district: district,
           country: country,
           latitude: latitude.toString(),
           longitude: longitude.toString(),
@@ -988,7 +988,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         <Button
           label={strings.register}
-          isDisabled={isButtomDiable}
+          // isDisabled={isButtomDiable}
           onPress={submit}
           loading={
             registerForm?.initOtpForm
