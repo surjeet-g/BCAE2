@@ -138,6 +138,7 @@ export const TextBoxWithCTA = (props) => {
             onSubmitEditing={() =>
               props.onSubmitEditing ? props.onSubmitEditing : null
             }
+            maxLength={props.maxLength || 100}
           />
         </View>
       </View>

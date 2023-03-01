@@ -130,6 +130,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [postcode, setPostcode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   //  mock
 
   // const [firstName, setFirstName] = useState("vipin");
@@ -686,6 +687,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
+          setNumberMaxLength(getPhoneNumberLength(item.code));
         }}
         onBackdropPress={() => setCountryPickModel(false)}
         style={{
@@ -713,6 +715,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}
           isDisableButton={isDisableSendOtp}
+          maxLength={numberMaxLength}
           btnTextPro={{
             color: color.WHITE,
             fontSize: fontSizes.FONT_12,

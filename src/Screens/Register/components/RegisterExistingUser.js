@@ -542,6 +542,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
+          setNumberMaxLength(getPhoneNumberLength(item.code));
         }}
         onBackdropPress={() => setCountryPickModel(false)}
         style={{
@@ -569,6 +570,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}
           isDisableButton={isDisableSendOtp}
+          maxLength={numberMaxLength}
           btnTextPro={{
             color: color.WHITE,
             fontSize: fontSizes.FONT_12,
