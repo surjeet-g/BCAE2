@@ -188,13 +188,13 @@ export const CountryPicker = ({
             transparent={true}
             visible={showModal}
             onShow={openModal}
-            style={{ marginTop :20}}
+            // style={{ marginTop :20}}
             onRequestClose={onRequestClose}
         >
             <View
                 style={{
                     flex: 1,
-                    // marginTop : 100,
+                
                     justifyContent: 'flex-end'
                 }}
             >
