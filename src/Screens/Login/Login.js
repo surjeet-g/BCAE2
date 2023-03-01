@@ -7,14 +7,13 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  validateNumber,
-} from "../../Utilities/Constants/Constant";
+import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
-import { capitalizeFirstLetter } from "../../Utilities/utils";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+  excludedCountriesList,
+} from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "../../Components/Toast";
@@ -60,10 +59,10 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
-  const [password, setPassword] = useState("Test@123");
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
+  // const [username, setUsername] = useState("kamal@yopmail.com");
+  // const [password, setPassword] = useState("Test@123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
@@ -71,6 +70,7 @@ export const Login = ({ navigation }) => {
   const [numberError, setNumberError] = useState("");
   const [params, setParams] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
   let login = useSelector((state) => state.login);
@@ -150,14 +150,10 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobile = (loginType) => {
     setLoginType(loginType);
-    if (!validateNumber(number)) {
-      setNumberError(strings.mobileValidError);
+    if (number.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
-    } else if (number.length < 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
     } else {
       param = {
         loginId: number,
@@ -200,12 +196,8 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobileOTP = (loginType) => {
     setLoginType(loginType);
-    if (!validateNumber(number)) {
-      setNumberError(strings.mobileValidError);
-    } else if (number.length < 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (number.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
       param = {
         loginId: number,
@@ -339,19 +331,19 @@ export const Login = ({ navigation }) => {
                 <View>
                   {/* Mobile Number View */}
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    {/* <CustomInput
-                      caption={strings.mobile_no}
-                      onChangeText={(text) => onIDChange(text)}
-                      value={number}
-                      placeHolder={strings.mobile_no}
-                      keyboardType="numeric"
-                    /> */}
                     <CountryPicker
                       show={countryPickModel}
-                      // when picker button press you will get the country object with dial code
+                      excludedCountries={excludedCountriesList()}
                       pickerButtonOnPress={(item) => {
                         setCountryCode(item.dial_code);
                         setCountryPickModel(false);
+                        setNumberMaxLength(getPhoneNumberLength(item.code));
+                      }}
+                      onBackdropPress={() => setCountryPickModel(false)}
+                      style={{
+                        modal: {
+                          height: "65%",
+                        },
                       }}
                     />
                     <CustomInputWithCC
@@ -362,6 +354,7 @@ export const Login = ({ navigation }) => {
                       value={number}
                       placeHolder={strings.mobile_no}
                       keyboardType="numeric"
+                      maxLength={numberMaxLength}
                     />
                     {!login.initLogin &&
                       login?.loggedProfile?.errorCode == "404" && (

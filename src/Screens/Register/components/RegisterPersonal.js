@@ -9,6 +9,11 @@ import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+  excludedCountriesList,
+} from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
@@ -126,6 +131,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [postcode, setPostcode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   //  mock
 
   // const [firstName, setFirstName] = useState("vipin");
@@ -238,8 +244,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       setgenderError(strings.genderError);
     } else if (title?.code === "") {
       setTitleError(strings.titleError);
-    } else if (!validateNumber(mobileNo)) {
-      setNumberError(strings.mobileValidError);
+    } else if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (otp.trim() === "") {
       setOtpNumberError(strings.numberOtpError);
     } else if (!validateEmail(email)) {
@@ -344,10 +350,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
       if (firstName.trim() === "") {
         Toast.show({
@@ -355,12 +359,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           text1: strings.firstNameError,
         });
         setFirstNameError(strings.firstNameError);
-      } else if (!validateNumber(mobileNo)) {
-        Toast.show({
-          type: "bctError",
-          text1: strings.mobileValidError,
-        });
-        setNumberError(strings.mobileValidError);
       } else {
         //alert("submitResndOTP");
         dispatch(
@@ -713,10 +711,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       <CountryPicker
         show={countryPickModel}
-        // when picker button press you will get the country object with dial code
+        excludedCountries={excludedCountriesList()}
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
+          setNumberMaxLength(getPhoneNumberLength(item.code));
+        }}
+        onBackdropPress={() => setCountryPickModel(false)}
+        style={{
+          modal: {
+            height: "65%",
+          },
         }}
       />
 
@@ -739,6 +744,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}
           isDisableButton={isDisableSendOtp}
+          maxLength={numberMaxLength}
           btnTextPro={{
             color: color.WHITE,
             fontSize: fontSizes.FONT_12,
