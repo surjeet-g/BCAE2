@@ -105,10 +105,12 @@ const SavedLocation = ({ route, navigation }) => {
         },
         {
           text: strings.ok,
-          onPress: () => {
-            dispatch(
-              deleteSavedLocation(key, profile.savedProfileData.customerId)
-            );
+          onPress: async () => {
+            console.log("hiting delte", key);
+            const res = await dispatch(deleteSavedLocation(key));
+            if (res) {
+              fetchMyProfileData();
+            }
           },
         },
       ]
@@ -126,10 +128,6 @@ const SavedLocation = ({ route, navigation }) => {
     postCode
   ) => {
     if (fromPage === "CreateEnquiry" || fromPage === "EditProfile") {
-      console.log(
-        "onItemClicked CreateEnquiry Saved location :" +
-          JSON.stringify(savedLocation?.savedLocationData)
-      );
       route.params.onPlaceChosen({
         geoAddress: address,
         latitude: latitude,
@@ -146,7 +144,7 @@ const SavedLocation = ({ route, navigation }) => {
   };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
-  console.log("result", address, address.length);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -186,14 +184,14 @@ const SavedLocation = ({ route, navigation }) => {
           </View>
         )}
 
-        <View>
+        {/* <View>
           <TouchableOpacity
             style={styles.savelocBtn}
             onPress={() => onClickedSaveLocationButton()}
           >
             <Text style={[styles.saveLocText]}>{strings.add_location}</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,7 +201,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-    ...HEADER_MARGIN,
   },
   bottomView: {
     flex: 1,

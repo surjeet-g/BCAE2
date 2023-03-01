@@ -53,7 +53,10 @@ import {
   setProfileFormField,
   setProfileReset,
 } from "../../Redux/ProfileAction";
-import Toast from "react-native-toast-message";
+import {
+  addresObjToString,
+  handleMultipleContact,
+} from "../../Utilities/utils";
 
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -372,7 +375,8 @@ const EditProfile = ({ navigation, props }) => {
     get(profile, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
 
-  console.log("Initial Fetch data", profile.formData);
+  const addresss = get(profile, "savedProfileData.customerAddress", []);
+  console.log(">>l", addresss);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Pressable
@@ -535,7 +539,7 @@ const EditProfile = ({ navigation, props }) => {
                   style={{
                     backgroundColor: "transparent",
                   }}
-                  value={location || strings.location}
+                  value={handleMultipleContact(addresss)}
                   caption={strings.location}
                   placeHolder={strings.location}
                   right={

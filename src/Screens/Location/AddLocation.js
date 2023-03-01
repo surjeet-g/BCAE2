@@ -144,7 +144,7 @@ const AddLocation = ({ route, navigation }) => {
             isPrimary: false,
             addressType: addreType,
             address1: simpangText,
-            address2: `${simpangText},${kampongName}`,
+            address2: kampongName,
             address3: `${country},${postcode}`,
             addrZone: country,
             city: simpangText,

@@ -79,34 +79,36 @@ export function addNewLocations(obj) {
   };
 }
 
-export function deleteSavedLocation(custFavAddrId, customerId) {
+export function deleteSavedLocation(custFavAddrId) {
   return async (dispatch) => {
-    dispatch(initSavedLocation());
-    let params = {};
-    console.log("=======custFavAddrId========>" + custFavAddrId);
-    console.log("=======customerId========>" + customerId);
+    // dispatch(initSavedLocation());
+    const customerUUDI = await getCustomerUUID();
+    let params = {
+      address: {
+        addressNo: custFavAddrId,
+      },
+    };
+    console.log("params", params);
+
     let result = await serverCall(
-      endPoints.GET_FAVOURITE_LOCATION + "/" + custFavAddrId,
+      endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
       requestMethod.DELETE,
       params
     );
+
     if (result.success) {
-      //result.data.data.rows
-      //console.log(getModifiedInteractions(DATA))
-      let result = await serverCall(
-        endPoints.GET_FAVOURITE_LOCATION + "/" + customerId,
-        requestMethod.GET,
-        params
-      );
-      if (result.success) {
-        //result.data.data.rows
-        //console.log(getModifiedInteractions(DATA))
-        dispatch(setSavedLocation(result.data.data.rows));
-      } else {
-        dispatch(savedLocationError(result));
-      }
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.data?.message,
+      });
+      return true;
     } else {
+      Toast.show({
+        type: "bctError",
+        text1: "Something wents wrong",
+      });
       dispatch(savedLocationError(result));
+      return false;
     }
   };
 }
