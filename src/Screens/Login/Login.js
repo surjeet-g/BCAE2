@@ -311,11 +311,13 @@ export const Login = ({ navigation }) => {
                       value={username}
                       onChangeText={(text) => onIDChange(text)}
                       right={
-                        <TextInput.Icon
-                          onPress={clearTextClick}
-                          style={{ width: 23, height: 23 }}
-                          icon="close"
-                        />
+                        username && (
+                          <TextInput.Icon
+                            onPress={clearTextClick}
+                            style={{ width: 23, height: 23 }}
+                            icon="close"
+                          />
+                        )
                       }
                     />
 
@@ -382,15 +384,17 @@ export const Login = ({ navigation }) => {
                 onChangeText={(text) => onPasswordChange(text)}
                 secureTextEntry={secureTextEntry}
                 right={
-                  <TextInput.Icon
-                    onPress={hideShowClick}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntry
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
+                  password && (
+                    <TextInput.Icon
+                      onPress={hideShowClick}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntry
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
 

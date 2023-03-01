@@ -20,12 +20,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
 import { strings } from "../Utilities/Language";
+import { navBar } from "../Utilities/Style/navBar";
+import { useTheme } from "react-native-paper";
+import { addresObjToString } from "../Utilities/utils";
 
 function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
-  let savedLocation = useSelector((state) => state.savedLocations);
-  const dispatch = useDispatch([deleteSavedLocation]);
+  const { colors } = useTheme();
 
-  const navigation = useNavigation();
+  const dispatch = useDispatch([deleteSavedLocation]);
 
   const getAddressString = (data) => {
     let addressString = "";
@@ -44,13 +46,6 @@ function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
 
     return addressString;
   };
-
-  function onPressedSavedLocation() {
-    //navigation.navigate('ManageExpense', {
-    // expenseId: id
-    //});
-    // navigation.navigate('MyTicketDetails', {ticketNo:ticketNo, intxnId:intxnId, intxnType:intxnType})
-  }
 
   return (
     <TouchableOpacity
@@ -78,7 +73,15 @@ function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
             />
           </View>
           <View style={{ flex: 4, justifyContent: "center" }}>
-            <Text style={[styles.status]}>{getAddressString(item)}</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "400",
+                color: colors.secondary,
+              }}
+            >
+              {addresObjToString(item)}
+            </Text>
           </View>
           <View
             style={{
@@ -100,8 +103,9 @@ function SavedLocationItem({ item, onDeleteClicked, onItemClicked }) {
 
             <TouchableOpacity
               activeOpacity={0.5}
+              style={navBar.roundIcon}
               onPress={() =>
-                onDeleteClicked(item.custFavAddrId, getAddressString(item))
+                onDeleteClicked(item.addressNo, addresObjToString(item))
               }
             >
               <Image

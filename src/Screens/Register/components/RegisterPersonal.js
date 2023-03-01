@@ -6,7 +6,7 @@ import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { strings } from "../../../Utilities/Language/index";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
-import { CountryPicker } from "react-native-country-codes-picker";
+import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
 import {
@@ -112,6 +112,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   // real
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [idType, setIdType] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [gender, setGender] = useState("");
   const [title, setTitle] = useState("");
@@ -166,6 +167,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [genderError, setgenderError] = useState("");
   const [titleError, setTitleError] = useState("");
 
+  const [idTypeError, setIdTypeError] = useState("");
   const [numberError, setNumberError] = useState("");
   const [otpNumberError, setOtpNumberError] = useState("");
 
@@ -178,7 +180,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [selectedValueTitle, setValueTitle] = useState("");
   const [isSelected, setSelection] = useState(false);
   const [isSelectedTerm, setSelectionTerm] = useState(false);
-
+  const [selectedValueIdType, setValueIdType] = useState("");
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setConfirmPasswordError] = useState("");
@@ -236,6 +238,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       setPrivaceyError(strings.privaceyError);
     } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
+    } else if (idType === "") {
+      setIdTypeError(strings.idTypeError);
     } else if (gender?.code === "") {
       setgenderError(strings.genderError);
     } else if (title?.code === "") {
@@ -261,6 +265,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         mobileNo: mobileNo,
         emailId: email,
         birthDate: moment(dob).format("YYYY-MM-DD"),
+        idType: idType?.code,
         idValue: idNumber,
         address: {
           addressType: addreType,
@@ -269,10 +274,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           address1: street,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
-          city: "city",
-          town: "town",
+          city: "",
+          town: "",
           state: state,
-          district: state,
+          district: district,
           country: country,
           latitude: latitude.toString(),
           longitude: longitude.toString(),
@@ -389,7 +394,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       mobileNo === "" ||
       otp === "" ||
       email === "" ||
-      otpEmail === ""
+      otpEmail === "" ||
+      idType === "" ||
+      idNumber === "" ||
+      location === "" ||
+      password === "" ||
+      confirmPassword === ""
     ) {
       setButtomEnableDisable(true);
       //console.log("buttonEnableDiable==>1");
@@ -491,6 +501,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
 
+  const onIdTypeClick = (textStr) => {
+    // console.log(textStr.description)
+    setIdType(textStr);
+    buttonEnableDiable();
+  };
+
   const onCountryClick = (textStr) => {
     setCountry(textStr.onChangeText);
     setCountryCode(textStr?.mapping?.countryCode ?? "");
@@ -558,12 +574,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           caption={strings.first_name}
           placeHolder={strings.first_name}
           right={
-            <TextInput.Icon
-              onPress={clearFirstName}
-              // style={{ width: 15, height: 15 }}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            firstName && (
+              <TextInput.Icon
+                onPress={clearFirstName}
+                // style={{ width: 15, height: 15 }}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
 
@@ -581,11 +599,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           placeHolder={strings.last_name}
           caption={strings.last_name}
           right={
-            <TextInput.Icon
-              onPress={clearLastName}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            lastName && (
+              <TextInput.Icon
+                onPress={clearLastName}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
 
@@ -641,21 +661,37 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         {dobError !== "" && showErrorMessage(dobError)}
       </View>
 
-      <View style={{ marginTop: 10 }}>
+      {/* ID Type */}
+      <View style={{ marginTop: 5 }}>
+        <CustomDropDown
+          selectedValue={selectedValueIdType}
+          setValue={setValueIdType}
+          data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+          onChangeText={(text) => onIdTypeClick(text)}
+          value={gender?.description}
+          placeHolder={strings.id_type}
+        />
+
+        {idTypeError !== "" && showErrorMessage(idTypeError)}
+      </View>
+
+      <View style={{ marginTop: 30 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          caption={"ID Number"}
-          placeHolder={"ID Number"}
+          caption={strings.id_number}
+          placeHolder={strings.id_number}
           right={
-            <TextInput.Icon
-              onPress={() => setIdNumber("")}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            idNumber && (
+              <TextInput.Icon
+                onPress={() => setIdNumber("")}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
         {idNumberError !== "" && showErrorMessage(idNumberError)}
@@ -696,6 +732,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           },
         }}
       />
+
       {/* Mobile Number */}
       <View style={{ marginTop: 5 }}>
         <TextBoxWithCTA
@@ -858,15 +895,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           onChangeText={setPassword}
           secureTextEntry={secureTextEntry}
           right={
-            <TextInput.Icon
-              onPress={() => setsecureTextEntry(!secureTextEntry)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntry
-                  ? require("../../../Assets/icons/ic_password_show.png")
-                  : require("../../../Assets/icons/ic_password_hide.png")
-              }
-            />
+            password && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntry(!secureTextEntry)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntry
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
           }
         />
 
@@ -881,15 +920,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           onChangeText={setConfirmPassword}
           secureTextEntry={secureTextEntryConfim}
           right={
-            <TextInput.Icon
-              onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
-              style={{ width: 23, height: 23 }}
-              icon={
-                secureTextEntryConfim
-                  ? require("../../../Assets/icons/ic_password_show.png")
-                  : require("../../../Assets/icons/ic_password_hide.png")
-              }
-            />
+            confirmPassword && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntryConfim
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
           }
         />
 
@@ -961,7 +1002,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       <View style={{ marginTop: spacing.HEIGHT_24 }}>
         <Button
           label={strings.register}
-          isDisabled={isButtomDiable}
+          // isDisabled={isButtomDiable}
           onPress={submit}
           loading={
             registerForm?.initOtpForm

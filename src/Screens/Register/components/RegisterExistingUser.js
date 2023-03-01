@@ -36,6 +36,7 @@ import {
   STAGE_FAQ,
   PROD_FAQ,
   validateEmail,
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { TextInput, useTheme } from "react-native-paper";
 
@@ -97,11 +98,18 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [customerID, setCustomerID] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [idType, setIDtype] = useState("");
   const [gender, setGender] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [otp, setOTP] = useState("");
   const [otpEmail, setEmailOTP] = useState("");
   const [email, setEmail] = useState("");
+
+  const [idTypeError, setIdTypeError] = useState("");
+  const [selectedValueIdType, setValueIdType] = useState("");
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [countryCode, setCountryCode] = useState("673");
 
@@ -131,6 +139,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [otpTimer, setOtpTimer] = useState(OTP_TIMER);
   const [isDisableSendOtp, setIsDisableSendOtp] = useState(false);
   const [selectedValueGender, setValueGender] = useState("");
+  const [secureTextEntry, setsecureTextEntry] = useState(true);
+  const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
 
   const [dob, setDob] = useState("");
   // const [dob, setDob] = useState("2023-02-10");
@@ -160,8 +170,18 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       return null;
     }
 
-    if (customerID === "") {
+    if (!validatePassword(password)) {
+      setPasswordError(strings.passwordValidError);
+    } else if (idType === "") {
+      setIDtype(strings.idNumberError);
+    } else if (!validatePassword(confirmPassword)) {
+      setConfirmPasswordError(strings.passwordValidError);
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
+    } else if (customerID === "") {
       setCustomerIDError(strings.customerIDError);
+    } else if (idType === "") {
+      setIdTypeError(strings.idTypeError);
     } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
     } else if (dob === "") {
@@ -181,12 +201,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     } else if (!isSelected) {
       setPrivaceyError(strings.privaceyError);
     } else {
-      console.log("validation cleared");
       let registerObject = {
         accountType: "existing",
         firstName: firstName,
         lastName: lastName,
         customerNo: customerID,
+        idType: idType?.code,
         idValue: idNumber,
         birthDate: moment(dob).format("YYYY-MM-DD"),
         gender: gender.code,
@@ -194,6 +214,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         mobileNo: mobileNo,
         emailId: email,
         isVerified: false,
+        password: password,
+        confirmPassword: confirmPassword,
       };
       console.log("userRegister===>2", registerObject);
       dispatch(
@@ -309,7 +331,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       email === "" ||
       otpEmail === "" ||
       customerID === "" ||
-      idNumber === ""
+      idNumber === "" ||
+      idType === "" ||
+      password === "" ||
+      confirmPassword === ""
     ) {
       setButtomEnableDisable(true);
       //console.log("buttonEnableDiable==>1");
@@ -408,6 +433,11 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setGender(textStr);
     buttonEnableDiable();
   };
+  const onIdTypeClick = (textStr) => {
+    // console.log(textStr.description)
+    setIDtype(textStr);
+    buttonEnableDiable();
+  };
 
   const onCountryClick = (textStr) => {
     setCountry(textStr.onChangeText);
@@ -493,37 +523,55 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           caption={"Cusomer ID"}
           placeHolder={"Cusomer ID"}
           right={
-            <TextInput.Icon
-              onPress={() => setCustomerID("")}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            customerID && (
+              <TextInput.Icon
+                onPress={() => setCustomerID("")}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
         {customerIDError !== "" && showErrorMessage(customerIDError)}
       </View>
 
-      <View style={{ marginTop: 10 }}>
+      {/* ID Type */}
+      <View style={{ marginTop: 1 }}>
+        <CustomDropDown
+          selectedValue={selectedValueIdType}
+          setValue={setValueIdType}
+          data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+          onChangeText={(text) => onIdTypeClick(text)}
+          value={idType?.description}
+          placeHolder={strings.id_type}
+        />
+
+        {idTypeError !== "" && showErrorMessage(idTypeError)}
+      </View>
+
+      <View style={{ marginTop: 35 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
           }}
           onChangeText={setIdNumber}
           value={idNumber}
-          caption={"User ID"}
-          placeHolder={"User ID"}
+          caption={strings.id_number}
+          placeHolder={strings.id_number}
           right={
-            <TextInput.Icon
-              onPress={() => setIdNumber("")}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              icon="close"
-            />
+            idNumber && (
+              <TextInput.Icon
+                onPress={() => setIdNumber("")}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon="close"
+              />
+            )
           }
         />
         {idNumberError !== "" && showErrorMessage(idNumberError)}
       </View>
       {/* Gender */}
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 1 }}>
         <CustomDropDown
           selectedValue={selectedValueGender}
           setValue={setValueGender}
@@ -741,6 +789,55 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
             />
           }
         />
+      </View>
+      <View style={{ marginTop: 5 }}>
+        <CustomInput
+          value={password}
+          caption={strings.password}
+          placeHolder={strings.password}
+          onChangeText={setPassword}
+          secureTextEntry={secureTextEntry}
+          right={
+            password && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntry(!secureTextEntry)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntry
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
+          }
+        />
+
+        {/* {showErrorMessage("sds")} */}
+        {passwordError !== "" && showErrorMessage(passwordError)}
+      </View>
+      <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+        <CustomInput
+          value={confirmPassword}
+          caption={strings.confirmPassword}
+          placeHolder={strings.confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={secureTextEntryConfim}
+          right={
+            confirmPassword && (
+              <TextInput.Icon
+                onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
+                style={{ width: 23, height: 23 }}
+                icon={
+                  secureTextEntryConfim
+                    ? require("../../../Assets/icons/ic_password_show.png")
+                    : require("../../../Assets/icons/ic_password_hide.png")
+                }
+              />
+            )
+          }
+        />
+
+        {passwordConfirmError !== "" && showErrorMessage(passwordConfirmError)}
       </View>
       <Pressable
         onPress={() => {

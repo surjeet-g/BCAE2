@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -7,6 +12,7 @@ import {
   Text,
   View,
   Alert,
+  Pressable,
 } from "react-native";
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,48 +28,71 @@ import {
   buttonSize,
   bottomBarHeight,
 } from "../../Utilities/Constants/Constant";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import SavedLocationList from "../../Components/SavedLocationList";
 // import Header from "../TabScreens/Component/Header";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { ScrollView } from "react-native-gesture-handler";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
-
+import { navBar } from "../../Utilities/Style/navBar";
+import { useTheme } from "react-native-paper";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { ClearSpace } from "../../Components/ClearSpace";
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
+import get from "lodash.get";
 const SavedLocation = ({ route, navigation }) => {
-  const [myscreenmae, setscreenname] = useState("Saved Locations");
+  const { colors, fonts, roundness } = useTheme();
 
   let savedLocation = useSelector((state) => state.savedLocations);
 
   //const { customerId } = route.params;
-  const { onPlaceChosen, fromPage } = route.params;
-
+  // const { onPlaceChosen , fromPage  } = route.params;
+  const { onPlaceChosen, fromPage } = {
+    onPlaceChosen: () => {},
+    fromPage: true,
+  };
   let profile = useSelector((state) => state.profile);
-  const dispatch2 = useDispatch([fetchSavedProfileData]);
+  const dispatch2 = useDispatch([fetchSavedProfileData, fetchRegisterFormData]);
   const fetchMyProfileData = () => dispatch2(fetchSavedProfileData());
 
   const dispatch = useDispatch([fetchSavedLocations, deleteSavedLocation]);
-  const fetchSavedLocationData = () =>
-    dispatch(fetchSavedLocations(profile.savedProfileData.customerId));
+
+  const fetchSavedLocationData = () => dispatch(fetchSavedLocations(33));
 
   useEffect(() => {
+    //get master
+    dispatch2(fetchRegisterFormData());
     fetchMyProfileData();
-    fetchSavedLocationData();
+    // fetchSavedLocationData();
 
     const willFocusSubscription = navigation.addListener("focus", () => {
-      console.log("willFocusSubscription====>");
-      fetchSavedLocationData();
+      dispatch2(fetchRegisterFormData());
     });
     return willFocusSubscription;
   }, []);
-
-  //alert("SavedLocation : " + JSON.stringify(savedLocation.savedLocationData));
-
   const onClickedSaveLocationButton = () => {
     navigation.navigate("AddLocation", {
-      customerId: profile.savedProfileData.customerId,
+      customerId: 33,
       fromPage: fromPage,
       addressLookup: [],
     });
   };
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <>
+          <Pressable
+            onPress={() => onClickedSaveLocationButton()}
+            style={navBar.roundIconColored}
+          >
+            <Icon name="plus" size={19} color={colors.primary} />
+          </Pressable>
+        </>
+      ),
+    });
+  }, [navigation]);
+
+  //alert("SavedLocation : " + JSON.stringify(savedLocation.savedLocationData));
 
   const onClickedDeleteButton = (key, address) => {
     Alert.alert(
@@ -76,18 +105,18 @@ const SavedLocation = ({ route, navigation }) => {
         },
         {
           text: strings.ok,
-          onPress: () => {
-            dispatch(
-              deleteSavedLocation(key, profile.savedProfileData.customerId)
-            );
+          onPress: async () => {
+            console.log("hiting delte", key);
+            const res = await dispatch(deleteSavedLocation(key));
+            if (res) {
+              fetchMyProfileData();
+            }
           },
         },
       ]
     );
   };
-  console.log(
-    "address lookup :" + JSON.stringify(savedLocation?.addressLoopupData)
-  );
+
   const onItemClicked = (
     key,
     address,
@@ -99,10 +128,6 @@ const SavedLocation = ({ route, navigation }) => {
     postCode
   ) => {
     if (fromPage === "CreateEnquiry" || fromPage === "EditProfile") {
-      console.log(
-        "onItemClicked CreateEnquiry Saved location :" +
-          JSON.stringify(savedLocation?.savedLocationData)
-      );
       route.params.onPlaceChosen({
         geoAddress: address,
         latitude: latitude,
@@ -118,14 +143,10 @@ const SavedLocation = ({ route, navigation }) => {
     }
   };
 
+  const address = get(profile, "savedProfileData.customerAddress", []);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Header
-        navigation={navigation}
-        Text={myscreenmae}
-        backIconVisibility={true}
-        rightIconsVisibility={true}
-      ></Header> */}
       <ScrollView>
         {savedLocation.initSavedLocation &&
           !savedLocation?.savedLocationError && (
@@ -140,12 +161,10 @@ const SavedLocation = ({ route, navigation }) => {
             </View>
           )}
 
-        {!savedLocation?.initSavedLocation &&
-        !savedLocation?.savedLocationError &&
-        savedLocation?.savedLocationData.length > 0 ? (
+        {address.length != 0 ? (
           <View>
             <SavedLocationList
-              savedLocationList={savedLocation?.savedLocationData}
+              savedLocationList={address}
               onDeleteClicked={onClickedDeleteButton}
               onItemClicked={onItemClicked}
             ></SavedLocationList>
@@ -165,14 +184,14 @@ const SavedLocation = ({ route, navigation }) => {
           </View>
         )}
 
-        <View>
+        {/* <View>
           <TouchableOpacity
             style={styles.savelocBtn}
             onPress={() => onClickedSaveLocationButton()}
           >
             <Text style={[styles.saveLocText]}>{strings.add_location}</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );

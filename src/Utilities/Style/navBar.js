@@ -20,4 +20,14 @@ export const navBar = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: theme.colors.inverseSecondary,
   },
+  roundIconColored: {
+    width: 26,
+    height: 26,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 26,
+    borderWidth: 0.5,
+    borderColor: theme.colors.primary,
+    marginRight: 12,
+  },
 });

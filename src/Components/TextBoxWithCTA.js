@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,6 +19,7 @@ import { useTheme } from "react-native-paper";
 import { CustomActivityIndicator } from "./CustomActivityIndicator";
 export const TextBoxWithCTA = (props) => {
   const { roundness, colors } = useTheme();
+  const [active, setActive] = useState(false);
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
@@ -27,14 +28,10 @@ export const TextBoxWithCTA = (props) => {
   let isDisableButton = props.isDisableButton ?? false;
 
   return (
-    <View>
+    <View style={{ marginTop: 10 }}>
       <View style={{ marginTop: 10 }}>
         <Text style={styles.placeHolderText}>
-          {props.value != ""
-            ? props.placeHolder
-            : props?.isResendOTP && props?.countryCode != ""
-            ? props.placeHolder
-            : " "}
+          {props.value != "" && props.placeHolder}
         </Text>
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -78,6 +75,9 @@ export const TextBoxWithCTA = (props) => {
             height: 55,
             backgroundColor: colors.background,
             borderRadius: roundness,
+            borderColor: active ? colors.gray : "transparent",
+            borderWidth: 2,
+            borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
           }}
@@ -113,6 +113,12 @@ export const TextBoxWithCTA = (props) => {
             </TouchableOpacity>
           )}
           <TextInput
+            onFocus={() => {
+              setActive(true);
+            }}
+            onBlur={() => {
+              setActive(false);
+            }}
             autoCapitalize="none"
             autoCorrect={false}
             editable={
@@ -148,11 +154,11 @@ export const TextBoxWithCTA = (props) => {
 
 const styles = StyleSheet.create({
   placeHolderText: {
-    color: "#C7CAD1",
-    fontSize: fontSizes.FONT_12,
-    fontWeight: "500",
+    color: "#000000",
+    fontSize: fontSizes.FONT_14,
+    fontWeight: "400",
     marginBottom: spacing.WIDTH_5,
-    marginLeft: 12,
+    marginLeft: spacing.WIDTH_10,
   },
   textInput: {
     width: "100%",

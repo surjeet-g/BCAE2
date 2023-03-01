@@ -148,7 +148,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
     } else if (loginMode.includes("Mobile")) {
       param = {
         reference: loginId,
-        extn,
+        extn: extn,
       };
       url = endPoints.GET_LOGIN_OTP_FOR_MOBILE;
     }

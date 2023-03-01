@@ -25,6 +25,13 @@ import {
   storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
+import { serverCall } from "../../Utilities/API";
+import { endPoints } from "../../Utilities/API/ApiConstants";
+import { requestMethod } from "../../Utilities/API/ApiConstants";
+import {
+  getCustomerUUID,
+  getUserId,
+} from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
@@ -32,6 +39,7 @@ export const ViewProfile = ({ navigation }) => {
 
   const { colors, fonts, roundness } = useTheme();
   let profile = useSelector((state) => state.profile);
+
   const [userInfo, setUserInfo] = useState({
     email: "",
     profilePicture: null,
@@ -49,15 +57,24 @@ export const ViewProfile = ({ navigation }) => {
   }, []);
   useEffect(() => {
     async function fetchMyAPI() {
-      const res = await dispatch2(fetchSavedProfileData());
+      const customerUUDI = await getCustomerUUID();
 
-      if (res.status) {
+      let profileResult = await serverCall(
+        endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+        requestMethod.GET,
+        {}
+      );
+      const userID = await getUserId();
+      console.log("userid", profileResult);
+      if (profileResult?.success) {
         setUserInfo({
-          email: res.data.email,
-          name: `${res.data.firstName} ${res.data.lastName}`,
-          userId: res.data.userId,
-          profilePicture: res.data.profilePicture,
+          email: profileResult?.data?.data?.customerContact[0]?.emailId,
+          name: `${profileResult?.data.data.firstName} ${profileResult?.data?.data?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.data?.data?.customerPhoto,
         });
+      } else {
+        console.log(">>err");
       }
     }
     fetchMyAPI();

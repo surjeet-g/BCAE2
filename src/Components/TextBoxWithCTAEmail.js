@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
   Image,
@@ -14,11 +13,14 @@ import {
   fontSizes,
   buttonSize,
 } from "../Utilities/Constants/Constant";
+
 import { CustomActivityIndicator } from "./CustomActivityIndicator";
-import { useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+import theme from "../Utilities/themeConfig";
 
 export const TextBoxWithCTAEmail = (props) => {
   const { roundness, colors } = useTheme();
+  const [active, setActive] = useState(false);
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
@@ -28,7 +30,7 @@ export const TextBoxWithCTAEmail = (props) => {
   return (
     <View>
       <View style={{ marginTop: 10 }}>
-        <Text style={styles.placeHolderText}>
+        <Text variant="labelSmall" style={styles.placeHolderText}>
           {props.value != ""
             ? props.placeHolder
             : props?.isResendOTP && props?.countryCode != ""
@@ -71,6 +73,9 @@ export const TextBoxWithCTAEmail = (props) => {
             height: 55,
             backgroundColor: colors.background,
             borderRadius: roundness,
+            borderColor: active ? colors.gray : "transparent",
+            borderWidth: 2,
+            borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
           }}
@@ -103,6 +108,12 @@ export const TextBoxWithCTAEmail = (props) => {
             </TouchableOpacity>
           )}
           <TextInput
+            onFocus={() => {
+              setActive(true);
+            }}
+            onBlur={() => {
+              setActive(false);
+            }}
             autoCapitalize="none"
             autoCorrect={false}
             editable={
@@ -137,10 +148,11 @@ export const TextBoxWithCTAEmail = (props) => {
 
 const styles = StyleSheet.create({
   placeHolderText: {
-    color: color.PLACEHOLDER,
-    fontSize: fontSizes.FONT_12,
-    fontWeight: "500",
+    color: theme.colors.onSurfaceVariant,
+    // fontSize: fontSizes.FONT_12,
+    // fontWeight: "500",
     marginBottom: spacing.WIDTH_5,
+    marginLeft: spacing.WIDTH_10,
   },
   textInput: {
     width: "100%",

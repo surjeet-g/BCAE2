@@ -28,7 +28,7 @@ export const CustomInput = (props) => {
           paddingVertical: 2,
           elevation: 1,
           borderColor: active ? colors.gray : "transparent",
-          borderWidth: 0.5,
+          borderWidth: 2,
           borderStyle: "solid",
         }}
       >

@@ -82,11 +82,13 @@ const CustomerEmailLogin = (props) => {
           value={username}
           onChangeText={(text) => onIDChange(text)}
           right={
-            <TextInput.Icon
-              onPress={clearTextClick}
-              style={{ width: 23, height: 23 }}
-              icon="close"
-            />
+            username && (
+              <TextInput.Icon
+                onPress={clearTextClick}
+                style={{ width: 23, height: 23 }}
+                icon="close"
+              />
+            )
           }
         />
 

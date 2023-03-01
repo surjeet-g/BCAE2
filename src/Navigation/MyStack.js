@@ -32,6 +32,10 @@ import { useTheme } from "react-native-paper";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+const EDIT_PROFILE = "EditProfile";
+const REGISTER = "Register with us";
+const SAVED_LOC = "SavedLocation";
+const LOGIN_STACK = "Login";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -55,14 +59,13 @@ function MyStack() {
       ...fonts.titleMedium,
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
-    headerShown: true,
   };
 
   return (
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName={EDIT_PROFILE}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -220,7 +223,12 @@ function MyStack() {
           component={AddLocation}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Saved Locations" }}
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              title: "Saved Locations",
+            },
+          })}
           name="SavedLocation"
           component={SavedLocation}
         />
