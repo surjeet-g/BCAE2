@@ -73,7 +73,6 @@ export function verifyLoginData(navigation, params) {
                   profilePicture:
                     result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
                   customerId: profileResult?.data?.data?.customerId,
-                  customerId: profileResult?.data?.data?.customerId,
                   customerUuid: profileResult?.data?.data?.customerUuid,
                   birthDate: profileResult?.data?.data?.birthDate,
                   contactNo:

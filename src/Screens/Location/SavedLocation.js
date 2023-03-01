@@ -72,11 +72,17 @@ const SavedLocation = ({ route, navigation }) => {
     return willFocusSubscription;
   }, []);
   const onClickedSaveLocationButton = () => {
-    navigation.navigate("AddLocation", {
-      customerId: 33,
-      fromPage: fromPage,
-      addressLookup: [],
-    });
+    if (profile?.savedProfileData?.customerAddress?.length < 3) {
+      navigation.navigate("AddLocation", {
+        customerId: 33,
+        fromPage: fromPage,
+        addressLookup: [],
+      });
+    } else {
+      Alert.alert(strings.attention, strings.max_number_address, [
+        { text: strings.ok, onPress: () => {} },
+      ]);
+    }
   };
   useLayoutEffect(() => {
     navigation.setOptions({

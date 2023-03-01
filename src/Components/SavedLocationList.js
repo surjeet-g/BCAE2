@@ -17,6 +17,7 @@ import {
   buttonType,
   buttonSize,
 } from "../Utilities/Constants/Constant";
+import { Divider } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
 import { strings } from "../Utilities/Language";
@@ -24,7 +25,10 @@ import { navBar } from "../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
 import { addresObjToString } from "../Utilities/utils";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import AddressImage from "../Assets/svg/location_green.svg";
+import EditImage from "../Assets/svg/edit_icon_round.svg";
+import DeleteImage from "../Assets/svg/delete.svg";
+import PrimaryAddress from "../Assets/svg/primary_address.svg";
 function SavedLocationItem({
   item,
   onDeleteClicked,
@@ -73,15 +77,22 @@ function SavedLocationItem({
       <View style={{ padding: 10 }}>
         <View style={{ flexDirection: "row" }}>
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <Image
-              style={styles.rightArrow}
-              source={require("../Assets/icons/ic_overlay_normal.png")}
-            />
+            <AddressImage></AddressImage>
           </View>
           <View style={{ flex: 4, justifyContent: "center" }}>
             <Text
               style={{
                 fontSize: 16,
+                fontWeight: "700",
+                color: colors.secondary,
+                marginBottom: 5,
+              }}
+            >
+              {item.addressType}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
                 fontWeight: "400",
                 color: colors.secondary,
               }}
@@ -106,33 +117,40 @@ function SavedLocationItem({
               ]}
               source={require("../Assets/icons/ic_edit_nav.png")}
             /> */}
-            {item?.isPrimary == false ? (
+            {item?.isPrimary == false && (
               <TouchableOpacity
                 activeOpacity={0.5}
-                style={navBar.roundIcon}
+                onPress={() => onSetPrimary(item.addressNo)}
+              >
+                <EditImage></EditImage>
+              </TouchableOpacity>
+            )}
+            {item?.isPrimary == false && (
+              <TouchableOpacity
+                style={{ marginLeft: 10 }}
+                activeOpacity={0.5}
                 onPress={() =>
                   onDeleteClicked(item.addressNo, addresObjToString(item))
                 }
               >
-                <Image
-                  style={[styles.rightArrow, styles.searchIcon]}
-                  source={require("../Assets/icons/ic_delete_red.png")}
-                />
+                <DeleteImage></DeleteImage>
               </TouchableOpacity>
-            ) : (
-              <Icon name="check" size={10} color="#0e76bd" />
             )}
-            {item?.isPrimary == false && (
+
+            {item?.isPrimary == true && (
               <TouchableOpacity
+                style={{ marginLeft: 10 }}
                 activeOpacity={0.5}
-                style={navBar.roundIcon}
-                onPress={() => onSetPrimary(item.addressNo)}
+                onPress={() =>
+                  onDeleteClicked(item.addressNo, addresObjToString(item))
+                }
               >
-                <Icon name="check" size={30} color="#0e76bd" />
+                <PrimaryAddress></PrimaryAddress>
               </TouchableOpacity>
             )}
           </View>
         </View>
+        <Divider style={{ marginTop: 10 }} />
       </View>
     </TouchableOpacity>
   );
