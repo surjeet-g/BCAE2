@@ -188,8 +188,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       dobError(strings.dobError);
     } else if (gender?.code === "") {
       setgenderError(strings.genderError);
-    } else if (!validateNumber(mobileNo)) {
-      setNumberError(strings.mobileValidError);
+    } else if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (otp.trim() === "") {
       setOtpNumberError(strings.numberOtpError);
     } else if (!validateEmail(email)) {
@@ -300,26 +300,14 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
-      if (!validateNumber(mobileNo)) {
-        Toast.show({
-          type: "bctError",
-          text1: strings.mobileValidError,
-        });
-        setNumberError(strings.mobileValidError);
-      } else {
-        //alert("submitResndOTP");
-        dispatch(
-          sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage)
-        );
-        buttonEnableDiable();
-        //setIsDisableSendOtp(true);
-        //runOtpTimer(otpTimer);
-      }
+      //alert("submitResndOTP");
+      dispatch(sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage));
+      buttonEnableDiable();
+      //setIsDisableSendOtp(true);
+      //runOtpTimer(otpTimer);
     }
   };
   const buttonEnableDiable = () => {

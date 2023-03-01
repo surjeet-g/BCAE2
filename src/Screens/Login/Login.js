@@ -7,12 +7,7 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  validateNumber,
-} from "../../Utilities/Constants/Constant";
+import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
 import {
   capitalizeFirstLetter,
@@ -155,7 +150,7 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobile = (loginType) => {
     setLoginType(loginType);
-    if (number.length < numberMaxLength) {
+    if (number.length !== numberMaxLength) {
       setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
@@ -201,7 +196,7 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobileOTP = (loginType) => {
     setLoginType(loginType);
-    if (number.length < numberMaxLength) {
+    if (number.length !== numberMaxLength) {
       setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
       param = {

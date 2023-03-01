@@ -244,8 +244,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       setgenderError(strings.genderError);
     } else if (title?.code === "") {
       setTitleError(strings.titleError);
-    } else if (!validateNumber(mobileNo)) {
-      setNumberError(strings.mobileValidError);
+    } else if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (otp.trim() === "") {
       setOtpNumberError(strings.numberOtpError);
     } else if (!validateEmail(email)) {
@@ -350,10 +350,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
       if (firstName.trim() === "") {
         Toast.show({
@@ -361,12 +359,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           text1: strings.firstNameError,
         });
         setFirstNameError(strings.firstNameError);
-      } else if (!validateNumber(mobileNo)) {
-        Toast.show({
-          type: "bctError",
-          text1: strings.mobileValidError,
-        });
-        setNumberError(strings.mobileValidError);
       } else {
         //alert("submitResndOTP");
         dispatch(
