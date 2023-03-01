@@ -14,7 +14,10 @@ import {
   validateNumber,
 } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
-import { capitalizeFirstLetter } from "../../Utilities/utils";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+} from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "../../Components/Toast";
@@ -71,6 +74,7 @@ export const Login = ({ navigation }) => {
   const [numberError, setNumberError] = useState("");
   const [params, setParams] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
   let login = useSelector((state) => state.login);
@@ -150,14 +154,10 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobile = (loginType) => {
     setLoginType(loginType);
-    if (!validateNumber(number)) {
-      setNumberError(strings.mobileValidError);
+    if (number.length < numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
-    } else if (number.length < 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
     } else {
       param = {
         loginId: number,
@@ -200,12 +200,8 @@ export const Login = ({ navigation }) => {
 
   const submitWithMobileOTP = (loginType) => {
     setLoginType(loginType);
-    if (!validateNumber(number)) {
-      setNumberError(strings.mobileValidError);
-    } else if (number.length < 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (number.length < numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
       param = {
         loginId: number,
@@ -337,19 +333,18 @@ export const Login = ({ navigation }) => {
                 <View>
                   {/* Mobile Number View */}
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    {/* <CustomInput
-                      caption={strings.mobile_no}
-                      onChangeText={(text) => onIDChange(text)}
-                      value={number}
-                      placeHolder={strings.mobile_no}
-                      keyboardType="numeric"
-                    /> */}
                     <CountryPicker
                       show={countryPickModel}
-                      // when picker button press you will get the country object with dial code
                       pickerButtonOnPress={(item) => {
                         setCountryCode(item.dial_code);
                         setCountryPickModel(false);
+                        setNumberMaxLength(getPhoneNumberLength(item.code));
+                      }}
+                      onBackdropPress={() => setCountryPickModel(false)}
+                      style={{
+                        modal: {
+                          height: "65%",
+                        },
                       }}
                     />
                     <CustomInputWithCC
@@ -360,6 +355,7 @@ export const Login = ({ navigation }) => {
                       value={number}
                       placeHolder={strings.mobile_no}
                       keyboardType="numeric"
+                      maxLength={numberMaxLength}
                     />
                     {!login.initLogin &&
                       login?.loggedProfile?.errorCode == "404" && (

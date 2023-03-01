@@ -534,10 +534,15 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
       <CountryPicker
         show={countryPickModel}
-        // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
+        }}
+        onBackdropPress={() => setCountryPickModel(false)}
+        style={{
+          modal: {
+            height: "65%",
+          },
         }}
       />
       {/* Mobile Number */}

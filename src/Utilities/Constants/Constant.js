@@ -321,3 +321,101 @@ export function TDLog(fileName, text) {
     );
   }
 }
+
+export const supportedCountriesList = [
+  {
+    countryName: "American Samoa",
+    countryShortCode: "AS",
+    numberLength: 10,
+  },
+  {
+    countryName: "Antigua and Barbuda",
+    countryShortCode: "AG",
+    numberLength: 10,
+  },
+  {
+    countryName: "Armenia",
+    countryShortCode: "AM",
+    numberLength: 8,
+  },
+  {
+    countryName: "Aruba",
+    countryShortCode: "AW",
+    numberLength: 7,
+  },
+  {
+    countryName: "Australia",
+    countryShortCode: "AU",
+    numberLength: 9,
+  },
+  {
+    countryName: "Austria",
+    countryShortCode: "AT",
+    numberLength: 10,
+  },
+  {
+    countryName: "Brunei",
+    countryShortCode: "BN",
+    numberLength: 7,
+  },
+  {
+    countryName: "China",
+    countryShortCode: "CN",
+    numberLength: 13,
+  },
+  {
+    countryName: "Czech Republic",
+    countryShortCode: "CZ",
+    numberLength: 9,
+  },
+  {
+    countryName: "Guadeloupe",
+    countryShortCode: "GP",
+    numberLength: 9,
+  },
+  {
+    countryName: "Singapore",
+    countryShortCode: "SG",
+    numberLength: 8,
+  },
+  {
+    countryName: "Indonesia",
+    countryShortCode: "ID",
+    numberLength: 9,
+  },
+  {
+    countryName: "Malaysia",
+    countryShortCode: "MY",
+    numberLength: 7,
+  },
+  {
+    countryName: "Qatar",
+    countryShortCode: "QA",
+    numberLength: 8,
+  },
+  {
+    countryName: "Taiwan",
+    countryShortCode: "TW",
+    numberLength: 9,
+  },
+  {
+    countryName: "Thailand",
+    countryShortCode: "TH",
+    numberLength: 9,
+  },
+  {
+    countryName: "United Arab Emirates (UAE)",
+    countryShortCode: "AE",
+    numberLength: 9,
+  },
+  {
+    countryName: "United Kingdom",
+    countryShortCode: "GB",
+    numberLength: 10,
+  },
+  {
+    countryName: "United States",
+    countryShortCode: "US",
+    numberLength: 10,
+  },
+];
