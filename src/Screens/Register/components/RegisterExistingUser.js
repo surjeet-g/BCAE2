@@ -141,7 +141,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [selectedValueGender, setValueGender] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [dob, setDob] = useState("");
   // const [dob, setDob] = useState("2023-02-10");
   const [dobError, setDobError] = useState("");

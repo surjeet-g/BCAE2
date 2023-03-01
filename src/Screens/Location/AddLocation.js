@@ -129,7 +129,7 @@ const AddLocation = ({ route, navigation }) => {
           street: simpangText,
           state: kampongName,
           district: distName,
-          country: "Brunei Darussalam",
+          country: country,
           longitude: currentLongitude,
           latitude: currentLatitude,
           postCode: postcode,

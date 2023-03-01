@@ -76,13 +76,15 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     console.log("hitting back with ", params);
     setLatitude(params.currentLatitude);
     setLongitude(params.currentLongitude);
-    setLocation(params.geoAddress);
+    setLocation(
+      `${params.street},${params.state},${params.country},${params.postCode}`
+    );
     setStreet(params.street);
     setStateProfile(params.state);
     setDistrict(params.district);
     setCountry(params.country);
     setPostcode(params.postCode);
-    setDialPick(params.dialPick);
+    // setDialPick(params.dialPick);
     setAddrType(params.addressType);
   };
 
@@ -274,8 +276,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           address1: street,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
-          city: "",
-          town: "",
+          city: street,
+          town: street,
           state: state,
           district: district,
           country: country,
