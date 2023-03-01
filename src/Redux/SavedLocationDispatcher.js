@@ -8,6 +8,8 @@ import { storageKeys } from "../Utilities/Constants/Constant";
 import { saveDataToDB, getDataFromDB } from "../Storage/token";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "..//Utilities/API";
+import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
+import Toast from "react-native-toast-message";
 
 export function fetchSavedLocations(customerId) {
   return async (dispatch) => {
@@ -45,65 +47,68 @@ export function fetchSavedLocations(customerId) {
 export function addNewLocations(obj) {
   return async (dispatch) => {
     dispatch(initSavedLocation());
-    let params = {
-      customerId: obj.customerId,
-      hno: obj.hno,
-      buildingName: obj.buildingName,
-      street: obj.street,
-      road: obj.road,
-      district: obj.district,
-      state: obj.state,
-      village: obj.village,
-      cityTown: obj.cityTown,
-      country: obj.country,
-      latitude: obj.latitude,
-      longitude: obj.longitude,
-      postCode: obj.postCode,
-    };
+    console.log("enter add new location dispatcher");
+    const customerUUDI = await getCustomerUUID();
+    console.log("enter add new location dispatcher", customerUUDI);
 
     let result = await serverCall(
-      endPoints.ADD_FAVOURITE_LOCATION,
-      requestMethod.POST,
-      params
+      `${endPoints.ADD_FAVOURITE_LOCATION}${customerUUDI}`,
+      requestMethod.PUT,
+      obj
     );
+    console.log("result add address", customerUUDI);
+    console.log("result add address", result);
+
     if (result.success) {
       //result.data.data.rows
       //console.log(getModifiedInteractions(DATA))
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.data?.message,
+      });
       dispatch(setSavedLocation(result));
+      return true;
     } else {
+      Toast.show({
+        type: "bctError",
+        text1: "Something wents wrong",
+      });
       dispatch(savedLocationError(result));
+      return false;
     }
   };
 }
 
-export function deleteSavedLocation(custFavAddrId, customerId) {
+export function deleteSavedLocation(custFavAddrId) {
   return async (dispatch) => {
-    dispatch(initSavedLocation());
-    let params = {};
-    console.log("=======custFavAddrId========>" + custFavAddrId);
-    console.log("=======customerId========>" + customerId);
+    // dispatch(initSavedLocation());
+    const customerUUDI = await getCustomerUUID();
+    let params = {
+      address: {
+        addressNo: custFavAddrId,
+      },
+    };
+    console.log("params", params);
+
     let result = await serverCall(
-      endPoints.GET_FAVOURITE_LOCATION + "/" + custFavAddrId,
+      endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
       requestMethod.DELETE,
       params
     );
+
     if (result.success) {
-      //result.data.data.rows
-      //console.log(getModifiedInteractions(DATA))
-      let result = await serverCall(
-        endPoints.GET_FAVOURITE_LOCATION + "/" + customerId,
-        requestMethod.GET,
-        params
-      );
-      if (result.success) {
-        //result.data.data.rows
-        //console.log(getModifiedInteractions(DATA))
-        dispatch(setSavedLocation(result.data.data.rows));
-      } else {
-        dispatch(savedLocationError(result));
-      }
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.data?.message,
+      });
+      return true;
     } else {
+      Toast.show({
+        type: "bctError",
+        text1: "Something wents wrong",
+      });
       dispatch(savedLocationError(result));
+      return false;
     }
   };
 }

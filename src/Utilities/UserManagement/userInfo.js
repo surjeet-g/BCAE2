@@ -16,3 +16,18 @@ export const getCustomerUUID = async () => {
   }
   return custUUDI;
 };
+
+export const getUserId = async () => {
+  let userId;
+  try {
+    userId = get(
+      await getDataFromDB(storageKeys.PROFILE_DETAILS),
+      "userId",
+      ""
+    );
+    if (userId == "") throw "Customer UUDI is empty";
+  } catch (error) {
+    console.log("getCustomerUUID ", error);
+  }
+  return userId;
+};

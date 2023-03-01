@@ -8,15 +8,19 @@ import {
   ScrollView,
   Switch,
 } from "react-native";
-
+import Toast from "react-native-toast-message";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import {
+  spacing,
+  fontSizes,
+  color,
+  validateNumber,
+} from "../../Utilities/Constants/Constant";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { strings } from "../../Utilities/Language";
-
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
@@ -25,6 +29,13 @@ import {
   storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
+import { serverCall } from "../../Utilities/API";
+import { endPoints } from "../../Utilities/API/ApiConstants";
+import { requestMethod } from "../../Utilities/API/ApiConstants";
+import {
+  getCustomerUUID,
+  getUserId,
+} from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
@@ -32,6 +43,7 @@ export const ViewProfile = ({ navigation }) => {
 
   const { colors, fonts, roundness } = useTheme();
   let profile = useSelector((state) => state.profile);
+
   const [userInfo, setUserInfo] = useState({
     email: "",
     profilePicture: null,
@@ -49,15 +61,24 @@ export const ViewProfile = ({ navigation }) => {
   }, []);
   useEffect(() => {
     async function fetchMyAPI() {
-      const res = await dispatch2(fetchSavedProfileData());
+      const customerUUDI = await getCustomerUUID();
 
-      if (res.status) {
+      let profileResult = await serverCall(
+        endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+        requestMethod.GET,
+        {}
+      );
+      const userID = await getUserId();
+      console.log("userid", profileResult);
+      if (profileResult?.success) {
         setUserInfo({
-          email: res.data.email,
-          name: `${res.data.firstName} ${res.data.lastName}`,
-          userId: res.data.userId,
-          profilePicture: res.data.profilePicture,
+          email: profileResult?.data?.data?.customerContact[0]?.emailId,
+          name: `${profileResult?.data.data.firstName} ${profileResult?.data?.data?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.data?.data?.customerPhoto,
         });
+      } else {
+        console.log(">>err");
       }
     }
     fetchMyAPI();
@@ -67,7 +88,12 @@ export const ViewProfile = ({ navigation }) => {
     setIsNotiEnabled(!isNotiEnabled);
     saveDataToDB(storageKeys.PUSH_NOTIFICATION, {
       push_notification: !isNotiEnabled,
-    }).then(function () {});
+    }).then(function () {
+      Toast.show({
+        type: "bctSuccess",
+        text1: strings.settings_updated,
+      });
+    });
   };
   const dispatch = useDispatch([
     deleteNdLogoutUser,
@@ -152,7 +178,7 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Change Password
+            {strings.change_password}
           </Text>
         </Pressable>
         <Divider />
@@ -265,5 +291,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 20,
+  },
+  toast: {
+    position: "absolute",
+    bottom: spacing.HEIGHT_31 * 2,
   },
 });

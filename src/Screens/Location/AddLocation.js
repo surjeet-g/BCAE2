@@ -45,9 +45,9 @@ import { Button } from "react-native-paper";
 import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
 const { height } = Dimensions.get("screen");
 import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
-import { countryCodes } from "react-native-country-codes-picker/constants/countryCodes";
 import get from "lodash.get";
 import { CustomButton } from "../../Components/CustomButton";
+import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
 
 const AddLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
@@ -56,7 +56,6 @@ const AddLocation = ({ route, navigation }) => {
   let savedLocation = useSelector((state) => state.savedLocations);
 
   let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
-  console.log(">>", savedLocationWithoutAuth);
   const dispatch = useDispatch([addNewLocations]);
   const { width, height } = Dimensions.get("window");
   const ASPECT_RATIO = width / height;
@@ -73,7 +72,7 @@ const AddLocation = ({ route, navigation }) => {
   const [geoAddress, setGeoAddress] = useState("");
   const [dialPick, setDialPick] = useState("+673");
   const [locationGet, setCurrentLocationget] = useState(false);
-
+  const [country, setCountry] = useState("");
   const mapRef = useRef(null);
   const latitudeDelta = 0.0922;
   const longitudeDelta = latitudeDelta * ASPECT_RATIO;
@@ -118,19 +117,7 @@ const AddLocation = ({ route, navigation }) => {
     }
   };
 
-  const onClickedAddLocationTitleButton = () => {
-    TDLog(
-      "onClickedAddLocationTitleButton",
-      simpangText +
-        ", " +
-        kampongName +
-        ", " +
-        distName +
-        ", " +
-        "Brunei Darussalam" +
-        ", " +
-        postcode
-    );
+  const onClickedAddLocationTitleButton = async () => {
     if (!initAddLocation) {
       setInitAddLocation(true);
       // if (addlocationTitle != "") {
@@ -142,7 +129,7 @@ const AddLocation = ({ route, navigation }) => {
           street: simpangText,
           state: kampongName,
           district: distName,
-          country: "Brunei Darussalam",
+          country: country,
           longitude: currentLongitude,
           latitude: currentLatitude,
           postCode: postcode,
@@ -152,20 +139,45 @@ const AddLocation = ({ route, navigation }) => {
 
         navigation.goBack();
       } else {
+        const addressParams = {
+          address: {
+            isPrimary: false,
+            addressType: addreType,
+            address1: simpangText,
+            address2: kampongName,
+            address3: `${country},${postcode}`,
+            addrZone: country,
+            city: simpangText,
+            district: simpangText,
+            state: kampongName,
+            postcode: postcode,
+            country: country,
+            longitude: currentLongitude.toString(),
+            latitude: currentLatitude.toString(),
+          },
+        };
+        // const addressParams = {
+        //   address: {
+        //     addrZone: "kerala",
+        //     isPrimary: false,
+        //     addressType: "DIFF",
+        //     address1: "sdsd",
+        //     address2: "sdsd,Kampong Bang Nukat",
+        //     address3: ",TG2343",
+        //     city: "sfs",
+        //     district: "sfs",
+        //     state: "Kampong Bang Nukat",
+        //     postcode: "TG2343",
+        //     country: "dsfsd",
+        //     longitude: (114.7214024043128).toString(),
+        //     latitude: (4.543040540540541).toString(),
+        //   },
+        // };
+        console.log("hititng", addressParams);
         if (isCurrentLocation) {
-          addSavedLocation(
-            addlocationTitle,
-            currentLatitude,
-            currentLongitude,
-            geoAddress
-          );
+          await addSavedLocation(addressParams);
         } else {
-          addSavedLocation(
-            addlocationTitle,
-            mapOnLatitude,
-            mapOnLongitude,
-            geoAddress
-          );
+          await addSavedLocation(addressParams);
         }
 
         //alert(JSON.stringify(savedLocation.savedLocationData))
@@ -184,36 +196,9 @@ const AddLocation = ({ route, navigation }) => {
     }
   };
 
-  const addSavedLocation = (title, latitude, longitude, address) => {
-    TDLog(
-      "addSavedLocation",
-      simpangText +
-        ", " +
-        kampongName +
-        ", " +
-        distName +
-        ", " +
-        "Brunei Darussalam" +
-        ", " +
-        postcode
-    );
-    const obj = {
-      customerId: customerId,
-      hno: "",
-      buildingName: "",
-      street: simpangText,
-      road: "",
-      city: "",
-      state: kampongName,
-      district: distName,
-      country: "Brunei Darussalam",
-      longitude: longitude,
-      latitude: latitude,
-      village: "",
-      postCode: postcode,
-    };
-
-    dispatch(addNewLocations(obj));
+  const addSavedLocation = async (addressparams) => {
+    await dispatch(addNewLocations(addressparams));
+    setInitAddLocation(false);
   };
 
   const onClickLocationOnMap = () => {
@@ -237,6 +222,8 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
+        setCountry(res["0"]?.country);
+
         if (countryCode != "") {
           setDialPick(
             get(
@@ -540,16 +527,7 @@ const AddLocation = ({ route, navigation }) => {
         />
       </MapView>
 
-      <View>
-        {/* <Header
-          navigation={navigation}
-          Text={""}
-          backIconVisibility={true}
-          transparent={true}
-          bcae={false}
-          rightIconsVisibility={fromPage !== "Register"}
-        ></Header> */}
-      </View>
+      <View></View>
 
       <View
         style={{
@@ -725,16 +703,40 @@ const AddLocation = ({ route, navigation }) => {
                   // flex: 1,
                   // justifyContent: "center",
                   alignItems: "center",
-                  marginTop: 12,
+                  marginTop: 2,
                 }}
               >
                 <Text>{geoAddress}</Text>
               </View>
-
+              <View style={{ marginTop: 10, alignItems: "center" }}>
+                <Text>{strings.additional_address_info}</Text>
+              </View>
+              <View
+                style={{
+                  marginTop: 5,
+                  marginBottom: 12,
+                  zIndex: 4,
+                  elevation: 12,
+                }}
+              >
+                <CustomDropDown
+                  setDropDownEnable={() => setActiveDropDown("setAddrType")}
+                  isDisable={true}
+                  selectedValue={selectedValueAddr}
+                  setValue={setValueSelAddr}
+                  data={
+                    getAddresType() ?? []
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => {
+                    setAddrType(text.description);
+                  }}
+                  value={addreType}
+                  isDisableDropDown={activeDropDown != "setAddrType"}
+                  placeHolder={strings.address_type + "*"}
+                />
+              </View>
               <View>
-                <View style={{ marginTop: 10, alignItems: "center" }}>
-                  <Text>{strings.additional_address_info}</Text>
-                </View>
                 <View style={{ marginTop: 10 }}>
                   <TextInput
                     style={styles.searchInputStreet}
@@ -742,25 +744,6 @@ const AddLocation = ({ route, navigation }) => {
                     value={simpangText}
                     placeholder={strings.simpang}
                     keyboardType="default"
-                  />
-                </View>
-
-                <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
-                  <CustomDropDown
-                    setDropDownEnable={() => setActiveDropDown("setAddrType")}
-                    isDisable={true}
-                    selectedValue={selectedValueAddr}
-                    setValue={setValueSelAddr}
-                    data={
-                      getAddresType() ?? []
-                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                    }
-                    onChangeText={(text) => {
-                      setAddrType(text.description);
-                    }}
-                    value={addreType}
-                    isDisableDropDown={activeDropDown != "setAddrType"}
-                    placeHolder={strings.address_type + "*"}
                   />
                 </View>
 

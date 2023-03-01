@@ -61,7 +61,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName={"Splash"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -219,7 +219,12 @@ function MyStack() {
           component={AddLocation}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Saved Locations" }}
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              title: "Saved Locations",
+            },
+          })}
           name="SavedLocation"
           component={SavedLocation}
         />

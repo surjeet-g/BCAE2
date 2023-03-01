@@ -9,9 +9,12 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import moment from "moment";
 import { CustomInput } from "../../../Components/CustomInput";
-
-import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
-
+import { CountryPicker } from "react-native-country-codes-picker";
+import {
+  capitalizeFirstLetter,
+  getPhoneNumberLength,
+  excludedCountriesList,
+} from "../../../Utilities/utils";
 import {
   fetchRegisterFormData,
   getOtpForCheck,
@@ -138,7 +141,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [selectedValueGender, setValueGender] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [dob, setDob] = useState("");
   // const [dob, setDob] = useState("2023-02-10");
   const [dobError, setDobError] = useState("");
@@ -185,8 +188,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       dobError(strings.dobError);
     } else if (gender?.code === "") {
       setgenderError(strings.genderError);
-    } else if (!validateNumber(mobileNo)) {
-      setNumberError(strings.mobileValidError);
+    } else if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (otp.trim() === "") {
       setOtpNumberError(strings.numberOtpError);
     } else if (!validateEmail(email)) {
@@ -297,26 +300,14 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== 7) {
-      Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
+    if (mobileNo.length !== numberMaxLength) {
+      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
-      if (!validateNumber(mobileNo)) {
-        Toast.show({
-          type: "bctError",
-          text1: strings.mobileValidError,
-        });
-        setNumberError(strings.mobileValidError);
-      } else {
-        //alert("submitResndOTP");
-        dispatch(
-          sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage)
-        );
-        buttonEnableDiable();
-        //setIsDisableSendOtp(true);
-        //runOtpTimer(otpTimer);
-      }
+      //alert("submitResndOTP");
+      dispatch(sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage));
+      buttonEnableDiable();
+      //setIsDisableSendOtp(true);
+      //runOtpTimer(otpTimer);
     }
   };
   const buttonEnableDiable = () => {
@@ -583,10 +574,17 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
       <CountryPicker
         show={countryPickModel}
-        // when picker button press you will get the country object with dial code
+        excludedCountries={excludedCountriesList()}
         pickerButtonOnPress={(item) => {
           setDialPick(item.dial_code);
           setCountryPickModel(false);
+          setNumberMaxLength(getPhoneNumberLength(item.code));
+        }}
+        onBackdropPress={() => setCountryPickModel(false)}
+        style={{
+          modal: {
+            height: "65%",
+          },
         }}
       />
       {/* Mobile Number */}
@@ -608,6 +606,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           bgColor={color.BCAE_PRIMARY}
           keyboardType={"numeric"}
           isDisableButton={isDisableSendOtp}
+          maxLength={numberMaxLength}
           btnTextPro={{
             color: color.WHITE,
             fontSize: fontSizes.FONT_12,
