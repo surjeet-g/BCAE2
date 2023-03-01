@@ -188,13 +188,13 @@ export const CountryPicker = ({
             transparent={true}
             visible={showModal}
             onShow={openModal}
-            style={{ marginTop :100}}
+            style={{ marginTop :20}}
             onRequestClose={onRequestClose}
         >
             <View
                 style={{
                     flex: 1,
-                    marginTop :200,
+                    // marginTop : 100,
                     justifyContent: 'flex-end'
                 }}
             >
@@ -241,9 +241,7 @@ export const CountryPicker = ({
                             placeholder={inputPlaceholder || 'Search your country'}
                             {...rest}
                         />
-                    <Pressable onPress={()=> closeModal()} style={{ paddingHorizontal : 5}}>
-                     <Image source={require('../../Assets/icons/ic_close.png')} style={ICON_STYLE}/>
-                    </Pressable>
+               
                     </View>
                     <View style={[styles.line, style?.line]}/>
                     {resultCountries.length === 0 ? (
