@@ -100,6 +100,24 @@ const SavedLocation = ({ route, navigation }) => {
   }, [navigation]);
 
   //alert("SavedLocation : " + JSON.stringify(savedLocation.savedLocationData));
+  onClickedEditButton = (key, address) => {
+    Alert.alert(strings.attention, strings.confirm_edit_address, [
+      {
+        text: strings.cancel,
+        onPress: () => console.log("Cancel Pressed"),
+      },
+      {
+        text: strings.ok,
+        onPress: () => {
+          navigation.navigate("AddLocation", {
+            customerId: 33,
+            fromPage: fromPage,
+            addressLookup: [],
+          });
+        },
+      },
+    ]);
+  };
 
   const onClickedDeleteButton = (key, address) => {
     Alert.alert(
@@ -113,7 +131,7 @@ const SavedLocation = ({ route, navigation }) => {
         {
           text: strings.ok,
           onPress: async () => {
-            console.log("hiting delte", key);
+            console.log("hiting delete", key);
             const res = await dispatch(deleteSavedLocation(key));
             if (res) {
               fetchMyProfileData();
@@ -124,37 +142,22 @@ const SavedLocation = ({ route, navigation }) => {
     );
   };
 
-  const onSetPrimary = async (key) => {
-    const res = await dispatch(deleteSavedLocation(key));
-    if (res) {
-      fetchMyProfileData();
-    }
-  };
+  const onSetPrimary = async (key) => {};
+  const performPrimaryAddressUpdate = () => {};
 
-  const onItemClicked = (
-    key,
-    address,
-    latitude,
-    longitude,
-    street,
-    state,
-    district,
-    postCode
-  ) => {
-    if (fromPage === "CreateEnquiry" || fromPage === "EditProfile") {
-      route.params.onPlaceChosen({
-        geoAddress: address,
-        latitude: latitude,
-        longitude: longitude,
-        street: street,
-        state: state,
-        district: district,
-        country: "Brunei Darussalam",
-        postCode: postCode,
-      });
-
-      navigation.goBack();
-    }
+  const onItemClicked = (item) => {
+    Alert.alert(strings.attention, strings.confirm_primary_address, [
+      {
+        text: strings.cancel,
+        onPress: () => console.log("Cancel Pressed"),
+      },
+      {
+        text: strings.ok,
+        onPress: () => {
+          performPrimaryAddressUpdate();
+        },
+      },
+    ]);
   };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
@@ -181,6 +184,7 @@ const SavedLocation = ({ route, navigation }) => {
               onSetPrimary={onSetPrimary}
               savedLocationList={address}
               onDeleteClicked={onClickedDeleteButton}
+              onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
             ></SavedLocationList>
           </View>

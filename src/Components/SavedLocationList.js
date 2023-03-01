@@ -32,6 +32,7 @@ import PrimaryAddress from "../Assets/svg/primary_address.svg";
 function SavedLocationItem({
   item,
   onDeleteClicked,
+  onEditClicked,
   onItemClicked,
   onSetPrimary,
 }) {
@@ -60,18 +61,7 @@ function SavedLocationItem({
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      onPress={() =>
-        onItemClicked(
-          item.custFavAddrId,
-          getAddressString(item),
-          item.latitude,
-          item.longitude,
-          item.street,
-          item.state,
-          item.district,
-          item.postCode
-        )
-      }
+      onPress={() => onItemClicked(item)}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={{ padding: 10 }}>
@@ -120,7 +110,9 @@ function SavedLocationItem({
             {item?.isPrimary == false && (
               <TouchableOpacity
                 activeOpacity={0.5}
-                onPress={() => onSetPrimary(item.addressNo)}
+                onPress={() =>
+                  onEditClicked(item.addressNo, addresObjToString(item))
+                }
               >
                 <EditImage></EditImage>
               </TouchableOpacity>
@@ -138,13 +130,7 @@ function SavedLocationItem({
             )}
 
             {item?.isPrimary == true && (
-              <TouchableOpacity
-                style={{ marginLeft: 10 }}
-                activeOpacity={0.5}
-                onPress={() =>
-                  onDeleteClicked(item.addressNo, addresObjToString(item))
-                }
-              >
+              <TouchableOpacity style={{ marginLeft: 10 }} activeOpacity={0.5}>
                 <PrimaryAddress></PrimaryAddress>
               </TouchableOpacity>
             )}
@@ -159,6 +145,7 @@ function SavedLocationItem({
 const SavedLocationList = ({
   savedLocationList,
   onDeleteClicked,
+  onEditClicked,
   onItemClicked,
 }) => (
   <View>
@@ -177,6 +164,7 @@ const SavedLocationList = ({
           <SavedLocationItem
             item={item}
             onDeleteClicked={onDeleteClicked}
+            onEditClicked={onEditClicked}
             onItemClicked={onItemClicked}
           />
         )}
