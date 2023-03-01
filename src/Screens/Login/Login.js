@@ -17,6 +17,7 @@ import { CustomButton } from "../../Components/CustomButton";
 import {
   capitalizeFirstLetter,
   getPhoneNumberLength,
+  excludedCountriesList,
 } from "../../Utilities/utils";
 import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
@@ -335,6 +336,7 @@ export const Login = ({ navigation }) => {
                   <View style={{ marginBottom: spacing.HEIGHT_20 }}>
                     <CountryPicker
                       show={countryPickModel}
+                      excludedCountries={excludedCountriesList()}
                       pickerButtonOnPress={(item) => {
                         setCountryCode(item.dial_code);
                         setCountryPickModel(false);
