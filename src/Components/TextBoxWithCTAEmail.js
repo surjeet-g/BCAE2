@@ -126,6 +126,7 @@ export const TextBoxWithCTAEmail = (props) => {
             }
             onChangeText={(text) => props.onChangeText(text)}
             style={{
+              paddingRight: "40%",
               color: color.secondary,
               ...styles.textInput,
               ...customStyle,
