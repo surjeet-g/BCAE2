@@ -80,7 +80,21 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
-  const { customerId, fromPage } = route.params;
+  const {
+    customerId,
+    fromPage,
+    excludingSavedAddress = [],
+    includingSavedAddress = [],
+    isEditAddress = false,
+  } = route.params;
+
+  console.log(
+    ">>",
+    isEditAddress,
+    includingSavedAddress,
+    excludingSavedAddress
+  );
+
   // const { customerId, fromPage } = { customerId: 123132, fromPage: false };
   if (fromPage === "Register") {
     savedLocation = savedLocationWithoutAuth;
@@ -134,15 +148,15 @@ const AddLocation = ({ route, navigation }) => {
           latitude: currentLatitude,
           postCode: postcode,
           dialPick,
-          addressType: addreType,
+          addressType: addreType?.code,
         });
 
         navigation.goBack();
       } else {
-        const addressParams = {
+        let addressParams = {
           address: {
             isPrimary: false,
-            addressType: addreType,
+            addressType: addreType?.code,
             address1: simpangText,
             address2: kampongName,
             address3: `${country},${postcode}`,
@@ -173,10 +187,17 @@ const AddLocation = ({ route, navigation }) => {
         //     latitude: (4.543040540540541).toString(),
         //   },
         // };
-        console.log("hititng", addressParams);
-        if (isCurrentLocation) {
-          await addSavedLocation(addressParams);
+        // edit address
+
+        if (!isEditAddress) {
+          if (isCurrentLocation) {
+            await addSavedLocation(addressParams);
+          } else {
+            await addSavedLocation(addressParams);
+          }
         } else {
+          addressParams.address.addressNo = includingSavedAddress[0].addressNo;
+          addressParams.address.isPrimary = includingSavedAddress[0].isPrimary;
           await addSavedLocation(addressParams);
         }
 
@@ -327,10 +348,29 @@ const AddLocation = ({ route, navigation }) => {
     return uniqueDistrictData;
   };
   const getAddresType = () => {
+    let excludeAddressType = [];
+    let includeAddressTypes = [];
+    if (excludingSavedAddress.length != 0) {
+      excludeAddressType = excludingSavedAddress.map(
+        (addr) => addr.addressType
+      );
+    }
+    if (isEditAddress && includingSavedAddress.length != 0) {
+      includeAddressTypes = includingSavedAddress.map(
+        (addr) => addr.addressType
+      );
+    }
+    console.log("from getadd", includeAddressTypes);
     let result = [];
+
     if (savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE?.length > 0) {
       savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE.map((item) => {
-        result.push({ description: item.description, id: item.code });
+        if (!isEditAddress && !excludeAddressType.includes(item.code)) {
+          result.push({ description: item.description, code: item.code });
+        }
+        if (isEditAddress && includeAddressTypes.includes(item.code)) {
+          result.push({ description: item.description, code: item.code });
+        }
       });
     }
     return result;
@@ -723,13 +763,17 @@ const AddLocation = ({ route, navigation }) => {
                   setDropDownEnable={() => setActiveDropDown("setAddrType")}
                   isDisable={true}
                   selectedValue={selectedValueAddr}
-                  setValue={setValueSelAddr}
+                  setValue={(add) => {
+                    console.log(">>", add);
+                    setValueSelAddr(add);
+                  }}
                   data={
                     getAddresType() ?? []
                     // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
                   }
                   onChangeText={(text) => {
-                    setAddrType(text.description);
+                    console.log(">>", text);
+                    setAddrType(text);
                   }}
                   value={addreType}
                   isDisableDropDown={activeDropDown != "setAddrType"}

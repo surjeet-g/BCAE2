@@ -18,6 +18,7 @@ import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSavedLocations,
+  setPrimaryAddress,
   deleteSavedLocation,
 } from "../../Redux/SavedLocationDispatcher";
 import {
@@ -40,6 +41,7 @@ import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import get from "lodash.get";
+
 const SavedLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
 
@@ -55,9 +57,11 @@ const SavedLocation = ({ route, navigation }) => {
   const dispatch2 = useDispatch([fetchSavedProfileData, fetchRegisterFormData]);
   const fetchMyProfileData = () => dispatch2(fetchSavedProfileData());
 
-  const dispatch = useDispatch([fetchSavedLocations, deleteSavedLocation]);
-
-  const fetchSavedLocationData = () => dispatch(fetchSavedLocations(33));
+  const dispatch = useDispatch([
+    fetchSavedLocations,
+    deleteSavedLocation,
+    setPrimaryAddress,
+  ]);
 
   useEffect(() => {
     //get master
@@ -71,53 +75,44 @@ const SavedLocation = ({ route, navigation }) => {
     });
     return willFocusSubscription;
   }, []);
-  const onClickedSaveLocationButton = () => {
-    if (profile?.savedProfileData?.customerAddress?.length < 3) {
-      navigation.navigate("AddLocation", {
-        customerId: 33,
-        fromPage: fromPage,
-        addressLookup: [],
-      });
-    } else {
-      Alert.alert(strings.attention, strings.max_number_address, [
-        { text: strings.ok, onPress: () => {} },
-      ]);
-    }
-  };
+  const onClickedSaveLocationButton = () => {};
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <>
           <Pressable
-            onPress={() => onClickedSaveLocationButton()}
+            onPress={() => {
+              const addressCount = get(
+                profile,
+                "savedProfileData.customerAddress.length",
+                0
+              );
+              if (addressCount < 3) {
+                navigation.navigate("AddLocation", {
+                  customerId: 33,
+                  fromPage: fromPage,
+                  addressLookup: [],
+                  excludingSavedAddress:
+                    profile.savedProfileData?.customerAddress,
+                  includingSavedAddress: [],
+                });
+              } else {
+                Alert.alert(strings.attention, strings.max_number_address, [
+                  { text: strings.ok, onPress: () => {} },
+                ]);
+              }
+            }}
             style={navBar.roundIconColored}
           >
-            <Icon name="plus" size={19} color={colors.primary} />
+            <Icon name="plus" size={25} color={colors.primary} />
           </Pressable>
         </>
       ),
     });
-  }, [navigation]);
+  }, [navigation, profile.savedProfileData]);
 
   //alert("SavedLocation : " + JSON.stringify(savedLocation.savedLocationData));
-  onClickedEditButton = (key, address) => {
-    Alert.alert(strings.attention, strings.confirm_edit_address, [
-      {
-        text: strings.cancel,
-        onPress: () => console.log("Cancel Pressed"),
-      },
-      {
-        text: strings.ok,
-        onPress: () => {
-          navigation.navigate("AddLocation", {
-            customerId: 33,
-            fromPage: fromPage,
-            addressLookup: [],
-          });
-        },
-      },
-    ]);
-  };
 
   const onClickedDeleteButton = (key, address) => {
     Alert.alert(
@@ -131,7 +126,6 @@ const SavedLocation = ({ route, navigation }) => {
         {
           text: strings.ok,
           onPress: async () => {
-            console.log("hiting delete", key);
             const res = await dispatch(deleteSavedLocation(key));
             if (res) {
               fetchMyProfileData();
@@ -142,11 +136,32 @@ const SavedLocation = ({ route, navigation }) => {
     );
   };
 
-  const onSetPrimary = async (key) => {};
-  const performPrimaryAddressUpdate = () => {};
+  const onItemClicked = (
+    key,
+    address,
+    latitude,
+    longitude,
+    street,
+    state,
+    district,
+    postCode
+  ) => {
+    if (fromPage === "CreateEnquiry" || fromPage === "EditProfile") {
+      route.params.onPlaceChosen({
+        geoAddress: address,
+        latitude: latitude,
+        longitude: longitude,
+        street: street,
+        state: state,
+        district: district,
+        country: "Brunei Darussalam",
+        postCode: postCode,
+      });
+    }
+  };
 
-  const onItemClicked = (item) => {
-    Alert.alert(strings.attention, strings.confirm_primary_address, [
+  onClickedEditButton = (key, address) => {
+    Alert.alert(strings.attention, strings.confirm_edit_address, [
       {
         text: strings.cancel,
         onPress: () => console.log("Cancel Pressed"),
@@ -154,14 +169,67 @@ const SavedLocation = ({ route, navigation }) => {
       {
         text: strings.ok,
         onPress: () => {
-          performPrimaryAddressUpdate();
+          const allSavedAdd = get(
+            profile,
+            "savedProfileData.customerAddress",
+            []
+          );
+          if (allSavedAdd.length == 0) return null;
+
+          const addrArray = allSavedAdd.filter((add) => add.addressNo == key);
+
+          navigation.navigate("AddLocation", {
+            customerId: 33,
+            fromPage: fromPage,
+            addressLookup: [],
+            excludingSavedAddress: [],
+            isEditAddress: true,
+            includingSavedAddress: addrArray,
+          });
         },
       },
     ]);
   };
+  const performPrimaryAddressUpdate = () => {};
+
+  // const onItemClicked = (item) => {
+  //   Alert.alert(strings.attention, strings.confirm_primary_address, [
+  //     {
+  //       text: strings.cancel,
+  //       onPress: () => console.log("Cancel Pressed"),
+  //     },
+  //     {
+  //       text: strings.ok,
+  //       onPress: () => {
+  //         performPrimaryAddressUpdate();
+  //       },
+  //     },
+  //   ]);
+  // };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
+  const onSetPrimary = async (selectedAddressObj) => {
+    try {
+      Alert.alert(strings.attention, strings.confirm_primary_address, [
+        {
+          text: strings.cancel,
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        {
+          text: strings.ok,
+          onPress: async () => {
+            delete selectedAddressObj.status;
+            const formatedData = { ...selectedAddressObj, isPrimary: true };
 
+            const res = await dispatch(setPrimaryAddress(formatedData));
+            if (res) {
+              fetchMyProfileData();
+            }
+          },
+        },
+      ]);
+    } catch (error) {}
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -186,7 +254,7 @@ const SavedLocation = ({ route, navigation }) => {
               onDeleteClicked={onClickedDeleteButton}
               onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
-            ></SavedLocationList>
+            />
           </View>
         ) : (
           <View

@@ -9,6 +9,7 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
 import {
   spacing,
@@ -29,6 +30,7 @@ import AddressImage from "../Assets/svg/location_green.svg";
 import EditImage from "../Assets/svg/edit_icon_round.svg";
 import DeleteImage from "../Assets/svg/delete.svg";
 import PrimaryAddress from "../Assets/svg/primary_address.svg";
+import get from "lodash.get";
 function SavedLocationItem({
   item,
   onDeleteClicked,
@@ -37,7 +39,13 @@ function SavedLocationItem({
   onSetPrimary,
 }) {
   const { colors } = useTheme();
-
+  let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
+  console.log("saved date", savedLocationWithoutAuth);
+  const getAllAddressType = get(
+    savedLocationWithoutAuth,
+    "registerFormData.ADDRESS_TYPE",
+    []
+  );
   const dispatch = useDispatch([deleteSavedLocation]);
 
   const getAddressString = (data) => {
@@ -57,11 +65,20 @@ function SavedLocationItem({
 
     return addressString;
   };
+  const getAddresType = (code) => {
+    if (getAllAddressType.length == 0) return "";
+
+    return get(
+      getAllAddressType.filter((d) => d.code == code),
+      "[0].description",
+      ""
+    );
+  };
 
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      onPress={() => onItemClicked(item)}
+      onPress={() => onSetPrimary(item)}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={{ padding: 10 }}>
@@ -78,7 +95,7 @@ function SavedLocationItem({
                 marginBottom: 5,
               }}
             >
-              {item.addressType}
+              {getAddresType(item.addressType)}
             </Text>
             <Text
               style={{
@@ -107,16 +124,16 @@ function SavedLocationItem({
               ]}
               source={require("../Assets/icons/ic_edit_nav.png")}
             /> */}
-            {item?.isPrimary == false && (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={() =>
-                  onEditClicked(item.addressNo, addresObjToString(item))
-                }
-              >
-                <EditImage></EditImage>
-              </TouchableOpacity>
-            )}
+            {/* {item?.isPrimary == false && ( */}
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() =>
+                onEditClicked(item.addressNo, addresObjToString(item))
+              }
+            >
+              <EditImage></EditImage>
+            </TouchableOpacity>
+            {/* )} */}
             {item?.isPrimary == false && (
               <TouchableOpacity
                 style={{ marginLeft: 10 }}
@@ -147,6 +164,7 @@ const SavedLocationList = ({
   onDeleteClicked,
   onEditClicked,
   onItemClicked,
+  onSetPrimary,
 }) => (
   <View>
     {savedLocationList?.length > 0 ? (
@@ -166,6 +184,7 @@ const SavedLocationList = ({
             onDeleteClicked={onDeleteClicked}
             onEditClicked={onEditClicked}
             onItemClicked={onItemClicked}
+            onSetPrimary={onSetPrimary}
           />
         )}
       />

@@ -64,9 +64,37 @@ export function addNewLocations(obj) {
       //console.log(getModifiedInteractions(DATA))
       Toast.show({
         type: "bctSuccess",
-        text1: result?.data?.data?.message,
+        text1: result?.data?.message,
       });
       dispatch(setSavedLocation(result));
+      return true;
+    } else {
+      Toast.show({
+        type: "bctError",
+        text1: "Something wents wrong",
+      });
+      dispatch(savedLocationError(result));
+      return false;
+    }
+  };
+}
+export function setPrimaryAddress(address) {
+  return async (dispatch) => {
+    const customerUUDI = await getCustomerUUID();
+
+    console.log("params", address);
+
+    let result = await serverCall(
+      endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
+      requestMethod.PUT,
+      { address: address }
+    );
+    console.log(">>", result);
+    if (result.success) {
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.message,
+      });
       return true;
     } else {
       Toast.show({
@@ -88,7 +116,6 @@ export function deleteSavedLocation(custFavAddrId) {
         addressNo: custFavAddrId,
       },
     };
-    console.log("params", params);
 
     let result = await serverCall(
       endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
@@ -99,7 +126,7 @@ export function deleteSavedLocation(custFavAddrId) {
     if (result.success) {
       Toast.show({
         type: "bctSuccess",
-        text1: result?.data?.data?.message,
+        text1: result?.data?.message,
       });
       return true;
     } else {
