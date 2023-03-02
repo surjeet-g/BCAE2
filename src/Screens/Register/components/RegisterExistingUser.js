@@ -50,7 +50,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   ]);
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
-  const OTP_TIMER = 60 * 4;
+  const OTP_TIMER = 90;
 
   const onConfirmPasswordChange = (textStr) => {
     setConfirmPassword(textStr);
@@ -457,6 +457,11 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setEmailError("");
     buttonEnableDiable();
   };
+  const onClickPasswordChange = (text) => {
+    //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
+    setPassword(text);
+    setPasswordError("");
+  };
   return (
     <View>
       {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
@@ -783,7 +788,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           value={password}
           caption={strings.password}
           placeHolder={strings.password}
-          onChangeText={setPassword}
+          onChangeText={onClickPasswordChange}
           secureTextEntry={secureTextEntry}
           right={
             password && (

@@ -70,7 +70,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const { colors } = useTheme();
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
-  const OTP_TIMER = 60 * 4;
+  const OTP_TIMER = 90;
 
   const onPlaceChosen = (params) => {
     console.log("hitting back with ", params);
@@ -468,7 +468,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const onCheckBoxClick = () => {
     //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
   };
-
+  const onClickPasswordChange = (text) => {
+    //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
+    setPassword(text);
+    setPasswordError("");
+  };
   const clearFirstName = () => {
     setFirstName("");
     setFirstNameError(strings.firstNameError);
@@ -886,7 +890,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           value={password}
           caption={strings.password}
           placeHolder={strings.password}
-          onChangeText={setPassword}
+          onChangeText={onClickPasswordChange}
           secureTextEntry={secureTextEntry}
           right={
             password && (
