@@ -17,8 +17,7 @@ import {
   buttonType,
   buttonSize,
 } from "../Utilities/Constants/Constant";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
+
 import { strings } from "../Utilities/Language";
 import { navBar } from "../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
@@ -32,8 +31,6 @@ function SavedLocationItem({
   onSetPrimary,
 }) {
   const { colors } = useTheme();
-
-  const dispatch = useDispatch([deleteSavedLocation]);
 
   const getAddressString = (data) => {
     let addressString = "";
@@ -119,17 +116,17 @@ function SavedLocationItem({
                   source={require("../Assets/icons/ic_delete_red.png")}
                 />
               </TouchableOpacity>
-            ) : (
-              <Icon name="check" size={10} color="#0e76bd" />
-            )}
-            {item?.isPrimary == false && (
+            ) : null}
+            {item?.isPrimary == false ? (
               <TouchableOpacity
                 activeOpacity={0.5}
                 style={navBar.roundIcon}
-                onPress={() => onSetPrimary(item.addressNo)}
+                onPress={() => onSetPrimary(item)}
               >
                 <Icon name="check" size={30} color="#0e76bd" />
               </TouchableOpacity>
+            ) : (
+              <Text>Primary</Text>
             )}
           </View>
         </View>
@@ -142,6 +139,7 @@ const SavedLocationList = ({
   savedLocationList,
   onDeleteClicked,
   onItemClicked,
+  onSetPrimary,
 }) => (
   <View>
     {savedLocationList?.length > 0 ? (
@@ -160,6 +158,7 @@ const SavedLocationList = ({
             item={item}
             onDeleteClicked={onDeleteClicked}
             onItemClicked={onItemClicked}
+            onSetPrimary={onSetPrimary}
           />
         )}
       />

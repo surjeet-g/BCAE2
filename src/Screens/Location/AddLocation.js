@@ -80,7 +80,8 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
-  const { customerId, fromPage } = route.params;
+  const { customerId, fromPage, exitingSavedAddress = [] } = route.params;
+
   // const { customerId, fromPage } = { customerId: 123132, fromPage: false };
   if (fromPage === "Register") {
     savedLocation = savedLocationWithoutAuth;
@@ -327,10 +328,16 @@ const AddLocation = ({ route, navigation }) => {
     return uniqueDistrictData;
   };
   const getAddresType = () => {
+    let excludeAddressType = [];
+    if (exitingSavedAddress.length != 0) {
+      excludeAddressType = exitingSavedAddress.map((addr) => addr.addressType);
+    }
     let result = [];
     if (savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE?.length > 0) {
       savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE.map((item) => {
-        result.push({ description: item.description, id: item.code });
+        if (!excludeAddressType.includes(item.code)) {
+          result.push({ description: item.description, id: item.code });
+        }
       });
     }
     return result;

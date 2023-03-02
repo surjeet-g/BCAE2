@@ -18,6 +18,7 @@ import { strings } from "../../Utilities/Language";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSavedLocations,
+  setPrimaryAddress,
   deleteSavedLocation,
 } from "../../Redux/SavedLocationDispatcher";
 import {
@@ -55,9 +56,11 @@ const SavedLocation = ({ route, navigation }) => {
   const dispatch2 = useDispatch([fetchSavedProfileData, fetchRegisterFormData]);
   const fetchMyProfileData = () => dispatch2(fetchSavedProfileData());
 
-  const dispatch = useDispatch([fetchSavedLocations, deleteSavedLocation]);
-
-  const fetchSavedLocationData = () => dispatch(fetchSavedLocations(33));
+  const dispatch = useDispatch([
+    fetchSavedLocations,
+    deleteSavedLocation,
+    setPrimaryAddress,
+  ]);
 
   useEffect(() => {
     //get master
@@ -71,19 +74,21 @@ const SavedLocation = ({ route, navigation }) => {
     });
     return willFocusSubscription;
   }, []);
-  const onClickedSaveLocationButton = () => {
-    navigation.navigate("AddLocation", {
-      customerId: 33,
-      fromPage: fromPage,
-      addressLookup: [],
-    });
-  };
+  const onClickedSaveLocationButton = () => {};
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <>
           <Pressable
-            onPress={() => onClickedSaveLocationButton()}
+            onPress={() => {
+              navigation.navigate("AddLocation", {
+                customerId: 33,
+                fromPage: fromPage,
+                addressLookup: [],
+                exitingSavedAddress: profile.savedProfileData?.customerAddress,
+              });
+            }}
             style={navBar.roundIconColored}
           >
             <Icon name="plus" size={19} color={colors.primary} />
@@ -91,7 +96,7 @@ const SavedLocation = ({ route, navigation }) => {
         </>
       ),
     });
-  }, [navigation]);
+  }, [navigation, profile.savedProfileData]);
 
   //alert("SavedLocation : " + JSON.stringify(savedLocation.savedLocationData));
 
@@ -116,13 +121,6 @@ const SavedLocation = ({ route, navigation }) => {
         },
       ]
     );
-  };
-
-  const onSetPrimary = async (key) => {
-    const res = await dispatch(deleteSavedLocation(key));
-    if (res) {
-      fetchMyProfileData();
-    }
   };
 
   const onItemClicked = (
@@ -152,7 +150,17 @@ const SavedLocation = ({ route, navigation }) => {
   };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
+  const onSetPrimary = async (selectedAddressObj) => {
+    try {
+      delete selectedAddressObj.status;
+      const formatedData = { ...selectedAddressObj, isPrimary: true };
 
+      const res = await dispatch(setPrimaryAddress(formatedData));
+      if (res) {
+        fetchMyProfileData();
+      }
+    } catch (error) {}
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -176,7 +184,7 @@ const SavedLocation = ({ route, navigation }) => {
               savedLocationList={address}
               onDeleteClicked={onClickedDeleteButton}
               onItemClicked={onItemClicked}
-            ></SavedLocationList>
+            />
           </View>
         ) : (
           <View
