@@ -8,15 +8,19 @@ import {
   ScrollView,
   Switch,
 } from "react-native";
-
+import Toast from "react-native-toast-message";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import {
+  spacing,
+  fontSizes,
+  color,
+  validateNumber,
+} from "../../Utilities/Constants/Constant";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { strings } from "../../Utilities/Language";
-
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
@@ -84,7 +88,12 @@ export const ViewProfile = ({ navigation }) => {
     setIsNotiEnabled(!isNotiEnabled);
     saveDataToDB(storageKeys.PUSH_NOTIFICATION, {
       push_notification: !isNotiEnabled,
-    }).then(function () {});
+    }).then(function () {
+      Toast.show({
+        type: "bctSuccess",
+        text1: strings.settings_updated,
+      });
+    });
   };
   const dispatch = useDispatch([
     deleteNdLogoutUser,
@@ -169,7 +178,7 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Change Password
+            {strings.change_password}
           </Text>
         </Pressable>
         <Divider />
@@ -282,5 +291,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 20,
+  },
+  toast: {
+    position: "absolute",
+    bottom: spacing.HEIGHT_31 * 2,
   },
 });

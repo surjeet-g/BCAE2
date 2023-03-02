@@ -12,8 +12,8 @@ export const navBar = StyleSheet.create({
     height: 1,
   },
   roundIcon: {
-    width: 26,
-    height: 26,
+    width: 35,
+    height: 35,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 26,

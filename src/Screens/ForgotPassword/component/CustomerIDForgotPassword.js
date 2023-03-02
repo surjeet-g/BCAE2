@@ -136,12 +136,14 @@ const CustomerIDForgotPassword = (props) => {
           caption={strings.customer_ID}
           placeHolder={strings.customer_ID}
           right={
-            <TextInput.Icon
-              onPress={clearCustomerIdClick}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              style={{ width: 23, height: 23 }}
-              icon="close"
-            />
+            username && (
+              <TextInput.Icon
+                onPress={clearCustomerIdClick}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                style={{ width: 23, height: 23 }}
+                icon="close"
+              />
+            )
           }
         />
         {usernameError !== "" && showErrorMessage(usernameError)}
@@ -153,12 +155,14 @@ const CustomerIDForgotPassword = (props) => {
           caption="Last Name"
           placeHolder="Last Name"
           right={
-            <TextInput.Icon
-              onPress={clearLastnameClick}
-              theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              style={{ width: 23, height: 23 }}
-              icon="close"
-            />
+            lastName && (
+              <TextInput.Icon
+                onPress={clearLastnameClick}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                style={{ width: 23, height: 23 }}
+                icon="close"
+              />
+            )
           }
         />
         {lastNameError !== "" && showErrorMessage(lastNameError)}

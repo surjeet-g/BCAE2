@@ -145,8 +145,22 @@ const SavedLocation = ({ route, navigation }) => {
         postCode: postCode,
       });
 
-      navigation.goBack();
-    }
+
+  const performPrimaryAddressUpdate = () => {};
+
+  const onItemClicked = (item) => {
+    Alert.alert(strings.attention, strings.confirm_primary_address, [
+      {
+        text: strings.cancel,
+        onPress: () => console.log("Cancel Pressed"),
+      },
+      {
+        text: strings.ok,
+        onPress: () => {
+          performPrimaryAddressUpdate();
+        },
+      },
+    ]);
   };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
@@ -183,6 +197,7 @@ const SavedLocation = ({ route, navigation }) => {
               onSetPrimary={onSetPrimary}
               savedLocationList={address}
               onDeleteClicked={onClickedDeleteButton}
+              onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
             />
           </View>

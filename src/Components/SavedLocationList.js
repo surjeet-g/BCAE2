@@ -17,7 +17,6 @@ import {
   buttonType,
   buttonSize,
 } from "../Utilities/Constants/Constant";
-
 import { strings } from "../Utilities/Language";
 import { navBar } from "../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
@@ -53,27 +52,13 @@ function SavedLocationItem({
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      onPress={() =>
-        onItemClicked(
-          item.custFavAddrId,
-          getAddressString(item),
-          item.latitude,
-          item.longitude,
-          item.street,
-          item.state,
-          item.district,
-          item.postCode
-        )
-      }
+      onPress={() => onItemClicked(item)}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={{ padding: 10 }}>
         <View style={{ flexDirection: "row" }}>
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <Image
-              style={styles.rightArrow}
-              source={require("../Assets/icons/ic_overlay_normal.png")}
-            />
+            <AddressImage></AddressImage>
           </View>
           <View style={{ flex: 4, justifyContent: "center" }}>
             <Text
@@ -130,6 +115,7 @@ function SavedLocationItem({
             )}
           </View>
         </View>
+        <Divider style={{ marginTop: 10 }} />
       </View>
     </TouchableOpacity>
   );
@@ -138,6 +124,7 @@ function SavedLocationItem({
 const SavedLocationList = ({
   savedLocationList,
   onDeleteClicked,
+  onEditClicked,
   onItemClicked,
   onSetPrimary,
 }) => (
@@ -157,6 +144,7 @@ const SavedLocationList = ({
           <SavedLocationItem
             item={item}
             onDeleteClicked={onDeleteClicked}
+            onEditClicked={onEditClicked}
             onItemClicked={onItemClicked}
             onSetPrimary={onSetPrimary}
           />
