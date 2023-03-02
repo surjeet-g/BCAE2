@@ -32,10 +32,10 @@ import { useTheme } from "react-native-paper";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
-const EDIT_PROFILE = "EditProfile";
-const REGISTER = "Register with us";
-const SAVED_LOC = "SavedLocation";
-const LOGIN_STACK = "Login";
+const STACK_EDIT_PROFILE = "EditProfile";
+const STACK_REGISTER = "Register with us";
+const STACK_SAVED_LOC = "SavedLocation";
+const STACK_LOGIN_STACK = "Login";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -65,7 +65,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={SAVED_LOC}
+        initialRouteName={STACK_REGISTER}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
