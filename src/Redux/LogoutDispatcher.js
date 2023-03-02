@@ -4,42 +4,35 @@ import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { saveToken, getDataFromDB } from "../Storage/token";
 import { storageKeys } from "../Utilities/Constants/Constant";
 import { removeAsyncItem } from "../Storage/DB";
+import { getUserId } from "../Utilities/UserManagement/userInfo";
 
-export function logoutUser(navigation, userId) {
+export function logoutUser(navigation) {
   return async (dispatch) => {
     dispatch(initLogoutData());
-    getDataFromDB(storageKeys.FCM_DEVICE_ID)
-      .then(function (deviceId) {
-        return deviceId;
-      })
-      .then(async (fcmDeviceId) => {
-        let params = {
-          userId: userId,
-          deviceId: fcmDeviceId,
-        };
-        let result = await serverCall(
-          `${endPoints.LOGOUT_USER}${userId}`,
-          requestMethod.DELETE,
-          params
-        );
-        console.log("result====================>" + JSON.stringify(result));
-        if (result.success) {
-          dispatch(setLogoutData(result?.data?.data));
 
-          await removeAsyncItem(storageKeys.DASHBOARD_DATA);
-          await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
-          await removeAsyncItem(storageKeys.PROFILE_DETAILS);
-          await removeAsyncItem(storageKeys.SAVED_LOCATION);
-          await removeAsyncItem(storageKeys.LANGUAGE_KEY);
-          await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
-          await removeAsyncItem(storageKeys.REFRESH_TOKEN);
-          await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-          await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
-          navigation.navigate("Splash", {});
-        } else {
-          dispatch(setLogoutError(result));
-        }
-      });
+    let params = {};
+    const userId = await getUserId();
+    let result = await serverCall(
+      `${endPoints.LOGOUT_USER}${userId}`,
+      requestMethod.DELETE,
+      params
+    );
+
+    if (result.success) {
+      dispatch(setLogoutData(result?.data));
+      await removeAsyncItem(storageKeys.DASHBOARD_DATA);
+      await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
+      await removeAsyncItem(storageKeys.PROFILE_DETAILS);
+      await removeAsyncItem(storageKeys.SAVED_LOCATION);
+      await removeAsyncItem(storageKeys.LANGUAGE_KEY);
+      await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
+      await removeAsyncItem(storageKeys.REFRESH_TOKEN);
+      await removeAsyncItem(storageKeys.ACCESS_TOKEN);
+      await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+      navigation.navigate("Splash", {});
+    } else {
+      dispatch(setLogoutError(result));
+    }
   };
 }
 
