@@ -19,7 +19,6 @@ export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
     const { loginId, password, userType, loginType, loginMode } = params;
     dispatch(initLoginData());
-    console.log("$$$-verifyLoginData-params", params);
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
         return deviceId;
@@ -39,7 +38,6 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
-        console.log("$$$-verifyLoginData-result", result);
         if (result.success) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
@@ -69,19 +67,24 @@ export function verifyLoginData(navigation, params) {
               if (profileResult?.success) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,
-                  email: profileResult.data?.data?.customerContact[0].emailId,
+                  email:
+                    profileResult.data?.data?.customerContact[0].emailId ||
+                    result.data?.data?.user?.email,
                   profilePicture:
                     result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
                   customerId: profileResult?.data?.data?.customerId,
                   customerUuid: profileResult?.data?.data?.customerUuid,
                   birthDate: profileResult?.data?.data?.birthDate,
                   contactNo:
-                    profileResult.data?.data?.customerContact[0]?.mobileNo,
+                    profileResult.data?.data?.customerContact[0]?.mobileNo ||
+                    result.data?.data?.user?.contactNo,
                   status: profileResult?.data?.data?.status,
                   firstName:
-                    profileResult?.data?.data?.customerContact[0].firstName,
+                    profileResult?.data?.data?.customerContact[0].firstName ||
+                    result.data?.data?.user?.firstName,
                   lastName:
-                    profileResult?.data?.data?.customerContact[0].lastName,
+                    profileResult?.data?.data?.customerContact[0].lastName ||
+                    result.data?.data?.user?.lastName,
                   gender: profileResult?.data?.data?.gender,
                   ...profileResult?.data?.data?.customerAddress[0],
                 };
@@ -117,9 +120,7 @@ export function callLogoutAndLogin(userId, navigation, params) {
       endPoints.LOGOUT_USER + userId,
       requestMethod.DELETE
     );
-    console.log("$$$-callLogoutAndLogin-logout-result", result);
     if (result?.data?.status === 200) {
-      console.log("$$$-callLogoutAndLogin-params", params);
       dispatch(verifyLoginData(navigation, params));
     }
   };
@@ -132,12 +133,9 @@ export function resetShowSecondLoginAlert() {
 }
 
 export function sendLoginOTPData(navigation, params, toNavigate) {
-  console.log("$$$-sendLoginOTPData");
-  console.log("$$$-sendLoginOTPData-params", params);
   return async (dispatch) => {
     const { loginId, userType, loginType, loginMode, extn } = params;
     //dispatch(initLoginData());
-    console.log("$$$-sendLoginOTPData-params-1", params);
     let param = {};
     if (loginMode.includes("Email")) {
       param = {
@@ -153,7 +151,6 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
     }
 
     let result = await serverCall(url, requestMethod.POST, param);
-    console.log("$$$-sendLoginOTPData-result", result);
 
     if (result.success) {
       if (toNavigate) {

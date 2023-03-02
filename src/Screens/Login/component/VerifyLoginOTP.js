@@ -25,8 +25,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 const VerifyLoginOTP = (props) => {
-  console.log("$$$-VerifyLoginOTP");
-  console.log("$$$-VerifyLoginOTP-props", props);
   const { navigation, route } = props;
   const { loginId, loginMode, loginType, userType } = route.params;
   const [otp, setOTP] = useState("");
@@ -40,7 +38,6 @@ const VerifyLoginOTP = (props) => {
   let login = useSelector((state) => state.login);
 
   useEffect(() => {
-    console.log("$$$-otp", otp);
     if (otp.length === 6) {
       param = {
         loginId,

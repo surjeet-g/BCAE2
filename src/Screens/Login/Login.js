@@ -170,10 +170,7 @@ export const Login = ({ navigation }) => {
 
   const submitWithEmailOTP = (loginType) => {
     setLoginType(loginType);
-    console.log("$$$-submitWithEmailOTP");
-    console.log("$$$-submitWithEmailOTP-loginType", loginType);
     if (username.includes("@")) {
-      console.log("$$$-submitWithEmailOTP");
       if (username === "") {
         setUsernameError(strings.emailValidError);
       } else {
@@ -185,7 +182,6 @@ export const Login = ({ navigation }) => {
           loginMode,
           extn: 0,
         };
-        console.log("$$$-submitWithEmailOTP-param", param);
         setParams(param);
         dispatch(sendLoginOTPData(navigation, param, true));
       }
