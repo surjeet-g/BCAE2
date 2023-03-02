@@ -72,20 +72,30 @@ export function verifyLoginData(navigation, params) {
                     result.data?.data?.user?.email,
                   profilePicture:
                     result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
-                  customerId: profileResult?.data?.data?.customerId,
-                  customerUuid: profileResult?.data?.data?.customerUuid,
-                  birthDate: profileResult?.data?.data?.birthDate,
+                  customerId:
+                    profileResult?.data?.data?.customerId ||
+                    result.data?.data?.user?.customerId,
+                  customerUuid:
+                    profileResult?.data?.data?.customerUuid ||
+                    result.data?.data?.user?.customerUuid,
+                  birthDate:
+                    profileResult?.data?.data?.birthDate ||
+                    result.data?.data?.user?.dob,
                   contactNo:
                     profileResult.data?.data?.customerContact[0]?.mobileNo ||
                     result.data?.data?.user?.contactNo,
-                  status: profileResult?.data?.data?.status,
+                  status:
+                    profileResult?.data?.data?.status ||
+                    result.data?.data?.user?.status,
                   firstName:
                     profileResult?.data?.data?.customerContact[0].firstName ||
                     result.data?.data?.user?.firstName,
                   lastName:
                     profileResult?.data?.data?.customerContact[0].lastName ||
                     result.data?.data?.user?.lastName,
-                  gender: profileResult?.data?.data?.gender,
+                  gender:
+                    profileResult?.data?.data?.gender ||
+                    result.data?.data?.user?.gender,
                   ...profileResult?.data?.data?.customerAddress[0],
                 };
 
