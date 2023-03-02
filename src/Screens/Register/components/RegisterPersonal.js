@@ -177,7 +177,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [otpEmailError, setOtpEmailError] = useState("");
 
   const [otpTimer, setOtpTimer] = useState(OTP_TIMER);
+  const [otpTimerEmail, setOtpTimerEmail] = useState(OTP_TIMER);
   const [isDisableSendOtp, setIsDisableSendOtp] = useState(false);
+  const [isDisableSendOtpEmail, setIsDisableSendOtpEmail] = useState(false);
   const [selectedValueGender, setValueGender] = useState("");
   const [selectedValueTitle, setValueTitle] = useState("");
   const [isSelected, setSelection] = useState(false);
@@ -351,6 +353,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     runOtpTimer(otpTimer);
   };
 
+  const showOtpEmailSentMessage = () => {
+    setIsDisableSendOtpEmail(true);
+    runOtpTimerEmail(otpTimer);
+  };
+
   const submitResndOTP = () => {
     if (mobileNo.length !== numberMaxLength) {
       setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
@@ -418,6 +425,19 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     }, 1000);
   };
 
+  const runOtpTimerEmail = (otpTimer) => {
+    setTimeout(() => {
+      setOtpTimerEmail(otpTimer);
+      otpTimer = otpTimer - 1;
+      if (otpTimer < 0) {
+        setIsDisableSendOtpEmail(false);
+        setOtpTimerEmail(OTP_TIMER);
+      } else {
+        runOtpTimerEmail(otpTimer);
+      }
+    }, 1000);
+  };
+
   const submitConfirmMobileOTP = async () => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
@@ -460,7 +480,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     } else if (!validateEmail(email)) {
       setEmailError(strings.emailValidError);
     } else {
-      dispatch(sendOtp(email, firstName, "email"));
+      dispatch(sendOtp(email, firstName, "email", showOtpEmailSentMessage));
       buttonEnableDiable();
     }
   };
@@ -824,6 +844,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               ? true
               : false
           }
+          isDisableButton={isDisableSendOtpEmail}
           label={"CONFIRM EMAIL"}
           onPress={submitEmail}
           bgColor={color.BCAE_PRIMARY}
@@ -834,6 +855,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
             lineHeight: spacing.HEIGHT_14,
           }}
         />
+        {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
+          <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+            <Text style={styles.errorText}>
+              {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
+            </Text>
+          </View>
+        )}
         {!registerForm.initOtpForm &&
           registerForm?.isOtpFormError &&
           registerForm?.otpFormDataForEmail?.errorCode > 200 &&
