@@ -68,7 +68,7 @@ export function verifyLoginData(navigation, params) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,
                   email:
-                    profileResult.data?.data?.customerContact[0].emailId ||
+                    profileResult.data?.data?.customerContact[0]?.emailId ||
                     result.data?.data?.user?.email,
                   profilePicture:
                     result.data?.data?.customerPhoto || DEFAULT_PROFILE_IMAGE,
@@ -88,10 +88,10 @@ export function verifyLoginData(navigation, params) {
                     profileResult?.data?.data?.status ||
                     result.data?.data?.user?.status,
                   firstName:
-                    profileResult?.data?.data?.customerContact[0].firstName ||
+                    profileResult?.data?.data?.customerContact[0]?.firstName ||
                     result.data?.data?.user?.firstName,
                   lastName:
-                    profileResult?.data?.data?.customerContact[0].lastName ||
+                    profileResult?.data?.data?.customerContact[0]?.lastName ||
                     result.data?.data?.user?.lastName,
                   gender:
                     profileResult?.data?.data?.gender ||
