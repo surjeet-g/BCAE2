@@ -9,6 +9,7 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
 import {
   spacing,
@@ -17,19 +18,35 @@ import {
   buttonType,
   buttonSize,
 } from "../Utilities/Constants/Constant";
+import { Divider } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
 import { strings } from "../Utilities/Language";
 import { navBar } from "../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
 import { addresObjToString } from "../Utilities/utils";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import AddressImage from "../Assets/svg/location_green.svg";
+import EditImage from "../Assets/svg/edit_icon_round.svg";
+import DeleteImage from "../Assets/svg/delete.svg";
+import PrimaryAddress from "../Assets/svg/primary_address.svg";
+import get from "lodash.get";
 function SavedLocationItem({
   item,
   onDeleteClicked,
+  onEditClicked,
   onItemClicked,
   onSetPrimary,
 }) {
   const { colors } = useTheme();
+  let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
+  console.log("saved date", savedLocationWithoutAuth);
+  const getAllAddressType = get(
+    savedLocationWithoutAuth,
+    "registerFormData.ADDRESS_TYPE",
+    []
+  );
+  const dispatch = useDispatch([deleteSavedLocation]);
 
   const getAddressString = (data) => {
     let addressString = "";
@@ -48,11 +65,20 @@ function SavedLocationItem({
 
     return addressString;
   };
+  const getAddresType = (code) => {
+    if (getAllAddressType.length == 0) return "";
+
+    return get(
+      getAllAddressType.filter((d) => d.code == code),
+      "[0].description",
+      ""
+    );
+  };
 
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      onPress={() => onItemClicked(item)}
+      onPress={() => onSetPrimary(item)}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={{ padding: 10 }}>
@@ -64,6 +90,16 @@ function SavedLocationItem({
             <Text
               style={{
                 fontSize: 16,
+                fontWeight: "700",
+                color: colors.secondary,
+                marginBottom: 5,
+              }}
+            >
+              {getAddresType(item.addressType)}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
                 fontWeight: "400",
                 color: colors.secondary,
               }}
@@ -88,30 +124,32 @@ function SavedLocationItem({
               ]}
               source={require("../Assets/icons/ic_edit_nav.png")}
             /> */}
-            {item?.isPrimary == false ? (
+            {/* {item?.isPrimary == false && ( */}
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() =>
+                onEditClicked(item.addressNo, addresObjToString(item))
+              }
+            >
+              <EditImage></EditImage>
+            </TouchableOpacity>
+            {/* )} */}
+            {item?.isPrimary == false && (
               <TouchableOpacity
+                style={{ marginLeft: 10 }}
                 activeOpacity={0.5}
-                style={navBar.roundIcon}
                 onPress={() =>
                   onDeleteClicked(item.addressNo, addresObjToString(item))
                 }
               >
-                <Image
-                  style={[styles.rightArrow, styles.searchIcon]}
-                  source={require("../Assets/icons/ic_delete_red.png")}
-                />
+                <DeleteImage></DeleteImage>
               </TouchableOpacity>
-            ) : null}
-            {item?.isPrimary == false ? (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                style={navBar.roundIcon}
-                onPress={() => onSetPrimary(item)}
-              >
-                <Icon name="check" size={30} color="#0e76bd" />
+            )}
+
+            {item?.isPrimary == true && (
+              <TouchableOpacity style={{ marginLeft: 10 }} activeOpacity={0.5}>
+                <PrimaryAddress></PrimaryAddress>
               </TouchableOpacity>
-            ) : (
-              <Text>Primary</Text>
             )}
           </View>
         </View>

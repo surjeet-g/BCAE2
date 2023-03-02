@@ -116,7 +116,6 @@ export function deleteSavedLocation(custFavAddrId) {
         addressNo: custFavAddrId,
       },
     };
-    console.log("params", params);
 
     let result = await serverCall(
       endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
@@ -127,7 +126,7 @@ export function deleteSavedLocation(custFavAddrId) {
     if (result.success) {
       Toast.show({
         type: "bctSuccess",
-        text1: result?.data?.data?.message,
+        text1: result?.data?.message,
       });
       return true;
     } else {

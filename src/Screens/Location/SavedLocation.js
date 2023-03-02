@@ -41,6 +41,7 @@ import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import get from "lodash.get";
+
 const SavedLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
 
@@ -82,16 +83,29 @@ const SavedLocation = ({ route, navigation }) => {
         <>
           <Pressable
             onPress={() => {
-              navigation.navigate("AddLocation", {
-                customerId: 33,
-                fromPage: fromPage,
-                addressLookup: [],
-                exitingSavedAddress: profile.savedProfileData?.customerAddress,
-              });
+              const addressCount = get(
+                profile,
+                "savedProfileData.customerAddress.length",
+                0
+              );
+              if (addressCount < 3) {
+                navigation.navigate("AddLocation", {
+                  customerId: 33,
+                  fromPage: fromPage,
+                  addressLookup: [],
+                  excludingSavedAddress:
+                    profile.savedProfileData?.customerAddress,
+                  includingSavedAddress: [],
+                });
+              } else {
+                Alert.alert(strings.attention, strings.max_number_address, [
+                  { text: strings.ok, onPress: () => {} },
+                ]);
+              }
             }}
             style={navBar.roundIconColored}
           >
-            <Icon name="plus" size={19} color={colors.primary} />
+            <Icon name="plus" size={25} color={colors.primary} />
           </Pressable>
         </>
       ),
@@ -112,7 +126,6 @@ const SavedLocation = ({ route, navigation }) => {
         {
           text: strings.ok,
           onPress: async () => {
-            console.log("hiting delte", key);
             const res = await dispatch(deleteSavedLocation(key));
             if (res) {
               fetchMyProfileData();
@@ -144,12 +157,11 @@ const SavedLocation = ({ route, navigation }) => {
         country: "Brunei Darussalam",
         postCode: postCode,
       });
+    }
+  };
 
-
-  const performPrimaryAddressUpdate = () => {};
-
-  const onItemClicked = (item) => {
-    Alert.alert(strings.attention, strings.confirm_primary_address, [
+  onClickedEditButton = (key, address) => {
+    Alert.alert(strings.attention, strings.confirm_edit_address, [
       {
         text: strings.cancel,
         onPress: () => console.log("Cancel Pressed"),
@@ -157,22 +169,65 @@ const SavedLocation = ({ route, navigation }) => {
       {
         text: strings.ok,
         onPress: () => {
-          performPrimaryAddressUpdate();
+          const allSavedAdd = get(
+            profile,
+            "savedProfileData.customerAddress",
+            []
+          );
+          if (allSavedAdd.length == 0) return null;
+
+          const addrArray = allSavedAdd.filter((add) => add.addressNo == key);
+
+          navigation.navigate("AddLocation", {
+            customerId: 33,
+            fromPage: fromPage,
+            addressLookup: [],
+            excludingSavedAddress: [],
+            isEditAddress: true,
+            includingSavedAddress: addrArray,
+          });
         },
       },
     ]);
   };
+  const performPrimaryAddressUpdate = () => {};
+
+  // const onItemClicked = (item) => {
+  //   Alert.alert(strings.attention, strings.confirm_primary_address, [
+  //     {
+  //       text: strings.cancel,
+  //       onPress: () => console.log("Cancel Pressed"),
+  //     },
+  //     {
+  //       text: strings.ok,
+  //       onPress: () => {
+  //         performPrimaryAddressUpdate();
+  //       },
+  //     },
+  //   ]);
+  // };
 
   const address = get(profile, "savedProfileData.customerAddress", []);
   const onSetPrimary = async (selectedAddressObj) => {
     try {
-      delete selectedAddressObj.status;
-      const formatedData = { ...selectedAddressObj, isPrimary: true };
+      Alert.alert(strings.attention, strings.confirm_primary_address, [
+        {
+          text: strings.cancel,
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        {
+          text: strings.ok,
+          onPress: async () => {
+            delete selectedAddressObj.status;
+            const formatedData = { ...selectedAddressObj, isPrimary: true };
 
-      const res = await dispatch(setPrimaryAddress(formatedData));
-      if (res) {
-        fetchMyProfileData();
-      }
+            const res = await dispatch(setPrimaryAddress(formatedData));
+            if (res) {
+              fetchMyProfileData();
+            }
+          },
+        },
+      ]);
     } catch (error) {}
   };
   return (
