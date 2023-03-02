@@ -379,6 +379,11 @@ export const supportedCountriesList = [
     numberLength: 8,
   },
   {
+    countryName: "India",
+    countryShortCode: "IN",
+    numberLength: 10,
+  },
+  {
     countryName: "Indonesia",
     countryShortCode: "ID",
     numberLength: 9,

@@ -3925,7 +3925,10 @@ export function sendOtp(
       showOtpSentMessage();
       dispatch(setOtpFormData(result?.data, type));
     } else {
-      await dispatch(RESET);
+      Toast.show({
+        type: "bctError",
+        text1: result?.message || "",
+      });
       dispatch(failureOtpFormData(result, type));
     }
   };

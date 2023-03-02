@@ -86,11 +86,35 @@ export const Login = ({ navigation }) => {
   const onSelectBusinessUserType = () => {
     setFirstSelected(true);
     setUserType(BUSINESS);
+    setUsernameError("");
+    setPasswordError("");
+    setNumberError("");
+    dispatch(resetLogin());
   };
 
   const onSelectConsumerUserType = () => {
     setFirstSelected(false);
     setUserType(CONSUMER);
+    setUsernameError("");
+    setPasswordError("");
+    setNumberError("");
+    dispatch(resetLogin());
+  };
+
+  const onSelectEmailLoginMode = () => {
+    setLoginMode(EMAIL);
+    setUsernameError("");
+    setPasswordError("");
+    setNumberError("");
+    dispatch(resetLogin());
+  };
+
+  const onSelectMobileLoginMode = () => {
+    setLoginMode(MOBILE);
+    setUsernameError("");
+    setPasswordError("");
+    setNumberError("");
+    dispatch(resetLogin());
   };
 
   const onIDChange = (textStr) => {
@@ -170,10 +194,7 @@ export const Login = ({ navigation }) => {
 
   const submitWithEmailOTP = (loginType) => {
     setLoginType(loginType);
-    console.log("$$$-submitWithEmailOTP");
-    console.log("$$$-submitWithEmailOTP-loginType", loginType);
     if (username.includes("@")) {
-      console.log("$$$-submitWithEmailOTP");
       if (username === "") {
         setUsernameError(strings.emailValidError);
       } else {
@@ -185,7 +206,6 @@ export const Login = ({ navigation }) => {
           loginMode,
           extn: 0,
         };
-        console.log("$$$-submitWithEmailOTP-param", param);
         setParams(param);
         dispatch(sendLoginOTPData(navigation, param, true));
       }
@@ -274,7 +294,7 @@ export const Login = ({ navigation }) => {
                   <RadioButton
                     value={EMAIL}
                     status={loginMode === EMAIL ? "checked" : "unchecked"}
-                    onPress={() => setLoginMode(EMAIL)}
+                    onPress={onSelectEmailLoginMode}
                   />
                   <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(EMAIL)}
@@ -289,7 +309,7 @@ export const Login = ({ navigation }) => {
                   <RadioButton
                     value={MOBILE}
                     status={loginMode === MOBILE ? "checked" : "unchecked"}
-                    onPress={() => setLoginMode(MOBILE)}
+                    onPress={onSelectMobileLoginMode}
                   />
                   <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(MOBILE)}
