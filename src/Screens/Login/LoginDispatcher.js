@@ -19,7 +19,6 @@ export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
     const { loginId, password, userType, loginType, loginMode } = params;
     dispatch(initLoginData());
-    console.log("$$$-verifyLoginData-params", params);
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
         return deviceId;
@@ -39,7 +38,6 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params
         );
-        console.log("$$$-verifyLoginData-result", result);
         if (result.success) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
@@ -117,9 +115,7 @@ export function callLogoutAndLogin(userId, navigation, params) {
       endPoints.LOGOUT_USER + userId,
       requestMethod.DELETE
     );
-    console.log("$$$-callLogoutAndLogin-logout-result", result);
     if (result?.data?.status === 200) {
-      console.log("$$$-callLogoutAndLogin-params", params);
       dispatch(verifyLoginData(navigation, params));
     }
   };
@@ -132,12 +128,9 @@ export function resetShowSecondLoginAlert() {
 }
 
 export function sendLoginOTPData(navigation, params, toNavigate) {
-  console.log("$$$-sendLoginOTPData");
-  console.log("$$$-sendLoginOTPData-params", params);
   return async (dispatch) => {
     const { loginId, userType, loginType, loginMode, extn } = params;
     //dispatch(initLoginData());
-    console.log("$$$-sendLoginOTPData-params-1", params);
     let param = {};
     if (loginMode.includes("Email")) {
       param = {
@@ -153,7 +146,6 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
     }
 
     let result = await serverCall(url, requestMethod.POST, param);
-    console.log("$$$-sendLoginOTPData-result", result);
 
     if (result.success) {
       if (toNavigate) {
