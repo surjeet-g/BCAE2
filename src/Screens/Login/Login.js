@@ -39,8 +39,8 @@ import { CustomErrorText } from "../../Components/CustomErrorText";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import { CountryPicker } from "react-native-country-codes-picker";
 
-const BUSINESS = "business";
-const CONSUMER = "consumer";
+const BUSINESS = "Business";
+const CONSUMER = "Consumer";
 const EMAIL = "Email Address";
 const MOBILE = "Mobile Number";
 const PASSWORD = "password";
@@ -59,7 +59,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [username, setUsername] = useState("kamal@yopmail.com");
   const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
@@ -159,8 +159,7 @@ export const Login = ({ navigation }) => {
         param = {
           loginId: username,
           password,
-          userType:
-            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -182,8 +181,7 @@ export const Login = ({ navigation }) => {
       param = {
         loginId: number,
         password,
-        userType:
-          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
       };
@@ -200,8 +198,7 @@ export const Login = ({ navigation }) => {
       } else {
         param = {
           loginId: username,
-          userType:
-            userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
           extn: 0,
@@ -221,8 +218,7 @@ export const Login = ({ navigation }) => {
     } else {
       param = {
         loginId: number,
-        userType:
-          userType === BUSINESS ? "BusinessCustomer" : "PersonalCustomer",
+        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
         extn: countryCode.substring(1),
@@ -256,8 +252,8 @@ export const Login = ({ navigation }) => {
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
-                    first: capitalizeFirstLetter(BUSINESS),
-                    second: capitalizeFirstLetter(CONSUMER),
+                    first: BUSINESS,
+                    second: CONSUMER,
                   }}
                   bgColor={{
                     selected: color.BCAE_PRIMARY,
