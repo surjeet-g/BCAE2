@@ -96,14 +96,14 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [customerID, setCustomerID] = useState("CUST_2023_00000092");
-  const [idNumber, setIdNumber] = useState("P00898");
+  const [customerID, setCustomerID] = useState("");
+  const [idNumber, setIdNumber] = useState("");
   const [idType, setIDtype] = useState("");
   const [gender, setGender] = useState("");
-  const [mobileNo, setMobileNo] = useState("917327242");
+  const [mobileNo, setMobileNo] = useState("");
   const [otp, setOTP] = useState("");
   const [otpEmail, setEmailOTP] = useState("");
-  const [email, setEmail] = useState("business.user@gmail.com");
+  const [email, setEmail] = useState("");
 
   const [idTypeError, setIdTypeError] = useState("");
   const [selectedValueIdType, setValueIdType] = useState("");

@@ -39,10 +39,7 @@ import {
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
-  const dispatch2 = useDispatch([fetchSavedProfileData]);
-
   const { colors, fonts, roundness } = useTheme();
-  let profile = useSelector((state) => state.profile);
 
   const [userInfo, setUserInfo] = useState({
     email: "",
@@ -52,13 +49,6 @@ export const ViewProfile = ({ navigation }) => {
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
 
-  useEffect(() => {
-    getDataFromDB(storageKeys.PUSH_NOTIFICATION).then((result) => {
-      if (result) {
-        setIsNotiEnabled(result.push_notification);
-      }
-    });
-  }, []);
   useEffect(() => {
     async function fetchMyAPI() {
       const customerUUDI = await getCustomerUUID();
@@ -91,7 +81,7 @@ export const ViewProfile = ({ navigation }) => {
     }).then(function () {
       Toast.show({
         type: "bctSuccess",
-        text1: strings.settings_updated,
+        text1: "Detail updated",
       });
     });
   };
@@ -106,7 +96,6 @@ export const ViewProfile = ({ navigation }) => {
         setIsNotiEnabled(result.push_notification);
       }
     });
-    fetchMyProfileData();
   }, []);
   const onDeletePressed = () =>
     Alert.alert(strings.attention, strings.are_you_sure_delete_account, [
@@ -126,8 +115,7 @@ export const ViewProfile = ({ navigation }) => {
     //while logout we have to reset the data of first two tab as still it has logout info
     // dispatch(deleteNdLogoutUser(props.navigation, profile?.savedProfileData));
   };
-  const fetchMyProfileData = () => dispatch(fetchSavedProfileData());
-  console.log("profile", profile);
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
