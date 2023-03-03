@@ -18,7 +18,10 @@ import InquiryNotificationsReducer from "./InquiryNotificationsReducer";
 import { LOGOUT_DATA } from "./LogoutAction";
 import VersionCheckReducer from "./VersionCheckReducer";
 
-const appReducer = combineReducers({
+import masterDataReducer from "./masterDataReducer";
+
+ const appReducer = combineReducers({
+  masterdata: masterDataReducer,
   versioncheck: VersionCheckReducer,
   notifications: NotificationsReducer,
   followup: FollowUpReducer,

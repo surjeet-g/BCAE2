@@ -61,7 +61,23 @@ function SavedLocationItem({
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      onPress={() => onItemClicked(item)}
+      onPress={() => onItemClicked({
+        addressNo: item.addressNo,
+
+addressType: item.addressType,
+isPrimary: item.isPrimary,
+address1: item.address1,
+address2: item.address2,
+address3: item.address3,
+addrZone: item.addrZone,
+city: item.city,
+district: item.district,
+state: item.state,
+postcode: item.postcode,
+country: item.country,
+latitude: item.latitude,
+longitude: item.longitude
+      })}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={{ padding: 10 }}>
