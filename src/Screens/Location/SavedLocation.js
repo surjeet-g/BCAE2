@@ -82,7 +82,7 @@ const SavedLocation = ({ route, navigation }) => {
       headerRight: () => (
         <>
           <Pressable
-            onPress={() => {
+            onPress={async () => {
               const addressCount = get(
                 profile,
                 "savedProfileData.customerAddress.length",
