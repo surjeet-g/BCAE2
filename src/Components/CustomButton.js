@@ -1,8 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { Button } from "react-native-paper";
-import { spacing, color } from "../Utilities/Constants/Constant";
-import { useTheme } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
+import { spacing } from "../Utilities/Constants/Constant";
 
 export const CustomButton = (props) => {
   const { colors } = useTheme();
@@ -22,10 +21,11 @@ export const CustomButton = (props) => {
       }}
     >
       <Button
+        style={{ padding: 7 }}
         loading={loading}
         mode={mode}
         label={label}
-        textColor={isDisabled ? colors.gray : colors.buttonDisableColor}
+        color={isDisabled ? colors.inverseSecondary : colors.buttonDisableColor}
         buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
         onPress={isDisabled ? () => {} : () => onPress()}
       >

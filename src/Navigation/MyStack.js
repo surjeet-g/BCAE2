@@ -1,17 +1,16 @@
-import React from "react";
-import { Text, Button, View, Pressable } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+import { Pressable, View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
-import Splash from "../Screens/Splash/Splash";
-import { Login } from "../Screens/Login/Login";
-import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
-import Register from "../Screens/Register/Register";
-import BottomBarNavigation from "./BottomBarNavigation";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import SavedLocation from "../Screens/Location/SavedLocation";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Login } from "../Screens/Login/Login";
+import Register from "../Screens/Register/Register";
+import Splash from "../Screens/Splash/Splash";
+import BottomBarNavigation from "./BottomBarNavigation";
 
 // import Location from "../Screens/Location/Location";
 import AddLocation from "../Screens/Location/AddLocation";
@@ -21,17 +20,24 @@ import AddLocation from "../Screens/Location/AddLocation";
 // import Anouncement from "../Screens/TabScreens/Announcement";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
 // import Notification from "../Screens/TabScreens/Notification";
+import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
 import { Playground } from "../Screens/Playground";
-import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import { useTheme } from "react-native-paper";
-import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import RegisterSuccess from "../Screens/Register/RegisterSuccess";
+import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+const STACK_EDIT_PROFILE = "EditProfile";
+const STACK_REGISTER = "Register with us";
+const STACK_SAVED_LOC = "SavedLocation";
+const STACK_LOGIN_STACK = "Login";
+const STACK_SPLASH = "Splash";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -41,18 +47,12 @@ function MyStack() {
     activeTintColor: "#e91e63",
     headerShown: true,
     headerTransparent: false,
-    headerStyle: {
-      backgroundColor: colors.inverseSurface,
-    },
+
     headerStyle: {
       backgroundColor: colors.secondary,
     },
     headerTitleStyle: {
       ...fonts.titleLarge,
-      ...{ color: colors.inverseSecondary, fontWeight: "700" },
-    },
-    headerTitleStyle: {
-      ...fonts.titleMedium,
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
   };
@@ -61,7 +61,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Splash"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -71,9 +71,7 @@ function MyStack() {
             ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
-          headerTitle: () => (
-            <HeaderTitle header="Need your help" subHeader="Register" />
-          ),
+          headerTitle: "",
 
           headerRight: () => {
             return (
@@ -130,6 +128,13 @@ function MyStack() {
           name="EditProfile"
           component={EditProfile}
         />
+        <Stack.Screen
+          options={{
+            title: "",
+          }}
+          name="RegisterSuccess"
+          component={RegisterSuccess}
+        />
 
         <Stack.Screen
           name="Changepassword"
@@ -163,9 +168,19 @@ function MyStack() {
           component={ConfirmForgotPassword}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Reset Password" }}
-          name="ResetPassword"
           component={ResetPassword}
+          options={{
+            ...options,
+            ...{
+              title: "Reset Password",
+              headerRight: () => null,
+              headerTitle: () => (
+                <HeaderTitle header="Need your help" subHeader="Register" />
+              ),
+              headerTintColor: colors.inverseSecondary,
+            },
+          }}
+          name="ResetPassword"
         />
         <Stack.Screen
           options={{ headerShown: false }}
@@ -185,14 +200,7 @@ function MyStack() {
           name="Login"
           component={Login}
         />
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            title: "Login",
-          }}
-          name="VerifyLoginOTP"
-          component={VerifyLoginOTP}
-        />
+
         <Stack.Screen
           options={{
             headerShown: true,

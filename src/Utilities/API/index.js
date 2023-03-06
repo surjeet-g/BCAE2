@@ -1,20 +1,20 @@
-import axios from "axios";
 import NetInfo from "@react-native-community/netinfo";
-import {
-  BASE_URL,
-  requestMethod,
-  BASE_URL_TENANT,
-  PROD_BASE_URL_TENANT,
-  PROD_BASE_URL,
-  TENANT_ID,
-} from "./ApiConstants";
-import { strings } from "../Language/index";
-import { getDataFromDB } from "../../Storage/token";
-import { storageKeys, DEBUG_BUILD } from "../../Utilities/Constants/Constant";
+import axios from "axios";
 import { Alert } from "react-native";
+import { getDataFromDB } from "../../Storage/token";
+import { DEBUG_BUILD, storageKeys } from "../../Utilities/Constants/Constant";
 import { TDLog } from "../Constants/Constant";
+import { strings } from "../Language/index";
 import { logoutUserSectionTimeOut } from "./../../Redux/LogoutDispatcher";
 import { store } from "./../../Redux/Store";
+import {
+  BASE_URL,
+  BASE_URL_TENANT,
+  PROD_BASE_URL,
+  PROD_BASE_URL_TENANT,
+  TENANT_ID,
+  requestMethod,
+} from "./ApiConstants";
 
 export const networkAvailable = () =>
   new Promise((resolve, reject) =>
@@ -211,10 +211,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
   });
 
 const processErrorResponse = (resolve, error, requestObject, navigation) => {
-  if (
-    error?.response?.status === 401 &&
-    error?.response?.data?.message === "Not authorized"
-  ) {
+  if (0) {
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",

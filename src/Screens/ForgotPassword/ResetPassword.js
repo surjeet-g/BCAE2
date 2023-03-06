@@ -1,33 +1,22 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonSize,
-  buttonType,
-  validatePassword,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-} from "../../Utilities/Constants/Constant";
+import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { strings } from "../../Utilities/Language";
-import { Toast } from "../../Components/Toast";
 import { CustomInput } from "../../Components/CustomInput";
-import { Button, TextInput, useTheme, Text, Divider } from "react-native-paper";
+import { Toast } from "../../Components/Toast";
+import {
+  color,
+  fontSizes,
+  spacing,
+  validatePassword,
+} from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language";
 
-import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
+import { StickyFooter } from "../../Components/StickyFooter";
+import { SvgBG } from "../../Components/SvgBG";
+import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ResetPassword = ({ route, navigation }) => {
   const { colors } = useTheme();
@@ -45,7 +34,7 @@ const ResetPassword = ({ route, navigation }) => {
     email: "dash.surjeet@gmail.com",
     inviteToken:
       "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
-    isChangePassword: true,
+    isChangePassword: false,
   };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
@@ -152,9 +141,10 @@ const ResetPassword = ({ route, navigation }) => {
     <View
       style={{
         ...styles.container,
-        ...{ marginTop: isChangePassword ? 15 : 45 },
+        // ...{ marginTop: isChangePassword ? 15 : 45 },
       }}
     >
+      <SvgBG />
       {/* Header */}
       <ScrollView
         style={{
@@ -236,41 +226,6 @@ const ResetPassword = ({ route, navigation }) => {
             }
           />
         </View>
-        <View>
-          <CustomButton
-            loading={forgot?.initForgotPassword}
-            label={
-              isChangePassword
-                ? strings.change_password
-                : strings.reset_password
-            }
-            isDisabled={
-              oldPassword == "" || password == "" || confirmPassword == ""
-            }
-            onPress={onSubmitPasswordChanged}
-          />
-
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status == "200" &&
-            showSuccessMessage(forgot?.loggedProfile?.message)}
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status != "200" &&
-            showErrorMessage(forgot?.loggedProfile?.message)}
-        </View>
-
-        {orSection()}
-        {!isChangePassword && (
-          <View>
-            <Text style={styles.noAccText}>{strings.dont_account}</Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register with us", {})}
-            >
-              <Text style={styles.rgisterText}>
-                {strings.register_with_us.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
-        )}
 
         {/* {
           orSection()
@@ -301,6 +256,41 @@ const ResetPassword = ({ route, navigation }) => {
         <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
       </ScrollView>
 
+      <StickyFooter>
+        <View>
+          <CustomButton
+            loading={forgot?.initForgotPassword}
+            label={
+              isChangePassword
+                ? strings.change_password
+                : strings.reset_password
+            }
+            isDisabled={false}
+            onPress={onSubmitPasswordChanged}
+          />
+
+          {!forgot.initForgotPassword &&
+            forgot?.loggedProfile.status == "200" &&
+            showSuccessMessage(forgot?.loggedProfile?.message)}
+          {!forgot.initForgotPassword &&
+            forgot?.loggedProfile.status != "200" &&
+            showErrorMessage(forgot?.loggedProfile?.message)}
+        </View>
+
+        {orSection()}
+        {!isChangePassword && (
+          <View>
+            <Text style={styles.noAccText}>{strings.dont_account}</Text>
+            <Pressable
+              onPress={() => navigation.navigate("Register with us", {})}
+            >
+              <Text style={styles.rgisterText}>
+                {strings.register_with_us.toUpperCase()}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </StickyFooter>
       {!login.initLogin &&
         (login?.loggedProfile?.errorCode == "10000" ||
           login?.loggedProfile?.errorCode == "10001") && (
@@ -334,6 +324,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#9C8FC4",
+    // ...HEADER_MARGIN,
+    paddingTop: HEADER_MARGIN.marginTop + HEADER_MARGIN.paddingTop,
   },
 
   toast: {

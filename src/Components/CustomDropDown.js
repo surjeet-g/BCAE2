@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Pressable,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import { color, spacing, fontSizes } from "../Utilities/Constants/Constant";
-import { List, MD3Colors, TextInput, useTheme } from "react-native-paper";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
+import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 
 export const CustomDropDown = (props) => {
   const { selectedValue, setValue } = props;
@@ -44,25 +36,42 @@ export const CustomDropDown = (props) => {
 
   return (
     <View style={{ zIndex: 0, marginTop: 10 }}>
-      <View style={{ zIndex: 0, height: 50 }}>
-        {/* <Pressable
-          onPress={() => ondropDownClick()}
-          style={{ flexDirection: "row" }}
-        > */}
-        <CustomInput
-          editable={false}
-          caption={props.placeHolder}
-          placeholder={props.placeHolder}
-          style={{ ...styles.textInput, ...customStyle }}
-          value={selectedValue}
-          right={
-            <TextInput.Icon
-              onPress={() => ondropDownClick()}
-              style={{ width: 23, height: 23 }}
-              icon="chevron-down"
-            />
-          }
-        />
+      <View
+        style={{
+          zIndex: 0,
+          height: 50,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          variant="labelSmall"
+          style={{
+            flex: 0.6,
+            marginBottom: 6,
+            marginLeft: 8,
+            color: colors.onSurfaceVariant,
+          }}
+        >
+          {props.placeHolder}
+        </Text>
+        <View style={{ flex: 0.4 }}>
+          <CustomInput
+            hideCaption={true}
+            editable={false}
+            caption={props.placeHolder}
+            placeholder={props.placeHolder}
+            style={{ ...styles.textInput, ...customStyle }}
+            value={selectedValue}
+            right={
+              <TextInput.Icon
+                onPress={() => ondropDownClick()}
+                style={{ width: 23, height: 23 }}
+                icon="chevron-down"
+              />
+            }
+          />
+        </View>
         {/* </Pressable> */}
       </View>
 

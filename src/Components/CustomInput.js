@@ -1,34 +1,35 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Text, TextInput } from "react-native-paper";
-import { useTheme } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 
 export const CustomInput = (props) => {
-  const { caption = "", multiline = false } = props;
+  const { caption = "", multiline = false, hideCaption = false } = props;
   const MULT_LINE = multiline ? {} : { height: 45 };
   const { roundness, colors } = useTheme();
   const [active, setActive] = useState(false);
 
   return (
     <View style={{ marginTop: 5 }}>
-      <Text
-        variant="labelSmall"
-        style={{
-          marginBottom: 6,
-          marginLeft: 8,
-          color: colors.onSurfaceVariant,
-        }}
-      >
-        {caption}
-      </Text>
+      {!hideCaption && (
+        <Text
+          variant="labelSmall"
+          style={{
+            marginBottom: 6,
+            marginLeft: 8,
+            color: colors.onSurfaceVariant,
+          }}
+        >
+          {caption}
+        </Text>
+      )}
       <View
         style={{
           backgroundColor: colors.background,
           borderRadius: roundness,
-          paddingVertical: 2,
-          elevation: 1,
-          borderColor: active ? colors.gray : "transparent",
-          borderWidth: 2,
+          paddingVertical: 0,
+          // elevation: 1,
+          borderColor: active ? colors.gray : colors.gray,
+          borderWidth: active ? 2 : 0.8,
           borderStyle: "solid",
         }}
       >

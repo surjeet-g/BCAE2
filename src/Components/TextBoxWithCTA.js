@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import {
+  Image,
   StyleSheet,
   Text,
-  View,
   TextInput,
-  Image,
-  Pressable,
   TouchableOpacity,
+  View,
 } from "react-native";
-import {
-  color,
-  spacing,
-  fontSizes,
-  buttonSize,
-} from "../Utilities/Constants/Constant";
 import { useTheme } from "react-native-paper";
+import {
+  buttonSize,
+  color,
+  fontSizes,
+  spacing,
+} from "../Utilities/Constants/Constant";
 
+import theme from "../Utilities/themeConfig";
 import { CustomActivityIndicator } from "./CustomActivityIndicator";
 export const TextBoxWithCTA = (props) => {
   const { roundness, colors } = useTheme();
@@ -23,7 +23,7 @@ export const TextBoxWithCTA = (props) => {
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
-  let bgColor = colors.primary;
+  let bgColor = colors.yellow;
   let onClicked = props.onPress ?? null;
   let isDisableButton = props.isDisableButton ?? false;
 
@@ -72,11 +72,11 @@ export const TextBoxWithCTA = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 55,
+            height: 45,
             backgroundColor: colors.background,
             borderRadius: roundness,
-            borderColor: active ? colors.gray : "transparent",
-            borderWidth: 2,
+            borderColor: active ? colors.gray : colors.gray,
+            borderWidth: active ? 2 : 0.8,
             borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
@@ -173,13 +173,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginRight: 12,
     right: 0,
-    bottom: 10,
+    bottom: 8,
+    borderColor: theme.colors.gray,
+    borderWidth: 0.8,
     zIndex: 1,
     padding: spacing.WIDTH_10,
     // borderRadius: spacing.HEIGHT_3,
     justifyContent: "center",
     alignItems: "center",
-    height: spacing.HEIGHT_38,
+    height: spacing.HEIGHT_34,
   },
 
   correctStyle: {

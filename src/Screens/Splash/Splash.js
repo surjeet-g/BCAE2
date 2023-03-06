@@ -1,17 +1,22 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
+
+import { Text, useTheme } from "react-native-paper";
+
+import { useDispatch, useSelector } from "react-redux";
+import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
+import { CustomButton } from "../../Components/CustomButton";
+import { StickyFooter } from "../../Components/StickyFooter";
+import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
+import { getToken } from "../../Storage/token";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
-import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
-import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { getToken } from "../../Storage/token";
-import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
-import { Button } from "react-native-paper";
-import { SvgBG } from "../../Components/SvgBG";
+var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
+  const { colors } = useTheme();
   const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   const versioncheck = useSelector((state) => state.versioncheck);
 
@@ -57,54 +62,59 @@ const Splash = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          // Try setting `flexDirection` to `"row"`.
-          flexDirection: "column",
-        },
-      ]}
-    >
-      <SvgBG></SvgBG>
-      <View
+    <View style={{ backgroundColor: colors.background, flex: 1 }}>
+      <ImageBackground
+        source={require("../../Assets/icons/bg.png")}
+        resizeMode="cover"
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 85,
+          flex: 1,
         }}
       >
-        <BCAE_LOGO />
-      </View>
-
-      <View style={{ marginTop: 80, alignItems: "center" }}>
-        <Text style={styles.highlightText}>{strings.brand_name}</Text>
-        <Text
+        <View
           style={{
-            backgroundColor: color.VERSION_BACKGROUND,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: height * 0.03,
           }}
         >
-          {strings.version}
-        </Text>
-      </View>
-
-      <View
-        style={{
-          marginTop: 80,
-          paddingLeft: 20,
-          paddingRight: 20,
-        }}
-      >
-        <Button
-          mode="contained"
-          label={strings.get_started}
-          disabled={false}
-          onPress={checkLogin}
-        >
-          {strings.get_started}
-        </Button>
-      </View>
+          <BCAE_LOGO />
+        </View>
+      </ImageBackground>
+      <StickyFooter isSplash={true}>
+        <View>
+          <View style={{ alignItems: "flex-start", marginLeft: "10%" }}>
+            <Text variant="headlineLarge" style={styles.highlightText}>
+              Business{"\n"}Centric{"\n"}Automation{"\n"}Engine
+            </Text>
+            <Text
+              style={{
+                backgroundColor: color.VERSION_BACKGROUND,
+              }}
+            >
+              {strings.version}
+            </Text>
+          </View>
+          <View
+            style={{
+              marginBottom: 10,
+            }}
+          >
+            <CustomButton
+              loading={false}
+              label={strings.get_started}
+              isDisabled={false}
+              onPress={checkLogin}
+            />
+          </View>
+          <Text
+            variant="labelSmall"
+            style={{ textAlign: "center", marginBottom: 30 }}
+          >
+            © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+          </Text>
+        </View>
+      </StickyFooter>
     </View>
   );
 };
@@ -127,6 +137,7 @@ const styles = StyleSheet.create({
   },
   highlightText: {
     color: "#202223",
+    textAlign: "left",
     fontSize: fontSizes.FONT_19 * 2,
     fontWeight: "600",
     lineHeight: spacing.HEIGHT_27 * 2,

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { Provider as StoreProvider } from "react-redux";
-import { store } from "./src/Redux/Store";
-import MyStack from "./src/Navigation/MyStack";
 import Toast from "react-native-toast-message";
+import { Provider as StoreProvider } from "react-redux";
 import { ToastTemplete } from "./src/Components/ToastTemplete";
+import MyStack from "./src/Navigation/MyStack";
+import { store } from "./src/Redux/Store";
 
-import { LogBox, SafeAreaView, AppState, StatusBar } from "react-native";
+import { LogBox, SafeAreaView, StatusBar } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 // import { storageKeys } from "./src/Utilities/Constants/Constant";
 // import { getData, saveData } from "./src/Storage/DB";
@@ -89,7 +89,7 @@ const App = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         // animated={true}
-        backgroundColor={theme.colors.primary}
+        backgroundColor={"#5E5676"}
         // barStyle={statusBarStyle}
         // showHideTransition={statusBarTransition}
         // hidden={hidden}

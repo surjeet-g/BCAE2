@@ -1,22 +1,19 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
 import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  SafeAreaView,
+  ImageBackground,
   Platform,
-  Alert,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { spacing, color, fontSizes } from "../../Utilities/Constants/Constant";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 
+import { FullPageLoder } from "../../Components/FullPageLoder";
 import {
   fetchRegisterFormData,
   getOtpForCheck,
@@ -24,22 +21,21 @@ import {
   userRegister,
 } from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
-import { FullPageLoder } from "../../Components/FullPageLoder";
 
 import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
-import { RegisterPersonal } from "./components/RegisterPersonal";
+import { useTheme } from "react-native-paper";
+import { HeaderTitle } from "../../Components/headerTitle";
+import theme from "../../Utilities/themeConfig";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
-import { SvgBG } from "../../Components/SvgBG";
+import { RegisterPersonal } from "./components/RegisterPersonal";
 
 const TAB_EMAIL = true;
 const TAB_MOBILE = false;
-import { useTheme } from "react-native-paper";
-import theme from "../../Utilities/themeConfig";
 
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
-  const { colors } = useTheme();
+  const { colors, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
 
   //reseting state
@@ -140,77 +136,67 @@ const Register = ({ navigation, props }) => {
   }, [isFirstSelected]);
 
   return (
-    <View style={styles.container}>
-      <SvgBG />
-
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg.png")}
+      resizeMode="cover"
+    >
+      <HeaderTitle header="Need your help" subHeader="Register" />
       {registerForm.initRegisterForm ? (
         <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
       ) : (
-        <ScrollView
+        <View
           style={{
             flexGrow: 1,
-            paddingHorizontal: spacing.WIDTH_30,
-            marginTop: 50,
-            paddingTop: 10,
+            // paddingHorizontal: spacing.WIDTH_30,
+            // marginTop: 50,
+            // paddingTop: 10,
+            // ...HEADER_MARGIN,
+            marginTop: 12,
+            borderRadius: roundness,
+            // backgroundColor: colors.background,
+            marginHorizontal: 12,
+            padding: 12,
+            // ...SHADOW_STYLE,
           }}
           nestedScrollEnabled={true}
         >
-          <ToggleButton
-            isFirstSelected={isFirstSelected}
-            label={{
-              first: strings.tab_personal,
-              second: strings.tab_existing,
-            }}
-            bgColor={{
-              selected: color.BCAE_PRIMARY,
-              unselected: color.BCAE_LIGHT_BLUE_2,
-            }}
-            textColor={{
-              selected: color.WHITE,
-              unselected: color.BCAE_PRIMARY,
-            }}
-            textPro={{
-              fontSize: fontSizes.FONT_13,
-              fontWeight: "600",
-              lineHeight: spacing.HEIGHT_16,
-            }}
-            onPressFirst={async () => {
-              dispatch(resetRegister());
-              preRequiredDataFetch();
-              setFirstSelected(TAB_EMAIL);
-            }}
-            onPressSecond={() => {
-              dispatch(resetRegister());
-              preRequiredDataFetch();
-              setFirstSelected(TAB_MOBILE);
-            }}
-          ></ToggleButton>
-
-          {renderTab}
-          {/* First Name */}
-
-          {orSection()}
-
-          <View>
-            <Text
-              style={{
-                ...{ color: colors.secondary },
-                ...styles.alreadyAccount,
+          <View style={{ backgroundColor: colors.background, padding: 12 }}>
+            <ToggleButton
+              isFirstSelected={isFirstSelected}
+              label={{
+                first: strings.tab_personal,
+                second: strings.tab_existing,
               }}
-            >
-              {strings.already_acc}
-            </Text>
-            <Pressable onPress={() => navigation.navigate("Login", {})}>
-              <Text style={styles.loginText}>
-                {strings.login.toUpperCase()}
-              </Text>
-            </Pressable>
+              bgColor={{
+                selected: color.BCAE_PRIMARY,
+                unselected: color.BCAE_LIGHT_BLUE_2,
+              }}
+              textColor={{
+                selected: color.WHITE,
+                unselected: color.BCAE_PRIMARY,
+              }}
+              textPro={{
+                fontSize: fontSizes.FONT_13,
+                fontWeight: "600",
+                lineHeight: spacing.HEIGHT_16,
+              }}
+              onPressFirst={async () => {
+                dispatch(resetRegister());
+                preRequiredDataFetch();
+                setFirstSelected(TAB_EMAIL);
+              }}
+              onPressSecond={() => {
+                dispatch(resetRegister());
+                preRequiredDataFetch();
+                setFirstSelected(TAB_MOBILE);
+              }}
+            ></ToggleButton>
           </View>
-
-          <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
-        </ScrollView>
+          {renderTab}
+        </View>
       )}
-    </View>
+    </ImageBackground>
   );
 };
 
