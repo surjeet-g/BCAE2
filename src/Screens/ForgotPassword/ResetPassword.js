@@ -40,13 +40,13 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  const { email, inviteToken, isChangePassword } = route.params;
-  // const { email, inviteToken, isChangePassword } = {
-  //   email: "dash.surjeet@gmail.com",
-  //   inviteToken:
-  //     "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
-  //   isChangePassword: true,
-  // };
+  // const { email, inviteToken, isChangePassword } = route.params;
+  const { email, inviteToken, isChangePassword } = {
+    email: "dash.surjeet@gmail.com",
+    inviteToken:
+      "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
+    isChangePassword: true,
+  };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -325,7 +325,7 @@ const ResetPassword = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
+    backgroundColor: "#9C8FC4",
   },
 
   toast: {
