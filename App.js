@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Provider as StoreProvider } from "react-redux";
+import { Provider as StoreProvider, useDispatch } from "react-redux";
 import { store } from "./src/Redux/Store";
 import MyStack from "./src/Navigation/MyStack";
 import Toast from "react-native-toast-message";
@@ -11,10 +11,9 @@ import { storageKeys } from "./src/Utilities/Constants/Constant";
 import { getData, saveData } from "./src/Storage/DB";
 import moment from "moment";
 import { getToken } from "./src/Storage/token";
-import { logoutUserSectionTimeOut } from "./src/Redux/LogoutDispatcher";
-import theme from "./src/Utilities/themeConfig";
 
-let navigator = useNavigation;
+import theme from "./src/Utilities/themeConfig";
+import { logoutUserWithOutRedux } from "./src/Redux/LogoutDispatcher";
 
 const toastConfig = {
   bctError: ({ text1, props }) => (
@@ -26,16 +25,15 @@ const toastConfig = {
 };
 
 const App = () => {
-  const appState = useRef(AppState.currentState);
+  let navigator = useNavigation;
+  // const appState = useRef(AppState.currentState);
   useEffect(() => {
     const subscription = AppState.addEventListener(
       "change",
       async (nextAppState) => {
         const token = await getToken();
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === "active"
-        ) {
+
+        if (nextAppState == "active") {
           if (
             token.accessToken != null &&
             typeof token.accessToken != "undefined"
@@ -54,10 +52,12 @@ const App = () => {
                 moment(currentDate).diff(moment(lastLoggedDate))
               );
 
-              const hour = diffBwCurrentDate.asHours();
+              const hour = diffBwCurrentDate.asMinutes();
 
-              if (hour > 0) {
-                await logoutUserSectionTimeOut(navigator);
+              if (hour > 15) {
+                if (await logoutUserWithOutRedux()) {
+                  console.log("logout");
+                }
               }
             }
           } else {
