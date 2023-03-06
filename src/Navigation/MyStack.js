@@ -31,6 +31,7 @@ import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -70,9 +71,7 @@ function MyStack() {
             ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
-          headerTitle: () => (
-            <HeaderTitle header="Need your help" subHeader="Register" />
-          ),
+          headerTitle: "",
 
           headerRight: () => {
             return (
@@ -128,6 +127,13 @@ function MyStack() {
           })}
           name="EditProfile"
           component={EditProfile}
+        />
+        <Stack.Screen
+          options={{
+            title: "",
+          }}
+          name="RegisterSuccess"
+          component={RegisterSuccess}
         />
 
         <Stack.Screen

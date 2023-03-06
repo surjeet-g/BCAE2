@@ -89,7 +89,7 @@ const App = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         // animated={true}
-        backgroundColor={theme.colors.primary}
+        backgroundColor={"#5E5676"}
         // barStyle={statusBarStyle}
         // showHideTransition={statusBarTransition}
         // hidden={hidden}

@@ -23,7 +23,7 @@ export const TextBoxWithCTAEmail = (props) => {
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
-  let bgColor = colors.primary;
+  let bgColor = colors.yellow;
   let onClicked = props.onPress ?? null;
   let isDisableButton = props.isDisableButton ?? false;
   return (
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginRight: 12,
     right: 0,
-    bottom: 10,
+    bottom: 8,
     zIndex: 1,
     padding: spacing.WIDTH_10,
 

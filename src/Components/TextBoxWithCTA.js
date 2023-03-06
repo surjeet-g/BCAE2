@@ -23,7 +23,7 @@ export const TextBoxWithCTA = (props) => {
 
   let customStyle = props.customStyle ?? {};
   let btnTextPro = props.btnTextPro ?? {};
-  let bgColor = colors.primary;
+  let bgColor = colors.yellow;
   let onClicked = props.onPress ?? null;
   let isDisableButton = props.isDisableButton ?? false;
 
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginRight: 12,
     right: 0,
-    bottom: 10,
+    bottom: 8,
     borderColor: theme.colors.gray,
     borderWidth: 0.8,
     zIndex: 1,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     // borderRadius: spacing.HEIGHT_3,
     justifyContent: "center",
     alignItems: "center",
-    height: spacing.HEIGHT_38,
+    height: spacing.HEIGHT_34,
   },
 
   correctStyle: {
