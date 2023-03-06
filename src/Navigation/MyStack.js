@@ -60,7 +60,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={"Login"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -190,6 +190,9 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
+            headerTitle: () => (
+              <HeaderTitle header="Let us know," subHeader="Who you are?" />
+            ),
           }}
           name="Login"
           component={Login}

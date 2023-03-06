@@ -31,6 +31,7 @@ import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { CustomErrorText } from "../../Components/CustomErrorText";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import { CountryPicker } from "react-native-country-codes-picker";
+import { StickyFooter } from "./../../Components/StickyFooter";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -227,13 +228,21 @@ export const Login = ({ navigation }) => {
       <KeyboardAwareView animated={false}>
         <View
           style={{
-            paddingHorizontal: spacing.WIDTH_30,
             flex: 1,
             justifyContent: "space-between",
           }}
         >
           <ScrollView nestedScrollEnabled={true}>
-            <View style={{ marginTop: 10, flex: 1 }}>
+            <View
+              style={{
+                margin: 10,
+                flex: 1,
+                paddingHorizontal: spacing.WIDTH_30,
+                backgroundColor: "#fff",
+                borderRadius: 20,
+                elevation: 5,
+              }}
+            >
               <View
                 style={{
                   marginBottom: spacing.HEIGHT_20,
@@ -377,41 +386,43 @@ export const Login = ({ navigation }) => {
                   </View>
                 </View>
               )}
-            </View>
 
-            {/* Password Input View */}
-            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-              <CustomInput
-                value={password}
-                caption={strings.password}
-                placeHolder={strings.password}
-                onChangeText={(text) => onPasswordChange(text)}
-                secureTextEntry={secureTextEntry}
-                right={
-                  password && (
-                    <TextInput.Icon
-                      onPress={hideShowClick}
-                      style={{ width: 23, height: 23 }}
-                      icon={
-                        secureTextEntry
-                          ? require("../../Assets/icons/ic_password_show.png")
-                          : require("../../Assets/icons/ic_password_hide.png")
-                      }
+              {/* Password Input View */}
+              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                <CustomInput
+                  value={password}
+                  caption={strings.password}
+                  placeHolder={strings.password}
+                  onChangeText={(text) => onPasswordChange(text)}
+                  secureTextEntry={secureTextEntry}
+                  right={
+                    password && (
+                      <TextInput.Icon
+                        onPress={hideShowClick}
+                        style={{ width: 23, height: 23 }}
+                        icon={
+                          secureTextEntry
+                            ? require("../../Assets/icons/ic_password_show.png")
+                            : require("../../Assets/icons/ic_password_hide.png")
+                        }
+                      />
+                    )
+                  }
+                />
+
+                {!login.initLogin &&
+                  login?.loggedProfile?.errorCode &&
+                  login.loggedProfile.errorCode != "404" &&
+                  login?.loggedProfile?.errorCode != "10000" &&
+                  login?.loggedProfile?.errorCode != "10001" && (
+                    <CustomErrorText
+                      errMessage={login?.loggedProfile?.message}
                     />
-                  )
-                }
-              />
-
-              {!login.initLogin &&
-                login?.loggedProfile?.errorCode &&
-                login.loggedProfile.errorCode != "404" &&
-                login?.loggedProfile?.errorCode != "10000" &&
-                login?.loggedProfile?.errorCode != "10001" && (
-                  <CustomErrorText errMessage={login?.loggedProfile?.message} />
+                  )}
+                {passwordError !== "" && (
+                  <CustomErrorText errMessage={passwordError} />
                 )}
-              {passwordError !== "" && (
-                <CustomErrorText errMessage={passwordError} />
-              )}
+              </View>
             </View>
 
             {/* Bottom View */}
@@ -497,9 +508,9 @@ export const Login = ({ navigation }) => {
                 />
               </View>
 
-              {/* <StickyFooter /> */}
+              {/* <Sticky></Sticky> */}
             </View>
-            {/* </ScrollView> */}
+
             {!login.initLogin &&
               (login?.loggedProfile?.errorCode == "10000" ||
                 login?.loggedProfile?.errorCode == "10001") && (
