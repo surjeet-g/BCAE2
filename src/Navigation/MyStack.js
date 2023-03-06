@@ -33,6 +33,7 @@ import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
@@ -61,7 +62,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"ConfirmForgotPassword"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -79,7 +80,7 @@ function MyStack() {
               <View style={navBar.navRightCon}>
                 <Pressable
                   onPress={() =>
-                    alert("ToDo - Navigate njjjkjjjjjto Notifications Screen")
+                    alert("ToDo - Navigate to Notifications Screen")
                   }
                 >
                   <TermIcon {...ICON_STYLE} />
@@ -200,6 +201,14 @@ function MyStack() {
           }}
           name="Login"
           component={Login}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
+          name="VerifyLoginOTP"
+          component={VerifyLoginOTP}
         />
 
         <Stack.Screen

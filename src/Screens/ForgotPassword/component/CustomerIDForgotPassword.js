@@ -215,22 +215,6 @@ const CustomerIDForgotPassword = (props) => {
           onPress={submit}
         />
       </View>
-
-      <Pressable onPress={() => props.navigation.goBack()}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 35,
-          }}
-        >
-          <Image source={require("../../../Assets/icons/ic_left_arrow.png")} />
-          <Text style={{ marginLeft: 10, color: color.PLACEHOLDER }}>
-            {strings.back_to_login}
-          </Text>
-        </View>
-      </Pressable>
     </View>
   );
 };

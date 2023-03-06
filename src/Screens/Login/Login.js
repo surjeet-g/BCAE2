@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { Modal, RadioButton, TextInput } from "react-native-paper";
+import { Modal, RadioButton, TextInput, Switch } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
@@ -37,6 +37,7 @@ import {
   verifyLoginData,
 } from "./LoginDispatcher";
 import { StickyFooter } from "./../../Components/StickyFooter";
+import CustomSwitch from "react-native-custom-switch-new";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -71,6 +72,17 @@ export const Login = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
+
+  const [isEmailLoginMode, setIsEmailLoginMode] = React.useState(true);
+
+  const onToggleSwitch = () => {
+    if (isEmailLoginMode) {
+      onSelectEmailLoginMode();
+    } else {
+      onSelectMobileLoginMode();
+    }
+    setIsEmailLoginMode(!isEmailLoginMode);
+  };
 
   let login = useSelector((state) => state.login);
 
@@ -286,11 +298,35 @@ export const Login = ({ navigation }) => {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginVertical: spacing.HEIGHT_10,
+                  justifyContent: "flex-end",
+                  marginTop: 20,
+                  marginBottom: -20,
                 }}
               >
-                <View
+                <CustomSwitch
+                  buttonWidth={20}
+                  buttonPadding={5}
+                  switchWidth={75}
+                  startOnLeft={isEmailLoginMode}
+                  onSwitch={onToggleSwitch}
+                  onSwitchReverse={onToggleSwitch}
+                  buttonColor={"#5B5372"}
+                  switchBackgroundColor={"#F2EFFF"}
+                  switchLeftText={"Email"}
+                  switchLeftTextStyle={{
+                    color: "#4B3694",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                  switchRightText={"Mobile"}
+                  switchRightTextStyle={{
+                    color: "#4B3694",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                />
+
+                {/* <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -319,7 +355,7 @@ export const Login = ({ navigation }) => {
                   <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(MOBILE)}
                   </Text>
-                </View>
+                </View> */}
               </View>
 
               {loginMode === EMAIL ? (
@@ -542,7 +578,15 @@ export const Login = ({ navigation }) => {
                 }}
               />
             </View>
-            <Text style={styles.noAccText}>
+            <Text
+              style={{
+                color: "#393939",
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
               By continuing, I accept and agree to BCAE
             </Text>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -583,7 +627,15 @@ export const Login = ({ navigation }) => {
                 Privacy Policy
               </Text>
             </View>
-            <Text style={styles.noAccText}>
+            <Text
+              style={{
+                color: "#393939",
+                fontSize: fontSizes.FONT_12,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
               © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
             </Text>
           </StickyFooter>

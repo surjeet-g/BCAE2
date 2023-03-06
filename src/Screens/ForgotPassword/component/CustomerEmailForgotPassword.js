@@ -107,14 +107,12 @@ const CustomerEmailForgotPassword = (props) => {
           caption={strings.customer_email_ID}
           placeHolder={strings.customer_email_ID}
           right={
-            username && (
-              <TextInput.Icon
-                onPress={clearTextClick}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                style={{ width: 23, height: 23 }}
-                icon="close"
-              />
-            )
+            <TextInput.Icon
+              onPress={clearTextClick}
+              theme={{ colors: { onSurfaceVariant: colors.gray } }}
+              style={{ width: 23, height: 23 }}
+              icon="close"
+            />
           }
         />
 
