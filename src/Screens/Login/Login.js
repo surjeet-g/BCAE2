@@ -427,9 +427,9 @@ export const Login = ({ navigation }) => {
                     textAlign: "center",
                     alignSelf: "center",
                     marginVertical: spacing.HEIGHT_15,
-                    color: "#F5AD47",
+                    color: "#BF873A",
                     fontWeight: "700",
-                    fontSize: fontSizes.FONT_16,
+                    fontSize: fontSizes.FONT_18,
                   }}
                   onPress={() => {
                     loginMode === EMAIL
@@ -439,6 +439,40 @@ export const Login = ({ navigation }) => {
                 >
                   {strings.login_with_otp}
                 </Text>
+              </View>
+
+              {/* Forgot Password View */}
+              <View
+                style={{
+                  alignSelf: "center",
+                  marginVertical: spacing.HEIGHT_20,
+                }}
+              >
+                <Pressable
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                  style={{ flexDirection: "row" }}
+                >
+                  <Text style={styles.noAccText}>{"Trouble Sign-In? "}</Text>
+                  <Text style={styles.forgotText}>
+                    {strings.forgot_password}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Register View */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  paddingVertical: 10,
+                }}
+              >
+                <Text style={styles.noAccText}>{strings.dont_account}</Text>
+                <Pressable
+                  onPress={() => navigation.navigate("Register with us", {})}
+                >
+                  <Text style={styles.rgisterText}>{strings.register}</Text>
+                </Pressable>
               </View>
 
               {/* Login View */}
@@ -463,37 +497,7 @@ export const Login = ({ navigation }) => {
                 />
               </View>
 
-              {/* Forgot Password View */}
-              <View
-                style={{
-                  alignSelf: "center",
-                  marginVertical: spacing.HEIGHT_20,
-                }}
-              >
-                <Pressable
-                  onPress={() => navigation.navigate("ForgotPassword")}
-                >
-                  <Text style={styles.forgotText}>
-                    {strings.forgot_password}
-                  </Text>
-                </Pressable>
-              </View>
-
-              {/* Register View */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingVertical: 10,
-                }}
-              >
-                <Text style={styles.noAccText}>{strings.dont_account}</Text>
-                <Pressable
-                  onPress={() => navigation.navigate("Register with us", {})}
-                >
-                  <Text style={styles.rgisterText}>{strings.register}</Text>
-                </Pressable>
-              </View>
+              {/* <StickyFooter /> */}
             </View>
             {/* </ScrollView> */}
             {!login.initLogin &&
@@ -573,21 +577,23 @@ const styles = StyleSheet.create({
     bottom: spacing.HEIGHT_31 * 2,
   },
   forgotText: {
-    color: "#E22D2D",
-    fontSize: fontSizes.FONT_14,
-    fontWeight: "500",
+    fontWeight: "700",
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
+    lineHeight: spacing.WIDTH_17,
+    textAlign: "center",
   },
   noAccText: {
-    color: "#202223",
+    color: "#393939",
     fontSize: fontSizes.FONT_12,
-    lineHeight: spacing.WIDTH_14,
+    lineHeight: spacing.WIDTH_16,
     textAlign: "center",
     fontWeight: 400,
   },
   rgisterText: {
-    fontWeight: "600",
-    color: "#202223",
-    fontSize: fontSizes.FONT_14,
+    fontWeight: "700",
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },
