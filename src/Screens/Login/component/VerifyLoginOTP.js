@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
 import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { TextInput, Modal } from "react-native-paper";
@@ -14,6 +20,7 @@ import {
   PROD_FAQ,
   WEBCLIENT_ID,
 } from "../../../Utilities/Constants/Constant";
+import { HEADER_MARGIN } from "../../../Utilities/themeConfig";
 import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 import { strings } from "../../../Utilities/Language";
 import {
@@ -82,8 +89,13 @@ const VerifyLoginOTP = (props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <SvgBG />
+    <ImageBackground
+      style={styles.container}
+      source={require("../../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
+    >
+      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Let us know,"}</Text>
+      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Who you are?"}</Text>
       <KeyboardAwareView
         animated={false}
         style={{
@@ -223,7 +235,7 @@ const VerifyLoginOTP = (props) => {
           />
         </View>
       </Modal>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -231,6 +243,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
+    ...HEADER_MARGIN,
   },
 });
 

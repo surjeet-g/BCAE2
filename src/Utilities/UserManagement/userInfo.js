@@ -25,9 +25,9 @@ export const getUserId = async () => {
       "userId",
       ""
     );
-    if (userId == "") throw "Customer UUDI is empty";
+    if (userId == "") throw "Customer UserID is empty";
   } catch (error) {
-    console.log("getCustomerUUID ", error);
+    console.log("getUserId ", error);
   }
   return userId;
 };

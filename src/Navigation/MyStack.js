@@ -33,6 +33,7 @@ import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
@@ -197,12 +198,17 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
-            headerTitle: () => (
-              <HeaderTitle header="Let us know," subHeader="Who you are?" />
-            ),
           }}
           name="Login"
           component={Login}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
+          name="VerifyLoginOTP"
+          component={VerifyLoginOTP}
         />
 
         <Stack.Screen

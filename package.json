@@ -34,6 +34,7 @@
     "react": "18.2.0",
     "react-file-base64": "^1.0.3",
     "react-native": "0.71.2",
+    "react-native-custom-switch-new": "^1.0.2",
     "react-native-date-picker": "^4.2.8",
     "react-native-document-picker": "^8.1.1",
     "react-native-easy-grid": "^0.2.2",
