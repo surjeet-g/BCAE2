@@ -532,30 +532,32 @@ const EditProfile = ({ navigation, props }) => {
               </View>
 
               {/* Address */}
-              <View style={{ marginTop: spacing.HEIGHT_40 }}>
-                <CustomInput
-                  multiline={true}
-                  numberOfLines={2}
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
-                  value={handleMultipleContact(addresss)}
-                  caption={strings.location}
-                  placeHolder={strings.location}
-                  right={
-                    <TextInput.Icon
-                      onPress={() => locationIconClick()}
-                      theme={{ colors: { onSurfaceVariant: colors.primary } }}
-                      icon="map"
-                    />
-                  }
-                />
+              {addresss.length > 0 && (
+                <View style={{ marginTop: spacing.HEIGHT_40 }}>
+                  <CustomInput
+                    multiline={true}
+                    numberOfLines={2}
+                    style={{
+                      backgroundColor: "transparent",
+                    }}
+                    value={handleMultipleContact(addresss)}
+                    caption={strings.location}
+                    placeHolder={strings.location}
+                    right={
+                      <TextInput.Icon
+                        onPress={() => locationIconClick()}
+                        theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                        icon="map"
+                      />
+                    }
+                  />
 
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
-                  this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {locationError !== "" && showErrorMessage(locationError)}
-              </View>
+                  {!registerForm.initRegisterForm &&
+                    registerForm?.loggedProfile?.errorCode == "404" &&
+                    this.showErrorMessage(registerForm?.loggedProfile?.message)}
+                  {locationError !== "" && showErrorMessage(locationError)}
+                </View>
+              )}
 
               {/* Location */}
               {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>

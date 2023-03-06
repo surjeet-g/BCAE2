@@ -47,6 +47,7 @@ export const endPoints = {
   ORGANIZATION: "api/organization",
   ADDRESS_LOOKUP: "api/lookup/address-lookup",
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
+  DOCUMENT_SCAN: "api/common/scan-document",
 };
 
 export const requestMethod = {
