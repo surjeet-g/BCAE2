@@ -32,6 +32,7 @@ import { useTheme } from "react-native-paper";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import { HeaderTitle } from "../Components/headerTitle";
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
@@ -66,7 +67,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={STACK_REGISTER}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -76,6 +77,10 @@ function MyStack() {
             ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
+          headerTitle: () => (
+            <HeaderTitle header="Need your help" subHeader="Register" />
+          ),
+
           headerRight: () => {
             return (
               <View style={navBar.navRightCon}>

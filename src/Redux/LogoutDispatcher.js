@@ -5,6 +5,7 @@ import { saveToken, getDataFromDB } from "../Storage/token";
 import { storageKeys } from "../Utilities/Constants/Constant";
 import { removeAsyncItem } from "../Storage/DB";
 import { getUserId } from "../Utilities/UserManagement/userInfo";
+import Toast from "react-native-toast-message";
 
 export function logoutUser(navigation) {
   return async (dispatch) => {
@@ -12,12 +13,13 @@ export function logoutUser(navigation) {
 
     let params = {};
     const userId = await getUserId();
+    console.log("hiting logout");
     let result = await serverCall(
       `${endPoints.LOGOUT_USER}${userId}`,
       requestMethod.DELETE,
       params
     );
-
+    console.log("result", result);
     if (result.success) {
       dispatch(setLogoutData(result?.data));
       await removeAsyncItem(storageKeys.DASHBOARD_DATA);
@@ -35,6 +37,36 @@ export function logoutUser(navigation) {
     }
   };
 }
+export const logoutUserWithOutRedux = async () => {
+  let params = {};
+  const userId = await getUserId();
+
+  let result = await serverCall(
+    `${endPoints.LOGOUT_USER}${userId}`,
+    requestMethod.DELETE,
+    params
+  );
+
+  if (result.success) {
+    Toast.show({
+      type: "bctError",
+      text1: "You are being time-out out due to inactivity.Please login again",
+    });
+    await removeAsyncItem(storageKeys.DASHBOARD_DATA);
+    await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
+    await removeAsyncItem(storageKeys.PROFILE_DETAILS);
+    await removeAsyncItem(storageKeys.SAVED_LOCATION);
+    await removeAsyncItem(storageKeys.LANGUAGE_KEY);
+    await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
+    await removeAsyncItem(storageKeys.REFRESH_TOKEN);
+    await removeAsyncItem(storageKeys.ACCESS_TOKEN);
+    await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+    return true;
+  } else {
+    return false;
+    console.log("error ");
+  }
+};
 
 export function deleteNdLogoutUser(navigation, userData) {
   return async (dispatch) => {
@@ -80,8 +112,6 @@ export function deleteNdLogoutUser(navigation, userData) {
 
 export function logoutUserSectionTimeOut(navigation) {
   return async (dispatch) => {
-    console.log("hiting logut dispatcher");
-
     dispatch(setLogoutData("logout"));
     await removeAsyncItem(storageKeys.DASHBOARD_DATA);
     await removeAsyncItem(storageKeys.FCM_DEVICE_ID);

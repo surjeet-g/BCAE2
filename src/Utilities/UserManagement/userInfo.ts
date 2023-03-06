@@ -1,8 +1,9 @@
 import get from "lodash.get";
 import { getDataFromDB } from "../../Storage/token";
 import { storageKeys } from "../Constants/Constant";
+import { IdsInterface } from "./types";
 
-export const getCustomerUUID = async () => {
+export const getCustomerUUID:IdsInterface = async () => {
   let custUUDI;
   try {
     custUUDI = get(
@@ -17,7 +18,7 @@ export const getCustomerUUID = async () => {
   return custUUDI;
 };
 
-export const getUserId = async () => {
+export const getUserId:IdsInterface = async () => {
   let userId;
   try {
     userId = get(

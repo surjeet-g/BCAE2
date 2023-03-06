@@ -8,7 +8,7 @@ const theme = {
   roundness: 12, //
   colors: {
     ...DefaultTheme.colors,
-    primary: "#F5AD47",
+    primary: "#9C8FC4",
     inversePrimary: "#DBDBDB",
     onPrimaryContainer: "#88a5da",
     secondary: "#474747",
@@ -35,7 +35,7 @@ const theme = {
     bodyMedium: {
       fontFamily: FONT_FAMILY,
       letterSpacing: 0.25,
-      fontWeight: "400",
+      fontWeight: "300",
       lineHeight: 20,
       fontSize: 14,
     },
