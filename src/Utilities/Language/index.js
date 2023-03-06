@@ -21,7 +21,9 @@ export let strings = new LocalizedStrings({
     click_to_more: "CLICK TO KNOW MORE",
     follow_up: "FOLLOW-UP",
     welcome: "Welcome",
-    brand_name: "Business Centric Automation Engine",
+    brand_name: `Business
+    Centric
+    Automation Engine`,
     get_started: "GET STARTED",
     login: "Login",
     login_with_otp: "Login with OTP",
@@ -226,7 +228,9 @@ export let strings = new LocalizedStrings({
     click_to_more: "CLICK TO KNOW MORE",
     follow_up: "FOLLOW-UP",
     welcome: "Welcome",
-    brand_name: "Business Centric Automation Engine",
+    brand_name: `Business
+    Centric
+    Automation Engine`,
     get_started: "GET STARTED",
     login: "Login",
     login_with_otp: "Login with OTP",
@@ -413,7 +417,9 @@ export let strings = new LocalizedStrings({
     checkYourMail: "Check your text message",
     inquiry_success: "Inquiry created successfully",
     welcome: "സ്വാഗതം",
-    brand_name: "Business Centric Automation Engine",
+    brand_name: `Business
+    Centric
+    Automation Engine`,
     get_started: "തുടങ്ങി",
     login: "ലോഗിൻ",
     back_to_login: "Back to log in",
@@ -444,7 +450,9 @@ export let strings = new LocalizedStrings({
   },
   hi: {
     welcome: "स्वागत",
-    brand_name: "Business Centric Automation Engine",
+    brand_name: `Business
+    Centric
+    Automation Engine`,
     get_started: "शुरू हो जाओ",
     login: "लॉगइन",
     back_to_login: "Back to log in",

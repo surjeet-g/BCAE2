@@ -67,15 +67,8 @@ const Splash = ({ route, navigation }) => {
         source={require("../../Assets/icons/bg.png")}
         resizeMode="cover"
         style={{
-          // backgroundColor: colors.background,
-          flex: 0.6,
+          flex: 0.5,
         }}
-        // style={[
-        //   styles.container,
-        //   {
-        //     // Try setting `flexDirection` to `"row"`.
-        //   },
-        // ]}
       >
         <View
           style={{
@@ -87,21 +80,21 @@ const Splash = ({ route, navigation }) => {
         >
           <BCAE_LOGO />
         </View>
-        <View style={{ marginTop: height * 0.2, alignItems: "center" }}>
-          <Text variant="headlineLarge" style={styles.highlightText}>
-            {strings.brand_name}
-          </Text>
-          <Text
-            style={{
-              backgroundColor: color.VERSION_BACKGROUND,
-            }}
-          >
-            {strings.version}
-          </Text>
-        </View>
       </ImageBackground>
       <StickyFooter>
         <View style={{ paddingVertical: 20 }}>
+          <View style={{ alignItems: "flex-start", marginLeft: "10%" }}>
+            <Text variant="headlineLarge" style={styles.highlightText}>
+              Business{"\n"}Centric{"\n"}Automation{"\n"}Engine
+            </Text>
+            <Text
+              style={{
+                backgroundColor: color.VERSION_BACKGROUND,
+              }}
+            >
+              {strings.version}
+            </Text>
+          </View>
           <View
             style={
               {
@@ -145,6 +138,7 @@ const styles = StyleSheet.create({
   },
   highlightText: {
     color: "#202223",
+    textAlign: "left",
     fontSize: fontSizes.FONT_19 * 2,
     fontWeight: "600",
     lineHeight: spacing.HEIGHT_27 * 2,
