@@ -61,9 +61,10 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Login"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
+          headerTintColor: "white",
           headerStyle: {
             backgroundColor: "transparent",
           },
@@ -78,7 +79,7 @@ function MyStack() {
               <View style={navBar.navRightCon}>
                 <Pressable
                   onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
+                    alert("ToDo - Navigate njjjkjjjjjto Notifications Screen")
                   }
                 >
                   <TermIcon {...ICON_STYLE} />

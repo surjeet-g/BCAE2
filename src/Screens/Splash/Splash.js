@@ -81,8 +81,8 @@ const Splash = ({ route, navigation }) => {
           <BCAE_LOGO />
         </View>
       </ImageBackground>
-      <StickyFooter>
-        <View style={{ paddingVertical: 20 }}>
+      <StickyFooter isSplash={true}>
+        <View>
           <View style={{ alignItems: "flex-start", marginLeft: "10%" }}>
             <Text variant="headlineLarge" style={styles.highlightText}>
               Business{"\n"}Centric{"\n"}Automation{"\n"}Engine
@@ -96,13 +96,9 @@ const Splash = ({ route, navigation }) => {
             </Text>
           </View>
           <View
-            style={
-              {
-                // marginTop: 80,
-                // paddingLeft: 20,
-                // paddingRight: 20,
-              }
-            }
+            style={{
+              marginBottom: 10,
+            }}
           >
             <CustomButton
               loading={false}
@@ -111,7 +107,10 @@ const Splash = ({ route, navigation }) => {
               onPress={checkLogin}
             />
           </View>
-          <Text variant="labelSmall" style={{ textAlign: "center" }}>
+          <Text
+            variant="labelSmall"
+            style={{ textAlign: "center", marginBottom: 30 }}
+          >
             © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
           </Text>
         </View>

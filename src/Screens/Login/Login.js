@@ -230,9 +230,11 @@ export const Login = ({ navigation }) => {
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../../Assets/icons/bg.png")}
+      source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
+      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Let us know,"}</Text>
+      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Who you are?"}</Text>
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -487,7 +489,7 @@ export const Login = ({ navigation }) => {
                 <Pressable
                   onPress={() => navigation.navigate("Register with us", {})}
                 >
-                  <Text style={styles.rgisterText}>{strings.register}</Text>
+                  <Text style={styles.rgisterText}> {strings.register}</Text>
                 </Pressable>
               </View>
             </View>

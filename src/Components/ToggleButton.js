@@ -22,7 +22,7 @@ export const ToggleButton = (props) => {
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: colors.gray,
+        backgroundColor: colors.toggleBackground,
         ...SHADOW_STYLE,
         // padding: 2,
         borderRadius: spacing.HEIGHT_24,
@@ -33,9 +33,11 @@ export const ToggleButton = (props) => {
         activeOpacity={activeOpacity}
         style={{
           paddingHorizontal: spacing.WIDTH_9,
-          backgroundColor: isFirstSelected ? colors.tertiary : colors.gray,
+          backgroundColor: isFirstSelected
+            ? colors.tertiary
+            : colors.toggleBackground,
           borderRadius: spacing.HEIGHT_24,
-          ...SHADOW_STYLE,
+          //...SHADOW_STYLE,
           justifyContent: "center",
           alignItems: "center",
           height: spacing.HEIGHT_32,
@@ -60,7 +62,9 @@ export const ToggleButton = (props) => {
         activeOpacity={activeOpacity}
         style={{
           paddingHorizontal: spacing.WIDTH_9,
-          backgroundColor: !isFirstSelected ? colors.tertiary : colors.gray,
+          backgroundColor: !isFirstSelected
+            ? colors.tertiary
+            : colors.toggleBackground,
           borderRadius: spacing.HEIGHT_24,
           justifyContent: "center",
           alignItems: "center",

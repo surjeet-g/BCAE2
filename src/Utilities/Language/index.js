@@ -24,8 +24,8 @@ export let strings = new LocalizedStrings({
     brand_name: `Business
     Centric
     Automation Engine`,
-    get_started: "GET STARTED",
-    login: "Login",
+    get_started: "LET'S GET STARTED",
+    login: "SIGN IN",
     login_with_otp: "Sign-In with OTP",
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
@@ -231,8 +231,8 @@ export let strings = new LocalizedStrings({
     brand_name: `Business
     Centric
     Automation Engine`,
-    get_started: "GET STARTED",
-    login: "Login",
+    get_started: "LET'S GET STARTED",
+    login: "SIGN IN",
     login_with_otp: "Sign-In with OTP",
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
