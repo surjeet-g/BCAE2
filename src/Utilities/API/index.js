@@ -3,18 +3,18 @@ import NetInfo from "@react-native-community/netinfo";
 import {
   BASE_URL,
   requestMethod,
-  endPoints,
   BASE_URL_TENANT,
   PROD_BASE_URL_TENANT,
   PROD_BASE_URL,
   TENANT_ID,
 } from "./ApiConstants";
 import { strings } from "../Language/index";
-const RNFetchBlob = require("rn-fetch-blob").default;
-import { getDataFromDB, saveDataToDB, getToken } from "../../Storage/token";
+import { getDataFromDB } from "../../Storage/token";
 import { storageKeys, DEBUG_BUILD } from "../../Utilities/Constants/Constant";
-import { Platform, PermissionsAndroid } from "react-native";
+import { Alert } from "react-native";
 import { TDLog } from "../Constants/Constant";
+import { logoutUserSectionTimeOut } from "./../../Redux/LogoutDispatcher";
+import { store } from "./../../Redux/Store";
 
 export const networkAvailable = () =>
   new Promise((resolve, reject) =>
@@ -23,7 +23,7 @@ export const networkAvailable = () =>
     )
   );
 
-export const serverCall = async (url, method, data) =>
+export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
     // Internet Check and response error
     let net = await networkAvailable();
@@ -144,7 +144,7 @@ export const serverCall = async (url, method, data) =>
                 "$$$-serverCall-error.response ===>>> ",
                 JSON.stringify(error.response)
               );
-              processErrorResponse(resolve, error, requestObject);
+              processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
               // if (
@@ -210,8 +210,30 @@ export const serverCall = async (url, method, data) =>
     }
   });
 
-const processErrorResponse = (resolve, error, requestObject) => {
+const processErrorResponse = (resolve, error, requestObject, navigation) => {
   if (
+    error?.response?.status === 401 &&
+    error?.response?.data?.message === "Not authorized"
+  ) {
+    Alert.alert(
+      strings.attention,
+      "Your session is expired. Kindly login again to continue!!!",
+      [
+        // {
+        //   text: strings.cancel,
+        //   onPress: () => console.log("Cancel Pressed"),
+        // },
+        {
+          text: strings.ok,
+          onPress: () => {
+            if (navigation != null)
+              store.dispatch(logoutUserSectionTimeOut(navigation));
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  } else if (
     error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&

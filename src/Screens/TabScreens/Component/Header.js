@@ -98,7 +98,8 @@ const Header = (props, { IsShowBell }) => {
           profile.savedProfileData.email,
           oldPassword,
           password,
-          confirmPassword
+          confirmPassword,
+          props.navigation
         )
       );
     } else {
@@ -122,7 +123,8 @@ const Header = (props, { IsShowBell }) => {
     dispatch(deleteNdLogoutUser(props.navigation, profile?.savedProfileData));
   };
 
-  const fetchMyProfileData = () => dispatch(fetchSavedProfileData());
+  const fetchMyProfileData = () =>
+    dispatch(fetchSavedProfileData(props.navigation));
 
   useEffect(() => {
     getDataFromDB(storageKeys.PUSH_NOTIFICATION).then((result) => {

@@ -30,7 +30,7 @@ export const endPoints = {
   GET_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=REGISTER",
   CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
-  PROFILE_DETAILS: "api/customer/",
+  PROFILE_DETAILS: "api/customer",
   UPDATE_MOBILE_USER: "api/customer/",
   REGISTER: "api/customer/register",
   GET_FAVOURITE_LOCATION: "api/customer/address/",
@@ -47,6 +47,7 @@ export const endPoints = {
   ORGANIZATION: "api/organization",
   ADDRESS_LOOKUP: "api/lookup/address-lookup",
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
+  DOCUMENT_SCAN: "api/common/scan-document",
 };
 
 export const requestMethod = {

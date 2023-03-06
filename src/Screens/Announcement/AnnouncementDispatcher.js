@@ -32,12 +32,16 @@ export function getAnnouncementsData(navigation, phoneNumber) {
         let result = await serverCall(
           endPoints.ANNOUNCEMENT,
           requestMethod.GET,
-          params
+          params,
+          navigation
         );
         if (result.success) {
           //result.data.data.rows
           let fullAnnouncement = [];
-          const masterInteraction = await getAllMasterIntraction(params);
+          const masterInteraction = await getAllMasterIntraction(
+            params,
+            navigation
+          );
           console.log(
             "master intraction data main dispatcher",
             masterInteraction
@@ -79,12 +83,13 @@ export function getAnnouncementsData(navigation, phoneNumber) {
   };
 }
 
-const getAllMasterIntraction = async (params) => {
+const getAllMasterIntraction = async (params, navigation) => {
   try {
     let result = await serverCall(
       `${endPoints.MY_TICKETS_API}`,
       requestMethod.POST,
-      params
+      params,
+      navigation
     );
     if (result.success) {
       console.log("getAllMasterIntraction() API Req success");

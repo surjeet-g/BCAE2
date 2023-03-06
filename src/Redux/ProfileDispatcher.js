@@ -10,7 +10,7 @@ import { serverCall } from "..//Utilities/API";
 import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 import Toast from "react-native-toast-message";
 
-export function fetchSavedProfileData() {
+export function fetchSavedProfileData(navigation = null) {
   return async (dispatch) => {
     dispatch(initProfile());
     const customerUUDI = await getCustomerUUID();
@@ -18,7 +18,8 @@ export function fetchSavedProfileData() {
     let profileResult = await serverCall(
       endPoints.PROFILE_DETAILS + "/" + customerUUDI,
       requestMethod.GET,
-      {}
+      {},
+      navigation
     );
     console.log("hiting", profileResult);
     if (profileResult?.success) {
@@ -29,7 +30,7 @@ export function fetchSavedProfileData() {
   };
 }
 
-export function updateProfileData(obj) {
+export function updateProfileData(obj, navigation) {
   return async (dispatch) => {
     dispatch(initProfile());
 
@@ -38,7 +39,8 @@ export function updateProfileData(obj) {
     let result = await serverCall(
       endPoints.UPDATE_MOBILE_USER + customerUUDI,
       requestMethod.PUT,
-      obj
+      obj,
+      navigation
     );
     console.log("res", obj);
     if (result.success) {

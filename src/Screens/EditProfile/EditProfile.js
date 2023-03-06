@@ -118,7 +118,7 @@ const EditProfile = ({ navigation, props }) => {
 
   useEffect(() => {
     async function fetchMyAPI() {
-      await dispatch2(fetchSavedProfileData());
+      await dispatch2(fetchSavedProfileData(navigation));
     }
 
     fetchMyAPI();
@@ -344,9 +344,11 @@ const EditProfile = ({ navigation, props }) => {
           },
         };
 
-        const status = await dispatch2(updateProfileData(registerObject));
+        const status = await dispatch2(
+          updateProfileData(registerObject, navigation)
+        );
         if (status) {
-          await dispatch2(fetchSavedProfileData());
+          await dispatch2(fetchSavedProfileData(navigation));
         }
       }
       //dispatch2(updateProfileData(registerObject,profile.savedProfileData.userId));
@@ -532,30 +534,32 @@ const EditProfile = ({ navigation, props }) => {
               </View>
 
               {/* Address */}
-              <View style={{ marginTop: spacing.HEIGHT_40 }}>
-                <CustomInput
-                  multiline={true}
-                  numberOfLines={2}
-                  style={{
-                    backgroundColor: "transparent",
-                  }}
-                  value={handleMultipleContact(addresss)}
-                  caption={strings.location}
-                  placeHolder={strings.location}
-                  right={
-                    <TextInput.Icon
-                      onPress={() => locationIconClick()}
-                      theme={{ colors: { onSurfaceVariant: colors.primary } }}
-                      icon="map"
-                    />
-                  }
-                />
+              {addresss.length > 0 && (
+                <View style={{ marginTop: spacing.HEIGHT_40 }}>
+                  <CustomInput
+                    multiline={true}
+                    numberOfLines={2}
+                    style={{
+                      backgroundColor: "transparent",
+                    }}
+                    value={handleMultipleContact(addresss)}
+                    caption={strings.location}
+                    placeHolder={strings.location}
+                    right={
+                      <TextInput.Icon
+                        onPress={() => locationIconClick()}
+                        theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                        icon="map"
+                      />
+                    }
+                  />
 
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
-                  this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {locationError !== "" && showErrorMessage(locationError)}
-              </View>
+                  {!registerForm.initRegisterForm &&
+                    registerForm?.loggedProfile?.errorCode == "404" &&
+                    this.showErrorMessage(registerForm?.loggedProfile?.message)}
+                  {locationError !== "" && showErrorMessage(locationError)}
+                </View>
+              )}
 
               {/* Location */}
               {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>

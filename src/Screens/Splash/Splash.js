@@ -20,7 +20,7 @@ const Splash = ({ route, navigation }) => {
   }, []);
 
   const fetchVersionData = async () => {
-    await dispatchVersionCheck(getVersionCheckData());
+    await dispatchVersionCheck(getVersionCheckData(navigation));
   };
 
   // useEffect(() => {

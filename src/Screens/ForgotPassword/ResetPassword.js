@@ -85,7 +85,15 @@ const ResetPassword = ({ route, navigation }) => {
   const dispatch = useDispatch([changePassword]);
   const requestChangePassword = () => {
     if (validatePassword(password)) {
-      dispatch(changePassword(email, oldPassword, password, confirmPassword));
+      dispatch(
+        changePassword(
+          email,
+          oldPassword,
+          password,
+          confirmPassword,
+          navigation
+        )
+      );
     } else {
       Alert.alert(strings.attention, strings.passwordValidError, [
         {
