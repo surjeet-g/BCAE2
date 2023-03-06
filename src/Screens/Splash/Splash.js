@@ -6,6 +6,7 @@ import { Text, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { CustomButton } from "../../Components/CustomButton";
+import { StickyFooter } from "../../Components/StickyFooter";
 import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
@@ -98,34 +99,30 @@ const Splash = ({ route, navigation }) => {
             {strings.version}
           </Text>
         </View>
-
-        <View
-          style={{
-            marginTop: 80,
-            paddingLeft: 20,
-            paddingRight: 20,
-          }}
-        >
-          <CustomButton
-            loading={false}
-            label={strings.get_started}
-            isDisabled={false}
-            onPress={checkLogin}
-          />
-        </View>
       </ImageBackground>
-      <Text
-        variant="labelSmall"
-        style={{
-          alignItems: "center",
-          textAlign: "center",
-          position: "absolute",
-          bottom: 15,
-          left: "13%",
-        }}
-      >
-        © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
-      </Text>
+      <StickyFooter>
+        <View style={{ paddingVertical: 20 }}>
+          <View
+            style={
+              {
+                // marginTop: 80,
+                // paddingLeft: 20,
+                // paddingRight: 20,
+              }
+            }
+          >
+            <CustomButton
+              loading={false}
+              label={strings.get_started}
+              isDisabled={false}
+              onPress={checkLogin}
+            />
+          </View>
+          <Text variant="labelSmall" style={{ textAlign: "center" }}>
+            © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+          </Text>
+        </View>
+      </StickyFooter>
     </View>
   );
 };

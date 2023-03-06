@@ -12,7 +12,7 @@ export const SHADOW_STYLE = {
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
-  roundness: 2, //
+  roundness: 3, //
   colors: {
     ...DefaultTheme.colors,
     primary: "#9C8FC4",
@@ -42,7 +42,7 @@ const theme = {
     bodyMedium: {
       fontFamily: FONT_FAMILY,
       letterSpacing: 0.25,
-      fontWeight: "300",
+      fontWeight: "400",
       lineHeight: 20,
       fontSize: 18,
     },
@@ -95,10 +95,11 @@ const theme = {
       lineHeight: 32,
       fontSize: 24,
     },
+    //button
     labelLarge: {
       fontFamily: FONT_FAMILY_MEDIUM,
       letterSpacing: 0.1,
-      fontWeight: "500",
+      fontWeight: "600",
       lineHeight: 20,
       fontSize: 18,
     },
