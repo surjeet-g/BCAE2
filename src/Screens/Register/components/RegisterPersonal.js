@@ -558,7 +558,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   );
   return (
     <>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{}}>
         <View style={{ marginVertical: 5 }}>
           <CustomDropDown
             selectedValue={selectedValueTitle?.description}
