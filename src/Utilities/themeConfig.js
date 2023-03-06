@@ -12,7 +12,7 @@ export const SHADOW_STYLE = {
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
-  roundness: 8, //
+  roundness: 2, //
   colors: {
     ...DefaultTheme.colors,
     primary: "#9C8FC4",
@@ -44,7 +44,7 @@ const theme = {
       letterSpacing: 0.25,
       fontWeight: "300",
       lineHeight: 20,
-      fontSize: 14,
+      fontSize: 18,
     },
     bodySmall: {
       fontFamily: FONT_FAMILY,
@@ -77,9 +77,9 @@ const theme = {
     headlineLarge: {
       fontFamily: FONT_FAMILY,
       letterSpacing: 0,
-      fontWeight: "400",
+      fontWeight: "600",
       lineHeight: 40,
-      fontSize: 32,
+      fontSize: 44,
     },
     headlineMedium: {
       fontFamily: FONT_FAMILY,
@@ -100,7 +100,7 @@ const theme = {
       letterSpacing: 0.1,
       fontWeight: "500",
       lineHeight: 20,
-      fontSize: 14,
+      fontSize: 18,
     },
     labelMedium: {
       fontFamily: FONT_FAMILY_MEDIUM,

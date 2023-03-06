@@ -60,7 +60,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {

@@ -1,17 +1,21 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
+
+import { Text, useTheme } from "react-native-paper";
+
+import { useDispatch, useSelector } from "react-redux";
+import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
+import { CustomButton } from "../../Components/CustomButton";
+import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
+import { getToken } from "../../Storage/token";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
-import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
-import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { getToken } from "../../Storage/token";
-import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
-import { Button } from "react-native-paper";
-import { SvgBG } from "../../Components/SvgBG";
+var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
+  const { colors } = useTheme();
   const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   const versioncheck = useSelector((state) => state.versioncheck);
 
@@ -57,54 +61,71 @@ const Splash = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          // Try setting `flexDirection` to `"row"`.
-          flexDirection: "column",
-        },
-      ]}
-    >
-      <SvgBG></SvgBG>
-      <View
+    <View style={{ backgroundColor: colors.background, flex: 1 }}>
+      <ImageBackground
+        source={require("../../Assets/icons/bg.png")}
+        resizeMode="cover"
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 85,
+          // backgroundColor: colors.background,
+          flex: 0.6,
         }}
+        // style={[
+        //   styles.container,
+        //   {
+        //     // Try setting `flexDirection` to `"row"`.
+        //   },
+        // ]}
       >
-        <BCAE_LOGO />
-      </View>
-
-      <View style={{ marginTop: 80, alignItems: "center" }}>
-        <Text style={styles.highlightText}>{strings.brand_name}</Text>
-        <Text
+        <View
           style={{
-            backgroundColor: color.VERSION_BACKGROUND,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 65,
           }}
         >
-          {strings.version}
-        </Text>
-      </View>
+          <BCAE_LOGO />
+        </View>
+        <View style={{ marginTop: height * 0.2, alignItems: "center" }}>
+          <Text variant="headlineLarge" style={styles.highlightText}>
+            {strings.brand_name}
+          </Text>
+          <Text
+            style={{
+              backgroundColor: color.VERSION_BACKGROUND,
+            }}
+          >
+            {strings.version}
+          </Text>
+        </View>
 
-      <View
+        <View
+          style={{
+            marginTop: 80,
+            paddingLeft: 20,
+            paddingRight: 20,
+          }}
+        >
+          <CustomButton
+            loading={false}
+            label={strings.get_started}
+            isDisabled={false}
+            onPress={checkLogin}
+          />
+        </View>
+      </ImageBackground>
+      <Text
+        variant="labelSmall"
         style={{
-          marginTop: 80,
-          paddingLeft: 20,
-          paddingRight: 20,
+          alignItems: "center",
+          textAlign: "center",
+          position: "absolute",
+          bottom: 15,
+          left: "13%",
         }}
       >
-        <Button
-          mode="contained"
-          label={strings.get_started}
-          disabled={false}
-          onPress={checkLogin}
-        >
-          {strings.get_started}
-        </Button>
-      </View>
+        © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+      </Text>
     </View>
   );
 };
