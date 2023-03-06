@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Provider as StoreProvider, useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { Provider as StoreProvider } from "react-redux";
 import { store } from "./src/Redux/Store";
 import MyStack from "./src/Navigation/MyStack";
 import Toast from "react-native-toast-message";
 import { ToastTemplete } from "./src/Components/ToastTemplete";
-import { useNavigation } from "@react-navigation/native";
+
 import { LogBox, SafeAreaView, AppState } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import { storageKeys } from "./src/Utilities/Constants/Constant";
 import { getData, saveData } from "./src/Storage/DB";
 import moment from "moment";
 import { getToken } from "./src/Storage/token";
-
+import RNRestart from "react-native-restart";
 import theme from "./src/Utilities/themeConfig";
 import { logoutUserWithOutRedux } from "./src/Redux/LogoutDispatcher";
 
@@ -25,7 +25,6 @@ const toastConfig = {
 };
 
 const App = () => {
-  let navigator = useNavigation;
   // const appState = useRef(AppState.currentState);
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -56,7 +55,7 @@ const App = () => {
 
               if (hour > 15) {
                 if (await logoutUserWithOutRedux()) {
-                  console.log("logout");
+                  RNRestart.restart();
                 }
               }
             }
