@@ -6,7 +6,8 @@ import SuccessIMG from "../../Assets/svg/success_register.svg";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { HeaderTitle } from "../../Components/headerTitle";
-const RegisterSuccess = ({ navigation, props }) => {
+const RegisterSuccess = ({ navigation, props, route }) => {
+  const { name } = route.params;
   return (
     <ImageBackground
       style={styles.container}
@@ -20,7 +21,7 @@ const RegisterSuccess = ({ navigation, props }) => {
           <SuccessIMG />
           <ClearSpace size={4} />
 
-          <Text variant="labelLarge">Rohit</Text>
+          <Text variant="labelLarge">{name}</Text>
           <Text variant="labelLarge">Welcome to BCAE</Text>
         </Card.Content>
       </Card>
