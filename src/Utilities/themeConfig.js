@@ -1,7 +1,8 @@
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 export const FONT_FAMILY = "";
 export const FONT_FAMILY_MEDIUM = "";
-export const HEADER_MARGIN = { marginTop: 50, paddingTop: 20 };
+export const HEADER_MARGIN = { marginTop: 0, paddingTop: 70 };
+
 export const SHADOW_STYLE = {
   elevation: 1,
   shadowColor: "#000",
@@ -19,6 +20,7 @@ const theme = {
     inversePrimary: "#DBDBDB",
     onPrimaryContainer: "#88a5da",
     secondary: "#23374e",
+    yellow: "#f5ad46",
     inverseSecondary: "#fff",
     tertiary: "#fff",
     gray: "#C7CAD1",
@@ -26,7 +28,7 @@ const theme = {
     surfaceVariant: "#ffffff",
     // surface: "#ffffff",
     onSurface: "#212223",
-    buttonDisableColor: "#FFFFFF",
+    buttonDisableColor: "#DBDBDB",
     onSurfaceVariant: "#202223",
     // outline: "black",
     graylabel: "#848A93",

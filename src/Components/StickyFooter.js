@@ -1,28 +1,25 @@
 import React from "react";
 import { Dimensions, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { SHADOW_STYLE } from "../Utilities/themeConfig";
 var { height, width } = Dimensions.get("screen");
+
 export const StickyFooter = ({ children, isRegistertion = false }) => {
   const { colors } = useTheme();
 
   return (
     <View
       style={{
-        marginTop: isRegistertion ? 10 : 0,
+        marginTop: isRegistertion ? 0 : 0,
         padding: 12,
         paddingBottom: isRegistertion ? 40 : 0,
-        position: "absolute",
+        position: isRegistertion ? "absolute" : "absolute",
         bottom: 0,
         left: isRegistertion ? -12 : 0,
-        // width: "100%",
+        marginBottom: 110,
         backgroundColor: colors.background,
-        width: width,
-
-        elevation: 1,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 1,
+        width: isRegistertion ? width : "100%",
+        ...SHADOW_STYLE,
       }}
     >
       {children}

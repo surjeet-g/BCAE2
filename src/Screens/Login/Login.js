@@ -1,36 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView, Text, Pressable } from "react-native";
-import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
-import { CustomButton } from "../../Components/CustomButton";
+import React, { useEffect, useState } from "react";
 import {
-  capitalizeFirstLetter,
-  getPhoneNumberLength,
-  excludedCountriesList,
-} from "../../Utilities/utils";
-import { strings } from "../../Utilities/Language";
-import { useDispatch, useSelector } from "react-redux";
-import { Toast } from "../../Components/Toast";
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { CountryPicker } from "react-native-country-codes-picker";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import {
-  resetLogin,
-  verifyLoginData,
-  resetShowSecondLoginAlert,
-  callLogoutAndLogin,
-  sendLoginOTPData,
-} from "./LoginDispatcher";
-import {
-  requestUserPermission,
-  notificationListener,
-} from "../../Utilities/FCM/NotificationService";
-import { ToggleButton } from "../../Components/ToggleButton";
-import { RadioButton, Modal } from "react-native-paper";
-import { SvgBG } from "../../Components/SvgBG";
-import { TextInput } from "react-native-paper";
+import { Modal, RadioButton, TextInput } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { CustomButton } from "../../Components/CustomButton";
+import { CustomErrorText } from "../../Components/CustomErrorText";
 import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
-import { CustomErrorText } from "../../Components/CustomErrorText";
+import { Toast } from "../../Components/Toast";
+import { ToggleButton } from "../../Components/ToggleButton";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
+import {
+  notificationListener,
+  requestUserPermission,
+} from "../../Utilities/FCM/NotificationService";
+import { strings } from "../../Utilities/Language";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
-import { CountryPicker } from "react-native-country-codes-picker";
+import {
+  capitalizeFirstLetter,
+  excludedCountriesList,
+  getPhoneNumberLength,
+} from "../../Utilities/utils";
+import {
+  callLogoutAndLogin,
+  resetLogin,
+  resetShowSecondLoginAlert,
+  sendLoginOTPData,
+  verifyLoginData,
+} from "./LoginDispatcher";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -222,8 +227,11 @@ export const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <SvgBG />
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg.png")}
+      resizeMode="cover"
+    >
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -558,7 +566,7 @@ export const Login = ({ navigation }) => {
           </View>
         </Modal>
       </KeyboardAwareView>
-    </View>
+    </ImageBackground>
   );
 };
 

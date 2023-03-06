@@ -1,6 +1,14 @@
 import moment from "moment";
 import React, { useState } from "react";
-import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,7 +42,7 @@ import {
   validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { styles } from "../Register";
-
+var { height, width } = Dimensions.get("screen");
 export const showErrorMessage = (errMessage) => {
   if (typeof errMessage != "string") return null;
   let pattern = /Successful/i;
@@ -558,7 +566,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   );
   return (
     <>
-      <ScrollView contentContainerStyle={{}}>
+      <ScrollView style={{ marginBottom: height * 0.4 }}>
         <View style={{ marginVertical: 5 }}>
           <CustomDropDown
             selectedValue={selectedValueTitle?.description}
@@ -579,7 +587,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
           {titleError !== "" && showErrorMessage(titleError)}
         </View>
-        <View style={{ marginTop: spacing.HEIGHT_30 }}>
+        <View style={{ marginTop: 10 }}>
           <CustomInput
             style={{
               backgroundColor: "transparent",
@@ -655,7 +663,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           }}
         />
 
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 10 }}>
           <CustomInput
             style={{
               backgroundColor: "transparent",
@@ -690,7 +698,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           {idTypeError !== "" && showErrorMessage(idTypeError)}
         </View>
 
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 10 }}>
           <CustomInput
             style={{
               backgroundColor: "transparent",
@@ -966,82 +974,86 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         </View>
       </ScrollView>
       <StickyFooter isRegistertion={true}>
-        <Pressable
-          onPress={() => {
-            console.log("hiint g");
-            setSelection(!isSelected);
-            setTermError("");
-            setPrivaceyError("");
-          }}
-          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-        >
-          <Image
-            style={styles.checkBox}
-            source={
-              isSelected
-                ? require("../../../Assets/icons/ci_checked.png")
-                : require("../../../Assets/icons/ci_uncheck.png")
-            }
-          ></Image>
-          <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
-          <Text
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: true,
-                title: "Privacy Policy",
-                // url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
-              })
-            }
-            style={{ color: color.BCAE_DARK_BLUE }}
+        <>
+          <Pressable
+            onPress={() => {
+              console.log("hiint g");
+              setSelection(!isSelected);
+              setTermError("");
+              setPrivaceyError("");
+            }}
+            style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
           >
-            Privacy Policy.
-          </Text>
-        </Pressable>
-        {privaceyError !== "" && showErrorMessage(privaceyError)}
+            <Image
+              style={styles.checkBox}
+              source={
+                isSelected
+                  ? require("../../../Assets/icons/ci_checked.png")
+                  : require("../../../Assets/icons/ci_uncheck.png")
+              }
+            ></Image>
+            <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+              I have read your{" "}
+            </Text>
+            <Text
+              onPress={() =>
+                navigation.navigate("ShowWebPage", {
+                  fromLogin: true,
+                  title: "Privacy Policy",
+                  // url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+                })
+              }
+              style={{ color: color.BCAE_DARK_BLUE }}
+            >
+              Privacy Policy.
+            </Text>
+          </Pressable>
+          {privaceyError !== "" && showErrorMessage(privaceyError)}
 
-        <Pressable
-          onPress={onCheckBoxClickTerm}
-          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-        >
-          <Image
-            style={styles.checkBox}
-            source={
-              isSelectedTerm
-                ? require("../../../Assets/icons/ci_checked.png")
-                : require("../../../Assets/icons/ci_uncheck.png")
-            }
-          ></Image>
-          <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-            I have agree to your{" "}
-          </Text>
-          <Text
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: true,
-                title: "Terms & Conditions",
-                // url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
-              })
-            }
-            style={{ color: color.BCAE_DARK_BLUE }}
+          <Pressable
+            onPress={onCheckBoxClickTerm}
+            style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
           >
-            Terms &amp; Conditions.
-          </Text>
-        </Pressable>
-        {termError !== "" && showErrorMessage(termError)}
+            <Image
+              style={styles.checkBox}
+              source={
+                isSelectedTerm
+                  ? require("../../../Assets/icons/ci_checked.png")
+                  : require("../../../Assets/icons/ci_uncheck.png")
+              }
+            ></Image>
+            <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+              I have agree to your{" "}
+            </Text>
+            <Text
+              onPress={() =>
+                navigation.navigate("ShowWebPage", {
+                  fromLogin: true,
+                  title: "Terms & Conditions",
+                  // url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+                })
+              }
+              style={{ color: color.BCAE_DARK_BLUE }}
+            >
+              Terms &amp; Conditions.
+            </Text>
+          </Pressable>
+          {termError !== "" && showErrorMessage(termError)}
 
-        <View style={{ marginTop: spacing.HEIGHT_24 }}>
-          <Button
-            label={strings.register}
-            // isDisabled={isButtomDiable}
-            onPress={submit}
-            loading={
-              registerForm?.initOtpForm
-                ? registerForm?.otpUsageType === "Register"
-                : false
-            }
-            mode="contained"
-          />
-        </View>
+          <View style={{ marginTop: spacing.HEIGHT_24 }}>
+            <Button
+              label={strings.register}
+              isDisabled={isButtomDiable}
+              onPress={submit}
+              loading={
+                registerForm?.initOtpForm
+                  ? registerForm?.otpUsageType === "Register"
+                  : false
+              }
+              mode="contained"
+            />
+          </View>
+        </>
       </StickyFooter>
     </>
   );

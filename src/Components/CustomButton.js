@@ -25,7 +25,9 @@ export const CustomButton = (props) => {
         loading={loading}
         mode={mode}
         label={label}
-        textColor={isDisabled ? colors.gray : colors.buttonDisableColor}
+        textColor={
+          isDisabled ? colors.inverseSecondary : colors.buttonDisableColor
+        }
         buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
         onPress={isDisabled ? () => {} : () => onPress()}
       >

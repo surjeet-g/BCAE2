@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
-import { Platform, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 
 import { FullPageLoder } from "../../Components/FullPageLoder";
@@ -19,11 +25,8 @@ import { strings } from "../../Utilities/Language/index";
 import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { useTheme } from "react-native-paper";
-import { SvgBG } from "../../Components/SvgBG";
-import theme, {
-  HEADER_MARGIN,
-  SHADOW_STYLE,
-} from "../../Utilities/themeConfig";
+import { HeaderTitle } from "../../Components/headerTitle";
+import theme, { SHADOW_STYLE } from "../../Utilities/themeConfig";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
 import { RegisterPersonal } from "./components/RegisterPersonal";
 
@@ -133,9 +136,12 @@ const Register = ({ navigation, props }) => {
   }, [isFirstSelected]);
 
   return (
-    <View style={styles.container}>
-      <SvgBG />
-
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg.png")}
+      resizeMode="cover"
+    >
+      <HeaderTitle header="Need your help" subHeader="Register" />
       {registerForm.initRegisterForm ? (
         <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
       ) : (
@@ -145,7 +151,8 @@ const Register = ({ navigation, props }) => {
             // paddingHorizontal: spacing.WIDTH_30,
             // marginTop: 50,
             // paddingTop: 10,
-            ...HEADER_MARGIN,
+            // ...HEADER_MARGIN,
+            marginTop: 12,
             borderRadius: roundness,
             backgroundColor: colors.background,
             marginHorizontal: 12,
@@ -188,7 +195,7 @@ const Register = ({ navigation, props }) => {
           {renderTab}
         </View>
       )}
-    </View>
+    </ImageBackground>
   );
 };
 

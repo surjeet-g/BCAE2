@@ -67,7 +67,7 @@ const Splash = ({ route, navigation }) => {
         source={require("../../Assets/icons/bg.png")}
         resizeMode="cover"
         style={{
-          flex: 0.5,
+          flex: 1,
         }}
       >
         <View
@@ -75,7 +75,7 @@ const Splash = ({ route, navigation }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: 65,
+            marginTop: height * 0.03,
           }}
         >
           <BCAE_LOGO />
