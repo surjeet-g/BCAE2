@@ -14,10 +14,10 @@ export const saveToken = async (token) => {
 export const getToken = async () => {
   try {
     const token = await getData(storageKeys.ACCESS_TOKEN);
-    TDLog(
-      "getToken",
-      "==========ACCESS_TOKEN============" + JSON.stringify(token)
-    );
+    // TDLog(
+    //   "getToken",
+    //   "==========ACCESS_TOKEN============" + JSON.stringify(token)
+    // );
 
     if (token !== null && typeof token != "undefined") {
       return token;
@@ -31,10 +31,10 @@ export const getToken = async () => {
 };
 
 export const saveDataToDB = async (key, obj, isString = false) => {
-  TDLog(
-    "saveDataToDB",
-    "==========saveDataToDB======" + key + "======" + JSON.stringify(obj)
-  );
+  // TDLog(
+  //   "saveDataToDB",
+  //   "==========saveDataToDB======" + key + "======" + JSON.stringify(obj)
+  // );
   try {
     await saveData(key, obj, isString);
   } catch (err) {
@@ -46,10 +46,10 @@ export const saveDataToDB = async (key, obj, isString = false) => {
 export const getDataFromDB = async (key, isString = false) => {
   try {
     const data = await getData(key, isString);
-    TDLog(
-      "getDataFromDB",
-      "==========getDataFromDB=======" + key + "=======" + JSON.stringify(data)
-    );
+    // TDLog(
+    //   "getDataFromDB",
+    //   "==========getDataFromDB=======" + key + "=======" + JSON.stringify(data)
+    // );
     if (data !== null && typeof data != "undefined") {
       return data;
     } else {
