@@ -44,7 +44,7 @@ export function fetchSavedLocations(customerId) {
   };
 }
 
-export function addNewLocations(obj) {
+export function addNewLocations(obj, navigation) {
   return async (dispatch) => {
     dispatch(initSavedLocation());
     console.log("enter add new location dispatcher");
@@ -54,7 +54,8 @@ export function addNewLocations(obj) {
     let result = await serverCall(
       `${endPoints.ADD_FAVOURITE_LOCATION}${customerUUDI}`,
       requestMethod.PUT,
-      obj
+      obj,
+      navigation
     );
     console.log("result add address", customerUUDI);
     console.log("result add address", result);
@@ -78,7 +79,7 @@ export function addNewLocations(obj) {
     }
   };
 }
-export function setPrimaryAddress(address) {
+export function setPrimaryAddress(address, navigation) {
   return async (dispatch) => {
     const customerUUDI = await getCustomerUUID();
 
@@ -87,7 +88,8 @@ export function setPrimaryAddress(address) {
     let result = await serverCall(
       endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
       requestMethod.PUT,
-      { address: address }
+      { address: address },
+      navigation
     );
     console.log(">>", result);
     if (result.success) {
@@ -107,7 +109,7 @@ export function setPrimaryAddress(address) {
   };
 }
 
-export function deleteSavedLocation(custFavAddrId) {
+export function deleteSavedLocation(custFavAddrId, navigation) {
   return async (dispatch) => {
     // dispatch(initSavedLocation());
     const customerUUDI = await getCustomerUUID();
@@ -120,7 +122,8 @@ export function deleteSavedLocation(custFavAddrId) {
     let result = await serverCall(
       endPoints.GET_FAVOURITE_LOCATION + customerUUDI,
       requestMethod.DELETE,
-      params
+      params,
+      navigation
     );
 
     if (result.success) {

@@ -36,7 +36,8 @@ export function verifyLoginData(navigation, params) {
         let result = await serverCall(
           endPoints.USER_LOGIN,
           requestMethod.POST,
-          params
+          params,
+          navigation
         );
         if (result.success) {
           if (result.data?.data?.anotherSession) {
@@ -61,7 +62,8 @@ export function verifyLoginData(navigation, params) {
                   "/" +
                   result?.data?.data?.user?.customerUuid,
                 requestMethod.GET,
-                {}
+                {},
+                navigation
               );
 
               if (profileResult?.success) {
@@ -128,7 +130,9 @@ export function callLogoutAndLogin(userId, navigation, params) {
   return async (dispatch) => {
     let result = await serverCall(
       endPoints.LOGOUT_USER + userId,
-      requestMethod.DELETE
+      requestMethod.DELETE,
+      {},
+      navigation
     );
     if (result?.data?.status === 200) {
       dispatch(verifyLoginData(navigation, params));
@@ -147,6 +151,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
     const { loginId, userType, loginType, loginMode, extn } = params;
     //dispatch(initLoginData());
     let param = {};
+    let url = "";
     if (loginMode.includes("Email")) {
       param = {
         reference: loginId,
@@ -160,7 +165,7 @@ export function sendLoginOTPData(navigation, params, toNavigate) {
       url = endPoints.GET_LOGIN_OTP_FOR_MOBILE;
     }
 
-    let result = await serverCall(url, requestMethod.POST, param);
+    let result = await serverCall(url, requestMethod.POST, param, navigation);
 
     if (result.success) {
       if (toNavigate) {

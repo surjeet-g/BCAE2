@@ -17,7 +17,8 @@ export function logoutUser(navigation) {
     let result = await serverCall(
       `${endPoints.LOGOUT_USER}${userId}`,
       requestMethod.DELETE,
-      params
+      params,
+      navigation
     );
     console.log("result", result);
     if (result.success) {
@@ -85,7 +86,8 @@ export function deleteNdLogoutUser(navigation, userData) {
         let result = await serverCall(
           endPoints.DELETE_ACCOUNT,
           requestMethod.POST,
-          params
+          params,
+          navigation
         );
 
         if (result.success) {

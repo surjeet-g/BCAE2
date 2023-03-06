@@ -17,7 +17,8 @@ export function verifyForgotPasswordData(navigation, params, type) {
     let result = await serverCall(
       endPoints.FORGOT_PASSWORD,
       requestMethod.POST,
-      params
+      params,
+      navigation
     );
 
     // navigation.replace("ConfirmForgotPassword", { email: params.loginId });
@@ -51,7 +52,8 @@ export function changePassword(
   email,
   oldPassword,
   newPassword,
-  confirmPassword
+  confirmPassword,
+  navigation
 ) {
   return async (dispatch) => {
     dispatch(initForgotPasswordData());
@@ -67,7 +69,8 @@ export function changePassword(
     let result = await serverCall(
       endPoints.CHANGE_PASSWORD,
       requestMethod.POST,
-      params
+      params,
+      navigation
     );
     console.log(JSON.stringify(result));
     if (result.success) {

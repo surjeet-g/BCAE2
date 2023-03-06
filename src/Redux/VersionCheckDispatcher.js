@@ -11,7 +11,7 @@ import get from "lodash.get";
 const EMPTY_DATA = [];
 const DATA = [];
 
-export const getVersionCheckData = () => {
+export const getVersionCheckData = (navigation) => {
   return async (dispatch) => {
     await dispatch(initVersionCheckData());
     let params = {};
@@ -19,7 +19,8 @@ export const getVersionCheckData = () => {
     let result = await serverCall(
       endPoints.VERSIONCHECK,
       requestMethod.POST,
-      params
+      params,
+      navigation
     );
 
     if (result.success) {

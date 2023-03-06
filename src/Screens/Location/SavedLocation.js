@@ -55,7 +55,7 @@ const SavedLocation = ({ route, navigation }) => {
   };
   let profile = useSelector((state) => state.profile);
   const dispatch2 = useDispatch([fetchSavedProfileData, fetchRegisterFormData]);
-  const fetchMyProfileData = () => dispatch2(fetchSavedProfileData());
+  const fetchMyProfileData = () => dispatch2(fetchSavedProfileData(navigation));
 
   const dispatch = useDispatch([
     fetchSavedLocations,
@@ -126,7 +126,7 @@ const SavedLocation = ({ route, navigation }) => {
         {
           text: strings.ok,
           onPress: async () => {
-            const res = await dispatch(deleteSavedLocation(key));
+            const res = await dispatch(deleteSavedLocation(key, navigation));
             if (res) {
               fetchMyProfileData();
             }
@@ -221,7 +221,9 @@ const SavedLocation = ({ route, navigation }) => {
             delete selectedAddressObj.status;
             const formatedData = { ...selectedAddressObj, isPrimary: true };
 
-            const res = await dispatch(setPrimaryAddress(formatedData));
+            const res = await dispatch(
+              setPrimaryAddress(formatedData, navigation)
+            );
             if (res) {
               fetchMyProfileData();
             }

@@ -118,7 +118,7 @@ const EditProfile = ({ navigation, props }) => {
 
   useEffect(() => {
     async function fetchMyAPI() {
-      await dispatch2(fetchSavedProfileData());
+      await dispatch2(fetchSavedProfileData(navigation));
     }
 
     fetchMyAPI();
@@ -344,9 +344,11 @@ const EditProfile = ({ navigation, props }) => {
           },
         };
 
-        const status = await dispatch2(updateProfileData(registerObject));
+        const status = await dispatch2(
+          updateProfileData(registerObject, navigation)
+        );
         if (status) {
-          await dispatch2(fetchSavedProfileData());
+          await dispatch2(fetchSavedProfileData(navigation));
         }
       }
       //dispatch2(updateProfileData(registerObject,profile.savedProfileData.userId));
