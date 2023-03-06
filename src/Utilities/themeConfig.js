@@ -5,7 +5,7 @@ export const HEADER_MARGIN = { marginTop: 50, paddingTop: 20 };
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
-  roundness: 12, //
+  roundness: 2, //
   colors: {
     ...DefaultTheme.colors,
     primary: "#9C8FC4",
