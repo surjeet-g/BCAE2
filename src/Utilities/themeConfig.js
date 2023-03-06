@@ -32,6 +32,7 @@ const theme = {
     onSurfaceVariant: "#202223",
     // outline: "black",
     graylabel: "#848A93",
+    toggleBackground: "#F2EFFF",
   },
   fonts: {
     bodyLarge: {

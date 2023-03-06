@@ -25,8 +25,8 @@ export let strings = new LocalizedStrings({
     Centric
     Automation Engine`,
     get_started: "LET'S GET STARTED",
-    login: "Login",
-    login_with_otp: "Login with OTP",
+    login: "SIGN IN",
+    login_with_otp: "Sign-In with OTP",
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
     password: "Password",
@@ -232,8 +232,8 @@ export let strings = new LocalizedStrings({
     Centric
     Automation Engine`,
     get_started: "LET'S GET STARTED",
-    login: "Login",
-    login_with_otp: "Login with OTP",
+    login: "SIGN IN",
+    login_with_otp: "Sign-In with OTP",
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
     password: "Password",
