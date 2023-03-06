@@ -8,7 +8,7 @@ export const StickyFooter = ({ children, isRegistertion = false }) => {
   return (
     <View
       style={{
-        marginTop: isRegistertion ? 10 : "relative",
+        marginTop: isRegistertion ? 10 : 0,
         padding: 12,
         paddingBottom: isRegistertion ? 40 : 0,
         position: isRegistertion ? "absolute" : "relative",

@@ -1,36 +1,22 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonSize,
-  buttonType,
-  validatePassword,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-} from "../../Utilities/Constants/Constant";
+import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { strings } from "../../Utilities/Language";
-import { Toast } from "../../Components/Toast";
 import { CustomInput } from "../../Components/CustomInput";
-import { Button, TextInput, useTheme, Text, Divider } from "react-native-paper";
+import { Toast } from "../../Components/Toast";
+import {
+  color,
+  fontSizes,
+  spacing,
+  validatePassword,
+} from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language";
 
-import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
-import { HEADER_MARGIN } from "../../Utilities/themeConfig";
-import { SvgBG } from "../../Components/SvgBG";
 import { StickyFooter } from "../../Components/StickyFooter";
+import { SvgBG } from "../../Components/SvgBG";
+import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ResetPassword = ({ route, navigation }) => {
   const { colors } = useTheme();

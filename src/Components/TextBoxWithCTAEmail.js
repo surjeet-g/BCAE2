@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
-  View,
-  TextInput,
   Image,
-  Pressable,
+  StyleSheet,
+  TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
 import {
-  color,
-  spacing,
-  fontSizes,
   buttonSize,
+  color,
+  fontSizes,
+  spacing,
 } from "../Utilities/Constants/Constant";
 
-import { CustomActivityIndicator } from "./CustomActivityIndicator";
 import { Text, useTheme } from "react-native-paper";
 import theme from "../Utilities/themeConfig";
+import { CustomActivityIndicator } from "./CustomActivityIndicator";
 
 export const TextBoxWithCTAEmail = (props) => {
   const { roundness, colors } = useTheme();
@@ -73,8 +72,8 @@ export const TextBoxWithCTAEmail = (props) => {
             height: 55,
             backgroundColor: colors.background,
             borderRadius: roundness,
-            borderColor: active ? colors.gray : "transparent",
-            borderWidth: 2,
+            borderColor: colors.gray,
+            borderWidth: active ? 2 : 0.8,
             borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
