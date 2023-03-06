@@ -26,60 +26,60 @@ const toastConfig = {
 
 const App = () => {
   // const appState = useRef(AppState.currentState);
-  useEffect(() => {
-    const subscription = AppState.addEventListener(
-      "change",
-      async (nextAppState) => {
-        const token = await getToken();
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener(
+  //     "change",
+  //     async (nextAppState) => {
+  //       const token = await getToken();
 
-        if (nextAppState == "active") {
-          if (
-            token.accessToken != null &&
-            typeof token.accessToken != "undefined"
-          ) {
-            const lastLogin = await getData(storageKeys.LAST_LOGINT_TIMESTAMP);
+  //       if (nextAppState == "active") {
+  //         if (
+  //           token.accessToken != null &&
+  //           typeof token.accessToken != "undefined"
+  //         ) {
+  //           const lastLogin = await getData(storageKeys.LAST_LOGINT_TIMESTAMP);
 
-            if (lastLogin.length > 0) {
-              const lastLoggedDate = moment(lastLogin).format(
-                "YYYY-MM-DD HH:mm:ss"
-              );
-              const currentDate = moment(new Date()).format(
-                "YYYY-MM-DD HH:mm:ss"
-              );
+  //           if (lastLogin.length > 0) {
+  //             const lastLoggedDate = moment(lastLogin).format(
+  //               "YYYY-MM-DD HH:mm:ss"
+  //             );
+  //             const currentDate = moment(new Date()).format(
+  //               "YYYY-MM-DD HH:mm:ss"
+  //             );
 
-              const diffBwCurrentDate = moment.duration(
-                moment(currentDate).diff(moment(lastLoggedDate))
-              );
+  //             const diffBwCurrentDate = moment.duration(
+  //               moment(currentDate).diff(moment(lastLoggedDate))
+  //             );
 
-              const hour = diffBwCurrentDate.asMinutes();
+  //             const hour = diffBwCurrentDate.asMinutes();
 
-              if (hour > 15) {
-                if (await logoutUserWithOutRedux()) {
-                  RNRestart.restart();
-                }
-              }
-            }
-          } else {
-            console.log("user not logged in");
-          }
-        } else {
-          if (
-            token.accessToken != null &&
-            typeof token.accessToken != "undefined"
-          ) {
-            await saveData(
-              storageKeys.LAST_LOGINT_TIMESTAMP,
-              moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-            );
-          }
-        }
-      }
-    );
+  //             if (hour > 15) {
+  //               if (await logoutUserWithOutRedux()) {
+  //                 RNRestart.restart();
+  //               }
+  //             }
+  //           }
+  //         } else {
+  //           console.log("user not logged in");
+  //         }
+  //       } else {
+  //         if (
+  //           token.accessToken != null &&
+  //           typeof token.accessToken != "undefined"
+  //         ) {
+  //           await saveData(
+  //             storageKeys.LAST_LOGINT_TIMESTAMP,
+  //             moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+  //           );
+  //         }
+  //       }
+  //     }
+  //   );
 
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
     LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
