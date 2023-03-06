@@ -217,6 +217,7 @@ const Register = ({ navigation, props }) => {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#9C8FC4",
   },
 
   orText: {

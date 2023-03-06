@@ -11,7 +11,7 @@ import { storageKeys } from "./src/Utilities/Constants/Constant";
 import { getData, saveData } from "./src/Storage/DB";
 import moment from "moment";
 import { getToken } from "./src/Storage/token";
-import RNRestart from "react-native-restart";
+// import RNRestart from "react-native-restart";
 import theme from "./src/Utilities/themeConfig";
 import { logoutUserWithOutRedux } from "./src/Redux/LogoutDispatcher";
 
