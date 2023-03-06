@@ -71,6 +71,10 @@ function MyStack() {
             ...fonts.titleLarge,
             ...{ color: colors.onSurfaceVariant, fontWeight: "700" },
           },
+          headerTitle: () => (
+            <HeaderTitle header="Need your help" subHeader="Register" />
+          ),
+
           headerRight: () => {
             return (
               <View style={navBar.navRightCon}>
@@ -135,7 +139,9 @@ function MyStack() {
             ...{
               title: "Change password",
               headerRight: () => null,
-
+              headerTitle: () => (
+                <HeaderTitle header="Need your help" subHeader="Register" />
+              ),
               headerTintColor: colors.inverseSecondary,
             },
           }}

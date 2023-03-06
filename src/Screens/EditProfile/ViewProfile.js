@@ -56,7 +56,8 @@ export const ViewProfile = ({ navigation }) => {
       let profileResult = await serverCall(
         endPoints.PROFILE_DETAILS + "/" + customerUUDI,
         requestMethod.GET,
-        {}
+        {},
+        navigation
       );
       const userID = await getUserId();
       console.log("userid", profileResult);

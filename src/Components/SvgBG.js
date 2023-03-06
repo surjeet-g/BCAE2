@@ -10,9 +10,10 @@ export const SvgBG = () => {
         position: "absolute",
         bottom: 0,
         zIndex: -99999,
+        backgroundColor: "red",
       }}
     >
-      <BG_SPLASH />
+      {/* <BG_SPLASH /> */}
     </View>
   );
 };

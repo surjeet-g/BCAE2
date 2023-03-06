@@ -218,7 +218,7 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   const addSavedLocation = async (addressparams) => {
-    await dispatch(addNewLocations(addressparams));
+    await dispatch(addNewLocations(addressparams, navigation));
     setInitAddLocation(false);
   };
 
