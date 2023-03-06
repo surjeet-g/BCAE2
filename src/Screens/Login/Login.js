@@ -53,7 +53,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  // const [username, setUsername] = useState("kamal@yopmail.com");
+  // const [username, setUsername] = useState("mobappbcae@yopmail.com");
   // const [password, setPassword] = useState("Test@123");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -237,20 +237,17 @@ export const Login = ({ navigation }) => {
               style={{
                 margin: 10,
                 flex: 1,
-                paddingHorizontal: spacing.WIDTH_30,
+                padding: 20,
                 backgroundColor: "#fff",
                 borderRadius: 20,
                 elevation: 5,
               }}
             >
-              <View
-                style={{
-                  marginBottom: spacing.HEIGHT_20,
-                }}
-              >
-                <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+              {/* Toggle Button View */}
+              <View>
+                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
                   {strings.check_usertype}
-                </Text>
+                </Text> */}
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
@@ -428,7 +425,7 @@ export const Login = ({ navigation }) => {
             {/* Bottom View */}
             <View
               style={{
-                marginVertical: spacing.HEIGHT_30,
+                marginVertical: 10,
               }}
             >
               {/* Login with OTP View */}
@@ -456,7 +453,7 @@ export const Login = ({ navigation }) => {
               <View
                 style={{
                   alignSelf: "center",
-                  marginVertical: spacing.HEIGHT_20,
+                  marginVertical: 10,
                 }}
               >
                 <Pressable
@@ -475,7 +472,7 @@ export const Login = ({ navigation }) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
-                  paddingVertical: 10,
+                  marginVertical: 10,
                 }}
               >
                 <Text style={styles.noAccText}>{strings.dont_account}</Text>
@@ -485,30 +482,6 @@ export const Login = ({ navigation }) => {
                   <Text style={styles.rgisterText}>{strings.register}</Text>
                 </Pressable>
               </View>
-
-              {/* Login View */}
-              <View>
-                <CustomButton
-                  loading={login.initLogin}
-                  label={strings.login}
-                  isDisabled={
-                    loginMode === EMAIL
-                      ? username == "" || password == ""
-                        ? true
-                        : false
-                      : number == "" || password == ""
-                      ? true
-                      : false
-                  }
-                  onPress={() => {
-                    loginMode === EMAIL
-                      ? submitWithEmail(PASSWORD)
-                      : submitWithMobile(PASSWORD);
-                  }}
-                />
-              </View>
-
-              {/* <Sticky></Sticky> */}
             </View>
 
             {!login.initLogin &&
@@ -537,6 +510,87 @@ export const Login = ({ navigation }) => {
                 </View>
               )}
           </ScrollView>
+          <StickyFooter>
+            {/* Login View */}
+            <View>
+              <CustomButton
+                loading={login.initLogin}
+                label={strings.login}
+                isDisabled={
+                  loginMode === EMAIL
+                    ? username == "" || password == ""
+                      ? true
+                      : false
+                    : number == "" || password == ""
+                    ? true
+                    : false
+                }
+                onPress={() => {
+                  loginMode === EMAIL
+                    ? submitWithEmail(PASSWORD)
+                    : submitWithMobile(PASSWORD);
+                }}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
+              By continuing, I accept and agree to BCAE
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to T&C")}
+              >
+                Terms & Conditions of Use
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#000000",
+                  marginTop: 5,
+                }}
+              >
+                {" "}
+                &{" "}
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to Privacy Policy")}
+              >
+                Privacy Policy
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: fontSizes.FONT_12,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
+              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+            </Text>
+          </StickyFooter>
         </View>
         {/* Modal for showing the second login alert */}
         <Modal

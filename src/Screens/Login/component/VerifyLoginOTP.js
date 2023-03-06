@@ -23,6 +23,7 @@ import {
   callLogoutAndLogin,
 } from ".././LoginDispatcher";
 import { useDispatch, useSelector } from "react-redux";
+import { StickyFooter } from "./../../../Components/StickyFooter";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
@@ -39,7 +40,7 @@ const VerifyLoginOTP = (props) => {
 
   useEffect(() => {
     if (otp.length === 6) {
-      param = {
+      let param = {
         loginId,
         password: otp,
         userType,
@@ -94,7 +95,6 @@ const VerifyLoginOTP = (props) => {
           style={{
             flex: 1,
             justifyContent: "center",
-            // backgroundColor: "red",
           }}
         >
           <Text
@@ -112,7 +112,7 @@ const VerifyLoginOTP = (props) => {
             style={{
               textAlign: "center",
               fontWeight: 400,
-              color: "#B1AFAF",
+              color: "#000000",
               fontSize: fontSizes.FONT_16,
             }}
           >
@@ -158,29 +158,36 @@ const VerifyLoginOTP = (props) => {
               numberOfInputs={6}
             />
           </View>
-          <Text
+          <View
             style={{
-              textAlign: "center",
-              marginTop: 40,
-              fontWeight: 400,
-              color: "#36393D",
-              fontSize: fontSizes.FONT_16,
+              flexDirection: "row",
+              // backgroundColor: "green",
+              padding: 10,
+              justifyContent: "center",
             }}
           >
-            {strings.didt_receive_code}
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: 20,
-              fontWeight: 600,
-              color: "#F5AD47",
-              fontSize: fontSizes.FONT_16,
-            }}
-            onPress={clickOnRequestAgainOTP}
-          >
-            {strings.request_again}
-          </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: 400,
+                color: "#3D3D3D",
+                fontSize: fontSizes.FONT_16,
+              }}
+            >
+              {strings.didt_receive_code}
+            </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: 600,
+                color: "#4B3694",
+                fontSize: fontSizes.FONT_16,
+              }}
+              onPress={clickOnRequestAgainOTP}
+            >
+              {strings.request_again}
+            </Text>
+          </View>
         </View>
       </KeyboardAwareView>
       <Modal
