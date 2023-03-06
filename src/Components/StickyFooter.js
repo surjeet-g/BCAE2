@@ -11,12 +11,12 @@ export const StickyFooter = ({ children, isRegistertion = false }) => {
         marginTop: isRegistertion ? 10 : 0,
         padding: 12,
         paddingBottom: isRegistertion ? 40 : 0,
-        position: isRegistertion ? "absolute" : "relative",
+        position: "absolute",
         bottom: 0,
         left: isRegistertion ? -12 : 0,
-
+        // width: "100%",
         backgroundColor: colors.background,
-        width: isRegistertion ? width : "auto",
+        width: width,
 
         elevation: 1,
         shadowColor: "#000",
