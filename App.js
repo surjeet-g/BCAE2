@@ -5,15 +5,15 @@ import MyStack from "./src/Navigation/MyStack";
 import Toast from "react-native-toast-message";
 import { ToastTemplete } from "./src/Components/ToastTemplete";
 
-import { LogBox, SafeAreaView, AppState } from "react-native";
+import { LogBox, SafeAreaView, AppState, StatusBar } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import { storageKeys } from "./src/Utilities/Constants/Constant";
-import { getData, saveData } from "./src/Storage/DB";
-import moment from "moment";
-import { getToken } from "./src/Storage/token";
+// import { storageKeys } from "./src/Utilities/Constants/Constant";
+// import { getData, saveData } from "./src/Storage/DB";
+// import moment from "moment";
+// import { getToken } from "./src/Storage/token";
 // import RNRestart from "react-native-restart";
 import theme from "./src/Utilities/themeConfig";
-import { logoutUserWithOutRedux } from "./src/Redux/LogoutDispatcher";
+// import { logoutUserWithOutRedux } from "./src/Redux/LogoutDispatcher";
 
 const toastConfig = {
   bctError: ({ text1, props }) => (
@@ -87,6 +87,13 @@ const App = () => {
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        // animated={true}
+        backgroundColor={theme.colors.primary}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       <StoreProvider store={store}>
         <PaperProvider theme={theme}>
           <MyStack />

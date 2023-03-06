@@ -67,7 +67,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={"ResetPassword"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerStyle: {
@@ -145,7 +145,9 @@ function MyStack() {
             ...{
               title: "Change password",
               headerRight: () => null,
-
+              headerTitle: () => (
+                <HeaderTitle header="Need your help" subHeader="Register" />
+              ),
               headerTintColor: colors.inverseSecondary,
             },
           }}
