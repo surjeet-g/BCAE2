@@ -1,7 +1,8 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
-import { color, spacing } from "../Utilities/Constants/Constant";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { color, spacing } from "../Utilities/Constants/Constant";
+import { SHADOW_STYLE } from "../Utilities/themeConfig";
 
 export const ToggleButton = (props) => {
   const { colors } = useTheme();
@@ -9,7 +10,7 @@ export const ToggleButton = (props) => {
   let label = props.label ?? {};
   let onPressFirst = props.onPressFirst ?? null;
   let onPressSecond = props.onPressSecond ?? null;
-  let bgColor = props.bgColor;
+  let { bgColor } = props;
   let textColor = props.textColor ? props.textColor : color.BLACK;
   let width = { width: "50%" };
   let customStyle = props.customStyle ?? {};
@@ -21,7 +22,9 @@ export const ToggleButton = (props) => {
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: colors.tertiary,
+        backgroundColor: colors.gray,
+        ...SHADOW_STYLE,
+        // padding: 2,
         borderRadius: spacing.HEIGHT_24,
       }}
     >
@@ -29,9 +32,10 @@ export const ToggleButton = (props) => {
         onPress={onPressFirst}
         activeOpacity={activeOpacity}
         style={{
-          paddingHorizontal: spacing.WIDTH_5,
-          backgroundColor: isFirstSelected ? colors.secondary : colors.tertiary,
+          paddingHorizontal: spacing.WIDTH_9,
+          backgroundColor: isFirstSelected ? colors.tertiary : colors.gray,
           borderRadius: spacing.HEIGHT_24,
+          ...SHADOW_STYLE,
           justifyContent: "center",
           alignItems: "center",
           height: spacing.HEIGHT_32,
@@ -43,7 +47,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
-              color: isFirstSelected ? colors.tertiary : colors.secondary,
+              color: isFirstSelected ? colors.secondary : colors.secondary,
             }}
           >
             {label.first}
@@ -55,10 +59,8 @@ export const ToggleButton = (props) => {
         onPress={onPressSecond}
         activeOpacity={activeOpacity}
         style={{
-          paddingHorizontal: spacing.WIDTH_5,
-          backgroundColor: !isFirstSelected
-            ? colors.secondary
-            : colors.tertiary,
+          paddingHorizontal: spacing.WIDTH_9,
+          backgroundColor: !isFirstSelected ? colors.tertiary : colors.gray,
           borderRadius: spacing.HEIGHT_24,
           justifyContent: "center",
           alignItems: "center",
@@ -71,7 +73,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
-              color: !isFirstSelected ? colors.tertiary : colors.secondary,
+              color: !isFirstSelected ? colors.secondary : colors.secondary,
             }}
           >
             {label.second}

@@ -2,6 +2,13 @@ import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 export const FONT_FAMILY = "";
 export const FONT_FAMILY_MEDIUM = "";
 export const HEADER_MARGIN = { marginTop: 50, paddingTop: 20 };
+export const SHADOW_STYLE = {
+  elevation: 1,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.8,
+  shadowRadius: 1,
+};
 //roximanova-regular
 const theme = {
   ...DefaultTheme,
@@ -11,9 +18,9 @@ const theme = {
     primary: "#9C8FC4",
     inversePrimary: "#DBDBDB",
     onPrimaryContainer: "#88a5da",
-    secondary: "#474747",
+    secondary: "#23374e",
     inverseSecondary: "#fff",
-    tertiary: "#DADADA",
+    tertiary: "#fff",
     gray: "#C7CAD1",
     background: "#ffffff",
     surfaceVariant: "#ffffff",

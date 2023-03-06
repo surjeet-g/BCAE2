@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, Image, Pressable, Alert } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import React, { useState } from "react";
+import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
-import { strings } from "../../../Utilities/Language/index";
-import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
-import moment from "moment";
-import DatePicker from "react-native-date-picker";
+import { setOtpFormData } from "../../../Redux/RegisterAction";
+import { strings } from "../../../Utilities/Language/index";
 import {
-  capitalizeFirstLetter,
-  getPhoneNumberLength,
   excludedCountriesList,
+  getPhoneNumberLength,
 } from "../../../Utilities/utils";
 
 import {
@@ -22,22 +21,19 @@ import {
   userRegister,
 } from "../../../Redux/RegisterDispatcher";
 
-import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
-import { CustomInput } from "../../../Components/CustomInput";
+import { TextInput, useTheme } from "react-native-paper";
 import { CustomButton as Button } from "../../../Components/CustomButton";
-import { TextInput } from "react-native-paper";
-import { styles } from "../Register";
+import { CustomInput } from "../../../Components/CustomInput";
+import { StickyFooter } from "../../../Components/StickyFooter";
+import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import {
-  spacing,
   color,
   fontSizes,
-  buttonSize,
-  validateNumber,
+  spacing,
   validateEmail,
   validatePassword,
 } from "../../../Utilities/Constants/Constant";
-import { useTheme } from "react-native-paper";
-import get from "lodash.get";
+import { styles } from "../Register";
 
 export const showErrorMessage = (errMessage) => {
   if (typeof errMessage != "string") return null;
@@ -208,11 +204,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setFirstNameError("");
     buttonEnableDiable();
   };
-  const onLocationChanged = (textStr) => {
-    setLocation(textStr);
-    setLocationError("");
-    buttonEnableDiable();
-  };
+  // const onLocationChanged = (textStr) => {
+  //   setLocation(textStr);
+  //   setLocationError("");
+  //   buttonEnableDiable();
+  // };
   const submit = async () => {
     console.log(">>", title);
     // if (!mobileOTPVerifcation) {
@@ -561,483 +557,492 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     registerForm?.registerFormData?.GENDER
   );
   return (
-    <View>
-      <View style={{ marginVertical: 5 }}>
-        <CustomDropDown
-          selectedValue={selectedValueTitle?.description}
-          setValue={setTitle}
-          data={[
-            { code: "Mr", description: "Mr" },
-            { code: "Mrs", description: "Mrs" },
-            { code: "Ms", description: "Ms" },
-            { code: "Miss", description: "Miss" },
-          ]}
-          onChangeText={(text) => {
-            setValueTitle(text);
-            buttonEnableDiable();
+    <>
+      <ScrollView>
+        <View style={{ marginVertical: 5 }}>
+          <CustomDropDown
+            selectedValue={selectedValueTitle?.description}
+            setValue={setTitle}
+            data={[
+              { code: "Mr", description: "Mr" },
+              { code: "Mrs", description: "Mrs" },
+              { code: "Ms", description: "Ms" },
+              { code: "Miss", description: "Miss" },
+            ]}
+            onChangeText={(text) => {
+              setValueTitle(text);
+              buttonEnableDiable();
+            }}
+            value={title?.description}
+            placeHolder={strings.title}
+          />
+
+          {titleError !== "" && showErrorMessage(titleError)}
+        </View>
+        <View style={{ marginTop: spacing.HEIGHT_30 }}>
+          <CustomInput
+            style={{
+              backgroundColor: "transparent",
+            }}
+            onChangeText={(text) => onFirstNameChange(text)}
+            value={firstName}
+            caption={strings.first_name}
+            placeHolder={strings.first_name}
+            right={
+              firstName && (
+                <TextInput.Icon
+                  onPress={clearFirstName}
+                  // style={{ width: 15, height: 15 }}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon="close"
+                />
+              )
+            }
+          />
+
+          {firstNameError !== "" && showErrorMessage(firstNameError)}
+        </View>
+
+        {/* Last Name */}
+        <View style={{ marginTop: 5 }}>
+          <CustomInput
+            style={{
+              backgroundColor: "transparent",
+            }}
+            onChangeText={(text) => onLastNameChange(text)}
+            value={lastName}
+            placeHolder={strings.last_name}
+            caption={strings.last_name}
+            right={
+              lastName && (
+                <TextInput.Icon
+                  onPress={clearLastName}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon="close"
+                />
+              )
+            }
+          />
+
+          {lastNameError !== "" && showErrorMessage(lastNameError)}
+        </View>
+        {/* Gender */}
+        <View style={{ marginTop: 5 }}>
+          <CustomDropDown
+            selectedValue={selectedValueGender}
+            setValue={setValueGender}
+            data={registerForm?.registerFormData?.GENDER ?? []}
+            onChangeText={(text) => onGenderClick(text)}
+            value={gender?.description}
+            placeHolder={strings.gender}
+          />
+
+          {genderError !== "" && showErrorMessage(genderError)}
+        </View>
+        <DatePicker
+          modal
+          mode="date"
+          validRange={{ endDate: new Date() }}
+          open={open}
+          onCancel={() => setOpen(false)}
+          date={dob == "" ? new Date() : dob}
+          maximumDate={new Date()}
+          onConfirm={(params) => {
+            console.log("data", params);
+            setOpen(false);
+            setDob(params);
+            setDobError("");
           }}
-          value={title?.description}
-          placeHolder={strings.title}
         />
 
-        {titleError !== "" && showErrorMessage(titleError)}
-      </View>
-      <View style={{ marginTop: spacing.HEIGHT_30 }}>
-        <CustomInput
-          style={{
-            backgroundColor: "transparent",
-          }}
-          onChangeText={(text) => onFirstNameChange(text)}
-          value={firstName}
-          caption={strings.first_name}
-          placeHolder={strings.first_name}
-          right={
-            firstName && (
+        <View style={{ marginTop: 30 }}>
+          <CustomInput
+            style={{
+              backgroundColor: "transparent",
+            }}
+            // onChangeText={(text) => onIDChange(text)}
+            value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+            caption={"Date of birth"}
+            onFocus={() => setOpen(true)}
+            placeHolder={"Date of birth"}
+            right={
               <TextInput.Icon
-                onPress={clearFirstName}
-                // style={{ width: 15, height: 15 }}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                icon="close"
+                onPress={() => setOpen(true)}
+                theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                icon="calendar"
               />
-            )
-          }
-        />
+            }
+          />
+          {dobError !== "" && showErrorMessage(dobError)}
+        </View>
 
-        {firstNameError !== "" && showErrorMessage(firstNameError)}
-      </View>
+        {/* ID Type */}
+        <View style={{ marginTop: 5 }}>
+          <CustomDropDown
+            selectedValue={selectedValueIdType}
+            setValue={setValueIdType}
+            data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+            onChangeText={(text) => onIdTypeClick(text)}
+            value={gender?.description}
+            placeHolder={strings.id_type}
+          />
 
-      {/* Last Name */}
-      <View style={{ marginTop: 5 }}>
-        <CustomInput
-          style={{
-            backgroundColor: "transparent",
-          }}
-          onChangeText={(text) => onLastNameChange(text)}
-          value={lastName}
-          placeHolder={strings.last_name}
-          caption={strings.last_name}
-          right={
-            lastName && (
+          {idTypeError !== "" && showErrorMessage(idTypeError)}
+        </View>
+
+        <View style={{ marginTop: 30 }}>
+          <CustomInput
+            style={{
+              backgroundColor: "transparent",
+            }}
+            onChangeText={setIdNumber}
+            value={idNumber}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            right={
+              idNumber && (
+                <TextInput.Icon
+                  onPress={() => setIdNumber("")}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon="close"
+                />
+              )
+            }
+          />
+          {idNumberError !== "" && showErrorMessage(idNumberError)}
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <CustomInput
+            multiline={true}
+            numberOfLines={2}
+            style={{
+              backgroundColor: "transparent",
+            }}
+            value={location || strings.location}
+            caption={strings.location}
+            placeHolder={strings.location}
+            right={
               <TextInput.Icon
-                onPress={clearLastName}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                icon="close"
+                onPress={() => locationIconClick()}
+                theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                icon="map"
               />
-            )
-          }
-        />
+            }
+          />
+        </View>
 
-        {lastNameError !== "" && showErrorMessage(lastNameError)}
-      </View>
-      {/* Gender */}
-      <View style={{ marginTop: 5 }}>
-        <CustomDropDown
-          selectedValue={selectedValueGender}
-          setValue={setValueGender}
-          data={registerForm?.registerFormData?.GENDER ?? []}
-          onChangeText={(text) => onGenderClick(text)}
-          value={gender?.description}
-          placeHolder={strings.gender}
-        />
-
-        {genderError !== "" && showErrorMessage(genderError)}
-      </View>
-      <DatePicker
-        modal
-        mode="date"
-        validRange={{ endDate: new Date() }}
-        open={open}
-        onCancel={() => setOpen(false)}
-        date={dob == "" ? new Date() : dob}
-        maximumDate={new Date()}
-        onConfirm={(params) => {
-          console.log("data", params);
-          setOpen(false);
-          setDob(params);
-          setDobError("");
-        }}
-      />
-
-      <View style={{ marginTop: 30 }}>
-        <CustomInput
+        <CountryPicker
+          show={countryPickModel}
+          excludedCountries={excludedCountriesList()}
+          pickerButtonOnPress={(item) => {
+            setDialPick(item.dial_code);
+            setCountryPickModel(false);
+            setNumberMaxLength(getPhoneNumberLength(item.code));
+          }}
+          onBackdropPress={() => setCountryPickModel(false)}
           style={{
-            backgroundColor: "transparent",
-          }}
-          // onChangeText={(text) => onIDChange(text)}
-          value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-          caption={"Date of birth"}
-          onFocus={() => setOpen(true)}
-          placeHolder={"Date of birth"}
-          right={
-            <TextInput.Icon
-              onPress={() => setOpen(true)}
-              theme={{ colors: { onSurfaceVariant: colors.primary } }}
-              icon="calendar"
-            />
-          }
-        />
-        {dobError !== "" && showErrorMessage(dobError)}
-      </View>
-
-      {/* ID Type */}
-      <View style={{ marginTop: 5 }}>
-        <CustomDropDown
-          selectedValue={selectedValueIdType}
-          setValue={setValueIdType}
-          data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
-          onChangeText={(text) => onIdTypeClick(text)}
-          value={gender?.description}
-          placeHolder={strings.id_type}
-        />
-
-        {idTypeError !== "" && showErrorMessage(idTypeError)}
-      </View>
-
-      <View style={{ marginTop: 30 }}>
-        <CustomInput
-          style={{
-            backgroundColor: "transparent",
-          }}
-          onChangeText={setIdNumber}
-          value={idNumber}
-          caption={strings.id_number}
-          placeHolder={strings.id_number}
-          right={
-            idNumber && (
-              <TextInput.Icon
-                onPress={() => setIdNumber("")}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                icon="close"
-              />
-            )
-          }
-        />
-        {idNumberError !== "" && showErrorMessage(idNumberError)}
-      </View>
-
-      <View style={{ marginTop: 10 }}>
-        <CustomInput
-          multiline={true}
-          numberOfLines={2}
-          style={{
-            backgroundColor: "transparent",
-          }}
-          value={location || strings.location}
-          caption={strings.location}
-          placeHolder={strings.location}
-          right={
-            <TextInput.Icon
-              onPress={() => locationIconClick()}
-              theme={{ colors: { onSurfaceVariant: colors.primary } }}
-              icon="map"
-            />
-          }
-        />
-      </View>
-
-      <CountryPicker
-        show={countryPickModel}
-        excludedCountries={excludedCountriesList()}
-        pickerButtonOnPress={(item) => {
-          setDialPick(item.dial_code);
-          setCountryPickModel(false);
-          setNumberMaxLength(getPhoneNumberLength(item.code));
-        }}
-        onBackdropPress={() => setCountryPickModel(false)}
-        style={{
-          modal: {
-            height: "65%",
-          },
-        }}
-      />
-
-      {/* Mobile Number */}
-      <View style={{ marginTop: 5 }}>
-        <TextBoxWithCTA
-          onChangeText={(text) => onMobleNoChange(text)}
-          value={mobileNo}
-          placeHolder={strings.mobile_number}
-          isResendOTP={true}
-          loader={
-            registerForm?.initOtpForm && registerForm?.otpUsageType === "mobile"
-              ? true
-              : false
-          }
-          onPressOnCountyCode={() => setCountryPickModel(true)}
-          countryCode={dialpick}
-          label={strings.send_otp}
-          onPress={submitResndOTP}
-          bgColor={color.BCAE_PRIMARY}
-          keyboardType={"numeric"}
-          isDisableButton={isDisableSendOtp}
-          maxLength={numberMaxLength}
-          btnTextPro={{
-            color: color.WHITE,
-            fontSize: fontSizes.FONT_12,
-            fontWeight: "400",
-            lineHeight: spacing.HEIGHT_14,
+            modal: {
+              height: "65%",
+            },
           }}
         />
-        {otpTimer > 0 && otpTimer < OTP_TIMER && (
-          <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-            <Text style={styles.errorText}>
-              {strings.otp_sent} {formatOtpTimer(otpTimer)}
-            </Text>
-          </View>
-        )}
-        {!registerForm.initOtpForm &&
-          registerForm?.isOtpFormError &&
-          registerForm?.otpFormDataForMobile?.errorCode > 200 &&
-          registerForm?.otpUsageType === "mobile" &&
-          showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
-        {numberError !== "" && showErrorMessage(numberError)}
-      </View>
-      {/* OTP */}
-      <View style={{ marginTop: 5 }}>
-        <TextBoxWithCTA
-          onChangeText={(text) => onOTPChange(text)}
-          value={otp}
-          placeHolder={strings.mobile_otp}
-          isConfirmOTP={true}
-          label={strings.confirm_otp}
-          loader={
-            registerForm?.initOtpForm &&
-            registerForm?.otpUsageType === "mobileOtp"
-              ? true
-              : false
-          }
-          correctOtp={mobileOTPVerifcation}
-          onPress={submitConfirmMobileOTP}
-          bgColor={color.BCAE_PRIMARY}
-          keyboardType={"numeric"}
-          btnTextPro={{
-            color: color.WHITE,
-            fontSize: fontSizes.FONT_12,
-            fontWeight: "400",
-            lineHeight: spacing.HEIGHT_14,
+
+        {/* Mobile Number */}
+        <View style={{ marginTop: 5 }}>
+          <TextBoxWithCTA
+            onChangeText={(text) => onMobleNoChange(text)}
+            value={mobileNo}
+            placeHolder={strings.mobile_number}
+            isResendOTP={true}
+            loader={
+              registerForm?.initOtpForm &&
+              registerForm?.otpUsageType === "mobile"
+                ? true
+                : false
+            }
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={dialpick}
+            label={strings.send_otp}
+            onPress={submitResndOTP}
+            bgColor={color.BCAE_PRIMARY}
+            keyboardType={"numeric"}
+            isDisableButton={isDisableSendOtp}
+            maxLength={numberMaxLength}
+            btnTextPro={{
+              color: color.WHITE,
+              fontSize: fontSizes.FONT_12,
+              fontWeight: "400",
+              lineHeight: spacing.HEIGHT_14,
+            }}
+          />
+          {otpTimer > 0 && otpTimer < OTP_TIMER && (
+            <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+              <Text style={styles.errorText}>
+                {strings.otp_sent} {formatOtpTimer(otpTimer)}
+              </Text>
+            </View>
+          )}
+          {!registerForm.initOtpForm &&
+            registerForm?.isOtpFormError &&
+            registerForm?.otpFormDataForMobile?.errorCode > 200 &&
+            registerForm?.otpUsageType === "mobile" &&
+            showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
+          {numberError !== "" && showErrorMessage(numberError)}
+        </View>
+        {/* OTP */}
+        <View style={{ marginTop: 5 }}>
+          <TextBoxWithCTA
+            onChangeText={(text) => onOTPChange(text)}
+            value={otp}
+            placeHolder={strings.mobile_otp}
+            isConfirmOTP={true}
+            label={strings.confirm_otp}
+            loader={
+              registerForm?.initOtpForm &&
+              registerForm?.otpUsageType === "mobileOtp"
+                ? true
+                : false
+            }
+            correctOtp={mobileOTPVerifcation}
+            onPress={submitConfirmMobileOTP}
+            bgColor={color.BCAE_PRIMARY}
+            keyboardType={"numeric"}
+            btnTextPro={{
+              color: color.WHITE,
+              fontSize: fontSizes.FONT_12,
+              fontWeight: "400",
+              lineHeight: spacing.HEIGHT_14,
+            }}
+          />
+          {otp !== "" &&
+            !registerForm.initOtpForm &&
+            registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
+            registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
+            registerForm?.otpUsageType === "mobileOtp" &&
+            showMobileErrorMessage()}
+
+          {otp !== "" &&
+            !registerForm.initOtpForm &&
+            registerForm?.otpFormDataForMobile?.data?.data === null &&
+            registerForm?.otpUsageType === "mobileOtp" &&
+            showMobileErrorMessage()}
+
+          {otpNumberError !== "" && showErrorMessage(otpNumberError)}
+        </View>
+        {/* Email */}
+        <View style={{ marginTop: 5 }}>
+          <TextBoxWithCTAEmail
+            onChangeText={(text) => onEmailChange(text)}
+            value={email}
+            placeHolder={strings.email}
+            isEmail={true}
+            loader={
+              registerForm?.initOtpForm &&
+              registerForm?.otpUsageType === "email"
+                ? true
+                : false
+            }
+            isDisableButton={isDisableSendOtpEmail}
+            label={"CONFIRM EMAIL"}
+            onPress={submitEmail}
+            bgColor={color.BCAE_PRIMARY}
+            btnTextPro={{
+              color: color.WHITE,
+              fontSize: fontSizes.FONT_12,
+              fontWeight: "400",
+              lineHeight: spacing.HEIGHT_14,
+            }}
+          />
+          {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
+            <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+              <Text style={styles.errorText}>
+                {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
+              </Text>
+            </View>
+          )}
+          {!registerForm.initOtpForm &&
+            registerForm?.isOtpFormError &&
+            registerForm?.otpFormDataForEmail?.errorCode > 200 &&
+            registerForm?.otpUsageType === "email" &&
+            showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
+
+          {emailError !== "" && showErrorMessage(emailError)}
+        </View>
+
+        {/* OTP */}
+
+        <View style={{ marginTop: 5 }}>
+          <TextBoxWithCTA
+            onChangeText={(text) => onEmailOTPChange(text)}
+            value={otpEmail}
+            placeHolder={strings.email_otp}
+            isConfirmOTP={true}
+            label={"CONFIRM OTP"}
+            loader={
+              registerForm?.initOtpForm &&
+              registerForm?.otpUsageType === "emailOtp"
+                ? true
+                : false
+            }
+            correctOtp={emailOTPVerification}
+            onPress={submitConfirmEmailOTP}
+            bgColor={color.BCAE_PRIMARY}
+            keyboardType={"numeric"}
+            btnTextPro={{
+              color: color.WHITE,
+              fontSize: fontSizes.FONT_12,
+              fontWeight: "400",
+              lineHeight: spacing.HEIGHT_14,
+            }}
+          />
+          {otpEmail !== "" &&
+            !registerForm.initOtpForm &&
+            registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
+            registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
+            registerForm?.otpUsageType === "emailOtp" &&
+            showEmailErrorMessage()}
+
+          {otpEmail !== "" &&
+            !registerForm.initOtpForm &&
+            registerForm?.otpFormDataForEmail?.data?.data === null &&
+            registerForm?.otpUsageType === "emailOtp" &&
+            showEmailErrorMessage()}
+
+          {otpEmailError !== "" && showErrorMessage(otpEmailError)}
+        </View>
+
+        <View style={{ marginTop: 5 }}>
+          <CustomInput
+            value={password}
+            caption={strings.password}
+            placeHolder={strings.password}
+            onChangeText={onClickPasswordChange}
+            secureTextEntry={secureTextEntry}
+            right={
+              password && (
+                <TextInput.Icon
+                  onPress={() => setsecureTextEntry(!secureTextEntry)}
+                  style={{ width: 23, height: 23 }}
+                  icon={
+                    secureTextEntry
+                      ? require("../../../Assets/icons/ic_password_show.png")
+                      : require("../../../Assets/icons/ic_password_hide.png")
+                  }
+                />
+              )
+            }
+          />
+
+          {/* {showErrorMessage("sds")} */}
+          {passwordError !== "" && showErrorMessage(passwordError)}
+        </View>
+        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+          <CustomInput
+            value={confirmPassword}
+            caption={strings.confirmPassword}
+            placeHolder={strings.confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={secureTextEntryConfim}
+            right={
+              confirmPassword && (
+                <TextInput.Icon
+                  onPress={() =>
+                    setsecureTextEntryConfim(!secureTextEntryConfim)
+                  }
+                  style={{ width: 23, height: 23 }}
+                  icon={
+                    secureTextEntryConfim
+                      ? require("../../../Assets/icons/ic_password_show.png")
+                      : require("../../../Assets/icons/ic_password_hide.png")
+                  }
+                />
+              )
+            }
+          />
+
+          {passwordConfirmError !== "" &&
+            showErrorMessage(passwordConfirmError)}
+        </View>
+      </ScrollView>
+      <StickyFooter isRegistertion={true}>
+        <Pressable
+          onPress={() => {
+            console.log("hiint g");
+            setSelection(!isSelected);
+            setTermError("");
+            setPrivaceyError("");
           }}
-        />
-        {otp !== "" &&
-          !registerForm.initOtpForm &&
-          registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
-          registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
-          registerForm?.otpUsageType === "mobileOtp" &&
-          showMobileErrorMessage()}
-
-        {otp !== "" &&
-          !registerForm.initOtpForm &&
-          registerForm?.otpFormDataForMobile?.data?.data === null &&
-          registerForm?.otpUsageType === "mobileOtp" &&
-          showMobileErrorMessage()}
-
-        {otpNumberError !== "" && showErrorMessage(otpNumberError)}
-      </View>
-      {/* Email */}
-      <View style={{ marginTop: 5 }}>
-        <TextBoxWithCTAEmail
-          onChangeText={(text) => onEmailChange(text)}
-          value={email}
-          placeHolder={strings.email}
-          isEmail={true}
-          loader={
-            registerForm?.initOtpForm && registerForm?.otpUsageType === "email"
-              ? true
-              : false
-          }
-          isDisableButton={isDisableSendOtpEmail}
-          label={"CONFIRM EMAIL"}
-          onPress={submitEmail}
-          bgColor={color.BCAE_PRIMARY}
-          btnTextPro={{
-            color: color.WHITE,
-            fontSize: fontSizes.FONT_12,
-            fontWeight: "400",
-            lineHeight: spacing.HEIGHT_14,
-          }}
-        />
-        {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
-          <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-            <Text style={styles.errorText}>
-              {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
-            </Text>
-          </View>
-        )}
-        {!registerForm.initOtpForm &&
-          registerForm?.isOtpFormError &&
-          registerForm?.otpFormDataForEmail?.errorCode > 200 &&
-          registerForm?.otpUsageType === "email" &&
-          showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
-
-        {emailError !== "" && showErrorMessage(emailError)}
-      </View>
-
-      {/* OTP */}
-
-      <View style={{ marginTop: 5 }}>
-        <TextBoxWithCTA
-          onChangeText={(text) => onEmailOTPChange(text)}
-          value={otpEmail}
-          placeHolder={strings.email_otp}
-          isConfirmOTP={true}
-          label={"CONFIRM OTP"}
-          loader={
-            registerForm?.initOtpForm &&
-            registerForm?.otpUsageType === "emailOtp"
-              ? true
-              : false
-          }
-          correctOtp={emailOTPVerification}
-          onPress={submitConfirmEmailOTP}
-          bgColor={color.BCAE_PRIMARY}
-          keyboardType={"numeric"}
-          btnTextPro={{
-            color: color.WHITE,
-            fontSize: fontSizes.FONT_12,
-            fontWeight: "400",
-            lineHeight: spacing.HEIGHT_14,
-          }}
-        />
-        {otpEmail !== "" &&
-          !registerForm.initOtpForm &&
-          registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
-          registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
-          registerForm?.otpUsageType === "emailOtp" &&
-          showEmailErrorMessage()}
-
-        {otpEmail !== "" &&
-          !registerForm.initOtpForm &&
-          registerForm?.otpFormDataForEmail?.data?.data === null &&
-          registerForm?.otpUsageType === "emailOtp" &&
-          showEmailErrorMessage()}
-
-        {otpEmailError !== "" && showErrorMessage(otpEmailError)}
-      </View>
-
-      <View style={{ marginTop: 5 }}>
-        <CustomInput
-          value={password}
-          caption={strings.password}
-          placeHolder={strings.password}
-          onChangeText={onClickPasswordChange}
-          secureTextEntry={secureTextEntry}
-          right={
-            password && (
-              <TextInput.Icon
-                onPress={() => setsecureTextEntry(!secureTextEntry)}
-                style={{ width: 23, height: 23 }}
-                icon={
-                  secureTextEntry
-                    ? require("../../../Assets/icons/ic_password_show.png")
-                    : require("../../../Assets/icons/ic_password_hide.png")
-                }
-              />
-            )
-          }
-        />
-
-        {/* {showErrorMessage("sds")} */}
-        {passwordError !== "" && showErrorMessage(passwordError)}
-      </View>
-      <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-        <CustomInput
-          value={confirmPassword}
-          caption={strings.confirmPassword}
-          placeHolder={strings.confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={secureTextEntryConfim}
-          right={
-            confirmPassword && (
-              <TextInput.Icon
-                onPress={() => setsecureTextEntryConfim(!secureTextEntryConfim)}
-                style={{ width: 23, height: 23 }}
-                icon={
-                  secureTextEntryConfim
-                    ? require("../../../Assets/icons/ic_password_show.png")
-                    : require("../../../Assets/icons/ic_password_hide.png")
-                }
-              />
-            )
-          }
-        />
-
-        {passwordConfirmError !== "" && showErrorMessage(passwordConfirmError)}
-      </View>
-      <Pressable
-        onPress={() => {
-          console.log("hiint g");
-          setSelection(!isSelected);
-          setTermError("");
-          setPrivaceyError("");
-        }}
-        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-      >
-        <Image
-          style={styles.checkBox}
-          source={
-            isSelected
-              ? require("../../../Assets/icons/ci_checked.png")
-              : require("../../../Assets/icons/ci_uncheck.png")
-          }
-        ></Image>
-        <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
-        <Text
-          onPress={() =>
-            navigation.navigate("ShowWebPage", {
-              fromLogin: true,
-              title: "Privacy Policy",
-              url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
-            })
-          }
-          style={{ color: color.BCAE_DARK_BLUE }}
+          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
         >
-          Privacy Policy.
-        </Text>
-      </Pressable>
-      {privaceyError !== "" && showErrorMessage(privaceyError)}
+          <Image
+            style={styles.checkBox}
+            source={
+              isSelected
+                ? require("../../../Assets/icons/ci_checked.png")
+                : require("../../../Assets/icons/ci_uncheck.png")
+            }
+          ></Image>
+          <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
+          <Text
+            onPress={() =>
+              navigation.navigate("ShowWebPage", {
+                fromLogin: true,
+                title: "Privacy Policy",
+                // url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
+              })
+            }
+            style={{ color: color.BCAE_DARK_BLUE }}
+          >
+            Privacy Policy.
+          </Text>
+        </Pressable>
+        {privaceyError !== "" && showErrorMessage(privaceyError)}
 
-      <Pressable
-        onPress={onCheckBoxClickTerm}
-        style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-      >
-        <Image
-          style={styles.checkBox}
-          source={
-            isSelectedTerm
-              ? require("../../../Assets/icons/ci_checked.png")
-              : require("../../../Assets/icons/ci_uncheck.png")
-          }
-        ></Image>
-        <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-          I have agree to your{" "}
-        </Text>
-        <Text
-          onPress={() =>
-            navigation.navigate("ShowWebPage", {
-              fromLogin: true,
-              title: "Terms & Conditions",
-              url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
-            })
-          }
-          style={{ color: color.BCAE_DARK_BLUE }}
+        <Pressable
+          onPress={onCheckBoxClickTerm}
+          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
         >
-          Terms &amp; Conditions.
-        </Text>
-      </Pressable>
-      {termError !== "" && showErrorMessage(termError)}
+          <Image
+            style={styles.checkBox}
+            source={
+              isSelectedTerm
+                ? require("../../../Assets/icons/ci_checked.png")
+                : require("../../../Assets/icons/ci_uncheck.png")
+            }
+          ></Image>
+          <Text style={{ marginLeft: spacing.WIDTH_8 }}>
+            I have agree to your{" "}
+          </Text>
+          <Text
+            onPress={() =>
+              navigation.navigate("ShowWebPage", {
+                fromLogin: true,
+                title: "Terms & Conditions",
+                // url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
+              })
+            }
+            style={{ color: color.BCAE_DARK_BLUE }}
+          >
+            Terms &amp; Conditions.
+          </Text>
+        </Pressable>
+        {termError !== "" && showErrorMessage(termError)}
 
-      <View style={{ marginTop: spacing.HEIGHT_24 }}>
-        <Button
-          label={strings.register}
-          // isDisabled={isButtomDiable}
-          onPress={submit}
-          loading={
-            registerForm?.initOtpForm
-              ? registerForm?.otpUsageType === "Register"
-              : false
-          }
-          mode="contained"
-        />
-      </View>
-    </View>
+        <View style={{ marginTop: spacing.HEIGHT_24 }}>
+          <Button
+            label={strings.register}
+            // isDisabled={isButtomDiable}
+            onPress={submit}
+            loading={
+              registerForm?.initOtpForm
+                ? registerForm?.otpUsageType === "Register"
+                : false
+            }
+            mode="contained"
+          />
+        </View>
+      </StickyFooter>
+    </>
   );
 });

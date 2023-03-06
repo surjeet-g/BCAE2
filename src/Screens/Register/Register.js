@@ -1,22 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  SafeAreaView,
-  Platform,
-  Alert,
-} from "react-native";
-import { spacing, color, fontSizes } from "../../Utilities/Constants/Constant";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 
+import { FullPageLoder } from "../../Components/FullPageLoder";
 import {
   fetchRegisterFormData,
   getOtpForCheck,
@@ -24,22 +15,24 @@ import {
   userRegister,
 } from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
-import { FullPageLoder } from "../../Components/FullPageLoder";
 
 import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
-import { RegisterPersonal } from "./components/RegisterPersonal";
-import { RegisterExistingUser } from "./components/RegisterExistingUser";
+import { useTheme } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
+import theme, {
+  HEADER_MARGIN,
+  SHADOW_STYLE,
+} from "../../Utilities/themeConfig";
+import { RegisterExistingUser } from "./components/RegisterExistingUser";
+import { RegisterPersonal } from "./components/RegisterPersonal";
 
 const TAB_EMAIL = true;
 const TAB_MOBILE = false;
-import { useTheme } from "react-native-paper";
-import theme from "../../Utilities/themeConfig";
 
 const Register = ({ navigation, props }) => {
   let registerForm = useSelector((state) => state.registerForm);
-  const { colors } = useTheme();
+  const { colors, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_EMAIL);
 
   //reseting state
@@ -146,12 +139,18 @@ const Register = ({ navigation, props }) => {
       {registerForm.initRegisterForm ? (
         <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
       ) : (
-        <ScrollView
+        <View
           style={{
             flexGrow: 1,
-            paddingHorizontal: spacing.WIDTH_30,
-            marginTop: 50,
-            paddingTop: 10,
+            // paddingHorizontal: spacing.WIDTH_30,
+            // marginTop: 50,
+            // paddingTop: 10,
+            ...HEADER_MARGIN,
+            borderRadius: roundness,
+            backgroundColor: colors.background,
+            marginHorizontal: 12,
+            padding: 12,
+            ...SHADOW_STYLE,
           }}
           nestedScrollEnabled={true}
         >
@@ -187,28 +186,7 @@ const Register = ({ navigation, props }) => {
           ></ToggleButton>
 
           {renderTab}
-          {/* First Name */}
-
-          {orSection()}
-
-          <View>
-            <Text
-              style={{
-                ...{ color: colors.secondary },
-                ...styles.alreadyAccount,
-              }}
-            >
-              {strings.already_acc}
-            </Text>
-            <Pressable onPress={() => navigation.navigate("Login", {})}>
-              <Text style={styles.loginText}>
-                {strings.login.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
-
-          <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
-        </ScrollView>
+        </View>
       )}
     </View>
   );

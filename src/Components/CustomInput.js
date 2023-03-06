@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Text, TextInput } from "react-native-paper";
-import { useTheme } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 
 export const CustomInput = (props) => {
   const { caption = "", multiline = false } = props;
@@ -25,10 +24,10 @@ export const CustomInput = (props) => {
         style={{
           backgroundColor: colors.background,
           borderRadius: roundness,
-          paddingVertical: 2,
-          elevation: 1,
-          borderColor: active ? colors.gray : "transparent",
-          borderWidth: 2,
+          paddingVertical: 0,
+          // elevation: 1,
+          borderColor: active ? colors.gray : colors.gray,
+          borderWidth: 0.8,
           borderStyle: "solid",
         }}
       >
