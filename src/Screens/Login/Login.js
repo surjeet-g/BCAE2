@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  Pressable,
-  Alert,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Text, Pressable } from "react-native";
 import { spacing, fontSizes, color } from "../../Utilities/Constants/Constant";
 import { CustomButton } from "../../Components/CustomButton";
 import {
@@ -32,7 +25,7 @@ import {
 import { ToggleButton } from "../../Components/ToggleButton";
 import { RadioButton, Modal } from "react-native-paper";
 import { SvgBG } from "../../Components/SvgBG";
-import { TextInput, useTheme } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { CustomErrorText } from "../../Components/CustomErrorText";
@@ -156,7 +149,7 @@ export const Login = ({ navigation }) => {
       } else if (password === "") {
         setPasswordError(strings.passwordValidErrorLogin);
       } else {
-        param = {
+        let param = {
           loginId: username,
           password,
           userType,
@@ -178,7 +171,7 @@ export const Login = ({ navigation }) => {
     } else if (password === "") {
       setPasswordError(strings.passwordValidErrorLogin);
     } else {
-      param = {
+      let param = {
         loginId: number,
         password,
         userType,
@@ -196,7 +189,7 @@ export const Login = ({ navigation }) => {
       if (username === "") {
         setUsernameError(strings.emailValidError);
       } else {
-        param = {
+        let param = {
           loginId: username,
           userType,
           loginType: loginType.toUpperCase(),
@@ -216,7 +209,7 @@ export const Login = ({ navigation }) => {
     if (number.length !== numberMaxLength) {
       setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else {
-      param = {
+      let param = {
         loginId: number,
         userType,
         loginType: loginType.toUpperCase(),
