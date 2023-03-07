@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   Dimensions,
   TouchableOpacity,
@@ -38,9 +44,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
     console.log("handleSheetChanges", index);
   }, []);
 
-  const [isEnableInteractions, setIsEnableInteractions] = React.useState(false);
+  const [isEnableInteractions, setIsEnableInteractions] = useState(false);
   const onToggleInteractionSwitch = () =>
     setIsEnableInteractions(!isEnableInteractions);
+
+  const [interactionType, setInteractionType] = useState("");
+  const [serviceType, setServiceType] = useState("");
+  const [problemCause, setProblemCause] = useState("");
+  const [priorityType, setPriorityType] = useState("");
+  const [contactType, setContactType] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [attachments, setAttachments] = useState([]);
+
+  const onCancelPressed = () => {
+    alert("Cancel Clicked");
+  };
+
+  const onSubmitPressed = () => {
+    alert("Submit Clicked");
+  };
 
   const InteractionsModalView = () => {
     return (
@@ -171,10 +193,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
           }}
         >
           <View style={{ flex: 1 }}>
-            <CustomButton label={strings.cancel} onPress={() => {}} />
+            <CustomButton label={strings.cancel} onPress={onCancelPressed} />
           </View>
           <View style={{ flex: 1 }}>
-            <CustomButton label={strings.submit} onPress={() => {}} />
+            <CustomButton label={strings.submit} onPress={onSubmitPressed} />
           </View>
         </View>
       </View>
