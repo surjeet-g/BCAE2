@@ -43,10 +43,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
   }, []);
+  const handleSnapPress = useCallback((index) => {
+    interactionsModalRef.current?.snapToIndex(index);
+  }, []);
+  const handleExpandPress = useCallback(() => {
+    interactionsModalRef.current?.expand();
+  }, []);
+  const handleCollapsePress = useCallback(() => {
+    interactionsModalRef.current?.collapse();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    interactionsModalRef.current?.close();
+  }, []);
 
   const [isEnableInteractions, setIsEnableInteractions] = useState(false);
-  const onToggleInteractionSwitch = () =>
+  const onToggleInteractionSwitch = () => {
+    if (isEnableInteractions) {
+      handleSnapPress(0);
+    } else {
+      handleSnapPress(1);
+    }
     setIsEnableInteractions(!isEnableInteractions);
+  };
 
   const [interactionType, setInteractionType] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -86,7 +104,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           >
             {"Enable Interactions"}
           </Text>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => handleSnapPress(0)}>
             <Image
               style={{ ...ICON_STYLE, color: "#36393D" }}
               source={require("../../Assets/icons/ic_close.png")}
