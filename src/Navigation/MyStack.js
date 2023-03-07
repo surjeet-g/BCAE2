@@ -135,7 +135,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Profile",
+              headerTitle: "Profile",
               headerRight: () => {
                 return (
                   <View style={navBar.navRightCon}>
