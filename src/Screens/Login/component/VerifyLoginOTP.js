@@ -173,7 +173,6 @@ const VerifyLoginOTP = (props) => {
           <View
             style={{
               flexDirection: "row",
-              // backgroundColor: "green",
               padding: 10,
               justifyContent: "center",
             }}
@@ -182,7 +181,7 @@ const VerifyLoginOTP = (props) => {
               style={{
                 textAlign: "center",
                 fontWeight: 400,
-                color: "#3D3D3D",
+                color: "#393939",
                 fontSize: fontSizes.FONT_16,
               }}
             >
@@ -191,7 +190,7 @@ const VerifyLoginOTP = (props) => {
             <Text
               style={{
                 textAlign: "center",
-                fontWeight: 600,
+                fontWeight: 700,
                 color: "#4B3694",
                 fontSize: fontSizes.FONT_16,
               }}
