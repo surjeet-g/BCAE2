@@ -26,12 +26,13 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { ICON_STYLE } from "./../../Utilities/Style/navBar";
 import { CustomDropDown } from "./../../Components/CustomDropDown";
 import { CustomInput } from "./../../Components/CustomInput";
+import { CustomDropDownFull } from "./../../Components/CustomDropDownFull";
 
 const InteractionsToOrder = ({ route, navigation }) => {
   // ref
   const interactionsModalRef = useRef(BottomSheet);
   // variables
-  const interactionsModalSnapPoints = useMemo(() => ["10%", "70%"], []);
+  const interactionsModalSnapPoints = useMemo(() => ["10%", "90%"], []);
   // callbacks
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
@@ -98,72 +99,51 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         {/* Field View */}
         <View style={{ marginHorizontal: 10 }}>
-          <CustomDropDown
+          <CustomDropDownFull
             selectedValue={""}
             setValue={""}
             data={[]}
             onChangeText={(text) => console.log(text)}
             value={""}
-            placeHolder={strings.intractionType}
+            caption={strings.intractionType}
+            placeHolder={"Select " + strings.intractionType}
           />
-          <CustomDropDown
+          <CustomDropDownFull
             selectedValue={""}
             setValue={""}
             data={[]}
             onChangeText={(text) => console.log(text)}
             value={""}
-            placeHolder={strings.serviceType}
+            caption={strings.serviceType}
+            placeHolder={"Select " + strings.serviceType}
           />
-          <CustomDropDown
+          <CustomDropDownFull
             selectedValue={""}
             setValue={""}
             data={[]}
             onChangeText={(text) => console.log(text)}
             value={""}
-            placeHolder={strings.problem_stat_cause}
+            caption={strings.problem_stat_cause}
+            placeHolder={"Select " + strings.problem_stat_cause}
           />
-          <CustomDropDown
+          <CustomDropDownFull
             selectedValue={""}
             setValue={""}
             data={[]}
             onChangeText={(text) => console.log(text)}
             value={""}
-            placeHolder={strings.priority_type}
+            caption={strings.priority_type}
+            placeHolder={"Select " + strings.priority_type}
           />
-          <CustomDropDown
+          <CustomDropDownFull
             selectedValue={""}
             setValue={""}
             data={[]}
             onChangeText={(text) => console.log(text)}
             value={""}
-            placeHolder={strings.contact_type}
+            caption={strings.contact_type}
+            placeHolder={"Select " + strings.contact_type}
           />
-          <CustomInput
-            value={""}
-            caption={strings.remarks}
-            placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.attachment}
-            placeHolder={strings.attachment}
-            onChangeText={(text) => console.log(text)}
-          />
-
-          <CustomInput
-            value={""}
-            caption={strings.remarks}
-            placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.attachment}
-            placeHolder={strings.attachment}
-            onChangeText={(text) => console.log(text)}
-          />
-
           <CustomInput
             value={""}
             caption={strings.remarks}
