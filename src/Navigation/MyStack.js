@@ -94,7 +94,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"ResetPassword"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -209,15 +209,8 @@ function MyStack() {
         <Stack.Screen
           component={ResetPassword}
           options={{
-            ...options,
-            ...{
-              title: "Reset Password",
-              headerRight: () => null,
-              headerTitle: () => (
-                <HeaderTitle header="Need your help" subHeader="Register" />
-              ),
-              headerTintColor: colors.inverseSecondary,
-            },
+            headerShown: true,
+            title: "Announcements",
           }}
           name="ResetPassword"
         />

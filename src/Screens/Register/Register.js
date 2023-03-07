@@ -164,7 +164,6 @@ const Register = ({ navigation, props }) => {
             style={{
               backgroundColor: "transparent",
               padding: 12,
-              marginTop: 20,
             }}
           >
             <ToggleButton
