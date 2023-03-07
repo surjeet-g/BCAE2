@@ -148,18 +148,20 @@ const VerifyLoginOTP = (props) => {
                 width: 50,
                 height: 50,
                 borderWidth: 1,
-                borderColor: "#BABEC5",
+                borderColor: "#C7CAD1",
                 borderRadius: 12,
                 margin: 3,
               }}
               inputStyles={{
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "#5E5676",
                 textAlign: "center",
                 fontSize: 20,
-                color: "#F5AD47",
+                color: "#5E5676",
                 fontWeight: "bold",
               }}
-              // focusStyles={{ backgroundColor: "#F5AD47" }}
+              // focusStyles={{ backgroundColor: "#5E5676" }}
               // caretHidden={true}
               autofillFromClipboard={true}
               autofillListenerIntervalMS={2000}
@@ -181,7 +183,7 @@ const VerifyLoginOTP = (props) => {
               style={{
                 textAlign: "center",
                 fontWeight: 400,
-                color: "#393939",
+                color: "#3D3D3D",
                 fontSize: fontSizes.FONT_16,
               }}
             >
