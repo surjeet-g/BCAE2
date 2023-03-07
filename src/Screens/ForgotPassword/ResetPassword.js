@@ -194,16 +194,18 @@ const ResetPassword = ({ route, navigation }) => {
                 placeHolder={strings.temporary_password}
                 secureTextEntry={secureTextEntryOld}
                 right={
-                  <TextInput.Icon
-                    onPress={hideShowClickOld}
-                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntryOld
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
+                  oldPassword && (
+                    <TextInput.Icon
+                      onPress={hideShowClickOld}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntryOld
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
             </View>
@@ -215,16 +217,18 @@ const ResetPassword = ({ route, navigation }) => {
                 placeHolder={strings.new_password}
                 secureTextEntry={secureTextEntry}
                 right={
-                  <TextInput.Icon
-                    onPress={hideShowClick}
-                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntry
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
+                  password && (
+                    <TextInput.Icon
+                      onPress={hideShowClick}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntry
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
             </View>
@@ -237,16 +241,18 @@ const ResetPassword = ({ route, navigation }) => {
                 placeHolder={strings.confirmPassword}
                 secureTextEntry={secureTextEntryConfim}
                 right={
-                  <TextInput.Icon
-                    onPress={hideShowClickConfirm}
-                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntryConfim
-                        ? require("../../Assets/icons/ic_password_show.png")
-                        : require("../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
+                  confirmPassword && (
+                    <TextInput.Icon
+                      onPress={hideShowClickConfirm}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntryConfim
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
             </View>
