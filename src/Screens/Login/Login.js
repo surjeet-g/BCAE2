@@ -694,7 +694,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   noAccText: {
-    color: "#393939",
+    color: "#3D3D3D",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
