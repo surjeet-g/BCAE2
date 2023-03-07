@@ -155,8 +155,8 @@ const Register = ({ navigation, props }) => {
             marginTop: 12,
             borderRadius: roundness,
             // backgroundColor: colors.background,
-            marginHorizontal: 12,
-            padding: 12,
+            //marginHorizontal: 12,
+            //padding: 12,
             // ...SHADOW_STYLE,
           }}
         >

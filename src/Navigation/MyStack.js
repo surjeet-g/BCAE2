@@ -15,7 +15,7 @@ import BottomBarNavigation from "./BottomBarNavigation";
 // import Location from "../Screens/Location/Location";
 import AddLocation from "../Screens/Location/AddLocation";
 
-// import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
+//import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
 
 // import Anouncement from "../Screens/TabScreens/Announcement";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
@@ -269,7 +269,11 @@ function MyStack() {
           name="Announcements"
           component={AnnouncementList}
         />
-
+        {/* <Stack.Screen
+          options={{ headerShown: false }}
+          name="ShowWebPage"
+          component={ShowWebPage}
+        /> */}
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="EditProfile"

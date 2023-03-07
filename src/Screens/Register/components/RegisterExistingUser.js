@@ -493,9 +493,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setPasswordError("");
   };
   return (
-    <>
-      <ScrollView style={{ marginBottom: height * 0.4 }}>
-        {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, padding: 12 }}>
+        <ScrollView nestedScrollEnabled={true}>
+          {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -516,8 +517,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         {firstNameError !== "" && showErrorMessage(firstNameError)}
       </View> */}
 
-        {/* Last Name */}
-        {/* <View style={{ marginTop: 5 }}>
+          {/* Last Name */}
+          {/* <View style={{ marginTop: 5 }}>
         <CustomInput
           style={{
             backgroundColor: "transparent",
@@ -538,481 +539,473 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         {lastNameError !== "" && showErrorMessage(lastNameError)}
       </View> */}
 
-        {/* Mobile Number */}
-        <Card
-          style={{
-            ...SHADOW_STYLE,
-            padding: 12,
-            // marginTop: 2,
-            backgroundColor: colors.background,
-            borderRadius: 20,
-          }}
-        >
-          <View style={{ marginTop: 10 }}>
-            <CustomInput
-              style={{
-                backgroundColor: "transparent",
-              }}
-              onChangeText={setCustomerID}
-              value={customerID}
-              caption={"Cusomer ID"}
-              placeHolder={"Cusomer ID"}
-              right={
-                customerID && (
-                  <TextInput.Icon
-                    onPress={() => setCustomerID("")}
-                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                    icon="close"
-                  />
-                )
-              }
-            />
-            {customerIDError !== "" && showErrorMessage(customerIDError)}
-          </View>
-
-          {/* ID Type */}
-          <View style={{ marginTop: 1 }}>
-            <CustomDropDown
-              selectedValue={selectedValueIdType}
-              setValue={setValueIdType}
-              data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
-              onChangeText={(text) => onIdTypeClick(text)}
-              value={idType?.description}
-              placeHolder={strings.id_type}
-            />
-
-            {idTypeError !== "" && showErrorMessage(idTypeError)}
-          </View>
-
-          <View style={{ marginTop: 5 }}>
-            <CustomInput
-              style={{
-                backgroundColor: "transparent",
-              }}
-              onChangeText={setIdNumber}
-              value={idNumber}
-              caption={strings.id_number}
-              placeHolder={strings.id_number}
-              right={
-                idNumber && (
-                  <TextInput.Icon
-                    onPress={() => setIdNumber("")}
-                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                    icon="close"
-                  />
-                )
-              }
-            />
-            {idNumberError !== "" && showErrorMessage(idNumberError)}
-          </View>
-          {/* Gender */}
-          <View style={{ marginTop: 5 }}>
-            <CustomDropDown
-              selectedValue={selectedValueGender}
-              setValue={setValueGender}
-              data={registerForm?.registerFormData?.GENDER ?? []}
-              onChangeText={(text) => onGenderClick(text)}
-              value={gender?.description}
-              placeHolder={strings.gender}
-            />
-
-            {genderError !== "" && showErrorMessage(genderError)}
-          </View>
-
-          <CountryPicker
-            show={countryPickModel}
-            excludedCountries={excludedCountriesList()}
-            pickerButtonOnPress={(item) => {
-              setDialPick(item.dial_code);
-              setCountryPickModel(false);
-              setNumberMaxLength(getPhoneNumberLength(item.code));
-            }}
-            onBackdropPress={() => setCountryPickModel(false)}
-            style={{
-              modal: {
-                height: "65%",
-              },
-            }}
-          />
-          <DatePicker
-            modal
-            mode="date"
-            validRange={{ endDate: new Date() }}
-            open={open}
-            onCancel={() => setOpen(false)}
-            date={dob == "" ? new Date() : dob}
-            maximumDate={new Date()}
-            onConfirm={(params) => {
-              console.log("data", params);
-              setOpen(false);
-              setDob(params);
-              setDobError("");
-            }}
-          />
-
-          <View style={{ marginTop: 10 }}>
-            <CustomInput
-              style={{
-                backgroundColor: "transparent",
-              }}
-              // onChangeText={(text) => onIDChange(text)}
-              value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
-              caption={"Date of birth"}
-              onFocus={() => setOpen(true)}
-              placeHolder={"Date of birth"}
-              right={
-                <TextInput.Icon
-                  onPress={() => setOpen(true)}
-                  theme={{ colors: { onSurfaceVariant: colors.primary } }}
-                  icon="calendar"
-                />
-              }
-            />
-          </View>
-        </Card>
-        <ClearSpace size={1} />
-        <Text variant="headlineSmall">Mobile Verification</Text>
-        <ClearSpace size={1} />
-
-        <Card
-          style={{
-            ...SHADOW_STYLE,
-            padding: 12,
-            marginTop: 2,
-            backgroundColor: colors.background,
-          }}
-        >
           {/* Mobile Number */}
-          <View style={{ marginTop: 5 }}>
-            <TextBoxWithCTA
-              onChangeText={(text) => onMobleNoChange(text)}
-              value={mobileNo}
-              placeHolder={strings.mobile_number}
-              isResendOTP={true}
-              loader={
-                registerForm?.initOtpForm &&
-                registerForm?.otpUsageType === "mobile"
-                  ? true
-                  : false
-              }
-              onPressOnCountyCode={() => setCountryPickModel(true)}
-              countryCode={dialpick}
-              label={strings.send_otp}
-              onPress={submitResndOTP}
-              bgColor={color.BCAE_PRIMARY}
-              keyboardType={"numeric"}
-              isDisableButton={isDisableSendOtp}
-              maxLength={numberMaxLength}
-              btnTextPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_12,
-                fontWeight: "400",
-                lineHeight: spacing.HEIGHT_14,
-              }}
-            />
-            {otpTimer > 0 && otpTimer < OTP_TIMER && (
-              <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-                <Text style={styles.errorText}>
-                  {strings.otp_sent} {formatOtpTimer(otpTimer)}
-                </Text>
-              </View>
-            )}
-            {!registerForm.initOtpForm &&
-              registerForm?.isOtpFormError &&
-              registerForm?.otpFormDataForMobile?.errorCode > 200 &&
-              registerForm?.otpUsageType === "mobile" &&
-              showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
-            {numberError !== "" && showErrorMessage(numberError)}
-          </View>
-          {/* OTP */}
-          <View style={{ marginTop: 5 }}>
-            <TextBoxWithCTA
-              onChangeText={(text) => onOTPChange(text)}
-              value={otp}
-              placeHolder={strings.mobile_otp}
-              isConfirmOTP={true}
-              label={strings.confirm_otp}
-              loader={
-                registerForm?.initOtpForm &&
-                registerForm?.otpUsageType === "mobileOtp"
-                  ? true
-                  : false
-              }
-              correctOtp={mobileOTPVerifcation}
-              onPress={submitConfirmMobileOTP}
-              bgColor={color.BCAE_PRIMARY}
-              keyboardType={"numeric"}
-              btnTextPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_12,
-                fontWeight: "400",
-                lineHeight: spacing.HEIGHT_14,
-              }}
-            />
-            {otp !== "" &&
-              !registerForm.initOtpForm &&
-              registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
-              registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
-              registerForm?.otpUsageType === "mobileOtp" &&
-              showMobileErrorMessage()}
-
-            {otp !== "" &&
-              !registerForm.initOtpForm &&
-              registerForm?.otpFormDataForMobile?.data?.data === null &&
-              registerForm?.otpUsageType === "mobileOtp" &&
-              showMobileErrorMessage()}
-
-            {otpNumberError !== "" && showErrorMessage(otpNumberError)}
-          </View>
-          {/* Email */}
-        </Card>
-        <ClearSpace size={1} />
-        <Text variant="headlineSmall">Mobile Verification</Text>
-        <ClearSpace size={1} />
-        {/* Mobile Number */}
-        <Card
-          style={{
-            ...SHADOW_STYLE,
-            padding: 12,
-            marginTop: 2,
-            backgroundColor: colors.background,
-          }}
-        >
-          <View style={{ marginTop: 5 }}>
-            <TextBoxWithCTAEmail
-              onChangeText={(text) => onEmailChange(text)}
-              value={email}
-              placeHolder={strings.email}
-              isEmail={true}
-              loader={
-                registerForm?.initOtpForm &&
-                registerForm?.otpUsageType === "email"
-                  ? true
-                  : false
-              }
-              isDisableButton={isDisableSendOtpEmail}
-              label={"CONFIRM EMAIL"}
-              onPress={submitEmail}
-              bgColor={color.BCAE_PRIMARY}
-              btnTextPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_12,
-                fontWeight: "400",
-                lineHeight: spacing.HEIGHT_14,
-              }}
-            />
-            {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
-              <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-                <Text style={styles.errorText}>
-                  {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
-                </Text>
-              </View>
-            )}
-            {!registerForm.initOtpForm &&
-              registerForm?.isOtpFormError &&
-              registerForm?.otpFormDataForEmail?.errorCode > 200 &&
-              registerForm?.otpUsageType === "email" &&
-              showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
-
-            {emailError !== "" && showErrorMessage(emailError)}
-          </View>
-
-          {/* OTP */}
-          {/* {console.log("registerForm====>"+registerForm?.otpUsageType  +"===="+registerForm?.otpFormData.data.otp)} */}
-
-          <View style={{ marginTop: 5 }}>
-            <TextBoxWithCTA
-              onChangeText={(text) => onEmailOTPChange(text)}
-              value={otpEmail}
-              placeHolder={strings.email_otp}
-              isConfirmOTP={true}
-              label={"CONFIRM OTP"}
-              loader={
-                registerForm?.initOtpForm &&
-                registerForm?.otpUsageType === "emailOtp"
-                  ? true
-                  : false
-              }
-              correctOtp={emailOTPVerification}
-              onPress={submitConfirmEmailOTP}
-              bgColor={color.BCAE_PRIMARY}
-              keyboardType={"numeric"}
-              btnTextPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_12,
-                fontWeight: "400",
-                lineHeight: spacing.HEIGHT_14,
-              }}
-            />
-            {/* //{ console.log("otpEmail==>"+otpEmail+"===>"+registerForm.initOtpForm+"===="+registerForm?.otpFormData?.data?.otp+"===="+registerForm?.otpUsageTyp )} */}
-            {otpEmail !== "" &&
-              !registerForm.initOtpForm &&
-              registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
-              registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
-              registerForm?.otpUsageType === "emailOtp" &&
-              showEmailErrorMessage()}
-
-            {otpEmail !== "" &&
-              !registerForm.initOtpForm &&
-              registerForm?.otpFormDataForEmail?.data?.data === null &&
-              registerForm?.otpUsageType === "emailOtp" &&
-              showEmailErrorMessage()}
-
-            {otpEmailError !== "" && showErrorMessage(otpEmailError)}
-          </View>
-        </Card>
-        <ClearSpace size={1} />
-        <Text variant="headlineSmall">Set Verification</Text>
-        <ClearSpace size={1} />
-
-        <Card
-          style={{
-            ...SHADOW_STYLE,
-            padding: 12,
-            marginTop: 2,
-            backgroundColor: colors.background,
-          }}
-        >
-          <View style={{ marginTop: 5 }}>
-            <CustomInput
-              value={password}
-              caption={strings.password}
-              placeHolder={strings.password}
-              onChangeText={onClickPasswordChange}
-              secureTextEntry={secureTextEntry}
-              right={
-                password && (
-                  <TextInput.Icon
-                    onPress={() => setsecureTextEntry(!secureTextEntry)}
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntry
-                        ? require("../../../Assets/icons/ic_password_show.png")
-                        : require("../../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
-                )
-              }
-            />
-
-            {/* {showErrorMessage("sds")} */}
-            {passwordError !== "" && showErrorMessage(passwordError)}
-          </View>
-          <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-            <CustomInput
-              value={confirmPassword}
-              caption={strings.confirmPassword}
-              placeHolder={strings.confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry={secureTextEntryConfim}
-              right={
-                confirmPassword && (
-                  <TextInput.Icon
-                    onPress={() =>
-                      setsecureTextEntryConfim(!secureTextEntryConfim)
-                    }
-                    style={{ width: 23, height: 23 }}
-                    icon={
-                      secureTextEntryConfim
-                        ? require("../../../Assets/icons/ic_password_show.png")
-                        : require("../../../Assets/icons/ic_password_hide.png")
-                    }
-                  />
-                )
-              }
-            />
-
-            {passwordConfirmError !== "" &&
-              showErrorMessage(passwordConfirmError)}
-          </View>
-        </Card>
-      </ScrollView>
-      <StickyFooter isRegistertion={true}>
-        <Pressable
-          onPress={() => {
-            console.log("hiint g");
-            setSelection(!isSelected);
-            setTermError("");
-            setPrivaceyError("");
-          }}
-          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-        >
-          <Image
-            style={styles.checkBox}
-            source={
-              isSelected
-                ? require("../../../Assets/icons/ci_checked.png")
-                : require("../../../Assets/icons/ci_uncheck.png")
-            }
-          ></Image>
-          <Text style={{ marginLeft: spacing.WIDTH_8 }}>I have read your </Text>
-          <Text
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: true,
-                title: "Privacy Policy",
-                // url: DEBUG_BUILD ? STAGE_PRIVACY : PROD_PRIVACY,
-              })
-            }
-            style={{ color: color.BCAE_DARK_BLUE }}
+          <Card
+            style={{
+              ...SHADOW_STYLE,
+              padding: 12,
+              // marginTop: 2,
+              backgroundColor: colors.background,
+              borderRadius: 20,
+            }}
           >
-            Privacy Policy.
-          </Text>
-        </Pressable>
-        {privaceyError !== "" && showErrorMessage(privaceyError)}
-        <Pressable
-          onPress={onCheckBoxClickTerm}
-          style={{ flexDirection: "row", marginTop: spacing.HEIGHT_24 }}
-        >
-          <Image
-            style={styles.checkBox}
-            source={
-              isSelectedTerm
-                ? require("../../../Assets/icons/ci_checked.png")
-                : require("../../../Assets/icons/ci_uncheck.png")
-            }
-          ></Image>
-          <Text style={{ marginLeft: spacing.WIDTH_8 }}>
-            I have agree to your{" "}
-          </Text>
-          <Text
-            onPress={() =>
-              navigation.navigate("ShowWebPage", {
-                fromLogin: true,
-                title: "Terms & Conditions",
-                // url: DEBUG_BUILD ? STAGE_TERMS : PROD_TERMS,
-              })
-            }
-            style={{ color: color.BCAE_DARK_BLUE }}
-          >
-            Terms &amp; Conditions.
-          </Text>
-        </Pressable>
-        {termError !== "" && showErrorMessage(termError)}
+            <View style={{ marginTop: 10 }}>
+              <CustomInput
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                onChangeText={setCustomerID}
+                value={customerID}
+                caption={"Cusomer ID"}
+                placeHolder={"Cusomer ID"}
+                right={
+                  customerID && (
+                    <TextInput.Icon
+                      onPress={() => setCustomerID("")}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      icon="close"
+                    />
+                  )
+                }
+              />
+              {customerIDError !== "" && showErrorMessage(customerIDError)}
+            </View>
 
-        <View style={{ marginTop: spacing.HEIGHT_24 }}>
-          {registerForm?.initOtpForm &&
-          registerForm?.otpUsageType === "Register" ? (
-            <CustomActivityIndicator
-              size={buttonSize.LARGE}
-              bgColor={color.BLACK}
-              loderColor={color.WHITE}
+            {/* ID Type */}
+            <View style={{ marginTop: 1 }}>
+              <CustomDropDown
+                selectedValue={selectedValueIdType}
+                setValue={setValueIdType}
+                data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+                onChangeText={(text) => onIdTypeClick(text)}
+                value={idType?.description}
+                placeHolder={strings.id_type}
+              />
+
+              {idTypeError !== "" && showErrorMessage(idTypeError)}
+            </View>
+
+            <View style={{ marginTop: 5 }}>
+              <CustomInput
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                onChangeText={setIdNumber}
+                value={idNumber}
+                caption={strings.id_number}
+                placeHolder={strings.id_number}
+                right={
+                  idNumber && (
+                    <TextInput.Icon
+                      onPress={() => setIdNumber("")}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      icon="close"
+                    />
+                  )
+                }
+              />
+              {idNumberError !== "" && showErrorMessage(idNumberError)}
+            </View>
+            {/* Gender */}
+            <View style={{ marginTop: 5 }}>
+              <CustomDropDown
+                selectedValue={selectedValueGender}
+                setValue={setValueGender}
+                data={registerForm?.registerFormData?.GENDER ?? []}
+                onChangeText={(text) => onGenderClick(text)}
+                value={gender?.description}
+                placeHolder={strings.gender}
+              />
+
+              {genderError !== "" && showErrorMessage(genderError)}
+            </View>
+
+            <CountryPicker
+              show={countryPickModel}
+              excludedCountries={excludedCountriesList()}
+              pickerButtonOnPress={(item) => {
+                setDialPick(item.dial_code);
+                setCountryPickModel(false);
+                setNumberMaxLength(getPhoneNumberLength(item.code));
+              }}
+              onBackdropPress={() => setCountryPickModel(false)}
+              style={{
+                modal: {
+                  height: "65%",
+                },
+              }}
             />
-          ) : (
+            <DatePicker
+              modal
+              mode="date"
+              validRange={{ endDate: new Date() }}
+              open={open}
+              onCancel={() => setOpen(false)}
+              date={dob == "" ? new Date() : dob}
+              maximumDate={new Date()}
+              onConfirm={(params) => {
+                console.log("data", params);
+                setOpen(false);
+                setDob(params);
+                setDobError("");
+              }}
+            />
+
+            <View style={{ marginTop: 10 }}>
+              <CustomInput
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                // onChangeText={(text) => onIDChange(text)}
+                value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+                caption={"Date of birth"}
+                onFocus={() => setOpen(true)}
+                placeHolder={"Date of birth"}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpen(true)}
+                    theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                    icon="calendar"
+                  />
+                }
+              />
+            </View>
+          </Card>
+          <ClearSpace size={1} />
+          <Text variant="headlineSmall">Mobile Verification</Text>
+          <ClearSpace size={1} />
+
+          <Card
+            style={{
+              ...SHADOW_STYLE,
+              padding: 12,
+              marginTop: 2,
+              backgroundColor: colors.background,
+            }}
+          >
+            {/* Mobile Number */}
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onMobleNoChange(text)}
+                value={mobileNo}
+                placeHolder={strings.mobile_number}
+                isResendOTP={true}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "mobile"
+                    ? true
+                    : false
+                }
+                onPressOnCountyCode={() => setCountryPickModel(true)}
+                countryCode={dialpick}
+                label={strings.send_otp}
+                onPress={submitResndOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                isDisableButton={isDisableSendOtp}
+                maxLength={numberMaxLength}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {otpTimer > 0 && otpTimer < OTP_TIMER && (
+                <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+                  <Text style={styles.errorText}>
+                    {strings.otp_sent} {formatOtpTimer(otpTimer)}
+                  </Text>
+                </View>
+              )}
+              {!registerForm.initOtpForm &&
+                registerForm?.isOtpFormError &&
+                registerForm?.otpFormDataForMobile?.errorCode > 200 &&
+                registerForm?.otpUsageType === "mobile" &&
+                showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
+              {numberError !== "" && showErrorMessage(numberError)}
+            </View>
+            {/* OTP */}
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onOTPChange(text)}
+                value={otp}
+                placeHolder={strings.mobile_otp}
+                isConfirmOTP={true}
+                label={strings.confirm_otp}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "mobileOtp"
+                    ? true
+                    : false
+                }
+                correctOtp={mobileOTPVerifcation}
+                onPress={submitConfirmMobileOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {otp !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
+                registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
+                registerForm?.otpUsageType === "mobileOtp" &&
+                showMobileErrorMessage()}
+
+              {otp !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForMobile?.data?.data === null &&
+                registerForm?.otpUsageType === "mobileOtp" &&
+                showMobileErrorMessage()}
+
+              {otpNumberError !== "" && showErrorMessage(otpNumberError)}
+            </View>
+            {/* Email */}
+          </Card>
+          <ClearSpace size={1} />
+          <Text variant="headlineSmall">Mobile Verification</Text>
+          <ClearSpace size={1} />
+          {/* Mobile Number */}
+          <Card
+            style={{
+              ...SHADOW_STYLE,
+              padding: 12,
+              marginTop: 2,
+              backgroundColor: colors.background,
+            }}
+          >
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTAEmail
+                onChangeText={(text) => onEmailChange(text)}
+                value={email}
+                placeHolder={strings.email}
+                isEmail={true}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "email"
+                    ? true
+                    : false
+                }
+                isDisableButton={isDisableSendOtpEmail}
+                label={"CONFIRM EMAIL"}
+                onPress={submitEmail}
+                bgColor={color.BCAE_PRIMARY}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
+                <View style={{ alignItems: "flex-end", marginTop: 10 }}>
+                  <Text style={styles.errorText}>
+                    {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
+                  </Text>
+                </View>
+              )}
+              {!registerForm.initOtpForm &&
+                registerForm?.isOtpFormError &&
+                registerForm?.otpFormDataForEmail?.errorCode > 200 &&
+                registerForm?.otpUsageType === "email" &&
+                showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
+
+              {emailError !== "" && showErrorMessage(emailError)}
+            </View>
+
+            {/* OTP */}
+            {/* {console.log("registerForm====>"+registerForm?.otpUsageType  +"===="+registerForm?.otpFormData.data.otp)} */}
+
+            <View style={{ marginTop: 5 }}>
+              <TextBoxWithCTA
+                onChangeText={(text) => onEmailOTPChange(text)}
+                value={otpEmail}
+                placeHolder={strings.email_otp}
+                isConfirmOTP={true}
+                label={"CONFIRM OTP"}
+                loader={
+                  registerForm?.initOtpForm &&
+                  registerForm?.otpUsageType === "emailOtp"
+                    ? true
+                    : false
+                }
+                correctOtp={emailOTPVerification}
+                onPress={submitConfirmEmailOTP}
+                bgColor={color.BCAE_PRIMARY}
+                keyboardType={"numeric"}
+                btnTextPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_12,
+                  fontWeight: "400",
+                  lineHeight: spacing.HEIGHT_14,
+                }}
+              />
+              {/* //{ console.log("otpEmail==>"+otpEmail+"===>"+registerForm.initOtpForm+"===="+registerForm?.otpFormData?.data?.otp+"===="+registerForm?.otpUsageTyp )} */}
+              {otpEmail !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
+                registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
+                registerForm?.otpUsageType === "emailOtp" &&
+                showEmailErrorMessage()}
+
+              {otpEmail !== "" &&
+                !registerForm.initOtpForm &&
+                registerForm?.otpFormDataForEmail?.data?.data === null &&
+                registerForm?.otpUsageType === "emailOtp" &&
+                showEmailErrorMessage()}
+
+              {otpEmailError !== "" && showErrorMessage(otpEmailError)}
+            </View>
+          </Card>
+          <ClearSpace size={1} />
+          <Text variant="headlineSmall">Set Verification</Text>
+          <ClearSpace size={1} />
+
+          <Card
+            style={{
+              ...SHADOW_STYLE,
+              padding: 12,
+              marginTop: 2,
+              backgroundColor: colors.background,
+            }}
+          >
+            <View style={{ marginTop: 5 }}>
+              <CustomInput
+                value={password}
+                caption={strings.password}
+                placeHolder={strings.password}
+                onChangeText={onClickPasswordChange}
+                secureTextEntry={secureTextEntry}
+                right={
+                  password && (
+                    <TextInput.Icon
+                      onPress={() => setsecureTextEntry(!secureTextEntry)}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntry
+                          ? require("../../../Assets/icons/ic_password_show.png")
+                          : require("../../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
+                }
+              />
+
+              {/* {showErrorMessage("sds")} */}
+              {passwordError !== "" && showErrorMessage(passwordError)}
+            </View>
+            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              <CustomInput
+                value={confirmPassword}
+                caption={strings.confirmPassword}
+                placeHolder={strings.confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={secureTextEntryConfim}
+                right={
+                  confirmPassword && (
+                    <TextInput.Icon
+                      onPress={() =>
+                        setsecureTextEntryConfim(!secureTextEntryConfim)
+                      }
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntryConfim
+                          ? require("../../../Assets/icons/ic_password_show.png")
+                          : require("../../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
+                }
+              />
+
+              {passwordConfirmError !== "" &&
+                showErrorMessage(passwordConfirmError)}
+            </View>
+          </Card>
+        </ScrollView>
+      </View>
+      <StickyFooter>
+        <>
+          <View>
             <Button
               label={strings.register}
-              disabled={isButtomDiable}
+              isDisabled={isButtomDiable}
+              onPress={submit}
               loading={
                 registerForm?.initOtpForm
                   ? registerForm?.otpUsageType === "Register"
                   : false
               }
-              onPress={submit}
               mode="contained"
             />
-          )}
-        </View>
+          </View>
+          <Text
+            style={{
+              color: "#393939",
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 400,
+              marginTop: 10,
+            }}
+          >
+            By continuing, I accept and agree to BCAE
+          </Text>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Text
+              style={{
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 600,
+                color: "#4B3694",
+                marginTop: 5,
+              }}
+              onPress={() => alert("Navigate to T&C")}
+            >
+              Terms & Conditions of Use
+            </Text>
+            <Text
+              style={{
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 600,
+                color: "#000000",
+                marginTop: 5,
+              }}
+            >
+              {" "}
+              &{" "}
+            </Text>
+            <Text
+              style={{
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 600,
+                color: "#4B3694",
+                marginTop: 5,
+              }}
+              onPress={() => alert("Navigate to Privacy Policy")}
+            >
+              Privacy Policy
+            </Text>
+          </View>
+          <Text
+            style={{
+              color: "#393939",
+              fontSize: fontSizes.FONT_12,
+              textAlign: "center",
+              fontWeight: 400,
+              marginTop: 10,
+            }}
+          >
+            © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+          </Text>
+        </>
       </StickyFooter>
-    </>
+    </View>
   );
 });
