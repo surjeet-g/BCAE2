@@ -49,6 +49,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
+              fontWeight: isFirstSelected ? 700 : 400,
               color: isFirstSelected ? colors.secondary : colors.secondary,
             }}
           >
@@ -77,6 +78,7 @@ export const ToggleButton = (props) => {
           <Text
             style={{
               ...textPro,
+              fontWeight: !isFirstSelected ? 700 : 400,
               color: !isFirstSelected ? colors.secondary : colors.secondary,
             }}
           >

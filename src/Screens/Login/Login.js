@@ -245,8 +245,12 @@ export const Login = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Let us know,"}</Text>
-      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Who you are?"}</Text>
+      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+        {"Let us know,"}
+      </Text>
+      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+        {"Who you are?"}
+      </Text>
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -480,10 +484,10 @@ export const Login = ({ navigation }) => {
                   style={{
                     textAlign: "center",
                     alignSelf: "center",
-                    marginVertical: spacing.HEIGHT_15,
+                    marginVertical: spacing.HEIGHT_10,
                     color: "#BF873A",
-                    fontWeight: "700",
-                    fontSize: fontSizes.FONT_18,
+                    fontWeight: 700,
+                    fontSize: fontSizes.FONT_20,
                   }}
                   onPress={() => {
                     loginMode === EMAIL
@@ -690,22 +694,22 @@ const styles = StyleSheet.create({
     bottom: spacing.HEIGHT_31 * 2,
   },
   forgotText: {
-    fontWeight: "700",
-    color: "#3D3D3D",
+    fontWeight: 700,
+    color: "#4B3694",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },
   noAccText: {
-    color: "#393939",
-    fontSize: fontSizes.FONT_12,
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
     fontWeight: 400,
   },
   rgisterText: {
-    fontWeight: "700",
-    color: "#3D3D3D",
+    fontWeight: 700,
+    color: "#4B3694",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",

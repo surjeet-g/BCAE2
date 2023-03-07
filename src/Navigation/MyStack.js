@@ -62,7 +62,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"ConfirmForgotPassword"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -165,7 +165,7 @@ function MyStack() {
         />
 
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
         />

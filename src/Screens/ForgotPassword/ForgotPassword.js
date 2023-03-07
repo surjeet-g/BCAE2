@@ -53,7 +53,7 @@ const ForgotPassword = ({ navigation }) => {
   // const [dob, setDob] = useState("2023-02-10");
   const [dobError, setDobError] = useState("");
   const [open, setOpen] = useState(false);
-  const isFirst = false;
+  const isFirst = true;
   const [isFirstSelected, setFirstSelected] = useState(isFirst);
 
   const onPressFirst = () => {
@@ -111,7 +111,7 @@ const ForgotPassword = ({ navigation }) => {
         loginId: username,
       };
 
-      dispatch(verifyForgotPasswordData(props.navigation, params));
+      dispatch(verifyForgotPasswordData(navigation, params));
     }
   };
 
@@ -125,7 +125,7 @@ const ForgotPassword = ({ navigation }) => {
     } else {
       dispatch(
         verifyForgotPasswordData(
-          props.navigation,
+          navigation,
           {
             loginId: username,
             lastName: lastName,
@@ -172,8 +172,12 @@ const ForgotPassword = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Need our help,"}</Text>
-      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Forgot password?"}</Text>
+      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+        {"Need our help,"}
+      </Text>
+      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+        {"Forgot password?"}
+      </Text>
       <ScrollView
         style={{
           flexGrow: 1,
@@ -320,7 +324,7 @@ const ForgotPassword = ({ navigation }) => {
             marginTop: 35,
           }}
         >
-          <Pressable onPress={() => props.navigation.goBack()}>
+          <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.rgisterText}>{strings.back_to_login}</Text>
           </Pressable>
         </View>
@@ -452,7 +456,6 @@ const ForgotPassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
     ...HEADER_MARGIN,
   },
   logo: {
