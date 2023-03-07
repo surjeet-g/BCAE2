@@ -286,7 +286,6 @@ export const Login = ({ navigation }) => {
                   }}
                   textPro={{
                     fontSize: fontSizes.FONT_13,
-                    fontWeight: "600",
                     lineHeight: spacing.HEIGHT_16,
                   }}
                   onPressFirst={onSelectBusinessUserType}
