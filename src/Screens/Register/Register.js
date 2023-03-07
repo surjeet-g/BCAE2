@@ -138,7 +138,7 @@ const Register = ({ navigation, props }) => {
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../../Assets/icons/bg.png")}
+      source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
       <HeaderTitle header="Need your help" subHeader="Register" />

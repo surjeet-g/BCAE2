@@ -245,8 +245,12 @@ export const Login = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Let us know,"}</Text>
-      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Who you are?"}</Text>
+      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+        {"Let us know,"}
+      </Text>
+      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+        {"Who you are?"}
+      </Text>
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -303,9 +307,9 @@ export const Login = ({ navigation }) => {
                 }}
               >
                 <CustomSwitch
-                  buttonWidth={20}
+                  buttonWidth={25}
                   buttonPadding={5}
-                  switchWidth={75}
+                  switchWidth={90}
                   startOnLeft={isEmailLoginMode}
                   onSwitch={onToggleSwitch}
                   onSwitchReverse={onToggleSwitch}
@@ -579,6 +583,7 @@ export const Login = ({ navigation }) => {
             </View>
             <Text
               style={{
+                color: "#393939",
                 fontSize: fontSizes.FONT_14,
                 textAlign: "center",
                 fontWeight: 400,
@@ -627,6 +632,7 @@ export const Login = ({ navigation }) => {
             </View>
             <Text
               style={{
+                color: "#393939",
                 fontSize: fontSizes.FONT_12,
                 textAlign: "center",
                 fontWeight: 400,

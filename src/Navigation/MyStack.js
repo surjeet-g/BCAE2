@@ -80,7 +80,7 @@ function MyStack() {
               <View style={navBar.navRightCon}>
                 <Pressable
                   onPress={() =>
-                    alert("ToDo - Navigate njjjkjjjjjto Notifications Screen")
+                    alert("ToDo - Navigate to Notifications Screen")
                   }
                 >
                   <TermIcon {...ICON_STYLE} />
@@ -165,7 +165,7 @@ function MyStack() {
         />
 
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
         />
