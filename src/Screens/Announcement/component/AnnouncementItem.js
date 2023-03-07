@@ -1,25 +1,12 @@
 import React, { useState } from "react";
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  Pressable,
-  Image,
-} from "react-native";
+import { View, StyleSheet, Text, Pressable, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonType,
-  buttonSize,
-} from "../../../Utilities/Constants/Constant";
 import Moment from "moment";
 
-const AnnouncementItem = ({ title, date, description }) => {
+const AnnouncementItem = ({ title, date, desc }) => {
   const navigation = useNavigation();
   const [toggleImage, setToggle] = useState(false);
+
   function OnClickAnnouncementItem() {
     // navigation.navigate('MyTicketDetails', {ticketNo:ticketNo, intxnId:intxnId, intxnType:intxnType})
   }
@@ -37,35 +24,44 @@ const AnnouncementItem = ({ title, date, description }) => {
             flexDirection: "row",
           }}
         >
-          <View style={{ flexDirection: "column" }}>
-            <Text numberOfLines={1} style={{}}>
-              {"Today"}
-            </Text>
-            {/* <Text style={[styles.status]}>{Moment(date).fromNow()}</Text> */}
-            <Text style={[styles.status]}>{"12:42 PM"}</Text>
-          </View>
-
-          {/* Vertical Divider */}
-          <View
-            style={{
-              marginHorizontal: 8,
-              width: 3,
-              maxHeight: 50,
-              backgroundColor: "grey",
-            }}
+          <Image
+            style={{ height: 20, width: 20 }}
+            source={require("../../../Assets/icons/ic_selected_radio.png")}
           />
 
-          <View style={{ flexDirection: "column" }}>
-            <Text numberOfLines={2} style={{ fontWeight: "bold" }}>
-              {"title"}
+          <View style={{ flexDirection: "column", marginLeft: 10 }}>
+            <Text
+              numberOfLines={2}
+              style={{ fontWeight: 600, fontSize: 14, color: "#202223" }}
+            >
+              {title}
             </Text>
-            <Text style={{}} numberOfLines={3}>
-              {"description"}
+            <Text
+              style={{
+                marginTop: 8,
+                fontWeight: 400,
+                fontSize: 14,
+                color: "#6C7072",
+              }}
+              numberOfLines={3}
+            >
+              {desc}
+            </Text>
+            <Text
+              numberOfLines={1}
+              style={{
+                marginTop: 5,
+                fontWeight: 400,
+                fontSize: 14,
+                color: "#6C7072",
+              }}
+            >
+              {date}
             </Text>
           </View>
         </View>
         {/* Bottom Horizontal Divider */}
-        <View style={{ marginTop: 8, height: 2, backgroundColor: "grey" }} />
+        <View style={{ marginTop: 8, height: 1, backgroundColor: "#293F56" }} />
       </View>
     </Pressable>
   );

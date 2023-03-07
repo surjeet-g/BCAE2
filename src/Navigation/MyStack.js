@@ -1,7 +1,15 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
-import { Pressable, View } from "react-native";
+import React, { useRef, useCallback, useMemo } from "react";
+import {
+  Pressable,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -27,6 +35,8 @@ import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo
 import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
+import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
+
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -34,10 +44,17 @@ import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
+import AnnouncementItem from "./../Screens/Announcement/component/AnnouncementItem";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { mockAnnouncementList } from "../Utilities/Constants/Constant";
+
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
-const STACK_LOGIN_STACK = "Login";
+const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
 
 const Stack = createStackNavigator();
@@ -57,6 +74,21 @@ function MyStack() {
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
   };
+
+  // ref
+  const bottomSheetModalRef = useRef(BottomSheetModal);
+  // variables
+  const snapPoints = useMemo(() => ["60%"], []);
+  // callbacks
+  const openAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const closeAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    console.log("$$$-handleSheetChanges", index);
+  }, []);
 
   return (
     <NavigationContainer>
@@ -86,7 +118,12 @@ function MyStack() {
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Announcements")}>
+                <Pressable
+                  onPress={
+                    // () => navigation.navigate("Announcements")
+                    openAnnoncementModal
+                  }
+                >
                   <AnnouIcon {...ICON_STYLE} />
                 </Pressable>
               </View>
@@ -269,6 +306,33 @@ function MyStack() {
           name="Announcements"
           component={AnnouncementList}
         />
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "Interactions",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={navBar.navRightCon}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                      style={navBar.roundIcon}
+                    >
+                      <Icon name="pencil-outline" size={19} color="black" />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="InteractionsToOrder"
+          component={InteractionsToOrder}
+        />
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="ShowWebPage"
@@ -328,7 +392,64 @@ function MyStack() {
           component={InquiryNotification}
         /> */}
       </Stack.Navigator>
+      <BottomSheetModalProvider>
+        <View>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View style={styles.contentContainer}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginVertical: 10,
+                }}
+              >
+                <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#22374E",
+                    fontSize: 20,
+                    flex: 1,
+                    marginHorizontal: 15,
+                  }}
+                >
+                  Annoucements
+                </Text>
+                <TouchableOpacity onPress={closeAnnoncementModal}>
+                  <Image
+                    style={{ ...ICON_STYLE, color: "#36393D" }}
+                    source={require("../Assets/icons/ic_close.png")}
+                  />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={mockAnnouncementList}
+                renderItem={({ item }) => (
+                  <AnnouncementItem
+                    title={item.title}
+                    desc={item.desc}
+                    date={item.date}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </NavigationContainer>
   );
 }
+const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    padding: 10,
+  },
+});
+
 export default MyStack;

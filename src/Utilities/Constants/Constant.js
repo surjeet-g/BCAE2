@@ -322,6 +322,57 @@ export function TDLog(fileName, text) {
   }
 }
 
+export const mockAnnouncementList = [
+  {
+    id: 1,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2023",
+    desc: "TNEB Recruitment 2023 Notification For Various Vacancies",
+    date: "Today, 03:44 PM",
+  },
+  {
+    id: 2,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2022",
+    desc: "TNEB Recruitment 2022 Notification For Various Vacancies",
+    date: "Today, 12:10 PM",
+  },
+  {
+    id: 3,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2021",
+    desc: "TNEB Recruitment 2021 Notification For Various Vacancies",
+    date: "Today, 11:10 AM",
+  },
+  {
+    id: 4,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2020",
+    desc: "TNEB Recruitment 2020 Notification For Various Vacancies",
+    date: "Today, 09:10 PM",
+  },
+  {
+    id: 5,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2019",
+    desc: "TNEB Recruitment 2019 Notification For Various Vacancies",
+    date: "Today, 01:10 PM",
+  },
+  {
+    id: 6,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2018",
+    desc: "TNEB Recruitment 2018 Notification For Various Vacancies",
+    date: "Today, 06:10 PM",
+  },
+  {
+    id: 7,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2017",
+    desc: "TNEB Recruitment 2017 Notification For Various Vacancies",
+    date: "Today, 01:10 PM",
+  },
+  {
+    id: 8,
+    title: "TNEB TANGEDCO AAO Job Recruitment 2016",
+    desc: "TNEB Recruitment 2016 Notification For Various Vacancies",
+    date: "Today, 06:10 PM",
+  },
+];
+
 export const supportedCountriesList = [
   {
     countryName: "American Samoa",
