@@ -4,7 +4,7 @@ import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
 import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 
-export const CustomDropDownFull = (props) => {
+export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
     setValue,

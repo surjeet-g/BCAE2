@@ -32,13 +32,13 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { ICON_STYLE } from "./../../Utilities/Style/navBar";
 import { CustomDropDown } from "./../../Components/CustomDropDown";
 import { CustomInput } from "./../../Components/CustomInput";
-import { CustomDropDownFull } from "./../../Components/CustomDropDownFull";
+import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 
 const InteractionsToOrder = ({ route, navigation }) => {
   // ref
   const interactionsModalRef = useRef(BottomSheet);
   // variables
-  const interactionsModalSnapPoints = useMemo(() => ["10%", "90%"], []);
+  const interactionsModalSnapPoints = useMemo(() => ["15%", "90%"], []);
   // callbacks
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
@@ -119,86 +119,96 @@ const InteractionsToOrder = ({ route, navigation }) => {
           />
         </View>
 
-        {/* Field View */}
-        <View style={{ marginHorizontal: 10 }}>
-          <CustomDropDownFull
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.intractionType}
-            placeHolder={"Select " + strings.intractionType}
-          />
-          <CustomDropDownFull
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.serviceType}
-            placeHolder={"Select " + strings.serviceType}
-          />
-          <CustomDropDownFull
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.problem_stat_cause}
-            placeHolder={"Select " + strings.problem_stat_cause}
-          />
-          <CustomDropDownFull
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.priority_type}
-            placeHolder={"Select " + strings.priority_type}
-          />
-          <CustomDropDownFull
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.contact_type}
-            placeHolder={"Select " + strings.contact_type}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.remarks}
-            placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.attachment}
-            placeHolder={strings.attachment}
-            onChangeText={(text) => console.log(text)}
-          />
-        </View>
+        {isEnableInteractions ? (
+          <View style={{ flex: 1 }}>
+            {/* Field View */}
+            <View style={{ marginHorizontal: 10 }}>
+              <CustomDropDownFullWidth
+                selectedValue={""}
+                setValue={""}
+                data={[]}
+                onChangeText={(text) => console.log(text)}
+                value={""}
+                caption={strings.intractionType}
+                placeHolder={"Select " + strings.intractionType}
+              />
+              <CustomDropDownFullWidth
+                selectedValue={""}
+                setValue={""}
+                data={[]}
+                onChangeText={(text) => console.log(text)}
+                value={""}
+                caption={strings.serviceType}
+                placeHolder={"Select " + strings.serviceType}
+              />
+              <CustomDropDownFullWidth
+                selectedValue={""}
+                setValue={""}
+                data={[]}
+                onChangeText={(text) => console.log(text)}
+                value={""}
+                caption={strings.problem_stat_cause}
+                placeHolder={"Select " + strings.problem_stat_cause}
+              />
+              <CustomDropDownFullWidth
+                selectedValue={""}
+                setValue={""}
+                data={[]}
+                onChangeText={(text) => console.log(text)}
+                value={""}
+                caption={strings.priority_type}
+                placeHolder={"Select " + strings.priority_type}
+              />
+              <CustomDropDownFullWidth
+                selectedValue={""}
+                setValue={""}
+                data={[]}
+                onChangeText={(text) => console.log(text)}
+                value={""}
+                caption={strings.contact_type}
+                placeHolder={"Select " + strings.contact_type}
+              />
+              <CustomInput
+                value={""}
+                caption={strings.remarks}
+                placeHolder={strings.remarks}
+                onChangeText={(text) => console.log(text)}
+              />
+              <CustomInput
+                value={""}
+                caption={strings.attachment}
+                placeHolder={strings.attachment}
+                onChangeText={(text) => console.log(text)}
+              />
+            </View>
 
-        {/* Bottom Button View */}
-        <View
-          style={{
-            flexDirection: "row",
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "white",
-            marginHorizontal: 15,
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <CustomButton label={strings.cancel} onPress={onCancelPressed} />
+            {/* Bottom Button View */}
+            <View
+              style={{
+                flexDirection: "row",
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: "white",
+                marginHorizontal: 15,
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.cancel}
+                  onPress={onCancelPressed}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.submit}
+                  onPress={onSubmitPressed}
+                />
+              </View>
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <CustomButton label={strings.submit} onPress={onSubmitPressed} />
-          </View>
-        </View>
+        ) : null}
       </View>
     );
   };
