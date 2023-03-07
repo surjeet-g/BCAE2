@@ -2,6 +2,10 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    contact_type: "Contact type",
+    priority_type: "Priority type",
+    problem_stat_cause: "Problem statement cause",
+    remarks: "Remarks",
     confirm_edit_address: "Do you want to edit this address?",
     confirm_primary_address: "Do you want to make this as default address?",
     max_number_address: "Maximum number of address already added!!",
@@ -131,6 +135,7 @@ export let strings = new LocalizedStrings({
     problem_description: "Problem Description",
     description: "Description",
     attachment: "Attachments",
+    submit: "Submit",
     submitInquiry: "Submit Inquiry",
     submitComplaint: "Submit Complaint",
     document: "Documents",
@@ -210,6 +215,10 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
+    contact_type: "Contact type",
+    priority_type: "Priority type",
+    problem_stat_cause: "Problem statement cause",
+    remarks: "Remarks",
     confirm_edit_address: "Do you want to edit this address?",
     confirm_primary_address: "Do you want to make this as default address?",
     max_number_address: "Maximum number of address already added!!",
@@ -335,6 +344,7 @@ export let strings = new LocalizedStrings({
     problem_description: "Problem Description",
     description: "Description",
     attachment: "Attachments",
+    submit: "Submit",
     submitInquiry: "Submit Inquiry",
     submitComplaint: "Submit Complaint",
     document: "Documents",
@@ -414,6 +424,7 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   ml: {
+    remarks: "Remarks",
     tab_personal: "Personal",
     tab_existing: "Existing",
     checkYourMail: "Check your text message",

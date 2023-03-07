@@ -135,7 +135,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Profile",
+              headerTitle: "Profile",
               headerRight: () => {
                 return (
                   <View style={navBar.navRightCon}>
@@ -161,7 +161,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Edit Profile",
+              headerTitle: "Edit Profile",
             },
           })}
           name="EditProfile"
@@ -318,12 +318,14 @@ function MyStack() {
               },
               headerRight: () => {
                 return (
-                  <View style={navBar.navRightCon}>
+                  <View style={{ marginRight: 15 }}>
                     <Pressable
                       onPress={() => navigation.navigate("EditProfile")}
-                      style={navBar.roundIcon}
                     >
-                      <Icon name="pencil-outline" size={19} color="black" />
+                      <Image
+                        style={{ ...ICON_STYLE }}
+                        source={require("../Assets/icons/search.png")}
+                      />
                     </Pressable>
                   </View>
                 );
@@ -423,7 +425,7 @@ function MyStack() {
                 <TouchableOpacity onPress={closeAnnoncementModal}>
                   <Image
                     style={{ ...ICON_STYLE, color: "#36393D" }}
-                    source={require("../Assets/icons/ic_close.png")}
+                    source={require("../Assets/icons/close_black.png")}
                   />
                 </TouchableOpacity>
               </View>
