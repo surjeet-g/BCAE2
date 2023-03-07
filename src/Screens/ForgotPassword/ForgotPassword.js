@@ -181,13 +181,13 @@ const ForgotPassword = ({ navigation }) => {
       <ScrollView
         style={{
           flexGrow: 1,
-          paddingHorizontal: spacing.WIDTH_30,
+          // paddingHorizontal: spacing.WIDTH_30,
         }}
         nestedScrollEnabled={true}
       >
         <View
           style={{
-            margin: 2,
+            margin: 10,
             flex: 1,
             padding: 20,
             backgroundColor: "#fff",

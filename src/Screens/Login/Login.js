@@ -308,9 +308,9 @@ export const Login = ({ navigation }) => {
                 }}
               >
                 <CustomSwitch
-                  buttonWidth={20}
+                  buttonWidth={25}
                   buttonPadding={5}
-                  switchWidth={75}
+                  switchWidth={90}
                   startOnLeft={isEmailLoginMode}
                   onSwitch={onToggleSwitch}
                   onSwitchReverse={onToggleSwitch}

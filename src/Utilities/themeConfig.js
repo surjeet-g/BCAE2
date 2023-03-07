@@ -1,7 +1,7 @@
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 export const FONT_FAMILY = "";
 export const FONT_FAMILY_MEDIUM = "";
-export const HEADER_MARGIN = { marginTop: 0, paddingTop: 70 };
+export const HEADER_MARGIN = { marginTop: 0, paddingTop: 40 };
 
 export const SHADOW_STYLE = {
   elevation: 1,
