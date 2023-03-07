@@ -35,6 +35,8 @@ import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo
 import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
+import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
+
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -303,6 +305,33 @@ function MyStack() {
           }}
           name="Announcements"
           component={AnnouncementList}
+        />
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "Interactions",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={navBar.navRightCon}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                      style={navBar.roundIcon}
+                    >
+                      <Icon name="pencil-outline" size={19} color="black" />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="InteractionsToOrder"
+          component={InteractionsToOrder}
         />
         {/* <Stack.Screen
           options={{ headerShown: false }}

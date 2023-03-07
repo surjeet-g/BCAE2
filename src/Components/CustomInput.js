@@ -51,6 +51,7 @@ export const CustomInput = (props) => {
           onBlur={() => {
             setActive(false);
           }}
+          autoCapitalize="none"
         />
       </View>
     </View>
