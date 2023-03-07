@@ -161,7 +161,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Edit Profile",
+              headerTitle: "Edit Profile",
             },
           })}
           name="EditProfile"
