@@ -559,7 +559,7 @@ export const Login = ({ navigation }) => {
                 </View>
               )}
           </ScrollView>
-          <StickyFooter isLogin={true}>
+          <StickyFooter>
             {/* Login View */}
             <View>
               <CustomButton

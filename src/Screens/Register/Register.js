@@ -155,13 +155,18 @@ const Register = ({ navigation, props }) => {
             marginTop: 12,
             borderRadius: roundness,
             // backgroundColor: colors.background,
-            marginHorizontal: 12,
-            padding: 12,
+            //marginHorizontal: 12,
+            //padding: 12,
             // ...SHADOW_STYLE,
           }}
-          nestedScrollEnabled={true}
         >
-          <View style={{ backgroundColor: colors.background, padding: 12 }}>
+          <View
+            style={{
+              backgroundColor: "transparent",
+              padding: 12,
+              marginTop: 20,
+            }}
+          >
             <ToggleButton
               isFirstSelected={isFirstSelected}
               label={{
