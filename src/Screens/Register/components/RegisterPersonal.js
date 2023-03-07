@@ -582,8 +582,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
             padding: 12,
             // marginTop: 2,
             backgroundColor: colors.background,
-            borderTopRightRadius: 0,
-            borderTopLeftRadius: 0,
+            borderRadius: 20,
           }}
         >
           <View style={{ marginVertical: 5 }}>

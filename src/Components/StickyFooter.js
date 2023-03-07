@@ -15,15 +15,11 @@ export const StickyFooter = ({
   return (
     <View
       style={{
-        marginTop: isRegistertion ? 0 : 0,
         padding: 12,
-        paddingBottom: isRegistertion ? 40 : 0,
-        position: isSplash || isRegistertion ? "absolute" : "relative",
+        position: isSplash ? "absolute" : "relative",
         bottom: 0,
-        left: isRegistertion ? -12 : 0,
         marginBottom: isSplash || isLogin ? 0 : 110,
         backgroundColor: colors.background,
-        width: isRegistertion ? width : "100%",
       }}
     >
       {children}
