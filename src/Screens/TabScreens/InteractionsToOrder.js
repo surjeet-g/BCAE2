@@ -49,10 +49,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
   }, []);
+  const handleSnapPress = useCallback((index) => {
+    interactionsModalRef.current?.snapToIndex(index);
+  }, []);
+  const handleExpandPress = useCallback(() => {
+    interactionsModalRef.current?.expand();
+  }, []);
+  const handleCollapsePress = useCallback(() => {
+    interactionsModalRef.current?.collapse();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    interactionsModalRef.current?.close();
+  }, []);
 
   const [isEnableInteractions, setIsEnableInteractions] = useState(false);
-  const onToggleInteractionSwitch = () =>
+  const onToggleInteractionSwitch = () => {
+    if (isEnableInteractions) {
+      handleSnapPress(0);
+    } else {
+      handleSnapPress(1);
+    }
     setIsEnableInteractions(!isEnableInteractions);
+  };
 
   const [searchText, setSearchText] = useState("");
   const [interactionType, setInteractionType] = useState("");
