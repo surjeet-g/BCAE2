@@ -339,7 +339,7 @@ const CreateOrder = (props) => {
             style={{
               borderRadius: 10,
               backgroundColor: "#FFEEEF",
-              width: "70%",
+              width: "80%",
               marginTop: 20,
               alignSelf: "center",
               elevation: 5,
