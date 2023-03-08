@@ -1,14 +1,9 @@
 import { initProfile, setProfileData, setProfileError } from "./ProfileAction";
 
-import {
-  storageKeys,
-  DEFAULT_PROFILE_IMAGE,
-} from "../Utilities/Constants/Constant";
-import { saveDataToDB, getDataFromDB } from "../Storage/token";
-import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
-import { serverCall } from "..//Utilities/API";
-import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 import Toast from "react-native-toast-message";
+import { serverCall } from "..//Utilities/API";
+import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
+import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 
 export function fetchSavedProfileData(navigation = null) {
   return async (dispatch) => {
@@ -24,8 +19,10 @@ export function fetchSavedProfileData(navigation = null) {
     console.log("hiting", profileResult);
     if (profileResult?.success) {
       dispatch(setProfileData(profileResult?.data?.data));
+      return true;
     } else {
       dispatch(setProfileError([]));
+      return false;
     }
   };
 }

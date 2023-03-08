@@ -1,53 +1,32 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  SafeAreaView,
-  Dimensions,
-  TouchableHighlight,
-  Alert,
+  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet,
+  Text, TextInput, TouchableOpacity, View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { useTheme } from "react-native-paper";
 
-import { strings } from "../../Utilities/Language";
+import MapView, {
+  Callout,
+  Circle, Marker, PROVIDER_GOOGLE
+} from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
 import {
-  spacing,
-  fontSizes,
-  color,
-  buttonType,
-  buttonSize,
-  validateEmail,
-  validatePassword,
-  Platform,
-  TDLog,
+  buttonSize, color, spacing
 } from "../../Utilities/Constants/Constant";
-import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-  Callout,
-  Circle,
-} from "react-native-maps";
+import { strings } from "../../Utilities/Language";
 
 // import Modal from "react-native-modal";
-import Header from "../TabScreens/Component/Header";
 import RNLocation from "react-native-location";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 
-import { Button } from "react-native-paper";
-import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
-const { height } = Dimensions.get("screen");
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
 import get from "lodash.get";
+import { Button } from "react-native-paper";
 import { CustomButton } from "../../Components/CustomButton";
+import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
+const { height } = Dimensions.get("screen");
 
 const AddLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
@@ -80,8 +59,12 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
+//  const { customerId,
+//    fromPage,  
+//     excludingSavedAddress = [],
+//   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
+
   const {
-    customerId,
     fromPage,
     excludingSavedAddress = [],
     includingSavedAddress = [],
@@ -95,7 +78,6 @@ const AddLocation = ({ route, navigation }) => {
     excludingSavedAddress
   );
 
-  // const { customerId, fromPage } = { customerId: 123132, fromPage: false };
   if (fromPage === "Register") {
     savedLocation = savedLocationWithoutAuth;
   }
@@ -377,10 +359,15 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+
     animateToCurrentLocation();
   }, [locationGet]);
 
   useEffect(() => {
+  if(Platform.OS === "android" ){
+    CheckForGPSEnablement()
+  }
+ 
     permissionHandle();
   }, [location]);
 

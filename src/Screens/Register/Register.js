@@ -138,7 +138,7 @@ const Register = ({ navigation, props }) => {
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../../Assets/icons/bg.png")}
+      source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
       <HeaderTitle header="Need your help" subHeader="Register" />
@@ -155,12 +155,17 @@ const Register = ({ navigation, props }) => {
             marginTop: 12,
             borderRadius: roundness,
             // backgroundColor: colors.background,
-            marginHorizontal: 12,
-            padding: 12,
+            //marginHorizontal: 12,
+            //padding: 12,
             // ...SHADOW_STYLE,
           }}
         >
-          <View style={{ backgroundColor: colors.background, padding: 12 }}>
+          <View
+            style={{
+              backgroundColor: "transparent",
+              padding: 12,
+            }}
+          >
             <ToggleButton
               isFirstSelected={isFirstSelected}
               label={{

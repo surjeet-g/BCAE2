@@ -1,7 +1,15 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
-import { Pressable, View } from "react-native";
+import React, { useCallback, useMemo, useRef } from "react";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -29,17 +37,26 @@ import { Playground } from "../Screens/Playground";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider
+} from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
+import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import AnnouncementItem from "./../Screens/Announcement/component/AnnouncementItem";
+import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
+
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
-const STACK_LOGIN_STACK = "Login";
+const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
+const STACK_INTER = "InteractionsToOrder";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -70,6 +87,7 @@ function MyStack() {
   const closeAnnoncementModal = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
   }, []);
+
   const handleSheetChanges = useCallback((index) => {
     console.log("$$$-handleSheetChanges", index);
   }, []);
@@ -78,7 +96,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={STACK_INTER}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -193,15 +211,8 @@ function MyStack() {
         <Stack.Screen
           component={ResetPassword}
           options={{
-            ...options,
-            ...{
-              title: "Reset Password",
-              headerRight: () => null,
-              headerTitle: () => (
-                <HeaderTitle header="Need your help" subHeader="Register" />
-              ),
-              headerTintColor: colors.inverseSecondary,
-            },
+            headerShown: true,
+            title: "Announcements",
           }}
           name="ResetPassword"
         />
@@ -223,6 +234,14 @@ function MyStack() {
           name="Login"
           component={Login}
         />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Login",
+          }}
+          name="VerifyLoginOTP"
+          component={VerifyLoginOTP}
+        />
 
         <Stack.Screen
           options={{
@@ -243,7 +262,7 @@ function MyStack() {
 
             headerTransparent: false,
             title: "Location on map",
-            headerRight: () => {},
+            headerRight: () => { },
             headerStyle: {
               backgroundColor: colors.secondary,
             },

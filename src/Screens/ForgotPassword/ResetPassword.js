@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert, ImageBackground, ScrollView,
+  StyleSheet,
+  View
+} from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "../../Components/CustomInput";
@@ -14,7 +18,6 @@ import { strings } from "../../Utilities/Language";
 
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { SvgBG } from "../../Components/SvgBG";
 import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
@@ -29,13 +32,13 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  // const { email, inviteToken, isChangePassword } = route.params;
-  const { email, inviteToken, isChangePassword } = {
-    email: "dash.surjeet@gmail.com",
-    inviteToken:
-      "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
-    isChangePassword: false,
-  };
+  const { email, inviteToken, isChangePassword } = route.params;
+  // const { email, inviteToken, isChangePassword } = {
+  //   email: "dash.surjeet@gmail.com",
+  //   inviteToken:
+  //     "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
+  //   isChangePassword: false,
+  // };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -138,15 +141,12 @@ const ResetPassword = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        // ...{ marginTop: isChangePassword ? 15 : 45 },
-      }}
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
     >
-      <SvgBG />
-      {/* Header */}
-      <ScrollView
+      <View
         style={{
           ...styles.container,
           // ...{ marginTop: isChangePassword ? 15 : 45 },
@@ -251,9 +251,8 @@ const ResetPassword = ({ route, navigation }) => {
                   )
                 }
               />
-            }
-          />
-        </View>
+            </View>
+          </View>
 
           {/* {
           orSection()
@@ -284,62 +283,14 @@ const ResetPassword = ({ route, navigation }) => {
           <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
         </ScrollView>
 
-      <StickyFooter>
-        <View>
-          <CustomButton
-            loading={forgot?.initForgotPassword}
-            label={
-              isChangePassword
-                ? strings.change_password
-                : strings.reset_password
-            }
-            isDisabled={false}
-            onPress={onSubmitPasswordChanged}
-          />
-
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status == "200" &&
-            showSuccessMessage(forgot?.loggedProfile?.message)}
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status != "200" &&
-            showErrorMessage(forgot?.loggedProfile?.message)}
-        </View>
-
-        {orSection()}
-        {!isChangePassword && (
+        <StickyFooter>
           <View>
-            <Text style={styles.noAccText}>{strings.dont_account}</Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register with us", {})}
-            >
-              <Text style={styles.rgisterText}>
-                {strings.register_with_us.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
-        )}
-      </StickyFooter>
-      {!login.initLogin &&
-        (login?.loggedProfile?.errorCode == "10000" ||
-          login?.loggedProfile?.errorCode == "10001") && (
-          <View style={styles.toast}>
-            <Toast
-              bgColor={color.TOAST_RED}
-              customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
-              textPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_14,
-                fontWeight: "700",
-              }}
-              img={
-                login?.loggedProfile?.errorCode == "10001"
-                  ? require("../../Assets/icons/ic_no_Internet.png")
-                  : require("../../Assets/icons/ci_error-warning-fill.png")
-              }
-              message={
-                login?.loggedProfile?.errorCode == "10001"
-                  ? strings.no_network
-                  : strings.something_went_wrong
+            <CustomButton
+              loading={forgot?.initForgotPassword}
+              label={
+                isChangePassword
+                  ? strings.change_password
+                  : strings.reset_password
               }
               isDisabled={false}
               onPress={onSubmitPasswordChanged}
@@ -353,19 +304,8 @@ const ResetPassword = ({ route, navigation }) => {
               showErrorMessage(forgot?.loggedProfile?.message)}
           </View>
 
-          {orSection()}
-          {!isChangePassword && (
-            <View>
-              <Text style={styles.noAccText}>{strings.dont_account}</Text>
-              <Pressable
-                onPress={() => navigation.navigate("Register with us", {})}
-              >
-                <Text style={styles.rgisterText}>
-                  {strings.register_with_us.toUpperCase()}
-                </Text>
-              </Pressable>
-            </View>
-          )}
+       
+      
         </StickyFooter>
         {!login.initLogin &&
           (login?.loggedProfile?.errorCode == "10000" ||
@@ -400,9 +340,7 @@ const ResetPassword = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#9C8FC4",
-    // ...HEADER_MARGIN,
-    paddingTop: HEADER_MARGIN.marginTop + HEADER_MARGIN.paddingTop,
+    ...HEADER_MARGIN,
   },
   toast: {
     position: "absolute",

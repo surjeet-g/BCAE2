@@ -31,3 +31,18 @@ export const getUserId = async () => {
   }
   return userId;
 };
+
+export const getCustomerID = async () => {
+  let userId;
+  try {
+    userId = get(
+      await getDataFromDB(storageKeys.PROFILE_DETAILS),
+      "customerId",
+      ""
+    );
+    if (userId == "") throw "Customer customerIDis empty";
+  } catch (error) {
+    console.log("getUserId ", error);
+  }
+  return userId;
+};
