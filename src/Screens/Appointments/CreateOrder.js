@@ -22,7 +22,7 @@ const CreateOrder = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
 
-  const [searchText, setSearchText] = useState("");
+  const [isGetSlotsEnabled, setIsGetSlotsEnabled] = useState(false);
   const [interactionType, setInteractionType] = useState("");
   const [serviceType, setServiceType] = useState("");
   const [problemCause, setProblemCause] = useState("");
@@ -526,6 +526,106 @@ const CreateOrder = (props) => {
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
           />
+
+          {/* ENable Interactions with Switch */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: 600,
+                color: "#282A2C",
+                fontSize: 16,
+                flex: 1,
+              }}
+            >
+              {strings.get_slots}
+            </Text>
+            <Switch
+              value={isGetSlotsEnabled}
+              onValueChange={() => setIsGetSlotsEnabled(!isGetSlotsEnabled)}
+            />
+          </View>
+
+          {isGetSlotsEnabled ? (
+            <View
+              style={{
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: colors.gray,
+                padding: 10,
+              }}
+            >
+              <View style={{ flexDirection: "column" }}>
+                {/* Available & Selected View */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  {/* Available view */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      margin: 5,
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 15,
+                        width: 15,
+                        backgroundColor: "#3FB94D",
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: "#282A2C",
+                        fontWeight: 400,
+                        fontSize: 14,
+                        marginLeft: 10,
+                      }}
+                    >
+                      Available
+                    </Text>
+                  </View>
+                  {/* Selected View */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginLeft: 20,
+                      margin: 5,
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 15,
+                        width: 15,
+                        backgroundColor: "#F5AD47",
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: "#282A2C",
+                        fontWeight: 400,
+                        fontSize: 14,
+                        marginLeft: 10,
+                      }}
+                    >
+                      Selected
+                    </Text>
+                  </View>
+                </View>
+                {/* Add Flatlist here to display the slots */}
+              </View>
+            </View>
+          ) : null}
+
           <CustomInput
             value={""}
             caption={strings.remarks}
