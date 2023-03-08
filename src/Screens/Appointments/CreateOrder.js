@@ -23,13 +23,12 @@ const CreateOrder = (props) => {
   const { colors, fonts, roundness } = useTheme();
 
   const [isGetSlotsEnabled, setIsGetSlotsEnabled] = useState(false);
-  const [interactionType, setInteractionType] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [problemCause, setProblemCause] = useState("");
-  const [priorityType, setPriorityType] = useState("");
+  const [appointDateTime, setAppointDateTime] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
   const [contactType, setContactType] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [attachments, setAttachments] = useState([]);
+  const [selectedSlots, setseSectedSlots] = useState("");
 
   const Item = () => {
     return (
@@ -469,7 +468,7 @@ const CreateOrder = (props) => {
         </View>
 
         {/* Flatlist Horizontal view */}
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", marginTop: 15 }}>
           <FlatList
             horizontal
             initialNumToRender={2}
@@ -484,7 +483,7 @@ const CreateOrder = (props) => {
           style={{
             borderRadius: 10,
             backgroundColor: "white",
-            margin: 5,
+            marginTop: 15,
             padding: 10,
           }}
         >
@@ -499,22 +498,22 @@ const CreateOrder = (props) => {
             Appointment Details
           </Text>
           <CustomInput
-            value={""}
+            value={appointDateTime}
             caption={strings.appoint_date_time}
             placeHolder={strings.appoint_date_time}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => setAppointDateTime(text)}
           />
           <CustomInput
-            value={""}
+            value={contactName}
             caption={strings.contact_name}
             placeHolder={strings.contact_name}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => setContactName(text)}
           />
           <CustomInput
-            value={""}
+            value={contactNumber}
             caption={strings.contact_number}
             placeHolder={strings.contact_number}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => setContactNumber(text)}
           />
 
           <CustomDropDownFullWidth
@@ -627,10 +626,10 @@ const CreateOrder = (props) => {
           ) : null}
 
           <CustomInput
-            value={""}
+            value={remarks}
             caption={strings.remarks}
             placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => setRemarks(text)}
           />
         </View>
       </ScrollView>
@@ -660,7 +659,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   scrollviewContainer: {
-    margin: 10,
+    margin: 15,
     backgroundColor: "#F0F0F0",
   },
 });
