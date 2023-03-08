@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
+import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
 import {

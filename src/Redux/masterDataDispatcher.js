@@ -1,10 +1,10 @@
+import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
+import { serverCall } from "../Utilities/API";
 import {
   initmasterDataData,
   setmasterDataData,
-  setmasterDataError,
+  setmasterDataError
 } from "./masterDataAction";
-import { serverCall } from "../Utilities/API";
-import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 export const MASTER_DATA_CONSTANT = {
   STATUS: "STATUS",
   GENDER: "GENDER",
@@ -14,6 +14,7 @@ export const MASTER_DATA_CONSTANT = {
   MARITAL_STATUS: "MARITAL_STATUS",
   NATIONALITY: "NATIONALITY",
   YES_NO: "YES_NO",
+  PROBLEM_CODE: "PROBLEM_CODE",
   CUST_STATUS_REASON: "CUST_STATUS_REASON",
   CONTACT_PREFERENCE: "CONTACT_PREFERENCE",
   STATUS: "STATUS",
@@ -40,6 +41,7 @@ export const getMasterData = (valueParam = "") => {
   if (typeof valueParam != "string") {
     console.log("params should be string");
   }
+  console.log('masterdate para', valueParam)
   return async (dispatch) => {
     dispatch(initmasterDataData());
     let params = {};
@@ -48,6 +50,7 @@ export const getMasterData = (valueParam = "") => {
       requestMethod.GET,
       params
     );
+    console.log('>>master date', result)
     if (result.success) {
       dispatch(setmasterDataData(result?.data?.data));
     } else {

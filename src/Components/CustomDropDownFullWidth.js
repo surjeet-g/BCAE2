@@ -7,13 +7,14 @@ import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
-    setValue,
+    setValue = () => { },
     caption = "",
     placeHolder = "",
     data,
     customStyle = {},
     onChangeText,
   } = props;
+
   const [hideShow, setHideShow] = useState(false);
   const { colors } = useTheme();
 
@@ -35,7 +36,9 @@ export const CustomDropDownFullWidth = (props) => {
         padding: 0,
         margin: 0,
       }}
-      style={{}}
+      style={{
+
+      }}
       onPress={() => onSelected(item)}
     />
   );
@@ -45,6 +48,7 @@ export const CustomDropDownFullWidth = (props) => {
       <View
         style={{
           flexDirection: "column",
+
         }}
       >
         <Text
@@ -81,9 +85,10 @@ export const CustomDropDownFullWidth = (props) => {
         <View style={styles.dropDownCard}>
           <FlatList
             data={data ?? []}
+
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-            // keyExtractor={item => item.description}
+          // keyExtractor={item => item.description}
           />
         </View>
       )}

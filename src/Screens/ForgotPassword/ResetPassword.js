@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Pressable,
-  ScrollView,
+  Alert, ImageBackground, ScrollView,
   StyleSheet,
-  View,
-  ImageBackground,
+  View
 } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,13 +12,12 @@ import {
   color,
   fontSizes,
   spacing,
-  validatePassword,
+  validatePassword
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { SvgBG } from "../../Components/SvgBG";
 import { changePassword } from "../../Screens/ForgotPassword/ForgotPasswordDispatcher";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
@@ -36,13 +32,13 @@ const ResetPassword = ({ route, navigation }) => {
   const [secureTextEntry, setsecureTextEntry] = useState(true);
   const [secureTextEntryOld, setsecureTextEntryOld] = useState(true);
   const [secureTextEntryConfim, setsecureTextEntryConfim] = useState(true);
-  // const { email, inviteToken, isChangePassword } = route.params;
-  const { email, inviteToken, isChangePassword } = {
-    email: "dash.surjeet@gmail.com",
-    inviteToken:
-      "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
-    isChangePassword: false,
-  };
+  const { email, inviteToken, isChangePassword } = route.params;
+  // const { email, inviteToken, isChangePassword } = {
+  //   email: "dash.surjeet@gmail.com",
+  //   inviteToken:
+  //     "bf772324d84e182d911b90386fcca07c058fa05e5ac98e48ff501a985734a0dc",
+  //   isChangePassword: false,
+  // };
   const hideShowClickOld = () => {
     setsecureTextEntryOld(!secureTextEntryOld);
   };
@@ -308,19 +304,8 @@ const ResetPassword = ({ route, navigation }) => {
               showErrorMessage(forgot?.loggedProfile?.message)}
           </View>
 
-          {orSection()}
-          {!isChangePassword && (
-            <View>
-              <Text style={styles.noAccText}>{strings.dont_account}</Text>
-              <Pressable
-                onPress={() => navigation.navigate("Register with us", {})}
-              >
-                <Text style={styles.rgisterText}>
-                  {strings.register_with_us.toUpperCase()}
-                </Text>
-              </Pressable>
-            </View>
-          )}
+       
+      
         </StickyFooter>
         {!login.initLogin &&
           (login?.loggedProfile?.errorCode == "10000" ||
