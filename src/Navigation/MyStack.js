@@ -255,20 +255,19 @@ function MyStack() {
           component={Register}
         />
         <Stack.Screen
-          options={{
-            headerTintColor: colors.inverseSecondary,
-
-            headerTransparent: false,
-            title: "Location on map",
-            headerRight: () => {},
-            headerStyle: {
-              backgroundColor: colors.secondary,
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "AddLocation",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return <View style={{ marginRight: 15 }}></View>;
+              },
             },
-            headerTitleStyle: {
-              ...fonts.titleMedium,
-              ...{ color: colors.inverseSecondary, fontWeight: "700" },
-            },
-          }}
+          })}
           name="AddLocation"
           component={AddLocation}
         />

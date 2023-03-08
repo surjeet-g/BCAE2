@@ -267,6 +267,7 @@ export const storageKeys = {
   FCM_DEVICE_ID: "FCM_DEVICE_ID",
   PUSH_NOTIFICATION: "PUSH_NOTIFICATION",
   GEOCODER_DATA: "GEOCODER_DATA",
+  LOGIN_ID: "LOGIN_ID",
 };
 
 export function validateEmail(text) {

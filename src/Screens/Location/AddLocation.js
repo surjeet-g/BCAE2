@@ -674,16 +674,18 @@ const AddLocation = ({ route, navigation }) => {
       </View>
       <View
         style={[
-          { height: 55, marginBottom: 40, paddingStart: 10, paddingEnd: 10 },
+          { marginBottom: 40, paddingStart: 10, paddingEnd: 10 },
           styles.bottomView,
         ]}
       >
         <CustomButton
-          style={styles.savelocBtn}
+          loading={false}
           label={strings.save_location}
+          isDisabled={false}
           onPress={() => onClickedSaveLocationButton()}
         />
       </View>
+
       {isAddLocationModalVisible && (
         <ScrollView style={{ position: "absolute", top: "-3%", left: "5%" }}>
           <View style={styles.addLocationContainer}>
@@ -728,7 +730,7 @@ const AddLocation = ({ route, navigation }) => {
                   onPress={() => setAddLocationModalVisible(false)}
                 >
                   <Image
-                    source={require("../../Assets/icons/ic_close.png")}
+                    source={require("../../Assets/icons/close_black.png")}
                     style={{
                       resizeMode: "cover",
                       width: spacing.WIDTH_16,
@@ -748,13 +750,13 @@ const AddLocation = ({ route, navigation }) => {
               >
                 <Text>{geoAddress}</Text>
               </View>
-              <View style={{ marginTop: 10, alignItems: "center" }}>
+              <View style={{ marginTop: 5, alignItems: "center" }}>
                 <Text>{strings.additional_address_info}</Text>
               </View>
               <View
                 style={{
                   marginTop: 5,
-                  marginBottom: 12,
+                  marginBottom: 5,
                   zIndex: 4,
                   elevation: 12,
                 }}
@@ -890,6 +892,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
+    marginTop: 60,
   },
   addLocationContainer: {
     width: "90%",
@@ -903,6 +906,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     marginBottom: 0,
     alignItems: "center",
+    marginTop: 20,
   },
   bottomView: {
     flex: 1,
