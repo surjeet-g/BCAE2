@@ -639,10 +639,7 @@ const CreateOrder = (props) => {
       <View
         style={{
           flexDirection: "row",
-          position: "absolute",
           bottom: 0,
-          left: 0,
-          right: 0,
           backgroundColor: "white",
         }}
       >
@@ -660,13 +657,11 @@ const CreateOrder = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     marginTop: 50,
   },
   scrollviewContainer: {
-    flex: 1,
-    backgroundColor: "##F0F0F0",
-    marginBottom: 70,
+    margin: 10,
+    backgroundColor: "#F0F0F0",
   },
 });
 export default CreateOrder;
