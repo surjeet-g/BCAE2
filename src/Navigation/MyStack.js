@@ -209,15 +209,8 @@ function MyStack() {
         <Stack.Screen
           component={ResetPassword}
           options={{
-            ...options,
-            ...{
-              title: "Reset Password",
-              headerRight: () => null,
-              headerTitle: () => (
-                <HeaderTitle header="Need your help" subHeader="Register" />
-              ),
-              headerTintColor: colors.inverseSecondary,
-            },
+            headerShown: true,
+            title: "Announcements",
           }}
           name="ResetPassword"
         />
@@ -318,12 +311,14 @@ function MyStack() {
               },
               headerRight: () => {
                 return (
-                  <View style={navBar.navRightCon}>
+                  <View style={{ marginRight: 15 }}>
                     <Pressable
                       onPress={() => navigation.navigate("EditProfile")}
-                      style={navBar.roundIcon}
                     >
-                      <Icon name="pencil-outline" size={19} color="black" />
+                      <Image
+                        style={{ ...ICON_STYLE }}
+                        source={require("../Assets/icons/search.png")}
+                      />
                     </Pressable>
                   </View>
                 );
@@ -422,8 +417,8 @@ function MyStack() {
                 </Text>
                 <TouchableOpacity onPress={closeAnnoncementModal}>
                   <Image
-                    style={{ ...ICON_STYLE, color: "#36393D" }}
-                    source={require("../Assets/icons/ic_close.png")}
+                    style={{ ...ICON_STYLE, tintColor: "#36393D" }}
+                    source={require("../Assets/icons/close_black.png")}
                   />
                 </TouchableOpacity>
               </View>

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  ImageBackground,
+} from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "../../Components/CustomInput";
@@ -138,96 +145,120 @@ const ResetPassword = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        // ...{ marginTop: isChangePassword ? 15 : 45 },
-      }}
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
     >
-      <SvgBG />
-      {/* Header */}
-      <ScrollView
+      <View
         style={{
-          flexGrow: 1,
-          paddingHorizontal: spacing.WIDTH_30,
-          paddingTop: isChangePassword ? 0 : spacing.HEIGHT_40 * 2,
+          ...styles.container,
+          // ...{ marginTop: isChangePassword ? 15 : 45 },
         }}
-        nestedScrollEnabled={true}
       >
-        <View style={{ marginBottom: 30 }}>
-          <Text variant="bodyMedium">Email Address : {email}</Text>
-        </View>
+        <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+          {"Need our help,"}
+        </Text>
+        <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+          {"Reset password?"}
+        </Text>
+        <ScrollView
+          style={{
+            flexGrow: 1,
+          }}
+          nestedScrollEnabled={true}
+        >
+          <View
+            style={{
+              margin: 10,
+              flex: 1,
+              padding: 20,
+              backgroundColor: "#fff",
+              borderRadius: 20,
+              elevation: 5,
+            }}
+          >
+            <View style={{ marginBottom: 30 }}>
+              <Text variant="bodyMedium">Email Address : {email}</Text>
+            </View>
 
-        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-          <CustomInput
-            onChangeText={(text) => onOldPasswordChange(text)}
-            value={oldPassword}
-            caption={
-              isChangePassword
-                ? strings.old_password
-                : strings.temporary_password
-            }
-            placeHolder={strings.temporary_password}
-            secureTextEntry={secureTextEntryOld}
-            right={
-              <TextInput.Icon
-                onPress={hideShowClickOld}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                style={{ width: 23, height: 23 }}
-                icon={
-                  secureTextEntryOld
-                    ? require("../../Assets/icons/ic_password_show.png")
-                    : require("../../Assets/icons/ic_password_hide.png")
+            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              <CustomInput
+                onChangeText={(text) => onOldPasswordChange(text)}
+                value={oldPassword}
+                caption={
+                  isChangePassword
+                    ? strings.old_password
+                    : strings.temporary_password
+                }
+                placeHolder={strings.temporary_password}
+                secureTextEntry={secureTextEntryOld}
+                right={
+                  oldPassword && (
+                    <TextInput.Icon
+                      onPress={hideShowClickOld}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntryOld
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
-            }
-          />
-        </View>
-        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-          <CustomInput
-            onChangeText={(text) => onPasswordChange(text)}
-            value={password}
-            caption={strings.new_password}
-            placeHolder={strings.new_password}
-            secureTextEntry={secureTextEntry}
-            right={
-              <TextInput.Icon
-                onPress={hideShowClick}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                style={{ width: 23, height: 23 }}
-                icon={
-                  secureTextEntry
-                    ? require("../../Assets/icons/ic_password_show.png")
-                    : require("../../Assets/icons/ic_password_hide.png")
+            </View>
+            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              <CustomInput
+                onChangeText={(text) => onPasswordChange(text)}
+                value={password}
+                caption={strings.new_password}
+                placeHolder={strings.new_password}
+                secureTextEntry={secureTextEntry}
+                right={
+                  password && (
+                    <TextInput.Icon
+                      onPress={hideShowClick}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntry
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
-            }
-          />
-        </View>
+            </View>
 
-        <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-          <CustomInput
-            onChangeText={(text) => onConfirmPasswordChange(text)}
-            value={confirmPassword}
-            caption={strings.confirmPassword}
-            placeHolder={strings.confirmPassword}
-            secureTextEntry={secureTextEntryConfim}
-            right={
-              <TextInput.Icon
-                onPress={hideShowClickConfirm}
-                theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                style={{ width: 23, height: 23 }}
-                icon={
-                  secureTextEntryConfim
-                    ? require("../../Assets/icons/ic_password_show.png")
-                    : require("../../Assets/icons/ic_password_hide.png")
+            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              <CustomInput
+                onChangeText={(text) => onConfirmPasswordChange(text)}
+                value={confirmPassword}
+                caption={strings.confirmPassword}
+                placeHolder={strings.confirmPassword}
+                secureTextEntry={secureTextEntryConfim}
+                right={
+                  confirmPassword && (
+                    <TextInput.Icon
+                      onPress={hideShowClickConfirm}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      style={{ width: 23, height: 23 }}
+                      icon={
+                        secureTextEntryConfim
+                          ? require("../../Assets/icons/ic_password_show.png")
+                          : require("../../Assets/icons/ic_password_hide.png")
+                      }
+                    />
+                  )
                 }
               />
-            }
-          />
-        </View>
+            </View>
+          </View>
 
-        {/* {
+          {/* {
           orSection()
         }
 
@@ -253,81 +284,79 @@ const ResetPassword = ({ route, navigation }) => {
           />
         </View> */}
 
-        <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
-      </ScrollView>
+          <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
+        </ScrollView>
 
-      <StickyFooter>
-        <View>
-          <CustomButton
-            loading={forgot?.initForgotPassword}
-            label={
-              isChangePassword
-                ? strings.change_password
-                : strings.reset_password
-            }
-            isDisabled={false}
-            onPress={onSubmitPasswordChanged}
-          />
-
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status == "200" &&
-            showSuccessMessage(forgot?.loggedProfile?.message)}
-          {!forgot.initForgotPassword &&
-            forgot?.loggedProfile.status != "200" &&
-            showErrorMessage(forgot?.loggedProfile?.message)}
-        </View>
-
-        {orSection()}
-        {!isChangePassword && (
+        <StickyFooter>
           <View>
-            <Text style={styles.noAccText}>{strings.dont_account}</Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register with us", {})}
-            >
-              <Text style={styles.rgisterText}>
-                {strings.register_with_us.toUpperCase()}
-              </Text>
-            </Pressable>
-          </View>
-        )}
-      </StickyFooter>
-      {!login.initLogin &&
-        (login?.loggedProfile?.errorCode == "10000" ||
-          login?.loggedProfile?.errorCode == "10001") && (
-          <View style={styles.toast}>
-            <Toast
-              bgColor={color.TOAST_RED}
-              customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
-              textPro={{
-                color: color.WHITE,
-                fontSize: fontSizes.FONT_14,
-                fontWeight: "700",
-              }}
-              img={
-                login?.loggedProfile?.errorCode == "10001"
-                  ? require("../../Assets/icons/ic_no_Internet.png")
-                  : require("../../Assets/icons/ci_error-warning-fill.png")
+            <CustomButton
+              loading={forgot?.initForgotPassword}
+              label={
+                isChangePassword
+                  ? strings.change_password
+                  : strings.reset_password
               }
-              message={
-                login?.loggedProfile?.errorCode == "10001"
-                  ? strings.no_network
-                  : strings.something_went_wrong
-              }
+              isDisabled={false}
+              onPress={onSubmitPasswordChanged}
             />
+
+            {!forgot.initForgotPassword &&
+              forgot?.loggedProfile.status == "200" &&
+              showSuccessMessage(forgot?.loggedProfile?.message)}
+            {!forgot.initForgotPassword &&
+              forgot?.loggedProfile.status != "200" &&
+              showErrorMessage(forgot?.loggedProfile?.message)}
           </View>
-        )}
-    </View>
+
+          {orSection()}
+          {!isChangePassword && (
+            <View>
+              <Text style={styles.noAccText}>{strings.dont_account}</Text>
+              <Pressable
+                onPress={() => navigation.navigate("Register with us", {})}
+              >
+                <Text style={styles.rgisterText}>
+                  {strings.register_with_us.toUpperCase()}
+                </Text>
+              </Pressable>
+            </View>
+          )}
+        </StickyFooter>
+        {!login.initLogin &&
+          (login?.loggedProfile?.errorCode == "10000" ||
+            login?.loggedProfile?.errorCode == "10001") && (
+            <View style={styles.toast}>
+              <Toast
+                bgColor={color.TOAST_RED}
+                customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
+                textPro={{
+                  color: color.WHITE,
+                  fontSize: fontSizes.FONT_14,
+                  fontWeight: "700",
+                }}
+                img={
+                  login?.loggedProfile?.errorCode == "10001"
+                    ? require("../../Assets/icons/ic_no_Internet.png")
+                    : require("../../Assets/icons/ci_error-warning-fill.png")
+                }
+                message={
+                  login?.loggedProfile?.errorCode == "10001"
+                    ? strings.no_network
+                    : strings.something_went_wrong
+                }
+              />
+            </View>
+          )}
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#9C8FC4",
-    // ...HEADER_MARGIN,
-    paddingTop: HEADER_MARGIN.marginTop + HEADER_MARGIN.paddingTop,
+    ...HEADER_MARGIN,
   },
-
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,

@@ -12,17 +12,22 @@ import {
   View,
   Image,
   Text,
+  TextInput,
 } from "react-native";
-
+import {
+  color,
+  fontSizes,
+  spacing,
+  DEFAULT_PROFILE_IMAGE,
+} from "../../Utilities/Constants/Constant";
 import { useTheme, Switch } from "react-native-paper";
-
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
 import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { getToken } from "../../Storage/token";
-import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
@@ -35,6 +40,7 @@ import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 
 const InteractionsToOrder = ({ route, navigation }) => {
+  const { colors, fonts, roundness } = useTheme();
   // ref
   const interactionsModalRef = useRef(BottomSheet);
   // variables
@@ -66,6 +72,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setIsEnableInteractions(!isEnableInteractions);
   };
 
+  const [searchText, setSearchText] = useState("");
   const [interactionType, setInteractionType] = useState("");
   const [serviceType, setServiceType] = useState("");
   const [problemCause, setProblemCause] = useState("");
@@ -85,33 +92,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const InteractionsModalView = () => {
     return (
       <View style={styles.modalContainer}>
-        {/* ENable Interactions with Close */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 10,
-            marginHorizontal: 15,
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: 600,
-              color: "#202223",
-              fontSize: 16,
-              flex: 1,
-            }}
-          >
-            {"Enable Interactions"}
-          </Text>
-          <TouchableOpacity onPress={() => handleSnapPress(0)}>
-            <Image
-              style={{ ...ICON_STYLE, color: "#36393D" }}
-              source={require("../../Assets/icons/ic_close.png")}
-            />
-          </TouchableOpacity>
-        </View>
-
         {/* ENable Interactions with Switch */}
         <View
           style={{
@@ -233,6 +213,206 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          margin: 5,
+          padding: 20,
+          backgroundColor: "#F26E77",
+          borderRadius: 20,
+          elevation: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row", marginTop: 20 }}>
+          <View>
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${DEFAULT_PROFILE_IMAGE}`,
+              }}
+              imageStyle={{ borderRadius: 60 }}
+              style={{ height: 60, width: 60 }}
+            />
+          </View>
+          <View style={{ flexDirection: "column", marginLeft: 10 }}>
+            <Text
+              variant="bodyMedium"
+              style={{
+                fontWeight: "700",
+                color: colors.inverseSecondary,
+              }}
+            >
+              RML transportation Business
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "400",
+                color: colors.inverseSecondary,
+              }}
+            >
+              Customer Id: 10
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "400",
+                color: colors.inverseSecondary,
+              }}
+            >
+              rohit@bahawancybertek.com
+            </Text>
+          </View>
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <Image source={require("../../Assets/icons/line.png")} />
+        </View>
+        <View
+          style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
+        >
+          <Image
+            source={require("../../Assets/icons/in_call.png")}
+            style={{ width: 45, height: 45 }}
+          />
+          <Text
+            variant="bodySmall"
+            style={{
+              fontWeight: "400",
+              color: colors.inverseSecondary,
+            }}
+          >
+            64511445666892
+          </Text>
+          <Image
+            source={require("../../Assets/icons/in_location.png")}
+            style={{ width: 45, height: 45 }}
+          />
+          <Text
+            numberOfLines={2}
+            variant="bodySmall"
+            style={{
+              fontWeight: "400",
+              color: colors.inverseSecondary,
+            }}
+          >
+            BE3119, Simpang {"\n"} 63-37, Brunei
+          </Text>
+        </View>
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flex: 0.5,
+            margin: 5,
+            padding: 10,
+            backgroundColor: "#FFF",
+            borderRadius: 20,
+            elevation: 5,
+          }}
+        >
+          <View style={{ flexDirection: "column" }}>
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                variant="bodyMedium"
+                style={{
+                  fontWeight: "700",
+                  color: colors.secondary,
+                }}
+              >
+                Most {"\n"} frequent {"\n"} Interactions
+              </Text>
+
+              <Image
+                source={require("../../Assets/icons/frequent_interaction.png")}
+                style={{ width: 50, height: 50, marginLeft: 10 }}
+              />
+            </View>
+            <Text
+              variant="bodySmall"
+              style={{
+                marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              Billing Problem
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{
+                marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              Billing Summary not received
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 0.5,
+            margin: 5,
+            padding: 10,
+            backgroundColor: "#FFF",
+            borderRadius: 20,
+            elevation: 5,
+          }}
+        >
+          <View style={{ flexDirection: "column" }}>
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                variant="bodyMedium"
+                style={{
+                  fontWeight: "700",
+                  color: colors.secondary,
+                }}
+              >
+                Last used {"\n"} Interactions {"\n"} for this {"\n"} customer
+              </Text>
+
+              <Image
+                source={require("../../Assets/icons/last_interaction.png")}
+                style={{ width: 50, height: 50, marginLeft: 10 }}
+              />
+            </View>
+            <Text
+              variant="bodySmall"
+              style={{
+                marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              Billing Problem
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{
+                marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              Billing Summary not received
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.searchSection}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search..."
+          onChangeText={(searchString) => {
+            this.setState({ searchString });
+          }}
+          underlineColorAndroid="transparent"
+        />
+        <Icon
+          style={styles.searchIcon}
+          name="magnify"
+          size={30}
+          color="#C7CAD1"
+        />
+      </View>
       <BottomSheet
         ref={interactionsModalRef}
         index={1}
@@ -246,11 +426,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  logo: {
-    height: "100%",
-  },
   container: {
     flex: 1,
+    padding: 10,
+    backgroundColor: "#d0d0d0",
+    marginTop: 50,
   },
   modalContainer: {
     flex: 1,
@@ -271,6 +451,28 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_19 * 2,
     fontWeight: "600",
     lineHeight: spacing.HEIGHT_27 * 2,
+  },
+  searchSection: {
+    padding: 5,
+    paddingLeft: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  searchIcon: {
+    padding: 10,
+  },
+  input: {
+    flex: 1,
+    paddingTop: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    paddingLeft: 0,
+    backgroundColor: "#fff",
+    color: "#424242",
   },
 });
 export default InteractionsToOrder;
