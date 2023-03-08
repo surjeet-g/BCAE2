@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  Pressable,
+  ImageBackground,
+} from "react-native";
 import {
   spacing,
   fontSizes,
@@ -10,6 +17,7 @@ import {
 import { strings } from "../../Utilities/Language";
 import { Button, Text } from "react-native-paper";
 import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
+import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ConfirmForgotPassword = ({ route, navigation }) => {
   const [myscreenmae, setscreenname] = useState("Forgot Password");
@@ -17,9 +25,17 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
   const isEMail = validateEmail(route?.params?.email);
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
+    >
+      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+        {"Congratulations !!"}
+      </Text>
+      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+        {"Reset successfull."}
+      </Text>
       <ScrollView
         style={{
           flexGrow: 1,
@@ -30,28 +46,30 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
       >
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 35,
-            marginBottom: 70,
+            margin: 2,
+            flex: 1,
+            padding: 20,
+            backgroundColor: "#fff",
+            borderRadius: 20,
+            elevation: 5,
           }}
         >
-          <BCAE_LOGO />
+          <Image
+            style={{ alignSelf: "center" }}
+            source={require("../../Assets/icons/tick.gif")}
+          />
+          <Text style={styles.headline}>{strings.checkYourMail}</Text>
+
+          <Text style={styles.subtext}>{strings.wesent}</Text>
+
+          <Text style={styles.email}>{route?.params?.email}</Text>
+
+          <Text style={styles.didtntrec}>{strings.didNotReceive_email}</Text>
+
+          <Text style={styles.clicktoresend}>
+            {strings.clicktoresend.toUpperCase()}
+          </Text>
         </View>
-
-        <Text style={styles.headline}>{strings.checkYourMail}</Text>
-
-        <Text style={styles.subtext}>{strings.wesent}</Text>
-
-        <Text style={styles.email}>{route?.params?.email}</Text>
-
-        <Text style={styles.didtntrec}>{strings.didNotReceive_email}</Text>
-
-        <Text style={styles.clicktoresend}>
-          {strings.clicktoresend.toUpperCase()}
-        </Text>
-
         <Pressable onPress={() => navigation.goBack()}>
           <View
             style={{
@@ -61,8 +79,7 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
               marginTop: 35,
             }}
           >
-            <Image source={require("../../Assets/icons/ic_left_arrow.png")} />
-            <Text style={{ marginLeft: 10, color: color.PLACEHOLDER }}>
+            <Text style={{ marginLeft: 10, color: "#4B3694" }}>
               {strings.back_to_login}
             </Text>
           </View>
@@ -70,14 +87,14 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
 
         <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
+    ...HEADER_MARGIN,
   },
   logo: {
     height: spacing.WIDTH_40,
@@ -119,7 +136,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   clicktoresend: {
-    color: color.BCAE_PRIMARY,
+    color: "#4B3694",
     fontSize: fontSizes.FONT_16,
     marginTop: 10,
     fontWeight: "500",

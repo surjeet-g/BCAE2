@@ -12,7 +12,7 @@ export const PROD_BASE_URL_TENANT =
 
 export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const endPoints = {
-  MASTERDATA: 'api/master/lookup',
+  MASTERDATA: "api/master/lookup",
   PREVERIFYUSERDATA: "api/register",
   VERSIONCHECK: "api/bcae-tenant",
   NOTIFICATIONS: "api/notification/pushNotification",
@@ -48,6 +48,7 @@ export const endPoints = {
   ADDRESS_LOOKUP: "api/lookup/address-lookup",
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
+  USERS_SEARCH: "api/users/search/",
 };
 
 export const requestMethod = {

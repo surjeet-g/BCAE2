@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { Modal, RadioButton, TextInput } from "react-native-paper";
+import { Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
@@ -25,7 +25,6 @@ import {
 import { strings } from "../../Utilities/Language";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import {
-  capitalizeFirstLetter,
   excludedCountriesList,
   getPhoneNumberLength,
 } from "../../Utilities/utils";
@@ -57,7 +56,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  // const [username, setUsername] = useState("kamal@yopmail.com");
+  // const [username, setUsername] = useState("mobappbcae@yopmail.com");
   // const [password, setPassword] = useState("Test@123");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -70,6 +69,17 @@ export const Login = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
+
+  const [isEmailLoginMode, setIsEmailLoginMode] = React.useState(true);
+
+  const onToggleSwitch = () => {
+    if (isEmailLoginMode) {
+      onSelectEmailLoginMode();
+    } else {
+      onSelectMobileLoginMode();
+    }
+    setIsEmailLoginMode(!isEmailLoginMode);
+  };
 
   let login = useSelector((state) => state.login);
 
@@ -235,21 +245,26 @@ export const Login = ({ navigation }) => {
       <KeyboardAwareView animated={false}>
         <View
           style={{
-            paddingHorizontal: spacing.WIDTH_30,
             flex: 1,
             justifyContent: "space-between",
           }}
         >
           <ScrollView nestedScrollEnabled={true}>
-            <View style={{ marginTop: 10, flex: 1 }}>
-              <View
-                style={{
-                  marginBottom: spacing.HEIGHT_20,
-                }}
-              >
-                <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+            <View
+              style={{
+                margin: 10,
+                flex: 1,
+                padding: 20,
+                backgroundColor: "#fff",
+                borderRadius: 20,
+                elevation: 5,
+              }}
+            >
+              {/* Toggle Button View */}
+              <View>
+                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
                   {strings.check_usertype}
-                </Text>
+                </Text> */}
                 <ToggleButton
                   isFirstSelected={isFirstSelected}
                   label={{
@@ -278,11 +293,35 @@ export const Login = ({ navigation }) => {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginVertical: spacing.HEIGHT_10,
+                  justifyContent: "flex-end",
+                  marginTop: 20,
+                  marginBottom: -20,
                 }}
               >
-                <View
+                <CustomSwitch
+                  buttonWidth={25}
+                  buttonPadding={5}
+                  switchWidth={90}
+                  startOnLeft={isEmailLoginMode}
+                  onSwitch={onToggleSwitch}
+                  onSwitchReverse={onToggleSwitch}
+                  buttonColor={"#5B5372"}
+                  switchBackgroundColor={"#F2EFFF"}
+                  switchLeftText={"Email"}
+                  switchLeftTextStyle={{
+                    color: "#4B3694",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                  switchRightText={"Mobile"}
+                  switchRightTextStyle={{
+                    color: "#4B3694",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                />
+
+                {/* <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -311,7 +350,7 @@ export const Login = ({ navigation }) => {
                   <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(MOBILE)}
                   </Text>
-                </View>
+                </View> */}
               </View>
 
               {loginMode === EMAIL ? (
@@ -385,47 +424,49 @@ export const Login = ({ navigation }) => {
                   </View>
                 </View>
               )}
-            </View>
 
-            {/* Password Input View */}
-            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-              <CustomInput
-                value={password}
-                caption={strings.password}
-                placeHolder={strings.password}
-                onChangeText={(text) => onPasswordChange(text)}
-                secureTextEntry={secureTextEntry}
-                right={
-                  password && (
-                    <TextInput.Icon
-                      onPress={hideShowClick}
-                      style={{ width: 23, height: 23 }}
-                      icon={
-                        secureTextEntry
-                          ? require("../../Assets/icons/ic_password_show.png")
-                          : require("../../Assets/icons/ic_password_hide.png")
-                      }
+              {/* Password Input View */}
+              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                <CustomInput
+                  value={password}
+                  caption={strings.password}
+                  placeHolder={strings.password}
+                  onChangeText={(text) => onPasswordChange(text)}
+                  secureTextEntry={secureTextEntry}
+                  right={
+                    password && (
+                      <TextInput.Icon
+                        onPress={hideShowClick}
+                        style={{ width: 23, height: 23 }}
+                        icon={
+                          secureTextEntry
+                            ? require("../../Assets/icons/ic_password_show.png")
+                            : require("../../Assets/icons/ic_password_hide.png")
+                        }
+                      />
+                    )
+                  }
+                />
+
+                {!login.initLogin &&
+                  login?.loggedProfile?.errorCode &&
+                  login.loggedProfile.errorCode != "404" &&
+                  login?.loggedProfile?.errorCode != "10000" &&
+                  login?.loggedProfile?.errorCode != "10001" && (
+                    <CustomErrorText
+                      errMessage={login?.loggedProfile?.message}
                     />
-                  )
-                }
-              />
-
-              {!login.initLogin &&
-                login?.loggedProfile?.errorCode &&
-                login.loggedProfile.errorCode != "404" &&
-                login?.loggedProfile?.errorCode != "10000" &&
-                login?.loggedProfile?.errorCode != "10001" && (
-                  <CustomErrorText errMessage={login?.loggedProfile?.message} />
+                  )}
+                {passwordError !== "" && (
+                  <CustomErrorText errMessage={passwordError} />
                 )}
-              {passwordError !== "" && (
-                <CustomErrorText errMessage={passwordError} />
-              )}
+              </View>
             </View>
 
             {/* Bottom View */}
             <View
               style={{
-                marginVertical: spacing.HEIGHT_30,
+                marginVertical: 10,
               }}
             >
               {/* Login with OTP View */}
@@ -434,10 +475,10 @@ export const Login = ({ navigation }) => {
                   style={{
                     textAlign: "center",
                     alignSelf: "center",
-                    marginVertical: spacing.HEIGHT_15,
-                    color: "#F5AD47",
-                    fontWeight: "700",
-                    fontSize: fontSizes.FONT_16,
+                    marginVertical: spacing.HEIGHT_10,
+                    color: "#BF873A",
+                    fontWeight: 700,
+                    fontSize: fontSizes.FONT_20,
                   }}
                   onPress={() => {
                     loginMode === EMAIL
@@ -449,38 +490,18 @@ export const Login = ({ navigation }) => {
                 </Text>
               </View>
 
-              {/* Login View */}
-              <View>
-                <CustomButton
-                  loading={login.initLogin}
-                  label={strings.login}
-                  isDisabled={
-                    loginMode === EMAIL
-                      ? username == "" || password == ""
-                        ? true
-                        : false
-                      : number == "" || password == ""
-                      ? true
-                      : false
-                  }
-                  onPress={() => {
-                    loginMode === EMAIL
-                      ? submitWithEmail(PASSWORD)
-                      : submitWithMobile(PASSWORD);
-                  }}
-                />
-              </View>
-
               {/* Forgot Password View */}
               <View
                 style={{
                   alignSelf: "center",
-                  marginVertical: spacing.HEIGHT_20,
+                  marginVertical: 10,
                 }}
               >
                 <Pressable
                   onPress={() => navigation.navigate("ForgotPassword")}
+                  style={{ flexDirection: "row" }}
                 >
+                  <Text style={styles.noAccText}>{"Trouble Sign-In? "}</Text>
                   <Text style={styles.forgotText}>
                     {strings.forgot_password}
                   </Text>
@@ -491,19 +512,19 @@ export const Login = ({ navigation }) => {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingVertical: 10,
+                  justifyContent: "center",
+                  marginVertical: 10,
                 }}
               >
                 <Text style={styles.noAccText}>{strings.dont_account}</Text>
                 <Pressable
                   onPress={() => navigation.navigate("Register with us", {})}
                 >
-                  <Text style={styles.rgisterText}>{strings.register}</Text>
+                  <Text style={styles.rgisterText}> {strings.register}</Text>
                 </Pressable>
               </View>
             </View>
-            {/* </ScrollView> */}
+
             {!login.initLogin &&
               (login?.loggedProfile?.errorCode == "10000" ||
                 login?.loggedProfile?.errorCode == "10001") && (
@@ -530,6 +551,89 @@ export const Login = ({ navigation }) => {
                 </View>
               )}
           </ScrollView>
+          <StickyFooter>
+            {/* Login View */}
+            <View>
+              <CustomButton
+                loading={login.initLogin}
+                label={strings.login}
+                isDisabled={
+                  loginMode === EMAIL
+                    ? username == "" || password == ""
+                      ? true
+                      : false
+                    : number == "" || password == ""
+                    ? true
+                    : false
+                }
+                onPress={() => {
+                  loginMode === EMAIL
+                    ? submitWithEmail(PASSWORD)
+                    : submitWithMobile(PASSWORD);
+                }}
+              />
+            </View>
+            <Text
+              style={{
+                color: "#393939",
+                fontSize: fontSizes.FONT_14,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
+              By continuing, I accept and agree to BCAE
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to T&C")}
+              >
+                Terms & Conditions of Use
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#000000",
+                  marginTop: 5,
+                }}
+              >
+                {" "}
+                &{" "}
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to Privacy Policy")}
+              >
+                Privacy Policy
+              </Text>
+            </View>
+            <Text
+              style={{
+                color: "#393939",
+                fontSize: fontSizes.FONT_12,
+                textAlign: "center",
+                fontWeight: 400,
+                marginTop: 10,
+              }}
+            >
+              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+            </Text>
+          </StickyFooter>
         </View>
         {/* Modal for showing the second login alert */}
         <Modal
@@ -581,21 +685,23 @@ const styles = StyleSheet.create({
     bottom: spacing.HEIGHT_31 * 2,
   },
   forgotText: {
-    color: "#E22D2D",
-    fontSize: fontSizes.FONT_14,
-    fontWeight: "500",
+    fontWeight: 700,
+    color: "#4B3694",
+    fontSize: fontSizes.FONT_16,
+    lineHeight: spacing.WIDTH_17,
+    textAlign: "center",
   },
   noAccText: {
-    color: "#202223",
-    fontSize: fontSizes.FONT_12,
-    lineHeight: spacing.WIDTH_14,
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
+    lineHeight: spacing.WIDTH_16,
     textAlign: "center",
     fontWeight: 400,
   },
   rgisterText: {
-    fontWeight: "600",
-    color: "#202223",
-    fontSize: fontSizes.FONT_14,
+    fontWeight: 700,
+    color: "#4B3694",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },

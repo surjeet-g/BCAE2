@@ -13,8 +13,8 @@ import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
-import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
+import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {

@@ -11,8 +11,8 @@ import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
+import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
+import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
 import {
@@ -159,7 +159,6 @@ const Register = ({ navigation, props }) => {
             padding: 12,
             // ...SHADOW_STYLE,
           }}
-          nestedScrollEnabled={true}
         >
           <View style={{ backgroundColor: colors.background, padding: 12 }}>
             <ToggleButton

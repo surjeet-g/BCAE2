@@ -57,16 +57,43 @@ export function verifyLoginData(navigation, params) {
               };
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
 
-              let profileResult = await serverCall(
-                endPoints.PROFILE_DETAILS +
-                  "/" +
-                  result?.data?.data?.user?.customerUuid,
-                requestMethod.GET,
-                {},
-                navigation
-              );
+              let userTypeInResponse = result?.data?.data?.user?.userType;
+              let profileResult = {};
 
-              if (profileResult?.success) {
+              if (
+                userTypeInResponse.length !== 0 &&
+                (userTypeInResponse === "UT_INTERNAL" ||
+                  userTypeInResponse === "UT_VENDOR")
+              ) {
+                // Business User Type
+                profileResult = await serverCall(
+                  endPoints.USERS_SEARCH + result?.data?.data?.user?.userId,
+                  requestMethod.GET,
+                  {},
+                  navigation
+                );
+              } else if (
+                userTypeInResponse.length !== 0 &&
+                (userTypeInResponse === "PersonalCustomer" ||
+                  userTypeInResponse === "BusinessCustomer")
+              ) {
+                // Consumer User Type
+                profileResult = await serverCall(
+                  endPoints.PROFILE_DETAILS +
+                    "/" +
+                    result?.data?.data?.user?.customerUuid,
+                  requestMethod.GET,
+                  {},
+                  navigation
+                );
+              }
+
+              if (
+                profileResult?.success &&
+                userTypeInResponse.length !== 0 &&
+                (userTypeInResponse === "PersonalCustomer" ||
+                  userTypeInResponse === "BusinessCustomer")
+              ) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,
                   email:
@@ -101,6 +128,16 @@ export function verifyLoginData(navigation, params) {
                   ...profileResult?.data?.data?.customerAddress[0],
                 };
 
+                await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setLoginData(result.data));
+                navigation.replace("BottomBar", {});
+              } else if (
+                profileResult?.success &&
+                userTypeInResponse.length !== 0 &&
+                (userTypeInResponse === "UT_INTERNAL" ||
+                  userTypeInResponse === "UT_VENDOR")
+              ) {
+                let profileData = profileResult?.data?.data;
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
                 dispatch(setLoginData(result.data));
                 navigation.replace("BottomBar", {});

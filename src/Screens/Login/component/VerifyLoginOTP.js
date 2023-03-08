@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
 import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { TextInput, Modal } from "react-native-paper";
@@ -14,6 +20,7 @@ import {
   PROD_FAQ,
   WEBCLIENT_ID,
 } from "../../../Utilities/Constants/Constant";
+import { HEADER_MARGIN } from "../../../Utilities/themeConfig";
 import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 import { strings } from "../../../Utilities/Language";
 import {
@@ -23,6 +30,7 @@ import {
   callLogoutAndLogin,
 } from ".././LoginDispatcher";
 import { useDispatch, useSelector } from "react-redux";
+import { StickyFooter } from "./../../../Components/StickyFooter";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
@@ -39,7 +47,7 @@ const VerifyLoginOTP = (props) => {
 
   useEffect(() => {
     if (otp.length === 6) {
-      param = {
+      let param = {
         loginId,
         password: otp,
         userType,
@@ -81,8 +89,13 @@ const VerifyLoginOTP = (props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <SvgBG />
+    <ImageBackground
+      style={styles.container}
+      source={require("../../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
+    >
+      <Text style={{ fontSize: 18, marginLeft: 15 }}>{"Let us know,"}</Text>
+      <Text style={{ fontSize: 28, marginLeft: 15 }}>{"Who you are?"}</Text>
       <KeyboardAwareView
         animated={false}
         style={{
@@ -94,7 +107,6 @@ const VerifyLoginOTP = (props) => {
           style={{
             flex: 1,
             justifyContent: "center",
-            // backgroundColor: "red",
           }}
         >
           <Text
@@ -112,7 +124,7 @@ const VerifyLoginOTP = (props) => {
             style={{
               textAlign: "center",
               fontWeight: 400,
-              color: "#B1AFAF",
+              color: "#000000",
               fontSize: fontSizes.FONT_16,
             }}
           >
@@ -136,18 +148,20 @@ const VerifyLoginOTP = (props) => {
                 width: 50,
                 height: 50,
                 borderWidth: 1,
-                borderColor: "#BABEC5",
+                borderColor: "#C7CAD1",
                 borderRadius: 12,
                 margin: 3,
               }}
               inputStyles={{
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "#5E5676",
                 textAlign: "center",
                 fontSize: 20,
-                color: "#F5AD47",
+                color: "#5E5676",
                 fontWeight: "bold",
               }}
-              // focusStyles={{ backgroundColor: "#F5AD47" }}
+              // focusStyles={{ backgroundColor: "#5E5676" }}
               // caretHidden={true}
               autofillFromClipboard={true}
               autofillListenerIntervalMS={2000}
@@ -158,29 +172,35 @@ const VerifyLoginOTP = (props) => {
               numberOfInputs={6}
             />
           </View>
-          <Text
+          <View
             style={{
-              textAlign: "center",
-              marginTop: 40,
-              fontWeight: 400,
-              color: "#36393D",
-              fontSize: fontSizes.FONT_16,
+              flexDirection: "row",
+              padding: 10,
+              justifyContent: "center",
             }}
           >
-            {strings.didt_receive_code}
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: 20,
-              fontWeight: 600,
-              color: "#F5AD47",
-              fontSize: fontSizes.FONT_16,
-            }}
-            onPress={clickOnRequestAgainOTP}
-          >
-            {strings.request_again}
-          </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: 400,
+                color: "#3D3D3D",
+                fontSize: fontSizes.FONT_16,
+              }}
+            >
+              {strings.didt_receive_code}
+            </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: 700,
+                color: "#4B3694",
+                fontSize: fontSizes.FONT_16,
+              }}
+              onPress={clickOnRequestAgainOTP}
+            >
+              {strings.request_again}
+            </Text>
+          </View>
         </View>
       </KeyboardAwareView>
       <Modal
@@ -216,7 +236,7 @@ const VerifyLoginOTP = (props) => {
           />
         </View>
       </Modal>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -224,6 +244,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
+    ...HEADER_MARGIN,
   },
 });
 

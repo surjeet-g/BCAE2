@@ -15,7 +15,7 @@ import BottomBarNavigation from "./BottomBarNavigation";
 // import Location from "../Screens/Location/Location";
 import AddLocation from "../Screens/Location/AddLocation";
 
-// import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
+//import ShowWebPage from "../Screens/TabScreens/ShowWebPage";
 
 // import Anouncement from "../Screens/TabScreens/Announcement";
 import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPassword";
@@ -27,6 +27,8 @@ import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo
 import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
+import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
+
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -57,6 +59,21 @@ function MyStack() {
     },
   };
 
+  // ref
+  const bottomSheetModalRef = useRef(BottomSheetModal);
+  // variables
+  const snapPoints = useMemo(() => ["60%"], []);
+  // callbacks
+  const openAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const closeAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    console.log("$$$-handleSheetChanges", index);
+  }, []);
+
   return (
     <NavigationContainer>
       {/* Register with u */}
@@ -64,6 +81,7 @@ function MyStack() {
         initialRouteName={STACK_REGISTER}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
+          headerTintColor: "white",
           headerStyle: {
             backgroundColor: "transparent",
           },
@@ -84,7 +102,12 @@ function MyStack() {
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Announcements")}>
+                <Pressable
+                  onPress={
+                    // () => navigation.navigate("Announcements")
+                    openAnnoncementModal
+                  }
+                >
                   <AnnouIcon {...ICON_STYLE} />
                 </Pressable>
               </View>
@@ -96,7 +119,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Profile",
+              headerTitle: "Profile",
               headerRight: () => {
                 return (
                   <View style={navBar.navRightCon}>
@@ -122,7 +145,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              title: "Edit Profile",
+              headerTitle: "Edit Profile",
             },
           })}
           name="EditProfile"
@@ -163,7 +186,7 @@ function MyStack() {
         />
 
         <Stack.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
         />
@@ -260,6 +283,39 @@ function MyStack() {
           component={AnnouncementList}
         />
 
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "Interactions",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Image
+                        style={{ ...ICON_STYLE }}
+                        source={require("../Assets/icons/search.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="InteractionsToOrder"
+          component={InteractionsToOrder}
+        />
+        {/* <Stack.Screen
+          options={{ headerShown: false }}
+          name="ShowWebPage"
+          component={ShowWebPage}
+        /> */}
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="EditProfile"
@@ -314,7 +370,64 @@ function MyStack() {
           component={InquiryNotification}
         /> */}
       </Stack.Navigator>
+      <BottomSheetModalProvider>
+        <View>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View style={styles.contentContainer}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginVertical: 10,
+                }}
+              >
+                <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#22374E",
+                    fontSize: 20,
+                    flex: 1,
+                    marginHorizontal: 15,
+                  }}
+                >
+                  Annoucements
+                </Text>
+                <TouchableOpacity onPress={closeAnnoncementModal}>
+                  <Image
+                    style={{ ...ICON_STYLE, color: "#36393D" }}
+                    source={require("../Assets/icons/close_black.png")}
+                  />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={mockAnnouncementList}
+                renderItem={({ item }) => (
+                  <AnnouncementItem
+                    title={item.title}
+                    desc={item.desc}
+                    date={item.date}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </NavigationContainer>
   );
 }
+const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    padding: 10,
+  },
+});
+
 export default MyStack;

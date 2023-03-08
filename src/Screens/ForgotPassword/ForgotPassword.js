@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Text,
   Pressable,
+  ImageBackground,
 } from "react-native";
 import {
   spacing,
@@ -15,21 +16,44 @@ import {
   DEBUG_BUILD,
   STAGE_FAQ,
   PROD_FAQ,
+  validateEmail,
 } from "../../Utilities/Constants/Constant";
+import DatePicker from "react-native-date-picker";
+import {
+  resetForgotPassword,
+  verifyForgotPasswordData,
+} from "../ForgotPassword/ForgotPasswordDispatcher.js";
+import moment from "moment";
+import { CustomInput } from "../../Components/CustomInput";
+import { StickyFooter } from "../../Components/StickyFooter";
 import { strings } from "../../Utilities/Language";
 import { ToggleButton } from "../../Components/ToggleButton";
 import CustomerEmailForgotPassword from "./component/CustomerEmailForgotPassword";
-import { SvgBG } from "../../Components/SvgBG";
+import { CustomButton } from "../../Components/CustomButton";
 import { Toast } from "../../Components/Toast";
-
-import { useSelector } from "react-redux";
+import { Button, TextInput, useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 
 const ForgotPassword = ({ navigation }) => {
   let login = useSelector((state) => state.login);
-  // const { isFirst } = route.params;
-  const isFirst = false;
+  const { colors } = useTheme();
+
+  let forgot = useSelector((state) => state.forgot);
+  // const [username, setUsername] = useState("vvvipindsm@gmail.com");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  // const [lastName, setlastName] = useState("vvv");
+  const [customerId, setCustomerId] = useState("");
+  const [customerIdError, setCustomerIdError] = useState("");
+  const [lastName, setlastName] = useState("");
+  const [lastNameError, setlastNameError] = useState("");
+  const [dob, setDob] = useState("");
+  // const [dob, setDob] = useState("2023-02-10");
+  const [dobError, setDobError] = useState("");
+  const [open, setOpen] = useState(false);
+  const isFirst = true;
   const [isFirstSelected, setFirstSelected] = useState(isFirst);
 
   const onPressFirst = () => {
@@ -38,87 +62,285 @@ const ForgotPassword = ({ navigation }) => {
   const onPressSecond = () => {
     setFirstSelected(false);
   };
+  useEffect(() => {
+    setCustomerId("");
+    setCustomerIdError("");
+    setUsername("");
+    setUsernameError("");
+    setlastNameError("");
+    setDob("");
+    setDobError("");
+    setOpen(false);
+  }, []);
+  const dispatch = useDispatch([verifyForgotPasswordData, resetForgotPassword]);
 
-  const orSection = () => {
+  const onIDChange = (textStr) => {
+    setUsername(textStr);
+    // if (textStr.length == 0) {
+    //   dispatch(resetForgotPassword());
+    // }
+    setUsernameError("");
+  };
+
+  const onIDChangeUsername = (textStr) => {
+    setlastName(textStr);
+    setlastNameError("");
+  };
+
+  const clearTextClick = () => {
+    setUsername("");
+    dispatch(resetForgotPassword());
+    setUsernameError(strings.emailValidError);
+  };
+  const clearCustomerIdClick = () => {
+    setUsername("");
+    // dispatch(resetForgotPassword());
+    setUsernameError(strings.customerIdValidError);
+  };
+  const clearLastnameClick = () => {
+    setlastName("");
+    // dispatch(resetForgotPassword());
+    setlastNameError(strings.lastnameValidError);
+  };
+  const submitEmail = () => {
+    if (!validateEmail(username)) {
+      setUsernameError(strings.emailValidError);
+    } else {
+      //to do api call
+      const params = {
+        loginId: username,
+      };
+
+      dispatch(verifyForgotPasswordData(navigation, params));
+    }
+  };
+
+  const submitCustomerId = () => {
+    if (username == "") {
+      setCustomerIdError(strings.customerIDError);
+    } else if (lastName == "") {
+      setlastNameError("Last Name sould be required");
+    } else if (dob == "") {
+      setDobError("Date of birth sould be required");
+    } else {
+      dispatch(
+        verifyForgotPasswordData(
+          navigation,
+          {
+            loginId: username,
+            lastName: lastName,
+            dob: moment(dob).format("YYYY-MM-DD"),
+          },
+          "customerID"
+        )
+      );
+    }
+  };
+  const showErrorMessage = (errMessage) => {
     return (
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: spacing.HEIGHT_32,
-        }}
-      >
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-          }}
-        ></View>
-        <Text style={styles.orText}>{strings.or}</Text>
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-            alignContent: "flex-end",
-          }}
-        ></View>
+      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+        <Image
+          style={styles.errorLogo}
+          source={require("../../Assets/icons/ci_error_warning.png")}
+        />
+        <Text style={styles.errorText}>{errMessage}</Text>
       </View>
     );
   };
+  const onCustomerIDChange = (textStr) => {
+    setCustomerId(textStr);
+    // if (textStr.length == 0) {
+    //   dispatch(resetForgotPassword());
+    // }
+    setCustomerIdError("");
+  };
+  const onDismissSingle = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
 
+  const onConfirmSingle = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDob(params.date);
+      setDobError("");
+    },
+    [setOpen, setDob]
+  );
   return (
-    <View style={styles.container}>
-      <SvgBG />
+    <ImageBackground
+      style={styles.container}
+      source={require("../../Assets/icons/bg_others.png")}
+      resizeMode="cover"
+    >
+      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+        {"Need our help,"}
+      </Text>
+      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+        {"Forgot password?"}
+      </Text>
       <ScrollView
         style={{
           flexGrow: 1,
-          paddingHorizontal: spacing.WIDTH_30,
-          ...HEADER_MARGIN,
+          // paddingHorizontal: spacing.WIDTH_30,
         }}
         nestedScrollEnabled={true}
       >
-        <View style={{ marginBottom: spacing.WIDTH_20 }}>
-          <ToggleButton
-            isFirstSelected={isFirstSelected}
-            label={{
-              first: strings.customer_email_ID,
-              second: "User ID",
-            }}
-            bgColor={{
-              selected: color.BCAE_PRIMARY,
-              unselected: color.BCAE_LIGHT_BLUE_2,
-            }}
-            textColor={{
-              selected: color.WHITE,
-              unselected: color.BCAE_PRIMARY,
-            }}
-            textPro={{
-              fontSize: fontSizes.FONT_13,
-              fontWeight: "600",
-              lineHeight: spacing.HEIGHT_16,
-            }}
-            onPressFirst={onPressFirst}
-            onPressSecond={onPressSecond}
-          ></ToggleButton>
+        <View
+          style={{
+            margin: 10,
+            flex: 1,
+            padding: 20,
+            backgroundColor: "#fff",
+            borderRadius: 20,
+            elevation: 5,
+          }}
+        >
+          <View style={{ marginBottom: spacing.WIDTH_20 }}>
+            <ToggleButton
+              isFirstSelected={isFirstSelected}
+              label={{
+                first: strings.customer_email_ID,
+                second: "User ID",
+              }}
+              bgColor={{
+                selected: color.BCAE_PRIMARY,
+                unselected: color.BCAE_LIGHT_BLUE_2,
+              }}
+              textColor={{
+                selected: color.WHITE,
+                unselected: color.BCAE_PRIMARY,
+              }}
+              textPro={{
+                fontSize: fontSizes.FONT_13,
+                fontWeight: "600",
+                lineHeight: spacing.HEIGHT_16,
+              }}
+              onPressFirst={onPressFirst}
+              onPressSecond={onPressSecond}
+            ></ToggleButton>
+          </View>
+          {isFirstSelected ? (
+            <View>
+              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                <CustomInput
+                  onChangeText={(text) => onIDChange(text)}
+                  value={username}
+                  caption={strings.customer_email_ID}
+                  placeHolder={strings.customer_email_ID}
+                  right={
+                    username && (
+                      <TextInput.Icon
+                        onPress={clearTextClick}
+                        theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                        style={{ width: 23, height: 23 }}
+                        icon="close"
+                      />
+                    )
+                  }
+                />
+
+                {usernameError !== "" && showErrorMessage(usernameError)}
+              </View>
+            </View>
+          ) : (
+            <View>
+              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                <CustomInput
+                  onChangeText={(text) => onCustomerIDChange(text)}
+                  value={customerId}
+                  caption={strings.customer_ID}
+                  placeHolder={strings.customer_ID}
+                  right={
+                    customerId && (
+                      <TextInput.Icon
+                        onPress={clearCustomerIdClick}
+                        theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                        style={{ width: 23, height: 23 }}
+                        icon="close"
+                      />
+                    )
+                  }
+                />
+                {usernameError !== "" && showErrorMessage(usernameError)}
+                <CustomInput
+                  onChangeText={(text) => {
+                    onIDChangeUsername(text);
+                  }}
+                  value={lastName}
+                  caption="Last Name"
+                  placeHolder="Last Name"
+                  right={
+                    lastName && (
+                      <TextInput.Icon
+                        onPress={clearLastnameClick}
+                        theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                        style={{ width: 23, height: 23 }}
+                        icon="close"
+                      />
+                    )
+                  }
+                />
+                {lastNameError !== "" && showErrorMessage(lastNameError)}
+                <DatePicker
+                  modal
+                  mode="date"
+                  validRange={{ endDate: new Date() }}
+                  open={open}
+                  onCancel={() => setOpen(false)}
+                  date={dob == "" ? new Date() : dob}
+                  maximumDate={new Date()}
+                  onConfirm={(params) => {
+                    console.log("data", params);
+                    setOpen(false);
+                    setDob(params);
+                    setDobError("");
+                  }}
+                />
+                <CustomInput
+                  // onChangeText={(text) => onIDChange(text)}
+                  value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+                  caption={"Date of birth"}
+                  onFocus={() => setOpen(true)}
+                  placeHolder={"Date of birth"}
+                  right={
+                    <TextInput.Icon
+                      onPress={() => setOpen(true)}
+                      style={{ width: 23, height: 23 }}
+                      theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                      icon={"calendar"}
+                    />
+                  }
+                />
+                {dobError !== "" && showErrorMessage(dobError)}
+              </View>
+            </View>
+          )}
         </View>
-        {isFirstSelected ? (
-          <CustomerEmailForgotPassword navigation={navigation} />
-        ) : (
-          <CustomerIDForgotPassword navigation={navigation} />
-        )}
-
-        {orSection()}
-
-        <View>
-          <Text style={styles.noAccText}>{strings.dont_account}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 35,
+          }}
+        >
+          <Pressable onPress={() => navigation.goBack()}>
+            <Text style={styles.rgisterText}>{strings.back_to_login}</Text>
+          </Pressable>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginVertical: 30,
+          }}
+        >
+          <Text style={styles.noAccText}>{strings.dont_account} </Text>
           <Pressable
             onPress={() => navigation.navigate("Register with us", {})}
           >
             <Text style={styles.rgisterText}>
-              {strings.register_with_us.toUpperCase()}
+              {strings.register.toUpperCase()}
             </Text>
           </Pressable>
         </View>
@@ -150,14 +372,91 @@ const ForgotPassword = ({ navigation }) => {
             />
           </View>
         )}
-    </View>
+      <StickyFooter isLogin={true}>
+        {/* Login View */}
+        <View>
+          <CustomButton
+            loading={forgot?.initForgotPassword}
+            label={strings.reset_password}
+            isDisabled={
+              isFirstSelected
+                ? !validateEmail(username)
+                : customerId == "" || dob == "" || lastName == ""
+                ? true
+                : false
+            }
+            onPress={isFirstSelected ? submitEmail : submitCustomerId}
+          />
+        </View>
+        <Text
+          style={{
+            color: "#393939",
+            fontSize: fontSizes.FONT_14,
+            textAlign: "center",
+            fontWeight: 400,
+            marginTop: 10,
+          }}
+        >
+          By continuing, I accept and agree to BCAE
+        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#4B3694",
+              marginTop: 5,
+            }}
+            onPress={() => alert("Navigate to T&C")}
+          >
+            Terms & Conditions of Use
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#000000",
+              marginTop: 5,
+            }}
+          >
+            {" "}
+            &{" "}
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#4B3694",
+              marginTop: 5,
+            }}
+            onPress={() => alert("Navigate to Privacy Policy")}
+          >
+            Privacy Policy
+          </Text>
+        </View>
+        <Text
+          style={{
+            color: "#393939",
+            fontSize: fontSizes.FONT_12,
+            textAlign: "center",
+            fontWeight: 400,
+            marginTop: 10,
+          }}
+        >
+          © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+        </Text>
+      </StickyFooter>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
+    ...HEADER_MARGIN,
   },
   logo: {
     height: 128,
@@ -175,17 +474,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.WIDTH_7,
   },
   noAccText: {
-    marginTop: spacing.HEIGHT_32,
-    color: color.PLACEHOLDER,
+    color: "#393939",
     fontSize: fontSizes.FONT_12,
-    lineHeight: spacing.WIDTH_14,
+    lineHeight: spacing.WIDTH_16,
     textAlign: "center",
+    fontWeight: 400,
   },
   rgisterText: {
-    marginTop: spacing.HEIGHT_6,
-    fontWeight: "500",
-    color: color.BCAE_PRIMARY,
-    fontSize: fontSizes.FONT_14,
+    fontWeight: "700",
+    color: "#4B3694",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },

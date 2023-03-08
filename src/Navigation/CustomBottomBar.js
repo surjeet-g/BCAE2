@@ -37,10 +37,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
 
   const onNavClickButton = (val) => {
     setModal(false);
-    if (val === "Enquiry") {
-      navigation.navigate("CreateEnquiry", { refresh: true });
-    } else if (val === "Complaint") {
-      navigation.navigate("CreateComplaint", { refresh: true });
+    if (val === "Order") {
+      navigation.navigate("OrderDashboard", { refresh: true });
+    } else if (val === "InteractionToOrder") {
+      navigation.navigate("InteractionsToOrder", { refresh: true });
     }
   };
   return (
@@ -60,16 +60,16 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       {modal && (
         <View style={styles.buttonContainer}>
           <Pressable
-            onPress={() => onNavClickButton("Complaint")}
+            onPress={() => onNavClickButton("Order")}
             style={styles.button}
           >
-            <Text style={styles.buttontext}>{strings.complaint}</Text>
+            <Text style={styles.buttontext}>{strings.order}</Text>
           </Pressable>
           <Pressable
-            onPress={() => onNavClickButton("Enquiry")}
+            onPress={() => onNavClickButton("InteractionToOrder")}
             style={styles.button}
           >
-            <Text style={styles.buttontext}>{strings.inquiry}</Text>
+            <Text style={styles.buttontext}>{strings.interaction}</Text>
           </Pressable>
         </View>
       )}
