@@ -43,19 +43,22 @@ import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
-import AnnouncementItem from "./../Screens/Announcement/component/AnnouncementItem";
+import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
+import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
+import CreateOrder from "../Screens/Appointments/CreateOrder";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
+const STACK_CREATE_ORDER = "CreateOrder";
+const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -229,7 +232,7 @@ function MyStack() {
             headerShown: true,
             title: "Login",
           }}
-          name="Login"
+          name={STACK_LOGIN}
           component={Login}
         />
         <Stack.Screen
@@ -237,7 +240,7 @@ function MyStack() {
             headerShown: true,
             title: "Login",
           }}
-          name="VerifyLoginOTP"
+          name={STACK_VERIFY_LOGIN_OTP}
           component={VerifyLoginOTP}
         />
 
@@ -327,6 +330,34 @@ function MyStack() {
           })}
           name="InteractionsToOrder"
           component={InteractionsToOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "Create Order",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Image
+                        style={{ ...ICON_STYLE }}
+                        source={require("../Assets/icons/search.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name={STACK_CREATE_ORDER}
+          component={CreateOrder}
         />
         {/* <Stack.Screen
           options={{ headerShown: false }}
