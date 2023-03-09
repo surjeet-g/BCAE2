@@ -6,6 +6,7 @@ import {
   setmasterDataError
 } from "./masterDataAction";
 export const MASTER_DATA_CONSTANT = {
+  SERVICE_CATEGORY: "SERVICE_CATEGORY",
   STATUS: "STATUS",
   GENDER: "GENDER",
   CUSTOMER_ID_TYPE: "CUSTOMER_ID_TYPE",

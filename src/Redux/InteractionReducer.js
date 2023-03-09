@@ -1,13 +1,8 @@
 import get from "lodash.get";
+import { INPUT_TYPE } from "../Utilities/Constants/Constant";
 import {
-  INTERACTION_ADD_LOADER_ENABLE,
-  INTERACTION_DATA,
-  INTERACTION_EDIT_LOADER_ENABLE,
-  INTERACTION_ERROR,
-  INTERACTION_FORM_ERROR,
-  INTERACTION_INIT,
-  INTERACTION_RESET,
-  INTERACTION_SET_FORM
+  INTERACTION_ADD_LOADER_ENABLE, INTERACTION_DATA, INTERACTION_EDIT_LOADER_ENABLE, INTERACTION_ERROR, INTERACTION_FORM_ERROR, INTERACTION_INIT,
+  INTERACTION_RESET, INTERACTION_SET_FORM
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -17,59 +12,89 @@ const InteractionInitialState = {
   interactionError: false,
   InteractionData: {},
   formData: {
-    customerId: {
-      field: "customerId",
-      required: true,
-      error: "",
-      value: ""
-    },
     statement: {
       field: "statement",
       required: true,
       error: "",
-      value: ""
+      value: "",
+      type: INPUT_TYPE.INPUTBOX
+    },
+    statementId: {
+      field: "statementId",
+      required: true,
+      error: "",
+      value: "",
+      type: INPUT_TYPE.INPUTBOX
     },
     interactionType: {
       field: "interactionType",
       required: true,
       error: "",
-      value: ""
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
+    },
+    interactionCategory: {
+      field: "interactionCategory",
+      required: true,
+      error: "",
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
+    },
+    serviceType: {
+      field: "serviceType",
+      required: true,
+      error: "",
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
     },
     channel: {
       field: "channel",
       required: true,
       error: "",
-      value: ""
+      value: "MOBILE_APP",
+      type: INPUT_TYPE.INPUTBOX
     },
-    problemCode: {
-      field: "problemCode",
+    serviceCategory: {
+      field: "serviceCategory",
       required: true,
       error: "",
-      value: ""
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
+    },
+    problemCause: {
+      field: "problemCause",
+      required: true,
+      error: "",
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
     },
     priorityCode: {
       field: "priorityCode",
       required: true,
       error: "",
-      value: ""
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
     },
     contactPerference: {
       field: "contactPerference",
       required: true,
       error: "",
-      value: ""
+      value: { code: "", description: "" },
+      type: INPUT_TYPE.DROPDOWN
     },
     remarks: {
       field: "remarks",
-      required: true,
+      required: false,
       error: "",
-      value: ""
+      value: "",
+      type: INPUT_TYPE.INPUTBOX
     },
     attachment: {
       field: "attachment",
-      required: true,
+      required: false,
       error: "",
-      value: ""
+      value: "",
+      type: INPUT_TYPE.INPUTBOX
     },
   },
 };
@@ -146,8 +171,11 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         InteractionData: action.data,
       };
     case INTERACTION_RESET:
-      state = InteractionInitialState;
-      return state;
+      return {
+        ...state,
+        formData: InteractionInitialState.formData
+      }
+
     case INTERACTION_SET_FORM:
       const {
         clearError = true,
@@ -156,7 +184,6 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         errMessage = "",
         isRequired = false,
       } = action.data;
-      console.log('>>INTERACTION_SET_FORM', action.data)
 
       let tempFormData = state.formData;
       tempFormData[field].value = value;

@@ -10,15 +10,15 @@ import AttachmentReducer from "./AttachmentReducer";
 import FollowUpReducer from "./FollowUpReducer";
 import InquiryNotificationsReducer from "./InquiryNotificationsReducer";
 import InquiryReducer from "./InquiryReducer";
+import InteractionReducer from "./InteractionReducer";
+import KnowledgeSearchReducer from "./KnowledgeSearchReducer";
 import LogoutReducer from "./LogoutReducer";
+import masterDataReducer from "./masterDataReducer";
 import MyDashboardReducer from "./MyDashboardReducer";
 import NotificationsReducer from "./NotificationsReducer";
 import ProfileReducer from "./ProfileReducer";
 import SavedLocationReducer from "./SavedLocationReducer";
 import VersionCheckReducer from "./VersionCheckReducer";
-import masterDataReducer from "./masterDataReducer";
-import InteractionReducer from "./InteractionReducer";
-import KnowledgeSearchReducer from "./KnowledgeSearchReducer";
 
 import { LOGOUT_DATA } from "./LogoutAction";
 

@@ -82,7 +82,7 @@ export const ViewProfile = ({ navigation }) => {
     }).then(function () {
       Toast.show({
         type: "bctSuccess",
-        text1: "Detail updated",
+        text1: strings.settings_updated,
       });
     });
   };

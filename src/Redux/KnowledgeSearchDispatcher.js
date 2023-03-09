@@ -1,15 +1,10 @@
+import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
+import { serverCall } from "../Utilities/API";
 import {
   initKnowledgeSearchData,
   setKnowledgeSearchData,
-  setKnowledgeSearchError,
+  setKnowledgeSearchError
 } from "./KnowledgeSearchAction";
-import { serverCall } from "../Utilities/API";
-import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
-import { saveDataToDB } from "../Storage/token";
-import { storageKeys } from "../Utilities/Constants/Constant";
-import get from "lodash.get";
-const EMPTY_DATA = [];
-const DATA = [];
 
 export const getKnowledgeSearchData = (searchQuery, navigation) => {
   return async (dispatch) => {
@@ -24,9 +19,9 @@ export const getKnowledgeSearchData = (searchQuery, navigation) => {
     );
 
     if (result.success) {
-      return await dispatch(setKnowledgeSearchData(DATA));
+      return await dispatch(setKnowledgeSearchData(result?.data?.data));
     } else {
-      return await dispatch(setKnowledgeSearchError(DATA));
+      return await dispatch(setKnowledgeSearchError(result));
     }
   };
 };

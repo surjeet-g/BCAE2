@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
+import CustomSwitch from "react-native-custom-switch-new";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { Modal, RadioButton, TextInput, Switch } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,10 +26,10 @@ import {
 import { strings } from "../../Utilities/Language";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import {
-  capitalizeFirstLetter,
   excludedCountriesList,
   getPhoneNumberLength,
 } from "../../Utilities/utils";
+import { StickyFooter } from "./../../Components/StickyFooter";
 import {
   callLogoutAndLogin,
   resetLogin,
@@ -36,8 +37,6 @@ import {
   sendLoginOTPData,
   verifyLoginData,
 } from "./LoginDispatcher";
-import { StickyFooter } from "./../../Components/StickyFooter";
-import CustomSwitch from "react-native-custom-switch-new";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -59,10 +58,10 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(true);
-  // const [username, setUsername] = useState("mobappbcae@yopmail.com");
-  // const [password, setPassword] = useState("Test@123");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [password, setPassword] = useState("Test@123");
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
