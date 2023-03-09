@@ -98,15 +98,25 @@ const CreateOrder = (props) => {
 
   const WorkFlowUI = () => {
     return (
-      <View>
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
+          style={{ width: 30, height: 30 }}
+        />
+        <Image
+          source={require("../../Assets/icons/ic_veritical_line.png")}
+          style={{ height: 100 }}
+        />
+        {/* Card View data */}
         <View
           style={{
             borderRadius: 10,
             backgroundColor: "#FCEEDA",
-            marginTop: 15,
             padding: 10,
+            width: "100%",
           }}
         >
+          {/* Date & Time View */}
           <Text
             style={{
               borderRadius: 10,
@@ -115,6 +125,8 @@ const CreateOrder = (props) => {
               textAlign: "center",
               width: "70%",
               alignSelf: "center",
+              color: "white",
+              bottom: 30,
             }}
           >
             10 Feb 2023 09:30 AM
@@ -124,40 +136,13 @@ const CreateOrder = (props) => {
           <View
             style={{
               flexDirection: "row",
-              marginTop: 10,
             }}
           >
             {/* Statement View */}
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                // backgroundColor: "blue",
-                // alignItems: "center",
-              }}
-            >
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "#686B6C",
-                }}
-              >
-                Statement
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#202223",
-                  marginTop: 5,
-                }}
-              >
-                Dissatisfaction with Policies
-              </Text>
-            </View>
+            <WorkFlowItem
+              title={"Statement"}
+              value={"Dissatisfaction with Policies"}
+            />
           </View>
 
           {/* Row 2 */}
@@ -168,69 +153,12 @@ const CreateOrder = (props) => {
             }}
           >
             {/* Statement View */}
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                // backgroundColor: "blue",
-                // alignItems: "center",
-              }}
-            >
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "#686B6C",
-                }}
-              >
-                Statement
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#202223",
-                  marginTop: 5,
-                }}
-              >
-                Dissatisfaction
-              </Text>
-            </View>
+            <WorkFlowItem title={"Statement"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                // backgroundColor: "blue",
-                // alignItems: "center",
-              }}
-            >
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "#686B6C",
-                }}
-              >
-                Statement
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#202223",
-                  marginTop: 5,
-                }}
-              >
-                Dissatisfaction
-              </Text>
-            </View>
+            <WorkFlowItem title={"Statement"} value={" Dissatisfaction"} />
           </View>
+
           {/* Row 3 */}
           <View
             style={{
@@ -239,37 +167,12 @@ const CreateOrder = (props) => {
             }}
           >
             {/* Statement View */}
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                // backgroundColor: "blue",
-                // alignItems: "center",
-              }}
-            >
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "#686B6C",
-                }}
-              >
-                Statement
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#202223",
-                  marginTop: 5,
-                }}
-              >
-                Dissatisfaction with Policies
-              </Text>
-            </View>
+            <WorkFlowItem
+              title={"Statement"}
+              value={"Dissatisfaction with Policies"}
+            />
           </View>
+
           {/* Row 4 */}
           <View
             style={{
@@ -278,39 +181,57 @@ const CreateOrder = (props) => {
             }}
           >
             {/* Comments View */}
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                // backgroundColor: "blue",
-                // alignItems: "center",
-              }}
-            >
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "#686B6C",
-                }}
-              >
-                Comments
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#202223",
-                  marginTop: 5,
-                }}
-              >
-                Assign to self
-              </Text>
-            </View>
+            <WorkFlowItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
-        <CustomButton label={strings.follow_up} onPress={() => {}} />
+        <Image
+          source={require("../../Assets/icons/ic_veritical_line.png")}
+          style={{ height: 50 }}
+        />
+        <Image
+          source={require("../../Assets/icons/ic_eclipse_orange.png")}
+          style={{ width: 20, height: 20 }}
+        />
+        {/* Follow up button view */}
+        <CustomButton
+          buttonStyle={{ width: "100%" }}
+          label={strings.follow_up}
+          onPress={() => alert("Go to Follow up history")}
+        />
+      </View>
+    );
+  };
+
+  const WorkFlowItem = (props) => {
+    const { title, value } = props;
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+        }}
+      >
+        <Text
+          variant="bodySmall"
+          style={{
+            fontWeight: 400,
+            fontSize: 14,
+            color: "#686B6C",
+          }}
+        >
+          {title}
+        </Text>
+        <Text
+          variant="bodySmall"
+          style={{
+            fontWeight: 600,
+            fontSize: 16,
+            color: "#202223",
+            marginTop: 5,
+          }}
+        >
+          {value}
+        </Text>
       </View>
     );
   };

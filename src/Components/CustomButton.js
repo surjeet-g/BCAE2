@@ -12,6 +12,7 @@ export const CustomButton = (props) => {
     onPress = () => {},
     loading = false,
     mode = "contained",
+    buttonStyle,
   } = props;
 
   return (
@@ -21,7 +22,7 @@ export const CustomButton = (props) => {
       }}
     >
       <Button
-        style={{ padding: 7 }}
+        style={{ padding: 7, ...buttonStyle }}
         loading={loading}
         mode={mode}
         label={label}
