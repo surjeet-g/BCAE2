@@ -37,3 +37,11 @@ export function updateWorkFlowSuccessInStore(data) {
 export function updateWorkFlowErrorInStore(data) {
   return { type: UPDATE_WORKFLOW_FAILURE, data };
 }
+
+export function getWorkFlowSuccessInStore(data) {
+  return { type: GET_WORKFLOW_SUCCESS, data };
+}
+
+export function getWorkFlowErrorInStore(data) {
+  return { type: GET_WORKFLOW_FAILURE, data };
+}

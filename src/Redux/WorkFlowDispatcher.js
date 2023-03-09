@@ -13,17 +13,19 @@ import {
   createWorkFlowErrorInStore,
   updateWorkFlowSuccessInStore,
   updateWorkFlowErrorInStore,
+  getWorkFlowSuccessInStore,
+  getWorkFlowErrorInStore,
 } from "./WorkFlowActions";
 
-export function fetchWorkFlowListData(userId, params, navigation = null) {
+export function fetchWorkFlowListData(params, navigation = null) {
   return async (dispatch) => {
     let url = endPoints.GET_WORKFLOW_LIST + "?limit=10&page=1";
     let result = await serverCall(url, requestMethod.GET, params, navigation);
     if (result.success) {
-      console.log("$$$-workflow-data", result.data.data);
+      console.log("$$$-workflow-list-data", result.data.data);
       dispatch(setWorkFlowListDataInStore(result.data.data));
     } else {
-      console.log("$$$-workflow-data", result);
+      console.log("$$$-workflow-list-data-error", result);
       dispatch(setWorkFlowListErrorDataInStore(result));
     }
   };
@@ -67,6 +69,20 @@ export function updateWorkFlow(params, navigation = null) {
     } else {
       console.log("$$$-update-workflow-error", result);
       dispatch(updateWorkFlowErrorInStore(result));
+    }
+  };
+}
+
+export function getWorkFlow(params, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.GET_WORKFLOW_FOR_ID + params.workFlowId;
+    let result = await serverCall(url, requestMethod.GET, params, navigation);
+    if (result.success) {
+      console.log("$$$-get-workflow-data", result.data.data);
+      dispatch(getWorkFlowSuccessInStore(result.data.data));
+    } else {
+      console.log("$$$-get-workflow-error", result);
+      dispatch(getWorkFlowErrorInStore(result));
     }
   };
 }
