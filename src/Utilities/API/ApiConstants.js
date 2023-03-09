@@ -52,6 +52,11 @@ export const endPoints = {
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
   KNOWLEDGE_SEARCH: "api/knowledge-Base/search/",
+  GET_WORKFLOW_LIST: "api/workflow/get-workflow-list",
+  GET_WORKFLOW_FOR_ID: "api/workflow/get-workflow/",
+  CREATE_WORKFLOW: "api/workflow/create",
+  UPDATE_WORKFLOW: "api/workflow/update/",
+  DELETE_WORKFLOW: "api/workflow/delete/",
 };
 
 export const requestMethod = {

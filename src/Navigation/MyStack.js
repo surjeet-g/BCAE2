@@ -1,14 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useRef, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
-  Pressable,
-  View,
-  Text,
-  StyleSheet,
   FlatList,
   Image,
+  Pressable,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -59,7 +59,7 @@ const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
-
+const STACK_INTERACTION = "InteractionsToOrder";
 const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();

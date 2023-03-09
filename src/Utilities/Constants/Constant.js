@@ -1,17 +1,22 @@
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import { Platform } from "react-native";
-
-const RNFetchBlob = require("rn-fetch-blob").default;
+import {
+  heightPercentageToDP as hp, widthPercentageToDP as wp
+} from "react-native-responsive-screen";
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
 import theme from "../themeConfig";
+
+const RNFetchBlob = require("rn-fetch-blob").default;
 
 export const ACCOUNT_TYPE = {
   PERSONAL: "personal",
   EXISTING: "existing",
 };
+
+export const INPUT_TYPE = {
+  INPUTBOX: 0,
+  DROPDOWN: 1,
+
+}
 export const SECERT_KEY = "(*Hnjkn2kjn";
 
 export const WEBCLIENT_ID =

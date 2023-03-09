@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { View, Text, Image } from "react-native";
 
-export const Dashboard = () => {
+export const HomeScreen = () => {
   return (
     <View>
-      <Text>Dashboard</Text>
+      <Text>HomeScreen</Text>
     </View>
   );
 };
