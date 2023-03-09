@@ -21,3 +21,11 @@ export function setWorkFlowListDataInStore(data) {
 export function setWorkFlowListErrorDataInStore(data) {
   return { type: GET_WORKFLOW_LIST_FAILURE, data };
 }
+
+export function createWorkFlowSuccessInStore(data) {
+  return { type: CREATE_WORKFLOW_SUCCESS, data };
+}
+
+export function createWorkFlowErrorInStore(data) {
+  return { type: CREATE_WORKFLOW_FAILURE, data };
+}

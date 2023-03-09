@@ -2,6 +2,8 @@ import {
   GET_WORKFLOW_LIST_DATA,
   GET_WORKFLOW_LIST_SUCCESS,
   GET_WORKFLOW_LIST_FAILURE,
+  CREATE_WORKFLOW_SUCCESS,
+  CREATE_WORKFLOW_FAILURE,
 } from "./WorkFlowActions";
 
 const initialState = {
@@ -33,6 +35,20 @@ const WorkFlowReducer = (state = initialState, action) => {
         ...state,
         showingLoadingIndicator: false,
         workflowListData: [],
+        workflowError: true,
+        workflowErrorData: action.data,
+      };
+    case CREATE_WORKFLOW_SUCCESS:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
+        workflowError: false,
+        workflowErrorData: {},
+      };
+    case CREATE_WORKFLOW_FAILURE:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
         workflowError: true,
         workflowErrorData: action.data,
       };

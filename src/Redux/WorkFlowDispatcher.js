@@ -9,6 +9,8 @@ import Toast from "react-native-toast-message";
 import {
   setWorkFlowListErrorDataInStore,
   setWorkFlowListDataInStore,
+  createWorkFlowSuccessInStore,
+  createWorkFlowErrorInStore,
 } from "./WorkFlowActions";
 
 export function fetchWorkFlowListData(userId, params, navigation = null) {
@@ -31,8 +33,10 @@ export function createWorkFlow(params, navigation = null) {
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     if (result.success) {
       console.log("$$$-create-workflow-data", result.data.data);
+      dispatch(createWorkFlowSuccessInStore(result.data.data));
     } else {
       console.log("$$$-create-workflow-error", result);
+      dispatch(createWorkFlowErrorInStore(result));
     }
   };
 }
