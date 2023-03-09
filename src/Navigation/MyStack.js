@@ -59,7 +59,7 @@ const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
-
+const STACK_INTERACTION = "InteractionsToOrder";
 const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();
@@ -98,7 +98,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={STACK_INTERACTION}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",

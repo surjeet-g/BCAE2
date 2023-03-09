@@ -51,7 +51,7 @@ export const endPoints = {
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
-  KNOWLEDGE_SEARCH: "api/knowledge-Base/search/",
+  KNOWLEDGE_SEARCH: "api/knowledge-Base/search",
 };
 
 export const requestMethod = {
