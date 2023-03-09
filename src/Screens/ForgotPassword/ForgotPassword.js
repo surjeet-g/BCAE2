@@ -200,7 +200,7 @@ const ForgotPassword = ({ navigation }) => {
               isFirstSelected={isFirstSelected}
               label={{
                 first: strings.customer_email_ID,
-                second: "User ID",
+                second: strings.loginId,
               }}
               bgColor={{
                 selected: color.BCAE_PRIMARY,
@@ -248,8 +248,8 @@ const ForgotPassword = ({ navigation }) => {
                 <CustomInput
                   onChangeText={(text) => onCustomerIDChange(text)}
                   value={customerId}
-                  caption={strings.customer_ID}
-                  placeHolder={strings.customer_ID}
+                  caption={strings.loginId}
+                  placeHolder={strings.loginId}
                   right={
                     customerId && (
                       <TextInput.Icon
@@ -267,8 +267,8 @@ const ForgotPassword = ({ navigation }) => {
                     onIDChangeUsername(text);
                   }}
                   value={lastName}
-                  caption="Last Name"
-                  placeHolder="Last Name"
+                  caption={strings.last_name}
+                  placeHolder={strings.last_name}
                   right={
                     lastName && (
                       <TextInput.Icon

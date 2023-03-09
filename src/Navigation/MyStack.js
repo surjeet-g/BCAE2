@@ -43,20 +43,22 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
+import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
+import CreateOrder from "../Screens/Appointments/CreateOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import AnnouncementItem from "./../Screens/Announcement/component/AnnouncementItem";
-import VerifyLoginOTP from "./../Screens/Login/component/VerifyLoginOTP";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
-const STACK_INTER = "InteractionsToOrder";
+const STACK_CREATE_ORDER = "CreateOrder";
+const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -96,7 +98,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -231,7 +233,7 @@ function MyStack() {
             headerShown: true,
             title: "Login",
           }}
-          name="Login"
+          name={STACK_LOGIN}
           component={Login}
         />
         <Stack.Screen
@@ -239,7 +241,7 @@ function MyStack() {
             headerShown: true,
             title: "Login",
           }}
-          name="VerifyLoginOTP"
+          name={STACK_VERIFY_LOGIN_OTP}
           component={VerifyLoginOTP}
         />
 
@@ -257,20 +259,19 @@ function MyStack() {
           component={Register}
         />
         <Stack.Screen
-          options={{
-            headerTintColor: colors.inverseSecondary,
-
-            headerTransparent: false,
-            title: "Location on map",
-            headerRight: () => { },
-            headerStyle: {
-              backgroundColor: colors.secondary,
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "AddLocation",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return <View style={{ marginRight: 15 }}></View>;
+              },
             },
-            headerTitleStyle: {
-              ...fonts.titleMedium,
-              ...{ color: colors.inverseSecondary, fontWeight: "700" },
-            },
-          }}
+          })}
           name="AddLocation"
           component={AddLocation}
         />
@@ -329,6 +330,34 @@ function MyStack() {
           })}
           name="InteractionsToOrder"
           component={InteractionsToOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "black",
+              headerTitle: "Create Order",
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "black", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Image
+                        style={{ ...ICON_STYLE }}
+                        source={require("../Assets/icons/search.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name={STACK_CREATE_ORDER}
+          component={CreateOrder}
         />
         {/* <Stack.Screen
           options={{ headerShown: false }}
@@ -419,7 +448,7 @@ function MyStack() {
                 </Text>
                 <TouchableOpacity onPress={closeAnnoncementModal}>
                   <Image
-                    style={{ ...ICON_STYLE, color: "#36393D" }}
+                    style={{ ...ICON_STYLE, tintColor: "#36393D" }}
                     source={require("../Assets/icons/close_black.png")}
                   />
                 </TouchableOpacity>
