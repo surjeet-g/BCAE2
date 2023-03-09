@@ -31,7 +31,7 @@ const CreateOrder = (props) => {
   const [selectedSlots, setseSectedSlots] = useState("");
   const [showIndex, setShowIndex] = useState(0);
 
-  const Item = (props) => {
+  const FlatListItem = (props) => {
     const { item, index } = props;
     return (
       <View
@@ -65,37 +65,38 @@ const CreateOrder = (props) => {
               style={{ width: 50, height: 50 }}
             />
           </View>
-          {/* View MOre view */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 30,
-              justifyContent: "space-between",
-            }}
-          >
-            <Text
-              variant="bodySmall"
+          {/* View More view */}
+          <TouchableOpacity onPress={() => setShowIndex(index)}>
+            <View
               style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: "#EFA848",
+                flexDirection: "row",
+                marginTop: 30,
+                justifyContent: "space-between",
               }}
+              onPress={() => setShowIndex(index)}
             >
-              View More
-            </Text>
-            <TouchableOpacity onPress={() => setShowIndex(index)}>
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: 600,
+                  fontSize: 14,
+                  color: "#EFA848",
+                }}
+              >
+                View More
+              </Text>
               <Image
                 source={require("../../Assets/icons/ic_right_arrow.png")}
                 style={{ marginLeft: 10, tintColor: "#EFA848" }}
               />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
   };
 
-  const renderWorkFlowUI = () => {
+  const WorkFlowUI = () => {
     return (
       <View>
         <View
@@ -314,7 +315,7 @@ const CreateOrder = (props) => {
     );
   };
 
-  const renderAppointmentUI = () => {
+  const AppointmentUIForm = () => {
     return (
       <View
         style={{
@@ -472,7 +473,44 @@ const CreateOrder = (props) => {
     );
   };
 
-  const renderCustomerInfoUI = () => {
+  const CustomerInfoItem = (props) => {
+    const { title, value } = props;
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          //   backgroundColor: "blue",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          variant="bodySmall"
+          style={{
+            fontWeight: 600,
+            fontSize: 14,
+            color: colors.inverseSecondary,
+            textAlign: "center",
+          }}
+        >
+          {title}
+        </Text>
+        <Text
+          variant="bodySmall"
+          style={{
+            fontWeight: 400,
+            fontSize: 12,
+            color: colors.inverseSecondary,
+            marginTop: 5,
+          }}
+        >
+          {value}
+        </Text>
+      </View>
+    );
+  };
+
+  const CustomerInfoUIFull = () => {
     return (
       <View
         style={{
@@ -525,6 +563,7 @@ const CreateOrder = (props) => {
             </Text>
           </View>
         </View>
+
         {/* Divider line view */}
         <View style={{ marginTop: 10 }}>
           <Image source={require("../../Assets/icons/line.png")} />
@@ -533,191 +572,34 @@ const CreateOrder = (props) => {
         {/* More Profile Data View 1 */}
         <View style={{ flexDirection: "row", marginTop: 10 }}>
           {/* Customer Number View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "blue",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: colors.inverseSecondary,
-                textAlign: "center",
-              }}
-            >
-              Customer{"\n"}Number
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 12,
-                color: colors.inverseSecondary,
-                marginTop: 5,
-              }}
-            >
-              1123445
-            </Text>
-          </View>
+          <CustomerInfoItem title={`Customer${"\n"}Number`} value={"1123445"} />
 
           {/* Customer Type View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "green",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: colors.inverseSecondary,
-                textAlign: "center",
-              }}
-            >
-              Customer{"\n"}Type
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 12,
-                color: colors.inverseSecondary,
-                marginTop: 5,
-              }}
-            >
-              Business
-            </Text>
-          </View>
+          <CustomerInfoItem title={`Customer${"\n"}Type`} value={"Business"} />
 
           {/* Service Type View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "red",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: colors.inverseSecondary,
-                textAlign: "center",
-              }}
-            >
-              Service{"\n"}Type
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 12,
-                color: colors.inverseSecondary,
-                marginTop: 5,
-              }}
-            >
-              Postpaid
-            </Text>
-          </View>
+          <CustomerInfoItem title={`Service${"\n"}Type`} value={"Postpaid"} />
         </View>
 
         {/* More Profile Data View 2*/}
         <View style={{ flexDirection: "row", marginTop: 20 }}>
           {/* Plan Name View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "blue",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: colors.inverseSecondary,
-                textAlign: "center",
-              }}
-            >
-              Plan Name
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 12,
-                color: colors.inverseSecondary,
-                marginTop: 5,
-              }}
-            >
-              10GB- Internet
-            </Text>
-          </View>
+          <CustomerInfoItem title={`Plan Name`} value={" 10GB- Internet"} />
 
           {/* ID Type View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "green",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 600,
-                fontSize: 14,
-                color: colors.inverseSecondary,
-                textAlign: "center",
-              }}
-            >
-              ID Type
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 12,
-                color: colors.inverseSecondary,
-                marginTop: 5,
-              }}
-            >
-              Passport
-            </Text>
-          </View>
+          <CustomerInfoItem title={`ID Type`} value={"Passport"} />
 
-          {/* Customer Number View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "red",
-              alignItems: "center",
-            }}
-          ></View>
+          {/* Empty View */}
+          <CustomerInfoItem title={""} value={""} />
         </View>
 
         {/* Interaction History View */}
-        {renderProfileInfoInteractionHistoryUI()}
+        <CustomerInfoInteractionHistoryUI />
       </View>
     );
   };
 
-  const renderProfileInfoInteractionHistoryUI = () => {
+  const CustomerInfoInteractionHistoryUI = () => {
     return (
       <View
         style={{
@@ -856,7 +738,7 @@ const CreateOrder = (props) => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Profile Information View Full Container */}
-        {renderCustomerInfoUI()}
+        <CustomerInfoUIFull />
         {/* Flatlist Horizontal view */}
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <FlatList
@@ -867,14 +749,16 @@ const CreateOrder = (props) => {
               { title: `Workflow${"\n"}History` },
               { title: "Not Available" },
             ]}
-            renderItem={({ item, index }) => <Item item={item} index={index} />}
+            renderItem={({ item, index }) => (
+              <FlatListItem item={item} index={index} />
+            )}
             keyExtractor={(item) => item.id}
           />
         </View>
         {/* Appointment Details View */}
-        {showIndex === 0 ? renderAppointmentUI() : null}
+        {showIndex === 0 ? <AppointmentUIForm /> : null}
         {/* Workflow History View */}
-        {showIndex === 1 ? renderWorkFlowUI() : null}
+        {showIndex === 1 ? <WorkFlowUI /> : null}
       </ScrollView>
 
       {/* Bottom Button View */}
