@@ -54,7 +54,7 @@ export const endPoints = {
   KNOWLEDGE_SEARCH: "api/knowledge-Base/search/",
   GET_WORKFLOW_LIST: "api/workflow/get-workflow-list",
   GET_WORKFLOW_FOR_ID: "api/workflow/get-workflow/",
-  CREATE_WORKFLOW: "api/workflow/create/",
+  CREATE_WORKFLOW: "api/workflow/create",
   UPDATE_WORKFLOW: "api/workflow/update/",
   DELETE_WORKFLOW: "api/workflow/delete/",
 };

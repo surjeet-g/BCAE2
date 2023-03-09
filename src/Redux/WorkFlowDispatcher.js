@@ -19,8 +19,20 @@ export function fetchWorkFlowListData(userId, params, navigation = null) {
       console.log("$$$-workflow-data", result.data.data);
       dispatch(setWorkFlowListDataInStore(result.data.data));
     } else {
-      console.log("$$$-workflow-data", result.data.data);
-      dispatch(setWorkFlowListErrorDataInStore(result.data.data));
+      console.log("$$$-workflow-data", result);
+      dispatch(setWorkFlowListErrorDataInStore(result));
+    }
+  };
+}
+
+export function createWorkFlow(params, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.CREATE_WORKFLOW;
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    if (result.success) {
+      console.log("$$$-create-workflow-data", result.data.data);
+    } else {
+      console.log("$$$-create-workflow-error", result);
     }
   };
 }
