@@ -814,7 +814,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 label={strings.submit}
                 onPress={async () => {
                   const input = interactionRedux.formData
-
                   const customerID = await getCustomerID()
                   const params = {
                     "customerId": customerID,
