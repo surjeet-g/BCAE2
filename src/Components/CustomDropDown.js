@@ -42,12 +42,13 @@ export const CustomDropDown = (props) => {
           height: 50,
           flexDirection: "row",
           alignItems: "center",
+          justifyContent:"space-between"
         }}
       >
         <Text
           variant="labelSmall"
           style={{
-            flex: 0.6,
+            flex: 0.,
             marginBottom: 6,
             marginLeft: 8,
             color: colors.onSurfaceVariant,
@@ -55,7 +56,7 @@ export const CustomDropDown = (props) => {
         >
           {props.placeHolder}
         </Text>
-        <View style={{ flex: 0.4 }}>
+        <View style={{}}>
           <CustomInput
             hideCaption={true}
             editable={false}

@@ -13,7 +13,7 @@ import {
   Keyboard,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import { getDataFromDB } from "../../Storage/token";
 import {
   spacing,
   color,
@@ -22,6 +22,7 @@ import {
   validateNumber,
   validateEmail,
   DEFAULT_PROFILE_IMAGE,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 
 import Camara from "../../Assets/svg/camera_icon.svg";
@@ -70,7 +71,7 @@ const EditProfile = ({ navigation, props }) => {
   const [isSaveButtonDisable, setSaveButtomEnableDisable] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-
+  const [loginId, setLoginId] = useState("");
   const [countryError, setCountryError] = useState("");
   const [locationError, setLocationError] = useState("");
 
@@ -102,6 +103,11 @@ const EditProfile = ({ navigation, props }) => {
 
   useEffect(() => {
     // dispatch1(setProfileReset());
+    getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
+      if (result) {
+        setLoginId(result.loginId);
+      }
+    });
     dispatch1(fetchRegisterFormData());
   }, []);
 
@@ -120,7 +126,6 @@ const EditProfile = ({ navigation, props }) => {
     async function fetchMyAPI() {
       await dispatch2(fetchSavedProfileData(navigation));
     }
-
     fetchMyAPI();
   }, []);
 
@@ -441,7 +446,12 @@ const EditProfile = ({ navigation, props }) => {
               </ImageBackground>
 
               <Text variant="bodyLarge" style={styles.caption}>
-                {get(profile, "savedProfileData.customerNo", "")}
+                {strings.customer_ID +
+                  " : " +
+                  get(profile, "savedProfileData.customerNo", "")}
+              </Text>
+              <Text variant="bodyLarge" style={styles.caption}>
+                {strings.loginId + " : " + loginId}
               </Text>
               <ClearSpace />
               <Text variant="bodySmall" style={styles.caption_small}>

@@ -55,6 +55,10 @@ export function verifyLoginData(navigation, params) {
               let accessTokenData = {
                 accessToken: result.data?.data?.accessToken ?? "",
               };
+              let loginId = {
+                loginId: result.data?.data?.user?.loginid ?? "",
+              };
+              await saveDataToDB(storageKeys.LOGIN_ID, loginId);
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
 
               let userTypeInResponse = result?.data?.data?.user?.userType;

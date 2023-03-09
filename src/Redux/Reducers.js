@@ -1,26 +1,29 @@
 import { combineReducers } from "redux";
 
-import LoginReducer from "../Screens/Login/LoginReducer";
-import RegisterFormReducer from "../Redux/RegisterReducer";
-import MyTicketsReducer from "../Redux/MyTicketsReducer";
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
+import MyTicketsReducer from "../Redux/MyTicketsReducer";
+import RegisterFormReducer from "../Redux/RegisterReducer";
 import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
-import SavedLocationReducer from "./SavedLocationReducer";
 import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
-import ProfileReducer from "./ProfileReducer";
-import MyDashboardReducer from "./MyDashboardReducer";
-import InquiryReducer from "./InquiryReducer";
+import LoginReducer from "../Screens/Login/LoginReducer";
 import AttachmentReducer from "./AttachmentReducer";
 import FollowUpReducer from "./FollowUpReducer";
-import LogoutReducer from "./LogoutReducer";
-import NotificationsReducer from "./NotificationsReducer";
 import InquiryNotificationsReducer from "./InquiryNotificationsReducer";
-import { LOGOUT_DATA } from "./LogoutAction";
+import InquiryReducer from "./InquiryReducer";
+import LogoutReducer from "./LogoutReducer";
+import MyDashboardReducer from "./MyDashboardReducer";
+import NotificationsReducer from "./NotificationsReducer";
+import ProfileReducer from "./ProfileReducer";
+import SavedLocationReducer from "./SavedLocationReducer";
 import VersionCheckReducer from "./VersionCheckReducer";
-
 import masterDataReducer from "./masterDataReducer";
+import InteractionReducer from "./InteractionReducer";
+import KnowledgeSearchReducer from "./KnowledgeSearchReducer";
 
- const appReducer = combineReducers({
+import { LOGOUT_DATA } from "./LogoutAction";
+
+const appReducer = combineReducers({
+  interaction: InteractionReducer,
   masterdata: masterDataReducer,
   versioncheck: VersionCheckReducer,
   notifications: NotificationsReducer,
@@ -38,6 +41,7 @@ import masterDataReducer from "./masterDataReducer";
   enquiry: InquiryReducer,
   logout: LogoutReducer,
   inquiryNotifications: InquiryNotificationsReducer,
+  knowledgeSearch: KnowledgeSearchReducer,
 });
 
 const RootReducer = (state, action) => {
