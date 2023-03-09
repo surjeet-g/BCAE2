@@ -45,3 +45,11 @@ export function getWorkFlowSuccessInStore(data) {
 export function getWorkFlowErrorInStore(data) {
   return { type: GET_WORKFLOW_FAILURE, data };
 }
+
+export function deleteWorkFlowSuccessInStore(data) {
+  return { type: DELETE_WORKFLOW_SUCCESS, data };
+}
+
+export function deleteWorkFlowErrorInStore(data) {
+  return { type: DELETE_WORKFLOW_FAILURE, data };
+}

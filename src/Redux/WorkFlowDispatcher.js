@@ -15,6 +15,8 @@ import {
   updateWorkFlowErrorInStore,
   getWorkFlowSuccessInStore,
   getWorkFlowErrorInStore,
+  deleteWorkFlowSuccessInStore,
+  deleteWorkFlowErrorInStore,
 } from "./WorkFlowActions";
 
 export function fetchWorkFlowListData(params, navigation = null) {
@@ -83,6 +85,25 @@ export function getWorkFlow(params, navigation = null) {
     } else {
       console.log("$$$-get-workflow-error", result);
       dispatch(getWorkFlowErrorInStore(result));
+    }
+  };
+}
+
+export function deleteWorkFlow(params, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.DELETE_WORKFLOW + params.workFlowId;
+    let result = await serverCall(
+      url,
+      requestMethod.DELETE,
+      params,
+      navigation
+    );
+    if (result.success) {
+      console.log("$$$-delete-workflow-data", result.data.data);
+      dispatch(deleteWorkFlowSuccessInStore(result.data.data));
+    } else {
+      console.log("$$$-delete-workflow-error", result);
+      dispatch(deleteWorkFlowErrorInStore(result));
     }
   };
 }

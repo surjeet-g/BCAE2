@@ -8,6 +8,8 @@ import {
   UPDATE_WORKFLOW_FAILURE,
   GET_WORKFLOW_SUCCESS,
   GET_WORKFLOW_FAILURE,
+  DELETE_WORKFLOW_SUCCESS,
+  DELETE_WORKFLOW_FAILURE,
 } from "./WorkFlowActions";
 
 const initialState = {
@@ -78,6 +80,20 @@ const WorkFlowReducer = (state = initialState, action) => {
         workflowErrorData: {},
       };
     case GET_WORKFLOW_FAILURE:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
+        workflowError: true,
+        workflowErrorData: action.data,
+      };
+    case DELETE_WORKFLOW_SUCCESS:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
+        workflowError: false,
+        workflowErrorData: {},
+      };
+    case DELETE_WORKFLOW_FAILURE:
       return {
         ...state,
         showingLoadingIndicator: false,
