@@ -11,6 +11,8 @@ import {
   setWorkFlowListDataInStore,
   createWorkFlowSuccessInStore,
   createWorkFlowErrorInStore,
+  updateWorkFlowSuccessInStore,
+  updateWorkFlowErrorInStore,
 } from "./WorkFlowActions";
 
 export function fetchWorkFlowListData(userId, params, navigation = null) {
@@ -30,13 +32,41 @@ export function fetchWorkFlowListData(userId, params, navigation = null) {
 export function createWorkFlow(params, navigation = null) {
   return async (dispatch) => {
     let url = endPoints.CREATE_WORKFLOW;
-    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    let payload = {
+      interactionType: "string",
+      productType: "string",
+      workflowName: "string",
+      status: "string",
+      wfDefinition: {},
+    };
+    let result = await serverCall(url, requestMethod.POST, payload, navigation);
     if (result.success) {
       console.log("$$$-create-workflow-data", result.data.data);
       dispatch(createWorkFlowSuccessInStore(result.data.data));
     } else {
       console.log("$$$-create-workflow-error", result);
       dispatch(createWorkFlowErrorInStore(result));
+    }
+  };
+}
+
+export function updateWorkFlow(params, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.UPDATE_WORKFLOW + params.workFlowId;
+    let payload = {
+      interactionType: "string",
+      productType: "string",
+      workflowName: "string",
+      status: "string",
+      wfDefinition: {},
+    };
+    let result = await serverCall(url, requestMethod.PUT, payload, navigation);
+    if (result.success) {
+      console.log("$$$-update-workflow-data", result.data.data);
+      dispatch(updateWorkFlowSuccessInStore(result.data.data));
+    } else {
+      console.log("$$$-update-workflow-error", result);
+      dispatch(updateWorkFlowErrorInStore(result));
     }
   };
 }

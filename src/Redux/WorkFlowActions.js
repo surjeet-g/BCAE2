@@ -29,3 +29,11 @@ export function createWorkFlowSuccessInStore(data) {
 export function createWorkFlowErrorInStore(data) {
   return { type: CREATE_WORKFLOW_FAILURE, data };
 }
+
+export function updateWorkFlowSuccessInStore(data) {
+  return { type: UPDATE_WORKFLOW_SUCCESS, data };
+}
+
+export function updateWorkFlowErrorInStore(data) {
+  return { type: UPDATE_WORKFLOW_FAILURE, data };
+}

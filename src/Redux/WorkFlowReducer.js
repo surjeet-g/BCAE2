@@ -4,6 +4,8 @@ import {
   GET_WORKFLOW_LIST_FAILURE,
   CREATE_WORKFLOW_SUCCESS,
   CREATE_WORKFLOW_FAILURE,
+  UPDATE_WORKFLOW_SUCCESS,
+  UPDATE_WORKFLOW_FAILURE,
 } from "./WorkFlowActions";
 
 const initialState = {
@@ -52,7 +54,20 @@ const WorkFlowReducer = (state = initialState, action) => {
         workflowError: true,
         workflowErrorData: action.data,
       };
-
+    case UPDATE_WORKFLOW_SUCCESS:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
+        workflowError: false,
+        workflowErrorData: {},
+      };
+    case UPDATE_WORKFLOW_FAILURE:
+      return {
+        ...state,
+        showingLoadingIndicator: false,
+        workflowError: true,
+        workflowErrorData: action.data,
+      };
     default:
       return state;
   }
