@@ -32,8 +32,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       navigation.navigate("Chat", {
         contactNo: profile.savedProfileData.contactNo,
       });
-    } else if (val === "ComingSoon") {
-      navigation.navigate("ComingSoon", {});
+    } else if (val === "Search") {
+      navigation.navigate("Search", {});
+    } else if (val === "Offers") {
+      navigation.navigate("Offers", {});
+    } else if (val === "Help") {
+      navigation.navigate("Help", {});
     }
   };
 
@@ -114,7 +118,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("ComingSoon")}
+          onPress={() => onNavClick("Search")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -166,7 +170,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("ComingSoon")}
+          onPress={() => onNavClick("Offers")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -200,7 +204,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("ComingSoon")}
+          onPress={() => onNavClick("Help")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
