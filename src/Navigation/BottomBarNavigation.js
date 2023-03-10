@@ -61,7 +61,6 @@ const BottomBarNavigation = () => {
       ...fonts.titleMedium,
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
-    headerShown: true,
   };
 
   return (
@@ -244,38 +243,6 @@ const BottomBarNavigation = () => {
           },
         })}
       />
-
-      {/* 
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="MyTicketsStack"
-        component={MyTicketsStack}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="AddTickets"
-        component={AddTickets}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="Announcement"
-        component={Announcement}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="Chat"
-        component={Chat}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="CreateEnquiry"
-        component={CreateEnquiry}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="CreateComplaint"
-        component={CreateComplaint}
-      /> */}
     </Tab.Navigator>
   );
 };
