@@ -5,8 +5,7 @@ import { getDataFromDB } from "../../Storage/token";
 import { DEBUG_BUILD, storageKeys } from "../../Utilities/Constants/Constant";
 import { TDLog } from "../Constants/Constant";
 import { strings } from "../Language/index";
-import { logoutUserSectionTimeOut } from "./../../Redux/LogoutDispatcher";
-import { store } from "./../../Redux/Store";
+import { logoutUserWithOutRedux } from "./../../Redux/LogoutDispatcher";
 import {
   BASE_URL,
   BASE_URL_TENANT,
@@ -20,7 +19,7 @@ export const networkAvailable = () =>
       state.isConnected ? resolve(true) : resolve(false)
     )
   );
-
+let accessTokenTemp = "";
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
     // Internet Check and response error
@@ -60,9 +59,11 @@ export const serverCall = async (url, method, data, navigation = null) =>
           }
 
           var headers;
-          let isTokenAvailable = false;
+          // let isTokenAvailable = false;
+
           if (token?.accessToken) {
-            isTokenAvailable = true
+            accessTokenTemp = token?.accessToken
+            // isTokenAvailable = true
             headers = {
               "x-tenant-id": TENANT_ID,
               "Content-Type": "application/json",
@@ -142,7 +143,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
               //   "$$$-serverCall-error.response ===>>> ",
               //   JSON.stringify(error.response)
               // );
-              processErrorResponse(resolve, error, requestObject, navigation, isTokenAvailable);
+              processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
               // if (
@@ -208,13 +209,15 @@ export const serverCall = async (url, method, data, navigation = null) =>
     }
   });
 
-const processErrorResponse = (resolve, error, requestObject, navigation, isTokenIsAvailable) => {
-  console.log('isTokenIsAvailable', isTokenIsAvailable)
+const processErrorResponse = (resolve, error, requestObject, navigation) => {
+  console.log('isTokenIsAvailable',)
   if (error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&
-    isTokenIsAvailable &&
+    accessTokenTemp != "" &&
+    navigation != null &&
     error.response.status != null) {
+    // if (0) {
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",
@@ -225,9 +228,11 @@ const processErrorResponse = (resolve, error, requestObject, navigation, isToken
         // },
         {
           text: strings.ok,
-          onPress: () => {
-            if (navigation != null)
-              store.dispatch(logoutUserSectionTimeOut(navigation));
+          onPress: async () => {
+            if (navigation != null) {
+              const result = await logoutUserWithOutRedux(navigation);
+              if (result) navigation.navigate("Splash")
+            }
           },
         },
       ],

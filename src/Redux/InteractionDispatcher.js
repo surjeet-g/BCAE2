@@ -1,11 +1,11 @@
 import {
-  enableLoaderAddInteraction,
+  enableLoaderAddInteractionAdd,
   enableLoaderEditInteraction,
   initInteraction,
   setInteractionData,
   setInteractionError,
   setInteractionsWorkFlowDataInStore,
-  setInteractionsWorkFlowErrorDataInStore,
+  setInteractionsWorkFlowErrorDataInStore
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -36,7 +36,7 @@ export function fetchInteractionAction(
       if (isCreateInteraction) {
         const customerId = await getCustomerID();
         const freqentlyAskedResult = await serverCall(
-          `${endPoints.FREQUENTLY_ASKED}?customerId=${customerId}&limit=3`,
+          `${endPoints.FREQUENTLY_ASKED}?customerId=${customerId}&limit=2`,
           requestMethod.GET,
           {}
         );
@@ -46,8 +46,9 @@ export function fetchInteractionAction(
           mostfrequently: interactionResult?.data?.data,
         };
         dispatch(setInteractionData(data, false));
+
       } else {
-        dispatch(setInteractionData(interactionResult?.data?.data, true));
+        dispatch(setInteractionData(interactionResult?.data?.data, false));
       }
 
       return true;
@@ -89,30 +90,33 @@ export function updateInteractionAction(obj) {
 }
 
 export function addInteractionAction(obj) {
+
   return async (dispatch) => {
-    const validation = await validateFormData(obj, dispatch);
-    if (!validation) return null;
-    dispatch(enableLoaderAddInteraction(true));
+    // const validation = await validateFormData(obj, dispatch);
+    // if (!validation) return null;
+
+    dispatch(enableLoaderAddInteractionAdd(true));
 
     let result = await serverCall(
       endPoints.INTERACTION_ADD,
-      requestMethod.PUSH,
+      requestMethod.POST,
       obj
     );
+
     if (result.success) {
-      dispatch(enableLoaderAddInteraction(false));
+      dispatch(enableLoaderAddInteractionAdd(false));
       Toast.show({
         type: "bctSuccess",
         text1: result?.data?.message,
       });
-      return true;
+      return { status: true, response: { id: 1 } };
     } else {
       Toast.show({
         type: "bctError",
         text1: "Something wents wrong",
       });
-      dispatch(enableLoaderAddInteraction(false));
-      return false;
+      dispatch(enableLoaderAddInteractionAdd(false));
+      return { status: false, response: { id: 1, message: "dfdf" } };
     }
   };
 }
