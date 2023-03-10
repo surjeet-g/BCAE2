@@ -32,6 +32,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       navigation.navigate("Chat", {
         contactNo: profile.savedProfileData.contactNo,
       });
+    } else if (val === "ComingSoon") {
+      navigation.navigate("ComingSoon", {});
     }
   };
 
@@ -100,7 +102,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Interactions")}
+          onPress={() => onNavClick("ComingSoon")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -117,7 +119,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           <Text
             style={state.index === 1 ? styles.selectedText : styles.upperText}
           >
-            {strings.interaction}
+            {strings.search}
           </Text>
         </Pressable>
 
@@ -142,7 +144,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Announcement")}
+          onPress={() => onNavClick("ComingSoon")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -161,12 +163,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             adjustsFontSizeToFit
             style={state.index === 3 ? styles.selectedText : styles.upperText}
           >
-            {strings.announcement}
+            {strings.offers}
           </Text>
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Chat")}
+          onPress={() => onNavClick("ComingSoon")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -183,7 +185,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           <Text
             style={state.index === 4 ? styles.selectedText : styles.upperText}
           >
-            {strings.chat}
+            {strings.help}
           </Text>
         </Pressable>
       </View>
