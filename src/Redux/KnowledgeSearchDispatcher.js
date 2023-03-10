@@ -19,9 +19,12 @@ export const getKnowledgeSearchData = (searchQuery, navigation) => {
     );
 
     if (result.success) {
-      return await dispatch(setKnowledgeSearchData(result?.data?.data));
+      dispatch(setKnowledgeSearchData(result?.data?.data));
+      return true;
     } else {
-      return await dispatch(setKnowledgeSearchError(result));
+      return false;
+      dispatch(setKnowledgeSearchError(result));
+
     }
   };
 };

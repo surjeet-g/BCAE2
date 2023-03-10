@@ -11,9 +11,7 @@ import {
   BASE_URL,
   BASE_URL_TENANT,
   PROD_BASE_URL,
-  PROD_BASE_URL_TENANT,
-  TENANT_ID,
-  requestMethod,
+  PROD_BASE_URL_TENANT, requestMethod, TENANT_ID
 } from "./ApiConstants";
 
 export const networkAvailable = () =>
@@ -96,20 +94,17 @@ export const serverCall = async (url, method, data, navigation = null) =>
             "Server API Call index.js BEFORE SERVER CALL requestObject :",
             JSON.stringify(requestObject)
           );
-          console.log(
-            "$$$-serverCall-requestObject ===>>> ",
-            JSON.stringify(requestObject)
-          );
+
           axios
             .request(requestObject)
             .then(async (response) => {
               TDLog(
                 "serverCall",
                 "BCAE APPLICATION SERVER CALL AFTER SUCCESS SERVER CALL URL : " +
-                  baseURL +
-                  url +
-                  +" : response :" +
-                  JSON.stringify(response)
+                baseURL +
+                url +
+                +" : response :" +
+                JSON.stringify(response)
               );
               console.log(
                 "$$$-serverCall-response ===>>> ",
