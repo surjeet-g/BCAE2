@@ -564,6 +564,7 @@ export const HomeScreen = () => {
         </Text>
         <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
           <FlatList
+            showsHorizontalScrollIndicator={false}
             horizontal
             initialNumToRender={2}
             data={[
@@ -608,6 +609,7 @@ export const HomeScreen = () => {
         </Text>
         <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
           <FlatList
+            showsHorizontalScrollIndicator={false}
             horizontal
             initialNumToRender={2}
             data={[
