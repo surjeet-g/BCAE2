@@ -1,8 +1,10 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   Image,
+  Pressable,
   ScrollView,
   Slider,
   StyleSheet,
@@ -14,9 +16,10 @@ import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
-import { useDispatch, useSelector } from "react-redux";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
+import { useDispatch, useSelector } from "react-redux";
 
+var { height, width } = Dimensions.get("screen");
 function CustomCalendar(props) {
   const initDate = new Date();
   const [selected, setSelected] = useState(initDate);
@@ -260,12 +263,15 @@ function CustomCalendar(props) {
   );
 }
 
-export const HomeScreen = () => {
+export const HomeScreen = (navigation) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
+  const dispatch = useDispatch([getCustomerAccountData]);
+
   useEffect(() => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
+      dispatch(getCustomerAccountData(navigation, customerUUDI));
     }
     fetchAccountAPI();
   }, []);
@@ -315,7 +321,7 @@ export const HomeScreen = () => {
                 color: colors.yellow,
               }}
             >
-              {"RS. 250"}
+              {console.log("customerAccount :" + customerAccount)}
             </Text>
           )}
           {index === 1 && (
@@ -561,12 +567,24 @@ export const HomeScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.floatingImg}
-        resizeMode="contain"
-        resizeMethod="resize"
-        source={require("../../Assets/icons/floating_whatsapp.png")}
-      />
+      <Pressable
+        style={{
+          position: "absolute",
+          bottom: height * 0.15,
+          right: 20,
+          flex: 1,
+          elevation: 999,
+          zIndex: 99999999,
+          height: 50,
+          width: 50,
+        }}
+      >
+        <Image
+          resizeMode="contain"
+          resizeMethod="resize"
+          source={require("../../Assets/icons/floating_whatsapp.png")}
+        />
+      </Pressable>
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text

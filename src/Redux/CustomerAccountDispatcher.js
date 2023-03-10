@@ -21,7 +21,7 @@ export const getCustomerAccountData = (uuId, navigation) => {
     );
 
     if (result.success) {
-      dispatch(setCustomerAccountData(result?.data?.data));
+      dispatch(setCustomerAccountData(result?.data?.rows));
       return true;
     } else {
       return false;
