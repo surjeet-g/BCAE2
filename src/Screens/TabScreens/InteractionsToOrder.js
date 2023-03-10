@@ -734,7 +734,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               style={{ flex: 1 }}
             >
               {/* Field View */}
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{ marginHorizontal: 10, }}>
                 <CustomDropDownFullWidth
                   selectedValue={get(interactionType, "value.description", "")}
                   data={interactionList}
