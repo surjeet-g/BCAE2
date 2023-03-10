@@ -29,7 +29,12 @@ export function verifyForgotPasswordData(navigation, params, type) {
         type: "bctSuccess",
         text1: result?.data?.message || "",
       });
-      navigation.replace("ConfirmForgotPassword", { email: params?.loginId });
+      navigation.replace("ConfirmForgotPassword", {
+        email: params?.loginId ?? "",
+        lastName: params?.lastName ?? "",
+        dob: params?.dob ?? "",
+        type: type,
+      });
     } else {
       Toast.show({
         visibilityTime: 5000,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, ScrollView, Text, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, Text, View } from "react-native";
 
 import { Switch } from "react-native-paper";
 import { SHADOW_STYLE } from "../Utilities/themeConfig";
@@ -12,18 +12,8 @@ export const FooterModel = ({
     children
 }) => {
     return (
-        <View contentContainerStyle={{
-            position: "relative",
-            bottom: 10,
-            left: 0,
-            top: 0,
-            width: width * .8,
-            zIndex: 9999,
-            flex: 1,
-            height: open ? height : 100,
+        <View style={{
             backgroundColor: 'transparent',
-            ...SHADOW_STYLE
-
         }}>
             {/* header */}
             <View style={{
@@ -34,16 +24,39 @@ export const FooterModel = ({
                 ...SHADOW_STYLE
 
             }}>
+                {open &&
+                    <Pressable
+                        onPress={() => {
+                            setOpen(false)
+                        }}
+                        style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 20,
+                            backgroundColor: "black",
+                            position: "absolute",
+                            right: 19,
+                            top: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}>
+                        <Text style={{ color: 'white', fontSize: 10, textAlign: "center" }}> x </Text>
+                    </Pressable>
+                }
+
+
                 <View style={{
                     position: "relative",
                     top: 1,
+
                     justifyContent: "center",
                     alignItems: 'center'
-
                 }}>
                     <ClearSpace size={4} />
                     <View style={{ width: 70, height: 3, backgroundColor: "black", borderRadius: 5 }} />
+
                 </View>
+
                 <ClearSpace size={2} />
                 <View
                     style={{

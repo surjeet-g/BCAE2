@@ -1,9 +1,9 @@
-import { View, Text } from "react-native";
 import React from "react";
+import { Text, View } from "react-native";
 
 const Offers = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <View style={{ flex: 1, justifyContent: "center", }}>
       <Text
         style={{
           color: "#F5AD47",

@@ -11,9 +11,7 @@ import {
   BASE_URL,
   BASE_URL_TENANT,
   PROD_BASE_URL,
-  PROD_BASE_URL_TENANT,
-  TENANT_ID,
-  requestMethod,
+  PROD_BASE_URL_TENANT, requestMethod, TENANT_ID
 } from "./ApiConstants";
 
 export const networkAvailable = () =>
@@ -62,7 +60,9 @@ export const serverCall = async (url, method, data, navigation = null) =>
           }
 
           var headers;
+          let isTokenAvailable = false;
           if (token?.accessToken) {
+            isTokenAvailable = true
             headers = {
               "x-tenant-id": TENANT_ID,
               "Content-Type": "application/json",
@@ -96,20 +96,17 @@ export const serverCall = async (url, method, data, navigation = null) =>
             "Server API Call index.js BEFORE SERVER CALL requestObject :",
             JSON.stringify(requestObject)
           );
-          console.log(
-            "$$$-serverCall-requestObject ===>>> ",
-            JSON.stringify(requestObject)
-          );
+
           axios
             .request(requestObject)
             .then(async (response) => {
               TDLog(
                 "serverCall",
                 "BCAE APPLICATION SERVER CALL AFTER SUCCESS SERVER CALL URL : " +
-                  baseURL +
-                  url +
-                  +" : response :" +
-                  JSON.stringify(response)
+                baseURL +
+                url +
+                +" : response :" +
+                JSON.stringify(response)
               );
               console.log(
                 "$$$-serverCall-response ===>>> ",
@@ -136,15 +133,16 @@ export const serverCall = async (url, method, data, navigation = null) =>
               }
             })
             .catch(async (error) => {
-              TDLog(
-                "Server API Call index.js AFTER SERVER CALL ERROR :",
-                JSON.stringify(error.response)
-              );
-              console.log(
-                "$$$-serverCall-error.response ===>>> ",
-                JSON.stringify(error.response)
-              );
-              processErrorResponse(resolve, error, requestObject, navigation);
+
+              // TDLog(
+              //   "Server API Call index.js AFTER SERVER CALL ERROR :",
+              //   JSON.stringify(error.response)
+              // );
+              // console.log(
+              //   "$$$-serverCall-error.response ===>>> ",
+              //   JSON.stringify(error.response)
+              // );
+              processErrorResponse(resolve, error, requestObject, navigation, isTokenAvailable);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
               // if (
@@ -210,8 +208,13 @@ export const serverCall = async (url, method, data, navigation = null) =>
     }
   });
 
-const processErrorResponse = (resolve, error, requestObject, navigation) => {
-  if (0) {
+const processErrorResponse = (resolve, error, requestObject, navigation, isTokenIsAvailable) => {
+  console.log('isTokenIsAvailable', isTokenIsAvailable)
+  if (error?.response?.data?.message &&
+    error?.response?.data?.message != null &&
+    error?.response?.status &&
+    isTokenIsAvailable &&
+    error.response.status != null) {
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",

@@ -18,12 +18,45 @@ import { strings } from "../../Utilities/Language";
 import { Button, Text } from "react-native-paper";
 import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  resetForgotPassword,
+  verifyForgotPasswordData,
+} from "../ForgotPassword/ForgotPasswordDispatcher.js";
+import moment from "moment";
 
 const ConfirmForgotPassword = ({ route, navigation }) => {
   const [myscreenmae, setscreenname] = useState("Forgot Password");
 
   const isEMail = validateEmail(route?.params?.email);
 
+  const email = route?.params?.email ?? "";
+  const lastName = route?.params?.lastName ?? "";
+  const routeDob = route?.params?.dob ?? "";
+  const type = route?.params?.type ?? "";
+  const dispatch = useDispatch([verifyForgotPasswordData, resetForgotPassword]);
+
+  const resendPassword = () => {
+    if (type === "customerID") {
+      dispatch(
+        verifyForgotPasswordData(
+          navigation,
+          {
+            loginId: email,
+            lastName: lastName,
+            dob: moment(routeDob).format("YYYY-MM-DD"),
+          },
+          "customerID"
+        )
+      );
+    } else {
+      const params = {
+        loginId: email,
+      };
+
+      dispatch(verifyForgotPasswordData(navigation, params));
+    }
+  };
   return (
     <ImageBackground
       style={styles.container}
@@ -66,7 +99,7 @@ const ConfirmForgotPassword = ({ route, navigation }) => {
 
           <Text style={styles.didtntrec}>{strings.didNotReceive_email}</Text>
 
-          <Text style={styles.clicktoresend}>
+          <Text style={styles.clicktoresend} onPress={resendPassword}>
             {strings.clicktoresend.toUpperCase()}
           </Text>
         </View>
