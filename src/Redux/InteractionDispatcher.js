@@ -3,7 +3,9 @@ import {
   enableLoaderEditInteraction,
   initInteraction,
   setInteractionData,
-  setInteractionError
+  setInteractionError,
+  setInteractionsWorkFlowDataInStore,
+  setInteractionsWorkFlowErrorDataInStore,
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -12,11 +14,14 @@ import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 import Toast from "react-native-toast-message";
 import { getCustomerID } from "../Utilities/UserManagement/userInfo";
 
-export function fetchInteractionAction(isCreateInteraction = false, page = 0, limit = 2, body = {
-  "searchParams": {
-
+export function fetchInteractionAction(
+  isCreateInteraction = false,
+  page = 0,
+  limit = 2,
+  body = {
+    searchParams: {},
   }
-}) {
+) {
   return async (dispatch) => {
     dispatch(initInteraction());
 
@@ -26,9 +31,8 @@ export function fetchInteractionAction(isCreateInteraction = false, page = 0, li
       body
     );
 
-
     if (interactionResult?.success) {
-      console.log('>>freqentlyAskedResult', isCreateInteraction)
+      console.log(">>freqentlyAskedResult", isCreateInteraction);
       if (isCreateInteraction) {
         const customerId = await getCustomerID();
         const freqentlyAskedResult = await serverCall(
@@ -37,19 +41,14 @@ export function fetchInteractionAction(isCreateInteraction = false, page = 0, li
           {}
         );
 
-
         const data = {
           frequerntlyAsked: freqentlyAskedResult?.data?.data,
-          mostfrequently: interactionResult?.data?.data
-        }
+          mostfrequently: interactionResult?.data?.data,
+        };
         dispatch(setInteractionData(data, false));
-
-      }
-      else {
+      } else {
         dispatch(setInteractionData(interactionResult?.data?.data, true));
-
       }
-
 
       return true;
     } else {
@@ -58,8 +57,6 @@ export function fetchInteractionAction(isCreateInteraction = false, page = 0, li
     }
   };
 }
-
-
 
 export function updateInteractionAction(obj) {
   return async (dispatch) => {
@@ -125,3 +122,22 @@ const validateFormData = async (formData, dispatch) => {
   //df,//df,//df,//df,//df,//df,//df,//df,//df
   return status;
 };
+
+export function getWorkFlowForInteractionID(
+  interactionID,
+  params = {},
+  navigation = null
+) {
+  return async (dispatch) => {
+    let url =
+      endPoints.INTERACTION_GET_WORKFLOW + interactionID + "?getFollwUp=true";
+    let result = await serverCall(url, requestMethod.GET, params, navigation);
+    if (result.success) {
+      console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);
+      dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
+    } else {
+      console.log("$$$-getWorkFlowForInteractionID-error", result);
+      dispatch(setInteractionsWorkFlowErrorDataInStore(result));
+    }
+  };
+}
