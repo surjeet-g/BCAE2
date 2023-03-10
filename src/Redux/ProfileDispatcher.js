@@ -19,8 +19,10 @@ export function fetchSavedProfileData(navigation = null) {
     console.log("hiting", profileResult);
     if (profileResult?.success) {
       dispatch(setProfileData(profileResult?.data?.data));
+      return true;
     } else {
       dispatch(setProfileError([]));
+      return false;
     }
   };
 }

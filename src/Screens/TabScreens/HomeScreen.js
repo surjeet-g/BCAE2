@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useTheme, Switch } from "react-native-paper";
-
+import moment from "moment";
 function CustomCalendar(props) {
   const initDate = new Date();
   const [selected, setSelected] = useState(initDate);
@@ -28,21 +28,39 @@ function CustomCalendar(props) {
   //   }),
   //   [selected]
   // );
-  const marked = {
-    "2023-03-08": {},
-    "2023-03-18": {},
-    "2023-03-23": {},
-    "2023-03-28": {},
-  };
+  const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
+
   return (
     <Calendar
       theme={{
         "stylesheet.calendar.header": {
           dayTextAtIndex0: {
-            color: "red",
+            color: "white",
+            backgroundColor: "red",
           },
           dayTextAtIndex6: {
-            color: "red",
+            color: "white",
+            backgroundColor: "red",
+          },
+          dayTextAtIndex1: {
+            color: "black",
+            backgroundColor: "#F5AD47",
+          },
+          dayTextAtIndex2: {
+            color: "black",
+            backgroundColor: "#F5AD47",
+          },
+          dayTextAtIndex3: {
+            color: "black",
+            backgroundColor: "#F5AD47",
+          },
+          dayTextAtIndex4: {
+            color: "black",
+            backgroundColor: "#F5AD47",
+          },
+          dayTextAtIndex5: {
+            color: "black",
+            backgroundColor: "#F5AD47",
           },
         },
         "stylesheet.calendar.main": {
@@ -51,7 +69,6 @@ function CustomCalendar(props) {
             borderWidth: 2,
             backgroundColor: "#E1E4EB",
             flex: 1,
-            padding: 5,
           },
           emptyDayContainer: {
             borderColor: "#D1D3D4",
@@ -69,22 +86,160 @@ function CustomCalendar(props) {
       }}
       dayComponent={({ date, state }) => {
         return (
-          <View style={{ flex: 1, backgroundColor: "#3FB94D" }}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor:
+                marked.indexOf(
+                  "" +
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD")
+                ) > -1 &&
+                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                  "YYYY-MM-DD"
+                ) < moment(new Date()).format("YYYY-MM-DD")
+                  ? "green"
+                  : marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1 &&
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD") >
+                      moment(new Date()).format("YYYY-MM-DD")
+                  ? "#F5AD47"
+                  : "#E1E4EB",
+            }}
+          >
             <Text
-              style={[
-                styles.customDay,
-                state === "disabled" ? styles.disabledText : styles.defaultText,
-                //color: (marked['key']) != null?"white":"black",
-              ]}
+              style={
+                ([
+                  styles.customDay,
+                  state === "disabled"
+                    ? styles.disabledText
+                    : styles.defaultText,
+                ],
+                {
+                  color:
+                    marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1
+                      ? "white"
+                      : "black",
+                  textAlign:
+                    marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1
+                      ? "right"
+                      : "center",
+                  fontSize:
+                    marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1
+                      ? 5
+                      : 10,
+                  paddingRight:
+                    marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1
+                      ? 5
+                      : 0,
+                })
+              }
             >
               {date?.day}
+              {console.log(
+                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                  "YYYY-MM-DD"
+                )
+              )}
+
+              {
+                console.log(
+                  marked.indexOf(
+                    "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                  ) > -1
+                )
+                // console.log(item.name);
+                // console.log(date?.year + "-" + date?.month + "-" + date?.day);
+              }
             </Text>
-            <Text style={{ fontSize: 5 }}>upcoming appointment</Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 5,
+                color:
+                  marked.indexOf(
+                    "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                  ) > -1 &&
+                  moment(
+                    date?.year + "-" + date?.month + "-" + date?.day
+                  ).format("YYYY-MM-DD") <
+                    moment(new Date()).format("YYYY-MM-DD")
+                    ? "white"
+                    : marked.indexOf(
+                        "" +
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
+                      ) > -1 &&
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD") >
+                        moment(new Date()).format("YYYY-MM-DD")
+                    ? "black"
+                    : "black",
+              }}
+            >
+              {marked.indexOf(
+                "" +
+                  moment(
+                    date?.year + "-" + date?.month + "-" + date?.day
+                  ).format("YYYY-MM-DD")
+              ) > -1 &&
+              moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                "YYYY-MM-DD"
+              ) < moment(new Date()).format("YYYY-MM-DD")
+                ? "completed appointment"
+                : marked.indexOf(
+                    "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                  ) > -1 &&
+                  moment(
+                    date?.year + "-" + date?.month + "-" + date?.day
+                  ).format("YYYY-MM-DD") >
+                    moment(new Date()).format("YYYY-MM-DD")
+                ? "Upcomming appointment"
+                : ""}
+            </Text>
           </View>
         );
       }}
       current={initDate}
-      markedDates={marked}
+      // markedDates={marked}
       markingType={"custom"}
       onDayPress={(day) => {
         setSelected(day.dateString);
@@ -480,7 +635,7 @@ const styles = StyleSheet.create({
     color: "grey",
   },
   defaultText: {
-    color: "purple",
+    color: "#000000",
   },
   customDay: {
     textAlign: "center",
