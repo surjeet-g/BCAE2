@@ -3,7 +3,10 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 // import { Button } from "../Components/Button";
 import { useSelector } from "react-redux";
 import {
-  bottomBarHeight, color, fontSizes, spacing
+  bottomBarHeight,
+  color,
+  fontSizes,
+  spacing,
 } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 
@@ -17,34 +20,49 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
 
   const onNavClick = (val) => {
     setModal(false);
-
-    if (val === "HomeScreen") {
-      navigation.navigate("HomeScreen", {});
-    } else if (val === "Interactions") {
-      navigation.navigate("MyTicketsStack", {});
-    } else if (val === "Announcement") {
-      navigation.navigate("Announcement", {});
-    } else if (val === "Chat") {
-      navigation.navigate("Chat", {
-        contactNo: profile.savedProfileData.contactNo,
-      });
-    } else if (val === "Search") {
-      navigation.navigate("Search", {});
-    } else if (val === "Offers") {
-      navigation.navigate("Offers", {});
-    } else if (val === "Help") {
-      navigation.navigate("Help", {});
+    switch (val) {
+      case "HomeScreen":
+        navigation.navigate("HomeScreen", {});
+        break;
+      case "Interactions":
+        navigation.navigate("MyTicketsStack", {});
+        break;
+      case "Announcement":
+        navigation.navigate("Announcement", {});
+        break;
+      case "Chat":
+        navigation.navigate("Chat", {
+          contactNo: profile.savedProfileData.contactNo,
+        });
+        break;
+      case "Search":
+        navigation.navigate("Search", {});
+        break;
+      case "Offers":
+        navigation.navigate("Offers", {});
+        break;
+      case "Help":
+        navigation.navigate("Help", {});
+        break;
+      default:
+        break;
     }
   };
 
   const onNavClickButton = (val) => {
     setModal(false);
-    if (val === "Order") {
-      navigation.navigate("OrderDashboard", { refresh: true });
-    } else if (val === "InteractionToOrder") {
-      navigation.navigate("InteractionsToOrder", { refresh: true });
-    } else if (val === "CreateOrder") {
-      navigation.navigate("CreateOrder", { refresh: true });
+    switch (val) {
+      case "Order":
+        navigation.navigate("OrderDashboard", { refresh: true });
+        break;
+      case "InteractionToOrder":
+        navigation.navigate("InteractionToOrder", { refresh: true });
+        break;
+      case "CreateOrder":
+        navigation.navigate("CreateOrder", { refresh: true });
+        break;
+      default:
+        break;
     }
   };
   return (
@@ -80,7 +98,6 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       )}
 
       <View style={styles.bottomcontainer}>
-
         <Pressable
           onPress={() => onNavClick("HomeScreen")}
           style={{
@@ -93,11 +110,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             // backgroundColor: "red",
             borderColor: "transparent",
             borderWidth: state.index === 0 ? 3 : 0,
-            borderTopColor: state.index === 0 ? color.BCAE_PRIMARY : "transparent"
+            borderTopColor:
+              state.index === 0 ? color.BCAE_PRIMARY : "transparent",
           }}
         >
-
-
           <Image
             style={state.index === 0 ? styles.selectedLogo : styles.upperLogo}
             source={require("../Assets/icons/ic_home.png")}
@@ -108,11 +124,6 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             {strings.home}
           </Text>
         </Pressable>
-
-
-
-
-
 
         <Pressable
           onPress={() => onNavClick("Search")}
@@ -125,10 +136,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
             borderColor: "transparent",
             borderWidth: state.index === 1 ? 3 : 0,
-            borderTopColor: state.index === 1 ? color.BCAE_PRIMARY : "transparent"
+            borderTopColor:
+              state.index === 1 ? color.BCAE_PRIMARY : "transparent",
           }}
         >
-
           <Image
             style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
             source={require("../Assets/icons/ic_search.png")}
@@ -149,7 +160,6 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             justifyContent: "center",
             alignItems: "center",
             width: "20%",
-
           }}
         >
           <View>
@@ -172,10 +182,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
             borderColor: "transparent",
             borderWidth: state.index === 2 ? 3 : 0,
-            borderTopColor: state.index === 2 ? color.BCAE_PRIMARY : "transparent"
+            borderTopColor:
+              state.index === 2 ? color.BCAE_PRIMARY : "transparent",
           }}
         >
-
           <Image
             style={state.index === 2 ? styles.selectedLogo : styles.upperLogo}
             source={require("../Assets/icons/ic_offers.png")}
@@ -200,10 +210,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
             borderColor: "transparent",
             borderWidth: state.index === 3 ? 3 : 0,
-            borderTopColor: state.index === 3 ? color.BCAE_PRIMARY : "transparent"
+            borderTopColor:
+              state.index === 3 ? color.BCAE_PRIMARY : "transparent",
           }}
         >
-
           <Image
             style={state.index === 3 ? styles.selectedLogo : styles.upperLogo}
             source={require("../Assets/icons/ic_help.png")}
@@ -267,7 +277,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: "#F3F3F3",
     borderWidth: 5,
-
   },
   button: {
     width: 100,

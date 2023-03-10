@@ -47,9 +47,9 @@ export function initInteractionAdd() {
   };
 }
 
-export function enableLoaderAddInteractionAdd() {
+export function enableLoaderAddInteractionAdd(data) {
   return async (dispatch) => {
-    dispatch({ type: INTERACTION_ADD_LOADER_ENABLE });
+    dispatch({ type: INTERACTION_ADD_LOADER_ENABLE, data: data });
   };
 }
 

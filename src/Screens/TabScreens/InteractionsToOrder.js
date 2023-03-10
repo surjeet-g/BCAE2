@@ -4,8 +4,7 @@ import React, {
 } from "react";
 
 import {
-  Dimensions, FlatList,
-  Image, ImageBackground, Keyboard,
+  Alert, Dimensions, FlatList, Image, ImageBackground, Keyboard,
   KeyboardAvoidingView, Platform,
   Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View
 } from "react-native";
@@ -46,6 +45,7 @@ import {
 import get from "lodash.get";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { FooterModel } from "../../Components/FooterModel";
+import { ImagePicker } from "../../Components/ImagePicker";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
@@ -57,17 +57,23 @@ import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 const InteractionsToOrder = ({ route, navigation }) => {
-  //need enable inital
+  //need enable screej loader
   const [loader, setLoader] = useState(true);
 
   const [resultLoader, setresultLoader] = useState(false)
-
+  //to store active interaction object 
   const [activeInteraction, setActiveInteraction] = useState(false)
+  //auto suggestion drop box vi
   const [showList, setShowList] = useState(true);
+  //for disble more section while search input box vissible
   const [bottomModelVisible, setBottomModel] = useState(true)
   const { colors, fonts, roundness } = useTheme();
+  //bottom model enble or not
   const [open, setOpen] = useState(false);
+
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
+  //attachment
+  const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
 
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
@@ -100,7 +106,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   );
 
   //to do check response
-  const frequertlyquestionList = get(
+  let frequertlyquestionList = get(
     interactionReducer,
     "InteractionData.frequerntlyAsked",
     []
@@ -210,11 +216,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
                 onPress={() => {
                   //store selected result in cache
-                  setActiveInteraction(item);
-                  //open form model 
-                  setOpen(true);
-                  //make empt search box
-                  setKnowledgeSearchText("");
+
 
                   //pre populating result
                   dispatchInteraction(
@@ -271,6 +273,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     })
                   );
                   //hide search result panal
+                  setActiveInteraction(item);
+                  //open form model 
+                  setOpen(true);
+                  //disable other windo
+                  setBottomModel(true)
+                  //make empt search box
+                  setKnowledgeSearchText("");
                   setShowList(false);
                 }}
               />
@@ -360,7 +369,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [mostfrequentlylist]);
 
   const renderFrequently = useMemo(() => {
-    mostfrequentlylist = mostfrequentlylist.filter(
+    frequertlyquestionList = frequertlyquestionList.filter(
       (item) => item.requestStatement != null
     );
     return (
@@ -393,7 +402,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           </View>
           <ClearSpace size={2} />
           {
-            mostfrequentlylist.length == 0 ? <Text
+            frequertlyquestionList.length == 0 ? <Text
               variant="labelSmall"
               style={{
                 // fontSizes: 12,
@@ -405,7 +414,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               No found
             </Text> :
 
-              mostfrequentlylist.map((item) => {
+              frequertlyquestionList.map((item) => {
                 return (
                   <View
                     style={{
@@ -656,6 +665,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   return (
     <>
       <View style={styles.container}>
+
         {/* profile card */}
         {bottomModelVisible &&
           renderProfileTab}
@@ -694,7 +704,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             onFocus={() => setBottomModel(false)}
-            onBlur={() => setBottomModel(true)}
+
             value={knowledgeSearchText}
             placeholder="Search..."
             onChangeText={onChangeKnowledgeSearchText}
@@ -704,6 +714,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
             <Pressable
               onPress={() => {
                 setKnowledgeSearchText(false)
+                setBottomModel(true)
+                //open form model 
+                setShowList(false);
                 Keyboard.dismiss()
               }}
             >
@@ -729,7 +742,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         <FooterModel open={open} setOpen={setOpen}>
           <ScrollView contentContainerStyle={{ flex: 1 }}>
             <KeyboardAvoidingView
-              keyboardVerticalOffset={50}
+              // keyboardVerticalOffset={50}
               behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
               style={{ flex: 1 }}
             >
@@ -898,7 +911,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 />
 
                 {remarks.error && showErrorMessage(remarks.error)}
+                <ImagePicker
+                  attachmentModalVisible={attachmentModalVisible}
+                  setAttachmentModalVisible={setAttachmentModalVisible}
 
+                />
                 {/* </KeyboardAwareView> */}
                 {/* <CustomInput
             value={attachment.value}
@@ -960,10 +977,42 @@ const InteractionsToOrder = ({ route, navigation }) => {
                         "remarks": input.remarks.value
                       }
 
-                      console.log('>>', params)
-                      // await dispatchInteraction(
-                      //   addInteractionAction(interactionRedux.formData)
-                      // );
+
+                      const { status, response } = await dispatchInteraction(
+                        addInteractionAction(params)
+                      );
+                      console.log('respin', status, response)
+
+                      if (status) {
+                        dispatchInteraction(setInteractionReset())
+
+                      }
+                      else {
+                        Alert.alert(strings.attention, response.message, [
+                          {
+                            text: strings.inquiryInfo,
+                            onPress: () => {
+                              dispatchInteraction(setInteractionReset())
+                              setBottomModel(false)
+                              // navigation.navigate("InquiryNotification", {
+                              //   ouId: organizationItem.unitId,
+                              //   serviceType: inquiryServiceName,
+                              //   problemCode: inquiryProblemCode,
+                              //   deptId: inquiryDeptId,
+                              // });
+
+                            },
+                          },
+                          {
+                            text: strings.close,
+                            onPress: () => {
+
+                              navigation.navigate("Home", {});
+                            },
+                            style: "cancel",
+                          },
+                        ]);
+                      }
                     }}
 
                   />

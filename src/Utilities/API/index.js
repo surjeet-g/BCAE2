@@ -5,8 +5,7 @@ import { getDataFromDB } from "../../Storage/token";
 import { DEBUG_BUILD, storageKeys } from "../../Utilities/Constants/Constant";
 import { TDLog } from "../Constants/Constant";
 import { strings } from "../Language/index";
-import { logoutUserSectionTimeOut } from "./../../Redux/LogoutDispatcher";
-import { store } from "./../../Redux/Store";
+import { logoutUserWithOutRedux } from "./../../Redux/LogoutDispatcher";
 import {
   BASE_URL,
   BASE_URL_TENANT,
@@ -20,7 +19,7 @@ export const networkAvailable = () =>
       state.isConnected ? resolve(true) : resolve(false)
     )
   );
-
+let accessTokenTemp = "";
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
     // Internet Check and response error
@@ -60,7 +59,11 @@ export const serverCall = async (url, method, data, navigation = null) =>
           }
 
           var headers;
+          // let isTokenAvailable = false;
+
           if (token?.accessToken) {
+            accessTokenTemp = token?.accessToken
+            // isTokenAvailable = true
             headers = {
               "x-tenant-id": TENANT_ID,
               "Content-Type": "application/json",
@@ -131,14 +134,15 @@ export const serverCall = async (url, method, data, navigation = null) =>
               }
             })
             .catch(async (error) => {
-              TDLog(
-                "Server API Call index.js AFTER SERVER CALL ERROR :",
-                JSON.stringify(error.response)
-              );
-              console.log(
-                "$$$-serverCall-error.response ===>>> ",
-                JSON.stringify(error.response)
-              );
+
+              // TDLog(
+              //   "Server API Call index.js AFTER SERVER CALL ERROR :",
+              //   JSON.stringify(error.response)
+              // );
+              // console.log(
+              //   "$$$-serverCall-error.response ===>>> ",
+              //   JSON.stringify(error.response)
+              // );
               processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
@@ -206,7 +210,14 @@ export const serverCall = async (url, method, data, navigation = null) =>
   });
 
 const processErrorResponse = (resolve, error, requestObject, navigation) => {
-  if (0) {
+  console.log('isTokenIsAvailable')
+  if (error?.response?.data?.message &&
+    error?.response?.data?.message != null &&
+    error?.response?.status &&
+    accessTokenTemp != "" &&
+    navigation != null &&
+    error.response.status != null) {
+    // if (0) {
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",
@@ -217,9 +228,11 @@ const processErrorResponse = (resolve, error, requestObject, navigation) => {
         // },
         {
           text: strings.ok,
-          onPress: () => {
-            if (navigation != null)
-              store.dispatch(logoutUserSectionTimeOut(navigation));
+          onPress: async () => {
+            if (navigation != null) {
+              const result = await logoutUserWithOutRedux(navigation);
+              if (result) navigation.navigate("Splash")
+            }
           },
         },
       ],
