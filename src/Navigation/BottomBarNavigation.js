@@ -7,10 +7,10 @@ import { navBar } from "../Utilities/Style/navBar";
 // import Announcement from "../Screens/TabScreens/Announcement";
 // import AddTickets from "../Screens/TabScreens/AddTickets";
 // import MyTicketsStack from "./MyTicketsStack";
-import { DrawerActions } from '@react-navigation/native';
+import { DrawerActions } from "@react-navigation/native";
 
 import { Image, Platform, View } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomBottomBar from "./CustomBottomBar";
 // import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
 // import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
@@ -73,8 +73,9 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: `data:image/jpeg;base64,${
+                  profile || DEFAULT_PROFILE_IMAGE
+                }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -95,10 +96,16 @@ const BottomBarNavigation = () => {
         // options={{ headerShown: false }}
         options={({ navigation }) => ({
           ...options,
-          headerLeft: () => (<Pressable onPress={() => {
-            navigation.dispatch(DrawerActions.openDrawer());
-          }
-          } style={{ marginLeft: 5 }}><Icon name='menu' size={25} color={colors.primary} /></Pressable>)
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                navigation.dispatch(DrawerActions.openDrawer());
+              }}
+              style={{ marginLeft: 5 }}
+            >
+              <Icon name="menu" size={25} color={colors.primary} />
+            </Pressable>
+          ),
         })}
         name="HomeScreen"
         component={HomeScreen}
