@@ -27,7 +27,7 @@ import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import Search from "./../Screens/Search";
 
-const Tab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator();
 const initialRoutByPlat =
   Platform.OS === "android" ? "HomeScreen" : "HomeScreen";
 
@@ -55,228 +55,82 @@ const BottomBarNavigation = () => {
     headerShown: true,
 
     headerStyle: {
-      backgroundColor: colors.secondary,
+      backgroundColor: "white",
     },
     headerTitleStyle: {
       ...fonts.titleMedium,
-      ...{ color: colors.inverseSecondary, fontWeight: "700" },
+      ...{ color: "black", fontWeight: "700" },
     },
-    headerShown: true,
+    headerRight: () => {
+      return (
+        <View style={navBar.navRightCon}>
+          <Pressable
+            onPress={() => alert("ToDo - Navigate to Notifications Screen")}
+            style={navBar.roundIcon}
+          >
+            <Image
+              source={require("../Assets/icons/home_bell.png")}
+              style={{ width: 35, height: 35 }}
+            />
+          </Pressable>
+          <View style={navBar.divider} />
+          <Pressable onPress={() => navigation.navigate("Profile")}>
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${
+                  profile || DEFAULT_PROFILE_IMAGE
+                }`,
+              }}
+              // imageStyle={{ borderRadius: 80 }}
+              style={navBar.roundIcon}
+            />
+          </Pressable>
+        </View>
+      );
+    },
   };
 
   return (
-    <Tab.Navigator
+    <BottomTab.Navigator
       tabBar={(props) => <CustomBottomBar {...props} />}
       initialRouteName="HomeScreen"
       backBehavior="history"
     >
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
+        options={({ navigation }) => ({
+          ...options,
+        })}
         name="HomeScreen"
         component={HomeScreen}
-        options={({ navigation }) => ({
-          activeTintColor: "#e91e63",
-          headerShown: true,
-
-          headerStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitleStyle: {
-            ...fonts.titleMedium,
-            ...{ color: colors.inverseSecondary, fontWeight: "700" },
-          },
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
-                    style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
-        })}
       />
 
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Search"
         component={Search}
         options={({ navigation }) => ({
-          activeTintColor: "#e91e63",
-          headerShown: true,
-
-          headerStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitleStyle: {
-            ...fonts.titleMedium,
-            ...{ color: colors.inverseSecondary, fontWeight: "700" },
-          },
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
-                    style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
+          ...options,
         })}
       />
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Offers"
         component={Offers}
         options={({ navigation }) => ({
-          activeTintColor: "#e91e63",
-          headerShown: true,
-
-          headerStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitleStyle: {
-            ...fonts.titleMedium,
-            ...{ color: colors.inverseSecondary, fontWeight: "700" },
-          },
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
-                    style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
+          ...options,
         })}
       />
 
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Help"
         component={Help}
         options={({ navigation }) => ({
-          activeTintColor: "#e91e63",
-          headerShown: true,
-
-          headerStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitleStyle: {
-            ...fonts.titleMedium,
-            ...{ color: colors.inverseSecondary, fontWeight: "700" },
-          },
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
-                    style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
+          ...options,
         })}
       />
-
-      {/* 
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="MyTicketsStack"
-        component={MyTicketsStack}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="AddTickets"
-        component={AddTickets}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="Announcement"
-        component={Announcement}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="Chat"
-        component={Chat}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="CreateEnquiry"
-        component={CreateEnquiry}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="CreateComplaint"
-        component={CreateComplaint}
-      /> */}
-    </Tab.Navigator>
+    </BottomTab.Navigator>
   );
 };
 
