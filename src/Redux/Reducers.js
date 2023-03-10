@@ -19,6 +19,7 @@ import NotificationsReducer from "./NotificationsReducer";
 import ProfileReducer from "./ProfileReducer";
 import SavedLocationReducer from "./SavedLocationReducer";
 import VersionCheckReducer from "./VersionCheckReducer";
+import CustomerAccountReducer from "./CustomerAccountReducer";
 
 import { LOGOUT_DATA } from "./LogoutAction";
 
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   logout: LogoutReducer,
   inquiryNotifications: InquiryNotificationsReducer,
   knowledgeSearch: KnowledgeSearchReducer,
+  customerAccount: CustomerAccountReducer,
 });
 
 const RootReducer = (state, action) => {

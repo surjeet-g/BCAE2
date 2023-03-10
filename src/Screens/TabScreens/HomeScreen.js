@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FlatList,
   Image,
@@ -13,6 +13,10 @@ import {
 import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 import { ClearSpace } from "../../Components/ClearSpace";
+import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
+
 function CustomCalendar(props) {
   const initDate = new Date();
   const [selected, setSelected] = useState(initDate);
@@ -258,6 +262,13 @@ function CustomCalendar(props) {
 
 export const HomeScreen = () => {
   const { colors, fonts, roundness } = useTheme();
+  let customerAccount = useSelector((state) => state.customerAccount);
+  useEffect(() => {
+    async function fetchAccountAPI() {
+      const customerUUDI = await getCustomerUUID();
+    }
+    fetchAccountAPI();
+  }, []);
 
   const FlatListItemTop = (props) => {
     const { item, index } = props;
@@ -549,81 +560,91 @@ export const HomeScreen = () => {
     );
   };
   return (
-    <ScrollView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text
-          style={{
-            color: "#2B2B2B",
-            fontSize: 16,
-            fontWeight: "600",
-            padding: 5,
-            marginLeft: 10,
-          }}
-        >
-          Account Details
-        </Text>
-        <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
-          <FlatList
-            horizontal
-            initialNumToRender={2}
-            data={[
-              { title: "Balance" },
-              { title: "Usage" },
-              { title: "Not Available" },
-            ]}
-            renderItem={({ item, index }) => (
-              <FlatListItemTop item={item} index={index} />
-            )}
-            keyExtractor={(item) => item.id}
-          />
+    <View style={styles.container}>
+      <Image
+        style={styles.floatingImg}
+        resizeMode="contain"
+        resizeMethod="resize"
+        source={require("../../Assets/icons/floating_whatsapp.png")}
+      />
+      <ScrollView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text
+            style={{
+              color: "#2B2B2B",
+              fontSize: 16,
+              fontWeight: "600",
+              padding: 5,
+              marginLeft: 10,
+            }}
+          >
+            Account Details
+          </Text>
+          <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              initialNumToRender={2}
+              data={[
+                { title: "Balance" },
+                { title: "Usage" },
+                { title: "Not Available" },
+              ]}
+              renderItem={({ item, index }) => (
+                <FlatListItemTop item={item} index={index} />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+          <Text
+            style={{
+              color: "#2B2B2B",
+              fontSize: 16,
+              fontWeight: "600",
+              padding: 5,
+              marginLeft: 10,
+            }}
+          >
+            Appointments
+          </Text>
+          <View style={{ margin: 10 }}>
+            <CustomCalendar
+              onDaySelect={(day) =>
+                console.log(`Date selected: ${day.dateString}`)
+              }
+            />
+          </View>
+          <Text
+            style={{
+              color: "#2B2B2B",
+              fontSize: 16,
+              fontWeight: "600",
+              padding: 5,
+              marginLeft: 10,
+            }}
+          >
+            History
+          </Text>
+          <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              initialNumToRender={2}
+              data={[
+                { title: "Orders" },
+                { title: "Interactions" },
+                { title: "Appointments" },
+              ]}
+              renderItem={({ item, index }) => (
+                <FlatListItemBottom item={item} index={index} />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
         </View>
-        <Text
-          style={{
-            color: "#2B2B2B",
-            fontSize: 16,
-            fontWeight: "600",
-            padding: 5,
-            marginLeft: 10,
-          }}
-        >
-          Appointments
-        </Text>
-        <View style={{ margin: 10 }}>
-          <CustomCalendar
-            onDaySelect={(day) =>
-              console.log(`Date selected: ${day.dateString}`)
-            }
-          />
-        </View>
-        <Text
-          style={{
-            color: "#2B2B2B",
-            fontSize: 16,
-            fontWeight: "600",
-            padding: 5,
-            marginLeft: 10,
-          }}
-        >
-          History
-        </Text>
-        <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
-          <FlatList
-            horizontal
-            initialNumToRender={2}
-            data={[
-              { title: "Orders" },
-              { title: "Interactions" },
-              { title: "Appointments" },
-            ]}
-            renderItem={({ item, index }) => (
-              <FlatListItemBottom item={item} index={index} />
-            )}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      </View>
-      <ClearSpace size={20} />
-    </ScrollView>
+        <ClearSpace size={20} />
+      </ScrollView>
+    </View>
   );
 };
 
@@ -646,5 +667,11 @@ const styles = StyleSheet.create({
   },
   customDay: {
     textAlign: "center",
+  },
+  floatingImg: {
+    width: "10%",
+    position: "absolute",
+    right: 0,
+    marginRight: 10,
   },
 });

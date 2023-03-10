@@ -210,7 +210,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
   });
 
 const processErrorResponse = (resolve, error, requestObject, navigation) => {
-  console.log('isTokenIsAvailable',)
+  console.log('isTokenIsAvailable')
   if (error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&
