@@ -44,7 +44,6 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       case "Help":
         navigation.navigate("Help", {});
         break;
-
       default:
         break;
     }
