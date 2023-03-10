@@ -22,8 +22,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
   const onNavClick = (val) => {
     setModal(false);
 
-    if (val === "Home") {
-      navigation.navigate("Dashboard", {});
+    if (val === "HomeScreen") {
+      navigation.navigate("HomeScreen", {});
     } else if (val === "Interactions") {
       navigation.navigate("MyTicketsStack", {});
     } else if (val === "Announcement") {

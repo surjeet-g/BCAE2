@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import { Dashboard } from "../Screens/TabScreens/Dashboard";
+import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
 // import Chat from "../Screens/TabScreens/Chat";
 // import Announcement from "../Screens/TabScreens/Announcement";
 // import AddTickets from "../Screens/TabScreens/AddTickets";
@@ -29,7 +29,7 @@ import Search from "./../Screens/Search";
 
 const Tab = createBottomTabNavigator();
 const initialRoutByPlat =
-  Platform.OS === "android" ? "Dashboard" : "MyTicketsStack";
+  Platform.OS === "android" ? "HomeScreen" : "HomeScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -67,13 +67,13 @@ const BottomBarNavigation = () => {
   return (
     <Tab.Navigator
       tabBar={(props) => <CustomBottomBar {...props} />}
-      initialRouteName="Dashboard"
+      initialRouteName="HomeScreen"
       backBehavior="history"
     >
       <Tab.Screen
         // options={{ headerShown: false }}
-        name="Dashboard"
-        component={Dashboard}
+        name="HomeScreen"
+        component={HomeScreen}
         options={({ navigation }) => ({
           activeTintColor: "#e91e63",
           headerShown: true,

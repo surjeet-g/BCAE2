@@ -61,7 +61,6 @@ const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
-
 const Stack = createStackNavigator();
 function MyStack() {
   const { colors, fonts } = useTheme();

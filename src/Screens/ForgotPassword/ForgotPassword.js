@@ -116,18 +116,18 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const submitCustomerId = () => {
-    if (username == "") {
+    if (customerId == "") {
       setCustomerIdError(strings.customerIDError);
     } else if (lastName == "") {
-      setlastNameError("Last Name sould be required");
+      setlastNameError("Last Name is required");
     } else if (dob == "") {
-      setDobError("Date of birth sould be required");
+      setDobError("Date of birth is required");
     } else {
       dispatch(
         verifyForgotPasswordData(
           navigation,
           {
-            loginId: username,
+            loginId: customerId,
             lastName: lastName,
             dob: moment(dob).format("YYYY-MM-DD"),
           },

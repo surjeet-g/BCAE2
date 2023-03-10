@@ -995,7 +995,6 @@ const styles = StyleSheet.create({
   fullspace: {
     flex: 1,
   },
-
   fullspace: {
     flex: 1,
   },

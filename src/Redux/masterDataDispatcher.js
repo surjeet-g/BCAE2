@@ -34,7 +34,6 @@ export const MASTER_DATA_CONSTANT = {
   INTXN_FLOW: "INTXN_FLOW", //Interaction Flow
   INTXN_CAUSE: "INTXN_CAUSE", //Interaction Cause
   ENTITY_CATEGORY: "ENTITY_CATEGORY", // Contact Category
-  ENTITY_CATEGORY: "ENTITY_CATEGORY", //Address Category
 };
 export const getMasterData = (valueParam = "") => {
   if (typeof valueParam != "string") {
