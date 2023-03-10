@@ -126,11 +126,15 @@ const validateFormData = async (formData, dispatch) => {
 export function getWorkFlowForInteractionID(
   interactionID,
   params = {},
+  requireFollowUpData = false,
   navigation = null
 ) {
   return async (dispatch) => {
     let url =
-      endPoints.INTERACTION_GET_WORKFLOW + interactionID + "?getFollwUp=true";
+      endPoints.INTERACTION_GET_WORKFLOW +
+      interactionID +
+      "?getFollwUp=" +
+      requireFollowUpData;
     let result = await serverCall(url, requestMethod.GET, params, navigation);
     if (result.success) {
       console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);

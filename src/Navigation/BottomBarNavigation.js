@@ -27,7 +27,7 @@ import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import Search from "./../Screens/Search";
 
-const Tab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator();
 const initialRoutByPlat =
   Platform.OS === "android" ? "HomeScreen" : "HomeScreen";
 
@@ -91,12 +91,12 @@ const BottomBarNavigation = () => {
   };
 
   return (
-    <Tab.Navigator
+    <BottomTab.Navigator
       tabBar={(props) => <CustomBottomBar {...props} />}
       initialRouteName="HomeScreen"
       backBehavior="history"
     >
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         options={({ navigation }) => ({
           ...options,
@@ -105,7 +105,7 @@ const BottomBarNavigation = () => {
         component={HomeScreen}
       />
 
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Search"
         component={Search}
@@ -113,7 +113,7 @@ const BottomBarNavigation = () => {
           ...options,
         })}
       />
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Offers"
         component={Offers}
@@ -122,7 +122,7 @@ const BottomBarNavigation = () => {
         })}
       />
 
-      <Tab.Screen
+      <BottomTab.Screen
         // options={{ headerShown: false }}
         name="Help"
         component={Help}
@@ -130,7 +130,7 @@ const BottomBarNavigation = () => {
           ...options,
         })}
       />
-    </Tab.Navigator>
+    </BottomTab.Navigator>
   );
 };
 
