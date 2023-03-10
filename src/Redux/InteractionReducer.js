@@ -91,7 +91,7 @@ const InteractionInitialState = {
     },
     remarks: {
       field: "remarks",
-      required: false,
+      required: true,
       error: "",
       value: "",
       type: INPUT_TYPE.INPUTBOX,
