@@ -1,28 +1,24 @@
-import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import React, { useEffect, useState } from "react";
 import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
+import { navBar } from "../Utilities/Style/navBar";
 // import Chat from "../Screens/TabScreens/Chat";
 // import Announcement from "../Screens/TabScreens/Announcement";
 // import AddTickets from "../Screens/TabScreens/AddTickets";
 // import MyTicketsStack from "./MyTicketsStack";
-import { Image, View, Platform } from "react-native";
+import { DrawerActions } from '@react-navigation/native';
+
+import { Image, Platform, View } from "react-native";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomBottomBar from "./CustomBottomBar";
 // import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
 // import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
-import { color, DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Text, Pressable } from "react-native";
-import NotiIcon from "../Assets/svg/notif.svg";
-import AvtrIcon from "../Assets/svg/avatr.svg";
+import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
-import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
-import EditProfile from "../Screens/EditProfile/EditProfile";
-import { fetchSavedProfileData } from "../Redux/ProfileDispatcher";
 import { useDispatch } from "react-redux";
-import ComingSoon from "./../Screens/ComingSoon";
+import { fetchSavedProfileData } from "../Redux/ProfileDispatcher";
+import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import Search from "./../Screens/Search";
@@ -77,9 +73,8 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  profile || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -100,6 +95,10 @@ const BottomBarNavigation = () => {
         // options={{ headerShown: false }}
         options={({ navigation }) => ({
           ...options,
+          headerLeft: () => (<Pressable onPress={() => {
+            navigation.dispatch(DrawerActions.openDrawer());
+          }
+          } style={{ marginLeft: 5 }}><Icon name='menu' size={25} color={colors.primary} /></Pressable>)
         })}
         name="HomeScreen"
         component={HomeScreen}

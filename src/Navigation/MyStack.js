@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -99,7 +99,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_INTERACTION}
+        initialRouteName={"BottomBar"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
