@@ -114,7 +114,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         >
           <Image
             style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/myticket.png")}
+            source={require("../Assets/icons/ic_search.png")}
           />
           <Text
             style={state.index === 1 ? styles.selectedText : styles.upperText}
@@ -156,7 +156,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         >
           <Image
             style={state.index === 3 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/announcement.png")}
+            source={require("../Assets/icons/ic_offers.png")}
           />
           <Text
             numberOfLines={1}
@@ -180,7 +180,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         >
           <Image
             style={state.index === 4 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/chat.png")}
+            source={require("../Assets/icons/ic_help.png")}
           />
           <Text
             style={state.index === 4 ? styles.selectedText : styles.upperText}
