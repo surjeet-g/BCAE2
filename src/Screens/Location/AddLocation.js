@@ -59,6 +59,11 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
+//  const { customerId,
+//    fromPage,  
+//     excludingSavedAddress = [],
+//   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
+
   const {
     fromPage,
     excludingSavedAddress = [],

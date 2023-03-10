@@ -1,18 +1,18 @@
-import React, { useState, useMemo } from "react";
+import moment from "moment";
+import React, { useState } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-  Text,
   FlatList,
   Image,
-  TouchableOpacity,
+  ScrollView,
   Slider,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { useTheme, Switch } from "react-native-paper";
-import moment from "moment";
+import { useTheme } from "react-native-paper";
+import { ClearSpace } from "../../Components/ClearSpace";
 function CustomCalendar(props) {
   const initDate = new Date();
   const [selected, setSelected] = useState(initDate);
@@ -32,6 +32,10 @@ function CustomCalendar(props) {
 
   return (
     <Calendar
+      style={{
+        paddingBottom: 12,
+        borderRadius: 10,
+      }}
       theme={{
         "stylesheet.calendar.header": {
           dayTextAtIndex0: {
@@ -89,6 +93,7 @@ function CustomCalendar(props) {
           <View
             style={{
               flex: 1,
+              paddingTop: 5,
               backgroundColor:
                 marked.indexOf(
                   "" +
@@ -186,6 +191,7 @@ function CustomCalendar(props) {
               style={{
                 textAlign: "center",
                 fontSize: 5,
+                paddingBottom: 5,
                 color:
                   marked.indexOf(
                     "" +
@@ -543,7 +549,7 @@ export const HomeScreen = () => {
     );
   };
   return (
-    <ScrollView style={{ flex: 1, marginBottom: 80 }}>
+    <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text
           style={{
@@ -616,6 +622,7 @@ export const HomeScreen = () => {
           />
         </View>
       </View>
+      <ClearSpace size={20} />
     </ScrollView>
   );
 };

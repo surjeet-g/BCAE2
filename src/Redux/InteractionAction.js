@@ -6,6 +6,11 @@ export const INTERACTION_SET_FORM = "INTERACTION_SET_FORM";
 export const INTERACTION_ADD_LOADER_ENABLE = "INTERACTION_ADD_LOADER_ENABLE";
 export const INTERACTION_EDIT_LOADER_ENABLE = "INTERACTION_EDIT_LOADER_ENABLE";
 export const INTERACTION_FORM_ERROR = "INTERACTION_FORM_ERROR";
+export const INTERACTION_GET_WORKFLOW = "INTERACTION_GET_WORKFLOW";
+export const INTERACTION_GET_WORKFLOW_SUCCESS =
+  "INTERACTION_GET_WORKFLOW_SUCCESS";
+export const INTERACTION_GET_WORKFLOW_FAILURE =
+  "INTERACTION_GET_WORKFLOW_FAILURE";
 
 export function initInteraction() {
   return { type: INTERACTION_INIT };
@@ -52,4 +57,12 @@ export function enableLoaderEditInteractionAdd(data) {
   return async (dispatch) => {
     dispatch({ type: INTERACTION_EDIT_LOADER_ENABLE, data });
   };
+}
+
+export function setInteractionsWorkFlowDataInStore(data) {
+  return { type: INTERACTION_GET_WORKFLOW_SUCCESS, data };
+}
+
+export function setInteractionsWorkFlowErrorDataInStore(data) {
+  return { type: INTERACTION_GET_WORKFLOW_FAILURE, data };
 }

@@ -14,6 +14,7 @@ export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const endPoints = {
   FREQUENTLY_ASKED: "api/interaction/frequent",
   INTERACTION_FETCH: "api/interaction/search",
+  INTERACTION_GET_WORKFLOW: "api/interaction/history/",
   MASTERDATA: "api/master/lookup",
   PREVERIFYUSERDATA: "api/register",
   VERSIONCHECK: "api/bcae-tenant",

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -37,20 +37,21 @@ import { Playground } from "../Screens/Playground";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
-import { useTheme } from "react-native-paper";
-import { HeaderTitle } from "../Components/headerTitle";
-import EditProfile from "../Screens/EditProfile/EditProfile";
-import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
-import RegisterSuccess from "../Screens/Register/RegisterSuccess";
-import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
-import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { mockAnnouncementList } from "../Utilities/Constants/Constant";
+import { useTheme } from "react-native-paper";
+import { HeaderTitle } from "../Components/headerTitle";
+import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import CreateOrder from "../Screens/Appointments/CreateOrder";
+import EditProfile from "../Screens/EditProfile/EditProfile";
+import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
+import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
+import RegisterSuccess from "../Screens/Register/RegisterSuccess";
+import { mockAnnouncementList } from "../Utilities/Constants/Constant";
+import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import ComingSoon from "./../Screens/ComingSoon";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -89,6 +90,7 @@ function MyStack() {
   const closeAnnoncementModal = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
   }, []);
+
   const handleSheetChanges = useCallback((index) => {
     console.log("$$$-handleSheetChanges", index);
   }, []);
@@ -358,6 +360,17 @@ function MyStack() {
           name={STACK_CREATE_ORDER}
           component={CreateOrder}
         />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Coming Soon",
+            },
+          })}
+          name="ComingSoon"
+          component={ComingSoon}
+        />
+
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="ShowWebPage"

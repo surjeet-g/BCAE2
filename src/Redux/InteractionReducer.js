@@ -1,8 +1,13 @@
 import get from "lodash.get";
 import { INPUT_TYPE } from "../Utilities/Constants/Constant";
 import {
-  INTERACTION_ADD_LOADER_ENABLE, INTERACTION_DATA, INTERACTION_EDIT_LOADER_ENABLE, INTERACTION_ERROR, INTERACTION_FORM_ERROR, INTERACTION_INIT,
-  INTERACTION_RESET, INTERACTION_SET_FORM
+  INTERACTION_ADD_LOADER_ENABLE,
+  INTERACTION_DATA,
+  INTERACTION_EDIT_LOADER_ENABLE,
+  INTERACTION_ERROR,
+  INTERACTION_FORM_ERROR, INTERACTION_GET_WORKFLOW_FAILURE, INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT,
+  INTERACTION_RESET,
+  INTERACTION_SET_FORM
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -11,90 +16,92 @@ const InteractionInitialState = {
   loaderEdit: false,
   interactionError: false,
   InteractionData: {},
+  InteractionWorkFlowData: {},
+  interactionWorkFlowErrorData: {},
   formData: {
     statement: {
       field: "statement",
       required: true,
       error: "",
       value: "",
-      type: INPUT_TYPE.INPUTBOX
+      type: INPUT_TYPE.INPUTBOX,
     },
     statementId: {
       field: "statementId",
       required: true,
       error: "",
       value: "",
-      type: INPUT_TYPE.INPUTBOX
+      type: INPUT_TYPE.INPUTBOX,
     },
     interactionType: {
       field: "interactionType",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     interactionCategory: {
       field: "interactionCategory",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     serviceType: {
       field: "serviceType",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     channel: {
       field: "channel",
       required: true,
       error: "",
       value: "MOBILE_APP",
-      type: INPUT_TYPE.INPUTBOX
+      type: INPUT_TYPE.INPUTBOX,
     },
     serviceCategory: {
       field: "serviceCategory",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     problemCause: {
       field: "problemCause",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     priorityCode: {
       field: "priorityCode",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     contactPerference: {
       field: "contactPerference",
       required: true,
       error: "",
       value: { code: "", description: "" },
-      type: INPUT_TYPE.DROPDOWN
+      type: INPUT_TYPE.DROPDOWN,
     },
     remarks: {
       field: "remarks",
       required: false,
       error: "",
       value: "",
-      type: INPUT_TYPE.INPUTBOX
+      type: INPUT_TYPE.INPUTBOX,
     },
     attachment: {
       field: "attachment",
       required: false,
       error: "",
       value: "",
-      type: INPUT_TYPE.INPUTBOX
+      type: INPUT_TYPE.INPUTBOX,
     },
   },
 };
@@ -173,8 +180,8 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
     case INTERACTION_RESET:
       return {
         ...state,
-        formData: InteractionInitialState.formData
-      }
+        formData: InteractionInitialState.formData,
+      };
 
     case INTERACTION_SET_FORM:
       const {
@@ -216,6 +223,17 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       return {
         ...state,
         formData: tempFormData,
+      };
+    case INTERACTION_GET_WORKFLOW_FAILURE:
+      return {
+        ...state,
+        interactionWorkFlowErrorData: action.data,
+      };
+    case INTERACTION_GET_WORKFLOW_SUCCESS:
+      return {
+        ...state,
+        InteractionWorkFlowData: action.data,
+        interactionWorkFlowErrorData: {},
       };
     default:
       return state;
