@@ -22,6 +22,10 @@ import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { fetchSavedProfileData } from "../Redux/ProfileDispatcher";
 import { useDispatch } from "react-redux";
+import ComingSoon from "./../Screens/ComingSoon";
+import Help from "./../Screens/Help";
+import Offers from "./../Screens/Offers";
+import Search from "./../Screens/Search";
 
 const Tab = createBottomTabNavigator();
 const initialRoutByPlat =
@@ -70,6 +74,137 @@ const BottomBarNavigation = () => {
         // options={{ headerShown: false }}
         name="Dashboard"
         component={Dashboard}
+        options={({ navigation }) => ({
+          activeTintColor: "#e91e63",
+          headerShown: true,
+
+          headerStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitleStyle: {
+            ...fonts.titleMedium,
+            ...{ color: colors.inverseSecondary, fontWeight: "700" },
+          },
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
+        })}
+      />
+
+      <Tab.Screen
+        // options={{ headerShown: false }}
+        name="Search"
+        component={Search}
+        options={({ navigation }) => ({
+          activeTintColor: "#e91e63",
+          headerShown: true,
+
+          headerStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitleStyle: {
+            ...fonts.titleMedium,
+            ...{ color: colors.inverseSecondary, fontWeight: "700" },
+          },
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
+        })}
+      />
+      <Tab.Screen
+        // options={{ headerShown: false }}
+        name="Offers"
+        component={Offers}
+        options={({ navigation }) => ({
+          activeTintColor: "#e91e63",
+          headerShown: true,
+
+          headerStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitleStyle: {
+            ...fonts.titleMedium,
+            ...{ color: colors.inverseSecondary, fontWeight: "700" },
+          },
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Icon name="bell" size={19} color={colors.inverseSecondary} />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
+        })}
+      />
+
+      <Tab.Screen
+        // options={{ headerShown: false }}
+        name="Help"
+        component={Help}
         options={({ navigation }) => ({
           activeTintColor: "#e91e63",
           headerShown: true,

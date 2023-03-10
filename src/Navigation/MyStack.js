@@ -51,6 +51,7 @@ import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import ComingSoon from "./../Screens/ComingSoon";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -360,6 +361,17 @@ function MyStack() {
           name={STACK_CREATE_ORDER}
           component={CreateOrder}
         />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Coming Soon",
+            },
+          })}
+          name="ComingSoon"
+          component={ComingSoon}
+        />
+
         {/* <Stack.Screen
           options={{ headerShown: false }}
           name="ShowWebPage"

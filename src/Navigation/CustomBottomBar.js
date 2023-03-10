@@ -32,6 +32,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       navigation.navigate("Chat", {
         contactNo: profile.savedProfileData.contactNo,
       });
+    } else if (val === "Search") {
+      navigation.navigate("Search", {});
+    } else if (val === "Offers") {
+      navigation.navigate("Offers", {});
+    } else if (val === "Help") {
+      navigation.navigate("Help", {});
     }
   };
 
@@ -86,11 +92,23 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             justifyContent: "center",
             alignItems: "center",
             width: "20%",
+            // backgroundColor: "red",
           }}
         >
+          {state.index === 0 ? (
+            <View
+              style={{
+                width: 40,
+                height: 3,
+                backgroundColor:
+                  state.index === 0 ? color.BCAE_PRIMARY : "transparent",
+              }}
+            />
+          ) : null}
+
           <Image
             style={state.index === 0 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/home.png")}
+            source={require("../Assets/icons/ic_home.png")}
           />
           <Text
             style={state.index === 0 ? styles.selectedText : styles.upperText}
@@ -100,7 +118,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Interactions")}
+          onPress={() => onNavClick("Search")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -110,14 +128,24 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
           }}
         >
+          {state.index === 1 ? (
+            <View
+              style={{
+                width: 40,
+                height: 3,
+                backgroundColor:
+                  state.index === 1 ? color.BCAE_PRIMARY : "transparent",
+              }}
+            />
+          ) : null}
           <Image
             style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/myticket.png")}
+            source={require("../Assets/icons/ic_search.png")}
           />
           <Text
             style={state.index === 1 ? styles.selectedText : styles.upperText}
           >
-            {strings.interaction}
+            {strings.search}
           </Text>
         </Pressable>
 
@@ -142,7 +170,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Announcement")}
+          onPress={() => onNavClick("Offers")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -152,21 +180,31 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
           }}
         >
+          {state.index === 3 ? (
+            <View
+              style={{
+                width: 40,
+                height: 3,
+                backgroundColor:
+                  state.index === 3 ? color.BCAE_PRIMARY : "transparent",
+              }}
+            />
+          ) : null}
           <Image
             style={state.index === 3 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/announcement.png")}
+            source={require("../Assets/icons/ic_offers.png")}
           />
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
             style={state.index === 3 ? styles.selectedText : styles.upperText}
           >
-            {strings.announcement}
+            {strings.offers}
           </Text>
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Chat")}
+          onPress={() => onNavClick("Help")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -176,14 +214,24 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             width: "20%",
           }}
         >
+          {state.index === 4 ? (
+            <View
+              style={{
+                width: 40,
+                height: 3,
+                backgroundColor:
+                  state.index === 4 ? color.BCAE_PRIMARY : "transparent",
+              }}
+            />
+          ) : null}
           <Image
             style={state.index === 4 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/chat.png")}
+            source={require("../Assets/icons/ic_help.png")}
           />
           <Text
             style={state.index === 4 ? styles.selectedText : styles.upperText}
           >
-            {strings.chat}
+            {strings.help}
           </Text>
         </Pressable>
       </View>
