@@ -1,7 +1,7 @@
 import Toast from "react-native-toast-message";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "..//Utilities/API";
-import { clearAllData, removeAsyncItem } from "../Storage/DB";
+import { clearAllData } from "../Storage/DB";
 import { getDataFromDB } from "../Storage/token";
 import { storageKeys } from "../Utilities/Constants/Constant";
 import { getUserId } from "../Utilities/UserManagement/userInfo";
@@ -22,16 +22,7 @@ export function logoutUser(navigation) {
     console.log("result", result);
     if (result.success) {
       dispatch(setLogoutData(result?.data));
-      await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-      await removeAsyncItem(storageKeys.DASHBOARD_DATA);
-      await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
-      await removeAsyncItem(storageKeys.PROFILE_DETAILS);
-      await removeAsyncItem(storageKeys.SAVED_LOCATION);
-      await removeAsyncItem(storageKeys.LANGUAGE_KEY);
-      await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
-      await removeAsyncItem(storageKeys.REFRESH_TOKEN);
-
-      await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+      await clearAllData()
       navigation.navigate("Splash", {});
     } else {
       dispatch(setLogoutError(result));
@@ -86,15 +77,7 @@ export function deleteNdLogoutUser(navigation, userData) {
         if (result.success) {
           dispatch(setLogoutData(result?.data?.data));
 
-          await removeAsyncItem(storageKeys.DASHBOARD_DATA);
-          await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
-          await removeAsyncItem(storageKeys.PROFILE_DETAILS);
-          await removeAsyncItem(storageKeys.SAVED_LOCATION);
-          await removeAsyncItem(storageKeys.LANGUAGE_KEY);
-          await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
-          await removeAsyncItem(storageKeys.REFRESH_TOKEN);
-          await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-          await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+          await clearAllData()
 
           navigation.navigate("Splash", {});
         } else {
@@ -108,15 +91,7 @@ export function deleteNdLogoutUser(navigation, userData) {
 export function logoutUserSectionTimeOut(navigation) {
   return async (dispatch) => {
     dispatch(setLogoutData("logout"));
-    await removeAsyncItem(storageKeys.DASHBOARD_DATA);
-    await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
-    await removeAsyncItem(storageKeys.PROFILE_DETAILS);
-    await removeAsyncItem(storageKeys.SAVED_LOCATION);
-    await removeAsyncItem(storageKeys.LANGUAGE_KEY);
-    await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
-    await removeAsyncItem(storageKeys.REFRESH_TOKEN);
-    await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-    await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+    await clearAllData()
     navigation.navigate("Splash", {});
   };
 }

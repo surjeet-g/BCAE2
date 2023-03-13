@@ -233,6 +233,7 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
+            headerLeft: null
           }}
           name={STACK_LOGIN}
           component={Login}

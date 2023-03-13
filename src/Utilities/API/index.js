@@ -244,10 +244,10 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
         {
           text: strings.ok,
           onPress: async () => {
-            if (navigation != null) {
-              const result = await logoutUserWithOutRedux(navigation);
-              if (result) navigation.navigate("Splash")
-            }
+
+            const result = await logoutUserWithOutRedux(navigation);
+            if (result) navigation.navigate("Splash")
+
           },
         },
       ],

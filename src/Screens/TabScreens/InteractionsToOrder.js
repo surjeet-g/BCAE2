@@ -80,7 +80,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
-
+  const resetStateData = () => {
+    setFileAttachments([])
+    setShowList(true)
+    setBottomModel(true)
+    setKnowledgeSearchText("")
+    setOpen(false)
+  }
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([fetchSavedProfileData]);
   const dispatchInteraction = useDispatch([
@@ -989,17 +995,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                       if (status) {
                         dispatchInteraction(setInteractionReset())
-
-                      }
-                      else {
+                        resetStateData()
+                        //reset state values
                         Alert.alert(strings.attention, response.message, [
                           {
                             text: strings.inquiryInfo,
                             onPress: () => {
                               //reset attachment
-                              setFileAttachments([])
-                              dispatchInteraction(setInteractionReset())
-                              setBottomModel(false)
+
                               // navigation.navigate("InquiryNotification", {
                               //   ouId: organizationItem.unitId,
                               //   serviceType: inquiryServiceName,
@@ -1018,6 +1021,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                             style: "cancel",
                           },
                         ]);
+                      }
+                      else {
+
                       }
                     }}
 
