@@ -1,7 +1,7 @@
 import Toast from "react-native-toast-message";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "..//Utilities/API";
-import { removeAsyncItem } from "../Storage/DB";
+import { clearAllData, removeAsyncItem } from "../Storage/DB";
 import { getDataFromDB } from "../Storage/token";
 import { storageKeys } from "../Utilities/Constants/Constant";
 import { getUserId } from "../Utilities/UserManagement/userInfo";
@@ -53,15 +53,8 @@ export const logoutUserWithOutRedux = async () => {
       type: "bctError",
       text1: "You are being time-out out due to inactivity.Please login again",
     });
-    await removeAsyncItem(storageKeys.DASHBOARD_DATA);
-    await removeAsyncItem(storageKeys.FCM_DEVICE_ID);
-    await removeAsyncItem(storageKeys.PROFILE_DETAILS);
-    await removeAsyncItem(storageKeys.SAVED_LOCATION);
-    await removeAsyncItem(storageKeys.LANGUAGE_KEY);
-    await removeAsyncItem(storageKeys.PUSH_NOTIFICATION);
-    await removeAsyncItem(storageKeys.REFRESH_TOKEN);
-    await removeAsyncItem(storageKeys.ACCESS_TOKEN);
-    await removeAsyncItem(storageKeys.LAST_LOGINT_TIMESTAMP);
+    //clear data 
+    await clearAllData()
     return true;
   } else {
     return false;
