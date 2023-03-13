@@ -89,13 +89,32 @@ export function updateInteractionAction(obj) {
   };
 }
 
-export function addInteractionAction(obj) {
+export function addInteractionAction(obj, fileAttachments) {
 
   return async (dispatch) => {
     // const validation = await validateFormData(obj, dispatch);
     // if (!validation) return null;
 
     dispatch(enableLoaderAddInteractionAdd(true));
+    // if (fileAttachments.length != 0) {
+    //   const uploadNW = await serverCall(
+    //     endPoints.UPLOAD_ATTACHMENT,
+    //     requestMethod.POST,
+    //     params
+    //   );
+    //   let Ids = [];
+    //   if (uploadNW?.success && uploadNW?.data) {
+    //     const uploadIds = uploadNW?.data?.data;
+    //     console.log("point follow", uploadIds);
+    //     if (get(uploadIds, "length", false)) {
+    //       Ids = uploadIds.map((id) => id.entityId);
+    //     }
+    //   }
+    // }
+    //if attachment having data 
+    // if (Ids.length != 0) {
+    //   obj = { ...obj, ...{ attachment: [Ids] } }
+    // }
 
     let result = await serverCall(
       endPoints.INTERACTION_ADD,

@@ -59,6 +59,8 @@ import { showErrorMessage } from "../Register/components/RegisterPersonal";
 const InteractionsToOrder = ({ route, navigation }) => {
   //need enable screej loader
   const [loader, setLoader] = useState(true);
+  //attachment 
+  const [fileAttachments, setFileAttachments] = useState([]);
 
   const [resultLoader, setresultLoader] = useState(false)
   //to store active interaction object 
@@ -914,6 +916,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 <ImagePicker
                   attachmentModalVisible={attachmentModalVisible}
                   setAttachmentModalVisible={setAttachmentModalVisible}
+                  fileAttachments={fileAttachments}
+                  setFileAttachments={setFileAttachments}
 
                 />
                 {/* </KeyboardAwareView> */}
@@ -979,7 +983,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
                       const { status, response } = await dispatchInteraction(
-                        addInteractionAction(params)
+                        addInteractionAction(params, fileAttachments)
                       );
                       console.log('respin', status, response)
 
@@ -992,6 +996,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                           {
                             text: strings.inquiryInfo,
                             onPress: () => {
+                              //reset attachment
+                              setFileAttachments([])
                               dispatchInteraction(setInteractionReset())
                               setBottomModel(false)
                               // navigation.navigate("InquiryNotification", {
