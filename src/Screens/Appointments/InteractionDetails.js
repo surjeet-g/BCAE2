@@ -18,7 +18,7 @@ import { strings } from "../../Utilities/Language";
 import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 
-const InteractionDetails = (props) => {
+const CreateOrder = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
 
@@ -36,7 +36,6 @@ const InteractionDetails = (props) => {
     return (
       <View
         style={{
-          flex: 0.5,
           margin: 5,
           padding: 20,
           backgroundColor: "#FFF",
@@ -46,15 +45,17 @@ const InteractionDetails = (props) => {
       >
         <View style={{ flexDirection: "column" }}>
           {/* Title & Image View */}
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
+          <View style={{ flexDirection: "row", flex: 1 }}>
             <Text
               variant="bodyMedium"
+              numberOfLines={2}
               style={{
                 fontWeight: 700,
                 fontSize: 16,
+                width: 100,
                 color: colors.secondary,
+                flex: 2,
+                marginRight: 5,
               }}
             >
               {item.title || "No Name"}
@@ -62,7 +63,7 @@ const InteractionDetails = (props) => {
 
             <Image
               source={require("../../Assets/icons/frequent_interaction.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 50, height: 50, flex: 1 }}
             />
           </View>
           {/* View More view */}
@@ -437,7 +438,7 @@ const InteractionDetails = (props) => {
         style={{
           margin: 5,
           padding: 20,
-          backgroundColor: "#5E5676",
+          backgroundColor: "#F26E77",
           borderRadius: 10,
           elevation: 5,
         }}
@@ -668,7 +669,7 @@ const InteractionDetails = (props) => {
             data={[
               { title: `Appointment${"\n"}Details` },
               { title: `Workflow${"\n"}History` },
-              { title: "Not Available" },
+              { title: "Not Available kamal is good person" },
             ]}
             renderItem={({ item, index }) => (
               <FlatListItem item={item} index={index} />
@@ -711,4 +712,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
 });
-export default InteractionDetails;
+export default CreateOrder;
