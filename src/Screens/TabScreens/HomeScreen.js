@@ -262,7 +262,7 @@ function CustomCalendar(props) {
   );
 }
 
-export const HomeScreen = (navigation) => {
+export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
   const dispatch = useDispatch([getCustomerAccountData]);

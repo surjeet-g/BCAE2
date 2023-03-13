@@ -1,33 +1,36 @@
 import React, { useEffect } from "react";
 import {
-  View,
-  Image,
-  ScrollView,
-  Platform,
-  ImageBackground,
+  Platform, ScrollView, View
 } from "react-native";
-import Icon from "react-native-vector-icons/EvilIcons";
+import DocumentScanner from 'react-native-document-scanner-plugin';
+import { Grid, Row } from "react-native-easy-grid";
 import {
-  Button,
-  TextInput,
-  RadioButton,
-  Divider,
-  Text,
-  useTheme,
-  Surface,
   ActivityIndicator,
   Appbar,
-  Badge,
-  ProgressBar,
-  Tooltip,
-  IconButton,
+  Badge, Button, Divider, ProgressBar, RadioButton, Text, TextInput, Tooltip, useTheme
 } from "react-native-paper";
-import { Col, Grid, Row } from "react-native-easy-grid";
-import { SvgBG } from "../Components/SvgBG";
 import Logo from "../Assets/svg/logo.svg";
+import { SvgBG } from "../Components/SvgBG";
+
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 export const Playground = () => {
+  useEffect(() => {
+    // call scanDocument on load
+    scanDocument()
+  }, []);
+
+  const scanDocument = async () => {
+    // start the document scanner
+    const { scannedImages } = await DocumentScanner.scanDocument()
+
+    // get back an array with scanned image file paths
+    if (scannedImages.length > 0) {
+      // set the img src, so we can view the first scanned image
+      setScannedImage(scannedImages[0])
+    }
+  }
+
   const theme = useTheme();
   console.log("them", theme);
 
@@ -39,8 +42,8 @@ export const Playground = () => {
         <>
           <Appbar.Header>
             <Appbar.Content title="Title" subtitle={"Subtitle"} />
-            <Appbar.Action icon="magnify" onPress={() => {}} />
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            <Appbar.Action icon="magnify" onPress={() => { }} />
+            <Appbar.Action icon={MORE_ICON} onPress={() => { }} />
           </Appbar.Header>
           <Badge>3</Badge>
           <ProgressBar progress={0.5} />

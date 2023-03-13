@@ -23,6 +23,7 @@ export const networkAvailable = () =>
 let accessTokenTemp = "";
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
+
     // Internet Check and response error
     let net = await networkAvailable();
     TDLog(
@@ -144,6 +145,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
               //   "$$$-serverCall-error.response ===>>> ",
               //   JSON.stringify(error.response)
               // );
+
               processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
@@ -233,6 +235,8 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
     navigation != null &&
     error.response.status != null) {
 
+
+
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",
@@ -246,6 +250,7 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
           onPress: async () => {
 
             const result = await logoutUserWithOutRedux(navigation);
+
             if (result) navigation.navigate("Splash")
 
           },

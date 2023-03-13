@@ -504,6 +504,8 @@ PODS:
     - React-Core
   - react-native-document-picker (8.1.3):
     - React-Core
+  - react-native-document-scanner-plugin (0.7.3):
+    - React-Core
   - react-native-geocoder (0.5.0):
     - React
   - react-native-geolocation (3.0.5):
@@ -737,6 +739,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - react-native-geocoder (from `../node_modules/react-native-geocoder`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -872,6 +875,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-document-scanner-plugin:
+    :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-geocoder:
     :path: "../node_modules/react-native-geocoder"
   react-native-geolocation:
@@ -1011,6 +1016,7 @@ SPEC CHECKSUMS:
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
   react-native-date-picker: c063a8967058c58a02d7d0e1d655f0453576fb0d
   react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
+  react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
   react-native-geocoder: 757427682892bb256f3b3745858cc90eba148a8e
   react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-google-maps: f4cf51c3c6360eb4f945adc12dc89575ec3d944a

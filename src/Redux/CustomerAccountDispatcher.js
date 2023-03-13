@@ -3,10 +3,10 @@ import { serverCall } from "../Utilities/API";
 import {
   initCustomerAccountData,
   setCustomerAccountData,
-  setCustomerAccountError,
+  setCustomerAccountError
 } from "./CustomerAccountAction";
 
-export const getCustomerAccountData = (uuId, navigation) => {
+export const getCustomerAccountData = (navigation, uuId) => {
   return async (dispatch) => {
     await dispatch(initCustomerAccountData());
     let params = {
@@ -24,8 +24,9 @@ export const getCustomerAccountData = (uuId, navigation) => {
       dispatch(setCustomerAccountData(result?.data?.rows));
       return true;
     } else {
-      return false;
       dispatch(setCustomerAccountError(result));
+      return false;
+
     }
   };
 };
