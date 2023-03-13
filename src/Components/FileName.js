@@ -7,9 +7,11 @@ const FileName = (props) => {
     <View
       style={{
         flexDirection: "row",
-        marginLeft: 20,
-        margin: 5,
+        padding: 10,
+        borderRadius: 10,
         alignItems: "center",
+        backgroundColor: "green",
+        margin: 2,
       }}
     >
       <Image
@@ -26,6 +28,8 @@ const FileName = (props) => {
           fontSize: 14,
           marginLeft: 10,
         }}
+        numberOfLines={2}
+        ellipsizeMode={"tail"}
       >
         {filename}
       </Text>
