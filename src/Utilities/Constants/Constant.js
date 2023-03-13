@@ -273,6 +273,7 @@ export const storageKeys = {
   PUSH_NOTIFICATION: "PUSH_NOTIFICATION",
   GEOCODER_DATA: "GEOCODER_DATA",
   LOGIN_ID: "LOGIN_ID",
+  TOKEN_EXPIRY: "TOKEN_EXPIRY",
 };
 
 export function validateEmail(text) {

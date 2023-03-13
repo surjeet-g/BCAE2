@@ -14,10 +14,10 @@ import {
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
-import { ClearSpace } from "../../Components/ClearSpace";
-import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
-import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
 import { useDispatch, useSelector } from "react-redux";
+import { ClearSpace } from "../../Components/ClearSpace";
+import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
+import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
 function CustomCalendar(props) {
@@ -175,13 +175,13 @@ function CustomCalendar(props) {
               }
             >
               {date?.day}
-              {console.log(
+              {/* {console.log(
                 moment(date?.year + "-" + date?.month + "-" + date?.day).format(
                   "YYYY-MM-DD"
                 )
-              )}
+              )} */}
 
-              {
+              {/* {
                 console.log(
                   marked.indexOf(
                     "" +
@@ -192,7 +192,7 @@ function CustomCalendar(props) {
                 )
                 // console.log(item.name);
                 // console.log(date?.year + "-" + date?.month + "-" + date?.day);
-              }
+              } */}
             </Text>
             <Text
               style={{
@@ -263,7 +263,7 @@ function CustomCalendar(props) {
   );
 }
 
-export const HomeScreen = (navigation) => {
+export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
   const dispatch = useDispatch([getCustomerAccountData]);
@@ -321,7 +321,7 @@ export const HomeScreen = (navigation) => {
                 color: colors.yellow,
               }}
             >
-              {console.log("customerAccount :" + customerAccount)}
+              {customerAccount?.accountBalance || "NA"}
             </Text>
           )}
           {index === 1 && (

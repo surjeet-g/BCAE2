@@ -59,6 +59,8 @@ import { showErrorMessage } from "../Register/components/RegisterPersonal";
 const InteractionsToOrder = ({ route, navigation }) => {
   //need enable screej loader
   const [loader, setLoader] = useState(true);
+  //attachment 
+  const [fileAttachments, setFileAttachments] = useState([]);
 
   const [resultLoader, setresultLoader] = useState(false)
   //to store active interaction object 
@@ -78,7 +80,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
-
+  const resetStateData = () => {
+    setFileAttachments([])
+    setShowList(true)
+    setBottomModel(true)
+    setKnowledgeSearchText("")
+    setOpen(false)
+  }
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([fetchSavedProfileData]);
   const dispatchInteraction = useDispatch([
@@ -914,6 +922,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 <ImagePicker
                   attachmentModalVisible={attachmentModalVisible}
                   setAttachmentModalVisible={setAttachmentModalVisible}
+                  fileAttachments={fileAttachments}
+                  setFileAttachments={setFileAttachments}
 
                 />
                 {/* </KeyboardAwareView> */}
@@ -979,21 +989,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
                       const { status, response } = await dispatchInteraction(
-                        addInteractionAction(params)
+                        addInteractionAction(params, fileAttachments)
                       );
                       console.log('respin', status, response)
 
                       if (status) {
                         dispatchInteraction(setInteractionReset())
-
-                      }
-                      else {
+                        resetStateData()
+                        //reset state values
                         Alert.alert(strings.attention, response.message, [
                           {
                             text: strings.inquiryInfo,
                             onPress: () => {
-                              dispatchInteraction(setInteractionReset())
-                              setBottomModel(false)
+                              //reset attachment
+
                               // navigation.navigate("InquiryNotification", {
                               //   ouId: organizationItem.unitId,
                               //   serviceType: inquiryServiceName,
@@ -1012,6 +1021,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                             style: "cancel",
                           },
                         ]);
+                      }
+                      else {
+
                       }
                     }}
 

@@ -1,5 +1,6 @@
 import NetInfo from "@react-native-community/netinfo";
 import axios from "axios";
+import moment from "moment";
 import { Alert } from "react-native";
 import { getDataFromDB } from "../../Storage/token";
 import { DEBUG_BUILD, storageKeys } from "../../Utilities/Constants/Constant";
@@ -22,6 +23,7 @@ export const networkAvailable = () =>
 let accessTokenTemp = "";
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
+
     // Internet Check and response error
     let net = await networkAvailable();
     TDLog(
@@ -143,6 +145,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
               //   "$$$-serverCall-error.response ===>>> ",
               //   JSON.stringify(error.response)
               // );
+
               processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
@@ -209,15 +212,31 @@ export const serverCall = async (url, method, data, navigation = null) =>
     }
   });
 
-const processErrorResponse = (resolve, error, requestObject, navigation) => {
-  console.log('isTokenIsAvailable')
-  if (error?.response?.data?.message &&
+const processErrorResponse = async (resolve, error, requestObject, navigation) => {
+  let isExpired = false
+  const expiry = await getDataFromDB(storageKeys.TOKEN_EXPIRY);
+
+  if (expiry != null && expiry != "") {
+
+    const expirtyTime = moment(expiry);
+    const currentTime = moment();
+    const duration = moment.duration(currentTime.diff(expirtyTime));
+    const diffSeconds = duration.asSeconds();
+    if (diffSeconds > -60) {
+      isExpired = true;
+    }
+  }
+
+
+  if (isExpired && error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&
     accessTokenTemp != "" &&
     navigation != null &&
     error.response.status != null) {
-    // if (0) {
+
+
+
     Alert.alert(
       strings.attention,
       "Your session is expired. Kindly login again to continue!!!",
@@ -229,10 +248,11 @@ const processErrorResponse = (resolve, error, requestObject, navigation) => {
         {
           text: strings.ok,
           onPress: async () => {
-            if (navigation != null) {
-              const result = await logoutUserWithOutRedux(navigation);
-              if (result) navigation.navigate("Splash")
-            }
+
+            const result = await logoutUserWithOutRedux(navigation);
+
+            if (result) navigation.navigate("Splash")
+
           },
         },
       ],

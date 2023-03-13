@@ -99,7 +99,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"Splash"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -233,6 +233,7 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
+            headerLeft: null
           }}
           name={STACK_LOGIN}
           component={Login}
