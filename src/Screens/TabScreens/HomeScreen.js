@@ -174,13 +174,13 @@ function CustomCalendar(props) {
               }
             >
               {date?.day}
-              {console.log(
+              {/* {console.log(
                 moment(date?.year + "-" + date?.month + "-" + date?.day).format(
                   "YYYY-MM-DD"
                 )
-              )}
+              )} */}
 
-              {
+              {/* {
                 console.log(
                   marked.indexOf(
                     "" +
@@ -191,7 +191,7 @@ function CustomCalendar(props) {
                 )
                 // console.log(item.name);
                 // console.log(date?.year + "-" + date?.month + "-" + date?.day);
-              }
+              } */}
             </Text>
             <Text
               style={{
@@ -320,7 +320,7 @@ export const HomeScreen = ({ navigation }) => {
                 color: colors.yellow,
               }}
             >
-              {console.log("customerAccount :" + customerAccount)}
+              {customerAccount?.accountBalance || "NA"}
             </Text>
           )}
           {index === 1 && (

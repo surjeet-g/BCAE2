@@ -10,7 +10,7 @@ export const getCustomerAccountData = (navigation, uuId) => {
   return async (dispatch) => {
     await dispatch(initCustomerAccountData());
     let params = {
-      customerUuid: uuId,
+      customerUuid: "7f550934-ea8b-4950-82ce-3eec4f5809c2", //uuId,
     };
 
     let result = await serverCall(
@@ -21,12 +21,12 @@ export const getCustomerAccountData = (navigation, uuId) => {
     );
 
     if (result.success) {
+      console.log("surjeet", JSON.stringify(result));
       dispatch(setCustomerAccountData(result?.data?.rows));
       return true;
     } else {
       dispatch(setCustomerAccountError(result));
       return false;
-
     }
   };
 };
