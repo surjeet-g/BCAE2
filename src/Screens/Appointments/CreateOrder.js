@@ -52,6 +52,7 @@ const CreateOrder = (props) => {
               style={{
                 fontWeight: 700,
                 fontSize: 16,
+                width: 100,
                 color: colors.secondary,
                 flex: 2,
                 marginRight: 5,
@@ -668,7 +669,7 @@ const CreateOrder = (props) => {
             data={[
               { title: `Appointment${"\n"}Details` },
               { title: `Workflow${"\n"}History` },
-              { title: "Not Available" },
+              { title: "Not Available kamal is good person" },
             ]}
             renderItem={({ item, index }) => (
               <FlatListItem item={item} index={index} />
