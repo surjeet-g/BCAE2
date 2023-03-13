@@ -1,3 +1,4 @@
+import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
@@ -265,6 +266,7 @@ function CustomCalendar(props) {
 export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
+  console.log('>>data', customerAccount)
   const dispatch = useDispatch([getCustomerAccountData]);
 
   useEffect(() => {
@@ -274,6 +276,8 @@ export const HomeScreen = ({ navigation }) => {
     }
     fetchAccountAPI();
   }, []);
+
+
 
   const FlatListItemTop = (props) => {
     const { item, index } = props;
@@ -289,6 +293,13 @@ export const HomeScreen = ({ navigation }) => {
           elevation: 5,
         }}
       >
+        <Pressable onPress={async () => {
+          const customerUUDI = await getCustomerUUID();
+          dispatch(getCustomerAccountData(navigation, customerUUDI));
+        }}>
+          <Text>hinttitn</Text>
+
+        </Pressable>
         <View style={{ flex: 1, flexDirection: "column" }}>
           {/* Title & Image View */}
           <View
@@ -320,7 +331,7 @@ export const HomeScreen = ({ navigation }) => {
                 color: colors.yellow,
               }}
             >
-              {customerAccount?.accountBalance || "NA"}
+              {get(customerAccount, 'customerAccountData[0].accountBalance', 'NA')}
             </Text>
           )}
           {index === 1 && (

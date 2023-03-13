@@ -21,8 +21,8 @@ export const getCustomerAccountData = (navigation, uuId) => {
     );
 
     if (result.success) {
-      console.log("surjeet", JSON.stringify(result));
-      dispatch(setCustomerAccountData(result?.data?.rows));
+      console.log("surjeet", result.data?.data?.rows);
+      dispatch(setCustomerAccountData(result?.data?.data?.rows));
       return true;
     } else {
       dispatch(setCustomerAccountError(result));
