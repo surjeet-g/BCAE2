@@ -36,7 +36,6 @@ const CreateOrder = (props) => {
     return (
       <View
         style={{
-          flex: 0.5,
           margin: 5,
           padding: 20,
           backgroundColor: "#FFF",
@@ -46,15 +45,16 @@ const CreateOrder = (props) => {
       >
         <View style={{ flexDirection: "column" }}>
           {/* Title & Image View */}
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
+          <View style={{ flexDirection: "row", flex: 1 }}>
             <Text
               variant="bodyMedium"
+              numberOfLines={2}
               style={{
                 fontWeight: 700,
                 fontSize: 16,
                 color: colors.secondary,
+                flex: 2,
+                marginRight: 5,
               }}
             >
               {item.title || "No Name"}
@@ -62,7 +62,7 @@ const CreateOrder = (props) => {
 
             <Image
               source={require("../../Assets/icons/frequent_interaction.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 50, height: 50, flex: 1 }}
             />
           </View>
           {/* View More view */}
