@@ -17,6 +17,7 @@ import { CustomButton } from "../../Components/CustomButton";
 import { strings } from "../../Utilities/Language";
 import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import FileName from "./../../Components/FileName";
 
 const CreateOrder = (props) => {
   const { route, navigation } = props;
@@ -381,6 +382,9 @@ const CreateOrder = (props) => {
                 </View>
               </View>
               {/* Add Flatlist here to display the slots */}
+              <FileName filename={"pancard.png"} />
+              <FileName filename={"aadhar.jpg"} />
+              <FileName filename={"id.png"} />
             </View>
           </View>
         ) : null}
