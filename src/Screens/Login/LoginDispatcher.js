@@ -1,19 +1,13 @@
-import {
-  initLoginData,
-  failureLogin,
-  setLoginData,
-  resetLoginData,
-  setShowSecondLoginAlert,
-  resetShowSecondLoginAlertData,
-} from "./LoginAction";
+import Toast from "react-native-toast-message";
+import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
-import { saveDataToDB, getDataFromDB } from "../../Storage/token";
 import {
-  storageKeys,
-  DEFAULT_PROFILE_IMAGE,
+  DEFAULT_PROFILE_IMAGE, storageKeys
 } from "../../Utilities/Constants/Constant";
-import Toast from "react-native-toast-message";
+import {
+  failureLogin, initLoginData, resetLoginData, resetShowSecondLoginAlertData, setLoginData, setShowSecondLoginAlert
+} from "./LoginAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
@@ -58,8 +52,12 @@ export function verifyLoginData(navigation, params) {
               let loginId = {
                 loginId: result.data?.data?.user?.loginid ?? "",
               };
+
+              const tokenExpiresAt = result.data?.data?.tokenExpiresAt ?? "";
+
               await saveDataToDB(storageKeys.LOGIN_ID, loginId);
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
+              await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
 
               let userTypeInResponse = result?.data?.data?.user?.userType;
               let profileResult = {};
@@ -84,8 +82,8 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                    "/" +
-                    result?.data?.data?.user?.customerUuid,
+                  "/" +
+                  result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation

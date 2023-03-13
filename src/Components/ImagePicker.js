@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import {
     Alert, FlatList, Image, Pressable, StyleSheet,
     Text, TouchableOpacity, View
@@ -15,9 +15,9 @@ import { color, spacing } from "../Utilities/Constants/Constant";
 
 import { strings } from '../Utilities/Language';
 
-export const ImagePicker = ({ attachmentModalVisible, setAttachmentModalVisible }) => {
+export const ImagePicker = ({ attachmentModalVisible, setAttachmentModalVisible, fileAttachments, setFileAttachments }) => {
 
-    const [fileAttachments, setFileAttachments] = useState([]);
+
     const launchImageLibrary1 = () => {
         let options = {
             storageOptions: {

@@ -46,7 +46,7 @@ const BottomBarNavigation = () => {
   }, []);
 
   const { colors, fonts } = useTheme();
-  const options = {
+  const options = (navigation) => ({
     activeTintColor: "#e91e63",
     headerShown: true,
 
@@ -84,7 +84,17 @@ const BottomBarNavigation = () => {
         </View>
       );
     },
-  };
+    headerLeft: () => (
+      <Pressable
+        onPress={() => {
+          navigation.dispatch(DrawerActions.openDrawer());
+        }}
+        style={{ marginLeft: 5 }}
+      >
+        <Icon name="menu" size={25} color={colors.primary} />
+      </Pressable>
+    ),
+  });
 
   return (
     <BottomTab.Navigator
@@ -95,17 +105,7 @@ const BottomBarNavigation = () => {
       <BottomTab.Screen
         // options={{ headerShown: false }}
         options={({ navigation }) => ({
-          ...options,
-          headerLeft: () => (
-            <Pressable
-              onPress={() => {
-                navigation.dispatch(DrawerActions.openDrawer());
-              }}
-              style={{ marginLeft: 5 }}
-            >
-              <Icon name="menu" size={25} color={colors.primary} />
-            </Pressable>
-          ),
+          ...options(navigation),
         })}
         name="HomeScreen"
         component={HomeScreen}
@@ -117,6 +117,35 @@ const BottomBarNavigation = () => {
         component={Search}
         options={({ navigation }) => ({
           ...options,
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Image
+                    source={require("../Assets/icons/home_bell.png")}
+                    style={{ width: 35, height: 35 }}
+                  />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
         })}
       />
       <BottomTab.Screen
@@ -125,6 +154,35 @@ const BottomBarNavigation = () => {
         component={Offers}
         options={({ navigation }) => ({
           ...options,
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Image
+                    source={require("../Assets/icons/home_bell.png")}
+                    style={{ width: 35, height: 35 }}
+                  />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
         })}
       />
 
@@ -134,6 +192,35 @@ const BottomBarNavigation = () => {
         component={Help}
         options={({ navigation }) => ({
           ...options,
+          headerRight: () => {
+            return (
+              <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() =>
+                    alert("ToDo - Navigate to Notifications Screen")
+                  }
+                  style={navBar.roundIcon}
+                >
+                  <Image
+                    source={require("../Assets/icons/home_bell.png")}
+                    style={{ width: 35, height: 35 }}
+                  />
+                </Pressable>
+                <View style={navBar.divider} />
+                <Pressable onPress={() => navigation.navigate("Profile")}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
+                    }}
+                    // imageStyle={{ borderRadius: 80 }}
+                    style={navBar.roundIcon}
+                  />
+                </Pressable>
+              </View>
+            );
+          },
         })}
       />
     </BottomTab.Navigator>
