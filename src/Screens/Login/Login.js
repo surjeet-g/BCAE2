@@ -264,7 +264,7 @@ export const Login = ({ navigation }) => {
                 flex: 1,
                 padding: 20,
                 backgroundColor: "#fff",
-                borderRadius: 20,
+                borderRadius: 16,
                 elevation: 5,
               }}
             >
