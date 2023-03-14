@@ -3,7 +3,12 @@ import { View } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 
 export const CustomInput = (props) => {
-  const { caption = "", multiline = false, hideCaption = false } = props;
+  const {
+    caption = "",
+    placeholder = "",
+    multiline = false,
+    hideCaption = false,
+  } = props;
   const MULT_LINE = multiline ? {} : { height: 45 };
   const { roundness, colors } = useTheme();
   const [active, setActive] = useState(false);

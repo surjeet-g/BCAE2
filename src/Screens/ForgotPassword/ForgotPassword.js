@@ -325,7 +325,7 @@ const ForgotPassword = ({ navigation }) => {
           }}
         >
           <Pressable onPress={() => navigation.goBack()}>
-            <Text style={styles.rgisterText}>{strings.back_to_login}</Text>
+            <Text style={styles.backToLogin}>{strings.back_to_login}</Text>
           </Pressable>
         </View>
         <View
@@ -339,9 +339,7 @@ const ForgotPassword = ({ navigation }) => {
           <Pressable
             onPress={() => navigation.navigate("Register with us", {})}
           >
-            <Text style={styles.rgisterText}>
-              {strings.register.toUpperCase()}
-            </Text>
+            <Text style={styles.rgisterText}>{strings.register}</Text>
           </Pressable>
         </View>
         <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
@@ -474,16 +472,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.WIDTH_7,
   },
   noAccText: {
-    color: "#393939",
-    fontSize: fontSizes.FONT_12,
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
     fontWeight: 400,
   },
   rgisterText: {
-    fontWeight: "700",
+    fontWeight: 700,
     color: "#4B3694",
     fontSize: fontSizes.FONT_16,
+    lineHeight: spacing.WIDTH_17,
+    textAlign: "center",
+  },
+  backToLogin: {
+    fontWeight: 700,
+    color: "#4B3694",
+    fontSize: fontSizes.FONT_18,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },
