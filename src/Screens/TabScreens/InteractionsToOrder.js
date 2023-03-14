@@ -247,6 +247,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const interType = get(interactionList?.filter((it) => it.code == item.intxnType), '[0]', { code: "", description: "" })
                   const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType), '[0]', { code: "", description: "" })
                   const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory), '[0]', { code: "", description: "" })
+                  //to do from api response 
+                  const contactPerFromProfile = get(profileReducer, "savedProfileData.contactPreferences",)
+                  //make array 
+                  const contactPerferance = get(contactTypeList?.filter((it) => it.code == contactPerFromProfile), '[0]', { code: "", description: "" })
+
+
+
+
+                  //set contact perferance
+                  dispatchInteraction(
+                    setInteractionFormField({
+                      field: "contactPerference",
+                      value: { code: interCat.code, description: interCat.description },
+                      clearError: true,
+                    })
+                  );
 
                   dispatchInteraction(
                     setInteractionFormField({
@@ -808,7 +824,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   }}
                   value={get(interactionCategory, "value.code", "")}
                   caption={strings.serviceType}
-                  placeHolder={"Select " + strings.serviceType}
+                  placeHolder={"Select interaction category"}
                 />
 
                 {interactionCategory.error && showErrorMessage(interactionCategory.error)}
