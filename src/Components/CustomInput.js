@@ -30,11 +30,11 @@ export const CustomInput = (props) => {
       <View
         style={{
           backgroundColor: colors.background,
-          borderRadius: roundness,
+          borderRadius: 10,
           paddingVertical: 0,
           // elevation: 1,
-          borderColor: active ? colors.gray : colors.gray,
-          borderWidth: active ? 2 : 0.8,
+          borderColor: colors.gray,
+          borderWidth: active ? 2 : 1,
           borderStyle: "solid",
         }}
       >
@@ -46,7 +46,7 @@ export const CustomInput = (props) => {
             ...MULT_LINE,
             padding: 0,
             margin: 0,
-            borderRadius: roundness,
+            borderRadius: 10,
           }}
           placeholderTextColor="#C7CAD1"
           placeholder={caption}
