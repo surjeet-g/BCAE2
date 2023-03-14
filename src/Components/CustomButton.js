@@ -22,7 +22,7 @@ export const CustomButton = (props) => {
       }}
     >
       <Button
-        style={{ padding: 7, ...buttonStyle }}
+        style={{ padding: 7, borderRadius: 10, ...buttonStyle }}
         loading={loading}
         mode={mode}
         label={label}
