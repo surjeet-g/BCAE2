@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -32,14 +32,14 @@ import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
-import { Playground } from "../Screens/Playground";
+//import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
@@ -195,11 +195,11 @@ function MyStack() {
             },
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
           component={Playground}
-        />
+        /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
@@ -233,7 +233,7 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
-            headerLeft: null
+            headerLeft: null,
           }}
           name={STACK_LOGIN}
           component={Login}

@@ -1,3 +1,4 @@
+import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
@@ -321,7 +322,12 @@ export const HomeScreen = ({ navigation }) => {
                 color: colors.yellow,
               }}
             >
-              {customerAccount?.accountBalance || "NA"}
+              {"RS. "}
+              {get(
+                customerAccount,
+                "customerAccountData[0].accountBalance",
+                "NA"
+              )}
             </Text>
           )}
           {index === 1 && (
