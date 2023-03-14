@@ -47,6 +47,7 @@ import { ClearSpace } from "../../Components/ClearSpace";
 import { FooterModel } from "../../Components/FooterModel";
 import { ImagePicker } from "../../Components/ImagePicker";
 import LoadingAnimation from "../../Components/LoadingAnimation";
+import { resetKnowSearch } from '../../Redux/KnowledgeSearchAction';
 import {
   getMasterData,
   MASTER_DATA_CONSTANT
@@ -57,6 +58,9 @@ import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 const InteractionsToOrder = ({ route, navigation }) => {
+
+
+
   //need enable screej loader
   const [loader, setLoader] = useState(true);
   //attachment 
@@ -77,6 +81,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
 
+
+
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
@@ -86,6 +92,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setBottomModel(true)
     setKnowledgeSearchText("")
     setOpen(false)
+
   }
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([fetchSavedProfileData]);
@@ -94,32 +101,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
     fetchInteractionAction,
     updateInteractionAction,
     addInteractionAction,
+    resetKnowSearch
   ]);
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      resetStateData()
+      dispatchInteraction(resetKnowSearch())
+    });
+    return willFocusSubscription;
+  }, []);
   const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
-
-  const { profileReducer, masterReducer, interactionReducer } = useSelector(
-    (state) => {
-      return {
-        profileReducer: state.profile,
-        masterReducer: state.masterdata,
-        interactionReducer: state.interaction,
-      };
-    }
-  );
-
-  let mostfrequentlylist = get(
-    interactionReducer,
-    "InteractionData.mostfrequently.rows",
-    []
-  );
-
-  //to do check response
-  let frequertlyquestionList = get(
-    interactionReducer,
-    "InteractionData.frequerntlyAsked",
-    []
-  );
-
   useEffect(() => {
     async function fetchMyAPI() {
       const { SERVICE_TYPE, INTXN_TYPE,
@@ -139,6 +130,42 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
     fetchMyAPI();
   }, []);
+  const { profileReducer, masterReducer, interactionReducer } = useSelector(
+    (state) => {
+      return {
+        profileReducer: state.profile,
+        masterReducer: state.masterdata,
+        interactionReducer: state.interaction,
+      };
+    }
+  );
+  const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
+  const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
+  const problemList = get(masterReducer, "masterdataData.PROBLEM_CODE", []);
+  const serviceTypelist = get(masterReducer, "masterdataData.SERVICE_TYPE", []);
+  const serviceCategoryList = get(masterReducer, "masterdataData.SERVICE_CATEGORY", []);
+  const interactionCategoryList = get(masterReducer, "masterdataData.INTXN_CATEGORY", []);
+  const contactTypeList = get(
+    masterReducer,
+    "masterdataData.CONTACT_TYPE",
+    []
+  );
+
+
+  let mostfrequentlylist = get(
+    interactionReducer,
+    "InteractionData.mostfrequently",
+    []
+  );
+
+  //to do check response
+  let frequertlyquestionList = get(
+    interactionReducer,
+    "InteractionData.frequerntlyAsked",
+    []
+  );
+
+
 
   const customerPic =
     get(profileReducer, "savedProfileData.customerPhoto", null) ??
@@ -147,34 +174,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
 
-
   const onChangeKnowledgeSearchText = async (text) => {
     setKnowledgeSearchText(text);
 
-    if (text.length > 1 && !resultLoader) {
-
-      setresultLoader(true)
+    if (text.length > 0) {
+      // setresultLoader(true)
       await knowledgeSearchDispatch(
-        getKnowledgeSearchData(knowledgeSearchText, navigation)
+        getKnowledgeSearchData(text)
       );
-
       //enable list show
       setShowList(true)
-      setresultLoader(false)
+      // setresultLoader(false)
     }
 
   };
-  const contactTypeList = get(
-    masterReducer,
-    "masterdataData.CONTACT_TYPE",
-    []
-  );
-  const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
-  const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
-  const problemList = get(masterReducer, "masterdataData.PROBLEM_CODE", []);
-  const serviceTypelist = get(masterReducer, "masterdataData.SERVICE_TYPE", []);
-  const serviceCategoryList = get(masterReducer, "masterdataData.SERVICE_CATEGORY", []);
-  const interactionCategoryList = get(masterReducer, "masterdataData.INTXN_CATEGORY", []);
 
   const RenderSearchResult = () => {
 
@@ -316,10 +329,83 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   }
+  const interactionDataToCreateInt = (item) => {
+
+    try {
+
+      const interCat = get(interactionCategoryList?.filter((it) => it.code == item.intxnCategory?.code), '[0]', { code: "", description: "" })
+      const interType = get(interactionList?.filter((it) => it.code == item.intxnType?.code), '[0]', { code: "", description: "" })
+      const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType?.code), '[0]', { code: "", description: "" })
+      const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
+      const prirtyCode = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
+
+      //to do from api response 
+      //make array 
+
+      const contactPerferance = get(contactTypeList?.filter((it) => it.code == get(item, 'contactPreference[0].code')), '[0]', { code: "", description: "" })
+      console.log('>>', item)
+      console.log('>>', get(item, 'contactPreference[0].code'))
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "priorityCode",
+          value: { code: prirtyCode.code, description: prirtyCode.description },
+          clearError: true,
+        })
+      );
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "contactPerference",
+          value: { code: contactPerferance.code, description: contactPerferance.description },
+          clearError: true,
+        })
+      );
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "interactionCategory",
+          value: { code: interCat.code, description: interCat.description },
+          clearError: true,
+        })
+      );
+
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "interactionType",
+          value: { code: interType.code, description: interType.description },
+          clearError: true,
+        })
+      );
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "serviceCategory",
+          value: { code: serviveCatType.code, description: serviveCatType.description },
+          clearError: true,
+        })
+      );
+
+      dispatchInteraction(
+        setInteractionFormField({
+          field: "serviceType",
+          value: { code: serviveType.code, description: serviveType.description },
+          clearError: true,
+        })
+      );
+    } catch (error) {
+      console.log('error in interactionTocreate', error)
+    }
+
+  }
+
   const renderMostFrequent = useMemo(() => {
+
     mostfrequentlylist = mostfrequentlylist.filter(
       (item) => item.requestStatement != null
     );
+
 
     return (
       <View
@@ -365,7 +451,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
           </Text> :
             mostfrequentlylist.map((item) => {
               return (
-                <View
+                <Pressable
+                  onPress={() => {
+                    interactionDataToCreateInt(item)
+                  }}
                   style={{
                     flexDirection: "row",
                     // justifyContent: "space-between",
@@ -384,18 +473,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   >
                     {item.requestStatement}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
         </View>
       </View>
     );
-  }, [mostfrequentlylist]);
+  }, [mostfrequentlylist, masterReducer]);
 
   const renderFrequently = useMemo(() => {
+
     frequertlyquestionList = frequertlyquestionList.filter(
       (item) => item.requestStatement != null
     );
+
+
     return (
       <View
         style={{
@@ -440,7 +532,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
               frequertlyquestionList.map((item) => {
                 return (
-                  <View
+                  <Pressable
+                    onPress={(item) => {
+                      interactionDataToCreateInt(item)
+                    }}
                     style={{
                       flexDirection: "row",
                       // justifyContent: "space-evenly",
@@ -458,7 +553,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     >
                       {item.requestStatement}
                     </Text>
-                  </View>
+                  </Pressable>
                 );
               })
           }
