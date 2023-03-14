@@ -37,6 +37,7 @@ import {
   sendLoginOTPData,
   verifyLoginData,
 } from "./LoginDispatcher";
+import { HeaderTitle } from "./../../Components/headerTitle";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -244,12 +245,7 @@ export const Login = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
-        {"Let us know,"}
-      </Text>
-      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
-        {"Who you are?"}
-      </Text>
+      <HeaderTitle header="Let us know," subHeader="Who you are?" />
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -685,7 +681,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-    ...HEADER_MARGIN,
   },
   toast: {
     position: "absolute",

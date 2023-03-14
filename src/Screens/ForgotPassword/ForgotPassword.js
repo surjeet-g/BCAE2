@@ -35,6 +35,7 @@ import { Button, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { HeaderTitle } from "./../../Components/headerTitle";
 
 const ForgotPassword = ({ navigation }) => {
   let login = useSelector((state) => state.login);
@@ -172,12 +173,7 @@ const ForgotPassword = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
-        {"Need our help,"}
-      </Text>
-      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
-        {"Forgot password?"}
-      </Text>
+      <HeaderTitle header="Need our help," subHeader="Forgot password?" />
       <ScrollView
         style={{
           flexGrow: 1,
@@ -454,7 +450,7 @@ const ForgotPassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...HEADER_MARGIN,
+    backgroundColor: color.BCAE_OFF_WHITE,
   },
   logo: {
     height: 128,
