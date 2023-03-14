@@ -54,11 +54,11 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [userType, setUserType] = useState(BUSINESS); // BUSINESS or CONSUMER
+  const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
-  const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [isFirstSelected, setFirstSelected] = useState(false);
+  const [username, setUsername] = useState("kamal@yopmail.com");
   const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
