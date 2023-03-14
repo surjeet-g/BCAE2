@@ -56,7 +56,7 @@ export const TextBoxWithCTAEmail = (props) => {
             onPress={onClicked}
             disabled={isDisableButton}
             style={{
-              borderRadius: roundness,
+              borderRadius: 10,
               backgroundColor: isDisableButton ? color.BLACK : bgColor,
               ...styles.ctaStyle,
             }}
@@ -71,9 +71,9 @@ export const TextBoxWithCTAEmail = (props) => {
             marginVertical: spacing.HEIGHT_3,
             height: 55,
             backgroundColor: colors.background,
-            borderRadius: roundness,
+            borderRadius: 10,
             borderColor: colors.gray,
-            borderWidth: active ? 2 : 0.8,
+            borderWidth: active ? 2 : 1,
             borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,

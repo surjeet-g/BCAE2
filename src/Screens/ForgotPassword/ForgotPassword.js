@@ -35,6 +35,7 @@ import { Button, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { HeaderTitle } from "./../../Components/headerTitle";
 
 const ForgotPassword = ({ navigation }) => {
   let login = useSelector((state) => state.login);
@@ -172,12 +173,7 @@ const ForgotPassword = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
-        {"Need our help,"}
-      </Text>
-      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
-        {"Forgot password?"}
-      </Text>
+      <HeaderTitle header="Need our help," subHeader="Forgot password?" />
       <ScrollView
         style={{
           flexGrow: 1,
@@ -191,7 +187,7 @@ const ForgotPassword = ({ navigation }) => {
             flex: 1,
             padding: 20,
             backgroundColor: "#fff",
-            borderRadius: 20,
+            borderRadius: 16,
             elevation: 5,
           }}
         >
@@ -325,7 +321,7 @@ const ForgotPassword = ({ navigation }) => {
           }}
         >
           <Pressable onPress={() => navigation.goBack()}>
-            <Text style={styles.rgisterText}>{strings.back_to_login}</Text>
+            <Text style={styles.backToLogin}>{strings.back_to_login}</Text>
           </Pressable>
         </View>
         <View
@@ -339,9 +335,7 @@ const ForgotPassword = ({ navigation }) => {
           <Pressable
             onPress={() => navigation.navigate("Register with us", {})}
           >
-            <Text style={styles.rgisterText}>
-              {strings.register.toUpperCase()}
-            </Text>
+            <Text style={styles.rgisterText}>{strings.register}</Text>
           </Pressable>
         </View>
         <View style={{ paddingBottom: spacing.HEIGHT_40 * 3 }} />
@@ -456,7 +450,7 @@ const ForgotPassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...HEADER_MARGIN,
+    backgroundColor: color.BCAE_OFF_WHITE,
   },
   logo: {
     height: 128,
@@ -474,16 +468,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.WIDTH_7,
   },
   noAccText: {
-    color: "#393939",
-    fontSize: fontSizes.FONT_12,
+    color: "#3D3D3D",
+    fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
     fontWeight: 400,
   },
   rgisterText: {
-    fontWeight: "700",
+    fontWeight: 700,
     color: "#4B3694",
     fontSize: fontSizes.FONT_16,
+    lineHeight: spacing.WIDTH_17,
+    textAlign: "center",
+  },
+  backToLogin: {
+    fontWeight: 700,
+    color: "#4B3694",
+    fontSize: fontSizes.FONT_18,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },

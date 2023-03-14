@@ -1,12 +1,21 @@
-import React, {
-  useEffect,
-  useMemo, useState
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
-  Alert, Dimensions, FlatList, Image, ImageBackground, Keyboard,
-  KeyboardAvoidingView, Platform,
-  Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View
+  Alert,
+  Dimensions,
+  FlatList,
+  Image,
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { List } from "react-native-paper";
 
@@ -36,7 +45,6 @@ import {
   updateInteractionAction
 } from "../../Redux/InteractionDispatcher";
 
-
 import {
   setInteractionFormField,
   setInteractionReset
@@ -53,7 +61,7 @@ import {
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
-import { getCustomerID } from '../../Utilities/UserManagement/userInfo';
+import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
@@ -63,16 +71,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   //need enable screej loader
   const [loader, setLoader] = useState(true);
-  //attachment 
+  //attachment
   const [fileAttachments, setFileAttachments] = useState([]);
 
-  const [resultLoader, setresultLoader] = useState(false)
-  //to store active interaction object 
-  const [activeInteraction, setActiveInteraction] = useState(false)
+  const [resultLoader, setresultLoader] = useState(false);
+  //to store active interaction object
+  const [activeInteraction, setActiveInteraction] = useState(false);
   //auto suggestion drop box vi
   const [showList, setShowList] = useState(true);
   //for disble more section while search input box vissible
-  const [bottomModelVisible, setBottomModel] = useState(true)
+  const [bottomModelVisible, setBottomModel] = useState(true);
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
   const [open, setOpen] = useState(false);
@@ -113,10 +121,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
   useEffect(() => {
     async function fetchMyAPI() {
-      const { SERVICE_TYPE, INTXN_TYPE,
-        PRIORITY, CONTACT_TYPE, INTXN_STATEMENT,
-        PROBLEM_CODE, SERVICE_CATEGORY, INTXN_CATEGORY } =
-        MASTER_DATA_CONSTANT;
+      const {
+        SERVICE_TYPE,
+        INTXN_TYPE,
+        PRIORITY,
+        CONTACT_TYPE,
+        INTXN_STATEMENT,
+        PROBLEM_CODE,
+        SERVICE_CATEGORY,
+        INTXN_CATEGORY,
+      } = MASTER_DATA_CONSTANT;
 
       await dispatchInteraction(fetchInteractionAction(true));
       await profileDispatch(fetchSavedProfileData(navigation));
@@ -186,13 +200,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
       setShowList(true)
       // setresultLoader(false)
     }
-
   };
 
   const RenderSearchResult = () => {
-
     if (!showList) return null;
-    const result = get(knowledgeSearchStore, 'knowledgeSearchData', [])
+    const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
 
     if (result.length == 0) {
       return (
@@ -205,15 +217,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
             borderRadius: 5,
             padding: 4,
             justifyContent: "center",
-            alignItems: "center"
-
-
+            alignItems: "center",
           }}
         >
           <Text style={styles.input}>{strings.no_solution}</Text>
           <Image source={require("../../Assets/icons/no_data.png")} />
         </View>
-      )
+      );
     } else {
       return (
         <FlatList
@@ -233,11 +243,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   alignItems: "center",
                   backgroundColor: "#fff",
                   height: 40,
-                  borderRadius: 3
+                  borderRadius: 3,
                 }}
                 onPress={() => {
                   //store selected result in cache
-
 
                   //pre populating result
                   dispatchInteraction(
@@ -280,16 +289,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   dispatchInteraction(
                     setInteractionFormField({
                       field: "interactionCategory",
-                      value: { code: interCat.code, description: interCat.description },
+                      value: {
+                        code: interCat.code,
+                        description: interCat.description,
+                      },
                       clearError: true,
                     })
                   );
 
-
                   dispatchInteraction(
                     setInteractionFormField({
                       field: "interactionType",
-                      value: { code: interType.code, description: interType.description },
+                      value: {
+                        code: interType.code,
+                        description: interType.description,
+                      },
                       clearError: true,
                     })
                   );
@@ -297,7 +311,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   dispatchInteraction(
                     setInteractionFormField({
                       field: "serviceCategory",
-                      value: { code: serviveCatType.code, description: serviveCatType.description },
+                      value: {
+                        code: serviveCatType.code,
+                        description: serviveCatType.description,
+                      },
                       clearError: true,
                     })
                   );
@@ -305,26 +322,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   dispatchInteraction(
                     setInteractionFormField({
                       field: "serviceType",
-                      value: { code: serviveType.code, description: serviveType.description },
+                      value: {
+                        code: serviveType.code,
+                        description: serviveType.description,
+                      },
                       clearError: true,
                     })
                   );
                   //hide search result panal
                   setActiveInteraction(item);
-                  //open form model 
+                  //open form model
                   setOpen(true);
                   //disable other windo
-                  setBottomModel(true)
+                  setBottomModel(true);
                   //make empt search box
                   setKnowledgeSearchText("");
                   setShowList(false);
                 }}
               />
-            )
+            );
           }}
-
         />
-      )
+      );
     }
 
 
@@ -414,7 +433,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           margin: 5,
           padding: 10,
           backgroundColor: "#FFF",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -438,17 +457,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
             />
           </View>
           <ClearSpace size={2} />
-          {mostfrequentlylist.length == 0 ? <Text
-            variant="labelSmall"
-            style={{
-              // fontSizes: 12,
-              // marginTop: 15,
-              fontWeight: "400",
-              color: "#848A93",
-            }}
-          >
-            No found
-          </Text> :
+          {mostfrequentlylist.length == 0 ? (
+            <Text
+              variant="labelSmall"
+              style={{
+                // fontSizes: 12,
+                // marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              No found
+            </Text>
+          ) : (
             mostfrequentlylist.map((item) => {
               return (
                 <Pressable
@@ -475,7 +496,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   </Text>
                 </Pressable>
               );
-            })}
+            })
+          )}
         </View>
       </View>
     );
@@ -495,7 +517,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           margin: 5,
           padding: 10,
           backgroundColor: "#FFF",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -517,8 +539,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
             />
           </View>
           <ClearSpace size={2} />
-          {
-            frequertlyquestionList.length == 0 ? <Text
+          {frequertlyquestionList.length == 0 ? (
+            <Text
               variant="labelSmall"
               style={{
                 // fontSizes: 12,
@@ -530,32 +552,32 @@ const InteractionsToOrder = ({ route, navigation }) => {
               No found
             </Text> :
 
-              frequertlyquestionList.map((item) => {
-                return (
-                  <Pressable
-                    onPress={(item) => {
-                      interactionDataToCreateInt(item)
-                    }}
+            frequertlyquestionList.map((item) => {
+              return (
+                <Pressable
+                  onPress={(item) => {
+                    interactionDataToCreateInt(item)
+                  }}
+                  style={{
+                    // marginTop: 15,
+                    fontWeight: "400",
+                    color: "#848A93",
+                  }}
+                >
+                  <View style={styles.dot} />
+                  <Text
+                    variant="bodySmall"
                     style={{
-                      flexDirection: "row",
-                      // justifyContent: "space-evenly",
-                      alignItems: "center",
+                      // marginTop: 15,
+                      fontWeight: "400",
+                      color: "#848A93",
                     }}
                   >
-                    <View style={styles.dot} />
-                    <Text
-                      variant="bodySmall"
-                      style={{
-                        // marginTop: 15,
-                        fontWeight: "400",
-                        color: "#848A93",
-                      }}
-                    >
-                      {item.requestStatement}
-                    </Text>
-                  </Pressable>
-                );
-              })
+                    {item.requestStatement}
+                  </Text>
+                </Pressable>
+              );
+            })
           }
         </View>
       </View>
@@ -571,7 +593,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           paddingRight: 20,
           paddingBottom: 20,
           backgroundColor: "#F26E77",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -725,7 +747,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [addresss, customerPic, profileReducer]);
 
   const {
-
     statement,
     interactionType,
     channel,
@@ -736,14 +757,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
     attachment,
     serviceType,
     interactionCategory,
-    serviceCategory
+    serviceCategory,
   } = interactionRedux.formData;
 
   const { loaderAdd } = interactionRedux;
 
   let isButtonEnable = true;
-
-
 
   //handling loader
   if (loader)
@@ -762,41 +781,35 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   //button disable or not
 
-  Object.keys(interactionRedux.formData).map(it => {
-
-    const item = interactionRedux.formData[it]
+  Object.keys(interactionRedux.formData).map((it) => {
+    const item = interactionRedux.formData[it];
 
     if (item.required) {
       //dropdown
       if (item.type == INPUT_TYPE.DROPDOWN) {
-
         if (item.value.code == "") {
-          isButtonEnable = false
+          isButtonEnable = false;
         }
       }
       if (item.type == INPUT_TYPE.INPUTBOX) {
         if (item.value == "") {
-          isButtonEnable = false
+          isButtonEnable = false;
         }
       }
     }
-  })
+  });
   return (
     <>
       <View style={styles.container}>
-
         {/* profile card */}
-        {bottomModelVisible &&
-          renderProfileTab}
+        {bottomModelVisible && renderProfileTab}
 
-        {bottomModelVisible &&
+        {bottomModelVisible && (
           <View style={{ flexDirection: "row" }}>
             {renderMostFrequent}
             {renderFrequently}
           </View>
-        }
-
-
+        )}
 
         {activeInteraction !== false && (
           <View
@@ -811,32 +824,29 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginTop: 20,
             }}
           >
-            <Text style={{ textAlign: "center" }}>{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
-
+            <Text
+              style={{ textAlign: "center" }}
+            >{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
           </View>
         )}
-
-
-
 
         <View style={styles.searchSection}>
           <TextInput
             style={styles.input}
             onFocus={() => setBottomModel(false)}
-
             value={knowledgeSearchText}
             placeholder="Search..."
             onChangeText={onChangeKnowledgeSearchText}
             underlineColorAndroid="transparent"
           />
-          {knowledgeSearchText &&
+          {knowledgeSearchText && (
             <Pressable
               onPress={() => {
-                setKnowledgeSearchText(false)
-                setBottomModel(true)
-                //open form model 
+                setKnowledgeSearchText(false);
+                setBottomModel(true);
+                //open form model
                 setShowList(false);
-                Keyboard.dismiss()
+                Keyboard.dismiss();
               }}
             >
               <Icon
@@ -846,27 +856,24 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 color={"#C7CAD1"}
               />
             </Pressable>
-          }
+          )}
         </View>
-
 
         <RenderSearchResult />
 
         {/* search box end */}
         {/*knowledge search*/}
-
-
       </View>
-      {bottomModelVisible &&
+      {bottomModelVisible && (
         <FooterModel open={open} setOpen={setOpen}>
           <ScrollView contentContainerStyle={{ flex: 1 }}>
             <KeyboardAvoidingView
               // keyboardVerticalOffset={50}
-              behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+              behavior={Platform.OS === "ios" ? "padding" : "padding"}
               style={{ flex: 1 }}
             >
               {/* Field View */}
-              <View style={{ marginHorizontal: 10, }}>
+              <View style={{ marginHorizontal: 10 }}>
                 <CustomDropDownFullWidth
                   selectedValue={get(interactionType, "value.description", "")}
                   data={interactionList}
@@ -884,7 +891,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   placeHolder={"Select " + strings.intractionType}
                 />
 
-                {interactionType.error && showErrorMessage(interactionType.error)}
+                {interactionType.error &&
+                  showErrorMessage(interactionType.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(serviceType, "value.description", "")}
@@ -902,11 +910,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={strings.serviceType}
                   placeHolder={"Select " + strings.serviceType}
                 />
-                {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
-
+                {serviceTypelist.error &&
+                  showErrorMessage(serviceTypelist.error)}
 
                 <CustomDropDownFullWidth
-                  selectedValue={get(interactionCategory, "value.description", "")}
+                  selectedValue={get(
+                    interactionCategory,
+                    "value.description",
+                    ""
+                  )}
                   data={interactionCategoryList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -922,7 +934,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   placeHolder={"Select interaction category"}
                 />
 
-                {interactionCategory.error && showErrorMessage(interactionCategory.error)}
+                {interactionCategory.error &&
+                  showErrorMessage(interactionCategory.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(serviceCategory, "value.description", "")}
@@ -940,8 +953,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={"Serive Category"}
                   placeHolder={"Select Serive Category"}
                 />
-                {serviceCategory.error && showErrorMessage(serviceCategory.error)}
-
+                {serviceCategory.error &&
+                  showErrorMessage(serviceCategory.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(problemCause, "value.description", "")}
@@ -963,7 +976,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                 <CustomDropDownFullWidth
                   selectedValue={get(priorityCode, "value.description", "")}
-
                   data={priorityList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -980,8 +992,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 />
 
                 <CustomDropDownFullWidth
-
-                  selectedValue={get(contactPerference, "value.description", "")}
+                  selectedValue={get(
+                    contactPerference,
+                    "value.description",
+                    ""
+                  )}
                   data={contactTypeList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -996,7 +1011,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={strings.contact_type}
                   placeHolder={"Select " + strings.contact_type}
                 />
-                {contactPerference.error && showErrorMessage(contactPerference.error)}
+                {contactPerference.error &&
+                  showErrorMessage(contactPerference.error)}
                 {/* <KeyboardAwareView animated={false}> */}
 
                 <CustomInput
@@ -1035,7 +1051,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setAttachmentModalVisible={setAttachmentModalVisible}
                   fileAttachments={fileAttachments}
                   setFileAttachments={setFileAttachments}
-
                 />
                 {/* </KeyboardAwareView> */}
                 {/* <CustomInput
@@ -1067,10 +1082,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   <CustomButton
                     label={strings.cancel}
                     onPress={() => {
-                      setOpen(false)
-                      dispatchInteraction(setInteractionReset())
-
-                    }} />
+                      setOpen(false);
+                      dispatchInteraction(setInteractionReset());
+                    }}
+                  />
                 </View>
 
                 <View style={{ flex: 1 }}>
@@ -1079,30 +1094,30 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     loading={loaderAdd}
                     label={strings.submit}
                     onPress={async () => {
-                      const input = interactionRedux.formData
-                      const customerID = await getCustomerID()
+                      const input = interactionRedux.formData;
+                      const customerID = await getCustomerID();
                       const params = {
-                        "customerId": customerID,
-                        "statement": input.statement.value,
-                        "statementId": input.statementId.value,
-                        "problemCause": input.problemCause.value?.code,
-                        "interactionCategory": input.interactionCategory.value?.code,
-                        "serviceCategory": input.serviceCategory.value?.code,
-                        "interactionType": input.interactionType.value?.code,
-                        "serviceType": input.serviceType.value?.code,
-                        "channel": input.channel.value,
-                        "priorityCode": input.priorityCode.value?.code,
-                        "contactPreference": [
-                          input.contactPerference.value?.code
+                        customerId: customerID,
+                        statement: input.statement.value,
+                        statementId: input.statementId.value,
+                        problemCause: input.problemCause.value?.code,
+                        interactionCategory:
+                          input.interactionCategory.value?.code,
+                        serviceCategory: input.serviceCategory.value?.code,
+                        interactionType: input.interactionType.value?.code,
+                        serviceType: input.serviceType.value?.code,
+                        channel: input.channel.value,
+                        priorityCode: input.priorityCode.value?.code,
+                        contactPreference: [
+                          input.contactPerference.value?.code,
                         ],
-                        "remarks": input.remarks.value
-                      }
-
+                        remarks: input.remarks.value,
+                      };
 
                       const { status, response } = await dispatchInteraction(
                         addInteractionAction(params, fileAttachments)
                       );
-                      console.log('respin', status, response)
+                      console.log("respin", status, response);
 
                       if (status) {
                         dispatchInteraction(setInteractionReset())
@@ -1113,20 +1128,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
                             text: strings.inquiryInfo,
                             onPress: () => {
                               //reset attachment
-
                               // navigation.navigate("InquiryNotification", {
                               //   ouId: organizationItem.unitId,
                               //   serviceType: inquiryServiceName,
                               //   problemCode: inquiryProblemCode,
                               //   deptId: inquiryDeptId,
                               // });
-
                             },
                           },
                           {
                             text: strings.close,
                             onPress: () => {
-
                               navigation.navigate("Home", {});
                             },
                             style: "cancel",
@@ -1137,15 +1149,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                       }
                     }}
-
                   />
                 </View>
-
               </View>
             </KeyboardAvoidingView>
           </ScrollView>
         </FooterModel>
-      }
+      )}
     </>
   );
 };

@@ -18,9 +18,8 @@ import { strings } from "../../Utilities/Language";
 import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import FileName from "./../../Components/FileName";
-import Slot from "./../../Components/Slot";
 
-const CreateOrder = (props) => {
+const InteractionDetails = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
 
@@ -383,9 +382,9 @@ const CreateOrder = (props) => {
                 </View>
               </View>
               {/* Add Flatlist here to display the slots */}
-              <Slot time={"12:00PM - 1:00PM"} isSelected={false} />
-              <Slot time={"10:30AM - 11:30AM"} isSelected={true} />
-              <Slot time={"5:00AM - 6:00PM"} isSelected={false} />
+              <FileName filename={"pancard.png"} />
+              <FileName filename={"aadhar.jpg"} />
+              <FileName filename={"id.png"} />
             </View>
           </View>
         ) : null}
@@ -717,4 +716,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
 });
-export default CreateOrder;
+export default InteractionDetails;

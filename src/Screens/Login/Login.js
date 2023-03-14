@@ -37,6 +37,7 @@ import {
   sendLoginOTPData,
   verifyLoginData,
 } from "./LoginDispatcher";
+import { HeaderTitle } from "./../../Components/headerTitle";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -54,11 +55,11 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [userType, setUserType] = useState(BUSINESS); // BUSINESS or CONSUMER
+  const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
-  const [isFirstSelected, setFirstSelected] = useState(true);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [isFirstSelected, setFirstSelected] = useState(false);
+  const [username, setUsername] = useState("kamal@yopmail.com");
   const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
@@ -244,12 +245,7 @@ export const Login = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
-        {"Let us know,"}
-      </Text>
-      <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
-        {"Who you are?"}
-      </Text>
+      <HeaderTitle header="Let us know," subHeader="Who you are?" />
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -264,7 +260,7 @@ export const Login = ({ navigation }) => {
                 flex: 1,
                 padding: 20,
                 backgroundColor: "#fff",
-                borderRadius: 20,
+                borderRadius: 16,
                 elevation: 5,
               }}
             >
@@ -685,7 +681,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-    ...HEADER_MARGIN,
   },
   toast: {
     position: "absolute",
