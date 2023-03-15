@@ -227,13 +227,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     //   });
     //   return null;
     // }
-    // if (!emailOTPVerification) {
-    //   Toast.show({
-    //     type: "bctError",
-    //     text1: strings.otpErrorMsgForEmail,
-    //   });
-    //   return null;
-    // }
+    if (!emailOTPVerification) {
+      Toast.show({
+        type: "bctError",
+        text1: strings.otpErrorMsgForEmail,
+      });
+      return null;
+    }
 
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
