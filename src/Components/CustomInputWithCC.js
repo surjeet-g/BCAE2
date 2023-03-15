@@ -29,11 +29,11 @@ export const CustomInputWithCC = (props) => {
       <View
         style={{
           backgroundColor: colors.background,
-          borderRadius: roundness,
+          borderRadius: 10,
           paddingVertical: 0,
           // elevation: 1,
-          borderColor: active ? colors.gray : colors.gray,
-          borderWidth: active ? 2 : 0.8,
+          borderColor: colors.gray,
+          borderWidth: active ? 2 : 1,
           borderStyle: "solid",
           flexDirection: "row",
           justifyContent: "flex-start",
@@ -54,7 +54,7 @@ export const CustomInputWithCC = (props) => {
             style={{
               color: color.DARK_GREY,
               fontSize: fontSizes.FONT_14,
-              fontWeight: "500",
+              fontWeight: 500,
             }}
           >
             {countryCode}{" "}
@@ -75,7 +75,7 @@ export const CustomInputWithCC = (props) => {
             ...MULT_LINE,
             padding: 0,
             margin: 0,
-            borderRadius: roundness,
+            borderRadius: 10,
             flex: 1,
           }}
           placeholderTextColor="#C7CAD1"
