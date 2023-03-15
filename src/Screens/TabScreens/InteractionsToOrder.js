@@ -78,12 +78,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //to store active interaction object
   const [activeInteraction, setActiveInteraction] = useState(false);
   //auto suggestion drop box vi
-  const [showList, setShowList] = useState(true);
+  const [autosuggestionlist, setautoSuggestionList] = useState(true);
   //for disble more section while search input box vissible
-  const [bottomModelVisible, setBottomModel] = useState(true);
+  const [searchStandAloneModal, setsearchStandaloneModel] = useState(true);
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
-  const [open, setOpen] = useState(false);
+  const [openBottomModal, setOpenBottomModal] = useState(false);
 
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
@@ -96,10 +96,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const resetStateData = () => {
     setFileAttachments([])
-    setShowList(true)
-    setBottomModel(true)
+    setautoSuggestionList(true)
+    setsearchStandaloneModel(true)
     setKnowledgeSearchText("")
-    setOpen(false)
+    setOpenBottomModal(false)
 
   }
   const masterDispatch = useDispatch([getMasterData]);
@@ -187,7 +187,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const addresss = get(profileReducer, "savedProfileData.customerAddress", []);
 
 
+  const resetStateAfterSearchClicked = () => {
 
+    //search result panal 
+
+    setKnowledgeSearchText("");
+    setautoSuggestionList(false);
+    //search box end
+  }
   const onChangeKnowledgeSearchText = async (text) => {
     setKnowledgeSearchText(text);
 
@@ -197,13 +204,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
         getKnowledgeSearchData(text)
       );
       //enable list show
-      setShowList(true)
+      setautoSuggestionList(true)
       // setresultLoader(false)
     }
   };
 
   const RenderSearchResult = () => {
-    if (!showList) return null;
+    if (!autosuggestionlist) return null;
     const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
 
     if (result.length == 0) {
@@ -290,15 +297,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setDropDownFormField("serviceType", serviveType)
 
 
-                  //hide search result panal
+                  //set selected data into state value
                   setActiveInteraction(item);
                   //open form model
-                  setOpen(true);
+                  setOpenBottomModal(true);
                   //disable other windo
-                  setBottomModel(true);
+                  setsearchStandaloneModel(true);
                   //make empt search box
                   setKnowledgeSearchText("");
-                  setShowList(false);
+                  setautoSuggestionList(false);
                 }}
               />
             );
@@ -486,7 +493,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               }}
             >
               No found
-            </Text> :
+            </Text>) :
 
             frequertlyquestionList.map((item) => {
               return (
@@ -738,9 +745,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
     <>
       <View style={styles.container}>
         {/* profile card */}
-        {bottomModelVisible && renderProfileTab}
+        {searchStandAloneModal && renderProfileTab}
 
-        {bottomModelVisible && (
+        {searchStandAloneModal && (
           <View style={{ flexDirection: "row" }}>
             {renderMostFrequent}
             {renderFrequently}
@@ -769,7 +776,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         <View style={styles.searchSection}>
           <TextInput
             style={styles.input}
-            onFocus={() => setBottomModel(false)}
+            onFocus={() => setsearchStandaloneModel(false)}
             value={knowledgeSearchText}
             placeholder="Search..."
             onChangeText={onChangeKnowledgeSearchText}
@@ -779,9 +786,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
             <Pressable
               onPress={() => {
                 setKnowledgeSearchText(false);
-                setBottomModel(true);
+                setsearchStandaloneModel(true);
                 //open form model
-                setShowList(false);
+                setautoSuggestionList(false);
                 Keyboard.dismiss();
               }}
             >
@@ -800,8 +807,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {/* search box end */}
         {/*knowledge search*/}
       </View>
-      {bottomModelVisible && (
-        <FooterModel open={open} setOpen={setOpen}>
+      {searchStandAloneModal && (
+        <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}>
           <ScrollView contentContainerStyle={{ flex: 1 }}>
             <KeyboardAvoidingView
               // keyboardVerticalOffset={50}
@@ -1018,7 +1025,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   <CustomButton
                     label={strings.cancel}
                     onPress={() => {
-                      setOpen(false);
+                      setOpenBottomModal(false);
                       dispatchInteraction(setInteractionReset());
                     }}
                   />

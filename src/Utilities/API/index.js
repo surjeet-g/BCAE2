@@ -223,19 +223,23 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
     const duration = moment.duration(currentTime.diff(expirtyTime));
     const diffSeconds = duration.asSeconds();
     if (diffSeconds > -60) {
+
       isExpired = true;
+
     }
   }
 
+  if (error?.response?.data?.message == "Not authorized") {
+    isExpired = true;
+  }
 
-  if (isExpired && error?.response?.data?.message &&
+  if (isExpired &&
+    error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&
     accessTokenTemp != "" &&
     navigation != null &&
     error.response.status != null) {
-
-
 
     Alert.alert(
       strings.attention,
