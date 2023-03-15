@@ -270,65 +270,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType), '[0]', { code: "", description: "" })
                   const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory), '[0]', { code: "", description: "" })
                   //to do from api response 
-                  const contactPerFromProfile = get(profileReducer, "savedProfileData.contactPreferences",)
+                  const contactPerFromProfile = get(profileReducer, "savedProfileData.contactPreferences", [{ code: "", description: "" }])
                   //make array 
                   const contactPerferance = get(contactTypeList?.filter((it) => it.code == contactPerFromProfile), '[0]', { code: "", description: "" })
 
 
 
-
+                  setDropDownFormField("contactPerference", contactPerferance)
                   //set contact perferance
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "contactPerference",
-                      value: { code: interCat.code, description: interCat.description },
-                      clearError: true,
-                    })
-                  );
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionCategory",
-                      value: {
-                        code: interCat.code,
-                        description: interCat.description,
-                      },
-                      clearError: true,
-                    })
-                  );
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionType",
-                      value: {
-                        code: interType.code,
-                        description: interType.description,
-                      },
-                      clearError: true,
-                    })
-                  );
+                  setDropDownFormField("interactionCategory", interCat)
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceCategory",
-                      value: {
-                        code: serviveCatType.code,
-                        description: serviveCatType.description,
-                      },
-                      clearError: true,
-                    })
-                  );
+                  setDropDownFormField("interactionType", interType)
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceType",
-                      value: {
-                        code: serviveType.code,
-                        description: serviveType.description,
-                      },
-                      clearError: true,
-                    })
-                  );
+                  setDropDownFormField("serviceCategory", serviveCatType)
+
+
+                  setDropDownFormField("serviceType", serviveType)
+
+
                   //hide search result panal
                   setActiveInteraction(item);
                   //open form model
@@ -348,6 +309,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   }
+
+  const setDropDownFormField = (field, { code, description }) => {
+    dispatchInteraction(
+      setInteractionFormField({
+        field,
+        value: { code: code, description: description },
+        clearError: true,
+      })
+    )
+  }
+
   const interactionDataToCreateInt = (item) => {
 
     try {
@@ -357,62 +329,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
       const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType?.code), '[0]', { code: "", description: "" })
       const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
       const prirtyCode = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
-
       //to do from api response 
       //make array 
-
       const contactPerferance = get(contactTypeList?.filter((it) => it.code == get(item, 'contactPreference[0].code')), '[0]', { code: "", description: "" })
-      console.log('>>', item)
-      console.log('>>', get(item, 'contactPreference[0].code'))
-
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "priorityCode",
-          value: { code: prirtyCode.code, description: prirtyCode.description },
-          clearError: true,
-        })
-      );
-
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "contactPerference",
-          value: { code: contactPerferance.code, description: contactPerferance.description },
-          clearError: true,
-        })
-      );
-
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "interactionCategory",
-          value: { code: interCat.code, description: interCat.description },
-          clearError: true,
-        })
-      );
 
 
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "interactionType",
-          value: { code: interType.code, description: interType.description },
-          clearError: true,
-        })
-      );
 
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "serviceCategory",
-          value: { code: serviveCatType.code, description: serviveCatType.description },
-          clearError: true,
-        })
-      );
+      setDropDownFormField("priorityCode", prirtyCode)
 
-      dispatchInteraction(
-        setInteractionFormField({
-          field: "serviceType",
-          value: { code: serviveType.code, description: serviveType.description },
-          clearError: true,
-        })
-      );
+      setDropDownFormField("contactPerference", contactPerferance)
+
+      setDropDownFormField("interactionCategory", interCat)
+
+      setDropDownFormField("interactionType", interType)
+
+      setDropDownFormField("serviceCategory", serviveCatType)
+
+      setDropDownFormField("serviceType", serviveType)
+
+
+
     } catch (error) {
       console.log('error in interactionTocreate', error)
     }
