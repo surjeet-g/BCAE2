@@ -23,6 +23,7 @@ export const networkAvailable = () =>
 let accessTokenTemp = "";
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
+
     // Internet Check and response error
     let net = await networkAvailable();
     TDLog(
@@ -110,10 +111,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
                 +" : response :" +
                 JSON.stringify(response)
               );
-              console.log(
-                "$$$-serverCall-response ===>>> ",
-                JSON.stringify(response)
-              );
+
               if (response.status === 200) {
                 resolve({
                   success: true,
@@ -144,6 +142,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
               //   "$$$-serverCall-error.response ===>>> ",
               //   JSON.stringify(error.response)
               // );
+
               processErrorResponse(resolve, error, requestObject, navigation);
 
               // Comentting this below part of refreshtoken logic - Kamal - 03-03-2023
@@ -221,12 +220,18 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
     const duration = moment.duration(currentTime.diff(expirtyTime));
     const diffSeconds = duration.asSeconds();
     if (diffSeconds > -60) {
+
       isExpired = true;
+
     }
   }
 
+  if (error?.response?.data?.message == "Not authorized") {
+    isExpired = true;
+  }
 
-  if (isExpired && error?.response?.data?.message &&
+  if (isExpired &&
+    error?.response?.data?.message &&
     error?.response?.data?.message != null &&
     error?.response?.status &&
     accessTokenTemp != "" &&
@@ -244,10 +249,11 @@ const processErrorResponse = async (resolve, error, requestObject, navigation) =
         {
           text: strings.ok,
           onPress: async () => {
-            if (navigation != null) {
-              const result = await logoutUserWithOutRedux(navigation);
-              if (result) navigation.navigate("Splash")
-            }
+
+            const result = await logoutUserWithOutRedux(navigation);
+
+            if (result) navigation.navigate("Splash")
+
           },
         },
       ],

@@ -13,6 +13,7 @@ export const PROD_BASE_URL_TENANT =
 export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const endPoints = {
   INTERACTION_ADD: "api/interaction/create",
+  KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
   FREQUENTLY_ASKED: "api/interaction/frequent",
   INTERACTION_FETCH: "api/interaction/search",
   INTERACTION_GET_WORKFLOW: "api/interaction/history/",
@@ -53,7 +54,7 @@ export const endPoints = {
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
-  KNOWLEDGE_SEARCH: "api/knowledge-Base/search/",
+  KNOWLEDGE_SEARCH: "api/knowledge-Base/search",
   GET_WORKFLOW_LIST: "api/workflow/get-workflow-list",
   GET_WORKFLOW_FOR_ID: "api/workflow/get-workflow/",
   CREATE_WORKFLOW: "api/workflow/create",

@@ -194,6 +194,8 @@ dependencies {
 
   // Add the dependencies for any other desired Firebase products
   // https://firebase.google.com/docs/android/setup#available-libraries
+
+  implementation 'com.facebook.fresco:animated-gif:2.5.0'
 }
 project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf','MaterialCommunityIcons.ttf' ] // Name of the font files you want to copy

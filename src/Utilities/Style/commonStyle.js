@@ -103,5 +103,6 @@ export const commonStyle = StyleSheet.create({
   center: {
     alignItems: "center",
     justifyContent: "center",
+
   },
 });

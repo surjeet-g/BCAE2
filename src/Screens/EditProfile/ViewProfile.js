@@ -1,40 +1,24 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Image,
-  StyleSheet,
-  Alert,
-  Pressable,
-  ScrollView,
-  Switch,
+  Alert, Image, Pressable,
+  ScrollView, StyleSheet, Switch, View
 } from "react-native";
-import Toast from "react-native-toast-message";
 import { Divider, Text, useTheme } from "react-native-paper";
+import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {
-  spacing,
-  fontSizes,
-  color,
-  validateNumber,
-} from "../../Utilities/Constants/Constant";
+import { useDispatch } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
-import { useDispatch, useSelector } from "react-redux";
-import { strings } from "../../Utilities/Language";
-import { ICON_STYLE } from "../../Utilities/Style/navBar";
+import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
-import {
-  DEFAULT_PROFILE_IMAGE,
-  storageKeys,
-} from "../../Utilities/Constants/Constant";
-import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
 import { serverCall } from "../../Utilities/API";
-import { endPoints } from "../../Utilities/API/ApiConstants";
-import { requestMethod } from "../../Utilities/API/ApiConstants";
+import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
+import { DEFAULT_PROFILE_IMAGE, spacing, storageKeys } from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language";
 import {
   getCustomerUUID,
-  getUserId,
+  getUserId
 } from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
@@ -122,9 +106,8 @@ export const ViewProfile = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Image
           source={{
-            uri: `data:image/jpeg;base64,${
-              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-            }`,
+            uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+              }`,
           }}
           // imageStyle={{ borderRadius: 80 }}
           style={{ height: 110, width: 110 }}
@@ -191,7 +174,7 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Pressable
             onPress={() => {
               alert("To do");

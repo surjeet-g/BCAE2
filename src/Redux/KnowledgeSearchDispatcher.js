@@ -6,7 +6,7 @@ import {
   setKnowledgeSearchError
 } from "./KnowledgeSearchAction";
 
-export const getKnowledgeSearchData = (searchQuery, navigation) => {
+export const getKnowledgeSearchData = (searchQuery) => {
   return async (dispatch) => {
     await dispatch(initKnowledgeSearchData());
     let params = {};
@@ -14,17 +14,16 @@ export const getKnowledgeSearchData = (searchQuery, navigation) => {
     let result = await serverCall(
       endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery,
       requestMethod.GET,
-      params,
-      navigation
+      params
     );
 
     if (result.success) {
+      console.log('result', endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery, result?.data?.data)
       dispatch(setKnowledgeSearchData(result?.data?.data));
       return true;
     } else {
-      return false;
       dispatch(setKnowledgeSearchError(result));
-
+      return false;
     }
   };
 };
