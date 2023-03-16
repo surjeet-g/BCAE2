@@ -30,8 +30,6 @@
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "lodash.get": "^4.4.2",
-    "lottie-ios": "^3.4.0",
-    "lottie-react-native": "^5.1.5",
     "moment": "^2.29.4",
     "n": "^1.0.0-alpha.7",
     "react": "18.2.0",
