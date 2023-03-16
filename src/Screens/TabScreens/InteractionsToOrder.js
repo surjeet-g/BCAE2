@@ -62,11 +62,10 @@ import theme from "../../Utilities/themeConfig";
 import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
-export const typeOfAccrodin = { category: "category", frequently: "frequently", rencently: "rencently" }
+export const typeOfAccrodin = { category: "category", frequently: "frequently", rencently: "rencently", searchbox: "searchbox" }
 
 const InteractionsToOrder = ({ route, navigation }) => {
 
-  const typeOfAccrodin = { category: "category", frequently: "frequently", rencently: "rencently" }
   const [activeChatBotSec, setactiveChatBot] = useState("")
   //need enable screej loader
   const [loader, setLoader] = useState(true);
@@ -75,7 +74,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [resultLoader, setresultLoader] = useState(false);
   //to store active interaction object
-  const [activeInteraction, setActiveInteraction] = useState(false);
+  const [activeInteraction, setActiveInteraction] = useState("");
   //auto suggestion drop box vi
   const [autosuggestionlist, setautoSuggestionList] = useState(true);
   //for disble more section while search input box vissible
@@ -257,9 +256,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   paddingHorizontal: 4
                   // borderRadius: 3,
                 }}
-                onPress={() => {
+                onPress={async () => {
                   //store selected result in cache
+                  await dispatchInteraction(fetchInteractionAction(typeOfAccrodin.searchbox, { requestId: item.requestId }));
 
+                  //todo
+                  return null
                   //pre populating result
                   dispatchInteraction(
                     setInteractionFormField({
@@ -376,7 +378,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     return (
       <View style={styles.accodinContainer}>
         <Pressable style={styles.accodinItem} onPress={() => {
-          handleAccodin(typeOfAccrodin.category)
+          handleAccodin(typeOfAccrodin.category,)
         }}>
           <Text style={styles.accordinImg}>s</Text>
           <Text style={styles.accordinTxt}>Top 10 Category</Text>
@@ -482,11 +484,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [mostfrequentlylist, masterReducer]);
 
   const renderFrequently = useMemo(() => {
-
     frequertlyquestionList = frequertlyquestionList.filter(
       (item) => item.requestStatement != null
     );
-
 
     return (
       <View
@@ -510,7 +510,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
             >
               {`Last used \nInteractions \nfor this \ncustomer`}
             </Text>
-
             <Image
               source={require("../../Assets/icons/last_interaction.png")}
               style={{ width: 50, height: 50, marginLeft: 10 }}
@@ -698,7 +697,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               fontWeight: "400",
               width: "60%",
 
-              color: colors.inverseSecondary,
+              color: colors.textColor,
             }}
           >
             {handleMultipleContact(addresss)}
@@ -727,28 +726,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
   let isButtonEnable = true;
 
   //handling loader
-  if (loader || interactionReducer.initInteraction)
-    return (
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 200,
-        }}
-      >
-        <LoadingAnimation></LoadingAnimation>
-        <Text style={styles.emptyList}>{strings.please_wait}</Text>
-      </View>
-    );
+
 
   //button disable or not
   const RenderBottomChatBoard = () => {
+
     const suggestionList = get(
       interactionReducer,
       "InteractionData",
       []
     );
-    console.log('>>', suggestionList)
+
     if (activeChatBotSec == "") {
       console.log("not active any section")
       return null
@@ -758,14 +746,40 @@ const InteractionsToOrder = ({ route, navigation }) => {
       <View style={styles.bottomContainer}>
         <ClearSpace size={2} />
         <Text variant="labelMedium">Next Action - Resoltion</Text>
+        <ClearSpace size={2} />
+        {activeInteraction != "" && (
+          <View
+            style={{
+              padding: 8,
+              paddingLeft: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#00A985",
+              borderRadius: 10,
+              marginTop: 20,
+            }}
+          >
+            <Text
+              style={{ textAlign: "center" }}
+            >{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
+          </View>
+        )}
         <ClearSpace size={4} />
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {suggestionList.length > 0 && suggestionList.map(ite => (
             <Chip mode="outlined" onPress={() => {
               alert("sdfsf")
             }}
-              textStyle={{ fontSize: 14, fontWeight: "400" }}
-              style={{ backgroundColor: "#edf1f7", borderRadius: 15, marginRight: 5, marginBottom: 5 }}
+              textStyle={{
+                fontSize: 14, fontWeight: "400"
+              }}
+              style={{
+                backgroundColor: "#edf1f7",
+                borderRadius: 15,
+                marginRight: 5,
+                marginBottom: 5
+              }}
             >{ite?.requestStatement} </Chip>
           )
           )}
@@ -799,28 +813,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const isModelOpen = (openBottomModal || openBottomModalChatBoard)
   return (
     <>
+      {(loader) &&
+        <LoadingAnimation title="while we are creating Interaction." />
+
+      }
+      {(interactionReducer.initInteraction) &&
+        <LoadingAnimation title="fetch data" />
+      }
       <View style={{ ...styles.container, backgroundColor: isModelOpen ? "gray" : "#d0d0d0", opacity: isModelOpen ? 0.3 : 1 }}>
         {/* profile card */}
         {renderProfileTab}
 
-        {activeInteraction !== false && (
-          <View
-            style={{
-              padding: 8,
-              paddingLeft: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#00A985",
-              borderRadius: 10,
-              marginTop: 20,
-            }}
-          >
-            <Text
-              style={{ textAlign: "center" }}
-            >{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
-          </View>
-        )}
+
         <ClearSpace size={2} />
         <Text variant="bodyMedium">Type your statement here</Text>
         <View style={styles.searchSection}>
@@ -828,7 +832,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             style={styles.input}
             onFocus={() => setsearchStandaloneModel(false)}
             value={knowledgeSearchText}
-            placeholder="Search..."
+            placeholder="ex. Biiling problem"
             onChangeText={onChangeKnowledgeSearchText}
             underlineColorAndroid="transparent"
           />

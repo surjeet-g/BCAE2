@@ -13,25 +13,28 @@ import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
+import { getCustomerID, getCustomerUUID } from '../Utilities/UserManagement/userInfo';
 
 export function fetchInteractionAction(
   type = "",
-  page = 0,
-  limit = 2,
-  body = {
-    searchParams: {},
-  }
+  params = {}
 ) {
   return async (dispatch) => {
-    dispatch(initInteraction());
 
+    dispatch(initInteraction());
+    const customerUUID = await getCustomerUUID()
+    const customerID = await getCustomerID()
 
     let interactionResult
     if (type == typeOfAccrodin.rencently) {
       interactionResult = await serverCall(
-        `${endPoints.INTERACTION_FETCH}?page=${page}&limit=${limit}`,
+        `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
         requestMethod.POST,
-        body
+        {
+          searchParams: {
+            customerId: customerID,
+          }
+        }
       );
     }
     else if (type == typeOfAccrodin.frequently) {
@@ -48,7 +51,19 @@ export function fetchInteractionAction(
         {}
       );
     }
+    else if (type == typeOfAccrodin.searchbox) {
+      interactionResult = await serverCall(
+        `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}?limit=4`,
+        requestMethod.POST,
+        {
+          "requestId": params.requestId,
+          "customerUuid": customerUUID
+        }
+      );
+    }
     else {
+
+      dispatch(setInteractionError([]));
       return false
     }
 
@@ -61,21 +76,22 @@ export function fetchInteractionAction(
         data = interactionResult?.data?.data?.rows
       }
       else if (type == typeOfAccrodin.frequently) {
-        console.log('1111', interactionResult)
         data = interactionResult?.data?.data
-
       }
       else if (type == typeOfAccrodin.category) {
         data = interactionResult?.data?.data
       }
+      else if (type == typeOfAccrodin.searchbox) {
+        data = interactionResult?.data?.data
+      }
       else {
-        console.log('11111', data)
         data = []
       }
 
       dispatch(setInteractionData(data, false));
       return true;
     } else {
+      console.log('error response', interactionResult)
       dispatch(setInteractionError([]));
       return false;
     }

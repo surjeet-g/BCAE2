@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image, View, Text } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "../Components/CustomButton";
 export const Success = ({
   intxId,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     alignItems: "center",
-    backgroundColor: "blue",
+
   },
   interactionText: {
     textAlign: "center",
