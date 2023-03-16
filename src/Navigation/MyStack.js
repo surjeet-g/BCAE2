@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,7 +39,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
@@ -52,6 +52,8 @@ import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import ComingSoon from "./../Screens/ComingSoon";
+import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
+import Followup from "./../Screens/Appointments/Followup";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -61,7 +63,10 @@ const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
+const STACK_INTERACTION_DETAILS = "InteractionDetails";
+const STACK_FOLLOWUP = "Followup";
 const Stack = createStackNavigator();
+
 function MyStack() {
   const { colors, fonts } = useTheme();
   const options = {
@@ -359,6 +364,26 @@ function MyStack() {
           })}
           name={STACK_CREATE_ORDER}
           component={CreateOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Interaction Details",
+            },
+          })}
+          name={STACK_INTERACTION_DETAILS}
+          component={InteractionDetails}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Interaction Details",
+            },
+          })}
+          name={STACK_FOLLOWUP}
+          component={Followup}
         />
         <Stack.Screen
           options={({ navigation }) => ({

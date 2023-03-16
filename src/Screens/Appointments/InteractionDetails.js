@@ -10,27 +10,13 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { DEFAULT_PROFILE_IMAGE } from "../../Utilities/Constants/Constant";
-import { useTheme, Switch } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDispatch, useSelector } from "react-redux";
+import { useTheme } from "react-native-paper";
 import { CustomButton } from "../../Components/CustomButton";
 import { strings } from "../../Utilities/Language";
-import { CustomInput } from "./../../Components/CustomInput";
-import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
-import FileName from "./../../Components/FileName";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
-
-  const [isGetSlotsEnabled, setIsGetSlotsEnabled] = useState(false);
-  const [appointDateTime, setAppointDateTime] = useState("");
-  const [contactName, setContactName] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
-  const [contactType, setContactType] = useState("");
-  const [remarks, setRemarks] = useState("");
-  const [selectedSlots, setseSectedSlots] = useState("");
   const [showIndex, setShowIndex] = useState(0);
 
   const HorizontalFlatListItem = (props) => {
@@ -242,7 +228,12 @@ const InteractionDetails = (props) => {
             />
 
             {/*Follow up View */}
-            <DetailInfoItem title={"Follow Up"} value={"3"} flex={1} />
+            <DetailInfoItem
+              title={"Follow Up"}
+              value={"3"}
+              flex={1}
+              onPress={() => navigation.navigate("Followup")}
+            />
           </View>
 
           {/* Row 6*/}
@@ -304,6 +295,7 @@ const InteractionDetails = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F0F0F0",
   },
   scrollviewContainer: {
     margin: 15,
