@@ -3,7 +3,12 @@ import { View } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 
 export const CustomInput = (props) => {
-  const { caption = "", multiline = false, hideCaption = false } = props;
+  const {
+    caption = "",
+    placeholder = "",
+    multiline = false,
+    hideCaption = false,
+  } = props;
   const MULT_LINE = multiline ? {} : { height: 45 };
   const { roundness, colors } = useTheme();
   const [active, setActive] = useState(false);
@@ -25,11 +30,11 @@ export const CustomInput = (props) => {
       <View
         style={{
           backgroundColor: colors.background,
-          borderRadius: roundness,
+          borderRadius: 10,
           paddingVertical: 0,
           // elevation: 1,
-          borderColor: active ? colors.gray : colors.gray,
-          borderWidth: active ? 2 : 0.8,
+          borderColor: colors.gray,
+          borderWidth: active ? 2 : 1,
           borderStyle: "solid",
         }}
       >
@@ -41,7 +46,7 @@ export const CustomInput = (props) => {
             ...MULT_LINE,
             padding: 0,
             margin: 0,
-            borderRadius: roundness,
+            borderRadius: 10,
           }}
           placeholderTextColor="#C7CAD1"
           placeholder={caption}

@@ -97,36 +97,6 @@ const Register = ({ navigation, props }) => {
     }
   }, []);
 
-  const orSection = () => {
-    return (
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: spacing.HEIGHT_32,
-        }}
-      >
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-          }}
-        ></View>
-        <Text style={styles.orText}>{strings.or}</Text>
-        <View
-          style={{
-            width: "43%",
-            height: 1,
-            backgroundColor: color.DISABLED_GREY,
-            alignContent: "flex-end",
-          }}
-        ></View>
-      </View>
-    );
-  };
-
   const renderTab = useMemo(() => {
     return isFirstSelected ? (
       <RegisterPersonal navigation={navigation} />
@@ -141,7 +111,7 @@ const Register = ({ navigation, props }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <HeaderTitle header="Need your help" subHeader="Register" />
+      <HeaderTitle header="New to BCAE?" subHeader="Create your account" />
       {registerForm.initRegisterForm ? (
         <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
       ) : (
@@ -207,14 +177,7 @@ const Register = ({ navigation, props }) => {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  orText: {
-    color: color.BCAE_LIGHT_BLUE,
-    fontSize: fontSizes.FONT_10,
-    fontWeight: "500",
-    lineHeight: spacing.WIDTH_16,
-    paddingHorizontal: spacing.WIDTH_7,
+    backgroundColor: color.BCAE_OFF_WHITE,
   },
   alreadyAccount: {
     marginTop: spacing.HEIGHT_30,

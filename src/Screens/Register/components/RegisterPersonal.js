@@ -3,30 +3,28 @@ import React, { useState } from "react";
 import {
   Alert,
   Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  View,
+  Image, ScrollView,
+  View
 } from "react-native";
 
 import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
-import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
+import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../../Redux/RegisterDispatcher";
 
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
@@ -40,7 +38,7 @@ import {
   fontSizes,
   spacing,
   validateEmail,
-  validatePassword,
+  validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -116,11 +114,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [dialpick, setDialPick] = useState("+673");
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
-
+  const [numberMaxLength, setNumberMaxLength] = useState(7);
+  const [idType, setIdType] = useState("");
   // real
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [idType, setIdType] = useState("");
+
   const [idNumber, setIdNumber] = useState("");
   const [gender, setGender] = useState("");
   const [title, setTitle] = useState("");
@@ -139,7 +138,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [postcode, setPostcode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [numberMaxLength, setNumberMaxLength] = useState(7);
+
   //  mock
 
   // const [firstName, setFirstName] = useState("vipin");
@@ -220,7 +219,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   //   buttonEnableDiable();
   // };
   const submit = async () => {
-    console.log(">>", title);
+    console.log(">>hittin",);
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",
@@ -239,14 +238,19 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
     } else if (!validatePassword(confirmPassword)) {
+
       setConfirmPasswordError(strings.passwordValidError);
     } else if (password !== confirmPassword) {
+
       setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
-    } else if (!isSelectedTerm) {
-      setTermError(strings.termError);
-    } else if (!isSelected) {
-      setPrivaceyError(strings.privaceyError);
-    } else if (idNumber === "") {
+    }
+    // else if (!isSelectedTerm) {
+
+    //   setTermError(strings.termError);
+    // } else if (!isSelected) {
+    //   setPrivaceyError(strings.privaceyError);
+    // }
+    else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
     } else if (idType === "") {
       setIdTypeError(strings.idTypeError);
@@ -413,6 +417,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       idNumber === "" ||
       location === "" ||
       password === "" ||
+      dob === "" ||
       confirmPassword === ""
     ) {
       setButtomEnableDisable(true);
@@ -505,6 +510,13 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
     setPassword(text);
     setPasswordError("");
+    buttonEnableDiable();
+  };
+  const onClickConfirmPasswordChange = (text) => {
+    //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
+    setConfirmPassword(text);
+    setConfirmPasswordError("");
+    buttonEnableDiable();
   };
   const clearFirstName = () => {
     setFirstName("");
@@ -529,12 +541,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const onGenderClick = (textStr) => {
     // console.log(textStr.description)
     setGender(textStr);
+    setgenderError("");
     buttonEnableDiable();
   };
 
   const onIdTypeClick = (textStr) => {
     // console.log(textStr.description)
     setIdType(textStr);
+    setIdTypeError("")
     buttonEnableDiable();
   };
 
@@ -583,7 +597,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               padding: 12,
               // marginTop: 2,
               backgroundColor: colors.background,
-              borderRadius: 20,
+              borderRadius: 16,
             }}
           >
             <View style={{ marginVertical: 5 }}>
@@ -679,6 +693,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 setOpen(false);
                 setDob(params);
                 setDobError("");
+                buttonEnableDiable()
               }}
             />
             <View style={{ marginTop: 10 }}>
@@ -719,7 +734,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 style={{
                   backgroundColor: "transparent",
                 }}
-                onChangeText={setIdNumber}
+                onChangeText={(text) => {
+                  setIdNumber(text)
+                  buttonEnableDiable();
+
+                }}
                 value={idNumber}
                 caption={strings.id_number}
                 placeHolder={strings.id_number}
@@ -794,7 +813,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobile"
+                    registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -837,7 +856,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobileOtp"
+                    registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -889,7 +908,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "email"
+                    registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -931,7 +950,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "emailOtp"
+                    registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }
@@ -1004,7 +1023,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 value={confirmPassword}
                 caption={strings.confirmPassword}
                 placeHolder={strings.confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={onClickConfirmPasswordChange}
                 secureTextEntry={secureTextEntryConfim}
                 right={
                   confirmPassword && (

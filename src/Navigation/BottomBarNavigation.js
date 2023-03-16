@@ -61,9 +61,7 @@ const BottomBarNavigation = () => {
       return (
         <View style={navBar.navRightCon}>
           <Pressable
-            onPress={() =>
-              alert("ToDo - Navigate to Notifications Screen")
-            }
+            onPress={() => alert("ToDo - Navigate to Notifications Screen")}
             style={navBar.roundIcon}
           >
             <Image
@@ -75,8 +73,9 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: `data:image/jpeg;base64,${
+                  profile || DEFAULT_PROFILE_IMAGE
+                }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -94,7 +93,7 @@ const BottomBarNavigation = () => {
       >
         <Icon name="menu" size={25} color={colors.primary} />
       </Pressable>
-    )
+    ),
   });
 
   return (
@@ -106,9 +105,7 @@ const BottomBarNavigation = () => {
       <BottomTab.Screen
         // options={{ headerShown: false }}
         options={({ navigation }) => ({
-          ...options(navigation)
-
-
+          ...options(navigation),
         })}
         name="HomeScreen"
         component={HomeScreen}
@@ -138,8 +135,9 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}
@@ -174,8 +172,9 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}
@@ -211,8 +210,9 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                      uri: `data:image/jpeg;base64,${
+                        profile || DEFAULT_PROFILE_IMAGE
+                      }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}

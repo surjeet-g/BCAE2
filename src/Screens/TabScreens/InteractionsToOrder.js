@@ -1,12 +1,21 @@
-import React, {
-  useEffect,
-  useMemo, useState
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
-  Alert, Dimensions, FlatList, Image, ImageBackground, Keyboard,
-  KeyboardAvoidingView, Platform,
-  Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View
+  Alert,
+  Dimensions,
+  FlatList,
+  Image,
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { List } from "react-native-paper";
 
@@ -36,7 +45,6 @@ import {
   updateInteractionAction
 } from "../../Redux/InteractionDispatcher";
 
-
 import {
   setInteractionFormField,
   setInteractionReset
@@ -47,45 +55,52 @@ import { ClearSpace } from "../../Components/ClearSpace";
 import { FooterModel } from "../../Components/FooterModel";
 import { ImagePicker } from "../../Components/ImagePicker";
 import LoadingAnimation from "../../Components/LoadingAnimation";
+import { resetKnowSearch } from '../../Redux/KnowledgeSearchAction';
 import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
-import { getCustomerID } from '../../Utilities/UserManagement/userInfo';
+import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 const InteractionsToOrder = ({ route, navigation }) => {
+
+
+
   //need enable screej loader
   const [loader, setLoader] = useState(true);
-  //attachment 
+  //attachment
   const [fileAttachments, setFileAttachments] = useState([]);
 
-  const [resultLoader, setresultLoader] = useState(false)
-  //to store active interaction object 
-  const [activeInteraction, setActiveInteraction] = useState(false)
+  const [resultLoader, setresultLoader] = useState(false);
+  //to store active interaction object
+  const [activeInteraction, setActiveInteraction] = useState(false);
   //auto suggestion drop box vi
-  const [showList, setShowList] = useState(true);
+  const [autosuggestionlist, setautoSuggestionList] = useState(true);
   //for disble more section while search input box vissible
-  const [bottomModelVisible, setBottomModel] = useState(true)
+  const [searchStandAloneModal, setsearchStandaloneModel] = useState(true);
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
-  const [open, setOpen] = useState(false);
+  const [openBottomModal, setOpenBottomModal] = useState(false);
 
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
+
+
 
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
   const resetStateData = () => {
     setFileAttachments([])
-    setShowList(true)
-    setBottomModel(true)
+    setautoSuggestionList(true)
+    setsearchStandaloneModel(true)
     setKnowledgeSearchText("")
-    setOpen(false)
+    setOpenBottomModal(false)
+
   }
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([fetchSavedProfileData]);
@@ -94,38 +109,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
     fetchInteractionAction,
     updateInteractionAction,
     addInteractionAction,
+    resetKnowSearch
   ]);
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      resetStateData()
+      dispatchInteraction(resetKnowSearch())
+    });
+    return willFocusSubscription;
+  }, []);
   const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
-
-  const { profileReducer, masterReducer, interactionReducer } = useSelector(
-    (state) => {
-      return {
-        profileReducer: state.profile,
-        masterReducer: state.masterdata,
-        interactionReducer: state.interaction,
-      };
-    }
-  );
-
-  let mostfrequentlylist = get(
-    interactionReducer,
-    "InteractionData.mostfrequently.rows",
-    []
-  );
-
-  //to do check response
-  let frequertlyquestionList = get(
-    interactionReducer,
-    "InteractionData.frequerntlyAsked",
-    []
-  );
-
   useEffect(() => {
     async function fetchMyAPI() {
-      const { SERVICE_TYPE, INTXN_TYPE,
-        PRIORITY, CONTACT_TYPE, INTXN_STATEMENT,
-        PROBLEM_CODE, SERVICE_CATEGORY, INTXN_CATEGORY } =
-        MASTER_DATA_CONSTANT;
+      const {
+        SERVICE_TYPE,
+        INTXN_TYPE,
+        PRIORITY,
+        CONTACT_TYPE,
+        INTXN_STATEMENT,
+        PROBLEM_CODE,
+        SERVICE_CATEGORY,
+        INTXN_CATEGORY,
+      } = MASTER_DATA_CONSTANT;
 
       await dispatchInteraction(fetchInteractionAction(true));
       await profileDispatch(fetchSavedProfileData(navigation));
@@ -139,35 +144,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
     fetchMyAPI();
   }, []);
-
-  const customerPic =
-    get(profileReducer, "savedProfileData.customerPhoto", null) ??
-    DEFAULT_PROFILE_IMAGE;
-  const addresss = get(profileReducer, "savedProfileData.customerAddress", []);
-
-
-
-
-  const onChangeKnowledgeSearchText = async (text) => {
-    setKnowledgeSearchText(text);
-
-    if (text.length > 1 && !resultLoader) {
-
-      setresultLoader(true)
-      await knowledgeSearchDispatch(
-        getKnowledgeSearchData(knowledgeSearchText, navigation)
-      );
-
-      //enable list show
-      setShowList(true)
-      setresultLoader(false)
+  const { profileReducer, masterReducer, interactionReducer } = useSelector(
+    (state) => {
+      return {
+        profileReducer: state.profile,
+        masterReducer: state.masterdata,
+        interactionReducer: state.interaction,
+      };
     }
-
-  };
-  const contactTypeList = get(
-    masterReducer,
-    "masterdataData.CONTACT_TYPE",
-    []
   );
   const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
@@ -175,11 +159,59 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const serviceTypelist = get(masterReducer, "masterdataData.SERVICE_TYPE", []);
   const serviceCategoryList = get(masterReducer, "masterdataData.SERVICE_CATEGORY", []);
   const interactionCategoryList = get(masterReducer, "masterdataData.INTXN_CATEGORY", []);
+  const contactTypeList = get(
+    masterReducer,
+    "masterdataData.CONTACT_TYPE",
+    []
+  );
+
+
+  let mostfrequentlylist = get(
+    interactionReducer,
+    "InteractionData.mostfrequently",
+    []
+  );
+
+  //to do check response
+  let frequertlyquestionList = get(
+    interactionReducer,
+    "InteractionData.frequerntlyAsked",
+    []
+  );
+
+
+
+  const customerPic =
+    get(profileReducer, "savedProfileData.customerPhoto", null) ??
+    DEFAULT_PROFILE_IMAGE;
+  const addresss = get(profileReducer, "savedProfileData.customerAddress", []);
+
+
+  const resetStateAfterSearchClicked = () => {
+
+    //search result panal 
+
+    setKnowledgeSearchText("");
+    setautoSuggestionList(false);
+    //search box end
+  }
+  const onChangeKnowledgeSearchText = async (text) => {
+    setKnowledgeSearchText(text);
+
+    if (text.length > 0) {
+      // setresultLoader(true)
+      await knowledgeSearchDispatch(
+        getKnowledgeSearchData(text)
+      );
+      //enable list show
+      setautoSuggestionList(true)
+      // setresultLoader(false)
+    }
+  };
 
   const RenderSearchResult = () => {
-
-    if (!showList) return null;
-    const result = get(knowledgeSearchStore, 'knowledgeSearchData', [])
+    if (!autosuggestionlist) return null;
+    const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
 
     if (result.length == 0) {
       return (
@@ -192,15 +224,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
             borderRadius: 5,
             padding: 4,
             justifyContent: "center",
-            alignItems: "center"
-
-
+            alignItems: "center",
           }}
         >
           <Text style={styles.input}>{strings.no_solution}</Text>
           <Image source={require("../../Assets/icons/no_data.png")} />
         </View>
-      )
+      );
     } else {
       return (
         <FlatList
@@ -220,11 +250,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   alignItems: "center",
                   backgroundColor: "#fff",
                   height: 40,
-                  borderRadius: 3
+                  borderRadius: 3,
                 }}
                 onPress={() => {
                   //store selected result in cache
-
 
                   //pre populating result
                   dispatchInteraction(
@@ -248,78 +277,97 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType), '[0]', { code: "", description: "" })
                   const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory), '[0]', { code: "", description: "" })
                   //to do from api response 
-                  const contactPerFromProfile = get(profileReducer, "savedProfileData.contactPreferences",)
+                  const contactPerFromProfile = get(profileReducer, "savedProfileData.contactPreferences", [{ code: "", description: "" }])
                   //make array 
                   const contactPerferance = get(contactTypeList?.filter((it) => it.code == contactPerFromProfile), '[0]', { code: "", description: "" })
 
 
 
-
+                  setDropDownFormField("contactPerference", contactPerferance)
                   //set contact perferance
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "contactPerference",
-                      value: { code: interCat.code, description: interCat.description },
-                      clearError: true,
-                    })
-                  );
-
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionCategory",
-                      value: { code: interCat.code, description: interCat.description },
-                      clearError: true,
-                    })
-                  );
 
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionType",
-                      value: { code: interType.code, description: interType.description },
-                      clearError: true,
-                    })
-                  );
+                  setDropDownFormField("interactionCategory", interCat)
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceCategory",
-                      value: { code: serviveCatType.code, description: serviveCatType.description },
-                      clearError: true,
-                    })
-                  );
+                  setDropDownFormField("interactionType", interType)
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceType",
-                      value: { code: serviveType.code, description: serviveType.description },
-                      clearError: true,
-                    })
-                  );
-                  //hide search result panal
+                  setDropDownFormField("serviceCategory", serviveCatType)
+
+
+                  setDropDownFormField("serviceType", serviveType)
+
+
+                  //set selected data into state value
                   setActiveInteraction(item);
-                  //open form model 
-                  setOpen(true);
+                  //open form model
+                  setOpenBottomModal(true);
                   //disable other windo
-                  setBottomModel(true)
+                  setsearchStandaloneModel(true);
                   //make empt search box
                   setKnowledgeSearchText("");
-                  setShowList(false);
+                  setautoSuggestionList(false);
                 }}
               />
-            )
+            );
           }}
-
         />
-      )
+      );
     }
 
 
   }
+
+  const setDropDownFormField = (field, { code, description }) => {
+    dispatchInteraction(
+      setInteractionFormField({
+        field,
+        value: { code: code, description: description },
+        clearError: true,
+      })
+    )
+  }
+
+  const interactionDataToCreateInt = (item) => {
+
+    try {
+
+      const interCat = get(interactionCategoryList?.filter((it) => it.code == item.intxnCategory?.code), '[0]', { code: "", description: "" })
+      const interType = get(interactionList?.filter((it) => it.code == item.intxnType?.code), '[0]', { code: "", description: "" })
+      const serviveType = get(serviceTypelist?.filter((it) => it.code == item.serviceType?.code), '[0]', { code: "", description: "" })
+      const serviveCatType = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
+      const prirtyCode = get(serviceCategoryList?.filter((it) => it.code == item.serviceCategory?.code), '[0]', { code: "", description: "" })
+      //to do from api response 
+      //make array 
+      const contactPerferance = get(contactTypeList?.filter((it) => it.code == get(item, 'contactPreference[0].code')), '[0]', { code: "", description: "" })
+
+
+
+      setDropDownFormField("priorityCode", prirtyCode)
+
+      setDropDownFormField("contactPerference", contactPerferance)
+
+      setDropDownFormField("interactionCategory", interCat)
+
+      setDropDownFormField("interactionType", interType)
+
+      setDropDownFormField("serviceCategory", serviveCatType)
+
+      setDropDownFormField("serviceType", serviveType)
+
+
+
+    } catch (error) {
+      console.log('error in interactionTocreate', error)
+    }
+
+  }
+
   const renderMostFrequent = useMemo(() => {
+
     mostfrequentlylist = mostfrequentlylist.filter(
       (item) => item.requestStatement != null
     );
+
 
     return (
       <View
@@ -328,7 +376,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           margin: 5,
           padding: 10,
           backgroundColor: "#FFF",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -352,20 +400,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
             />
           </View>
           <ClearSpace size={2} />
-          {mostfrequentlylist.length == 0 ? <Text
-            variant="labelSmall"
-            style={{
-              // fontSizes: 12,
-              // marginTop: 15,
-              fontWeight: "400",
-              color: "#848A93",
-            }}
-          >
-            No found
-          </Text> :
+          {mostfrequentlylist.length == 0 ? (
+            <Text
+              variant="labelSmall"
+              style={{
+                // fontSizes: 12,
+                // marginTop: 15,
+                fontWeight: "400",
+                color: "#848A93",
+              }}
+            >
+              No found
+            </Text>
+          ) : (
             mostfrequentlylist.map((item) => {
               return (
-                <View
+                <Pressable
+                  onPress={() => {
+                    interactionDataToCreateInt(item)
+                  }}
                   style={{
                     flexDirection: "row",
                     // justifyContent: "space-between",
@@ -384,18 +437,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   >
                     {item.requestStatement}
                   </Text>
-                </View>
+                </Pressable>
               );
-            })}
+            })
+          )}
         </View>
       </View>
     );
-  }, [mostfrequentlylist]);
+  }, [mostfrequentlylist, masterReducer]);
 
   const renderFrequently = useMemo(() => {
+
     frequertlyquestionList = frequertlyquestionList.filter(
       (item) => item.requestStatement != null
     );
+
+
     return (
       <View
         style={{
@@ -403,7 +460,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           margin: 5,
           padding: 10,
           backgroundColor: "#FFF",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -425,8 +482,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
             />
           </View>
           <ClearSpace size={2} />
-          {
-            frequertlyquestionList.length == 0 ? <Text
+          {frequertlyquestionList.length == 0 ? (
+            <Text
               variant="labelSmall"
               style={{
                 // fontSizes: 12,
@@ -436,31 +493,34 @@ const InteractionsToOrder = ({ route, navigation }) => {
               }}
             >
               No found
-            </Text> :
+            </Text>) :
 
-              frequertlyquestionList.map((item) => {
-                return (
-                  <View
+            frequertlyquestionList.map((item) => {
+              return (
+                <Pressable
+                  onPress={(item) => {
+                    interactionDataToCreateInt(item)
+                  }}
+                  style={{
+                    // marginTop: 15,
+                    fontWeight: "400",
+                    color: "#848A93",
+                  }}
+                >
+                  <View style={styles.dot} />
+                  <Text
+                    variant="bodySmall"
                     style={{
-                      flexDirection: "row",
-                      // justifyContent: "space-evenly",
-                      alignItems: "center",
+                      // marginTop: 15,
+                      fontWeight: "400",
+                      color: "#848A93",
                     }}
                   >
-                    <View style={styles.dot} />
-                    <Text
-                      variant="bodySmall"
-                      style={{
-                        // marginTop: 15,
-                        fontWeight: "400",
-                        color: "#848A93",
-                      }}
-                    >
-                      {item.requestStatement}
-                    </Text>
-                  </View>
-                );
-              })
+                    {item.requestStatement}
+                  </Text>
+                </Pressable>
+              );
+            })
           }
         </View>
       </View>
@@ -476,7 +536,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           paddingRight: 20,
           paddingBottom: 20,
           backgroundColor: "#F26E77",
-          borderRadius: 20,
+          borderRadius: 16,
           elevation: 5,
         }}
       >
@@ -630,7 +690,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [addresss, customerPic, profileReducer]);
 
   const {
-
     statement,
     interactionType,
     channel,
@@ -641,14 +700,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
     attachment,
     serviceType,
     interactionCategory,
-    serviceCategory
+    serviceCategory,
   } = interactionRedux.formData;
 
   const { loaderAdd } = interactionRedux;
 
   let isButtonEnable = true;
-
-
 
   //handling loader
   if (loader)
@@ -667,41 +724,35 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   //button disable or not
 
-  Object.keys(interactionRedux.formData).map(it => {
-
-    const item = interactionRedux.formData[it]
+  Object.keys(interactionRedux.formData).map((it) => {
+    const item = interactionRedux.formData[it];
 
     if (item.required) {
       //dropdown
       if (item.type == INPUT_TYPE.DROPDOWN) {
-
         if (item.value.code == "") {
-          isButtonEnable = false
+          isButtonEnable = false;
         }
       }
       if (item.type == INPUT_TYPE.INPUTBOX) {
         if (item.value == "") {
-          isButtonEnable = false
+          isButtonEnable = false;
         }
       }
     }
-  })
+  });
   return (
     <>
       <View style={styles.container}>
-
         {/* profile card */}
-        {bottomModelVisible &&
-          renderProfileTab}
+        {searchStandAloneModal && renderProfileTab}
 
-        {bottomModelVisible &&
+        {searchStandAloneModal && (
           <View style={{ flexDirection: "row" }}>
             {renderMostFrequent}
             {renderFrequently}
           </View>
-        }
-
-
+        )}
 
         {activeInteraction !== false && (
           <View
@@ -716,32 +767,29 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginTop: 20,
             }}
           >
-            <Text style={{ textAlign: "center" }}>{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
-
+            <Text
+              style={{ textAlign: "center" }}
+            >{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
           </View>
         )}
-
-
-
 
         <View style={styles.searchSection}>
           <TextInput
             style={styles.input}
-            onFocus={() => setBottomModel(false)}
-
+            onFocus={() => setsearchStandaloneModel(false)}
             value={knowledgeSearchText}
             placeholder="Search..."
             onChangeText={onChangeKnowledgeSearchText}
             underlineColorAndroid="transparent"
           />
-          {knowledgeSearchText &&
+          {knowledgeSearchText && (
             <Pressable
               onPress={() => {
-                setKnowledgeSearchText(false)
-                setBottomModel(true)
-                //open form model 
-                setShowList(false);
-                Keyboard.dismiss()
+                setKnowledgeSearchText(false);
+                setsearchStandaloneModel(true);
+                //open form model
+                setautoSuggestionList(false);
+                Keyboard.dismiss();
               }}
             >
               <Icon
@@ -751,27 +799,24 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 color={"#C7CAD1"}
               />
             </Pressable>
-          }
+          )}
         </View>
-
 
         <RenderSearchResult />
 
         {/* search box end */}
         {/*knowledge search*/}
-
-
       </View>
-      {bottomModelVisible &&
-        <FooterModel open={open} setOpen={setOpen}>
+      {searchStandAloneModal && (
+        <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}>
           <ScrollView contentContainerStyle={{ flex: 1 }}>
             <KeyboardAvoidingView
               // keyboardVerticalOffset={50}
-              behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+              behavior={Platform.OS === "ios" ? "padding" : "padding"}
               style={{ flex: 1 }}
             >
               {/* Field View */}
-              <View style={{ marginHorizontal: 10, }}>
+              <View style={{ marginHorizontal: 10 }}>
                 <CustomDropDownFullWidth
                   selectedValue={get(interactionType, "value.description", "")}
                   data={interactionList}
@@ -789,7 +834,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   placeHolder={"Select " + strings.intractionType}
                 />
 
-                {interactionType.error && showErrorMessage(interactionType.error)}
+                {interactionType.error &&
+                  showErrorMessage(interactionType.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(serviceType, "value.description", "")}
@@ -807,11 +853,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={strings.serviceType}
                   placeHolder={"Select " + strings.serviceType}
                 />
-                {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
-
+                {serviceTypelist.error &&
+                  showErrorMessage(serviceTypelist.error)}
 
                 <CustomDropDownFullWidth
-                  selectedValue={get(interactionCategory, "value.description", "")}
+                  selectedValue={get(
+                    interactionCategory,
+                    "value.description",
+                    ""
+                  )}
                   data={interactionCategoryList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -827,7 +877,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   placeHolder={"Select interaction category"}
                 />
 
-                {interactionCategory.error && showErrorMessage(interactionCategory.error)}
+                {interactionCategory.error &&
+                  showErrorMessage(interactionCategory.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(serviceCategory, "value.description", "")}
@@ -845,8 +896,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={"Serive Category"}
                   placeHolder={"Select Serive Category"}
                 />
-                {serviceCategory.error && showErrorMessage(serviceCategory.error)}
-
+                {serviceCategory.error &&
+                  showErrorMessage(serviceCategory.error)}
 
                 <CustomDropDownFullWidth
                   selectedValue={get(problemCause, "value.description", "")}
@@ -868,7 +919,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                 <CustomDropDownFullWidth
                   selectedValue={get(priorityCode, "value.description", "")}
-
                   data={priorityList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -885,8 +935,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 />
 
                 <CustomDropDownFullWidth
-
-                  selectedValue={get(contactPerference, "value.description", "")}
+                  selectedValue={get(
+                    contactPerference,
+                    "value.description",
+                    ""
+                  )}
                   data={contactTypeList}
                   onChangeText={(text) => {
                     dispatchInteraction(
@@ -901,7 +954,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   caption={strings.contact_type}
                   placeHolder={"Select " + strings.contact_type}
                 />
-                {contactPerference.error && showErrorMessage(contactPerference.error)}
+                {contactPerference.error &&
+                  showErrorMessage(contactPerference.error)}
                 {/* <KeyboardAwareView animated={false}> */}
 
                 <CustomInput
@@ -940,7 +994,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setAttachmentModalVisible={setAttachmentModalVisible}
                   fileAttachments={fileAttachments}
                   setFileAttachments={setFileAttachments}
-
                 />
                 {/* </KeyboardAwareView> */}
                 {/* <CustomInput
@@ -972,10 +1025,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   <CustomButton
                     label={strings.cancel}
                     onPress={() => {
-                      setOpen(false)
-                      dispatchInteraction(setInteractionReset())
-
-                    }} />
+                      setOpenBottomModal(false);
+                      dispatchInteraction(setInteractionReset());
+                    }}
+                  />
                 </View>
 
                 <View style={{ flex: 1 }}>
@@ -984,30 +1037,30 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     loading={loaderAdd}
                     label={strings.submit}
                     onPress={async () => {
-                      const input = interactionRedux.formData
-                      const customerID = await getCustomerID()
+                      const input = interactionRedux.formData;
+                      const customerID = await getCustomerID();
                       const params = {
-                        "customerId": customerID,
-                        "statement": input.statement.value,
-                        "statementId": input.statementId.value,
-                        "problemCause": input.problemCause.value?.code,
-                        "interactionCategory": input.interactionCategory.value?.code,
-                        "serviceCategory": input.serviceCategory.value?.code,
-                        "interactionType": input.interactionType.value?.code,
-                        "serviceType": input.serviceType.value?.code,
-                        "channel": input.channel.value,
-                        "priorityCode": input.priorityCode.value?.code,
-                        "contactPreference": [
-                          input.contactPerference.value?.code
+                        customerId: customerID,
+                        statement: input.statement.value,
+                        statementId: input.statementId.value,
+                        problemCause: input.problemCause.value?.code,
+                        interactionCategory:
+                          input.interactionCategory.value?.code,
+                        serviceCategory: input.serviceCategory.value?.code,
+                        interactionType: input.interactionType.value?.code,
+                        serviceType: input.serviceType.value?.code,
+                        channel: input.channel.value,
+                        priorityCode: input.priorityCode.value?.code,
+                        contactPreference: [
+                          input.contactPerference.value?.code,
                         ],
-                        "remarks": input.remarks.value
-                      }
-
+                        remarks: input.remarks.value,
+                      };
 
                       const { status, response } = await dispatchInteraction(
                         addInteractionAction(params, fileAttachments)
                       );
-                      console.log('respin', status, response)
+                      console.log("respin", status, response);
 
                       if (status) {
                         dispatchInteraction(setInteractionReset())
@@ -1018,20 +1071,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
                             text: strings.inquiryInfo,
                             onPress: () => {
                               //reset attachment
-
                               // navigation.navigate("InquiryNotification", {
                               //   ouId: organizationItem.unitId,
                               //   serviceType: inquiryServiceName,
                               //   problemCode: inquiryProblemCode,
                               //   deptId: inquiryDeptId,
                               // });
-
                             },
                           },
                           {
                             text: strings.close,
                             onPress: () => {
-
                               navigation.navigate("Home", {});
                             },
                             style: "cancel",
@@ -1042,15 +1092,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                       }
                     }}
-
                   />
                 </View>
-
               </View>
             </KeyboardAvoidingView>
           </ScrollView>
         </FooterModel>
-      }
+      )}
     </>
   );
 };

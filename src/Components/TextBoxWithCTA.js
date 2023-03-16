@@ -30,13 +30,11 @@ export const TextBoxWithCTA = (props) => {
   return (
     <View style={{ marginTop: 10 }}>
       <View style={{ marginTop: 10 }}>
-        <Text style={styles.placeHolderText}>
-          {props.value != "" && props.placeHolder}
-        </Text>
+        <Text style={styles.placeHolderText}>{props.placeHolder}</Text>
       </View>
       <View style={{ flexDirection: "row" }}>
         {props?.correctOtp && (
-          <View style={{ borderRadius: roundness, ...styles.correctStyle }}>
+          <View style={{ borderRadius: 10, ...styles.correctStyle }}>
             <Image source={require("../Assets/icons/Verify.png")} />
           </View>
         )}
@@ -44,7 +42,7 @@ export const TextBoxWithCTA = (props) => {
           <View
             style={{
               backgroundColor: color.BLACK,
-              borderRadius: roundness,
+              borderRadius: 10,
               ...styles.ctaStyle,
             }}
           >
@@ -59,7 +57,7 @@ export const TextBoxWithCTA = (props) => {
             onPress={onClicked}
             disabled={isDisableButton}
             style={{
-              borderRadius: roundness,
+              borderRadius: 10,
               backgroundColor: isDisableButton ? color.BLACK : bgColor,
               ...styles.ctaStyle,
             }}
@@ -74,9 +72,9 @@ export const TextBoxWithCTA = (props) => {
             marginVertical: spacing.HEIGHT_3,
             height: 45,
             backgroundColor: colors.background,
-            borderRadius: roundness,
-            borderColor: active ? colors.gray : colors.gray,
-            borderWidth: active ? 2 : 0.8,
+            borderRadius: 10,
+            borderColor: colors.gray,
+            borderWidth: active ? 2 : 1,
             borderStyle: "solid",
             alignItems: "center",
             paddingHorizontal: 12,
@@ -175,7 +173,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 8,
     borderColor: theme.colors.gray,
-    borderWidth: 0.8,
+    borderWidth: 1,
     zIndex: 1,
     padding: spacing.WIDTH_10,
     // borderRadius: spacing.HEIGHT_3,

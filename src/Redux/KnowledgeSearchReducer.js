@@ -1,7 +1,6 @@
 import {
-  KNOWLEDGE_SEARCH_INIT,
   KNOWLEDGE_SEARCH_DATA,
-  KNOWLEDGE_SEARCH_ERROR,
+  KNOWLEDGE_SEARCH_ERROR, KNOWLEDGE_SEARCH_INIT, RESET_KNOW_SEARCH
 } from "./KnowledgeSearchAction";
 
 const knowledgeSearchInitialState = {
@@ -30,7 +29,11 @@ const KnowledgeSearchReducer = (
         isKnowledgeSearchError: true,
         knowledgeSearchData: action.data,
       };
-
+    case RESET_KNOW_SEARCH:
+      return {
+        ...state,
+        knowledgeSearchData: {}
+      };
     case KNOWLEDGE_SEARCH_DATA:
       return {
         ...state,

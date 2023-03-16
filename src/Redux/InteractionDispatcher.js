@@ -36,15 +36,16 @@ export function fetchInteractionAction(
       if (isCreateInteraction) {
         const customerId = await getCustomerID();
         const freqentlyAskedResult = await serverCall(
-          `${endPoints.FREQUENTLY_ASKED}?customerId=${customerId}&limit=2`,
+          `${endPoints.FREQUENTLY_ASKED}?limit=2`,
           requestMethod.GET,
           {}
         );
-
+        console.log('>>tresdfg', freqentlyAskedResult)
         const data = {
           frequerntlyAsked: freqentlyAskedResult?.data?.data,
-          mostfrequently: interactionResult?.data?.data,
+          mostfrequently: interactionResult?.data?.data?.rows,
         };
+        console.log('>>tresdfg', data)
         dispatch(setInteractionData(data, false));
 
       } else {

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import {
-  Alert, ImageBackground, ScrollView,
+  Alert,
+  ImageBackground,
+  ScrollView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +14,7 @@ import {
   color,
   fontSizes,
   spacing,
-  validatePassword
+  validatePassword,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 
@@ -170,7 +172,7 @@ const ResetPassword = ({ route, navigation }) => {
               flex: 1,
               padding: 20,
               backgroundColor: "#fff",
-              borderRadius: 20,
+              borderRadius: 16,
               elevation: 5,
             }}
           >
@@ -303,9 +305,6 @@ const ResetPassword = ({ route, navigation }) => {
               forgot?.loggedProfile.status != "200" &&
               showErrorMessage(forgot?.loggedProfile?.message)}
           </View>
-
-       
-      
         </StickyFooter>
         {!login.initLogin &&
           (login?.loggedProfile?.errorCode == "10000" ||

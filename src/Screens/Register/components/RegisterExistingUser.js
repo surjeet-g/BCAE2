@@ -3,15 +3,12 @@ import React, { useState } from "react";
 import {
   Alert,
   Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  View,
+  Image, ScrollView,
+  View
 } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 import { CustomButton as Button } from "../../../Components/CustomButton";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
 import { CustomInput } from "../../../Components/CustomInput";
@@ -23,27 +20,25 @@ import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../../Redux/RegisterDispatcher";
 var { height, width } = Dimensions.get("screen");
 
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../../Utilities/utils";
 
 import DatePicker from "react-native-date-picker";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
-import Toast from "react-native-toast-message";
 import { ClearSpace } from "../../../Components/ClearSpace";
 import {
-  buttonSize,
   color,
   fontSizes,
   spacing,
   validateEmail,
-  validatePassword,
+  validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -172,13 +167,13 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     //   });
     //   return null;
     // }
-    if (!emailOTPVerification) {
-      Toast.show({
-        type: "bctError",
-        text1: strings.otpErrorMsgForEmail,
-      });
-      return null;
-    }
+    // if (!emailOTPVerification) {
+    //   Toast.show({
+    //     type: "bctError",
+    //     text1: strings.otpErrorMsgForEmail,
+    //   });
+    //   return null;
+    // }
 
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
@@ -204,11 +199,13 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       setEmailError(strings.emailValidError);
     } else if (otpEmail.trim() === "") {
       setOtpEmailError(strings.emailOtpError);
-    } else if (!isSelectedTerm) {
-      setTermError(strings.termError);
-    } else if (!isSelected) {
-      setPrivaceyError(strings.privaceyError);
-    } else {
+    }
+    // else if (!isSelectedTerm) {
+    //   setTermError(strings.termError);
+    // } else if (!isSelected) {
+    //   setPrivaceyError(strings.privaceyError);
+    // } 
+    else {
       let registerObject = {
         accountType: "existing",
         customerNo: customerID,
@@ -488,9 +485,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
   const onClickPasswordChange = (text) => {
-    //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
+
     setPassword(text);
     setPasswordError("");
+    buttonEnableDiable();
   };
   return (
     <View style={{ flex: 1 }}>
@@ -546,7 +544,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
               padding: 12,
               // marginTop: 2,
               backgroundColor: colors.background,
-              borderRadius: 20,
+              borderRadius: 16,
             }}
           >
             <View style={{ marginTop: 10 }}>
@@ -692,7 +690,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobile"
+                    registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -735,7 +733,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobileOtp"
+                    registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -787,7 +785,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "email"
+                    registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -830,7 +828,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "emailOtp"
+                    registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }
@@ -904,7 +902,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 value={confirmPassword}
                 caption={strings.confirmPassword}
                 placeHolder={strings.confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={onConfirmPasswordChange}
                 secureTextEntry={secureTextEntryConfim}
                 right={
                   confirmPassword && (
@@ -927,6 +925,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 showErrorMessage(passwordConfirmError)}
             </View>
           </Card>
+
         </ScrollView>
       </View>
       <StickyFooter>

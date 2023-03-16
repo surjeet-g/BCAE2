@@ -53,7 +53,7 @@ export const endPoints = {
   ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
-  KNOWLEDGE_SEARCH: "api/knowledge-Base/search/",
+  KNOWLEDGE_SEARCH: "api/knowledge-Base/search",
   GET_WORKFLOW_LIST: "api/workflow/get-workflow-list",
   GET_WORKFLOW_FOR_ID: "api/workflow/get-workflow/",
   CREATE_WORKFLOW: "api/workflow/create",
