@@ -11,8 +11,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
-  TextInput, View
+  StyleSheet, TextInput, View
 } from "react-native";
 import { Chip, List, Text } from "react-native-paper";
 
@@ -380,17 +379,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
         <Pressable style={styles.accodinItem} onPress={() => {
           handleAccodin(typeOfAccrodin.category,)
         }}>
-          <Text style={styles.accordinImg}>s</Text>
+          <Image source={require("../../Assets/icons/interaction_category.gif")}
+            style={styles.gif} />
           <Text style={styles.accordinTxt}>Top 10 Category</Text>
           <Icon name='chevron-down' size={30} color={colors.accodinItem} />
         </Pressable>
         <Pressable style={styles.accodinItem} onPress={() => handleAccodin(typeOfAccrodin.frequently)}>
-          <Text style={styles.accordinImg}>s</Text>
+          <Image source={require("../../Assets/icons/interaction_fewq.gif")}
+            style={styles.gif} />
           <Text style={styles.accordinTxt}>Most frequent Interaction</Text>
           <Icon name='chevron-down' size={30} color={colors.accodinItem} />
         </Pressable>
         <Pressable style={styles.accodinItem} onPress={() => handleAccodin(typeOfAccrodin.rencently)}>
-          <Text style={styles.accordinImg}>s</Text>
+          <Image source={require("../../Assets/icons/interaction_most_feq.gif")}
+            style={styles.gif} />
           <Text style={styles.accordinTxt}>Recently Interaction</Text>
           <Icon name='chevron-down' size={30} color={colors.accodinItem} />
         </Pressable>
@@ -563,9 +565,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const renderProfileTab = useMemo(() => {
     return (
-      <View
+      <ImageBackground
+        source={require("../../Assets/icons/login_card_background.png")}
+        // resizeMode="contain"
         style={{
-          margin: 5,
+          // margin: 5,
           paddingLeft: 20,
           paddingRight: 20,
           paddingBottom: 20,
@@ -703,7 +707,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             {handleMultipleContact(addresss)}
           </Text>
         </View>
-      </View>
+      </ImageBackground>
     );
   }, [addresss, customerPic, profileReducer]);
 
@@ -1264,6 +1268,10 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     paddingHorizontal: 10
+  },
+  gif: {
+    width: 30,
+    height: 30
   }
 });
 
