@@ -4,6 +4,27 @@ import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 const Followup = (props) => {
   const { route, navigation } = props;
 
+  const PlaceHolderText = ({ text = "Placeholder", top, right }) => {
+    return (
+      <Text
+        style={{
+          paddingVertical: 5,
+          paddingHorizontal: 10,
+          backgroundColor: "#47B065",
+          color: "#fff",
+          fontSize: 13,
+          fontWeight: 700,
+          borderRadius: 30,
+          position: "absolute",
+          top: top,
+          right: right,
+        }}
+      >
+        {text}
+      </Text>
+    );
+  };
+
   const FollowupUI = () => {
     return (
       <View style={{ alignItems: "center" }}>
@@ -11,10 +32,13 @@ const Followup = (props) => {
           source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
           style={{ width: 30, height: 30 }}
         />
-        <Image
-          source={require("../../Assets/icons/ic_veritical_line.png")}
-          style={{ height: 100 }}
-        />
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={require("../../Assets/icons/ic_veritical_line.png")}
+            style={{ height: 100 }}
+          />
+          <PlaceHolderText text={"Followup 3"} top={20} right={-45} />
+        </View>
         {/* Card View data 1*/}
         <View
           style={{
@@ -84,10 +108,13 @@ const Followup = (props) => {
           </View>
         </View>
 
-        <Image
-          source={require("../../Assets/icons/ic_veritical_line.png")}
-          style={{ height: 100 }}
-        />
+        <View>
+          <Image
+            source={require("../../Assets/icons/ic_veritical_line.png")}
+            style={{ height: 150 }}
+          />
+          <PlaceHolderText text={"Followup 2"} top={50} right={-45} />
+        </View>
 
         {/* Card View data 2*/}
         <View
@@ -158,10 +185,13 @@ const Followup = (props) => {
           </View>
         </View>
 
-        <Image
-          source={require("../../Assets/icons/ic_veritical_line.png")}
-          style={{ height: 100 }}
-        />
+        <View>
+          <Image
+            source={require("../../Assets/icons/ic_veritical_line.png")}
+            style={{ height: 150 }}
+          />
+          <PlaceHolderText text={"Followup 1"} top={50} right={-45} />
+        </View>
 
         {/* Card View data 3*/}
         <View
