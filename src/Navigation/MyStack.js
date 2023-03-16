@@ -52,6 +52,9 @@ import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import ComingSoon from "./../Screens/ComingSoon";
+import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
+import Followup from "./../Screens/Appointments/Followup";
+import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -61,7 +64,11 @@ const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
+const STACK_INTERACTION_DETAILS = "InteractionDetails";
+const STACK_FOLLOWUP = "Followup";
+const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const Stack = createStackNavigator();
+
 function MyStack() {
   const { colors, fonts } = useTheme();
   const options = {
@@ -99,7 +106,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Playground"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -347,6 +354,36 @@ function MyStack() {
           })}
           name={STACK_CREATE_ORDER}
           component={CreateOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Interaction Details",
+            },
+          })}
+          name={STACK_INTERACTION_DETAILS}
+          component={InteractionDetails}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Interaction Details",
+            },
+          })}
+          name={STACK_FOLLOWUP}
+          component={Followup}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Workflow History",
+            },
+          })}
+          name={STACK_WORKFLOW_HISTORY}
+          component={WorkflowHistory}
         />
         <Stack.Screen
           options={({ navigation }) => ({
