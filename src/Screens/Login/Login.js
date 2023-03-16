@@ -5,12 +5,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { Modal, RadioButton, TextInput, Switch } from "react-native-paper";
+import { Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
@@ -21,23 +21,22 @@ import { ToggleButton } from "../../Components/ToggleButton";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
-  requestUserPermission,
+  requestUserPermission
 } from "../../Utilities/FCM/NotificationService";
 import { strings } from "../../Utilities/Language";
-import { HEADER_MARGIN } from "../../Utilities/themeConfig";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../Utilities/utils";
+import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
 import {
   callLogoutAndLogin,
   resetLogin,
   resetShowSecondLoginAlert,
   sendLoginOTPData,
-  verifyLoginData,
+  verifyLoginData
 } from "./LoginDispatcher";
-import { HeaderTitle } from "./../../Components/headerTitle";
 
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
@@ -59,7 +58,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(false);
-  const [username, setUsername] = useState("kamal@yopmail.com");
+  const [username, setUsername] = useState("vipinv0647@gmail.com");
   const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
@@ -566,8 +565,8 @@ export const Login = ({ navigation }) => {
                       ? true
                       : false
                     : number == "" || password == ""
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
                 onPress={() => {
                   loginMode === EMAIL

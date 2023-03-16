@@ -1,12 +1,14 @@
 import React from "react";
-import { Dimensions, Pressable, ScrollView, Text, View } from "react-native";
+import { Dimensions, ScrollView, Text, View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { Switch } from "react-native-paper";
 import { SHADOW_STYLE } from "../Utilities/themeConfig";
 import { ClearSpace } from "./ClearSpace";
-
+Icon
 var { height, width } = Dimensions.get("screen");
-export const FooterModel = ({ setOpen = () => {}, open = false, children }) => {
+
+export const FooterModel = ({ setOpen = () => { }, open = false, children, title = "" }) => {
+  if (!open) return null
   return (
     <View
       style={{
@@ -17,36 +19,13 @@ export const FooterModel = ({ setOpen = () => {}, open = false, children }) => {
       <View
         style={{
           backgroundColor: "white",
-          height: open ? height : 100,
+          minHeight: height * .2,
+          maxHeight: height * .6,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
           ...SHADOW_STYLE,
         }}
       >
-        {open && (
-          <Pressable
-            onPress={() => {
-              setOpen(false);
-            }}
-            style={{
-              width: 20,
-              height: 20,
-              borderRadius: 16,
-              backgroundColor: "black",
-              position: "absolute",
-              right: 19,
-              top: 12,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 10, textAlign: "center" }}>
-              {" "}
-              x{" "}
-            </Text>
-          </Pressable>
-        )}
-
         <View
           style={{
             position: "relative",
@@ -87,15 +66,20 @@ export const FooterModel = ({ setOpen = () => {}, open = false, children }) => {
               // flex: 1,
             }}
           >
-            {"Enable Interactions"}
+            {title}
           </Text>
-          <Switch value={open} onValueChange={setOpen} />
+
+
+          <Icon
+            onPress={() => {
+              setOpen(false);
+            }} name='close-circle' size={25} color={"#000"} />
         </View>
-        {open && (
-          <ScrollView style={{ flex: 1, marginBottom: 122 }}>
-            {children}
-          </ScrollView>
-        )}
+
+        <ScrollView contentContainerStyle={{ marginBottom: 20 }}>
+          {children}
+        </ScrollView>
+
       </View>
     </View>
   );

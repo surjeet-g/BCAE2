@@ -30,9 +30,10 @@ const theme = {
     onSurface: "#212223",
     buttonDisableColor: "#DBDBDB",
     onSurfaceVariant: "#202223",
-    // outline: "black",
+    textColor: "black",
     graylabel: "#848A93",
     toggleBackground: "#F2EFFF",
+    black: "#000000"
   },
   fonts: {
     bodyLarge: {
@@ -45,9 +46,9 @@ const theme = {
     bodyMedium: {
       // fontFamily: FONT_FAMILY,
       letterSpacing: 0.25,
-      fontWeight: "400",
+      fontWeight: "500",
       lineHeight: 20,
-      fontSize: 18,
+      fontSize: 15,
     },
     bodySmall: {
       // fontFamily: FONT_FAMILY,

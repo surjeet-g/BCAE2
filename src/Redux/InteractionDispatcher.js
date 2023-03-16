@@ -12,48 +12,87 @@ import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 import Toast from "react-native-toast-message";
-import { getCustomerID } from "../Utilities/UserManagement/userInfo";
+import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
+import { getCustomerID, getCustomerUUID } from '../Utilities/UserManagement/userInfo';
 
 export function fetchInteractionAction(
-  isCreateInteraction = false,
-  page = 0,
-  limit = 2,
-  body = {
-    searchParams: {},
-  }
+  type = "",
+  params = {}
 ) {
   return async (dispatch) => {
+
     dispatch(initInteraction());
+    const customerUUID = await getCustomerUUID()
+    const customerID = await getCustomerID()
+    console.log('hititng', customerID, type)
+    let interactionResult
+    if (type == typeOfAccrodin.rencently.value) {
+      interactionResult = await serverCall(
+        `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
+        requestMethod.POST,
+        {
+          searchParams: {
+            customerId: customerID,
+          }
+        }
+      );
+    }
+    else if (type == typeOfAccrodin.frequently.value) {
+      interactionResult = await serverCall(
+        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+        requestMethod.GET,
+        {}
+      );
+    }
+    else if (type == typeOfAccrodin.category.value) {
+      interactionResult = await serverCall(
+        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+        requestMethod.GET,
+        {}
+      );
+    }
+    else if (type == typeOfAccrodin.searchbox.value) {
+      interactionResult = await serverCall(
+        `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}?limit=4`,
+        requestMethod.POST,
+        {
+          "requestId": params.requestId,
+          "customerUuid": customerUUID
+        }
+      );
+    }
+    else {
 
-    const interactionResult = await serverCall(
-      `${endPoints.INTERACTION_FETCH}?page=${page}&limit=${limit}`,
-      requestMethod.POST,
-      body
-    );
+      dispatch(setInteractionError([]));
+      return false
+    }
 
+    console.log('terdsf', interactionResult.data, type)
     if (interactionResult?.success) {
-      console.log(">>freqentlyAskedResult", isCreateInteraction);
-      if (isCreateInteraction) {
-        const customerId = await getCustomerID();
-        const freqentlyAskedResult = await serverCall(
-          `${endPoints.FREQUENTLY_ASKED}?limit=2`,
-          requestMethod.GET,
-          {}
-        );
-        console.log('>>tresdfg', freqentlyAskedResult)
-        const data = {
-          frequerntlyAsked: freqentlyAskedResult?.data?.data,
-          mostfrequently: interactionResult?.data?.data?.rows,
-        };
-        console.log('>>tresdfg', data)
-        dispatch(setInteractionData(data, false));
 
-      } else {
-        dispatch(setInteractionData(interactionResult?.data?.data, false));
+      let data = []
+
+      if (type == typeOfAccrodin.rencently.value) {
+        data = interactionResult?.data?.data?.rows
       }
+      else if (type == typeOfAccrodin.frequently.value) {
+        data = interactionResult?.data?.data
+      }
+      else if (type == typeOfAccrodin.category.value) {
+        data = interactionResult?.data?.data
+      }
+      else if (type == typeOfAccrodin.searchbox.value) {
+        data = interactionResult?.data?.data
+      }
+      else {
+        data = []
+      }
+      console.log('terdsf 1', data)
 
+      dispatch(setInteractionData(data, false));
       return true;
     } else {
+      console.log('error response', interactionResult)
       dispatch(setInteractionError([]));
       return false;
     }
