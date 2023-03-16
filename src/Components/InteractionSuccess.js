@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { CustomButton } from "../Components/CustomButton";
-export const Success = ({
+import { CustomButton } from "./CustomButton";
+export const InteractionSuccess = ({
   intxId,
   cancelButtonRequired,
   okHandler,
@@ -18,26 +18,25 @@ export const Success = ({
       </Text>
       <Text style={styles.idText}>Your Interaction ID : {intxId}</Text>
 
-      {cancelButtonRequired && (
+      {cancelButtonRequired ? (
         <View style={{ flexDirection: "row" }}>
           <View style={{ flex: 0.5 }}>
-            <CustomButton label={"ok"} onPress={() => okHandler} />
+            <CustomButton label={"Cancel"} onPress={cancelHandler} />
           </View>
           <View style={{ flex: 0.5 }}>
-            <CustomButton label={"Ok"} onPress={() => cancelHandler} />
+            <CustomButton label={"Ok"} onPress={okHandler} />
           </View>
         </View>
-      )}
+      ) : <CustomButton label={"ok"} onPress={okHandler} />}
 
-      <CustomButton label={"okml,nlnlnl"} onPress={() => okHandler} />
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   successContainer: {
-    width: "70%",
-    height: "60%",
+
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",

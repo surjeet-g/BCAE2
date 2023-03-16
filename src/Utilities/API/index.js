@@ -111,10 +111,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
                 +" : response :" +
                 JSON.stringify(response)
               );
-              console.log(
-                "$$$-serverCall-response ===>>> ",
-                JSON.stringify(response)
-              );
+
               if (response.status === 200) {
                 resolve({
                   success: true,

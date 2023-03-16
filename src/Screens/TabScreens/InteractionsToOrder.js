@@ -50,6 +50,7 @@ import get from "lodash.get";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { FooterModel } from "../../Components/FooterModel";
 import { ImagePicker } from "../../Components/ImagePicker";
+import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { resetKnowSearch } from '../../Redux/KnowledgeSearchAction';
 import {
@@ -57,11 +58,17 @@ import {
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import { commonStyle } from '../../Utilities/Style/commonStyle';
 import theme from "../../Utilities/themeConfig";
 import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
-export const typeOfAccrodin = { category: "category", frequently: "frequently", rencently: "rencently", searchbox: "searchbox" }
+export const typeOfAccrodin = {
+  category: { value: "category", title: "Top 10 Catgory" },
+  frequently: { value: "frequently", title: "Most frequently interaction" },
+  rencently: { value: "rencently", title: "Recently inteaction" },
+  searchbox: { value: "searchbox", title: "Seach input" }
+}
 
 const InteractionsToOrder = ({ route, navigation }) => {
 
@@ -88,12 +95,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
 
   //bottom 
-  const [bottomBarTitle, setBottombartitle] = useState("Billing issue")
+  const [bottomBarTitle, setBottombartitle] = useState("")
+  const interactionResponseScreen = { SUCCESS: "SUCCESS", FAILED: "FAILED", NONE: "NONE" }
+  const [enableSuccessScreen, setEnableSuccessScreen] = useState(interactionResponseScreen.NONE)
 
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
   const resetStateData = () => {
+    setEnableSuccessScreen(interactionResponseScreen.NONE)
     setFileAttachments([])
     setautoSuggestionList(true)
     setsearchStandaloneModel(true)
@@ -257,8 +267,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
                 onPress={async () => {
                   //store selected result in cache
-                  await dispatchInteraction(fetchInteractionAction(typeOfAccrodin.searchbox, { requestId: item.requestId }));
-
+                  await dispatchInteraction(fetchInteractionAction(typeOfAccrodin.searchbox.value, { requestId: item.requestId }));
+                  setActiveInteraction(item);
+                  //open form model
+                  setOpenBottomModalChatBot(true);
+                  //disable other windo
+                  setsearchStandaloneModel(true);
+                  //make empt search box
+                  setKnowledgeSearchText("");
+                  setautoSuggestionList(false);
                   //todo
                   return null
                   //pre populating result
@@ -367,9 +384,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
 
   }
-  const handleAccodin = async (type) => {
-    setactiveChatBot(type)
-    await dispatchInteraction(fetchInteractionAction(type));
+  const handleAccodin = async ({ value, title }) => {
+    await setactiveChatBot(value)
+    await setBottombartitle(title)
+    await dispatchInteraction(fetchInteractionAction(value));
     setOpenBottomModalChatBot(true)
   }
 
@@ -377,13 +395,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
     return (
       <View style={styles.accodinContainer}>
         <Pressable style={styles.accodinItem} onPress={() => {
-          handleAccodin(typeOfAccrodin.category,)
+          handleAccodin(typeOfAccrodin.category)
         }}>
           <Image source={require("../../Assets/icons/interaction_category.gif")}
             style={styles.gif} />
           <Text style={styles.accordinTxt}>Top 10 Category</Text>
           <Icon name='chevron-down' size={30} color={colors.accodinItem} />
         </Pressable>
+
         <Pressable style={styles.accodinItem} onPress={() => handleAccodin(typeOfAccrodin.frequently)}>
           <Image source={require("../../Assets/icons/interaction_fewq.gif")}
             style={styles.gif} />
@@ -401,167 +420,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     )
   }, [])
 
-  const renderMostFrequent = useMemo(() => {
 
-    mostfrequentlylist = mostfrequentlylist.filter(
-      (item) => item.requestStatement != null
-    );
-
-
-    return (
-      <View
-        style={{
-          flex: 0.5,
-          margin: 5,
-          padding: 10,
-          backgroundColor: "#FFF",
-          borderRadius: 16,
-          elevation: 5,
-        }}
-      >
-        <View style={{ flexDirection: "column" }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text
-              variant="bodyMedium"
-              style={{
-                fontWeight: "700",
-                color: colors.secondary,
-              }}
-            >
-              Most{"\n"}frequent{"\n"}Interactions
-            </Text>
-
-            <Image
-              source={require("../../Assets/icons/frequent_interaction.png")}
-              style={{ width: 50, height: 50, marginLeft: 10 }}
-            />
-          </View>
-          <ClearSpace size={2} />
-          {mostfrequentlylist.length == 0 ? (
-            <Text
-              variant="labelSmall"
-              style={{
-                // fontSizes: 12,
-                // marginTop: 15,
-                fontWeight: "400",
-                color: "#848A93",
-              }}
-            >
-              No found
-            </Text>
-          ) : (
-            mostfrequentlylist.map((item) => {
-              return (
-                <Pressable
-                  onPress={() => {
-                    interactionDataToCreateInt(item)
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    // justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={styles.dot} />
-                  <Text
-                    variant="labelSmall"
-                    style={{
-                      // fontSizes: 12,
-                      // marginTop: 15,
-                      fontWeight: "400",
-                      color: "#848A93",
-                    }}
-                  >
-                    {item.requestStatement}
-                  </Text>
-                </Pressable>
-              );
-            })
-          )}
-        </View>
-      </View>
-    );
-  }, [mostfrequentlylist, masterReducer]);
-
-  const renderFrequently = useMemo(() => {
-    frequertlyquestionList = frequertlyquestionList.filter(
-      (item) => item.requestStatement != null
-    );
-
-    return (
-      <View
-        style={{
-          flex: 0.5,
-          margin: 5,
-          padding: 10,
-          backgroundColor: "#FFF",
-          borderRadius: 16,
-          elevation: 5,
-        }}
-      >
-        <View style={{ flexDirection: "column" }}>
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              variant="bodyMedium"
-              style={{
-                fontWeight: "700",
-                color: colors.secondary,
-              }}
-            >
-              {`Last used \nInteractions \nfor this \ncustomer`}
-            </Text>
-            <Image
-              source={require("../../Assets/icons/last_interaction.png")}
-              style={{ width: 50, height: 50, marginLeft: 10 }}
-            />
-          </View>
-          <ClearSpace size={2} />
-          {frequertlyquestionList.length == 0 ? (
-            <Text
-              variant="labelSmall"
-              style={{
-                // fontSizes: 12,
-                // marginTop: 15,
-                fontWeight: "400",
-                color: "#848A93",
-              }}
-            >
-              No found
-            </Text>) :
-
-            frequertlyquestionList.map((item) => {
-              return (
-                <Pressable
-                  onPress={(item) => {
-                    interactionDataToCreateInt(item)
-                  }}
-                  style={{
-                    // marginTop: 15,
-                    fontWeight: "400",
-                    color: "#848A93",
-                  }}
-                >
-                  <View style={styles.dot} />
-                  <Text
-                    variant="bodySmall"
-                    style={{
-                      // marginTop: 15,
-                      fontWeight: "400",
-                      color: "#848A93",
-                    }}
-                  >
-                    {item.requestStatement}
-                  </Text>
-                </Pressable>
-              );
-            })
-          }
-        </View>
-      </View>
-    );
-  }, [frequertlyquestionList]);
 
   const renderProfileTab = useMemo(() => {
     return (
@@ -674,7 +533,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
         >
           <Image
-            source={require("../../Assets/icons/in_call.png")}
+            source={require("../../Assets/icons/interaction_contact.png")}
             style={{ width: 45, height: 45 }}
           />
           <Text
@@ -691,7 +550,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             )}
           </Text>
           <Image
-            source={require("../../Assets/icons/in_location.png")}
+            source={require("../../Assets/icons/interaction_loc.png")}
             style={{ width: 45, height: 45 }}
           />
           <Text
@@ -771,7 +630,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         )}
         <ClearSpace size={4} />
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          {suggestionList.length > 0 && suggestionList.map(ite => (
+          {suggestionList.length > 0 ? suggestionList.map(ite => (
             <Chip mode="outlined" onPress={() => {
               alert("sdfsf")
             }}
@@ -786,7 +645,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               }}
             >{ite?.requestStatement} </Chip>
           )
-          )}
+          ) : (<View style={{ flex: 1 }}><Text style={{ textAlign: "center" }} variant="labelMedium">No data available!</Text></View>)}
         </View>
 
         <ClearSpace size={3} />
@@ -814,12 +673,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
       }
     }
   });
+
   const isModelOpen = (openBottomModal || openBottomModalChatBoard)
+
+  if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
+    return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}><InteractionSuccess intxId="13123" cancelButtonRequired={true}
+      okHandler={() => { }} cancelHandler={() => { }}
+    /></View>)
+  }
+  if (enableSuccessScreen == interactionResponseScreen.FAILED) {
+    return <Text>Failed</Text>
+  }
+
   return (
     <>
       {(loader) &&
         <LoadingAnimation title="while we are creating Interaction." />
-
       }
       {(interactionReducer.initInteraction) &&
         <LoadingAnimation title="fetch data" />
@@ -872,7 +741,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {/* search box end */}
         {/*knowledge search*/}
       </View>
-      <FooterModel open={openBottomModalChatBoard} setOpen={setOpenBottomModalChatBot} title={bottomBarTitle}>
+      <FooterModel open={openBottomModalChatBoard} setOpen={setOpenBottomModalChatBot}
+        title={bottomBarTitle}>
         <RenderBottomChatBoard />
       </FooterModel>
 
@@ -1271,7 +1141,9 @@ const styles = StyleSheet.create({
   },
   gif: {
     width: 30,
-    height: 30
+    height: 30,
+    flex: .1,
+    marginRight: 8
   }
 });
 

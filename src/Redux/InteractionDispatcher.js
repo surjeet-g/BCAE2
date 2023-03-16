@@ -24,9 +24,9 @@ export function fetchInteractionAction(
     dispatch(initInteraction());
     const customerUUID = await getCustomerUUID()
     const customerID = await getCustomerID()
-
+    console.log('hititng', customerID, type)
     let interactionResult
-    if (type == typeOfAccrodin.rencently) {
+    if (type == typeOfAccrodin.rencently.value) {
       interactionResult = await serverCall(
         `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
         requestMethod.POST,
@@ -37,21 +37,21 @@ export function fetchInteractionAction(
         }
       );
     }
-    else if (type == typeOfAccrodin.frequently) {
+    else if (type == typeOfAccrodin.frequently.value) {
       interactionResult = await serverCall(
         `${endPoints.FREQUENTLY_ASKED}?limit=4`,
         requestMethod.GET,
         {}
       );
     }
-    else if (type == typeOfAccrodin.category) {
+    else if (type == typeOfAccrodin.category.value) {
       interactionResult = await serverCall(
         `${endPoints.FREQUENTLY_ASKED}?limit=4`,
         requestMethod.GET,
         {}
       );
     }
-    else if (type == typeOfAccrodin.searchbox) {
+    else if (type == typeOfAccrodin.searchbox.value) {
       interactionResult = await serverCall(
         `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}?limit=4`,
         requestMethod.POST,
@@ -67,26 +67,27 @@ export function fetchInteractionAction(
       return false
     }
 
-
+    console.log('terdsf', interactionResult.data, type)
     if (interactionResult?.success) {
 
       let data = []
 
-      if (type == typeOfAccrodin.rencently) {
+      if (type == typeOfAccrodin.rencently.value) {
         data = interactionResult?.data?.data?.rows
       }
-      else if (type == typeOfAccrodin.frequently) {
+      else if (type == typeOfAccrodin.frequently.value) {
         data = interactionResult?.data?.data
       }
-      else if (type == typeOfAccrodin.category) {
+      else if (type == typeOfAccrodin.category.value) {
         data = interactionResult?.data?.data
       }
-      else if (type == typeOfAccrodin.searchbox) {
+      else if (type == typeOfAccrodin.searchbox.value) {
         data = interactionResult?.data?.data
       }
       else {
         data = []
       }
+      console.log('terdsf 1', data)
 
       dispatch(setInteractionData(data, false));
       return true;
