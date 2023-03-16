@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Dimensions,
   TouchableOpacity,
   StyleSheet,
   View,
@@ -55,14 +54,20 @@ const InteractionDetails = (props) => {
             />
           </View>
           {/* View More view */}
-          <TouchableOpacity onPress={() => setShowIndex(index)}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowIndex(index);
+              if (index == 1) {
+                navigation.navigate("WorkflowHistory");
+              }
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
                 marginTop: 30,
                 justifyContent: "space-between",
               }}
-              onPress={() => setShowIndex(index)}
             >
               <Text
                 variant="bodySmall"
@@ -132,6 +137,56 @@ const InteractionDetails = (props) => {
           </Text>
         </View>
       </Pressable>
+    );
+  };
+
+  const DetailInfoAttachmentItem = (props) => {
+    const {
+      title = "",
+      attachmentData = [],
+      flex = 1,
+      onPress = () => console.log(`Clicked ${title}`),
+    } = props;
+
+    return (
+      <View
+        style={{
+          flex: flex,
+          flexDirection: "column",
+        }}
+      >
+        <Text
+          variant="bodySmall"
+          style={{
+            fontWeight: 400,
+            fontSize: 14,
+            color: "#686B6C",
+          }}
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
+        <FlatList
+          style={{ marginTop: 10 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={attachmentData}
+          key={(item) => item.id}
+          renderItem={({ item }) => (
+            <Image
+              source={require("../../Assets/icons/ic_word.png")}
+              style={{
+                borderRadius: 6,
+                borderWidth: 1,
+                borderColor: "#AEB3BE",
+                height: 70,
+                width: 70,
+                margin: 5,
+              }}
+            />
+          )}
+        />
+      </View>
     );
   };
 
@@ -239,9 +294,12 @@ const InteractionDetails = (props) => {
           {/* Row 6*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* Attachments View */}
-            <DetailInfoItem
+            <DetailInfoAttachmentItem
               title={"Attachments"}
-              value={"TODO - Show attachment here"}
+              attachmentData={[
+                { id: 1, name: "../../Assets/icons/ic_word.png" },
+                { id: 2, name: "../../Assets/icons/ic_pdf.png" },
+              ]}
             />
           </View>
         </View>

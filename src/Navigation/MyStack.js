@@ -54,6 +54,7 @@ import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import ComingSoon from "./../Screens/ComingSoon";
 import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import Followup from "./../Screens/Appointments/Followup";
+import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -65,6 +66,7 @@ const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
+const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const Stack = createStackNavigator();
 
 function MyStack() {
@@ -384,6 +386,16 @@ function MyStack() {
           })}
           name={STACK_FOLLOWUP}
           component={Followup}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Workflow History",
+            },
+          })}
+          name={STACK_WORKFLOW_HISTORY}
+          component={WorkflowHistory}
         />
         <Stack.Screen
           options={({ navigation }) => ({

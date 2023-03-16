@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
+import { CustomButton } from "./../../Components/CustomButton";
+import { strings } from "./../../Utilities/Language/index";
 
-const Followup = (props) => {
+const WorkflowHistory = (props) => {
   const { route, navigation } = props;
 
-  const FollowupUI = () => {
+  const WorkflowUI = () => {
     return (
       <View style={{ alignItems: "center" }}>
         <Image
@@ -49,7 +51,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -63,10 +65,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
+            <WorkFlowInfoItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -80,7 +82,7 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <FollowupItem title={"Comments"} value={"Assign to self"} />
+            <WorkFlowInfoItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
 
@@ -123,7 +125,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -137,10 +139,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
+            <WorkFlowInfoItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -154,7 +156,7 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <FollowupItem title={"Comments"} value={"Assign to self"} />
+            <WorkFlowInfoItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
 
@@ -197,7 +199,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -211,10 +213,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
+            <WorkFlowInfoItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <FollowupItem
+            <WorkFlowInfoItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -228,14 +230,29 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <FollowupItem title={"Comments"} value={"Assign to self"} />
+            <WorkFlowInfoItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
+
+        <Image
+          source={require("../../Assets/icons/ic_veritical_line.png")}
+          style={{ height: 50 }}
+        />
+        <Image
+          source={require("../../Assets/icons/ic_eclipse_orange.png")}
+          style={{ width: 20, height: 20 }}
+        />
+
+        {/* Follow up button view */}
+        <CustomButton
+          label={strings.follow_up}
+          onPress={() => navigation.navigate("Followup")}
+        />
       </View>
     );
   };
 
-  const FollowupItem = (props) => {
+  const WorkFlowInfoItem = (props) => {
     const { title, value } = props;
     return (
       <View
@@ -272,8 +289,8 @@ const Followup = (props) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
-        {/* FollowupUI View */}
-        <FollowupUI />
+        {/* WorkflowUI View */}
+        <WorkflowUI />
       </ScrollView>
     </View>
   );
@@ -289,4 +306,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
 });
-export default Followup;
+export default WorkflowHistory;
