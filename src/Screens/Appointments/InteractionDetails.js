@@ -154,77 +154,105 @@ const InteractionDetails = (props) => {
       <View
         style={{
           margin: 5,
-          padding: 20,
           backgroundColor: "#fff",
           borderRadius: 10,
           elevation: 5,
         }}
       >
-        {/* Row 1 */}
-        <View style={{ flexDirection: "row", marginTop: 10 }}>
-          {/* Statement View */}
-          <DetailInfoItem
-            title={"Statement"}
-            value={"Dissatisfaction with Policies"}
-            flex={1}
-          />
-        </View>
+        <Text
+          style={{
+            backgroundColor: "rgba(63, 185, 77, 0.23)",
+            color: "#3FB94D",
+            paddingVertical: 2,
+            paddingHorizontal: 10,
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+            position: "absolute",
+            top: 0,
+            right: 30,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+          numberOfLines={1}
+        >
+          Interaction ID: 144425
+        </Text>
 
-        {/* Row 2*/}
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          {/* Date & Time View */}
-          <DetailInfoItem
-            title={"Created Date & time"}
-            value={"14 March 2023, 11:30 AM"}
-            flex={2}
-          />
+        <View
+          style={{
+            padding: 20,
+          }}
+        >
+          {/* Row 1 */}
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            {/* Statement View */}
+            <DetailInfoItem
+              title={"Statement"}
+              value={"Dissatisfaction with Policies"}
+              flex={1}
+            />
+          </View>
 
-          {/* Service Type View */}
-          <DetailInfoItem title={"Service type"} value={"Addon"} flex={1} />
-        </View>
+          {/* Row 2*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* Date & Time View */}
+            <DetailInfoItem
+              title={"Created Date & time"}
+              value={"14 March 2023, 11:30 AM"}
+              flex={2}
+            />
 
-        {/* Row 3*/}
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          {/* Interaction Type View */}
-          <DetailInfoItem
-            title={"Interaction Type"}
-            value={"Complaint"}
-            flex={2}
-          />
+            {/* Service Type View */}
+            <DetailInfoItem title={"Service type"} value={"Addon"} flex={1} />
+          </View>
 
-          {/* Priority View */}
-          <DetailInfoItem title={"Priority"} value={"High"} flex={1} />
-        </View>
+          {/* Row 3*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* Interaction Type View */}
+            <DetailInfoItem
+              title={"Interaction Type"}
+              value={"Complaint"}
+              flex={2}
+            />
 
-        {/* Row 4*/}
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          {/* Problem Statement View */}
-          <DetailInfoItem
-            title={"Problem Statement"}
-            value={"Dissatisfaction"}
-            flex={2}
-          />
+            {/* Priority View */}
+            <DetailInfoItem title={"Priority"} value={"High"} flex={1} />
+          </View>
 
-          {/* Status View */}
-          <DetailInfoItem title={"Status"} value={"Business"} flex={1} />
-        </View>
+          {/* Row 4*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* Problem Statement View */}
+            <DetailInfoItem
+              title={"Problem Statement"}
+              value={"Dissatisfaction"}
+              flex={2}
+            />
 
-        {/* Row 5*/}
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          {/* Contact type View */}
-          <DetailInfoItem title={"Contact Type"} value={"Business"} flex={2} />
+            {/* Status View */}
+            <DetailInfoItem title={"Status"} value={"Business"} flex={1} />
+          </View>
 
-          {/*Follow up View */}
-          <DetailInfoItem title={"Follow Up"} value={"3"} flex={1} />
-        </View>
+          {/* Row 5*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* Contact type View */}
+            <DetailInfoItem
+              title={"Contact Type"}
+              value={"Business"}
+              flex={2}
+            />
 
-        {/* Row 6*/}
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          {/* Attachments View */}
-          <DetailInfoItem
-            title={"Attachments"}
-            value={"TODO - Show attachment here"}
-          />
+            {/*Follow up View */}
+            <DetailInfoItem title={"Follow Up"} value={"3"} flex={1} />
+          </View>
+
+          {/* Row 6*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* Attachments View */}
+            <DetailInfoItem
+              title={"Attachments"}
+              value={"TODO - Show attachment here"}
+            />
+          </View>
         </View>
       </View>
     );
