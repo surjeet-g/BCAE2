@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ImageBackground,
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
@@ -288,35 +289,44 @@ export const ImagePicker = ({
 
     // setAttachmentModalVisible(false);
   };
+  const EmptyAttachmentItem = (props) => {
+    return (
+      <Pressable
+        style={{
+          borderRadius: 6,
+          borderWidth: 1,
+          borderColor: "#AEB3BE",
+          padding: 20,
+          margin: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={() => showAttachmentModal()}
+      >
+        <Image source={require("../Assets/icons/add_tickets.png")} />
+      </Pressable>
+    );
+  };
 
   return (
     <View>
-      <AttachmentList
-        attachmentList={fileAttachments}
-        onDeleteClicked={onDeleteClicked}
-      />
       <View style={{}}>
+        <Text style={{ fontSize: 16, fontWeight: 400, color: "#000000" }}>
+          Attachment
+        </Text>
+        <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
+          (Maximum 5 files can be attached with max file size of 5MB each)
+        </Text>
+        <AttachmentList
+          attachmentList={fileAttachments}
+          onDeleteClicked={onDeleteClicked}
+        />
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={[{}, {}, {}, {}, {}]}
           //   key={item.id}
-          renderItem={({ item }) => (
-            <Pressable
-              style={{
-                borderRadius: 6,
-                borderWidth: 1,
-                borderColor: "#AEB3BE",
-                padding: 20,
-                margin: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => showAttachmentModal()}
-            >
-              <Image source={require("../Assets/icons/add_tickets.png")} />
-            </Pressable>
-          )}
+          renderItem={({ item }) => <EmptyAttachmentItem />}
         />
       </View>
 
@@ -404,73 +414,67 @@ export const ImagePicker = ({
 
 const AttachmentList = ({ attachmentList, onDeleteClicked }) => (
   <View style={{ marginTop: 20 }}>
-    {attachmentList?.length > 0 ? (
+    {attachmentList?.length > 0 && (
       <FlatList
         contentContainerStyle={{
           paddingBottom: 20,
           paddingLeft: 2,
           paddingRight: 2,
         }}
+        horizontal
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={attachmentList}
         key={attachmentList.fileName}
         renderItem={({ item }) => (
-          <AttachmentItems item={item} onDeleteClicked={onDeleteClicked} />
+          <AttachmentItem item={item} onDeleteClicked={onDeleteClicked} />
         )}
       />
-    ) : (
-      <View style={{ alignItems: "center" }}>
-        <Text
-          style={{ marginTop: 10, fontSize: 14, color: color.BCAE_PRIMARY }}
-        >
-          Attachment list is empty !!
-        </Text>
-      </View>
     )}
   </View>
 );
-const AttachmentItems = ({ item, onDeleteClicked }) => {
-  function onPressedSavedLocation() {
-    //navigation.navigate('ManageExpense', {
-    // expenseId: id
-    //});
-    // navigation.navigate('MyTicketDetails', {ticketNo:ticketNo, intxnId:intxnId, intxnType:intxnType})
-  }
-
+const AttachmentItem = (props) => {
+  const { item, onDeleteClicked, showDeleteIcon = true } = props;
   return (
-    <Pressable>
-      <View style={{ paddingTop: 10 }}>
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ flex: 4, justifyContent: "center" }}>
-            <Image
-              source={{ uri: item.uri }}
-              style={{ width: 50, height: 50 }}
-            />
-            <Text style={[styles.status]}>{item.fileName}</Text>
-          </View>
-          <View
+    <View
+      style={{
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: "#AEB3BE",
+        margin: 5,
+        width: 70,
+        height: 70,
+        flexDirection: "row",
+      }}
+    >
+      <Image
+        source={{ uri: item.uri }}
+        style={{
+          flex: 1,
+          borderRadius: 6,
+          borderWidth: 1,
+          borderColor: "#AEB3BE",
+          resizeMode: "cover",
+        }}
+      />
+      {showDeleteIcon && (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => onDeleteClicked(item.fileName)}
+        >
+          <Image
             style={{
-              flex: 2,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              color: color.BLACK,
+              position: "absolute",
+              right: 0,
+              top: 0,
+              height: 15,
+              width: 15,
             }}
-          >
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => onDeleteClicked(item.fileName)}
-            >
-              <Image
-                style={[styles.rightArrow, styles.searchIcon]}
-                source={require("../Assets/icons/ic_delete_red.png")}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+            source={require("../Assets/icons/ic_attachment_remove.png")}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 
