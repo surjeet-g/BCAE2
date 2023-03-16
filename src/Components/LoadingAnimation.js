@@ -8,7 +8,7 @@ export default function LoadingAnimation({ title = "" }) {
   return (
     <View style={{
       position: "absolute", top: 1, height: height, width: width,
-      backgroundColor: "white", opacity: .8, zIndex: 9999999
+      backgroundColor: "white", opacity: .8, zIndex: 99999999999999
     }}>
       <View style={{ justifyContent: "center", alignItems: "center", flex: 1, }}>
         <Image source={require("../Assets/icons/processing.gif")} />

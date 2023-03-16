@@ -308,26 +308,13 @@ function MyStack() {
         <Stack.Screen
           options={({ navigation }) => ({
             ...{
-              headerTintColor: "black",
+              headerTintColor: "#fff",
               headerTitle: "Interactions",
+              headerBackgroundContainerStyle: { backgroundColor: '#4C5A81' },
               headerTitleStyle: {
                 ...fonts.titleLarge,
-                ...{ color: "black", fontWeight: "700" },
-              },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
-                      <Image
-                        style={{ ...ICON_STYLE }}
-                        source={require("../Assets/icons/search.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
+                ...{ color: "#fff", fontWeight: "700" },
+              }
             },
           })}
           name="InteractionsToOrder"

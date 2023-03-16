@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import {
   Alert,
@@ -59,6 +59,7 @@ import {
 } from "../../Redux/masterDataDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
+import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
@@ -98,11 +99,32 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [bottomBarTitle, setBottombartitle] = useState("")
   const interactionResponseScreen = { SUCCESS: "SUCCESS", FAILED: "FAILED", NONE: "NONE" }
   const [enableSuccessScreen, setEnableSuccessScreen] = useState(interactionResponseScreen.NONE)
-
+  const [modelProfileServiceModel, setProfileSeriveModal] = useState(false)
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <View style={navBar.navRightCon}>
+            <Pressable onPress={() =>
+              setOpenBottomModal(true)
+            } style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}>
+              <Icon
+                name="plus"
+                size={19}
+                color={colors.inverseSecondary}
+              />
+            </Pressable>
+          </View>
+        );
+      },
+    });
+  }, []);
+
   const resetStateData = () => {
+    setProfileSeriveModal(false)
     setEnableSuccessScreen(interactionResponseScreen.NONE)
     setFileAttachments([])
     setautoSuggestionList(true)
@@ -267,6 +289,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
                 onPress={async () => {
                   //store selected result in cache
+                  await setBottombartitle(typeOfAccrodin.searchbox.title)
                   await dispatchInteraction(fetchInteractionAction(typeOfAccrodin.searchbox.value, { requestId: item.requestId }));
                   setActiveInteraction(item);
                   //open form model
@@ -429,6 +452,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         // resizeMode="contain"
         style={{
           // margin: 5,
+          zIndex: 999,
           paddingLeft: 20,
           paddingRight: 20,
           paddingBottom: 20,
@@ -566,6 +590,55 @@ const InteractionsToOrder = ({ route, navigation }) => {
             {handleMultipleContact(addresss)}
           </Text>
         </View>
+
+        <Pressable
+          onPress={() => {
+            setProfileSeriveModal(!modelProfileServiceModel)
+          }}
+          style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
+        >
+          <Image
+            source={require("../../Assets/icons/interaction_service.png")}
+            style={{ width: 45, height: 45 }}
+          />
+          <Text
+            variant="bodySmall"
+            style={{
+              fontWeight: "400",
+              color: colors.textColor,
+              marginRight: 5
+            }}
+          >
+            Services
+          </Text>
+          <Icon name={!modelProfileServiceModel ? 'chevron-down' : "chevron-up"} size={20} color={colors.textColor} />
+
+        </Pressable>
+        {modelProfileServiceModel && (
+          <View style={styles.modelContainerProfile}>
+            <List.Item
+              title={"onesdf"}
+              titleStyle={{
+                fontSize: 10,
+                padding: 0,
+                margin: 0,
+
+              }}
+              style={{ borderWidthColor: 'gray', borderBottomWidth: .2 }}
+
+            />
+            <List.Item
+              title={"onesdf"}
+              titleStyle={{
+                fontSize: 10,
+                padding: 0,
+                margin: 0,
+
+              }}
+              style={{ borderWidthColor: 'gray', borderBottomWidth: .15 }}
+            />
+          </View>)}
+
       </ImageBackground>
     );
   }, [addresss, customerPic, profileReducer]);
@@ -1144,7 +1217,21 @@ const styles = StyleSheet.create({
     height: 30,
     flex: .1,
     marginRight: 8
-  }
+  },
+  modelContainerProfile: {
+    zIndex: 99999999,
+    position: "absolute",
+    backgroundColor: "#fff",
+    elevation: 1,
+    width: 200,
+    borderRadius: 3,
+    // minHeight: 100,
+    bottom: -60,
+    left: 40
+  },
+
+
+
 });
 
 export default InteractionsToOrder;
