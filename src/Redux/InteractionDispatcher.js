@@ -12,10 +12,10 @@ import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 import Toast from "react-native-toast-message";
-import { getCustomerID } from "../Utilities/UserManagement/userInfo";
+import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
 
 export function fetchInteractionAction(
-  isCreateInteraction = false,
+  type = "",
   page = 0,
   limit = 2,
   body = {
@@ -25,33 +25,55 @@ export function fetchInteractionAction(
   return async (dispatch) => {
     dispatch(initInteraction());
 
-    const interactionResult = await serverCall(
-      `${endPoints.INTERACTION_FETCH}?page=${page}&limit=${limit}`,
-      requestMethod.POST,
-      body
-    );
+
+    let interactionResult
+    if (type == typeOfAccrodin.rencently) {
+      interactionResult = await serverCall(
+        `${endPoints.INTERACTION_FETCH}?page=${page}&limit=${limit}`,
+        requestMethod.POST,
+        body
+      );
+    }
+    else if (type == typeOfAccrodin.frequently) {
+      interactionResult = await serverCall(
+        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+        requestMethod.GET,
+        {}
+      );
+    }
+    else if (type == typeOfAccrodin.category) {
+      interactionResult = await serverCall(
+        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+        requestMethod.GET,
+        {}
+      );
+    }
+    else {
+      return false
+    }
+
 
     if (interactionResult?.success) {
-      console.log(">>freqentlyAskedResult", isCreateInteraction);
-      if (isCreateInteraction) {
-        const customerId = await getCustomerID();
-        const freqentlyAskedResult = await serverCall(
-          `${endPoints.FREQUENTLY_ASKED}?limit=2`,
-          requestMethod.GET,
-          {}
-        );
-        console.log('>>tresdfg', freqentlyAskedResult)
-        const data = {
-          frequerntlyAsked: freqentlyAskedResult?.data?.data,
-          mostfrequently: interactionResult?.data?.data?.rows,
-        };
-        console.log('>>tresdfg', data)
-        dispatch(setInteractionData(data, false));
 
-      } else {
-        dispatch(setInteractionData(interactionResult?.data?.data, false));
+      let data = []
+
+      if (type == typeOfAccrodin.rencently) {
+        data = interactionResult?.data?.data?.rows
+      }
+      else if (type == typeOfAccrodin.frequently) {
+        console.log('1111', interactionResult)
+        data = interactionResult?.data?.data
+
+      }
+      else if (type == typeOfAccrodin.category) {
+        data = interactionResult?.data?.data
+      }
+      else {
+        console.log('11111', data)
+        data = []
       }
 
+      dispatch(setInteractionData(data, false));
       return true;
     } else {
       dispatch(setInteractionError([]));
