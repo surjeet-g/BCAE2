@@ -56,6 +56,8 @@ const Followup = (props) => {
               alignSelf: "center",
               color: "white",
               bottom: 30,
+              fontWeight: 600,
+              fontSize: 16,
             }}
           >
             10 Feb 2023 09:30 AM
@@ -128,6 +130,8 @@ const Followup = (props) => {
               alignSelf: "center",
               color: "white",
               bottom: 30,
+              fontWeight: 600,
+              fontSize: 16,
             }}
           >
             10 Feb 2023 09:30 AM
@@ -200,6 +204,8 @@ const Followup = (props) => {
               alignSelf: "center",
               color: "white",
               bottom: 30,
+              fontWeight: 600,
+              fontSize: 16,
             }}
           >
             10 Feb 2023 09:30 AM
