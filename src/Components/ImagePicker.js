@@ -317,16 +317,25 @@ export const ImagePicker = ({
         <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
           (Maximum 5 files can be attached with max file size of 5MB each)
         </Text>
-        <AttachmentList
+        {/* <AttachmentList
           attachmentList={fileAttachments}
           onDeleteClicked={onDeleteClicked}
-        />
+        /> */}
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={[{}, {}, {}, {}, {}]}
           //   key={item.id}
-          renderItem={({ item }) => <EmptyAttachmentItem />}
+          renderItem={({ item, index }) =>
+            fileAttachments[index]?.fileName?.length > 0 ? (
+              <AttachmentItem
+                item={fileAttachments[index]}
+                onDeleteClicked={onDeleteClicked}
+              />
+            ) : (
+              <EmptyAttachmentItem />
+            )
+          }
         />
       </View>
 
