@@ -331,7 +331,12 @@ export const HomeScreen = ({ navigation }) => {
                 color: colors.yellow,
               }}
             >
-              {get(customerAccount, 'customerAccountData[0].accountBalance', 'NA')}
+              {"RS. "}
+              {get(
+                customerAccount,
+                "customerAccountData[0].accountBalance",
+                "NA"
+              )}
             </Text>
           )}
           {index === 1 && (
