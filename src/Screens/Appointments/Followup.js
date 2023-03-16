@@ -25,7 +25,7 @@ const Followup = (props) => {
   const { colors, fonts, roundness } = useTheme();
   const [showIndex, setShowIndex] = useState(0);
 
-  const WorkFlowUI = () => {
+  const FollowupUI = () => {
     return (
       <View style={{ alignItems: "center" }}>
         <Image
@@ -70,7 +70,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -84,10 +84,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem title={"Source"} value={" Dissatisfaction"} />
+            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -101,7 +101,7 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <WorkFlowItem title={"Comments"} value={"Assign to self"} />
+            <FollowupItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
 
@@ -144,7 +144,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -158,10 +158,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem title={"Source"} value={" Dissatisfaction"} />
+            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -175,7 +175,7 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <WorkFlowItem title={"Comments"} value={"Assign to self"} />
+            <FollowupItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
 
@@ -218,7 +218,7 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Priority"}
               value={"Dissatisfaction with Policies"}
             />
@@ -232,10 +232,10 @@ const Followup = (props) => {
             }}
           >
             {/* Statement View */}
-            <WorkFlowItem title={"Source"} value={" Dissatisfaction"} />
+            <FollowupItem title={"Source"} value={" Dissatisfaction"} />
 
             {/* Statement View */}
-            <WorkFlowItem
+            <FollowupItem
               title={"Remark"}
               value={"Dissatisfaction with Policies"}
             />
@@ -249,14 +249,14 @@ const Followup = (props) => {
             }}
           >
             {/* Comments View */}
-            <WorkFlowItem title={"Comments"} value={"Assign to self"} />
+            <FollowupItem title={"Comments"} value={"Assign to self"} />
           </View>
         </View>
       </View>
     );
   };
 
-  const WorkFlowItem = (props) => {
+  const FollowupItem = (props) => {
     const { title, value } = props;
     return (
       <View
@@ -293,8 +293,8 @@ const Followup = (props) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
-        {/* Workflow History View */}
-        <WorkFlowUI />
+        {/* FollowupUI View */}
+        <FollowupUI />
       </ScrollView>
     </View>
   );
