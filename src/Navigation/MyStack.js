@@ -357,9 +357,27 @@ function MyStack() {
         />
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Interaction Details",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Image
+                        source={require("../Assets/icons/ic_more_vertical.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
             },
           })}
           name={STACK_INTERACTION_DETAILS}
@@ -367,9 +385,27 @@ function MyStack() {
         />
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Interaction Details",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Image
+                        source={require("../Assets/icons/ic_more_vertical.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
             },
           })}
           name={STACK_FOLLOWUP}
