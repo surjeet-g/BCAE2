@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,12 +39,12 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
-import CreateOrder from "../Screens/Appointments/CreateOrder";
+import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
@@ -61,7 +61,7 @@ const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
-const STACK_CREATE_ORDER = "CreateOrder";
+const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
@@ -317,11 +317,11 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interactions",
-              headerBackgroundContainerStyle: { backgroundColor: '#4C5A81' },
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
-              }
+              },
             },
           })}
           name="InteractionsToOrder"
@@ -331,7 +331,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...{
               headerTintColor: "black",
-              headerTitle: "Create Order",
+              headerTitle: "View Order",
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "black", fontWeight: "700" },
@@ -352,8 +352,8 @@ function MyStack() {
               },
             },
           })}
-          name={STACK_CREATE_ORDER}
-          component={CreateOrder}
+          name={STACK_VIEW_ORDER}
+          component={ViewOrder}
         />
         <Stack.Screen
           options={({ navigation }) => ({
