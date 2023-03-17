@@ -26,14 +26,14 @@ const InteractionInitialState = {
   formData: {
     statement: {
       field: "statement",
-      required: true,
+      required: false,
       error: "",
       value: "",
       type: INPUT_TYPE.INPUTBOX,
     },
     statementId: {
       field: "statementId",
-      required: true,
+      required: false,
       error: "",
       value: "",
       type: INPUT_TYPE.INPUTBOX,
