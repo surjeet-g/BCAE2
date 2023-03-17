@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getInteractionDetailsForID,
+  getWorkFlowForInteractionID,
+} from "./../../Redux/InteractionDispatcher";
+import moment from "moment";
 
 const Followup = (props) => {
   const { route, navigation } = props;
+  // const { interactionId = "116" } = route.params;
+  let interactionId = 116;
+  const dispatch = useDispatch([
+    getInteractionDetailsForID,
+    getWorkFlowForInteractionID,
+  ]);
+  let interactionReducer = useSelector((state) => state.interaction);
+  const { InteractionWorkFlowData } = interactionReducer;
+
+  // Calling API to get workflow/followup data
+  useEffect(() => {
+    dispatch(getWorkFlowForInteractionID(interactionId, {}, navigation));
+  }, []);
 
   const PlaceHolderText = ({ text = "Placeholder", top, right }) => {
     return (
