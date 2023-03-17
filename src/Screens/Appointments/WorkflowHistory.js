@@ -49,7 +49,7 @@ const WorkflowHistory = (props) => {
   const WorkflowUI = (props) => {
     return (
       <View>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", margin: 15 }}>
           <Image
             source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
             style={{ width: 30, height: 30 }}
@@ -339,7 +339,7 @@ const WorkflowHistory = (props) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
+      <ScrollView nestedScrollEnabled={true}>
         {/* WorkflowUI View */}
         <WorkflowUI />
       </ScrollView>
@@ -350,10 +350,6 @@ const WorkflowHistory = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F0F0",
-  },
-  scrollviewContainer: {
-    margin: 15,
     backgroundColor: "#F0F0F0",
   },
 });
