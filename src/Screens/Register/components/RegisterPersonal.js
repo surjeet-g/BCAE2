@@ -1,11 +1,6 @@
 import moment from "moment";
 import React, { useState } from "react";
-import {
-  Alert,
-  Dimensions,
-  Image, ScrollView,
-  View
-} from "react-native";
+import { Alert, Dimensions, Image, ScrollView, View } from "react-native";
 
 import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
@@ -17,14 +12,14 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister
+  userRegister,
 } from "../../../Redux/RegisterDispatcher";
 
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
@@ -38,7 +33,7 @@ import {
   fontSizes,
   spacing,
   validateEmail,
-  validatePassword
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -219,7 +214,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   //   buttonEnableDiable();
   // };
   const submit = async () => {
-    console.log(">>hittin",);
+    console.log(">>hittin");
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",
@@ -238,10 +233,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (!validatePassword(password)) {
       setPasswordError(strings.passwordValidError);
     } else if (!validatePassword(confirmPassword)) {
-
       setConfirmPasswordError(strings.passwordValidError);
     } else if (password !== confirmPassword) {
-
       setConfirmPasswordError(strings.passwordandconfirmpasswordnotsame);
     }
     // else if (!isSelectedTerm) {
@@ -548,7 +541,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const onIdTypeClick = (textStr) => {
     // console.log(textStr.description)
     setIdType(textStr);
-    setIdTypeError("")
+    setIdTypeError("");
     buttonEnableDiable();
   };
 
@@ -693,7 +686,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 setOpen(false);
                 setDob(params);
                 setDobError("");
-                buttonEnableDiable()
+                buttonEnableDiable();
               }}
             />
             <View style={{ marginTop: 10 }}>
@@ -735,9 +728,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   backgroundColor: "transparent",
                 }}
                 onChangeText={(text) => {
-                  setIdNumber(text)
+                  setIdNumber(text);
                   buttonEnableDiable();
-
                 }}
                 value={idNumber}
                 caption={strings.id_number}
@@ -813,7 +805,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobile"
+                  registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -856,7 +848,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobileOtp"
+                  registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -908,7 +900,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "email"
+                  registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -950,7 +942,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "emailOtp"
+                  registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }

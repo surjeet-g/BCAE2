@@ -16,7 +16,9 @@ import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
-import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
+import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
+import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
+import { DATE_FORMAT } from '../../Utilities/Constants/Constant';
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
@@ -266,13 +268,17 @@ function CustomCalendar(props) {
 export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
-  console.log('>>data', customerAccount)
-  const dispatch = useDispatch([getCustomerAccountData]);
+  let interactionList = useSelector((state) => state.interactionList);
+  const dispatch = useDispatch([
+    getCustomerAccountData,
+    getInteractionListData,
+  ]);
 
   useEffect(() => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
       dispatch(getCustomerAccountData(navigation, customerUUDI));
+      dispatch(getInteractionListData(navigation, 1));
     }
     fetchAccountAPI();
   }, []);
@@ -293,13 +299,7 @@ export const HomeScreen = ({ navigation }) => {
           elevation: 5,
         }}
       >
-        <Pressable onPress={async () => {
-          const customerUUDI = await getCustomerUUID();
-          dispatch(getCustomerAccountData(navigation, customerUUDI));
-        }}>
-          <Text>hinttitn</Text>
 
-        </Pressable>
         <View style={{ flex: 1, flexDirection: "column" }}>
           {/* Title & Image View */}
           <View
@@ -482,13 +482,13 @@ export const HomeScreen = ({ navigation }) => {
                         : "#ffffff",
                 }}
               >
-                {"Inter. ID : 1234"}
+                Id:  {interactionList?.interactionListData[0]?.intxnId || "NA"}
               </Text>
               <Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
-                  fontSize: 16,
+                  fontSize: 14,
                   color:
                     index === 0
                       ? "#ffffff"
@@ -497,7 +497,7 @@ export const HomeScreen = ({ navigation }) => {
                         : "#ffffff",
                 }}
               >
-                {"Date : 10 Jan 2023"}
+                Date :{moment(interactionList?.interactionListData[0]?.createdAt).format(DATE_FORMAT)}
               </Text>
             </View>
           )}

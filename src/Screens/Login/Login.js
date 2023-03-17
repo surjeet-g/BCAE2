@@ -60,6 +60,9 @@ export const Login = ({ navigation }) => {
   const [isFirstSelected, setFirstSelected] = useState(false);
   const [username, setUsername] = useState("vipinv0647@gmail.com");
   const [password, setPassword] = useState("Test@123");
+  //bussiness
+  // const [username, setUsername] = useState("mobappbcae@yopmail.com");
+  // const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");

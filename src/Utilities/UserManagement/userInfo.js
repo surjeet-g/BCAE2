@@ -2,6 +2,11 @@ import get from "lodash.get";
 import { getDataFromDB } from "../../Storage/token";
 import { storageKeys } from "../Constants/Constant";
 
+export const USERTYPE = {
+  CUSTOMER: "CUSTOMER",
+  USER: "USER"
+}
+
 export const getCustomerUUID = async () => {
   let custUUDI;
   try {
@@ -44,5 +49,27 @@ export const getCustomerID = async () => {
   } catch (error) {
     console.log("getUserId ", error);
   }
-  return userId;
+
+  return parseInt(userId);
+};
+export const getUserType = async () => {
+  let userType;
+  try {
+
+    userType = await getDataFromDB(storageKeys.USERTYPE)
+    if (["PersonalCustomer"].includes(userType)) {
+
+      userType = USERTYPE.CUSTOMER
+    }
+    else {
+      userType = USERTYPE.USER
+    }
+
+    if (userType == null) throw "User Type  empty";
+
+  } catch (error) {
+    console.log("user Type is ", error);
+  }
+
+  return userType;
 };

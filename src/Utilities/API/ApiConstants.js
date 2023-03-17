@@ -27,7 +27,7 @@ export const endPoints = {
   FOLLOWUP: "api/complaint",
   USER_LOGIN: "api/auth/login",
   GET_REGISTER_FORM_DATA: "api/master/lookup",
-  MY_TICKETS_API: "api/interaction/search",
+  INTERACTION_LIST_API: "api/interaction/search",
   MY_TICKETS_DETAILS_API: "api/complaint",
   GET_LOGIN_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=LOGIN",
   GET_LOGIN_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=LOGIN",
