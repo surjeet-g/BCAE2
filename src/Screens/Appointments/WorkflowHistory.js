@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getInteractionDetailsForID,
+  getWorkFlowForInteractionID,
+} from "./../../Redux/InteractionDispatcher";
+import moment from "moment";
 
 const WorkflowHistory = (props) => {
   const { route, navigation } = props;
+  // const { interactionId = "116" } = route.params;
+  let interactionId = 116;
+  const dispatch = useDispatch([
+    getInteractionDetailsForID,
+    getWorkFlowForInteractionID,
+  ]);
+  let interactionReducer = useSelector((state) => state.interaction);
+  const { InteractionWorkFlowData } = interactionReducer;
+
+  // Calling API to get workflow/followup data
+  useEffect(() => {
+    dispatch(getWorkFlowForInteractionID(interactionId, {}, navigation));
+  }, []);
 
   const PlaceHolderText = ({ text = "Placeholder", top, right }) => {
     return (
@@ -30,7 +49,7 @@ const WorkflowHistory = (props) => {
   const WorkflowUI = (props) => {
     return (
       <View>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", margin: 15 }}>
           <Image
             source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
             style={{ width: 30, height: 30 }}
@@ -320,7 +339,7 @@ const WorkflowHistory = (props) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
+      <ScrollView nestedScrollEnabled={true}>
         {/* WorkflowUI View */}
         <WorkflowUI />
       </ScrollView>
@@ -331,10 +350,6 @@ const WorkflowHistory = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F0F0",
-  },
-  scrollviewContainer: {
-    margin: 15,
     backgroundColor: "#F0F0F0",
   },
 });

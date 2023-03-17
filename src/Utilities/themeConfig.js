@@ -32,6 +32,7 @@ const theme = {
     onSurfaceVariant: "#202223",
     textColor: "black",
     graylabel: "#848A93",
+    userTypeColor: "#F18888",
     toggleBackground: "#F2EFFF",
     black: "#000000"
   },

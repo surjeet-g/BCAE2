@@ -10,8 +10,7 @@ import {
   Slider,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  TouchableOpacity, View
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
@@ -19,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
+import { DATE_FORMAT } from '../../Utilities/Constants/Constant';
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
@@ -106,26 +106,26 @@ function CustomCalendar(props) {
               backgroundColor:
                 marked.indexOf(
                   "" +
+                  moment(
+                    date?.year + "-" + date?.month + "-" + date?.day
+                  ).format("YYYY-MM-DD")
+                ) > -1 &&
+                  moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                    "YYYY-MM-DD"
+                  ) < moment(new Date()).format("YYYY-MM-DD")
+                  ? "green"
+                  : marked.indexOf(
+                    "" +
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD")
-                ) > -1 &&
-                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
-                  "YYYY-MM-DD"
-                ) < moment(new Date()).format("YYYY-MM-DD")
-                  ? "green"
-                  : marked.indexOf(
-                      "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
-                    ) > -1 &&
+                  ) > -1 &&
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD") >
-                      moment(new Date()).format("YYYY-MM-DD")
-                  ? "#F5AD47"
-                  : "#E1E4EB",
+                    moment(new Date()).format("YYYY-MM-DD")
+                    ? "#F5AD47"
+                    : "#E1E4EB",
             }}
           >
             <Text
@@ -140,36 +140,36 @@ function CustomCalendar(props) {
                   color:
                     marked.indexOf(
                       "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
                     ) > -1
                       ? "white"
                       : "black",
                   textAlign:
                     marked.indexOf(
                       "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
                     ) > -1
                       ? "right"
                       : "center",
                   fontSize:
                     marked.indexOf(
                       "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
                     ) > -1
                       ? 5
                       : 10,
                   paddingRight:
                     marked.indexOf(
                       "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
                     ) > -1
                       ? 5
                       : 0,
@@ -187,9 +187,9 @@ function CustomCalendar(props) {
                 console.log(
                   marked.indexOf(
                     "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD")
                   ) > -1
                 )
                 // console.log(item.name);
@@ -204,51 +204,51 @@ function CustomCalendar(props) {
                 color:
                   marked.indexOf(
                     "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD")
                   ) > -1 &&
-                  moment(
-                    date?.year + "-" + date?.month + "-" + date?.day
-                  ).format("YYYY-MM-DD") <
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD") <
                     moment(new Date()).format("YYYY-MM-DD")
                     ? "white"
                     : marked.indexOf(
-                        "" +
-                          moment(
-                            date?.year + "-" + date?.month + "-" + date?.day
-                          ).format("YYYY-MM-DD")
-                      ) > -1 &&
+                      "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                    ) > -1 &&
                       moment(
                         date?.year + "-" + date?.month + "-" + date?.day
                       ).format("YYYY-MM-DD") >
-                        moment(new Date()).format("YYYY-MM-DD")
-                    ? "black"
-                    : "black",
+                      moment(new Date()).format("YYYY-MM-DD")
+                      ? "black"
+                      : "black",
               }}
             >
               {marked.indexOf(
                 "" +
+                moment(
+                  date?.year + "-" + date?.month + "-" + date?.day
+                ).format("YYYY-MM-DD")
+              ) > -1 &&
+                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                  "YYYY-MM-DD"
+                ) < moment(new Date()).format("YYYY-MM-DD")
+                ? "completed appointment"
+                : marked.indexOf(
+                  "" +
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD")
-              ) > -1 &&
-              moment(date?.year + "-" + date?.month + "-" + date?.day).format(
-                "YYYY-MM-DD"
-              ) < moment(new Date()).format("YYYY-MM-DD")
-                ? "completed appointment"
-                : marked.indexOf(
-                    "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
-                  ) > -1 &&
+                ) > -1 &&
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD") >
-                    moment(new Date()).format("YYYY-MM-DD")
-                ? "Upcomming appointment"
-                : ""}
+                  moment(new Date()).format("YYYY-MM-DD")
+                  ? "Upcomming appointment"
+                  : ""}
             </Text>
           </View>
         );
@@ -278,10 +278,12 @@ export const HomeScreen = ({ navigation }) => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
       dispatch(getCustomerAccountData(navigation, customerUUDI));
-      dispatch(getInteractionListData(navigation));
+      dispatch(getInteractionListData(navigation, 1));
     }
     fetchAccountAPI();
   }, []);
+
+
 
   const FlatListItemTop = (props) => {
     const { item, index } = props;
@@ -297,6 +299,7 @@ export const HomeScreen = ({ navigation }) => {
           elevation: 5,
         }}
       >
+
         <View style={{ flex: 1, flexDirection: "column" }}>
           {/* Title & Image View */}
           <View
@@ -441,8 +444,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
                 {"Order ID : 1234"}
@@ -456,8 +459,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
                 {"Date : 10 Jan 2023"}
@@ -475,26 +478,26 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
-                {interactionList?.interactionListData[0]?.intxnId || "NA"}
+                Id:  {interactionList?.interactionListData[0]?.intxnId || "NA"}
               </Text>
               <Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
-                  fontSize: 16,
+                  fontSize: 14,
                   color:
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
-                {"Date : 10 Jan 2023"}
+                Date :{moment(interactionList?.interactionListData[0]?.createdAt).format(DATE_FORMAT)}
               </Text>
             </View>
           )}
@@ -509,8 +512,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
                 {"Appt. ID : 1234"}
@@ -524,8 +527,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                      ? "#775324"
-                      : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                 }}
               >
                 {"Date : 10 Jan 2023"}
@@ -552,8 +555,8 @@ export const HomeScreen = ({ navigation }) => {
                       index === 0
                         ? "#ffffff"
                         : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                          ? "#775324"
+                          : "#ffffff",
                   }}
                 >
                   View More
@@ -566,8 +569,8 @@ export const HomeScreen = ({ navigation }) => {
                       index === 0
                         ? "#ffffff"
                         : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                          ? "#775324"
+                          : "#ffffff",
                   }}
                 />
               </View>

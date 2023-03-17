@@ -44,27 +44,27 @@ import {
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
-import CreateOrder from "../Screens/Appointments/CreateOrder";
+import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import ComingSoon from "./../Screens/ComingSoon";
-import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import Followup from "./../Screens/Appointments/Followup";
+import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
+import ComingSoon from "./../Screens/ComingSoon";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
-const STACK_CREATE_ORDER = "CreateOrder";
+const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
-const STACK_INTERACTION_DETAILS = "InteractionDetails";
+export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const Stack = createStackNavigator();
@@ -317,11 +317,11 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interactions",
-              headerBackgroundContainerStyle: { backgroundColor: '#4C5A81' },
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
-              }
+              },
             },
           })}
           name="InteractionsToOrder"
@@ -331,7 +331,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...{
               headerTintColor: "black",
-              headerTitle: "Create Order",
+              headerTitle: "View Order",
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "black", fontWeight: "700" },
@@ -352,8 +352,8 @@ function MyStack() {
               },
             },
           })}
-          name={STACK_CREATE_ORDER}
-          component={CreateOrder}
+          name={STACK_VIEW_ORDER}
+          component={ViewOrder}
         />
         <Stack.Screen
           options={({ navigation }) => ({

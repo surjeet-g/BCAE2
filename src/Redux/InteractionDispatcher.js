@@ -5,7 +5,9 @@ import {
   setInteractionData,
   setInteractionError,
   setInteractionsWorkFlowDataInStore,
-  setInteractionsWorkFlowErrorDataInStore
+  setInteractionsWorkFlowErrorDataInStore,
+  setInteractionsDetailsDataInStore,
+  setInteractionsDetailsErrorDataInStore,
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -13,19 +15,18 @@ import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
-import { getCustomerID, getCustomerUUID } from '../Utilities/UserManagement/userInfo';
+import {
+  getCustomerID,
+  getCustomerUUID,
+} from "../Utilities/UserManagement/userInfo";
 
-export function fetchInteractionAction(
-  type = "",
-  params = {}
-) {
+export function fetchInteractionAction(type = "", params = {}) {
   return async (dispatch) => {
-
     dispatch(initInteraction());
-    const customerUUID = await getCustomerUUID()
-    const customerID = await getCustomerID()
-    console.log('hititng', customerID, type)
-    let interactionResult
+    const customerUUID = await getCustomerUUID();
+    const customerID = await getCustomerID();
+    console.log("hititng", customerID, type);
+    let interactionResult;
     if (type == typeOfAccrodin.rencently.value) {
       interactionResult = await serverCall(
         `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
@@ -33,66 +34,56 @@ export function fetchInteractionAction(
         {
           searchParams: {
             customerId: customerID,
-          }
+          },
         }
       );
-    }
-    else if (type == typeOfAccrodin.frequently.value) {
+    } else if (type == typeOfAccrodin.frequently.value) {
       interactionResult = await serverCall(
         `${endPoints.FREQUENTLY_ASKED}?limit=4`,
         requestMethod.GET,
         {}
       );
-    }
-    else if (type == typeOfAccrodin.category.value) {
+    } else if (type == typeOfAccrodin.category.value) {
       interactionResult = await serverCall(
         `${endPoints.FREQUENTLY_ASKED}?limit=4`,
         requestMethod.GET,
         {}
       );
-    }
-    else if (type == typeOfAccrodin.searchbox.value) {
+    } else if (type == typeOfAccrodin.searchbox.value) {
       interactionResult = await serverCall(
         `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}?limit=4`,
         requestMethod.POST,
         {
-          "requestId": params.requestId,
-          "customerUuid": customerUUID
+          requestId: params.requestId,
+          customerUuid: customerUUID,
         }
       );
-    }
-    else {
-
+    } else {
       dispatch(setInteractionError([]));
-      return false
+      return false;
     }
 
-    console.log('terdsf', interactionResult.data, type)
+    console.log("terdsf", interactionResult.data, type);
     if (interactionResult?.success) {
-
-      let data = []
+      let data = [];
 
       if (type == typeOfAccrodin.rencently.value) {
-        data = interactionResult?.data?.data?.rows
+        data = interactionResult?.data?.data?.rows;
+      } else if (type == typeOfAccrodin.frequently.value) {
+        data = interactionResult?.data?.data;
+      } else if (type == typeOfAccrodin.category.value) {
+        data = interactionResult?.data?.data;
+      } else if (type == typeOfAccrodin.searchbox.value) {
+        data = interactionResult?.data?.data;
+      } else {
+        data = [];
       }
-      else if (type == typeOfAccrodin.frequently.value) {
-        data = interactionResult?.data?.data
-      }
-      else if (type == typeOfAccrodin.category.value) {
-        data = interactionResult?.data?.data
-      }
-      else if (type == typeOfAccrodin.searchbox.value) {
-        data = interactionResult?.data?.data
-      }
-      else {
-        data = []
-      }
-      console.log('terdsf 1', data)
+      console.log("terdsf 1", data);
 
       dispatch(setInteractionData(data, false));
       return true;
     } else {
-      console.log('error response', interactionResult)
+      console.log("error response", interactionResult);
       dispatch(setInteractionError([]));
       return false;
     }
@@ -130,7 +121,6 @@ export function updateInteractionAction(obj) {
 }
 
 export function addInteractionAction(obj, fileAttachments) {
-
   return async (dispatch) => {
     // const validation = await validateFormData(obj, dispatch);
     // if (!validation) return null;
@@ -151,7 +141,7 @@ export function addInteractionAction(obj, fileAttachments) {
     //     }
     //   }
     // }
-    //if attachment having data 
+    //if attachment having data
     // if (Ids.length != 0) {
     //   obj = { ...obj, ...{ attachment: [Ids] } }
     // }
@@ -164,11 +154,18 @@ export function addInteractionAction(obj, fileAttachments) {
 
     if (result.success) {
       dispatch(enableLoaderAddInteractionAdd(false));
+
       Toast.show({
         type: "bctSuccess",
         text1: result?.data?.message,
       });
-      return { status: true, response: { id: 1 } };
+
+      return {
+        status: true, response: {
+          intxnNo: result?.data?.data?.intxnNo,
+          message: result?.data?.message,
+        }
+      };
     } else {
       Toast.show({
         type: "bctError",
@@ -187,17 +184,14 @@ const validateFormData = async (formData, dispatch) => {
 };
 
 export function getWorkFlowForInteractionID(
-  interactionID,
+  interactionId,
   params = {},
-  requireFollowUpData = false,
   navigation = null
 ) {
+  console.log("$$$-getWorkFlowForInteractionID");
   return async (dispatch) => {
     let url =
-      endPoints.INTERACTION_GET_WORKFLOW +
-      interactionID +
-      "?getFollwUp=" +
-      requireFollowUpData;
+      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
     let result = await serverCall(url, requestMethod.GET, params, navigation);
     if (result.success) {
       console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);
@@ -205,6 +199,34 @@ export function getWorkFlowForInteractionID(
     } else {
       console.log("$$$-getWorkFlowForInteractionID-error", result);
       dispatch(setInteractionsWorkFlowErrorDataInStore(result));
+    }
+  };
+}
+
+export function getInteractionDetailsForID(interactionId, navigation = null) {
+  console.log("$$$-getInteractionDetailsForID");
+  return async (dispatch) => {
+    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
+    let params = {
+      searchParams: {
+        interactionId,
+      },
+    };
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    if (result.success) {
+      console.log("$$$-getInteractionDetailsForID-data", result.data.data);
+      console.log(
+        "$$$-getInteractionDetailsForID-data-stringify",
+        JSON.stringify(result.data.data)
+      );
+      console.log(
+        "$$$-getInteractionDetailsForID-data-stringify-row[0]",
+        JSON.stringify(result.data.data.rows[0])
+      );
+      dispatch(setInteractionsDetailsDataInStore(result.data.data));
+    } else {
+      console.log("$$$-getInteractionDetailsForID-error", result);
+      dispatch(setInteractionsDetailsErrorDataInStore(result));
     }
   };
 }

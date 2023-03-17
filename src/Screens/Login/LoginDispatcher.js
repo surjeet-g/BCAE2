@@ -54,12 +54,12 @@ export function verifyLoginData(navigation, params) {
               };
 
               const tokenExpiresAt = result.data?.data?.tokenExpiresAt ?? "";
+              let userTypeInResponse = result?.data?.data?.user?.userType;
 
               await saveDataToDB(storageKeys.LOGIN_ID, loginId);
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
               await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
-
-              let userTypeInResponse = result?.data?.data?.user?.userType;
+              await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse)
               let profileResult = {};
 
               if (
