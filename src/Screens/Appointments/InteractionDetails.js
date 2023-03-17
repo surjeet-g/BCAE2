@@ -266,7 +266,7 @@ const InteractionDetails = (props) => {
             {/* Service Type View */}
             <DetailInfoItem
               title={"Service type"}
-              value={InteractionDetailsData.serviceType.description}
+              value={InteractionDetailsData.serviceType?.description}
               flex={1}
             />
           </View>
@@ -276,14 +276,14 @@ const InteractionDetails = (props) => {
             {/* Interaction Type View */}
             <DetailInfoItem
               title={"Interaction Type"}
-              value={InteractionDetailsData.intxnType.description}
+              value={InteractionDetailsData.intxnType?.description}
               flex={2}
             />
 
             {/* Priority View */}
             <DetailInfoItem
               title={"Priority"}
-              value={InteractionDetailsData.intxnPriority.description}
+              value={InteractionDetailsData.intxnPriority?.description}
               flex={1}
             />
           </View>
@@ -293,14 +293,14 @@ const InteractionDetails = (props) => {
             {/* Problem Statement View */}
             <DetailInfoItem
               title={"Problem Statement"}
-              value={InteractionDetailsData.intxnCause.description}
+              value={InteractionDetailsData.intxnCause?.description}
               flex={2}
             />
 
             {/* Status View */}
             <DetailInfoItem
               title={"Status"}
-              value={InteractionDetailsData.intxnStatus.description}
+              value={InteractionDetailsData.intxnStatus?.description}
               flex={1}
             />
           </View>
