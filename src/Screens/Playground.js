@@ -16,7 +16,6 @@ import {
 } from "react-native-paper";
 import Logo from "../Assets/svg/logo.svg";
 import { SvgBG } from "../Components/SvgBG";
-import { Success } from "../Components/Success";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 export const Playground = () => {

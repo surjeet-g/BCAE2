@@ -86,7 +86,7 @@ export function getAnnouncementsData(navigation, phoneNumber) {
 const getAllMasterIntraction = async (params, navigation) => {
   try {
     let result = await serverCall(
-      `${endPoints.MY_TICKETS_API}`,
+      `${endPoints.INTERACTION_LIST_API}`,
       requestMethod.POST,
       params,
       navigation

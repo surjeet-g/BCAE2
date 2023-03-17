@@ -37,7 +37,6 @@ import {
   deleteNdLogoutUser,
 } from "../../../Redux/LogoutDispatcher";
 import { resetMyDashboardData } from "../../../Redux/MyDashboardDispatcher";
-import { resetMyTicketsData } from "../../../Redux/MyTicketsDispatcher";
 import {
   changePassword,
   resetPasswordChangeData,

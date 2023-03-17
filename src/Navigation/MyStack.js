@@ -32,7 +32,7 @@ import AnnouncementList from "../Screens/Announcement/AnnouncementList";
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
-import { Playground } from "../Screens/Playground";
+// import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
@@ -202,11 +202,11 @@ function MyStack() {
             },
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
           component={Playground}
-        />
+        /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
