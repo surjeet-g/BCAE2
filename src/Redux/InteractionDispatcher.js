@@ -164,11 +164,18 @@ export function addInteractionAction(obj, fileAttachments) {
 
     if (result.success) {
       dispatch(enableLoaderAddInteractionAdd(false));
+
       Toast.show({
         type: "bctSuccess",
         text1: result?.data?.message,
       });
-      return { status: true, response: { id: 1 } };
+
+      return {
+        status: true, response: {
+          intxnNo: result?.data?.data?.intxnNo,
+          message: result?.data?.message,
+        }
+      };
     } else {
       Toast.show({
         type: "bctError",

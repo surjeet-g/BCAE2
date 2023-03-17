@@ -829,11 +829,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
     return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-      <InteractionSuccess intxId="13123" cancelButtonRequired={true}
+      <InteractionSuccess intxId={intereactionAddResponse?.intxnNo} cancelButtonRequired={true}
         okHandler={async () => {
           await resetStateData("setInteractionResponse")
           navigation.navigate(STACK_INTERACTION_DETAILS, {
-            interactionID: intereactionAddResponse?.interactionID
+            interactionID: intereactionAddResponse?.intxnNo
           })
 
         }}
@@ -1148,8 +1148,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     const customerID = await getCustomerID();
                     const params = {
                       customerId: customerID,
-                      statement: input.statement.value,
-                      statementId: input.statementId.value,
+                      // statement: input.statement.value,
+                      // statementId: input.statementId.value,
                       problemCause: input.problemCause.value?.code,
                       interactionCategory:
                         input.interactionCategory.value?.code,
@@ -1163,42 +1163,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       ],
                       remarks: input.remarks.value,
                     };
-
+                    console.log('>>', params,)
                     const { status, response } = await dispatchInteraction(
                       addInteractionAction(params, fileAttachments)
                     );
-                    console.log("respin", status, response);
+
 
                     if (status) {
                       console.log('interaction type response ', response)
                       setInteractionResponse(response)
                       dispatchInteraction(setInteractionReset())
+                      setEnableSuccessScreen(interactionResponseScreen.SUCCESS)
 
-
-                      Alert.alert(strings.attention, response.message, [
-                        {
-                          text: strings.inquiryInfo,
-                          onPress: () => {
-                            //reset attachment
-                            // navigation.navigate("InquiryNotification", {
-                            //   ouId: organizationItem.unitId,
-                            //   serviceType: inquiryServiceName,
-                            //   problemCode: inquiryProblemCode,
-                            //   deptId: inquiryDeptId,
-                            // });
-                          },
-                        },
-                        {
-                          text: strings.close,
-                          onPress: () => {
-                            resetReducerNdState()
-                            navigation.navigate("Home", {});
-                          },
-                          style: "cancel",
-                        },
-                      ]);
                     }
                     else {
+                      setEnableSuccessScreen(interactionResponseScreen.FAILED)
 
                     }
                   }}

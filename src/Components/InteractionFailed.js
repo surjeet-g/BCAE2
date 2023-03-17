@@ -10,7 +10,7 @@ export const InteractionFailed = ({
   return (
     <View style={styles.successContainer}>
       <Image
-        source={require("../Assets/icons/success.gif")}
+        source={require("../Assets/icons/interaction_error.gif")}
         style={styles.gif}
       />
 

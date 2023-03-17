@@ -7,14 +7,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ImageBackground,
+  View
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import Toast from "react-native-toast-message";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { color, spacing } from "../Utilities/Constants/Constant";
 
 import { strings } from "../Utilities/Language";
@@ -152,12 +152,12 @@ export const ImagePicker = ({
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
-          { text: strings.ok, onPress: () => {} },
+          { text: strings.ok, onPress: () => { } },
         ]);
       }
     } else {
       Alert.alert(strings.attention, strings.max_number_of_file, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     }
   };
@@ -341,25 +341,60 @@ export const ImagePicker = ({
 
       {attachmentModalVisible && (
         <View>
+
+
           <View
             style={{
               alignItems: "center",
+              justifyContent: "space-evenly",
               position: "absolute",
               bottom: 80,
-              flexDirection: "row",
+
+              flexDirection: "column",
+              backgroundColor: "gray"
             }}
           >
             <View
               style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                // position: "relative",
+                marginVertical: 10,
+
+                width: "65%",
+                // height: 300,
+                marginHorizontal: 15,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: 600,
+                  color: "#202223",
+                  fontSize: 16,
+                  // flex: 1,
+                }}
+              >
+                Choose file
+              </Text>
+
+
+              <Icon
+                onPress={() => {
+                  setAttachmentModalVisible(false);
+                }} name='close-circle' size={25} color={"#000"} />
+            </View>
+            <View
+              style={{
                 alignItems: "center",
                 flex: 1,
-
                 flexDirection: "row",
                 backgroundColor: color.BCAE_OFF_WHITE,
                 borderRadius: 10,
                 padding: 10,
               }}
             >
+
+
               <Pressable
                 onPress={() => handleDocumentSelection()}
                 style={{
