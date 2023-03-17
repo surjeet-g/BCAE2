@@ -23,9 +23,7 @@ import { CustomButton } from "../../Components/CustomButton";
 import {
   color,
   DEFAULT_PROFILE_IMAGE,
-  fontSizes,
-  INPUT_TYPE,
-  spacing
+  fontSizes, spacing
 } from "../../Utilities/Constants/Constant";
 
 import { strings } from "../../Utilities/Language";
@@ -66,6 +64,12 @@ import theme from "../../Utilities/themeConfig";
 import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
+export const typeOfAccrodin = {
+  category: { value: "category", title: "Top 10 Catgory" },
+  frequently: { value: "frequently", title: "Most frequently interaction" },
+  rencently: { value: "rencently", title: "Recently inteaction" },
+  searchbox: { value: "searchbox", title: "Seach input" }
+}
 
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Catgory" },
@@ -612,7 +616,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Pressable
           onPress={() => {
-
             setProfileSeriveModal(!modelProfileServiceModel)
           }}
           style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
@@ -814,18 +817,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   Object.keys(interactionRedux.formData).map((it) => {
     const item = interactionRedux.formData[it];
 
-    if (item.required) {
-      //dropdown
-      if (item.type == INPUT_TYPE.DROPDOWN) {
-        if (item.value.code == "") {
-          isButtonEnable = false;
-        }
-      }
-      if (item.type == INPUT_TYPE.INPUTBOX) {
-        if (item.value == "") {
-          isButtonEnable = false;
-        }
-      }
+    if (activeChatBotSec == "") {
+      console.log("not active any section")
+      return null
     }
   });
 

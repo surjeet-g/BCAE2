@@ -325,7 +325,7 @@ const saveDashboardData = (dispatch, page = 1) => {
         filters: [],
       };
       let result = await serverCall(
-        `${endPoints.MY_TICKETS_API}?limit=3&page=${page}`,
+        `${endPoints.INTERACTION_LIST_API}?limit=3&page=${page}`,
         requestMethod.POST,
         params
       );

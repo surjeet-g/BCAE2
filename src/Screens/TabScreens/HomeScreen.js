@@ -16,7 +16,8 @@ import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
-import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher.js";
+import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
+import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
@@ -266,13 +267,17 @@ function CustomCalendar(props) {
 export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
-  console.log('>>data', customerAccount)
-  const dispatch = useDispatch([getCustomerAccountData]);
+  let interactionList = useSelector((state) => state.interactionList);
+  const dispatch = useDispatch([
+    getCustomerAccountData,
+    getInteractionListData,
+  ]);
 
   useEffect(() => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
       dispatch(getCustomerAccountData(navigation, customerUUDI));
+      dispatch(getInteractionListData(navigation));
     }
     fetchAccountAPI();
   }, []);
@@ -482,7 +487,7 @@ export const HomeScreen = ({ navigation }) => {
                         : "#ffffff",
                 }}
               >
-                {"Inter. ID : 1234"}
+                {interactionList?.interactionListData[0]?.intxnId || "NA"}
               </Text>
               <Text
                 variant="bodyMedium"

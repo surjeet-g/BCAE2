@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
-import MyTicketsReducer from "../Redux/MyTicketsReducer";
+import InteractionListReducer from "../Redux/InteractionListReducer";
 import RegisterFormReducer from "../Redux/RegisterReducer";
 import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
 import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
@@ -32,7 +32,7 @@ const appReducer = combineReducers({
   attachment: AttachmentReducer,
   login: LoginReducer,
   registerForm: RegisterFormReducer,
-  myTickets: MyTicketsReducer,
+  interactionList: InteractionListReducer,
   myTicketDetails: MyTicketDetailsReducer,
   myDashboardData: MyDashboardReducer,
   announcements: AnnouncementsReducer,
