@@ -55,8 +55,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       case "InteractionsToOrder":
         navigation.navigate("InteractionsToOrder", { refresh: true });
         break;
-      case "CreateOrder":
-        navigation.navigate("CreateOrder", { refresh: true });
+      case "ViewOrder":
+        navigation.navigate("ViewOrder", { refresh: true });
         break;
       default:
         break;
@@ -80,7 +80,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       {modal && (
         <View style={styles.buttonContainer}>
           <Pressable
-            onPress={() => onNavClickButton("CreateOrder")}
+            onPress={() => onNavClickButton("ViewOrder")}
             style={styles.button}
           >
             <Text style={styles.buttontext}>{strings.order}</Text>
