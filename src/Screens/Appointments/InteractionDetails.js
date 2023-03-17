@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -12,11 +12,28 @@ import {
 import { useTheme } from "react-native-paper";
 import { CustomButton } from "../../Components/CustomButton";
 import { strings } from "../../Utilities/Language";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getInteractionDetailsForID,
+  getWorkFlowForInteractionID,
+} from "./../../Redux/InteractionDispatcher";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  const { colors, fonts, roundness } = useTheme();
-  const [showIndex, setShowIndex] = useState(0);
+  // const { interactionId = "1989" } = route.params;
+  const { colors } = useTheme();
+  const dispatch = useDispatch([
+    getInteractionDetailsForID,
+    getWorkFlowForInteractionID,
+  ]);
+  const { interactionReducer } = useSelector((state) => state.interaction);
+  // const { InteractionDetailsData } = interactionReducer.InteractionDetailsData;
+
+  // Calling API to get interaction details & workflow/followup data
+  useEffect(() => {
+    dispatch(getInteractionDetailsForID(1989, navigation));
+    dispatch(getWorkFlowForInteractionID(1989, {}, navigation));
+  }, []);
 
   const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
@@ -56,7 +73,6 @@ const InteractionDetails = (props) => {
           {/* View More view */}
           <TouchableOpacity
             onPress={() => {
-              setShowIndex(index);
               if (index == 1) {
                 navigation.navigate("WorkflowHistory");
               }

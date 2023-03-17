@@ -5,9 +5,14 @@ import {
   INTERACTION_DATA,
   INTERACTION_EDIT_LOADER_ENABLE,
   INTERACTION_ERROR,
-  INTERACTION_FORM_ERROR, INTERACTION_GET_WORKFLOW_FAILURE, INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT,
+  INTERACTION_FORM_ERROR,
+  INTERACTION_GET_WORKFLOW_FAILURE,
+  INTERACTION_GET_WORKFLOW_SUCCESS,
+  INTERACTION_INIT,
   INTERACTION_RESET,
-  INTERACTION_SET_FORM
+  INTERACTION_SET_FORM,
+  INTERACTION_GET_DETAILS_FAILURE,
+  INTERACTION_GET_DETAILS_SUCCESS,
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -104,6 +109,8 @@ const InteractionInitialState = {
       type: INPUT_TYPE.INPUTBOX,
     },
   },
+  InteractionDetailsData: {},
+  interactionDetailsErrorData: {},
 };
 
 const InteractionReducer = (state = InteractionInitialState, action) => {
@@ -234,6 +241,17 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         InteractionWorkFlowData: action.data,
         interactionWorkFlowErrorData: {},
+      };
+    case INTERACTION_GET_DETAILS_FAILURE:
+      return {
+        ...state,
+        interactionDetailsErrorData: action.data,
+      };
+    case INTERACTION_GET_DETAILS_SUCCESS:
+      return {
+        ...state,
+        InteractionDetailsData: action.data,
+        interactionDetailsErrorData: {},
       };
     default:
       return state;
