@@ -234,7 +234,7 @@ const InteractionDetails = (props) => {
           }}
           numberOfLines={1}
         >
-          Interaction ID: {InteractionDetailsData.intxnId}
+          Interaction ID: {InteractionDetailsData?.intxnId}
         </Text>
 
         <View
@@ -247,7 +247,7 @@ const InteractionDetails = (props) => {
             {/* Statement View */}
             <DetailInfoItem
               title={"Statement"}
-              value={InteractionDetailsData.requestStatement}
+              value={InteractionDetailsData?.requestStatement}
               flex={1}
             />
           </View>
@@ -257,7 +257,7 @@ const InteractionDetails = (props) => {
             {/* Date & Time View */}
             <DetailInfoItem
               title={"Created Date & time"}
-              value={moment(InteractionDetailsData.createdAt).format(
+              value={moment(InteractionDetailsData?.createdAt).format(
                 "DD MMMM YYYY, hh:mm A"
               )}
               flex={2}
@@ -266,7 +266,7 @@ const InteractionDetails = (props) => {
             {/* Service Type View */}
             <DetailInfoItem
               title={"Service type"}
-              value={InteractionDetailsData.serviceType?.description}
+              value={InteractionDetailsData?.serviceType?.description}
               flex={1}
             />
           </View>
@@ -276,14 +276,14 @@ const InteractionDetails = (props) => {
             {/* Interaction Type View */}
             <DetailInfoItem
               title={"Interaction Type"}
-              value={InteractionDetailsData.intxnType?.description}
+              value={InteractionDetailsData?.intxnType?.description}
               flex={2}
             />
 
             {/* Priority View */}
             <DetailInfoItem
               title={"Priority"}
-              value={InteractionDetailsData.intxnPriority?.description}
+              value={InteractionDetailsData?.intxnPriority?.description}
               flex={1}
             />
           </View>
@@ -293,14 +293,14 @@ const InteractionDetails = (props) => {
             {/* Problem Statement View */}
             <DetailInfoItem
               title={"Problem Statement"}
-              value={InteractionDetailsData.intxnCause?.description}
+              value={InteractionDetailsData?.intxnCause?.description}
               flex={2}
             />
 
             {/* Status View */}
             <DetailInfoItem
               title={"Status"}
-              value={InteractionDetailsData.intxnStatus?.description}
+              value={InteractionDetailsData?.intxnStatus?.description}
               flex={1}
             />
           </View>
@@ -320,7 +320,7 @@ const InteractionDetails = (props) => {
           </View>
 
           {/* Row 6*/}
-          {InteractionDetailsData.attachments?.length > 0 ? (
+          {InteractionDetailsData?.attachments?.length > 0 ? (
             <View style={{ flexDirection: "row", marginTop: 20 }}>
               {/* Attachments View */}
               <DetailInfoAttachmentItem
