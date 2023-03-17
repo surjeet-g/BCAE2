@@ -250,7 +250,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
     case INTERACTION_GET_DETAILS_SUCCESS:
       return {
         ...state,
-        InteractionDetailsData: action.data,
+        InteractionDetailsData: action.data.rows[0],
         interactionDetailsErrorData: {},
       };
     default:

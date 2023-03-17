@@ -17,22 +17,24 @@ import {
   getInteractionDetailsForID,
   getWorkFlowForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
+import moment from "moment";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // const { interactionId = "1989" } = route.params;
+  // const { interactionId = "116" } = route.params;
+  let interactionId = 116;
   const { colors } = useTheme();
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
   ]);
-  const { interactionReducer } = useSelector((state) => state.interaction);
-  // const { InteractionDetailsData } = interactionReducer.InteractionDetailsData;
+  let interactionReducer = useSelector((state) => state.interaction);
+  const { InteractionDetailsData } = interactionReducer;
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(() => {
-    dispatch(getInteractionDetailsForID(1989, navigation));
-    dispatch(getWorkFlowForInteractionID(1989, {}, navigation));
+    dispatch(getInteractionDetailsForID(interactionId, navigation));
+    dispatch(getWorkFlowForInteractionID(interactionId, {}, navigation));
   }, []);
 
   const HorizontalFlatListItem = (props) => {
@@ -232,7 +234,7 @@ const InteractionDetails = (props) => {
           }}
           numberOfLines={1}
         >
-          Interaction ID: 144425
+          Interaction ID: {InteractionDetailsData.intxnId}
         </Text>
 
         <View
@@ -245,7 +247,7 @@ const InteractionDetails = (props) => {
             {/* Statement View */}
             <DetailInfoItem
               title={"Statement"}
-              value={"Dissatisfaction with Policies"}
+              value={InteractionDetailsData.requestStatement}
               flex={1}
             />
           </View>
@@ -255,12 +257,18 @@ const InteractionDetails = (props) => {
             {/* Date & Time View */}
             <DetailInfoItem
               title={"Created Date & time"}
-              value={"14 March 2023, 11:30 AM"}
+              value={moment(InteractionDetailsData.createdAt).format(
+                "DD MMMM YYYY, hh:mm A"
+              )}
               flex={2}
             />
 
             {/* Service Type View */}
-            <DetailInfoItem title={"Service type"} value={"Addon"} flex={1} />
+            <DetailInfoItem
+              title={"Service type"}
+              value={InteractionDetailsData.serviceType.description}
+              flex={1}
+            />
           </View>
 
           {/* Row 3*/}
@@ -268,12 +276,16 @@ const InteractionDetails = (props) => {
             {/* Interaction Type View */}
             <DetailInfoItem
               title={"Interaction Type"}
-              value={"Complaint"}
+              value={InteractionDetailsData.intxnType.description}
               flex={2}
             />
 
             {/* Priority View */}
-            <DetailInfoItem title={"Priority"} value={"High"} flex={1} />
+            <DetailInfoItem
+              title={"Priority"}
+              value={InteractionDetailsData.intxnPriority.description}
+              flex={1}
+            />
           </View>
 
           {/* Row 4*/}
@@ -281,43 +293,45 @@ const InteractionDetails = (props) => {
             {/* Problem Statement View */}
             <DetailInfoItem
               title={"Problem Statement"}
-              value={"Dissatisfaction"}
+              value={InteractionDetailsData.intxnCause.description}
               flex={2}
             />
 
             {/* Status View */}
-            <DetailInfoItem title={"Status"} value={"Business"} flex={1} />
+            <DetailInfoItem
+              title={"Status"}
+              value={InteractionDetailsData.intxnStatus.description}
+              flex={1}
+            />
           </View>
 
           {/* Row 5*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* Contact type View */}
-            <DetailInfoItem
-              title={"Contact Type"}
-              value={"Business"}
-              flex={2}
-            />
+            <DetailInfoItem title={"Contact Type"} value={"NA"} flex={2} />
 
             {/*Follow up View */}
             <DetailInfoItem
               title={"Follow Up"}
-              value={"3"}
+              value={"NA"}
               flex={1}
               onPress={() => navigation.navigate("Followup")}
             />
           </View>
 
           {/* Row 6*/}
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Attachments View */}
-            <DetailInfoAttachmentItem
-              title={"Attachments"}
-              attachmentData={[
-                { id: 1, name: "../../Assets/icons/ic_word.png" },
-                { id: 2, name: "../../Assets/icons/ic_pdf.png" },
-              ]}
-            />
-          </View>
+          {InteractionDetailsData.attachments?.length > 0 ? (
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              {/* Attachments View */}
+              <DetailInfoAttachmentItem
+                title={"Attachments"}
+                attachmentData={[
+                  { id: 1, name: "../../Assets/icons/ic_word.png" },
+                  { id: 2, name: "../../Assets/icons/ic_pdf.png" },
+                ]}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     );

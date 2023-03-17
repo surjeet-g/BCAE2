@@ -188,7 +188,7 @@ export function getWorkFlowForInteractionID(
     let result = await serverCall(url, requestMethod.GET, params, navigation);
     if (result.success) {
       console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);
-      dispatch(setInteractionsDetailsDataInStore(result.data.data));
+      dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
     } else {
       console.log("$$$-getWorkFlowForInteractionID-error", result);
       dispatch(setInteractionsWorkFlowErrorDataInStore(result));
@@ -208,7 +208,15 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     if (result.success) {
       console.log("$$$-getInteractionDetailsForID-data", result.data.data);
-      dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
+      console.log(
+        "$$$-getInteractionDetailsForID-data-stringify",
+        JSON.stringify(result.data.data)
+      );
+      console.log(
+        "$$$-getInteractionDetailsForID-data-stringify-row[0]",
+        JSON.stringify(result.data.data.rows[0])
+      );
+      dispatch(setInteractionsDetailsDataInStore(result.data.data));
     } else {
       console.log("$$$-getInteractionDetailsForID-error", result);
       dispatch(setInteractionsDetailsErrorDataInStore(result));
