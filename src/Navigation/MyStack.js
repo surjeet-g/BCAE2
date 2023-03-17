@@ -365,19 +365,6 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
-                      <Image
-                        source={require("../Assets/icons/ic_more_vertical.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
             },
           })}
           name={STACK_INTERACTION_DETAILS}

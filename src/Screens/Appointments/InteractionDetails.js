@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
+import { navBar } from "../../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
 import { CustomButton } from "../../Components/CustomButton";
 import { strings } from "../../Utilities/Language";
@@ -18,12 +19,26 @@ import {
   getWorkFlowForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import moment from "moment";
+import { Button, Menu, Divider, Provider } from "react-native-paper";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionId = "116" } = route.params;
   let interactionId = 116;
   const { colors } = useTheme();
+  const [visible, setVisible] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 });
+  const openMenu = (event) => {
+    const { nativeEvent } = event;
+    const anchor = {
+      x: nativeEvent.pageX - 15,
+      y: nativeEvent.pageY + 25,
+    };
+    console.log("$$$-anchor", anchor);
+    setMenuAnchor(anchor);
+    setVisible(true);
+  };
+  const closeMenu = () => setVisible(false);
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
@@ -35,6 +50,25 @@ const InteractionDetails = (props) => {
   useEffect(() => {
     dispatch(getInteractionDetailsForID(interactionId, navigation));
     dispatch(getWorkFlowForInteractionID(interactionId, {}, navigation));
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <View>
+            <View style={navBar.navRightCon}>
+              <Pressable onPress={openMenu}>
+                <Image
+                  style={{ margin: 10 }}
+                  source={require("../../Assets/icons/ic_more_vertical.png")}
+                />
+              </Pressable>
+            </View>
+          </View>
+        );
+      },
+    });
   }, []);
 
   const HorizontalFlatListItem = (props) => {
@@ -339,6 +373,37 @@ const InteractionDetails = (props) => {
 
   return (
     <View style={styles.container}>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={menuAnchor}
+        anchorPosition={"bottom"}
+        style={{
+          backgroundColor: "white",
+          borderRadius: 10,
+          padding: 10,
+          elevation: 10,
+        }}
+      >
+        <Menu.Item
+          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
+          style={{ backgroundColor: "#F1F1F1", borderRadius: 10 }}
+          onPress={closeMenu}
+          title="Add Followup"
+        />
+        <Divider />
+        <Menu.Item
+          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
+          onPress={closeMenu}
+          title="Re-Assign"
+        />
+        <Divider />
+        <Menu.Item
+          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
+          onPress={closeMenu}
+          title="Assign to self"
+        />
+      </Menu>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Interaction Details View Full Container */}
         <DetailsInfoUIFull />
