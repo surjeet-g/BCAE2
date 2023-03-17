@@ -268,7 +268,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         firstName: firstName,
         lastName: lastName,
         gender: gender?.code, //gender.code
-        customerNo: "",
+        //customerNo: "",  not required for personal customer
         mobileNo: mobileNo,
         emailId: email,
         birthDate: moment(dob).format("YYYY-MM-DD"),
