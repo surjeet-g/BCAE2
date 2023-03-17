@@ -50,8 +50,10 @@ import get from "lodash.get";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { FooterModel } from "../../Components/FooterModel";
 import { ImagePicker } from "../../Components/ImagePicker";
+import { InteractionFailed } from '../../Components/InteractionFailed';
 import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from '../../Redux/KnowledgeSearchAction';
 import {
   getMasterData,
@@ -64,6 +66,7 @@ import theme from "../../Utilities/themeConfig";
 import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
+
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Catgory" },
   frequently: { value: "frequently", title: "Most frequently interaction" },
@@ -74,7 +77,7 @@ export const typeOfAccrodin = {
 const InteractionsToOrder = ({ route, navigation }) => {
 
   const [activeChatBotSec, setactiveChatBot] = useState("")
-  //need enable screej loader
+  //need enable screen loader
   const [loader, setLoader] = useState(true);
   //attachment
   const [fileAttachments, setFileAttachments] = useState([]);
@@ -95,13 +98,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
 
-  //bottom 
   const [bottomBarTitle, setBottombartitle] = useState("")
+
   const interactionResponseScreen = { SUCCESS: "SUCCESS", FAILED: "FAILED", NONE: "NONE" }
   const [enableSuccessScreen, setEnableSuccessScreen] = useState(interactionResponseScreen.NONE)
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false)
+  const [intereactionAddResponse, setInteractionResponse] = useState({})
+
+  const [requestStatementHistory, setRequestStatementHistory] = useState([])
+  const [isSolutionFound, setSolutionFound] = useState(false)
+
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -123,17 +132,39 @@ const InteractionsToOrder = ({ route, navigation }) => {
     });
   }, []);
 
-  const resetStateData = () => {
-    setProfileSeriveModal(false)
-    setEnableSuccessScreen(interactionResponseScreen.NONE)
-    setFileAttachments([])
-    setautoSuggestionList(true)
-    setsearchStandaloneModel(true)
-    setKnowledgeSearchText("")
-    setOpenBottomModal(false)
-    setBottombartitle("")
+  /**
+  * Reset State data 
+  *
+  * @param {string} exclude To avoid current state data
+  */
+  const resetStateData = (exclude = "") => {
+    if (exclude != "setInteractionResponse") {
+      setInteractionResponse({});
+    }
+    setSolutionFound(false)
+    setRequestStatementHistory([])
+    setProfileSeriveModal(false);
+    setEnableSuccessScreen(interactionResponseScreen.NONE);
+    setFileAttachments([]);
+    setautoSuggestionList(true);
+    setsearchStandaloneModel(true);
+    setKnowledgeSearchText("");
+    setOpenBottomModal(false);
+    setBottombartitle("");
 
   }
+
+  /**
+   * Reset All params
+   *
+   * @param {string} params The number to raise.
+   */
+  const resetReducerNdState = (params = "") => {
+    resetStateData(params)
+    dispatchInteraction(setInteractionReset())
+    dispatchInteraction(resetKnowSearch())
+  }
+
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([fetchSavedProfileData]);
   const dispatchInteraction = useDispatch([
@@ -145,8 +176,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   ]);
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
-      resetStateData()
-      dispatchInteraction(resetKnowSearch())
+      resetReducerNdState()
     });
     return willFocusSubscription;
   }, []);
@@ -198,18 +228,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   );
 
 
-  let mostfrequentlylist = get(
-    interactionReducer,
-    "InteractionData.mostfrequently",
-    []
-  );
 
-  //to do check response
-  let frequertlyquestionList = get(
-    interactionReducer,
-    "InteractionData.frequerntlyAsked",
-    []
-  );
 
 
 
@@ -593,6 +612,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Pressable
           onPress={() => {
+
             setProfileSeriveModal(!modelProfileServiceModel)
           }}
           style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
@@ -602,7 +622,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             style={{ width: 45, height: 45 }}
           />
           <Text
-            variant="bodySmall"
+            variant="bodyMedium"
             style={{
               fontWeight: "400",
               color: colors.textColor,
@@ -612,8 +632,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
             Services
           </Text>
           <Icon name={!modelProfileServiceModel ? 'chevron-down' : "chevron-up"} size={20} color={colors.textColor} />
-
         </Pressable>
+
         {modelProfileServiceModel && (
           <View style={styles.modelContainerProfile}>
             <List.Item
@@ -641,7 +661,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       </ImageBackground>
     );
-  }, [addresss, customerPic, profileReducer]);
+  }, [addresss, customerPic, profileReducer, modelProfileServiceModel]);
 
   const {
     statement,
@@ -664,7 +684,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //handling loader
 
 
-  //button disable or not
+
+  /**
+  * render bottom chat 
+  *
+  */
   const RenderBottomChatBoard = () => {
 
     const suggestionList = get(
@@ -677,13 +701,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
       console.log("not active any section")
       return null
     }
-
-    return (
-      <View style={styles.bottomContainer}>
-        <ClearSpace size={2} />
-        <Text variant="labelMedium">Next Action - Resoltion</Text>
-        <ClearSpace size={2} />
-        {activeInteraction != "" && (
+    if (isSolutionFound) {
+      return (
+        <View style={styles.bottomContainer}>
+          <ClearSpace size={4} />
           <View
             style={{
               padding: 8,
@@ -691,21 +712,77 @@ const InteractionsToOrder = ({ route, navigation }) => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "#00A985",
+
               borderRadius: 10,
               marginTop: 20,
             }}
           >
-            <Text
-              style={{ textAlign: "center" }}
-            >{`${strings.soultion_found} \n ${activeInteraction.requestStatement}`}</Text>
+            <Text variant="bodyLarge"
+              style={{ textAlign: "center", color: "#3FB94D" }}
+            >
+              {`${strings.soultion_found}`}
+            </Text>
+
           </View>
-        )}
-        <ClearSpace size={4} />
+          <ClearSpace size={2} />
+          <View style={{ flexDirection: "row", flexWrap: "wrap", }}>
+            {requestStatementHistory.length && requestStatementHistory.map((item, idx) => (
+              <View key={item} style={{ flexDirection: "row", alignItems: "center" }}>
+                <Chip mode="outlined" onPress={() => {
+                  alert("sdfsf")
+                }}
+                  textStyle={{
+                    fontSize: 14, fontWeight: "400"
+                  }}
+                  style={{
+                    backgroundColor: "#d9e7ff",
+                    borderRadius: 15,
+                    padding: 0,
+                    marginRight: 5,
+                    borderColor: "transparent",
+                    marginBottom: 5
+                  }}
+                >{item} </Chip>
+                {requestStatementHistory.length != (idx + 1) &&
+                  <Icon name='arrow-right' size={20} color={"#4C5A81"}
+                    style={{ marginRight: 5 }} />
+                }
+              </View>
+            ))}
+          </View>
+          <ClearSpace size={3} />
+        </View>
+      )
+    }
+    return (
+      <View style={styles.bottomContainer}>
+        <ClearSpace size={2} />
+        <Text variant="labelMedium">Next Action - Resoltion</Text>
+        <ClearSpace size={2} />
+
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {suggestionList.length > 0 ? suggestionList.map(ite => (
             <Chip mode="outlined" onPress={() => {
-              alert("sdfsf")
+              Alert.alert(strings.attention, "Are you sure want to create interaction", [
+                {
+                  text: "Ok",
+                  onPress: () => {
+                    setLoader(true)
+                    let tempHistory = requestStatementHistory
+                    tempHistory.push()
+                    setRequestStatementHistory(tempHistory)
+                    setLoader(false)
+                  },
+                },
+                {
+                  text: strings.close,
+                  onPress: () => {
+
+                  },
+                  style: "cancel",
+                },
+              ]);
+
             }}
               textStyle={{
                 fontSize: 14, fontWeight: "400"
@@ -714,7 +791,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 backgroundColor: "#edf1f7",
                 borderRadius: 15,
                 marginRight: 5,
-                marginBottom: 5
+                marginBottom: 5,
+                borderColor: "transparent",
               }}
             >{ite?.requestStatement} </Chip>
           )
@@ -722,9 +800,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </View>
 
         <ClearSpace size={3} />
-        <Text variant="labelMedium" style={{ textAlign: "center" }}>Couldn't Find a resolution?<Text onPress={() => {
-          alert("//to do open model")
-        }} style={{ color: "red" }}> Create Interaction</Text> </Text>
+
+        <Text variant="labelMedium" style={{ textAlign: "center" }}>Couldn't Find a resolution?<Text
+          onPress={() => {
+
+          }}
+          style={{ color: "red" }}> Create Interaction</Text> </Text>
+
 
       </View>
     )
@@ -750,12 +832,30 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const isModelOpen = (openBottomModal || openBottomModalChatBoard)
 
   if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
-    return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}><InteractionSuccess intxId="13123" cancelButtonRequired={true}
-      okHandler={() => { }} cancelHandler={() => { }}
-    /></View>)
+    return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
+      <InteractionSuccess intxId="13123" cancelButtonRequired={true}
+        okHandler={async () => {
+          await resetStateData("setInteractionResponse")
+          navigation.navigate(STACK_INTERACTION_DETAILS, {
+            interactionID: intereactionAddResponse?.interactionID
+          })
+
+        }}
+        cancelHandler={() => {
+
+        }}
+      /></View>)
   }
   if (enableSuccessScreen == interactionResponseScreen.FAILED) {
-    return <Text>Failed</Text>
+    return (
+      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
+        <InteractionFailed okHandler={() => {
+          //Failed action
+          resetReducerNdState()
+
+        }} />
+      </View>
+    )
   }
 
   return (
@@ -815,7 +915,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {/*knowledge search*/}
       </View>
       <FooterModel open={openBottomModalChatBoard} setOpen={setOpenBottomModalChatBot}
-        title={bottomBarTitle}>
+        title={`${bottomBarTitle} ${isSolutionFound ? "- Solution Found" : ""}`} >
         <RenderBottomChatBoard />
       </FooterModel>
 
@@ -1074,9 +1174,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     console.log("respin", status, response);
 
                     if (status) {
+                      console.log('interaction type response ', response)
+                      setInteractionResponse(response)
                       dispatchInteraction(setInteractionReset())
-                      resetStateData()
-                      //reset state values
+
+
                       Alert.alert(strings.attention, response.message, [
                         {
                           text: strings.inquiryInfo,
@@ -1093,6 +1195,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                         {
                           text: strings.close,
                           onPress: () => {
+                            resetReducerNdState()
                             navigation.navigate("Home", {});
                           },
                           style: "cancel",

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,7 +39,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider,
+  BottomSheetModalProvider
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
@@ -51,10 +51,10 @@ import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
-import ComingSoon from "./../Screens/ComingSoon";
-import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import Followup from "./../Screens/Appointments/Followup";
+import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
+import ComingSoon from "./../Screens/ComingSoon";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -64,7 +64,7 @@ const STACK_SPLASH = "Splash";
 const STACK_CREATE_ORDER = "CreateOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
-const STACK_INTERACTION_DETAILS = "InteractionDetails";
+export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const Stack = createStackNavigator();
@@ -106,7 +106,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_INTERACTION}
+        initialRouteName={"Splash"}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",

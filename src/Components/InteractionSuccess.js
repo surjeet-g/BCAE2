@@ -1,6 +1,14 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "./CustomButton";
+/**
+* After success response for interaction
+*
+* @param {string} intxId interaction id
+* @param {function} cancelButtonRequired cancel action 
+* @param {function} okHandler interaction id
+* @param {bool} cancelButtonRequired interaction id
+*/
 export const InteractionSuccess = ({
   intxId,
   cancelButtonRequired,
@@ -34,7 +42,7 @@ export const InteractionSuccess = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   successContainer: {
 
     alignItems: "center",
