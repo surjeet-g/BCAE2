@@ -20,7 +20,7 @@ import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWi
 import FileName from "./../../Components/FileName";
 import Slot from "./../../Components/Slot";
 
-const CreateOrder = (props) => {
+const ViewOrder = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
 
@@ -719,4 +719,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
 });
-export default CreateOrder;
+export default ViewOrder;
