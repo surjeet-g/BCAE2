@@ -17,6 +17,7 @@ export const INPUT_TYPE = {
   DROPDOWN: 1,
 
 }
+export const DATE_FORMAT = "YYYY-MM-DD"
 export const SECERT_KEY = "(*Hnjkn2kjn";
 
 export const WEBCLIENT_ID =
@@ -274,6 +275,7 @@ export const storageKeys = {
   GEOCODER_DATA: "GEOCODER_DATA",
   LOGIN_ID: "LOGIN_ID",
   TOKEN_EXPIRY: "TOKEN_EXPIRY",
+  USERTYPE: "USERTYPE"
 };
 
 export function validateEmail(text) {

@@ -61,7 +61,7 @@ import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
-import { getCustomerID } from "../../Utilities/UserManagement/userInfo";
+import { getCustomerID, getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 export const typeOfAccrodin = {
@@ -71,12 +71,7 @@ export const typeOfAccrodin = {
   searchbox: { value: "searchbox", title: "Seach input" }
 }
 
-export const typeOfAccrodin = {
-  category: { value: "category", title: "Top 10 Catgory" },
-  frequently: { value: "frequently", title: "Most frequently interaction" },
-  rencently: { value: "rencently", title: "Recently inteaction" },
-  searchbox: { value: "searchbox", title: "Seach input" }
-}
+
 
 const InteractionsToOrder = ({ route, navigation }) => {
 
@@ -111,11 +106,35 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [requestStatementHistory, setRequestStatementHistory] = useState([])
   const [isSolutionFound, setSolutionFound] = useState(false)
-
+  const [userType, setUserType] = useState("")
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
 
+
+
+  /**
+  * Reset State data 
+  *
+  * @param {string} exclude To avoid current state data
+  */
+  const resetStateData = (exclude = "") => {
+    if (exclude != "setInteractionResponse") {
+      setInteractionResponse({});
+    }
+    setUserType("")
+    setSolutionFound(false)
+    setRequestStatementHistory([])
+    setProfileSeriveModal(false);
+    setEnableSuccessScreen(interactionResponseScreen.NONE);
+    setFileAttachments([]);
+    setautoSuggestionList(true);
+    setsearchStandaloneModel(true);
+    setKnowledgeSearchText("");
+    setOpenBottomModal(false);
+    setBottombartitle("");
+
+  }
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
@@ -135,29 +154,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
       },
     });
   }, []);
-
-  /**
-  * Reset State data 
-  *
-  * @param {string} exclude To avoid current state data
-  */
-  const resetStateData = (exclude = "") => {
-    if (exclude != "setInteractionResponse") {
-      setInteractionResponse({});
-    }
-    setSolutionFound(false)
-    setRequestStatementHistory([])
-    setProfileSeriveModal(false);
-    setEnableSuccessScreen(interactionResponseScreen.NONE);
-    setFileAttachments([]);
-    setautoSuggestionList(true);
-    setsearchStandaloneModel(true);
-    setKnowledgeSearchText("");
-    setOpenBottomModal(false);
-    setBottombartitle("");
-
-  }
-
   /**
    * Reset All params
    *
@@ -207,7 +203,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
           `${INTXN_TYPE},${SERVICE_TYPE},${PROBLEM_CODE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
         )
       );
+      setUserType(await getUserType())
+
     }
+
     fetchMyAPI();
   }, []);
   const { profileReducer, masterReducer, interactionReducer } = useSelector(
@@ -469,6 +468,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   const renderProfileTab = useMemo(() => {
+
     return (
       <ImageBackground
         source={require("../../Assets/icons/login_card_background.png")}
@@ -482,6 +482,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
           backgroundColor: "#ffff",
           borderRadius: 16,
           elevation: 1,
+          borderColor: (userType == USERTYPE.CUSTOMER) ? "#0CD222" : colors.userTypeColor,
+          borderWidth: 3
         }}
       >
 
@@ -618,7 +620,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           onPress={() => {
             setProfileSeriveModal(!modelProfileServiceModel)
           }}
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
+          style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
         >
           <Image
             source={require("../../Assets/icons/interaction_service.png")}
@@ -664,7 +666,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       </ImageBackground>
     );
-  }, [addresss, customerPic, profileReducer, modelProfileServiceModel]);
+  }, [addresss, customerPic, profileReducer, modelProfileServiceModel, userType]);
 
   const {
     statement,
