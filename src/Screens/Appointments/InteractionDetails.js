@@ -347,13 +347,12 @@ const InteractionDetails = (props) => {
             {/*Follow up View */}
             <DetailInfoItem
               title={"Follow Up"}
-              value={InteractionFollowupData.length || "NA"}
+              value={InteractionFollowupData.length}
               flex={1}
-              onPress={() =>
-                navigation.navigate("Followup", {
-                  InteractionFollowupData,
-                })
-              }
+              onPress={() => {
+                if (InteractionFollowupData.length > 0)
+                  navigation.navigate("Followup");
+              }}
             />
           </View>
 

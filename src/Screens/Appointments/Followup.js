@@ -1,10 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 
 const Followup = (props) => {
   const { route, navigation } = props;
-  const { InteractionFollowupData } = route.params;
+  let interactionReducer = useSelector((state) => state.interaction);
+  const { InteractionFollowupData } = interactionReducer;
 
   const PlaceHolderText = ({ text = "Followup", top, right }) => {
     return (
@@ -42,8 +44,9 @@ const Followup = (props) => {
           <PlaceHolderText text={"Followup 2"} top={20} right={-45} />
         </View>
         {/* Card View data*/}
-        {InteractionFollowupData.map((item) => {
+        {InteractionFollowupData.map((item) => (
           <View
+            key={item.intxnId}
             style={{
               borderRadius: 10,
               backgroundColor: "#fff",
@@ -66,7 +69,7 @@ const Followup = (props) => {
                 fontSize: 16,
               }}
             >
-              {moment(item?.createdAt).format("DD MMMM YYYY, hh:mm A")}
+              {moment(item?.intxnCreatedDate).format("DD MMMM YYYY, hh:mm A")}
             </Text>
 
             {/* Row 1 */}
@@ -106,8 +109,8 @@ const Followup = (props) => {
               {/* Comments View */}
               <FollowupItem title={"Comments"} value={"Assign to self"} />
             </View>
-          </View>;
-        })}
+          </View>
+        ))}
       </View>
     );
   };

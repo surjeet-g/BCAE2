@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,7 +39,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../Components/headerTitle";
@@ -374,7 +374,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
-              headerTitle: "Interaction Details",
+              headerTitle: "Followup History",
               headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
@@ -383,9 +383,7 @@ function MyStack() {
               headerRight: () => {
                 return (
                   <View style={{ marginRight: 15 }}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
+                    <Pressable onPress={() => {}}>
                       <Image
                         source={require("../Assets/icons/ic_more_vertical.png")}
                       />
@@ -400,9 +398,25 @@ function MyStack() {
         />
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Workflow History",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {
+                return (
+                  <View style={{ marginRight: 15 }}>
+                    <Pressable onPress={() => {}}>
+                      <Image
+                        source={require("../Assets/icons/ic_more_vertical.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
