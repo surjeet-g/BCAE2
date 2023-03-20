@@ -18,7 +18,12 @@ import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { Toast } from "../../Components/Toast";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
+import {
+  color,
+  fontSizes,
+  spacing,
+  isValidNumber,
+} from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
   requestUserPermission,
@@ -185,21 +190,27 @@ export const Login = ({ navigation }) => {
   };
 
   const submitWithMobile = (loginType) => {
-    setLoginType(loginType);
-    if (number.length !== numberMaxLength) {
-      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
-    } else if (password === "") {
-      setPasswordError(strings.passwordValidErrorLogin);
+    if (!isValidNumber(number)) {
+      setNumberError(strings.mobileValidError);
     } else {
-      let param = {
-        loginId: number,
-        password,
-        userType,
-        loginType: loginType.toUpperCase(),
-        loginMode,
-      };
-      setParams(param);
-      dispatch(verifyLoginData(navigation, param));
+      setLoginType(loginType);
+      if (number.length !== numberMaxLength) {
+        setNumberError(
+          `Please enter a ${numberMaxLength} digit mobile number!!`
+        );
+      } else if (password === "") {
+        setPasswordError(strings.passwordValidErrorLogin);
+      } else {
+        let param = {
+          loginId: number,
+          password,
+          userType,
+          loginType: loginType.toUpperCase(),
+          loginMode,
+        };
+        setParams(param);
+        dispatch(verifyLoginData(navigation, param));
+      }
     }
   };
 
