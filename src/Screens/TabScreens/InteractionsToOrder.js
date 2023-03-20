@@ -104,7 +104,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
   const [userSeachEnable, setUserSeachEnable] = useState(false)
   const [bottomBarTitle, setBottombartitle] = useState("");
-
   const interactionResponseScreen = {
     SUCCESS: "SUCCESS",
     FAILED: "FAILED",
@@ -1035,8 +1034,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const renderResult = (navigation, setUserSeachEnable,
     profile, dispatch1, loader, setLoader,
     headerRightForNav, headerTitleForNav) => {
+
     const profileSearchResult = get(profile, 'profileSearchData', [])
-    console.log('task - profil inside result ', profileSearchResult, profile)
+    console.log('task renderResult ', profileSearchResult)
     return (<UserSearchList
       headerTitleForNav={headerTitleForNav}
       profileSearchResult={profileSearchResult}
@@ -1081,8 +1081,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const UserSearchList = ({
     setLoader, headerTitleForNav, setUserSeachEnable,
-    profileSearchResult, dispatch1, navigation, headerRightForNav }) => {
+    profileSearchResult, dispatch1, navigation,
+    headerRightForNav }) => {
 
+    console.log('>>task UserSearchList', profileSearchResult)
     return (
       <View style={{
         top: 60,
@@ -1138,6 +1140,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     )
   }
+
   const headerSet = () => {
     if (1) {
       navigation.setOptions({
@@ -1209,11 +1212,48 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //   }
   // }
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Icon
+            onPress={() => {
+              dispatch1(setSearchProfileReset())
+            }} name='close-circle' size={25} color={"#000"} />
+        )
+      },
+      headerTitle: () => {
+        let searchString = ""
+        return (
+          <>
+            <Searchbar
+              style={{ width: width * 0.7 }}
+              placeholder={"Search customer" + get(route, 'params.testValue', "")}
+              onChangeText={async (text) => {
 
+                searchString = text
+                console.log('>>', searchString)
+                setLoader(true)
+
+                await profileDispatch(seachCustomers())
+                setLoader(false)
+              }}
+
+            // value={ser}
+            />
+            {renderResult(navigation, setUserSeachEnable,
+              profileReducer, profileDispatch, loader, setLoader,
+              headerRightForNav, headerTitleForNav = "")}
+
+          </>
+        )
+      }
+    })
+  }, [profileReducer])
   return (
     <>
 
-      {/* {headerSet()} */}
+
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />
       )}
