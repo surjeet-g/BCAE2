@@ -12,6 +12,7 @@ export const PROD_BASE_URL_TENANT =
 
 export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const endPoints = {
+  SEACH_CUSTOMERS: "api/users/search",
   INTERACTION_ADD: "api/interaction/create",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
   FREQUENTLY_ASKED: "api/interaction/frequent",
