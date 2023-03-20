@@ -1,12 +1,10 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
-import { ClearSpace } from './ClearSpace';
+import { ClearSpace } from "./ClearSpace";
 import { CustomButton } from "./CustomButton";
 import { styles } from "./InteractionSuccess";
 
-export const InteractionFailed = ({
-  okHandler = () => { },
-}) => {
+export const InteractionFailed = ({ okHandler = () => {} }) => {
   return (
     <View style={styles.successContainer}>
       <Image
@@ -14,18 +12,12 @@ export const InteractionFailed = ({
         style={styles.gif}
       />
 
-
-
       <Text style={{ ...styles.idText, textAlign: "center" }}>
         Aw Snap! {"\n\n"}
-        Unable to create an interaction,
-        try again later.</Text>
+        Unable to create an interaction, try again later.
+      </Text>
       <ClearSpace size={5} />
       <CustomButton label={"Go Back"} onPress={okHandler} />
-
-
     </View>
   );
 };
-
-
