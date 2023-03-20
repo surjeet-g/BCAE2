@@ -36,78 +36,87 @@ const Followup = (props) => {
           source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
           style={{ width: 30, height: 30 }}
         />
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={require("../../Assets/icons/ic_veritical_line.png")}
-            style={{ height: 100 }}
-          />
-          <PlaceHolderText text={"Followup 2"} top={20} right={-45} />
-        </View>
-        {/* Card View data*/}
-        {InteractionFollowupData.map((item) => (
+        {InteractionFollowupData.map((item, index) => (
           <View
             key={item.intxnId}
-            style={{
-              borderRadius: 10,
-              backgroundColor: "#fff",
-              padding: 10,
-              width: "100%",
-            }}
+            style={{ width: "100%", alignItems: "center" }}
           >
-            {/* Date & Time View */}
-            <Text
-              style={{
-                borderRadius: 10,
-                backgroundColor: "#EFA848",
-                padding: 10,
-                textAlign: "center",
-                width: "70%",
-                alignSelf: "center",
-                color: "white",
-                bottom: 30,
-                fontWeight: 600,
-                fontSize: 16,
-              }}
-            >
-              {moment(item?.intxnCreatedDate).format("DD MMMM YYYY, hh:mm A")}
-            </Text>
-
-            {/* Row 1 */}
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              {/* Priority View */}
-              <FollowupItem
-                title={"Priority"}
-                value={item?.priorityCodeDesc?.description}
+            <View style={{ flexDirection: "row" }}>
+              <Image
+                source={require("../../Assets/icons/ic_veritical_line.png")}
+                style={{ height: 100 }}
+              />
+              <PlaceHolderText
+                text={`Followup ${index + 1}`}
+                top={20}
+                right={-45}
               />
             </View>
+            {/* Card View data*/}
 
-            {/* Row 2 */}
             <View
               style={{
-                flexDirection: "row",
-                marginTop: 20,
+                borderRadius: 10,
+                backgroundColor: "#fff",
+                padding: 10,
+                width: "100%",
               }}
             >
-              {/* Source View */}
-              <FollowupItem title={"Source"} value={"Dissatisfaction"} />
+              {/* Date & Time View */}
+              <Text
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#EFA848",
+                  padding: 10,
+                  textAlign: "center",
+                  width: "70%",
+                  alignSelf: "center",
+                  color: "white",
+                  bottom: 30,
+                  fontWeight: 600,
+                  fontSize: 16,
+                }}
+              >
+                {moment(item?.intxnCreatedDate).format("DD MMMM YYYY, hh:mm A")}
+              </Text>
 
-              {/* Remark View */}
-              <FollowupItem title={"Remark"} value={item?.remarks} />
-            </View>
+              {/* Row 1 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {/* Priority View */}
+                <FollowupItem
+                  title={"Priority"}
+                  value={item?.priorityCodeDesc?.description}
+                />
+              </View>
 
-            {/* Row 3 */}
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 20,
-              }}
-            >
-              {/* Comments View */}
-              <FollowupItem title={"Comments"} value={"Assign to self"} />
+              {/* Row 2 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 20,
+                }}
+              >
+                {/* Source View */}
+                <FollowupItem title={"Source"} value={"Dissatisfaction"} />
+
+                {/* Remark View */}
+                <FollowupItem title={"Remark"} value={item?.remarks} />
+              </View>
+
+              {/* Row 3 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 20,
+                }}
+              >
+                {/* Comments View */}
+                <FollowupItem title={"Comments"} value={"Assign to self"} />
+              </View>
             </View>
           </View>
         ))}

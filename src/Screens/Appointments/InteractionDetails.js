@@ -351,8 +351,8 @@ const InteractionDetails = (props) => {
               value={InteractionFollowupData.length}
               flex={1}
               onPress={() => {
-                if (InteractionFollowupData.length > 0)
-                  navigation.navigate("Followup");
+                // if (InteractionFollowupData.length > 0)
+                navigation.navigate("Followup");
               }}
             />
           </View>
