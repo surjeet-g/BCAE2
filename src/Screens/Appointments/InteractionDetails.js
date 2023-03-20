@@ -378,7 +378,7 @@ const InteractionDetails = (props) => {
         }}
         onPress={() => {
           setShowPopupMenu(!showPopupMenu);
-          setShowBottomModal(!showBottomModal);
+          setShowBottomModal(true);
         }}
       >
         <Text
@@ -396,6 +396,19 @@ const InteractionDetails = (props) => {
           source={require("../../Assets/icons/ic_right_arrow.png")}
         />
       </Pressable>
+    );
+  };
+
+  const PopUpMenuDivider = () => {
+    return (
+      <Divider
+        style={{
+          borderWidth: 1,
+          borderColor: "#848A93",
+          borderStyle: "dashed",
+          marginVertical: 10,
+        }}
+      />
     );
   };
 
@@ -417,57 +430,18 @@ const InteractionDetails = (props) => {
       >
         {/* Follow up */}
         <PopUpMenuItem title={"Add followup"} />
-        <Divider
-          style={{
-            borderWidth: 1,
-            borderColor: "#848A93",
-            borderStyle: "dashed",
-            marginVertical: 10,
-          }}
-        />
+        <PopUpMenuDivider />
         {/* Assign to self */}
         <PopUpMenuItem title={"Assign to self"} />
-
-        <Divider
-          style={{
-            borderWidth: 1,
-            borderColor: "#848A93",
-            borderStyle: "dashed",
-            marginVertical: 10,
-          }}
-        />
+        <PopUpMenuDivider />
         {/* Re-assign */}
         <PopUpMenuItem title={"Re-Assign"} />
       </View>
     );
   };
 
-  return (
-    <View style={styles.container}>
-      {showPopupMenu && <PopUpMenu />}
-
-      <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
-        {/* Interaction Details View Full Container */}
-        <DetailsInfoUIFull />
-        {/* Flatlist Horizontal view */}
-        <View style={{ flexDirection: "row", marginTop: 15 }}>
-          <FlatList
-            horizontal
-            initialNumToRender={2}
-            showsHorizontalScrollIndicator={false}
-            data={[
-              { title: `Appointment${"\n"}Details` },
-              { title: `Workflow${"\n"}History` },
-              { title: "Not Available" },
-            ]}
-            renderItem={({ item, index }) => (
-              <HorizontalFlatListItem item={item} index={index} />
-            )}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      </ScrollView>
-
+  const AddFollowUpModal = (props) => {
+    return (
       <FooterModel
         open={showBottomModal}
         setOpen={setShowBottomModal}
@@ -520,6 +494,143 @@ const InteractionDetails = (props) => {
           </View>
         </View>
       </FooterModel>
+    );
+  };
+
+  const AssignToSelfModal = (props) => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Assign to self"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.current_dept_role}
+            placeHolder={"Select " + strings.current_dept_role}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.user}
+            placeHolder={"Select " + strings.user}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.remarks}
+            placeHolder={strings.remarks}
+            onChangeText={(text) => console.log(text)}
+          />
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+  const ReAssignModal = (props) => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Re-assign"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.current_dept_role}
+            placeHolder={"Select " + strings.current_dept_role}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.user}
+            placeHolder={"Select " + strings.user}
+          />
+
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {showPopupMenu && <PopUpMenu />}
+
+      <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
+        {/* Interaction Details View Full Container */}
+        <DetailsInfoUIFull />
+        {/* Flatlist Horizontal view */}
+        <View style={{ flexDirection: "row", marginTop: 15 }}>
+          <FlatList
+            horizontal
+            initialNumToRender={2}
+            showsHorizontalScrollIndicator={false}
+            data={[
+              { title: `Appointment${"\n"}Details` },
+              { title: `Workflow${"\n"}History` },
+              { title: "Not Available" },
+            ]}
+            renderItem={({ item, index }) => (
+              <HorizontalFlatListItem item={item} index={index} />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        </View>
+      </ScrollView>
+
+      {showBottomModal && <AddFollowUpModal />}
     </View>
   );
 };
