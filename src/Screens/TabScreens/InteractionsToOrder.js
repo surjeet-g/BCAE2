@@ -132,7 +132,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       setInteractionResponse({});
     }
     // setUserType("");
-    setService("")
+    // setService("")
     setSolutionFound(false);
     setRequestStatementHistory([]);
     setProfileSeriveModal(false);
@@ -215,7 +215,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
         SERVICE_CATEGORY,
         INTXN_CATEGORY,
       } = MASTER_DATA_CONSTANT;
-
+      //set service
+      //to get data from api
+      setService({
+        "code": "SC_INSURANCE",
+        "description": "Insurance"
+      })
       // await dispatchInteraction(fetchInteractionAction(true));
       await profileDispatch(fetchSavedProfileData(navigation));
       setLoader(false);
@@ -277,7 +282,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
     if (text.length > 0) {
       // setresultLoader(true)
-      await knowledgeSearchDispatch(getKnowledgeSearchData(text, activeService));
+      await knowledgeSearchDispatch(getKnowledgeSearchData(text, activeService?.code));
       //enable list show
       setautoSuggestionList(true);
       // setresultLoader(false)
@@ -347,23 +352,23 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setKnowledgeSearchText("");
                   setautoSuggestionList(false);
                   //todo
-                  return null;
-                  //pre populating result
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "statement",
-                      value: item.requestStatement,
-                      clearError: true,
-                    })
-                  );
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "statementId",
-                      value: item.requestId,
-                      clearError: true,
-                    })
-                  );
+                  //pre populating result
+                  // dispatchInteraction(
+                  //   setInteractionFormField({
+                  //     field: "statement",
+                  //     value: item.requestStatement,
+                  //     clearError: true,
+                  //   })
+                  // );
+
+                  // dispatchInteraction(
+                  //   setInteractionFormField({
+                  //     field: "statementId",
+                  //     value: item.requestId,
+                  //     clearError: true,
+                  //   })
+                  // );
 
                   const interCat = get(
                     interactionCategoryList?.filter(
@@ -372,11 +377,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   const interType = get(
                     interactionList?.filter((it) => it.code == item.intxnType),
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   const serviveType = get(
                     serviceTypelist?.filter(
                       (it) => it.code == item.serviceType
@@ -384,6 +391,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+                  console.log('>>', serviveType, "master data", serviceTypelist, "api response", item.serviceType)
                   const serviveCatType = get(
                     serviceCategoryList?.filter(
                       (it) => it.code == item.serviceCategory
@@ -391,6 +399,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   //to do from api response
                   const contactPerFromProfile = get(
                     profileReducer,
@@ -554,7 +563,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, []);
 
   const renderProfileTab = useMemo(() => {
-    const serviceList = ["SC_BANK", "SC_INSURANCE"]
+    const serviceList =
+      [{
+        "code": "SC_BANK",
+        "description": "Banking"
+      }, {
+        "code": "SC_INSURANCE",
+        "description": "Insurance"
+      }]
+
     return (
       <ImageBackground
         source={require("../../Assets/icons/login_card_background.png")}
@@ -722,7 +739,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginRight: 5,
             }}
           >
-            Services  {activeService}
+            Services :  {activeService?.description}
           </Text>
           {serviceList.length > 0 &&
             <Icon
@@ -738,8 +755,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
             {serviceList.map(ite => {
               return (
                 <List.Item
-                  key={ite}
-                  title={ite}
+                  key={ite.code}
+                  title={ite.description}
                   titleStyle={{
                     fontSize: 10,
                     padding: 0,
