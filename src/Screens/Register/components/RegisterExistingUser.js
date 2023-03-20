@@ -35,10 +35,7 @@ import { Card, Text, TextInput, useTheme } from "react-native-paper";
 import { ClearSpace } from "../../../Components/ClearSpace";
 import {
   color,
-  fontSizes,
-  spacing,
-  isValidNumber,
-  validatePassword,
+  fontSizes, isValidNumber, spacing, validateEmail, validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -81,6 +78,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     return finalString;
   };
+
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
@@ -187,11 +185,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       setCustomerIDError(strings.customerIDError);
     } else if (idNumber === "") {
       setIdNumberError(strings.idNumberError);
-    } else if (dob === "") {
-      dobError(strings.dobError);
-    } else if (gender?.code === "") {
-      setgenderError(strings.genderError);
-    } else if (mobileNo.length !== numberMaxLength) {
+    }
+    else if (mobileNo.length !== numberMaxLength) {
       setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
     } else if (otp.trim() === "") {
       setOtpNumberError(strings.numberOtpError);
@@ -212,7 +207,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         idType: idType?.code,
         idValue: idNumber,
         birthDate: moment(dob).format("YYYY-MM-DD"),
-        gender: gender.code,
         // extn: countryCode,
         mobileNo: mobileNo,
         emailId: email,
@@ -335,7 +329,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const buttonEnableDiable = () => {
     if (
       dob === "" ||
-      gender === "" ||
       mobileNo === "" ||
       otp === "" ||
       email === "" ||
@@ -613,18 +606,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
               {idNumberError !== "" && showErrorMessage(idNumberError)}
             </View>
             {/* Gender */}
-            <View style={{ marginTop: 5 }}>
-              <CustomDropDown
-                selectedValue={selectedValueGender}
-                setValue={setValueGender}
-                data={registerForm?.registerFormData?.GENDER ?? []}
-                onChangeText={(text) => onGenderClick(text)}
-                value={gender?.description}
-                placeHolder={strings.gender}
-              />
 
-              {genderError !== "" && showErrorMessage(genderError)}
-            </View>
 
             <CountryPicker
               show={countryPickModel}
