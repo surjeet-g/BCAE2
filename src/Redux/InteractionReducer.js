@@ -13,6 +13,8 @@ import {
   INTERACTION_SET_FORM,
   INTERACTION_GET_DETAILS_FAILURE,
   INTERACTION_GET_DETAILS_SUCCESS,
+  CREATE_FOLLOWUP,
+  CREATE_FOLLOWUP_FAILURE,
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -111,6 +113,8 @@ const InteractionInitialState = {
   },
   InteractionDetailsData: {},
   interactionDetailsErrorData: {},
+  followupData: [],
+  followupErrorData: {},
 };
 
 const InteractionReducer = (state = InteractionInitialState, action) => {
@@ -252,6 +256,17 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         InteractionDetailsData: action.data.rows[0],
         interactionDetailsErrorData: {},
+      };
+    case CREATE_FOLLOWUP_FAILURE:
+      return {
+        ...state,
+        followupErrorData: action.data,
+      };
+    case CREATE_FOLLOWUP:
+      return {
+        ...state,
+        followupData: action.data,
+        followupErrorData: {},
       };
     default:
       return state;

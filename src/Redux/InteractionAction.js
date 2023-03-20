@@ -14,6 +14,8 @@ export const INTERACTION_GET_DETAILS_SUCCESS =
   "INTERACTION_GET_DETAILS_SUCCESS";
 export const INTERACTION_GET_DETAILS_FAILURE =
   "INTERACTION_GET_DETAILS_FAILURE";
+export const CREATE_FOLLOWUP = "CREATE_FOLLOWUP";
+export const CREATE_FOLLOWUP_FAILURE = "CREATE_FOLLOWUP_FAILURE";
 
 export function initInteraction() {
   return { type: INTERACTION_INIT };
@@ -76,4 +78,12 @@ export function setInteractionsDetailsDataInStore(data) {
 
 export function setInteractionsDetailsErrorDataInStore(data) {
   return { type: INTERACTION_GET_DETAILS_FAILURE, data };
+}
+
+export function setFollowupDataInStore(data) {
+  return { type: CREATE_FOLLOWUP, data };
+}
+
+export function setFollowupErrorDataInStore(data) {
+  return { type: CREATE_FOLLOWUP_FAILURE, data };
 }

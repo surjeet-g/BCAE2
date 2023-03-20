@@ -8,6 +8,8 @@ import {
   setInteractionsWorkFlowErrorDataInStore,
   setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore,
+  setFollowupDataInStore,
+  setFollowupErrorDataInStore,
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -161,10 +163,11 @@ export function addInteractionAction(obj, fileAttachments) {
       });
 
       return {
-        status: true, response: {
+        status: true,
+        response: {
           intxnNo: result?.data?.data?.intxnNo,
           message: result?.data?.message,
-        }
+        },
       };
     } else {
       Toast.show({
@@ -227,6 +230,29 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
     } else {
       console.log("$$$-getInteractionDetailsForID-error", result);
       dispatch(setInteractionsDetailsErrorDataInStore(result));
+    }
+  };
+}
+
+export function createFollowupForInteraction(
+  interactionId,
+  remarks,
+  navigation = null
+) {
+  console.log("$$$-createFollowupForInteraction");
+  return async (dispatch) => {
+    let url = endPoints.INSERTFOLLOWUP;
+    let params = {
+      intxnId: interactionId,
+      remarks,
+    };
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    if (result.success) {
+      console.log("$$$-createFollowupForInteraction-data", result.data.data);
+      dispatch(setFollowupDataInStore(result.data.data));
+    } else {
+      console.log("$$$-createFollowupForInteraction-error", result);
+      dispatch(setFollowupErrorDataInStore(result));
     }
   };
 }
