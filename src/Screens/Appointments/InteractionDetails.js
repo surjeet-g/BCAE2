@@ -20,6 +20,9 @@ import {
 } from "./../../Redux/InteractionDispatcher";
 import moment from "moment";
 import { Divider } from "react-native-paper";
+import { FooterModel } from "./../../Components/FooterModel";
+import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "./../../Components/CustomInput";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
@@ -27,6 +30,7 @@ const InteractionDetails = (props) => {
   let interactionId = 116;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
+  const [showBottomModal, setShowBottomModal] = useState(false);
 
   const dispatch = useDispatch([
     getInteractionDetailsForID,
@@ -374,7 +378,7 @@ const InteractionDetails = (props) => {
         }}
         onPress={() => {
           setShowPopupMenu(!showPopupMenu);
-          alert("Clicked");
+          setShowBottomModal(!showBottomModal);
         }}
       >
         <Text
@@ -464,21 +468,58 @@ const InteractionDetails = (props) => {
         </View>
       </ScrollView>
 
-      {/* Bottom Button View */}
-      <View
-        style={{
-          flexDirection: "row",
-          bottom: 0,
-          backgroundColor: "white",
-        }}
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Add Follow up"}
+        subtitle={"You have two follow up"}
       >
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.cancel} onPress={() => {}} />
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.priority}
+            placeHolder={"Select " + strings.priority}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.source}
+            placeHolder={"Select " + strings.user}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.remarks}
+            placeHolder={strings.remarks}
+            onChangeText={(text) => console.log(text)}
+          />
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.submit} onPress={() => {}} />
-        </View>
-      </View>
+      </FooterModel>
     </View>
   );
 };

@@ -2,6 +2,8 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    user: "User",
+    source: "Source",
     help: "Help",
     search: "Search",
     offers: "Offer",
@@ -14,6 +16,7 @@ export let strings = new LocalizedStrings({
     loginId: "Login Id",
     contact_type: "Contact type",
     priority_type: "Priority type",
+    priority: "Priority",
     problem_stat_cause: "Problem statement cause",
     remarks: "Remarks",
     confirm_edit_address: "Do you want to edit this address?",
@@ -222,6 +225,8 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
+    user: "User",
+    source: "Source",
     help: "Help",
     search: "Search",
     offers: "Offer",
@@ -234,6 +239,7 @@ export let strings = new LocalizedStrings({
     loginId: "Login Id",
     contact_type: "Contact type",
     priority_type: "Priority type",
+    priority: "Priority",
     problem_stat_cause: "Problem statement cause",
     remarks: "Remarks",
     confirm_edit_address: "Do you want to edit this address?",
@@ -438,7 +444,8 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   ml: {
-
+    user: "User",
+    source: "Source",
     search: "Search",
     offers: "Offers",
     help: "Help",
