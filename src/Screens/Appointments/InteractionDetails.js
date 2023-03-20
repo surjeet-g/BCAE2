@@ -19,26 +19,15 @@ import {
   getWorkFlowForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import moment from "moment";
-import { Button, Menu, Divider, Provider } from "react-native-paper";
+import { Divider } from "react-native-paper";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionId = "116" } = route.params;
   let interactionId = 116;
   const { colors } = useTheme();
-  const [visible, setVisible] = useState(false);
-  const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 });
-  const openMenu = (event) => {
-    const { nativeEvent } = event;
-    const anchor = {
-      x: nativeEvent.pageX - 15,
-      y: nativeEvent.pageY + 25,
-    };
-    console.log("$$$-anchor", anchor);
-    setMenuAnchor(anchor);
-    setVisible(true);
-  };
-  const closeMenu = () => setVisible(false);
+  const [showPopupMenu, setShowPopupMenu] = useState(false);
+
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
@@ -58,7 +47,7 @@ const InteractionDetails = (props) => {
         return (
           <View>
             <View style={navBar.navRightCon}>
-              <Pressable onPress={openMenu}>
+              <Pressable onPress={() => setShowPopupMenu(!showPopupMenu)}>
                 <Image
                   style={{ margin: 10 }}
                   source={require("../../Assets/icons/ic_more_vertical.png")}
@@ -69,7 +58,7 @@ const InteractionDetails = (props) => {
         );
       },
     });
-  }, []);
+  }, [showPopupMenu]);
 
   const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
@@ -371,39 +360,88 @@ const InteractionDetails = (props) => {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={menuAnchor}
-        anchorPosition={"bottom"}
+  const PopUpMenuItem = (props) => {
+    const { title } = props;
+    return (
+      <Pressable
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#F1F1F1",
+          borderRadius: 10,
+          padding: 15,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        onPress={() => {
+          setShowPopupMenu(!showPopupMenu);
+          alert("Clicked");
+        }}
+      >
+        <Text
+          style={{
+            marginRight: 10,
+            color: "#605879",
+            fontWeight: 600,
+            fontSize: 16,
+          }}
+        >
+          {title}
+        </Text>
+        <Image
+          style={{ tintColor: "#605879" }}
+          source={require("../../Assets/icons/ic_right_arrow.png")}
+        />
+      </Pressable>
+    );
+  };
+
+  const PopUpMenu = (props) => {
+    return (
+      <View
         style={{
           backgroundColor: "white",
           borderRadius: 10,
-          padding: 10,
+          padding: 15,
           elevation: 10,
+          zIndex: 99999999,
+          margin: 20,
+          alignSelf: "flex-end",
+          position: "absolute",
+          top: 40,
+          right: 10,
         }}
       >
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          style={{ backgroundColor: "#F1F1F1", borderRadius: 10 }}
-          onPress={closeMenu}
-          title="Add Followup"
+        {/* Follow up */}
+        <PopUpMenuItem title={"Add followup"} />
+        <Divider
+          style={{
+            borderWidth: 1,
+            borderColor: "#848A93",
+            borderStyle: "dashed",
+            marginVertical: 10,
+          }}
         />
-        <Divider />
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          onPress={closeMenu}
-          title="Re-Assign"
+        {/* Assign to self */}
+        <PopUpMenuItem title={"Assign to self"} />
+
+        <Divider
+          style={{
+            borderWidth: 1,
+            borderColor: "#848A93",
+            borderStyle: "dashed",
+            marginVertical: 10,
+          }}
         />
-        <Divider />
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          onPress={closeMenu}
-          title="Assign to self"
-        />
-      </Menu>
+        {/* Re-assign */}
+        <PopUpMenuItem title={"Re-Assign"} />
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {showPopupMenu && <PopUpMenu />}
+
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Interaction Details View Full Container */}
         <DetailsInfoUIFull />
