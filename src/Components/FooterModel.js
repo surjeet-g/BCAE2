@@ -4,11 +4,17 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { SHADOW_STYLE } from "../Utilities/themeConfig";
 import { ClearSpace } from "./ClearSpace";
-Icon
+Icon;
 var { height, width } = Dimensions.get("screen");
 
-export const FooterModel = ({ setOpen = () => { }, open = false, children, title = "" }) => {
-  if (!open) return null
+export const FooterModel = ({
+  setOpen = () => {},
+  open = false,
+  children,
+  title = "",
+  subtitle = "",
+}) => {
+  if (!open) return null;
   return (
     <View
       style={{
@@ -19,8 +25,8 @@ export const FooterModel = ({ setOpen = () => { }, open = false, children, title
       <View
         style={{
           backgroundColor: "white",
-          minHeight: height * .2,
-          maxHeight: height * .6,
+          minHeight: height * 0.2,
+          maxHeight: height * 0.6,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
           ...SHADOW_STYLE,
@@ -69,17 +75,41 @@ export const FooterModel = ({ setOpen = () => { }, open = false, children, title
             {title}
           </Text>
 
-
           <Icon
             onPress={() => {
               setOpen(false);
-            }} name='close-circle' size={25} color={"#000"} />
+            }}
+            name="close-circle"
+            size={25}
+            color={"#000"}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            // position: "relative",
+            marginVertical: 10,
+            // flex: 1,
+            // height: 300,
+            marginHorizontal: 15,
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: 400,
+              color: "#3D3D3D",
+              fontSize: 16,
+              // flex: 1,
+            }}
+          >
+            {subtitle}
+          </Text>
         </View>
 
         <ScrollView contentContainerStyle={{ marginBottom: 20 }}>
           {children}
         </ScrollView>
-
       </View>
     </View>
   );

@@ -19,26 +19,19 @@ import {
   getWorkFlowForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import moment from "moment";
-import { Button, Menu, Divider, Provider } from "react-native-paper";
+import { Divider } from "react-native-paper";
+import { FooterModel } from "./../../Components/FooterModel";
+import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "./../../Components/CustomInput";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionId = "116" } = route.params;
   let interactionId = 116;
   const { colors } = useTheme();
-  const [visible, setVisible] = useState(false);
-  const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 });
-  const openMenu = (event) => {
-    const { nativeEvent } = event;
-    const anchor = {
-      x: nativeEvent.pageX - 15,
-      y: nativeEvent.pageY + 25,
-    };
-    console.log("$$$-anchor", anchor);
-    setMenuAnchor(anchor);
-    setVisible(true);
-  };
-  const closeMenu = () => setVisible(false);
+  const [showPopupMenu, setShowPopupMenu] = useState(false);
+  const [showBottomModal, setShowBottomModal] = useState(false);
+
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
@@ -58,7 +51,7 @@ const InteractionDetails = (props) => {
         return (
           <View>
             <View style={navBar.navRightCon}>
-              <Pressable onPress={openMenu}>
+              <Pressable onPress={() => setShowPopupMenu(!showPopupMenu)}>
                 <Image
                   style={{ margin: 10 }}
                   source={require("../../Assets/icons/ic_more_vertical.png")}
@@ -69,7 +62,7 @@ const InteractionDetails = (props) => {
         );
       },
     });
-  }, []);
+  }, [showPopupMenu]);
 
   const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
@@ -371,39 +364,250 @@ const InteractionDetails = (props) => {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={menuAnchor}
-        anchorPosition={"bottom"}
+  const PopUpMenuItem = (props) => {
+    const { title } = props;
+    return (
+      <Pressable
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#F1F1F1",
+          borderRadius: 10,
+          padding: 15,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        onPress={() => {
+          setShowPopupMenu(!showPopupMenu);
+          setShowBottomModal(true);
+        }}
+      >
+        <Text
+          style={{
+            marginRight: 10,
+            color: "#605879",
+            fontWeight: 600,
+            fontSize: 16,
+          }}
+        >
+          {title}
+        </Text>
+        <Image
+          style={{ tintColor: "#605879" }}
+          source={require("../../Assets/icons/ic_right_arrow.png")}
+        />
+      </Pressable>
+    );
+  };
+
+  const PopUpMenuDivider = () => {
+    return (
+      <Divider
+        style={{
+          borderWidth: 1,
+          borderColor: "#848A93",
+          borderStyle: "dashed",
+          marginVertical: 10,
+        }}
+      />
+    );
+  };
+
+  const PopUpMenu = (props) => {
+    return (
+      <View
         style={{
           backgroundColor: "white",
           borderRadius: 10,
-          padding: 10,
+          padding: 15,
           elevation: 10,
+          zIndex: 99999999,
+          margin: 20,
+          alignSelf: "flex-end",
+          position: "absolute",
+          top: 40,
+          right: 10,
         }}
       >
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          style={{ backgroundColor: "#F1F1F1", borderRadius: 10 }}
-          onPress={closeMenu}
-          title="Add Followup"
-        />
-        <Divider />
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          onPress={closeMenu}
-          title="Re-Assign"
-        />
-        <Divider />
-        <Menu.Item
-          trailingIcon={require("../../Assets/icons/ic_right_arrow.png")}
-          onPress={closeMenu}
-          title="Assign to self"
-        />
-      </Menu>
+        {/* Follow up */}
+        <PopUpMenuItem title={"Add followup"} />
+        <PopUpMenuDivider />
+        {/* Assign to self */}
+        <PopUpMenuItem title={"Assign to self"} />
+        <PopUpMenuDivider />
+        {/* Re-assign */}
+        <PopUpMenuItem title={"Re-Assign"} />
+      </View>
+    );
+  };
+
+  const AddFollowUpModal = (props) => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Add Follow up"}
+        subtitle={"You have two follow up"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.priority}
+            placeHolder={"Select " + strings.priority}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.source}
+            placeHolder={"Select " + strings.user}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.remarks}
+            placeHolder={strings.remarks}
+            onChangeText={(text) => console.log(text)}
+          />
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+  const AssignToSelfModal = (props) => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Assign to self"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.current_dept_role}
+            placeHolder={"Select " + strings.current_dept_role}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.user}
+            placeHolder={"Select " + strings.user}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.remarks}
+            placeHolder={strings.remarks}
+            onChangeText={(text) => console.log(text)}
+          />
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+  const ReAssignModal = (props) => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Re-assign"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.current_dept_role}
+            placeHolder={"Select " + strings.current_dept_role}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.user}
+            placeHolder={"Select " + strings.user}
+          />
+
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {}} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {showPopupMenu && <PopUpMenu />}
+
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Interaction Details View Full Container */}
         <DetailsInfoUIFull />
@@ -426,21 +630,7 @@ const InteractionDetails = (props) => {
         </View>
       </ScrollView>
 
-      {/* Bottom Button View */}
-      <View
-        style={{
-          flexDirection: "row",
-          bottom: 0,
-          backgroundColor: "white",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.cancel} onPress={() => {}} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.submit} onPress={() => {}} />
-        </View>
-      </View>
+      {showBottomModal && <AddFollowUpModal />}
     </View>
   );
 };
