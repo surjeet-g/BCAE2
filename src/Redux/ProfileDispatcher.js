@@ -1,4 +1,7 @@
-import { initProfile, setProfileData, setProfileError } from "./ProfileAction";
+import {
+  initProfile, initProfileSearch, setProfileData, setProfileError,
+  setSearchProfileData, setSearchProfileDataError
+} from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
@@ -22,6 +25,51 @@ export function fetchSavedProfileData(navigation = null) {
       return true;
     } else {
       dispatch(setProfileError([]));
+      return false;
+    }
+  };
+}
+export function fetchSavedProfileDataByUser(customerUUDI) {
+  return async (dispatch) => {
+    // dispatch(initProfile());
+
+    console.log('task fetch',)
+    let profileResult = await serverCall(
+      endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+      requestMethod.GET,
+      {}
+    );
+    console.log('task fetch', profileResult)
+    if (profileResult?.success) {
+      dispatch(setProfileData(profileResult?.data?.data));
+      return true;
+    } else {
+      dispatch(setProfileError([]));
+      return false;
+    }
+  };
+}
+
+export function seachCustomers(limit = 5, page = 0) {
+  return async (dispatch) => {
+    dispatch(initProfileSearch());
+    //todo search params
+    let profileResult = await serverCall(
+      `${endPoints.SEACH_CUSTOMERS}?limit=${limit}&page=${page}`,
+      requestMethod.POST,
+      {
+        source: "string",
+        filters: {
+          email: "a@gmail.com"
+        }
+      },
+    );
+    console.log("task - pro result", profileResult);
+    if (profileResult?.success) {
+      dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
+      return true;
+    } else {
+      dispatch(setSearchProfileDataError([]));
       return false;
     }
   };

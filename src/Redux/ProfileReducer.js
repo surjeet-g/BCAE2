@@ -1,16 +1,23 @@
 import get from "lodash.get";
 import {
-  PROFILE_INIT,
   PROFILE_DATA,
-  PROFILE_ERROR,
-  PROFILE_RESET,
+  PROFILE_ERROR, PROFILE_INIT, PROFILE_RESET,
+  PROFILE_SEARCH_DATA,
+  PROFILE_SEARCH_DATA_RESET,
+  PROFILE_SEARCH_ERROR,
+  PROFILE_SEARCH_INIT,
   PROFILE_SET_FORM,
+  SET_USER_SEARCH
 } from "./ProfileAction";
 
 const mySavedProfileInitialState = {
   initProfile: false,
+  userSearchString: "",
+  initSeachProfile: false,
   profileError: false,
+  profileSearchError: false,
   savedProfileData: {},
+  profileSearchData: [],
   formData: {
     firstName: "",
     firstNameError: "",
@@ -26,15 +33,55 @@ const mySavedProfileInitialState = {
 };
 
 const ProfileReducer = (state = mySavedProfileInitialState, action) => {
-  console.log("hitting reducers");
+
   switch (action.type) {
-    case PROFILE_INIT:
+    case PROFILE_SEARCH_INIT:
       return {
         ...state,
         initProfile: true,
         profileError: false,
         savedProfileData: {},
       };
+    case PROFILE_INIT:
+      return {
+        ...state,
+        initSeachProfile: true,
+        profileSearchError: false,
+        profileSearchError: {},
+      };
+    case PROFILE_SEARCH_DATA_RESET:
+      return {
+        ...state,
+        profileSearchData: []
+      };
+    case SET_USER_SEARCH:
+      console.log('task - profile text search reducer', action.data)
+
+      return {
+        ...state,
+        userSearchString: action.data
+      };
+    case PROFILE_INIT:
+      return {
+        ...state,
+        initSeachProfile: true,
+        profileSearchError: false,
+        profileSearchError: {},
+      };
+    case PROFILE_SEARCH_ERROR:
+      return {
+        ...state,
+        initSeachProfile: false,
+        profileSearchError: true,
+        profileSearchError: action.data,
+      };
+    case PROFILE_SEARCH_DATA:
+      return {
+        ...state,
+        initSeachProfile: false,
+        profileSearchError: false,
+        profileSearchData: action.data,
+      }
     case PROFILE_DATA:
       return {
         ...state,

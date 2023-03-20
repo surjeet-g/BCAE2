@@ -1,8 +1,12 @@
 import get from "lodash.get";
 import React from "react";
-import { Dimensions, Image, Pressable, Text, View } from "react-native";
+import { Dimensions, FlatList, Image, Pressable, Text, View } from "react-native";
 import { List, Searchbar } from "react-native-paper";
-import { setUserSearch } from "../Redux/ProfileAction";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchProfileReset, setUserSearch } from "../Redux/ProfileAction";
+import { fetchSavedProfileDataByUser, seachCustomers } from "../Redux/ProfileDispatcher";
+
 const { height, width } = Dimensions.get('screen');
 
 /**
@@ -10,19 +14,29 @@ const { height, width } = Dimensions.get('screen');
 *
 *  @param {obj} navigation The obj to raise..
 *  @param {func} setUserSeachEnable for handle main screen blue effect
-* @param {Object} profile reference for profile reducers
-*  @param {Object} dispatch1 reference for profile dispatcher
+* @param {boolean} loader reference for loader
 */
-export const EnableSearchForUser = (navigation, setUserSeachEnable, profile, dispatch1) => {
+export const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = false, setLoader = () => { }, headerRightForNav = null, headerTitleForNav = "" }) => {
+    const profileDispatch = useDispatch([seachCustomers, setUserSearch, setSearchProfileReset, fetchSavedProfileDataByUser]);
+    const profileReducer = useSelector(
+        (state) => state.profile
+    );
+    enableSearchBar(navigation, setUserSeachEnable,
+        profileReducer,
+        profileDispatch, loader, setLoader,
+        headerRightForNav, headerTitleForNav)
 
-    enableSearchBar(navigation, setUserSeachEnable, profile, dispatch1)
-    return <Text>sdfsdf</Text>
-    navigation.setOptions({
+    return navigation.setOptions({
         headerRight: () => {
             return (
                 <View>
                     <Pressable
-                        onPress={() => enableSearchBar(navigation)}
+                        onPress={() => {
+                            // enableSearchBar(navigation, setUserSeachEnable,
+                            //     profileReducer,
+                            //     profileDispatch, loader, setLoader,
+                            //     headerRightForNav, headerTitleForNav)
+                        }}
                     >
                         <Image source={require('../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
                     </Pressable>
@@ -30,16 +44,53 @@ export const EnableSearchForUser = (navigation, setUserSeachEnable, profile, dis
             );
         },
     });
-
+    return null
 }
 
 /**
  * Change Header middle section
  * @param {obj} navigation The null to raise.
  */
-const enableSearchBar = async (navigation, setUserSeachEnable, profile, dispatch1) => {
+
+
+
+const enableSearchBar = async (navigation, setUserSeachEnable,
+    profile, dispatch1, loader, setLoader,
+    headerRightForNav, headerTitleForNav) => {
+
     // const [search, setSearch] = useState("")
+
+
     console.log('task - profile view', profile)
+
+    const renderResult = () => {
+        const profileSearchResult = get(profile, 'profileSearchData', [])
+        console.log('task - profil inside result ', profileSearchResult, profile)
+        return (<UserSearchList
+            headerTitleForNav={headerTitleForNav}
+            profileSearchResult={profileSearchResult}
+            dispatch1={dispatch1}
+            navigation={navigation}
+            setLoader={setLoader}
+            headerRightForNav={headerRightForNav}
+            setUserSeachEnable={setUserSeachEnable}
+        />)
+    }
+    // const renderResult = useMemo(() => {
+    //     const profileSearchResult = get(profile, 'profileSearchData', [])
+    //     console.log('task - profil inside result ', profileSearchResult, profile)
+    //     return (<UserSearchList
+    //         headerTitleForNav={headerTitleForNav}
+    //         profileSearchResult={profileSearchResult}
+    //         dispatch1={dispatch1}
+    //         navigation={navigation}
+    //         setLoader={setLoader}
+    //         headerRightForNav={headerRightForNav}
+    //         setUserSeachEnable={setUserSeachEnable}
+    //     />)
+    // }, [headerTitleForNav, profileSearchResult, navigation, setLoader, headerRightForNav, setUserSeachEnable])
+
+
     navigation.setOptions({
         headerTitle: () => {
             return (
@@ -47,45 +98,88 @@ const enableSearchBar = async (navigation, setUserSeachEnable, profile, dispatch
                     <Searchbar
                         style={{ width: width * 0.7 }}
                         placeholder="Search customer"
-                        onChangeText={(text) => {
+                        onChangeText={async (text) => {
                             console.log('task - profile text search', text)
-                            dispatch1(setUserSearch(text))
+                            setLoader(true)
+                            await dispatch1(setUserSearch(text))
+                            await dispatch1(seachCustomers())
+                            setLoader(false)
                         }}
-                        value={get(profile, ' userSearchString', "")}
-                    />
 
-                    <UserSearchList />
+                        value={get(profile, 'userSearchString', "")}
+                    />
+                    {renderResult()}
+
                 </>
+            )
+        }
+    })
+    navigation.setOptions({
+        headerRight: () => {
+            return (
+                <Icon
+                    onPress={() => {
+                        dispatch1(setSearchProfileReset())
+                    }} name='close-circle' size={25} color={"#000"} />
             )
         }
     })
 }
 
-const UserSearchList = () => {
+const UserSearchList = ({ setLoader, headerTitleForNav, setUserSeachEnable,
+    profileSearchResult, dispatch1, navigation, headerRightForNav }) => {
     return (
         <View style={{
-            position: "absolute",
             top: 60,
+            position: "absolute",
             width: width * 0.9
         }}>
-            <List.Item
-                title={"sfdsdsd"}
-                titleStyle={{
-                    fontSize: 10,
-                    padding: 0,
-                    margin: 0,
-                }}
-                style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#fff",
-                    height: 40,
+            {profileSearchResult.length == 0 ?
+                <Text>No data found</Text> :
+                <FlatList
+                    contentContainerStyle={{
+                        height: 500
+                    }}
+                    data={profileSearchResult}
+                    renderItem={({ item }) => {
+                        return (
+                            <List.Item
+                                title={`${item.firstName} ${item.lastName}`}
+                                titleStyle={{
+                                    fontSize: 10,
+                                    padding: 0,
+                                    margin: 0,
+                                }}
+                                style={{
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    backgroundColor: "#fff",
+                                    height: 40,
 
-                    borderBottomWidth: 0.5,
-                    paddingHorizontal: 4,
-                    // borderRadius: 3,
-                }}
-            />
+                                    borderBottomWidth: 0.5,
+                                    paddingHorizontal: 4,
+                                    // borderRadius: 3,
+                                }}
+                                onPress={async () => {
+
+                                    setLoader(true)
+                                    const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
+                                    if (status) {
+                                        navigation.setOptions({
+                                            headerRight: headerRightForNav,
+                                            headerTitle: headerTitleForNav
+                                        })
+
+                                    }
+                                    // setLoader(false)
+                                    setUserSeachEnable(false)
+                                }}
+                            />
+                        )
+
+                    }}
+                />
+            }
         </View>
     )
 }

@@ -60,7 +60,8 @@ import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
-import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import { setUserSearch } from "../../Redux/ProfileAction";
+import { fetchSavedProfileData, seachCustomers } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
@@ -100,7 +101,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
-
+  const [userSeachEnable, setUserSeachEnable] = useState(false)
   const [bottomBarTitle, setBottombartitle] = useState("");
 
   const interactionResponseScreen = {
@@ -141,22 +142,29 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setOpenBottomModal(false);
     setBottombartitle("");
   };
+  const headerRightForNav = () => {
+
+    return (
+      <View style={navBar.navRightCon}>
+        <Pressable
+          onPress={() => setOpenBottomModal(true)}
+          style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}
+        >
+          <Icon name="plus" size={19} color={colors.inverseSecondary} />
+        </Pressable>
+      </View>
+    );
+
+
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => {
-        return (
-          <View style={navBar.navRightCon}>
-            <Pressable
-              onPress={() => setOpenBottomModal(true)}
-              style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}
-            >
-              <Icon name="plus" size={19} color={colors.inverseSecondary} />
-            </Pressable>
-          </View>
-        );
-      },
+      headerRight: headerRightForNav
     });
   }, []);
+
+
   /**
    * Reset All params
    *
@@ -169,7 +177,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   };
 
   const masterDispatch = useDispatch([getMasterData]);
-  const profileDispatch = useDispatch([fetchSavedProfileData]);
+  const profileDispatch = useDispatch([fetchSavedProfileData, seachCustomers, setUserSearch]);
   const dispatchInteraction = useDispatch([
     setInteractionReset,
     fetchInteractionAction,
@@ -184,6 +192,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
     return willFocusSubscription;
   }, []);
   const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
+  const { profileReducer, masterReducer, interactionReducer } = useSelector(
+    (state) => {
+      return {
+        profileReducer: state.profile,
+        masterReducer: state.masterdata,
+        interactionReducer: state.interaction,
+      };
+    }
+  );
   useEffect(() => {
     async function fetchMyAPI() {
       const {
@@ -206,20 +223,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
           `${INTXN_TYPE},${SERVICE_TYPE},${PROBLEM_CODE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
         )
       );
-      setUserType(await getUserType());
+      const userType = await getUserType()
+      console.log('>>rrr', userType)
+      setUserType(userType);
+      // if (userType == USERTYPE.CUSTOMER) {
+
     }
 
     fetchMyAPI();
   }, []);
-  const { profileReducer, masterReducer, interactionReducer } = useSelector(
-    (state) => {
-      return {
-        profileReducer: state.profile,
-        masterReducer: state.masterdata,
-        interactionReducer: state.interaction,
-      };
-    }
-  );
+
+
   const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
   const problemList = get(masterReducer, "masterdataData.PROBLEM_CODE", []);
@@ -911,17 +925,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
   });
 
-  const isModelOpen = openBottomModal || openBottomModalChatBoard;
+  const isModelOpen = openBottomModal || openBottomModalChatBoard || userSeachEnable;
 
   if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
     return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-      <InteractionSuccess intxId={intereactionAddResponse?.intxnNo} cancelButtonRequired={true}
+      <InteractionSuccess intxId={intereactionAddResponse?.intxnNo}
+        cancelButtonRequired={true}
         okHandler={async () => {
           await resetStateData("setInteractionResponse")
           navigation.navigate(STACK_INTERACTION_DETAILS, {
             interactionID: intereactionAddResponse?.intxnNo
           })
-
         }}
         cancelHandler={() => {
 
@@ -941,8 +955,29 @@ const InteractionsToOrder = ({ route, navigation }) => {
     );
   }
 
+  // const headerSet = () => {
+  //   if (1) {
+  //     return (
+  //       <EnableSearchForUser
+  //         headerRightForNav={headerRightForNav}
+  //         headerTitleForNav={"Interaction"}
+  //         loader={loader}
+  //         setLoader={setLoader}
+  //         navigation={navigation}
+  //         setUserSeachEnable={setUserSeachEnable}
+  //       />
+  //     )
+  //   }
+  //   else {
+  //     return null
+  //   }
+  // }
+
+
   return (
     <>
+
+      {/* {headerSet()} */}
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />
       )}

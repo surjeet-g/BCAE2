@@ -1,7 +1,6 @@
 import { Platform } from "react-native";
 import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
+  heightPercentageToDP as hp, widthPercentageToDP as wp
 } from "react-native-responsive-screen";
 import { BASE_URL, PROD_BASE_URL } from "../API/ApiConstants";
 import theme from "../themeConfig";
@@ -16,8 +15,9 @@ export const ACCOUNT_TYPE = {
 export const INPUT_TYPE = {
   INPUTBOX: 0,
   DROPDOWN: 1,
-};
-export const DATE_FORMAT = "YYYY-MM-DD";
+
+}
+export const DATE_FORMAT = "YYYY-MM-DD"
 export const SECERT_KEY = "(*Hnjkn2kjn";
 
 export const WEBCLIENT_ID =
@@ -275,7 +275,7 @@ export const storageKeys = {
   GEOCODER_DATA: "GEOCODER_DATA",
   LOGIN_ID: "LOGIN_ID",
   TOKEN_EXPIRY: "TOKEN_EXPIRY",
-  USERTYPE: "USERTYPE",
+  USERTYPE: "USERTYPE"
 };
 
 export function validateEmail(text) {
