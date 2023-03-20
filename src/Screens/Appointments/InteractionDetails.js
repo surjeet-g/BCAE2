@@ -351,7 +351,7 @@ const InteractionDetails = (props) => {
               flex={1}
               onPress={() =>
                 navigation.navigate("Followup", {
-                  data: InteractionFollowupData,
+                  InteractionFollowupData,
                 })
               }
             />
