@@ -7,7 +7,6 @@ import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
 import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
 import LoginReducer from "../Screens/Login/LoginReducer";
 import AttachmentReducer from "./AttachmentReducer";
-import FollowUpReducer from "./FollowUpReducer";
 import InquiryNotificationsReducer from "./InquiryNotificationsReducer";
 import InquiryReducer from "./InquiryReducer";
 import InteractionReducer from "./InteractionReducer";
@@ -28,7 +27,6 @@ const appReducer = combineReducers({
   masterdata: masterDataReducer,
   versioncheck: VersionCheckReducer,
   notifications: NotificationsReducer,
-  followup: FollowUpReducer,
   attachment: AttachmentReducer,
   login: LoginReducer,
   registerForm: RegisterFormReducer,
