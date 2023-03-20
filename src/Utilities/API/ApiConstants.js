@@ -23,7 +23,7 @@ export const endPoints = {
   NOTIFICATIONS: "api/notification/pushNotification",
   ANNOUNCEMENT: "api/announcement",
   INSERTFOLLOWUP: "api/interaction/followUp",
-  GETFOLLOWUPWITHATTTACHMENT: "api/interaction/followUp",
+  INTERACTION_ASSIGN_SELF: "api/interaction/assignSelf/",
   FOLLOWUP: "api/complaint",
   USER_LOGIN: "api/auth/login",
   GET_REGISTER_FORM_DATA: "api/master/lookup",

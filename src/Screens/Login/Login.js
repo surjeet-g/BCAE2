@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
@@ -21,12 +21,12 @@ import { ToggleButton } from "../../Components/ToggleButton";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
-  requestUserPermission
+  requestUserPermission,
 } from "../../Utilities/FCM/NotificationService";
 import { strings } from "../../Utilities/Language";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../Utilities/utils";
 import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
@@ -35,7 +35,7 @@ import {
   resetLogin,
   resetShowSecondLoginAlert,
   sendLoginOTPData,
-  verifyLoginData
+  verifyLoginData,
 } from "./LoginDispatcher";
 
 const BUSINESS = "Business";
@@ -568,8 +568,8 @@ export const Login = ({ navigation }) => {
                       ? true
                       : false
                     : number == "" || password == ""
-                      ? true
-                      : false
+                    ? true
+                    : false
                 }
                 onPress={() => {
                   loginMode === EMAIL

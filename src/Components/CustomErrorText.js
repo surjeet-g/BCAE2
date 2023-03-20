@@ -5,9 +5,7 @@ import { spacing, fontSizes, color } from "../Utilities/Constants/Constant";
 export const CustomErrorText = (props) => {
   const { errMessage } = props;
   return (
-    <View
-      style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row", padding: 10 }}
-    >
+    <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
       <Image
         style={styles.errorLogo}
         source={require("../Assets/icons/ci_error_warning.png")}

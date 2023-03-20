@@ -13,6 +13,10 @@ import {
   INTERACTION_SET_FORM,
   INTERACTION_GET_DETAILS_FAILURE,
   INTERACTION_GET_DETAILS_SUCCESS,
+  CREATE_FOLLOWUP,
+  CREATE_FOLLOWUP_FAILURE,
+  INTERACTION_ASSIGN_SELF,
+  INTERACTION_ASSIGN_SELF_FAILURE,
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -111,6 +115,8 @@ const InteractionInitialState = {
   },
   InteractionDetailsData: {},
   interactionDetailsErrorData: {},
+  followupData: [],
+  followupErrorData: {},
 };
 
 const InteractionReducer = (state = InteractionInitialState, action) => {
@@ -238,6 +244,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       };
     case INTERACTION_GET_WORKFLOW_SUCCESS:
       return {
+        // todo here logic
         ...state,
         InteractionWorkFlowData: action.data,
         interactionWorkFlowErrorData: {},
@@ -252,6 +259,29 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         InteractionDetailsData: action.data.rows[0],
         interactionDetailsErrorData: {},
+      };
+    case CREATE_FOLLOWUP_FAILURE:
+      return {
+        // todo here logic
+        ...state,
+        followupErrorData: action.data,
+      };
+    case CREATE_FOLLOWUP:
+      return {
+        // todo here logic
+        ...state,
+        followupData: action.data,
+        followupErrorData: {},
+      };
+    case INTERACTION_ASSIGN_SELF_FAILURE:
+      return {
+        ...state,
+        // todo here logic
+      };
+    case INTERACTION_ASSIGN_SELF:
+      return {
+        ...state,
+        // todo here logic
       };
     default:
       return state;
