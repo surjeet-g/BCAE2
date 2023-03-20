@@ -135,7 +135,7 @@ const UserSearchList = ({ setLoader, headerTitleForNav, setUserSeachEnable,
             width: width * 0.9
         }}>
             {profileSearchResult.length == 0 ?
-                <Text>No data found</Text> :
+                <Text></Text> :
                 <FlatList
                     contentContainerStyle={{
                         height: 500
@@ -161,18 +161,18 @@ const UserSearchList = ({ setLoader, headerTitleForNav, setUserSeachEnable,
                                     // borderRadius: 3,
                                 }}
                                 onPress={async () => {
-
+                                    console.log('>>nav', navigation)
                                     setLoader(true)
                                     const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
-                                    if (status) {
-                                        navigation.setOptions({
-                                            headerRight: headerRightForNav,
-                                            headerTitle: headerTitleForNav
-                                        })
+                                    // if (status) {
+                                    navigation.setOptions({
+                                        headerRight: headerRightForNav,
+                                        headerTitle: "sdfsdf"
+                                    })
 
-                                    }
-                                    // setLoader(false)
-                                    setUserSeachEnable(false)
+                                    // }
+                                    setLoader(false)
+                                    // setUserSeachEnable(false)
                                 }}
                             />
                         )

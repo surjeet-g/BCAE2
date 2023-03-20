@@ -6,13 +6,13 @@ import {
   setKnowledgeSearchError
 } from "./KnowledgeSearchAction";
 
-export const getKnowledgeSearchData = (searchQuery) => {
+export const getKnowledgeSearchData = (searchQuery, service) => {
   return async (dispatch) => {
     await dispatch(initKnowledgeSearchData());
     let params = {};
 
     let result = await serverCall(
-      endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery,
+      endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery + "&st=" + service,
       requestMethod.GET,
       params
     );
