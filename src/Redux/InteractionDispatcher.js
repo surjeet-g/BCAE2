@@ -6,6 +6,8 @@ import {
   setInteractionError,
   setInteractionsWorkFlowDataInStore,
   setInteractionsWorkFlowErrorDataInStore,
+  setInteractionsFollowupDataInStore,
+  setInteractionsFollowupErrorDataInStore,
   setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore,
   setFollowupDataInStore,
@@ -188,22 +190,34 @@ const validateFormData = async (formData, dispatch) => {
   return status;
 };
 
-export function getWorkFlowForInteractionID(
-  interactionId,
-  params = {},
-  navigation = null
-) {
+export function getWorkFlowForInteractionID(interactionId, navigation = null) {
   console.log("$$$-getWorkFlowForInteractionID");
   return async (dispatch) => {
     let url =
-      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
-    let result = await serverCall(url, requestMethod.GET, params, navigation);
+      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=false";
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
     if (result.success) {
       console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);
       dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
     } else {
       console.log("$$$-getWorkFlowForInteractionID-error", result);
       dispatch(setInteractionsWorkFlowErrorDataInStore(result));
+    }
+  };
+}
+
+export function getFollowupForInteractionID(interactionId, navigation = null) {
+  console.log("$$$-getFollowupForInteractionID");
+  return async (dispatch) => {
+    let url =
+      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    if (result.success) {
+      console.log("$$$-getFollowupForInteractionID-data", result.data.data);
+      dispatch(setInteractionsFollowupDataInStore(result.data.data));
+    } else {
+      console.log("$$$-getFollowupForInteractionID-error", result);
+      dispatch(setInteractionsFollowupErrorDataInStore(result));
     }
   };
 }

@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getInteractionDetailsForID,
   getWorkFlowForInteractionID,
+  getFollowupForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import moment from "moment";
 import { Divider } from "react-native-paper";
@@ -35,6 +36,7 @@ const InteractionDetails = (props) => {
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
+    getFollowupForInteractionID,
   ]);
   let interactionReducer = useSelector((state) => state.interaction);
   const { InteractionDetailsData } = interactionReducer;
@@ -42,7 +44,8 @@ const InteractionDetails = (props) => {
   // Calling API to get interaction details & workflow/followup data
   useEffect(() => {
     dispatch(getInteractionDetailsForID(interactionId, navigation));
-    dispatch(getWorkFlowForInteractionID(interactionId, {}, navigation));
+    dispatch(getWorkFlowForInteractionID(interactionId, navigation));
+    dispatch(getFollowupForInteractionID(interactionId, navigation));
   }, []);
 
   useLayoutEffect(() => {

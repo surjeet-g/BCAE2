@@ -10,6 +10,12 @@ export const INTERACTION_GET_WORKFLOW_SUCCESS =
   "INTERACTION_GET_WORKFLOW_SUCCESS";
 export const INTERACTION_GET_WORKFLOW_FAILURE =
   "INTERACTION_GET_WORKFLOW_FAILURE";
+
+export const INTERACTION_GET_FOLLOWUP_SUCCESS =
+  "INTERACTION_GET_FOLLOWUP_SUCCESS";
+export const INTERACTION_GET_FOLLOWUP_FAILURE =
+  "INTERACTION_GET_FOLLOWUP_FAILURE";
+
 export const INTERACTION_GET_DETAILS_SUCCESS =
   "INTERACTION_GET_DETAILS_SUCCESS";
 export const INTERACTION_GET_DETAILS_FAILURE =
@@ -73,6 +79,14 @@ export function setInteractionsWorkFlowDataInStore(data) {
 
 export function setInteractionsWorkFlowErrorDataInStore(data) {
   return { type: INTERACTION_GET_WORKFLOW_FAILURE, data };
+}
+
+export function setInteractionsFollowupDataInStore(data) {
+  return { type: INTERACTION_GET_FOLLOWUP_SUCCESS, data };
+}
+
+export function setInteractionsFollowupErrorDataInStore(data) {
+  return { type: INTERACTION_GET_FOLLOWUP_FAILURE, data };
 }
 
 export function setInteractionsDetailsDataInStore(data) {
