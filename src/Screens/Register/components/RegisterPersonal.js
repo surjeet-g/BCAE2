@@ -32,7 +32,7 @@ import {
   color,
   fontSizes,
   spacing,
-  validateEmail,
+  isValidNumber,
   validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
@@ -369,28 +369,34 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== numberMaxLength) {
-      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
+    if (!isValidNumber(mobileNo)) {
+      setNumberError(strings.mobileValidError);
     } else {
-      if (firstName.trim() === "") {
-        Toast.show({
-          type: "bctError",
-          text1: strings.firstNameError,
-        });
-        setFirstNameError(strings.firstNameError);
-      } else {
-        //alert("submitResndOTP");
-        dispatch(
-          sendOtp(
-            countryCode + mobileNo,
-            firstName,
-            "mobile",
-            showOtpSentMessage
-          )
+      if (mobileNo.length !== numberMaxLength) {
+        setNumberError(
+          `Please enter a ${numberMaxLength} digit mobile number!!`
         );
-        buttonEnableDiable();
-        //setIsDisableSendOtp(true);
-        //runOtpTimer(otpTimer);
+      } else {
+        if (firstName.trim() === "") {
+          Toast.show({
+            type: "bctError",
+            text1: strings.firstNameError,
+          });
+          setFirstNameError(strings.firstNameError);
+        } else {
+          //alert("submitResndOTP");
+          dispatch(
+            sendOtp(
+              countryCode + mobileNo,
+              firstName,
+              "mobile",
+              showOtpSentMessage
+            )
+          );
+          buttonEnableDiable();
+          //setIsDisableSendOtp(true);
+          //runOtpTimer(otpTimer);
+        }
       }
     }
   };

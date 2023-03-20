@@ -37,8 +37,8 @@ import {
   color,
   fontSizes,
   spacing,
-  validateEmail,
-  validatePassword
+  isValidNumber,
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -314,14 +314,22 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const submitResndOTP = () => {
-    if (mobileNo.length !== numberMaxLength) {
-      setNumberError(`Please enter a ${numberMaxLength} digit mobile number!!`);
+    if (!isValidNumber(mobileNo)) {
+      setNumberError(strings.mobileValidError);
     } else {
-      //alert("submitResndOTP");
-      dispatch(sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage));
-      buttonEnableDiable();
-      //setIsDisableSendOtp(true);
-      //runOtpTimer(otpTimer);
+      if (mobileNo.length !== numberMaxLength) {
+        setNumberError(
+          `Please enter a ${numberMaxLength} digit mobile number!!`
+        );
+      } else {
+        //alert("submitResndOTP");
+        dispatch(
+          sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage)
+        );
+        buttonEnableDiable();
+        //setIsDisableSendOtp(true);
+        //runOtpTimer(otpTimer);
+      }
     }
   };
   const buttonEnableDiable = () => {

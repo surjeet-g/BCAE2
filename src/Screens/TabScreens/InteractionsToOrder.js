@@ -1174,6 +1174,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }
 
 
+  // const headerSet = () => {
+  //   if (1) {
+  //     return (
+  //       <EnableSearchForUser
+  //         headerRightForNav={headerRightForNav}
+  //         headerTitleForNav={"Interaction"}
+  //         loader={loader}
+  //         setLoader={setLoader}
+  //         navigation={navigation}
+  //         setUserSeachEnable={setUserSeachEnable}
+  //       />
+  //     )
+  //   }
+  //   else {
+  //     return null
+  //   }
+  // }
+
+
   return (
     <>
 

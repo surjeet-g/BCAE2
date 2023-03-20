@@ -323,6 +323,14 @@ export function validateNumber(text) {
   }
 }
 
+export function isValidNumber(text) {
+  if (text?.charAt(0) == "0") {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 export function TDLog(fileName, text) {
   if (LOG_ENABLED) {
     console.debug(
