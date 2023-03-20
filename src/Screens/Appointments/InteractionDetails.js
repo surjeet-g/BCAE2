@@ -39,7 +39,11 @@ const InteractionDetails = (props) => {
     getFollowupForInteractionID,
   ]);
   let interactionReducer = useSelector((state) => state.interaction);
-  const { InteractionDetailsData } = interactionReducer;
+  const {
+    InteractionDetailsData,
+    InteractionWorkFlowData,
+    InteractionFollowupData,
+  } = interactionReducer;
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(() => {
@@ -343,9 +347,13 @@ const InteractionDetails = (props) => {
             {/*Follow up View */}
             <DetailInfoItem
               title={"Follow Up"}
-              value={"NA"}
+              value={InteractionFollowupData.length || "NA"}
               flex={1}
-              onPress={() => navigation.navigate("Followup")}
+              onPress={() =>
+                navigation.navigate("Followup", {
+                  data: InteractionFollowupData,
+                })
+              }
             />
           </View>
 
@@ -623,7 +631,6 @@ const InteractionDetails = (props) => {
             data={[
               { title: `Appointment${"\n"}Details` },
               { title: `Workflow${"\n"}History` },
-              { title: "Not Available" },
             ]}
             renderItem={({ item, index }) => (
               <HorizontalFlatListItem item={item} index={index} />
