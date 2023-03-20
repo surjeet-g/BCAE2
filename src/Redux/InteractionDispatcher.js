@@ -10,6 +10,8 @@ import {
   setInteractionsDetailsErrorDataInStore,
   setFollowupDataInStore,
   setFollowupErrorDataInStore,
+  setAssignInteractionToSelfDataInStore,
+  setAssignInteractionToSelfErrorDataInStore,
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -253,6 +255,28 @@ export function createFollowupForInteraction(
     } else {
       console.log("$$$-createFollowupForInteraction-error", result);
       dispatch(setFollowupErrorDataInStore(result));
+    }
+  };
+}
+
+export function assignInteractionToSelf(
+  interactionId,
+  type,
+  navigation = null
+) {
+  console.log("$$$-assignInteractionToSelf");
+  return async (dispatch) => {
+    let url = endPoints.INTERACTION_ASSIGN_SELF + interactionId;
+    let params = {
+      type,
+    };
+    let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    if (result.success) {
+      console.log("$$$-assignInteractionToSelf-data", result.data.data);
+      dispatch(setAssignInteractionToSelfDataInStore(result.data.data));
+    } else {
+      console.log("$$$-assignInteractionToSelf-error", result);
+      dispatch(setAssignInteractionToSelfErrorDataInStore(result));
     }
   };
 }

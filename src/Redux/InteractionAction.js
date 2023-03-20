@@ -16,6 +16,9 @@ export const INTERACTION_GET_DETAILS_FAILURE =
   "INTERACTION_GET_DETAILS_FAILURE";
 export const CREATE_FOLLOWUP = "CREATE_FOLLOWUP";
 export const CREATE_FOLLOWUP_FAILURE = "CREATE_FOLLOWUP_FAILURE";
+export const INTERACTION_ASSIGN_SELF = "INTERACTION_ASSIGN_SELF";
+export const INTERACTION_ASSIGN_SELF_FAILURE =
+  "INTERACTION_ASSIGN_SELF_FAILURE";
 
 export function initInteraction() {
   return { type: INTERACTION_INIT };
@@ -86,4 +89,12 @@ export function setFollowupDataInStore(data) {
 
 export function setFollowupErrorDataInStore(data) {
   return { type: CREATE_FOLLOWUP_FAILURE, data };
+}
+
+export function setAssignInteractionToSelfDataInStore(data) {
+  return { type: INTERACTION_ASSIGN_SELF, data };
+}
+
+export function setAssignInteractionToSelfErrorDataInStore(data) {
+  return { type: INTERACTION_ASSIGN_SELF_FAILURE, data };
 }
