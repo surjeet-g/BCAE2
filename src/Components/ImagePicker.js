@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import {
-  Alert, Dimensions, FlatList,
+  Alert,
+  Dimensions,
+  FlatList,
   Image,
   Pressable,
   StyleSheet,
@@ -16,7 +18,7 @@ import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { spacing } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
-var { height, width } = Dimensions.get('screen');
+var { height, width } = Dimensions.get("screen");
 
 export const ImagePicker = ({
   attachmentModalVisible,
@@ -342,8 +344,7 @@ export const ImagePicker = ({
         <>
           <Pressable
             onPress={() => {
-
-              setAttachmentModalVisible(false)
+              setAttachmentModalVisible(false);
             }}
             style={{
               // backgroundColor: "gray",
@@ -352,12 +353,9 @@ export const ImagePicker = ({
               width: width,
               height: height,
               elevation: 9999,
-              zIndex: 9
-
-
-            }}>
-
-          </Pressable>
+              zIndex: 9,
+            }}
+          ></Pressable>
           <View>
             <View
               style={{
@@ -392,12 +390,11 @@ export const ImagePicker = ({
                     // position: "relative",
                     marginVertical: 10,
 
-                    width: '85%',
+                    width: "85%",
                     // height: 300,
                     marginHorizontal: 15,
                   }}
                 >
-
                   <Text
                     style={{
                       fontWeight: 600,
@@ -521,16 +518,38 @@ const AttachmentItem = (props) => {
         flexDirection: "row",
       }}
     >
-      <Image
-        source={{ uri: item.uri }}
-        style={{
-          flex: 1,
-          borderRadius: 6,
-          borderWidth: 1,
-          borderColor: "#AEB3BE",
-          resizeMode: "cover",
-        }}
-      />
+      {item.fileType.includes("pdf") ? (
+        <Image
+          source={require("../Assets/icons/ic_pdf.png")}
+          style={{
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: "#AEB3BE",
+          }}
+        />
+      ) : item.fileType.includes("docx") || item.fileType.includes("doc") ? (
+        <Image
+          source={require("../Assets/icons/ic_word.png")}
+          style={{
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: "#AEB3BE",
+            resizeMode: "cover",
+          }}
+        />
+      ) : (
+        <Image
+          source={{ uri: item.uri }}
+          style={{
+            flex: 1,
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: "#AEB3BE",
+            resizeMode: "cover",
+          }}
+        />
+      )}
+
       {showDeleteIcon && (
         <TouchableOpacity
           activeOpacity={0.5}

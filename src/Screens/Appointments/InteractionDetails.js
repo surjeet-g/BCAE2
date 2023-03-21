@@ -10,14 +10,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -28,11 +28,11 @@ import {
   createFollowupForInteractionID,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
-  getWorkFlowForInteractionID,
+  getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
-  USERTYPE,
+  USERTYPE
 } from "./../../Utilities/UserManagement/userInfo";
 
 const InteractionDetails = (props) => {
@@ -605,7 +605,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>
@@ -656,7 +656,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>

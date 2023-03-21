@@ -1,19 +1,13 @@
 import {
   enableLoaderAddInteractionAdd,
   enableLoaderEditInteraction,
-  initInteraction,
-  setInteractionData,
-  setInteractionError,
-  setInteractionsWorkFlowDataInStore,
-  setInteractionsWorkFlowErrorDataInStore,
-  setInteractionsFollowupDataInStore,
-  setInteractionsFollowupErrorDataInStore,
-  setInteractionsDetailsDataInStore,
-  setInteractionsDetailsErrorDataInStore,
-  setFollowupDataInStore,
-  setFollowupErrorDataInStore,
-  setAssignInteractionToSelfDataInStore,
-  setAssignInteractionToSelfErrorDataInStore,
+  initInteraction, setAssignInteractionToSelfDataInStore,
+  setAssignInteractionToSelfErrorDataInStore, setFollowupDataInStore,
+  setFollowupErrorDataInStore, setInteractionData,
+  setInteractionError, setInteractionsDetailsDataInStore,
+  setInteractionsDetailsErrorDataInStore, setInteractionsFollowupDataInStore,
+  setInteractionsFollowupErrorDataInStore, setInteractionsWorkFlowDataInStore,
+  setInteractionsWorkFlowErrorDataInStore
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -23,7 +17,7 @@ import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
 import {
   getCustomerID,
-  getCustomerUUID,
+  getCustomerUUID
 } from "../Utilities/UserManagement/userInfo";
 
 export function fetchInteractionAction(type = "", params = {}) {
