@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
@@ -152,12 +152,12 @@ export const ImagePicker = ({
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
-          { text: strings.ok, onPress: () => { } },
+          { text: strings.ok, onPress: () => {} },
         ]);
       }
     } else {
       Alert.alert(strings.attention, strings.max_number_of_file, [
-        { text: strings.ok, onPress: () => { } },
+        { text: strings.ok, onPress: () => {} },
       ]);
     }
   };
@@ -341,17 +341,18 @@ export const ImagePicker = ({
 
       {attachmentModalVisible && (
         <View>
-
-
           <View
             style={{
               alignItems: "center",
               justifyContent: "space-evenly",
               position: "absolute",
-              bottom: 80,
+              bottom: 100,
 
               flexDirection: "column",
-              backgroundColor: "gray"
+              backgroundColor: "white",
+              backgroundColor: color.BCAE_OFF_WHITE,
+              borderRadius: 10,
+              padding: 10,
             }}
           >
             <View
@@ -360,41 +361,57 @@ export const ImagePicker = ({
                 justifyContent: "space-between",
                 // position: "relative",
                 marginVertical: 10,
-
-                width: "65%",
                 // height: 300,
                 marginHorizontal: 15,
               }}
             >
-              <Text
+              <View
                 style={{
-                  fontWeight: 600,
-                  color: "#202223",
-                  fontSize: 16,
-                  // flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  // position: "relative",
+                  marginVertical: 10,
+                  // height: 300,
+                  marginHorizontal: 15,
                 }}
               >
-                Choose file
-              </Text>
-
-
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#202223",
+                    fontSize: 16,
+                    // flex: 1,
+                  }}
+                >
+                  Choose file
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#202223",
+                    fontSize: 16,
+                    // flex: 1,
+                  }}
+                >
+                  Choose file
+                </Text>
+              </View>
               <Icon
                 onPress={() => {
                   setAttachmentModalVisible(false);
-                }} name='close-circle' size={25} color={"#000"} />
+                }}
+                name="close-circle"
+                size={25}
+                color={"#000"}
+              />
             </View>
             <View
               style={{
                 alignItems: "center",
                 flex: 1,
                 flexDirection: "row",
-                backgroundColor: color.BCAE_OFF_WHITE,
-                borderRadius: 10,
-                padding: 10,
               }}
             >
-
-
               <Pressable
                 onPress={() => handleDocumentSelection()}
                 style={{
@@ -407,9 +424,8 @@ export const ImagePicker = ({
               >
                 <Image
                   style={styles.upperLogo}
-                  source={require("../Assets/icons/documents.png")}
+                  source={require("../Assets/icons/picker_document.png")}
                 />
-                <Text>{strings.document}</Text>
               </Pressable>
 
               <Pressable
@@ -427,9 +443,8 @@ export const ImagePicker = ({
               >
                 <Image
                   style={styles.upperLogo}
-                  source={require("../Assets/icons/camera.png")}
+                  source={require("../Assets/icons/picker_camera.png")}
                 />
-                <Text style={styles.upperText}>{strings.camera}</Text>
               </Pressable>
 
               <Pressable
@@ -444,9 +459,8 @@ export const ImagePicker = ({
               >
                 <Image
                   style={styles.upperLogo}
-                  source={require("../Assets/icons/gallery.png")}
+                  source={require("../Assets/icons/picker_gallery.png")}
                 />
-                <Text style={styles.upperText}>{strings.gallery}</Text>
               </Pressable>
             </View>
           </View>
@@ -527,7 +541,7 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   upperLogo: {
-    width: spacing.WIDTH_30,
-    height: spacing.WIDTH_30,
+    width: 80,
+    height: 80,
   },
 });
