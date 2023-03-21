@@ -521,6 +521,7 @@ const AttachmentItem = (props) => {
         flexDirection: "row",
       }}
     >
+      {/* <Text>{item.fileType}</Text> */}
       {item.fileType.includes("pdf") ? (
         <Image
           source={require("../Assets/icons/ic_pdf.png")}
@@ -530,7 +531,7 @@ const AttachmentItem = (props) => {
             borderColor: "#AEB3BE",
           }}
         />
-      ) : item.fileType.includes("docx") || item.fileType.includes("doc") ? (
+      ) : item.fileType.includes("msword") ? (
         <Image
           source={require("../Assets/icons/ic_word.png")}
           style={{
