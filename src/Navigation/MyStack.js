@@ -42,7 +42,6 @@ import {
   BottomSheetModalProvider
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
-import { HeaderTitle } from "../Components/headerTitle";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -106,7 +105,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_INTERACTION}
+        initialRouteName={STACK_INTERACTION_DETAILS}
         screenOptions={({ navigation }) => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -195,9 +194,7 @@ function MyStack() {
             ...{
               title: "Change password",
               headerRight: () => null,
-              headerTitle: () => (
-                <HeaderTitle header="Need your help" subHeader="Register" />
-              ),
+              headerTitle: "Change password",
               headerTintColor: colors.inverseSecondary,
             },
           }}
