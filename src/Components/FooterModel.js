@@ -8,7 +8,7 @@ Icon;
 var { height, width } = Dimensions.get("screen");
 
 export const FooterModel = ({
-  setOpen = () => {},
+  setOpen = () => { },
   open = false,
   children,
   title = "",
@@ -26,7 +26,7 @@ export const FooterModel = ({
         style={{
           backgroundColor: "white",
           minHeight: height * 0.2,
-          maxHeight: height * 0.6,
+          maxHeight: height * 0.8,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
           ...SHADOW_STYLE,
