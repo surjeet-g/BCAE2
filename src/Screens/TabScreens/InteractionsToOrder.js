@@ -1037,6 +1037,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   return (
     <>
+
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
@@ -1080,6 +1081,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           opacity: isModelOpen ? 0.3 : 1,
         }}
       >
+
         {/* profile card */}
         {renderProfileTab}
 
@@ -1113,6 +1115,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
             </Pressable>
           )}
         </View>
+        <ImagePicker
+          attachmentModalVisible={true}
+          setAttachmentModalVisible={setAttachmentModalVisible}
+          fileAttachments={fileAttachments}
+          setFileAttachments={setFileAttachments}
+        />
         {searchStandAloneModal && (
           <>
             <ClearSpace size={5} />
