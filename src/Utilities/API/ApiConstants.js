@@ -15,6 +15,7 @@ export const endPoints = {
   SEACH_CUSTOMERS: "api/users/search",
   INTERACTION_ADD: "api/interaction/create",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
+  INTELIGENCE: "api/intelligence-corner/based-on-interaction",
   FREQUENTLY_ASKED: "api/interaction/frequent",
   INTERACTION_FETCH: "api/interaction/search",
   INTERACTION_GET_WORKFLOW: "api/interaction/history/",
