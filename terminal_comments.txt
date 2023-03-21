@@ -9,3 +9,7 @@ kamal
 
 
 git stash && git checkout mks_develop && git pull && git checkout vv_develop && git merge mks_develop 
+
+
+
+git stash apply
