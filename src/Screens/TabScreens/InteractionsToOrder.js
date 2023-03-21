@@ -54,13 +54,14 @@ import { InteractionFailed } from "../../Components/InteractionFailed";
 import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 
+import { RenderUserSelectResult } from "../../Components/UserSearch";
 import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
-import { setSearchProfileReset, setUserSearch } from "../../Redux/ProfileAction";
+import { setProfileReset, setSearchProfileReset, setUserSearch } from "../../Redux/ProfileAction";
 import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -117,6 +118,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
+  const [del, setDel] = useState([])
   const [userType, setUserType] = useState("");
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
@@ -178,7 +180,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
   };
 
   const masterDispatch = useDispatch([getMasterData]);
-  const profileDispatch = useDispatch([fetchSavedProfileData, seachCustomers, setUserSearch]);
+  const profileDispatch = useDispatch([fetchSavedProfileData,
+    seachCustomers, setUserSearch,
+    fetchSavedProfileDataByUser, setProfileReset]);
+
   const dispatchInteraction = useDispatch([
     setInteractionReset,
     fetchInteractionAction,
@@ -1141,57 +1146,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     )
   }
 
-  const headerSet = () => {
-    if (1) {
-      navigation.setOptions({
-        headerRight: () => {
-          return (
-            <Icon
-              onPress={() => {
-                dispatch1(setSearchProfileReset())
-              }} name='close-circle' size={25} color={"#000"} />
-          )
-        },
-        headerTitle: () => {
-          return (
-            <>
-              <Searchbar
-                style={{ width: width * 0.7 }}
-                placeholder="Search customer"
-                onChangeText={async (text) => {
-                  console.log('task - profile text search', text)
-                  setLoader(true)
-                  await dispatch1(setUserSearch(text))
-                  await dispatch1(seachCustomers())
-                  setLoader(false)
-                }}
 
-                value={get(profileReducer, 'userSearchString', "")}
-              />
-              {/* {renderResult(navigation, setUserSeachEnable,
-                profile, dispatch1, loader, setLoader,
-                headerRightForNav, headerTitleForNav)} */}
-
-            </>
-          )
-        }
-      })
-      return null
-      return (
-        <EnableSearchForUser
-          headerRightForNav={headerRightForNav}
-          headerTitleForNav={"Interaction"}
-          loader={loader}
-          setLoader={setLoader}
-          navigation={navigation}
-          setUserSeachEnable={setUserSeachEnable}
-        />
-      )
-    }
-    else {
-      return null
-    }
-  }
 
 
   // const headerSet = () => {
@@ -1212,47 +1167,87 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //   }
   // }
 
-  useEffect(() => {
-    navigation.setOptions({
+  const profiledd = () => {
+    return navigation.setOptions({
       headerRight: () => {
         return (
-          <Icon
-            onPress={() => {
-              dispatch1(setSearchProfileReset())
-            }} name='close-circle' size={25} color={"#000"} />
-        )
-      },
-      headerTitle: () => {
-        let searchString = ""
-        return (
-          <>
-            <Searchbar
-              style={{ width: width * 0.7 }}
-              placeholder={"Search customer" + get(route, 'params.testValue', "")}
-              onChangeText={async (text) => {
+          <View>
+            <Pressable
+              onPress={() => {
+                // enableSearchBar(navigation, setUserSeachEnable,
+                //   profileReducer,
+                //   profileDispatch, loader, setLoader,
+                //   headerRightForNav, headerTitleForNav)
+                navigation.setOptions({
 
-                searchString = text
-                console.log('>>', searchString)
-                setLoader(true)
+                  headerTitle: () => {
+                    let searchString = ""
+                    return (
+                      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                        <Searchbar
+                          style={{ width: width * 0.7 }}
+                          placeholder={"Search customer" + get(route, 'params.testValue', "")}
+                          onChangeText={async (text) => {
+                            searchString = text
+                            setLoader(true)
 
-                await profileDispatch(seachCustomers())
-                setLoader(false)
+                            const d = await profileDispatch(seachCustomers())
+
+                            // setDel(d)
+                            setLoader(false)
+                          }}
+
+
+                        />
+                        <Icon
+                          onPress={() => {
+
+                            profileDispatch(setSearchProfileReset())
+                            navigation.setOptions({
+                              headerRight: headerRightForNav,
+                              headerTitle: "sdfsdf"
+                            })
+                          }} name='close-circle' size={25} color={"#000"} />
+                      </View>
+                    )
+                  }
+                })
               }}
+            >
+              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
+            </Pressable>
+          </View>
+        );
+      },
+    });
 
-            // value={ser}
-            />
-            {renderResult(navigation, setUserSeachEnable,
-              profileReducer, profileDispatch, loader, setLoader,
-              headerRightForNav, headerTitleForNav = "")}
+  }
 
-          </>
-        )
-      }
-    })
-  }, [profileReducer])
   return (
     <>
 
+      {userType == USERTYPE.USER &&
+        useMemo(() => {
+          return userNavigationIcon({
+            navigation, setLoader,
+            profileDispatch, headerRightForNav,
+            headerTitle: "headerTitle"
+          })
+        }, [headerRightForNav, setLoader, navigation, profileDispatch])
+      }
+      {userType == USERTYPE.USER &&
+        useMemo(() => {
+          return (<RenderUserSelectResult
+            profileSearchData={get(profileReducer, 'profileSearchData', [])}
+            setLoader={setLoader}
+            profileDispatch={profileDispatch}
+            headerRightForNav={headerRightForNav}
+            headerTitle={"Interaction"}
+            navigation={navigation}
+          />)
+        }, [profileReducer, setLoader, profileDispatch, navigation, headerRightForNav])
+
+      }
 
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />
@@ -1269,6 +1264,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
       >
+
         {/* profile card */}
         {renderProfileTab}
 

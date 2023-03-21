@@ -1,6 +1,5 @@
 import {
-  initProfile, initProfileSearch, setProfileData, setProfileError,
-  setSearchProfileData, setSearchProfileDataError
+  initProfile, setProfileData, setProfileError, setSearchProfileData, setSearchProfileDataError
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
@@ -52,7 +51,7 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
 
 export function seachCustomers(limit = 5, page = 0) {
   return async (dispatch) => {
-    dispatch(initProfileSearch());
+    // dispatch(initProfileSearch());
     //todo search params
     let profileResult = await serverCall(
       `${endPoints.SEACH_CUSTOMERS}?limit=${limit}&page=${page}`,
@@ -67,7 +66,7 @@ export function seachCustomers(limit = 5, page = 0) {
     console.log("task - pro result", profileResult);
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
-      return true;
+      return true
     } else {
       dispatch(setSearchProfileDataError([]));
       return false;
