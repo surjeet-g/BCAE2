@@ -526,6 +526,9 @@ const AttachmentItem = (props) => {
         <Image
           source={require("../Assets/icons/ic_pdf.png")}
           style={{
+            flex: 1,
+            height: 70,
+            width: 70,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
@@ -535,10 +538,12 @@ const AttachmentItem = (props) => {
         <Image
           source={require("../Assets/icons/ic_word.png")}
           style={{
+            flex: 1,
+            height: 70,
+            width: 70,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
-            resizeMode: "cover",
           }}
         />
       ) : (
