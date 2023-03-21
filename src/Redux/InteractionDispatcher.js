@@ -250,8 +250,16 @@ export function createFollowupForInteraction(
     console.log("$$$-createFollowupForInteraction-result", result);
 
     if (result.success) {
+      Toast.show({
+        type: "bctSuccess",
+        text1: result?.data?.message,
+      });
       dispatch(setFollowupDataInStore(result.data.data));
     } else {
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
       dispatch(setFollowupErrorDataInStore(result));
     }
   };

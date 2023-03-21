@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -495,64 +496,66 @@ const InteractionDetails = (props) => {
         title={"Add Follow up"}
         subtitle={`You have ${InteractionFollowupData.length} follow up`}
       >
-        <View style={{ paddingHorizontal: 10 }}>
-          <CustomDropDownFullWidth
-            selectedValue={get(formPriority, "description", "")}
-            data={priorityList}
-            onChangeText={(text) => {
-              setFormPriority(text);
-            }}
-            value={get(formPriority, "code", "")}
-            caption={strings.priority}
-            placeHolder={"Select " + strings.priority}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={get(formSource, "description", "")}
-            data={sourceList}
-            onChangeText={(text) => {
-              setSource(text);
-            }}
-            value={get(formSource, "code", "")}
-            caption={strings.source}
-            placeHolder={"Select " + strings.user}
-          />
-          <CustomInput
-            value={formRemarks}
-            caption={strings.remarks}
-            placeHolder={strings.remarks}
-            onChangeText={(text) => setFormRemarks(text)}
-          />
-          {/* Bottom Button View */}
-          <View
-            style={{
-              flexDirection: "row",
-              bottom: 0,
-              marginTop: 20,
-              backgroundColor: "white",
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <CustomButton
-                label={strings.cancel}
-                onPress={() => setShowBottomModal(false)}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <CustomButton
-                label={strings.submit}
-                onPress={() => {
-                  dispatch(
-                    createFollowupForInteraction(
-                      interactionId,
-                      { formPriority, formSource, formRemarks },
-                      navigation
-                    )
-                  );
-                }}
-              />
+        <KeyboardAvoidingView>
+          <View style={{ paddingHorizontal: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={get(formPriority, "description", "")}
+              data={priorityList}
+              onChangeText={(text) => {
+                setFormPriority(text);
+              }}
+              value={get(formPriority, "code", "")}
+              caption={strings.priority}
+              placeHolder={"Select " + strings.priority}
+            />
+            <CustomDropDownFullWidth
+              selectedValue={get(formSource, "description", "")}
+              data={sourceList}
+              onChangeText={(text) => {
+                setSource(text);
+              }}
+              value={get(formSource, "code", "")}
+              caption={strings.source}
+              placeHolder={"Select " + strings.user}
+            />
+            <CustomInput
+              value={formRemarks}
+              caption={strings.remarks}
+              placeHolder={strings.remarks}
+              onChangeText={(text) => setFormRemarks(text)}
+            />
+            {/* Bottom Button View */}
+            <View
+              style={{
+                flexDirection: "row",
+                bottom: 0,
+                marginTop: 20,
+                backgroundColor: "white",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.cancel}
+                  onPress={() => setShowBottomModal(false)}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.submit}
+                  onPress={() => {
+                    dispatch(
+                      createFollowupForInteraction(
+                        interactionId,
+                        { formPriority, formSource, formRemarks },
+                        navigation
+                      )
+                    );
+                  }}
+                />
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </FooterModel>
     );
   };
