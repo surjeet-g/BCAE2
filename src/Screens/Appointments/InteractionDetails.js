@@ -37,8 +37,8 @@ import {
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // const { interactionId = "116" } = route.params;
-  let interactionId = 197;
+  // const { interactionID = "116" } = route.params;
+  let interactionID = 197;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -67,9 +67,9 @@ const InteractionDetails = (props) => {
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
-    dispatch(getInteractionDetailsForID(interactionId, navigation));
-    dispatch(getWorkFlowForInteractionID(interactionId, navigation));
-    dispatch(getFollowupForInteractionID(interactionId, navigation));
+    dispatch(getInteractionDetailsForID(interactionID, navigation));
+    dispatch(getWorkFlowForInteractionID(interactionID, navigation));
+    dispatch(getFollowupForInteractionID(interactionID, navigation));
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
     let userType = await getUserType();
@@ -542,7 +542,7 @@ const InteractionDetails = (props) => {
                   onPress={() => {
                     dispatch(
                       createFollowupForInteraction(
-                        interactionId,
+                        interactionID,
                         { formPriority, formSource, formRemarks },
                         navigation
                       )
