@@ -126,10 +126,10 @@ export const ImagePicker = ({
     }
   };
 
-  const onDeleteClicked = (key) => {
+  const onDeleteClicked = (index) => {
     Alert.alert(
       strings.attention,
-      strings.are_you_sure_delete + " \n\n" + key,
+      strings.are_you_sure_delete + " \n\n" + fileAttachments[index].fileName,
       [
         {
           text: strings.cancel,
@@ -137,9 +137,7 @@ export const ImagePicker = ({
         {
           text: strings.ok,
           onPress: () => {
-            const newArray = fileAttachments?.filter(
-              (data) => data?.fileName !== key
-            );
+            const newArray = fileAttachments?.filter((data, i) => index !== i);
             setFileAttachments(newArray);
           },
         },
@@ -535,7 +533,7 @@ const AttachmentItem = (props) => {
       {showDeleteIcon && (
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => onDeleteClicked(item.fileName)}
+          onPress={() => onDeleteClicked(index)}
         >
           <Image
             style={{
