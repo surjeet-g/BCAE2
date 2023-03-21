@@ -108,7 +108,7 @@ const WorkflowHistory = (props) => {
                   {/* Source View */}
                   <WorkFlowInfoItem
                     title={"Source"}
-                    value={"Dissatisfaction"}
+                    value={item?.channelDesc?.description}
                   />
 
                   {/* Remark View */}
@@ -125,7 +125,7 @@ const WorkflowHistory = (props) => {
                   {/* Comments View */}
                   <WorkFlowInfoItem
                     title={"Comments"}
-                    value={"Assign to self"}
+                    value={item?.intxnDetails?.intxnDescription}
                   />
                 </View>
               </View>
