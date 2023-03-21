@@ -380,17 +380,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable onPress={() => {}}>
-                      <Image
-                        source={require("../Assets/icons/ic_more_vertical.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -406,17 +396,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable onPress={() => {}}>
-                      <Image
-                        source={require("../Assets/icons/ic_more_vertical.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
