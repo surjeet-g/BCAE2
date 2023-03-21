@@ -101,7 +101,10 @@ const Followup = (props) => {
                 }}
               >
                 {/* Source View */}
-                <FollowupItem title={"Source"} value={"Dissatisfaction"} />
+                <FollowupItem
+                  title={"Source"}
+                  value={item?.channelDesc?.description}
+                />
 
                 {/* Remark View */}
                 <FollowupItem title={"Remark"} value={item?.remarks} />
@@ -115,7 +118,10 @@ const Followup = (props) => {
                 }}
               >
                 {/* Comments View */}
-                <FollowupItem title={"Comments"} value={"Assign to self"} />
+                <FollowupItem
+                  title={"Comments"}
+                  value={item?.intxnDetails?.intxnDescription}
+                />
               </View>
             </View>
           </View>

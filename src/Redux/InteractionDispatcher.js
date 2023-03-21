@@ -1,19 +1,13 @@
 import {
   enableLoaderAddInteractionAdd,
   enableLoaderEditInteraction,
-  initInteraction,
-  setInteractionData,
-  setInteractionError,
-  setInteractionsWorkFlowDataInStore,
-  setInteractionsWorkFlowErrorDataInStore,
-  setInteractionsFollowupDataInStore,
-  setInteractionsFollowupErrorDataInStore,
-  setInteractionsDetailsDataInStore,
-  setInteractionsDetailsErrorDataInStore,
-  setFollowupDataInStore,
-  setFollowupErrorDataInStore,
-  setAssignInteractionToSelfDataInStore,
-  setAssignInteractionToSelfErrorDataInStore,
+  initInteraction, setAssignInteractionToSelfDataInStore,
+  setAssignInteractionToSelfErrorDataInStore, setFollowupDataInStore,
+  setFollowupErrorDataInStore, setInteractionData,
+  setInteractionError, setInteractionsDetailsDataInStore,
+  setInteractionsDetailsErrorDataInStore, setInteractionsFollowupDataInStore,
+  setInteractionsFollowupErrorDataInStore, setInteractionsWorkFlowDataInStore,
+  setInteractionsWorkFlowErrorDataInStore
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -23,7 +17,7 @@ import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
 import {
   getCustomerID,
-  getCustomerUUID,
+  getCustomerUUID
 } from "../Utilities/UserManagement/userInfo";
 
 export function fetchInteractionAction(type = "", params = {}) {
@@ -57,10 +51,11 @@ export function fetchInteractionAction(type = "", params = {}) {
       );
     } else if (type == typeOfAccrodin.searchbox.value) {
       interactionResult = await serverCall(
-        `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}?limit=4`,
+        `${endPoints.INTELIGENCE}`,
         requestMethod.POST,
         {
           requestId: params.requestId,
+          actionCount: 1,
           customerUuid: customerUUID,
         }
       );
@@ -69,7 +64,7 @@ export function fetchInteractionAction(type = "", params = {}) {
       return false;
     }
 
-    console.log("terdsf", interactionResult.data, type);
+
     if (interactionResult?.success) {
       let data = [];
 
@@ -87,7 +82,7 @@ export function fetchInteractionAction(type = "", params = {}) {
       console.log("terdsf 1", data);
 
       dispatch(setInteractionData(data, false));
-      return true;
+      return data;
     } else {
       console.log("error response", interactionResult);
       dispatch(setInteractionError([]));
@@ -233,7 +228,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
   };
 }
 
-export function createFollowupForInteraction(
+export function createFollowupForInteractionID(
   interactionId,
   param,
   navigation = null
@@ -247,7 +242,7 @@ export function createFollowupForInteraction(
       source: param.formSource.code,
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
-    console.log("$$$-createFollowupForInteraction-result", result);
+    console.log("$$$-createFollowupForInteractionID-result", result);
 
     if (result.success) {
       Toast.show({
