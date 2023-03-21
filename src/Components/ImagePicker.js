@@ -89,7 +89,7 @@ export const ImagePicker = ({
     setAttachmentModalVisible(false);
   };
 
-  const handleDocumentSelection = useCallback(async () => {
+  const handleDocumentSelection = async () => {
     try {
       const response = await DocumentPicker.pick({
         presentationStyle: "fullScreen",
@@ -124,7 +124,7 @@ export const ImagePicker = ({
     } catch (err) {
       // console.warn(err);
     }
-  }, []);
+  };
 
   const onDeleteClicked = (key) => {
     Alert.alert(
@@ -321,10 +321,6 @@ export const ImagePicker = ({
         <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
           (Maximum 5 files can be attached with max file size of 5MB each)
         </Text>
-        {/* <AttachmentList
-          attachmentList={fileAttachments}
-          onDeleteClicked={onDeleteClicked}
-        /> */}
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -333,6 +329,7 @@ export const ImagePicker = ({
           renderItem={({ item, index }) =>
             fileAttachments[index]?.fileName?.length > 0 ? (
               <AttachmentItem
+                index={index}
                 item={fileAttachments[index]}
                 onDeleteClicked={onDeleteClicked}
               />
@@ -366,11 +363,9 @@ export const ImagePicker = ({
                 justifyContent: "space-evenly",
                 position: "absolute",
                 bottom: 100,
-
                 flexDirection: "column",
                 backgroundColor: "white",
                 elevation: 1,
-                backgroundColor: "white",
                 paddingBottom: 30,
                 borderRadius: 10,
                 padding: 10,
@@ -486,29 +481,8 @@ export const ImagePicker = ({
   );
 };
 
-const AttachmentList = ({ attachmentList, onDeleteClicked }) => (
-  <View style={{ marginTop: 20 }}>
-    {attachmentList?.length > 0 && (
-      <FlatList
-        contentContainerStyle={{
-          paddingBottom: 20,
-          paddingLeft: 2,
-          paddingRight: 2,
-        }}
-        horizontal
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={attachmentList}
-        key={attachmentList.fileName}
-        renderItem={({ item }) => (
-          <AttachmentItem item={item} onDeleteClicked={onDeleteClicked} />
-        )}
-      />
-    )}
-  </View>
-);
 const AttachmentItem = (props) => {
-  const { item, onDeleteClicked, showDeleteIcon = true } = props;
+  const { item, onDeleteClicked, showDeleteIcon = true, index } = props;
   return (
     <View
       style={{
@@ -521,7 +495,6 @@ const AttachmentItem = (props) => {
         flexDirection: "row",
       }}
     >
-      {/* <Text>{item.fileType}</Text> */}
       {item.fileType.includes("pdf") ? (
         <Image
           source={require("../Assets/icons/ic_pdf.png")}
