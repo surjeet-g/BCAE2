@@ -532,6 +532,7 @@ const AttachmentItem = (props) => {
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
+            resizeMode: "cover",
           }}
         />
       ) : item.fileType.includes("msword") ? (
