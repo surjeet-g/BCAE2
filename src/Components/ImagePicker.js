@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
@@ -89,7 +89,7 @@ export const ImagePicker = ({
     setAttachmentModalVisible(false);
   };
 
-  const handleDocumentSelection = useCallback(async () => {
+  const handleDocumentSelection = async () => {
     try {
       const response = await DocumentPicker.pick({
         presentationStyle: "fullScreen",
@@ -104,14 +104,16 @@ export const ImagePicker = ({
       });
 
       if (response[0]?.size < 5000000) {
-        fileAttachments.push({
-          fileType: response[0]?.type,
-          fileName: response[0]?.name,
-          fileSize: response[0]?.size,
-          uri: response[0]?.uri,
-          base64: await RNFS.readFile(response[0]?.uri, "base64"),
-        });
-        setFileAttachments(fileAttachments);
+        setFileAttachments([
+          ...fileAttachments,
+          {
+            fileType: response[0]?.type,
+            fileName: response[0]?.name,
+            fileSize: response[0]?.size,
+            uri: response[0]?.uri,
+            base64: await RNFS.readFile(response[0]?.uri, "base64"),
+          },
+        ]);
       } else {
         Toast.show({
           type: "bctError",
@@ -122,11 +124,12 @@ export const ImagePicker = ({
     } catch (err) {
       // console.warn(err);
     }
-  }, []);
-  const onDeleteClicked = (key) => {
+  };
+
+  const onDeleteClicked = (index) => {
     Alert.alert(
       strings.attention,
-      strings.are_you_sure_delete + " \n\n" + key,
+      strings.are_you_sure_delete + " \n\n" + fileAttachments[index].fileName,
       [
         {
           text: strings.cancel,
@@ -134,9 +137,7 @@ export const ImagePicker = ({
         {
           text: strings.ok,
           onPress: () => {
-            const newArray = fileAttachments?.filter(
-              (data) => data?.fileName != key
-            );
+            const newArray = fileAttachments?.filter((data, i) => index !== i);
             setFileAttachments(newArray);
           },
         },
@@ -153,12 +154,12 @@ export const ImagePicker = ({
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
-          { text: strings.ok, onPress: () => { } },
+          { text: strings.ok, onPress: () => {} },
         ]);
       }
     } else {
       Alert.alert(strings.attention, strings.max_number_of_file, [
-        { text: strings.ok, onPress: () => { } },
+        { text: strings.ok, onPress: () => {} },
       ]);
     }
   };
@@ -318,10 +319,6 @@ export const ImagePicker = ({
         <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
           (Maximum 5 files can be attached with max file size of 5MB each)
         </Text>
-        {/* <AttachmentList
-          attachmentList={fileAttachments}
-          onDeleteClicked={onDeleteClicked}
-        /> */}
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -330,6 +327,7 @@ export const ImagePicker = ({
           renderItem={({ item, index }) =>
             fileAttachments[index]?.fileName?.length > 0 ? (
               <AttachmentItem
+                index={index}
                 item={fileAttachments[index]}
                 onDeleteClicked={onDeleteClicked}
               />
@@ -363,11 +361,9 @@ export const ImagePicker = ({
                 justifyContent: "space-evenly",
                 position: "absolute",
                 bottom: 100,
-
                 flexDirection: "column",
                 backgroundColor: "white",
                 elevation: 1,
-                backgroundColor: "white",
                 paddingBottom: 30,
                 borderRadius: 10,
                 padding: 10,
@@ -483,29 +479,8 @@ export const ImagePicker = ({
   );
 };
 
-const AttachmentList = ({ attachmentList, onDeleteClicked }) => (
-  <View style={{ marginTop: 20 }}>
-    {attachmentList?.length > 0 && (
-      <FlatList
-        contentContainerStyle={{
-          paddingBottom: 20,
-          paddingLeft: 2,
-          paddingRight: 2,
-        }}
-        horizontal
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={attachmentList}
-        key={attachmentList.fileName}
-        renderItem={({ item }) => (
-          <AttachmentItem item={item} onDeleteClicked={onDeleteClicked} />
-        )}
-      />
-    )}
-  </View>
-);
 const AttachmentItem = (props) => {
-  const { item, onDeleteClicked, showDeleteIcon = true } = props;
+  const { item, onDeleteClicked, showDeleteIcon = true, index } = props;
   return (
     <View
       style={{
@@ -522,19 +497,24 @@ const AttachmentItem = (props) => {
         <Image
           source={require("../Assets/icons/ic_pdf.png")}
           style={{
+            flex: 1,
+            height: 70,
+            width: 70,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
           }}
         />
-      ) : item.fileType.includes("docx") || item.fileType.includes("doc") ? (
+      ) : item.fileType.includes("msword") ? (
         <Image
           source={require("../Assets/icons/ic_word.png")}
           style={{
+            flex: 1,
+            height: 70,
+            width: 70,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
-            resizeMode: "cover",
           }}
         />
       ) : (
@@ -553,7 +533,7 @@ const AttachmentItem = (props) => {
       {showDeleteIcon && (
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => onDeleteClicked(item.fileName)}
+          onPress={() => onDeleteClicked(index)}
         >
           <Image
             style={{
