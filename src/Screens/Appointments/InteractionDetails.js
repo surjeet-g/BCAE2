@@ -1,32 +1,25 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
-import {
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  FlatList,
-  ScrollView,
-  Pressable,
-} from "react-native";
-import { navBar } from "../../Utilities/Style/navBar";
-import { useTheme } from "react-native-paper";
-import { CustomButton } from "../../Components/CustomButton";
-import { strings } from "../../Utilities/Language";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getInteractionDetailsForID,
-  getWorkFlowForInteractionID,
-  getFollowupForInteractionID,
-} from "./../../Redux/InteractionDispatcher";
+import get from "lodash.get";
 import moment from "moment";
-import { Divider } from "react-native-paper";
-import { FooterModel } from "./../../Components/FooterModel";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import {
+  FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View
+} from "react-native";
+import { Divider, useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { CustomButton } from "../../Components/CustomButton";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
+import { strings } from "../../Utilities/Language";
+import { navBar } from "../../Utilities/Style/navBar";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
+import { FooterModel } from "./../../Components/FooterModel";
+import {
+  getFollowupForInteractionID, getInteractionDetailsForID,
+  getWorkFlowForInteractionID
+} from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
-  USERTYPE,
+  USERTYPE
 } from "./../../Utilities/UserManagement/userInfo";
 
 const InteractionDetails = (props) => {
@@ -35,15 +28,25 @@ const InteractionDetails = (props) => {
   let interactionId = 116;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
-  const [showBottomModal, setShowBottomModal] = useState(false);
+  const [showBottomModal, setShowBottomModal] = useState(true);
   const [userType, setUserType] = useState("");
-
+  const [formPriority, setFormPriority] = useState({})
+  const [formSource, setSource] = useState({})
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
   ]);
-  let interactionReducer = useSelector((state) => state.interaction);
+  const masterDispatch = useDispatch([getMasterData]);
+
+  const { masterReducer, interactionReducer } = useSelector(
+    (state) => {
+      return {
+        masterReducer: state.masterdata,
+        interactionReducer: state.interaction,
+      };
+    }
+  );
   const {
     InteractionDetailsData,
     InteractionWorkFlowData,
@@ -56,6 +59,16 @@ const InteractionDetails = (props) => {
     dispatch(getInteractionDetailsForID(interactionId, navigation));
     dispatch(getWorkFlowForInteractionID(interactionId, navigation));
     dispatch(getFollowupForInteractionID(interactionId, navigation));
+    const {
+      PRIORITY,
+      SOURCE
+    } = MASTER_DATA_CONSTANT;
+    console.log('master dat', PRIORITY)
+    masterDispatch(
+      getMasterData(
+        `${PRIORITY},${SOURCE}`
+      )
+    );
     let userType = await getUserType();
     setUserType(userType);
   }, []);
@@ -466,6 +479,9 @@ const InteractionDetails = (props) => {
   };
 
   const AddFollowUpModal = (props) => {
+    const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
+    const sourceList = get(masterReducer, "masterdataData.SOURCE", []);
+
     return (
       <FooterModel
         open={showBottomModal}
@@ -475,20 +491,24 @@ const InteractionDetails = (props) => {
       >
         <View style={{ paddingHorizontal: 10 }}>
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+
+            selectedValue={get(formPriority, 'description', '')}
+
+            data={priorityList}
+            onChangeText={(text) => {
+              setFormPriority(text)
+            }}
+            value={get(formPriority, 'code', '')}
             caption={strings.priority}
             placeHolder={"Select " + strings.priority}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            selectedValue={get(formSource, 'description', '')}
+            data={sourceList}
+            onChangeText={(text) => {
+              setSource(text)
+            }}
+            value={get(formSource, 'code', '')}
             caption={strings.source}
             placeHolder={"Select " + strings.user}
           />
@@ -514,7 +534,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>
@@ -570,7 +590,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>
@@ -621,7 +641,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>

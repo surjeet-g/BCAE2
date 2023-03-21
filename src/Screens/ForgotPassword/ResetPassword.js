@@ -4,7 +4,7 @@ import {
   ImageBackground,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import {
   color,
   fontSizes,
   spacing,
-  validatePassword,
+  validatePassword
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 
@@ -68,7 +68,7 @@ const ResetPassword = ({ route, navigation }) => {
       requestChangePassword();
     } else {
       Alert.alert(strings.attention, strings.password_not_match, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     }
   };
@@ -89,7 +89,7 @@ const ResetPassword = ({ route, navigation }) => {
       Alert.alert(strings.attention, strings.passwordValidError, [
         {
           text: strings.ok,
-          onPress: () => {},
+          onPress: () => { },
         },
       ]);
     }
@@ -154,12 +154,16 @@ const ResetPassword = ({ route, navigation }) => {
           // ...{ marginTop: isChangePassword ? 15 : 45 },
         }}
       >
-        <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
-          {"Need our help,"}
-        </Text>
-        <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
-          {"Reset password?"}
-        </Text>
+        {!(isChangePassword) &&
+          <>
+            <Text style={{ fontSize: 18, marginLeft: 15, color: "white" }}>
+              {"Need our help,"}
+            </Text>
+            <Text style={{ fontSize: 28, marginLeft: 15, color: "white" }}>
+              {"Reset password?"}
+            </Text>
+          </>
+        }
         <ScrollView
           style={{
             flexGrow: 1,

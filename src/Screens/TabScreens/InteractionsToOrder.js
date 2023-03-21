@@ -15,7 +15,7 @@ import {
   TextInput,
   View
 } from "react-native";
-import { Chip, List, Searchbar, Text, useTheme } from "react-native-paper";
+import { Chip, List, Text, useTheme } from "react-native-paper";
 import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,7 +61,7 @@ import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
-import { setProfileReset, setSearchProfileReset, setUserSearch } from "../../Redux/ProfileAction";
+import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
 import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -197,6 +197,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     });
     return willFocusSubscription;
   }, []);
+
   const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
   const { profileReducer, masterReducer, interactionReducer } = useSelector(
     (state) => {
@@ -996,232 +997,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
-  /**
-  * Reset All params
-  *
-  *  @param {obj} navigation The obj to raise..
-  *  @param {func} setUserSeachEnable for handle main screen blue effect
-  * @param {boolean} loader reference for loader
-  */
-  const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = false, setLoader = () => { }, headerRightForNav = null, headerTitleForNav = "" }) => {
-    const profileDispatch = useDispatch([seachCustomers, setUserSearch, setSearchProfileReset, fetchSavedProfileDataByUser]);
-    const profileReducer = useSelector(
-      (state) => state.profile
-    );
-
-
-    return navigation.setOptions({
-      headerRight: () => {
-        return (
-          <View>
-            <Pressable
-              onPress={() => {
-                enableSearchBar(navigation, setUserSeachEnable,
-                  profileReducer,
-                  profileDispatch, loader, setLoader,
-                  headerRightForNav, headerTitleForNav)
-              }}
-            >
-              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
-            </Pressable>
-          </View>
-        );
-      },
-    });
-    return null
-  }
-
-  /**
-  * Change Header middle section
-  * @param {obj} navigation The null to raise.
-  */
-
-  const renderResult = (navigation, setUserSeachEnable,
-    profile, dispatch1, loader, setLoader,
-    headerRightForNav, headerTitleForNav) => {
-
-    const profileSearchResult = get(profile, 'profileSearchData', [])
-    console.log('task renderResult ', profileSearchResult)
-    return (<UserSearchList
-      headerTitleForNav={headerTitleForNav}
-      profileSearchResult={profileSearchResult}
-      dispatch1={dispatch1}
-      navigation={navigation}
-      setLoader={setLoader}
-      headerRightForNav={headerRightForNav}
-      setUserSeachEnable={setUserSeachEnable}
-    />)
-  }
-
-  const enableSearchBar = async (navigation, setUserSeachEnable,
-    profile, dispatch1, loader, setLoader,
-    headerRightForNav, headerTitleForNav) => {
-
-
-
-    // const [search, setSearch] = useState("")
-
-
-    console.log('task - profile view', profile)
-
-
-    // const renderResult = useMemo(() => {
-    //     const profileSearchResult = get(profile, 'profileSearchData', [])
-    //     console.log('task - profil inside result ', profileSearchResult, profile)
-    //     return (<UserSearchList
-    //         headerTitleForNav={headerTitleForNav}
-    //         profileSearchResult={profileSearchResult}
-    //         dispatch1={dispatch1}
-    //         navigation={navigation}
-    //         setLoader={setLoader}
-    //         headerRightForNav={headerRightForNav}
-    //         setUserSeachEnable={setUserSeachEnable}
-    //     />)
-    // }, [headerTitleForNav, profileSearchResult, navigation, setLoader, headerRightForNav, setUserSeachEnable])
 
 
 
 
-  }
-
-  const UserSearchList = ({
-    setLoader, headerTitleForNav, setUserSeachEnable,
-    profileSearchResult, dispatch1, navigation,
-    headerRightForNav }) => {
-
-    console.log('>>task UserSearchList', profileSearchResult)
-    return (
-      <View style={{
-        top: 60,
-        position: "absolute",
-        width: width * 0.9
-      }}>
-        {profileSearchResult.length == 0 ?
-          <Text></Text> :
-          <FlatList
-            contentContainerStyle={{
-              height: 500
-            }}
-            data={profileSearchResult}
-            renderItem={({ item }) => {
-              return (
-                <List.Item
-                  title={`${item.firstName} ${item.lastName}`}
-                  titleStyle={{
-                    fontSize: 10,
-                    padding: 0,
-                    margin: 0,
-                  }}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#fff",
-                    height: 40,
-
-                    borderBottomWidth: 0.5,
-                    paddingHorizontal: 4,
-                    // borderRadius: 3,
-                  }}
-                  onPress={async () => {
-                    console.log('>>nav', navigation)
-                    // setLoader(true)
-                    const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
-                    // if (status) {
-                    navigation.setOptions({
-                      headerRight: headerRightForNav,
-                      headerTitle: "sdfsdf"
-                    })
-
-                    // }
-                    // setLoader(false)
-                    // setUserSeachEnable(false)
-                  }}
-                />
-              )
-
-            }}
-          />
-        }
-      </View>
-    )
-  }
 
 
 
 
-  // const headerSet = () => {
-  //   if (1) {
-  //     return (
-  //       <EnableSearchForUser
-  //         headerRightForNav={headerRightForNav}
-  //         headerTitleForNav={"Interaction"}
-  //         loader={loader}
-  //         setLoader={setLoader}
-  //         navigation={navigation}
-  //         setUserSeachEnable={setUserSeachEnable}
-  //       />
-  //     )
-  //   }
-  //   else {
-  //     return null
-  //   }
-  // }
-
-  const profiledd = () => {
-    return navigation.setOptions({
-      headerRight: () => {
-        return (
-          <View>
-            <Pressable
-              onPress={() => {
-                // enableSearchBar(navigation, setUserSeachEnable,
-                //   profileReducer,
-                //   profileDispatch, loader, setLoader,
-                //   headerRightForNav, headerTitleForNav)
-                navigation.setOptions({
-
-                  headerTitle: () => {
-                    let searchString = ""
-                    return (
-                      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                        <Searchbar
-                          style={{ width: width * 0.7 }}
-                          placeholder={"Search customer" + get(route, 'params.testValue', "")}
-                          onChangeText={async (text) => {
-                            searchString = text
-                            setLoader(true)
-
-                            const d = await profileDispatch(seachCustomers())
-
-                            // setDel(d)
-                            setLoader(false)
-                          }}
-
-
-                        />
-                        <Icon
-                          onPress={() => {
-
-                            profileDispatch(setSearchProfileReset())
-                            navigation.setOptions({
-                              headerRight: headerRightForNav,
-                              headerTitle: "sdfsdf"
-                            })
-                          }} name='close-circle' size={25} color={"#000"} />
-                      </View>
-                    )
-                  }
-                })
-              }}
-            >
-              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
-            </Pressable>
-          </View>
-        );
-      },
-    });
-
-  }
 
   return (
     <>

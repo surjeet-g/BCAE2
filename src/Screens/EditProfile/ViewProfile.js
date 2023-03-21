@@ -19,6 +19,7 @@ import {
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
 import { mockAnnouncementList } from "../../Utilities/Constants/Constant";
@@ -146,8 +147,8 @@ export const ViewProfile = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <ScrollView nestedScrollEnabled={true}>
         <Image
           source={{
             uri: `data:image/jpeg;base64,${
@@ -377,17 +378,19 @@ export const ViewProfile = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
-              <FlatList
-                data={mockAnnouncementList}
-                renderItem={({ item }) => (
-                  <AnnouncementItem
-                    title={item.title}
-                    desc={item.desc}
-                    date={item.date}
-                  />
-                )}
-                keyExtractor={(item) => item.id}
-              />
+              <BottomSheetScrollView>
+                <FlatList
+                  data={mockAnnouncementList}
+                  renderItem={({ item }) => (
+                    <AnnouncementItem
+                      title={item.title}
+                      desc={item.desc}
+                      date={item.date}
+                    />
+                  )}
+                  keyExtractor={(item) => item.id}
+                />
+              </BottomSheetScrollView>
             </View>
           </BottomSheetModal>
         </View>
@@ -398,7 +401,11 @@ export const ViewProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flexGrow: 1,
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 10,
   },
   listItem: {
     flexDirection: "row",

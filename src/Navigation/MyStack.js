@@ -42,7 +42,6 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
-import { HeaderTitle } from "../Components/headerTitle";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -195,9 +194,7 @@ function MyStack() {
             ...{
               title: "Change password",
               headerRight: () => null,
-              headerTitle: () => (
-                <HeaderTitle header="Need your help" subHeader="Register" />
-              ),
+              headerTitle: "Change password",
               headerTintColor: colors.inverseSecondary,
             },
           }}
@@ -374,25 +371,13 @@ function MyStack() {
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
-              headerTitle: "Interaction Details",
+              headerTitle: "Followup History",
               headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
-                      <Image
-                        source={require("../Assets/icons/ic_more_vertical.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -400,9 +385,15 @@ function MyStack() {
         />
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Workflow History",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
