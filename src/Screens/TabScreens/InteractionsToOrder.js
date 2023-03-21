@@ -1115,12 +1115,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             </Pressable>
           )}
         </View>
-        <ImagePicker
-          attachmentModalVisible={true}
-          setAttachmentModalVisible={setAttachmentModalVisible}
-          fileAttachments={fileAttachments}
-          setFileAttachments={setFileAttachments}
-        />
+
         {searchStandAloneModal && (
           <>
             <ClearSpace size={5} />

@@ -1,13 +1,12 @@
 import React, { useCallback } from "react";
 import {
-  Alert,
-  FlatList,
+  Alert, Dimensions, FlatList,
   Image,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
@@ -15,9 +14,9 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { color, spacing } from "../Utilities/Constants/Constant";
-
+import { spacing } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
+var { height, width } = Dimensions.get('screen');
 
 export const ImagePicker = ({
   attachmentModalVisible,
@@ -152,12 +151,12 @@ export const ImagePicker = ({
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
-          { text: strings.ok, onPress: () => {} },
+          { text: strings.ok, onPress: () => { } },
         ]);
       }
     } else {
       Alert.alert(strings.attention, strings.max_number_of_file, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     }
   };
@@ -340,34 +339,45 @@ export const ImagePicker = ({
       </View>
 
       {attachmentModalVisible && (
-        <View>
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              position: "absolute",
-              bottom: 100,
+        <>
+          <Pressable
+            onPress={() => {
 
-              flexDirection: "column",
-              backgroundColor: "white",
-              backgroundColor: color.BCAE_OFF_WHITE,
-              borderRadius: 10,
-              padding: 10,
+              setAttachmentModalVisible(false)
             }}
-          >
+            style={{
+              // backgroundColor: "gray",
+              // opacity: .5,
+              position: "absolute",
+              width: width,
+              height: height,
+              elevation: 9999,
+              zIndex: 9
+
+
+            }}>
+
+          </Pressable>
+          <View>
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                // position: "relative",
-                marginVertical: 10,
-                // height: 300,
-                marginHorizontal: 15,
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                position: "absolute",
+                bottom: 100,
+
+                flexDirection: "column",
+                backgroundColor: "white",
+                elevation: 1,
+                backgroundColor: "white",
+                paddingBottom: 30,
+                borderRadius: 10,
+                padding: 10,
               }}
             >
               <View
                 style={{
-                  flexDirection: "column",
+                  flexDirection: "row",
                   justifyContent: "space-between",
                   // position: "relative",
                   marginVertical: 10,
@@ -375,96 +385,102 @@ export const ImagePicker = ({
                   marginHorizontal: 15,
                 }}
               >
-                <Text
+                <View
                   style={{
-                    fontWeight: 600,
-                    color: "#202223",
-                    fontSize: 16,
-                    // flex: 1,
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    // position: "relative",
+                    marginVertical: 10,
+
+                    width: '85%',
+                    // height: 300,
+                    marginHorizontal: 15,
                   }}
                 >
-                  Choose file
-                </Text>
-                <Text
-                  style={{
-                    fontWeight: 600,
-                    color: "#202223",
-                    fontSize: 16,
-                    // flex: 1,
+
+                  <Text
+                    style={{
+                      fontWeight: 600,
+                      color: "#202223",
+                      fontSize: 19,
+                      // flex: 1,
+                    }}
+                  >
+                    Choose Files
+                  </Text>
+                  <Text>Select files for attachments</Text>
+                </View>
+                <Icon
+                  onPress={() => {
+                    setAttachmentModalVisible(false);
                   }}
-                >
-                  Choose file
-                </Text>
+                  name="close-circle"
+                  size={25}
+                  color={"#000"}
+                />
               </View>
-              <Icon
-                onPress={() => {
-                  setAttachmentModalVisible(false);
-                }}
-                name="close-circle"
-                size={25}
-                color={"#000"}
-              />
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-                flex: 1,
-                flexDirection: "row",
-              }}
-            >
-              <Pressable
-                onPress={() => handleDocumentSelection()}
-                style={{
-                  marginTop: spacing.HEIGHT_6,
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "33%",
-                }}
-              >
-                <Image
-                  style={styles.upperLogo}
-                  source={require("../Assets/icons/picker_document.png")}
-                />
-              </Pressable>
 
-              <Pressable
-                onPress={() => {
-                  // setAttachmentModalVisible(false);
-                  launchCamera1();
-                }}
+              <View
                 style={{
-                  marginTop: spacing.HEIGHT_6,
-                  flexDirection: "column",
-                  justifyContent: "center",
                   alignItems: "center",
-                  width: "33%",
+                  flex: 1,
+                  flexDirection: "row",
                 }}
               >
-                <Image
-                  style={styles.upperLogo}
-                  source={require("../Assets/icons/picker_camera.png")}
-                />
-              </Pressable>
+                <Pressable
+                  onPress={() => handleDocumentSelection()}
+                  style={{
+                    marginTop: spacing.HEIGHT_6,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "33%",
+                  }}
+                >
+                  <Image
+                    style={styles.upperLogo}
+                    source={require("../Assets/icons/picker_document.png")}
+                  />
+                </Pressable>
 
-              <Pressable
-                onPress={() => launchImageLibrary1()}
-                style={{
-                  marginTop: spacing.HEIGHT_6,
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "33%",
-                }}
-              >
-                <Image
-                  style={styles.upperLogo}
-                  source={require("../Assets/icons/picker_gallery.png")}
-                />
-              </Pressable>
+                <Pressable
+                  onPress={() => {
+                    // setAttachmentModalVisible(false);
+                    launchCamera1();
+                  }}
+                  style={{
+                    marginTop: spacing.HEIGHT_6,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "33%",
+                  }}
+                >
+                  <Image
+                    style={styles.upperLogo}
+                    source={require("../Assets/icons/picker_camera.png")}
+                  />
+                </Pressable>
+
+                <Pressable
+                  onPress={() => launchImageLibrary1()}
+                  style={{
+                    marginTop: spacing.HEIGHT_6,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "33%",
+                  }}
+                >
+                  <Image
+                    style={styles.upperLogo}
+                    source={require("../Assets/icons/picker_gallery.png")}
+                  />
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </>
       )}
     </View>
   );
