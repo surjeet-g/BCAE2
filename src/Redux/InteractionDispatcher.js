@@ -233,7 +233,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
   };
 }
 
-export function createFollowupForInteraction(
+export function createFollowupForInteractionID(
   interactionId,
   param,
   navigation = null
@@ -247,7 +247,7 @@ export function createFollowupForInteraction(
       source: param.formSource.code,
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
-    console.log("$$$-createFollowupForInteraction-result", result);
+    console.log("$$$-createFollowupForInteractionID-result", result);
 
     if (result.success) {
       Toast.show({

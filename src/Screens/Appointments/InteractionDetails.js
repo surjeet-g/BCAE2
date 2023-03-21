@@ -28,7 +28,7 @@ import {
   getFollowupForInteractionID,
   getInteractionDetailsForID,
   getWorkFlowForInteractionID,
-  createFollowupForInteraction,
+  createFollowupForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
@@ -52,7 +52,7 @@ const InteractionDetails = (props) => {
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
     getMasterData,
-    createFollowupForInteraction,
+    createFollowupForInteractionID,
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
@@ -541,7 +541,7 @@ const InteractionDetails = (props) => {
                   label={strings.submit}
                   onPress={() => {
                     dispatch(
-                      createFollowupForInteraction(
+                      createFollowupForInteractionID(
                         interactionID,
                         { formPriority, formSource, formRemarks },
                         navigation
