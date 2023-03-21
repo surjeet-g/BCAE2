@@ -55,12 +55,9 @@ const InteractionDetails = (props) => {
     createFollowupForInteraction,
   ]);
 
-  const { masterReducer, interactionReducer } = useSelector((state) => {
-    return {
-      masterReducer: state.masterdata,
-      interactionReducer: state.interaction,
-    };
-  });
+  let masterReducer = useSelector((state) => state.masterdata);
+  let interactionReducer = useSelector((state) => state.interaction);
+
   const {
     InteractionDetailsData,
     InteractionWorkFlowData,
