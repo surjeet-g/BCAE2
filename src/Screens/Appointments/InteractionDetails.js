@@ -660,6 +660,9 @@ const InteractionDetails = (props) => {
       </FooterModel>
     );
   };
+  const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
+  const sourceList = get(masterReducer, "masterdataData.SOURCE", []);
+
 
   return (
     <View style={styles.container}>
@@ -686,7 +689,74 @@ const InteractionDetails = (props) => {
         </View>
       </ScrollView>
 
-      {showBottomModal && modalIndex === 1 && <AddFollowUpModal />}
+      {showBottomModal && modalIndex === 1 &&
+        <FooterModel
+          open={showBottomModal}
+          setOpen={setShowBottomModal}
+          title={"Add Follow up"}
+          subtitle={`You have ${InteractionFollowupData.length} follow up`}
+        >
+          <KeyboardAvoidingView>
+            <View style={{ paddingHorizontal: 10 }}>
+              <CustomDropDownFullWidth
+                selectedValue={get(formPriority, "description", "")}
+                data={priorityList}
+                onChangeText={(text) => {
+                  setFormPriority(text);
+                }}
+                value={get(formPriority, "code", "")}
+                caption={strings.priority}
+                placeHolder={"Select " + strings.priority}
+              />
+              <CustomDropDownFullWidth
+                selectedValue={get(formSource, "description", "")}
+                data={sourceList}
+                onChangeText={(text) => {
+                  setSource(text);
+                }}
+                value={get(formSource, "code", "")}
+                caption={strings.source}
+                placeHolder={"Select " + strings.user}
+              />
+              <CustomInput
+                value={formRemarks}
+                caption={strings.remarks}
+                placeHolder={strings.remarks}
+                onChangeText={(text) => setFormRemarks(text)}
+              />
+              {/* Bottom Button View */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  bottom: 0,
+                  marginTop: 20,
+                  backgroundColor: "white",
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <CustomButton
+                    label={strings.cancel}
+                    onPress={() => setShowBottomModal(false)}
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <CustomButton
+                    label={strings.submit}
+                    onPress={() => {
+                      dispatch(
+                        createFollowupForInteraction(
+                          interactionID,
+                          { formPriority, formSource, formRemarks },
+                          navigation
+                        )
+                      );
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </FooterModel>}
       {showBottomModal && modalIndex === 2 && <AssignToSelfModal />}
       {showBottomModal && modalIndex === 3 && <ReAssignModal />}
     </View>
