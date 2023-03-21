@@ -13,10 +13,10 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { Chip, List, Searchbar, Text, useTheme } from "react-native-paper";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
@@ -25,7 +25,7 @@ import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
-  spacing
+  spacing,
 } from "../../Utilities/Constants/Constant";
 
 import { strings } from "../../Utilities/Language";
@@ -38,12 +38,12 @@ import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js
 import {
   addInteractionAction,
   fetchInteractionAction,
-  updateInteractionAction
+  updateInteractionAction,
 } from "../../Redux/InteractionDispatcher";
 
 import {
   setInteractionFormField,
-  setInteractionReset
+  setInteractionReset,
 } from "../../Redux/InteractionAction";
 
 import get from "lodash.get";
@@ -59,17 +59,25 @@ import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
-import { setProfileReset, setSearchProfileReset, setUserSearch } from "../../Redux/ProfileAction";
-import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
+import {
+  setProfileReset,
+  setSearchProfileReset,
+  setUserSearch,
+} from "../../Redux/ProfileAction";
+import {
+  fetchSavedProfileData,
+  fetchSavedProfileDataByUser,
+  seachCustomers,
+} from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import {
   getCustomerID,
   getUserType,
-  USERTYPE
+  USERTYPE,
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -81,7 +89,7 @@ export const typeOfAccrodin = {
 };
 
 const InteractionsToOrder = ({ route, navigation }) => {
-  const [activeService, setService] = useState("")
+  const [activeService, setService] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState("");
   //need enable screen loader
   const [loader, setLoader] = useState(true);
@@ -103,7 +111,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
-  const [userSeachEnable, setUserSeachEnable] = useState(false)
+  const [userSeachEnable, setUserSeachEnable] = useState(false);
   const [bottomBarTitle, setBottombartitle] = useState("");
   const interactionResponseScreen = {
     SUCCESS: "SUCCESS",
@@ -118,7 +126,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
-  const [del, setDel] = useState([])
+  const [del, setDel] = useState([]);
   const [userType, setUserType] = useState("");
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
@@ -146,7 +154,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setBottombartitle("");
   };
   const headerRightForNav = () => {
-
     return (
       <View style={navBar.navRightCon}>
         <Pressable
@@ -157,16 +164,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </Pressable>
       </View>
     );
-
-
-  }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: headerRightForNav
+      headerRight: headerRightForNav,
     });
   }, []);
-
 
   /**
    * Reset All params
@@ -180,9 +184,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
   };
 
   const masterDispatch = useDispatch([getMasterData]);
-  const profileDispatch = useDispatch([fetchSavedProfileData,
-    seachCustomers, setUserSearch,
-    fetchSavedProfileDataByUser, setProfileReset]);
+  const profileDispatch = useDispatch([
+    fetchSavedProfileData,
+    seachCustomers,
+    setUserSearch,
+    fetchSavedProfileDataByUser,
+    setProfileReset,
+  ]);
 
   const dispatchInteraction = useDispatch([
     setInteractionReset,
@@ -222,9 +230,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
       //set service
       //to get data from api
       setService({
-        "code": "SC_INSURANCE",
-        "description": "Insurance"
-      })
+        code: "SC_INSURANCE",
+        description: "Insurance",
+      });
       // await dispatchInteraction(fetchInteractionAction(true));
       await profileDispatch(fetchSavedProfileData(navigation));
       setLoader(false);
@@ -234,16 +242,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
           `${INTXN_TYPE},${SERVICE_TYPE},${PROBLEM_CODE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
         )
       );
-      const userType = await getUserType()
-      console.log('>>rrr', userType)
+      const userType = await getUserType();
+      console.log(">>rrr", userType);
       setUserType(userType);
       // if (userType == USERTYPE.CUSTOMER) {
-
     }
 
     fetchMyAPI();
   }, []);
-
 
   const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
@@ -275,18 +281,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
   };
 
   const onChangeKnowledgeSearchText = async (text) => {
-
     setKnowledgeSearchText(text);
     if (activeService == "") {
       Toast.show({
         type: "bctError",
         text1: "Please select service",
       });
-      return null
+      return null;
     }
     if (text.length > 0) {
       // setresultLoader(true)
-      await knowledgeSearchDispatch(getKnowledgeSearchData(text, activeService?.code));
+      await knowledgeSearchDispatch(
+        getKnowledgeSearchData(text, activeService?.code)
+      );
       //enable list show
       setautoSuggestionList(true);
       // setresultLoader(false)
@@ -395,7 +402,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
-                  console.log('>>', serviveType, "master data", serviceTypelist, "api response", item.serviceType)
+                  console.log(
+                    ">>",
+                    serviveType,
+                    "master data",
+                    serviceTypelist,
+                    "api response",
+                    item.serviceType
+                  );
                   const serviveCatType = get(
                     serviceCategoryList?.filter(
                       (it) => it.code == item.serviceCategory
@@ -567,14 +581,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, []);
 
   const renderProfileTab = useMemo(() => {
-    const serviceList =
-      [{
-        "code": "SC_BANK",
-        "description": "Banking"
-      }, {
-        "code": "SC_INSURANCE",
-        "description": "Insurance"
-      }]
+    const serviceList = [
+      {
+        code: "SC_BANK",
+        description: "Banking",
+      },
+      {
+        code: "SC_INSURANCE",
+        description: "Insurance",
+      },
+    ];
 
     return (
       <ImageBackground
@@ -727,9 +743,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
             if (serviceList.length > 0) {
               setProfileSeriveModal(!modelProfileServiceModel);
             }
-
           }}
-          style={{ zIndex: 9, flexDirection: "row", width: '50%', alignItems: "center", marginTop: 5 }}
+          style={{
+            zIndex: 9,
+            flexDirection: "row",
+            width: "50%",
+            alignItems: "center",
+            marginTop: 5,
+          }}
         >
           <Image
             source={require("../../Assets/icons/interaction_service.png")}
@@ -743,20 +764,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginRight: 5,
             }}
           >
-            Services :  {activeService?.description}
+            Services : {activeService?.description}
           </Text>
-          {serviceList.length > 0 &&
+          {serviceList.length > 0 && (
             <Icon
               name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
               size={20}
               color={colors.textColor}
             />
-          }
+          )}
         </Pressable>
 
         {modelProfileServiceModel && (
           <View style={styles.modelContainerProfile}>
-            {serviceList.map(ite => {
+            {serviceList.map((ite) => {
               return (
                 <List.Item
                   key={ite.code}
@@ -767,16 +788,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     margin: 0,
                   }}
                   onPress={() => {
-                    setService(ite)
-                    setProfileSeriveModal(false)
+                    setService(ite);
+                    setProfileSeriveModal(false);
                   }}
                   style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
                 />
-              )
-            })
-
-            }
-
+              );
+            })}
           </View>
         )}
       </ImageBackground>
@@ -788,7 +806,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     modelProfileServiceModel,
     userType,
     setService,
-    activeService
+    activeService,
   ]);
 
   const {
@@ -916,7 +934,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       },
                       {
                         text: strings.close,
-                        onPress: () => { },
+                        onPress: () => {},
                         style: "cancel",
                       },
                     ]
@@ -950,7 +968,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Text variant="labelMedium" style={{ textAlign: "center" }}>
           Couldn't Find a resolution?
-          <Text onPress={() => { }} style={{ color: "red" }}>
+          <Text onPress={() => {}} style={{ color: "red" }}>
             {" "}
             Create Interaction
           </Text>{" "}
@@ -967,22 +985,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
   });
 
-  const isModelOpen = openBottomModal || openBottomModalChatBoard || userSeachEnable;
+  const isModelOpen =
+    openBottomModal || openBottomModalChatBoard || userSeachEnable;
 
   if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
-    return (<View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-      <InteractionSuccess intxId={intereactionAddResponse?.intxnNo}
-        cancelButtonRequired={true}
-        okHandler={async () => {
-          await resetStateData("setInteractionResponse")
-          navigation.navigate(STACK_INTERACTION_DETAILS, {
-            interactionID: intereactionAddResponse?.intxnNo
-          })
-        }}
-        cancelHandler={() => {
-
-        }}
-      /></View>)
+    return (
+      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
+        <InteractionSuccess
+          intxId={intereactionAddResponse?.intxnNo}
+          cancelButtonRequired={true}
+          okHandler={async () => {
+            await resetStateData("setInteractionResponse");
+            navigation.navigate(STACK_INTERACTION_DETAILS, {
+              interactionID: intereactionAddResponse?.intxnNo,
+            });
+          }}
+          cancelHandler={() => {}}
+        />
+      </View>
+    );
   }
   if (enableSuccessScreen == interactionResponseScreen.FAILED) {
     return (
@@ -997,18 +1018,27 @@ const InteractionsToOrder = ({ route, navigation }) => {
     );
   }
   /**
-  * Reset All params
-  *
-  *  @param {obj} navigation The obj to raise..
-  *  @param {func} setUserSeachEnable for handle main screen blue effect
-  * @param {boolean} loader reference for loader
-  */
-  const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = false, setLoader = () => { }, headerRightForNav = null, headerTitleForNav = "" }) => {
-    const profileDispatch = useDispatch([seachCustomers, setUserSearch, setSearchProfileReset, fetchSavedProfileDataByUser]);
-    const profileReducer = useSelector(
-      (state) => state.profile
-    );
-
+   * Reset All params
+   *
+   *  @param {obj} navigation The obj to raise..
+   *  @param {func} setUserSeachEnable for handle main screen blue effect
+   * @param {boolean} loader reference for loader
+   */
+  const EnableSearchForUser = ({
+    navigation,
+    setUserSeachEnable,
+    loader = false,
+    setLoader = () => {},
+    headerRightForNav = null,
+    headerTitleForNav = "",
+  }) => {
+    const profileDispatch = useDispatch([
+      seachCustomers,
+      setUserSearch,
+      setSearchProfileReset,
+      fetchSavedProfileDataByUser,
+    ]);
+    const profileReducer = useSelector((state) => state.profile);
 
     return navigation.setOptions({
       headerRight: () => {
@@ -1016,54 +1046,73 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <View>
             <Pressable
               onPress={() => {
-                enableSearchBar(navigation, setUserSeachEnable,
+                enableSearchBar(
+                  navigation,
+                  setUserSeachEnable,
                   profileReducer,
-                  profileDispatch, loader, setLoader,
-                  headerRightForNav, headerTitleForNav)
+                  profileDispatch,
+                  loader,
+                  setLoader,
+                  headerRightForNav,
+                  headerTitleForNav
+                );
               }}
             >
-              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
+              <Image
+                source={require("../../Assets/icons/search_user.png")}
+                style={{ width: 60, height: 60 }}
+              />
             </Pressable>
           </View>
         );
       },
     });
-    return null
-  }
+    return null;
+  };
 
   /**
-  * Change Header middle section
-  * @param {obj} navigation The null to raise.
-  */
+   * Change Header middle section
+   * @param {obj} navigation The null to raise.
+   */
 
-  const renderResult = (navigation, setUserSeachEnable,
-    profile, dispatch1, loader, setLoader,
-    headerRightForNav, headerTitleForNav) => {
+  const renderResult = (
+    navigation,
+    setUserSeachEnable,
+    profile,
+    dispatch1,
+    loader,
+    setLoader,
+    headerRightForNav,
+    headerTitleForNav
+  ) => {
+    const profileSearchResult = get(profile, "profileSearchData", []);
+    console.log("task renderResult ", profileSearchResult);
+    return (
+      <UserSearchList
+        headerTitleForNav={headerTitleForNav}
+        profileSearchResult={profileSearchResult}
+        dispatch1={dispatch1}
+        navigation={navigation}
+        setLoader={setLoader}
+        headerRightForNav={headerRightForNav}
+        setUserSeachEnable={setUserSeachEnable}
+      />
+    );
+  };
 
-    const profileSearchResult = get(profile, 'profileSearchData', [])
-    console.log('task renderResult ', profileSearchResult)
-    return (<UserSearchList
-      headerTitleForNav={headerTitleForNav}
-      profileSearchResult={profileSearchResult}
-      dispatch1={dispatch1}
-      navigation={navigation}
-      setLoader={setLoader}
-      headerRightForNav={headerRightForNav}
-      setUserSeachEnable={setUserSeachEnable}
-    />)
-  }
-
-  const enableSearchBar = async (navigation, setUserSeachEnable,
-    profile, dispatch1, loader, setLoader,
-    headerRightForNav, headerTitleForNav) => {
-
-
-
+  const enableSearchBar = async (
+    navigation,
+    setUserSeachEnable,
+    profile,
+    dispatch1,
+    loader,
+    setLoader,
+    headerRightForNav,
+    headerTitleForNav
+  ) => {
     // const [search, setSearch] = useState("")
 
-
-    console.log('task - profile view', profile)
-
+    console.log("task - profile view", profile);
 
     // const renderResult = useMemo(() => {
     //     const profileSearchResult = get(profile, 'profileSearchData', [])
@@ -1078,29 +1127,32 @@ const InteractionsToOrder = ({ route, navigation }) => {
     //         setUserSeachEnable={setUserSeachEnable}
     //     />)
     // }, [headerTitleForNav, profileSearchResult, navigation, setLoader, headerRightForNav, setUserSeachEnable])
-
-
-
-
-  }
+  };
 
   const UserSearchList = ({
-    setLoader, headerTitleForNav, setUserSeachEnable,
-    profileSearchResult, dispatch1, navigation,
-    headerRightForNav }) => {
-
-    console.log('>>task UserSearchList', profileSearchResult)
+    setLoader,
+    headerTitleForNav,
+    setUserSeachEnable,
+    profileSearchResult,
+    dispatch1,
+    navigation,
+    headerRightForNav,
+  }) => {
+    console.log(">>task UserSearchList", profileSearchResult);
     return (
-      <View style={{
-        top: 60,
-        position: "absolute",
-        width: width * 0.9
-      }}>
-        {profileSearchResult.length == 0 ?
-          <Text></Text> :
+      <View
+        style={{
+          top: 60,
+          position: "absolute",
+          width: width * 0.9,
+        }}
+      >
+        {profileSearchResult.length == 0 ? (
+          <Text></Text>
+        ) : (
           <FlatList
             contentContainerStyle={{
-              height: 500
+              height: 500,
             }}
             data={profileSearchResult}
             renderItem={({ item }) => {
@@ -1123,31 +1175,31 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     // borderRadius: 3,
                   }}
                   onPress={async () => {
-                    console.log('>>nav', navigation)
+                    console.log(">>nav", navigation);
                     // setLoader(true)
-                    const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
+                    const status = await dispatch1(
+                      fetchSavedProfileDataByUser(
+                        "ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"
+                      )
+                    );
                     // if (status) {
                     navigation.setOptions({
                       headerRight: headerRightForNav,
-                      headerTitle: "sdfsdf"
-                    })
+                      headerTitle: "sdfsdf",
+                    });
 
                     // }
                     // setLoader(false)
                     // setUserSeachEnable(false)
                   }}
                 />
-              )
-
+              );
             }}
           />
-        }
+        )}
       </View>
-    )
-  }
-
-
-
+    );
+  };
 
   // const headerSet = () => {
   //   if (1) {
@@ -1179,75 +1231,92 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 //   profileDispatch, loader, setLoader,
                 //   headerRightForNav, headerTitleForNav)
                 navigation.setOptions({
-
                   headerTitle: () => {
-                    let searchString = ""
+                    let searchString = "";
                     return (
-                      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
                         <Searchbar
                           style={{ width: width * 0.7 }}
-                          placeholder={"Search customer" + get(route, 'params.testValue', "")}
+                          placeholder={
+                            "Search customer" +
+                            get(route, "params.testValue", "")
+                          }
                           onChangeText={async (text) => {
-                            searchString = text
-                            setLoader(true)
+                            searchString = text;
+                            setLoader(true);
 
-                            const d = await profileDispatch(seachCustomers())
+                            const d = await profileDispatch(seachCustomers());
 
                             // setDel(d)
-                            setLoader(false)
+                            setLoader(false);
                           }}
-
-
                         />
                         <Icon
                           onPress={() => {
-
-                            profileDispatch(setSearchProfileReset())
+                            profileDispatch(setSearchProfileReset());
                             navigation.setOptions({
                               headerRight: headerRightForNav,
-                              headerTitle: "sdfsdf"
-                            })
-                          }} name='close-circle' size={25} color={"#000"} />
+                              headerTitle: "sdfsdf",
+                            });
+                          }}
+                          name="close-circle"
+                          size={25}
+                          color={"#000"}
+                        />
                       </View>
-                    )
-                  }
-                })
+                    );
+                  },
+                });
               }}
             >
-              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
+              <Image
+                source={require("../../Assets/icons/search_user.png")}
+                style={{ width: 60, height: 60 }}
+              />
             </Pressable>
           </View>
         );
       },
     });
-
-  }
+  };
 
   return (
     <>
-
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
-            navigation, setLoader,
-            profileDispatch, headerRightForNav,
-            headerTitle: "headerTitle"
-          })
-        }, [headerRightForNav, setLoader, navigation, profileDispatch])
-      }
+            navigation,
+            setLoader,
+            profileDispatch,
+            headerRightForNav,
+            headerTitle: "headerTitle",
+          });
+        }, [headerRightForNav, setLoader, navigation, profileDispatch])}
       {userType == USERTYPE.USER &&
         useMemo(() => {
-          return (<RenderUserSelectResult
-            profileSearchData={get(profileReducer, 'profileSearchData', [])}
-            setLoader={setLoader}
-            profileDispatch={profileDispatch}
-            headerRightForNav={headerRightForNav}
-            headerTitle={"Interaction"}
-            navigation={navigation}
-          />)
-        }, [profileReducer, setLoader, profileDispatch, navigation, headerRightForNav])
-
-      }
+          return (
+            <RenderUserSelectResult
+              profileSearchData={get(profileReducer, "profileSearchData", [])}
+              setLoader={setLoader}
+              profileDispatch={profileDispatch}
+              headerRightForNav={headerRightForNav}
+              headerTitle={"Interaction"}
+              navigation={navigation}
+            />
+          );
+        }, [
+          profileReducer,
+          setLoader,
+          profileDispatch,
+          navigation,
+          headerRightForNav,
+        ])}
 
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />
@@ -1258,13 +1327,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
       <View
         style={{
           ...styles.container,
-          backgroundColor: isModelOpen ? "gray" : "#d0d0d0",
+          backgroundColor: isModelOpen ? "gray" : "#F0F0F0",
           opacity: isModelOpen ? 0.3 : 1,
         }}
-
-
       >
-
         {/* profile card */}
         {renderProfileTab}
 
@@ -1558,22 +1624,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       contactPreference: [input.contactPerference.value?.code],
                       remarks: input.remarks.value,
                     };
-                    console.log('>>', params,)
+                    console.log(">>", params);
                     const { status, response } = await dispatchInteraction(
                       addInteractionAction(params, fileAttachments)
                     );
 
-
                     if (status) {
-                      console.log('interaction type response ', response)
-                      setInteractionResponse(response)
-                      dispatchInteraction(setInteractionReset())
-                      setEnableSuccessScreen(interactionResponseScreen.SUCCESS)
-
-                    }
-                    else {
-                      setEnableSuccessScreen(interactionResponseScreen.FAILED)
-
+                      console.log("interaction type response ", response);
+                      setInteractionResponse(response);
+                      dispatchInteraction(setInteractionReset());
+                      setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
+                    } else {
+                      setEnableSuccessScreen(interactionResponseScreen.FAILED);
                     }
                   }}
                 />
@@ -1590,7 +1652,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#d0d0d0",
+    backgroundColor: "#F0F0F0",
     marginTop: 60,
   },
   dot: {
@@ -1599,9 +1661,6 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 6,
     marginRight: 5,
-  },
-  fullspace: {
-    flex: 1,
   },
   fullspace: {
     flex: 1,
