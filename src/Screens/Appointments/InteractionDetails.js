@@ -490,7 +490,7 @@ const InteractionDetails = (props) => {
         open={showBottomModal}
         setOpen={setShowBottomModal}
         title={"Add Follow up"}
-        subtitle={"You have two follow up"}
+        subtitle={`You have ${InteractionFollowupData.length} follow up`}
       >
         <View style={{ paddingHorizontal: 10 }}>
           <CustomDropDownFullWidth
