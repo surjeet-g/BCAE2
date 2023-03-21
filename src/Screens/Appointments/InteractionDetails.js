@@ -31,12 +31,12 @@ import {
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  let userType = "";
   // const { interactionId = "116" } = route.params;
   let interactionId = 116;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
+  const [userType, setUserType] = useState("");
 
   const dispatch = useDispatch([
     getInteractionDetailsForID,
@@ -56,7 +56,8 @@ const InteractionDetails = (props) => {
     dispatch(getInteractionDetailsForID(interactionId, navigation));
     dispatch(getWorkFlowForInteractionID(interactionId, navigation));
     dispatch(getFollowupForInteractionID(interactionId, navigation));
-    userType = await getUserType();
+    let userType = await getUserType();
+    setUserType(userType);
   }, []);
 
   useLayoutEffect(() => {
@@ -452,7 +453,7 @@ const InteractionDetails = (props) => {
           </View>
         ) : (
           <View>
-            <PopUpMenuDivider />
+            {/* <PopUpMenuDivider /> */}
             {/* Assign to self */}
             <PopUpMenuItem title={"Assign to self"} />
             <PopUpMenuDivider />
