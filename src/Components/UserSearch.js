@@ -1,41 +1,54 @@
-import get from "lodash.get";
 import React from "react";
 import { Dimensions, FlatList, Image, Pressable, Text, View } from "react-native";
 import { List, Searchbar } from "react-native-paper";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch, useSelector } from "react-redux";
-import { setSearchProfileReset, setUserSearch } from "../Redux/ProfileAction";
+import { setProfileReset, setSearchProfileReset } from "../Redux/ProfileAction";
 import { fetchSavedProfileDataByUser, seachCustomers } from "../Redux/ProfileDispatcher";
 
 const { height, width } = Dimensions.get('screen');
 
-/**
-* Reset All params
-*
-*  @param {obj} navigation The obj to raise..
-*  @param {func} setUserSeachEnable for handle main screen blue effect
-* @param {boolean} loader reference for loader
-*/
-export const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = false, setLoader = () => { }, headerRightForNav = null, headerTitleForNav = "" }) => {
-    const profileDispatch = useDispatch([seachCustomers, setUserSearch, setSearchProfileReset, fetchSavedProfileDataByUser]);
-    const profileReducer = useSelector(
-        (state) => state.profile
-    );
-    enableSearchBar(navigation, setUserSeachEnable,
-        profileReducer,
-        profileDispatch, loader, setLoader,
-        headerRightForNav, headerTitleForNav)
+export const userNavigationIcon = (props) => {
 
-    return navigation.setOptions({
+    return props.navigation.setOptions({
         headerRight: () => {
             return (
                 <View>
                     <Pressable
                         onPress={() => {
-                            // enableSearchBar(navigation, setUserSeachEnable,
-                            //     profileReducer,
-                            //     profileDispatch, loader, setLoader,
-                            //     headerRightForNav, headerTitleForNav)
+
+                            props.navigation.setOptions({
+
+                                headerTitle: () => {
+                                    let searchString = ""
+                                    return (
+                                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                                            <Searchbar
+                                                style={{ width: width * 0.7 }}
+                                                placeholder={"Search customer"}
+                                                onChangeText={async (text) => {
+                                                    searchString = text
+                                                    props.setLoader(true)
+
+                                                    const d = await props.profileDispatch(seachCustomers())
+
+                                                    props.setLoader(false)
+                                                }}
+
+
+                                            />
+                                            <Icon
+                                                onPress={() => {
+
+                                                    props.profileDispatch(setSearchProfileReset())
+                                                    props.navigation.setOptions({
+                                                        headerRight: props.headerRightForNav,
+                                                        headerTitle: props.headerTitle
+                                                    })
+                                                }} name='close-circle' size={25} color={"#000"} />
+                                        </View>
+                                    )
+                                }
+                            })
                         }}
                     >
                         <Image source={require('../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
@@ -44,104 +57,34 @@ export const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = f
             );
         },
     });
-    return null
-}
 
+}
 /**
  * Change Header middle section
- * @param {obj} navigation The null to raise.
+ * @param {obj} profileSearchData data for search result
+ * @param {obj} setLoader loader for pre loader screen
+ * 
  */
-
-
-
-const enableSearchBar = async (navigation, setUserSeachEnable,
-    profile, dispatch1, loader, setLoader,
-    headerRightForNav, headerTitleForNav) => {
-
-    // const [search, setSearch] = useState("")
-
-
-    console.log('task - profile view', profile)
-
-    const renderResult = () => {
-        const profileSearchResult = get(profile, 'profileSearchData', [])
-        console.log('task - profil inside result ', profileSearchResult, profile)
-        return (<UserSearchList
-            headerTitleForNav={headerTitleForNav}
-            profileSearchResult={profileSearchResult}
-            dispatch1={dispatch1}
-            navigation={navigation}
-            setLoader={setLoader}
-            headerRightForNav={headerRightForNav}
-            setUserSeachEnable={setUserSeachEnable}
-        />)
-    }
-    // const renderResult = useMemo(() => {
-    //     const profileSearchResult = get(profile, 'profileSearchData', [])
-    //     console.log('task - profil inside result ', profileSearchResult, profile)
-    //     return (<UserSearchList
-    //         headerTitleForNav={headerTitleForNav}
-    //         profileSearchResult={profileSearchResult}
-    //         dispatch1={dispatch1}
-    //         navigation={navigation}
-    //         setLoader={setLoader}
-    //         headerRightForNav={headerRightForNav}
-    //         setUserSeachEnable={setUserSeachEnable}
-    //     />)
-    // }, [headerTitleForNav, profileSearchResult, navigation, setLoader, headerRightForNav, setUserSeachEnable])
-
-
-    navigation.setOptions({
-        headerTitle: () => {
-            return (
-                <>
-                    <Searchbar
-                        style={{ width: width * 0.7 }}
-                        placeholder="Search customer"
-                        onChangeText={async (text) => {
-                            console.log('task - profile text search', text)
-                            setLoader(true)
-                            await dispatch1(setUserSearch(text))
-                            await dispatch1(seachCustomers())
-                            setLoader(false)
-                        }}
-
-                        value={get(profile, 'userSearchString', "")}
-                    />
-                    {renderResult()}
-
-                </>
-            )
-        }
-    })
-    navigation.setOptions({
-        headerRight: () => {
-            return (
-                <Icon
-                    onPress={() => {
-                        dispatch1(setSearchProfileReset())
-                    }} name='close-circle' size={25} color={"#000"} />
-            )
-        }
-    })
-}
-
-const UserSearchList = ({ setLoader, headerTitleForNav, setUserSeachEnable,
-    profileSearchResult, dispatch1, navigation, headerRightForNav }) => {
+export const RenderUserSelectResult = (props) => {
     return (
         <View style={{
             top: 60,
+            right: 10,
             position: "absolute",
-            width: width * 0.9
+            width: width * 0.9,
+            zIndex: 99999999,
+            elevation: 999,
         }}>
-            {profileSearchResult.length == 0 ?
+
+            {props.profileSearchData.length == 0 ?
                 <Text></Text> :
                 <FlatList
                     contentContainerStyle={{
                         height: 500
                     }}
-                    data={profileSearchResult}
+                    data={props.profileSearchData}
                     renderItem={({ item }) => {
+
                         return (
                             <List.Item
                                 title={`${item.firstName} ${item.lastName}`}
@@ -161,17 +104,17 @@ const UserSearchList = ({ setLoader, headerTitleForNav, setUserSeachEnable,
                                     // borderRadius: 3,
                                 }}
                                 onPress={async () => {
-                                    console.log('>>nav', navigation)
-                                    setLoader(true)
-                                    const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
-                                    // if (status) {
-                                    navigation.setOptions({
-                                        headerRight: headerRightForNav,
-                                        headerTitle: "sdfsdf"
-                                    })
 
-                                    // }
-                                    setLoader(false)
+                                    props.setLoader(true)
+                                    const status = await props.profileDispatch(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
+                                    if (status) {
+                                        props.navigation.setOptions({
+                                            headerRight: props.headerRightForNav,
+                                            headerTitle: props.headerTitle,
+                                        })
+                                        props.profileDispatch(setProfileReset())
+                                    }
+                                    props.setLoader(false)
                                     // setUserSeachEnable(false)
                                 }}
                             />
