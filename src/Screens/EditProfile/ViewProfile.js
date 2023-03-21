@@ -138,8 +138,8 @@ export const ViewProfile = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <ScrollView nestedScrollEnabled={true}>
         <Image
           source={{
             uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
@@ -389,7 +389,11 @@ export const ViewProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flexGrow: 1,
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 10,
   },
   listItem: {
     flexDirection: "row",
