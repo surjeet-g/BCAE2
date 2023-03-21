@@ -3,8 +3,7 @@ import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   FlatList,
-  Image,
-  Pressable,
+  Image, KeyboardAvoidingView, Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,7 +23,7 @@ import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWi
 import { CustomInput } from "./../../Components/CustomInput";
 import { FooterModel } from "./../../Components/FooterModel";
 import {
-  getFollowupForInteractionID,
+  createFollowupForInteraction, getFollowupForInteractionID,
   getInteractionDetailsForID,
   getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
@@ -35,8 +34,8 @@ import {
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // const { interactionId = "116" } = route.params;
-  let interactionId = 116;
+  // const { interactionID = "116" } = route.params;
+  let interactionID = 197;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -44,19 +43,18 @@ const InteractionDetails = (props) => {
   const [userType, setUserType] = useState("");
   const [formPriority, setFormPriority] = useState({});
   const [formSource, setSource] = useState({});
+  const [formRemarks, setFormRemarks] = useState("");
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
     getMasterData,
+    createFollowupForInteraction,
   ]);
 
-  const { masterReducer, interactionReducer } = useSelector((state) => {
-    return {
-      masterReducer: state.masterdata,
-      interactionReducer: state.interaction,
-    };
-  });
+  let masterReducer = useSelector((state) => state.masterdata);
+  let interactionReducer = useSelector((state) => state.interaction);
+
   const {
     InteractionDetailsData,
     InteractionWorkFlowData,
@@ -66,9 +64,9 @@ const InteractionDetails = (props) => {
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
-    dispatch(getInteractionDetailsForID(interactionId, navigation));
-    dispatch(getWorkFlowForInteractionID(interactionId, navigation));
-    dispatch(getFollowupForInteractionID(interactionId, navigation));
+    dispatch(getInteractionDetailsForID(interactionID, navigation));
+    dispatch(getWorkFlowForInteractionID(interactionID, navigation));
+    dispatch(getFollowupForInteractionID(interactionID, navigation));
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
     let userType = await getUserType();
@@ -490,55 +488,68 @@ const InteractionDetails = (props) => {
         open={showBottomModal}
         setOpen={setShowBottomModal}
         title={"Add Follow up"}
-        subtitle={"You have two follow up"}
+        subtitle={`You have ${InteractionFollowupData.length} follow up`}
       >
-        <View style={{ paddingHorizontal: 10 }}>
-          <CustomDropDownFullWidth
-            selectedValue={get(formPriority, "description", "")}
-            data={priorityList}
-            onChangeText={(text) => {
-              setFormPriority(text);
-            }}
-            value={get(formPriority, "code", "")}
-            caption={strings.priority}
-            placeHolder={"Select " + strings.priority}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={get(formSource, "description", "")}
-            data={sourceList}
-            onChangeText={(text) => {
-              setSource(text);
-            }}
-            value={get(formSource, "code", "")}
-            caption={strings.source}
-            placeHolder={"Select " + strings.user}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.remarks}
-            placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
-          />
-          {/* Bottom Button View */}
-          <View
-            style={{
-              flexDirection: "row",
-              bottom: 0,
-              marginTop: 20,
-              backgroundColor: "white",
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <CustomButton
-                label={strings.cancel}
-                onPress={() => setShowBottomModal(false)}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => { }} />
+        <KeyboardAvoidingView>
+          <View style={{ paddingHorizontal: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={get(formPriority, "description", "")}
+              data={priorityList}
+              onChangeText={(text) => {
+                setFormPriority(text);
+              }}
+              value={get(formPriority, "code", "")}
+              caption={strings.priority}
+              placeHolder={"Select " + strings.priority}
+            />
+            <CustomDropDownFullWidth
+              selectedValue={get(formSource, "description", "")}
+              data={sourceList}
+              onChangeText={(text) => {
+                setSource(text);
+              }}
+              value={get(formSource, "code", "")}
+              caption={strings.source}
+              placeHolder={"Select " + strings.user}
+            />
+            <CustomInput
+              value={formRemarks}
+              caption={strings.remarks}
+              placeHolder={strings.remarks}
+              onChangeText={(text) => setFormRemarks(text)}
+            />
+            {/* Bottom Button View */}
+            <View
+              style={{
+                flexDirection: "row",
+                bottom: 0,
+                marginTop: 20,
+                backgroundColor: "white",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.cancel}
+                  onPress={() => setShowBottomModal(false)}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomButton
+                  label={strings.submit}
+                  onPress={() => {
+                    dispatch(
+                      createFollowupForInteraction(
+                        interactionID,
+                        { formPriority, formSource, formRemarks },
+                        navigation
+                      )
+                    );
+                  }}
+                />
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </FooterModel>
     );
   };
