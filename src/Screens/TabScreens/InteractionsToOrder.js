@@ -769,26 +769,42 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </Pressable>
 
         {modelProfileServiceModel && (
-          <View style={styles.modelContainerProfile}>
-            {serviceList.map((ite) => {
-              return (
-                <List.Item
-                  key={ite.code}
-                  title={ite.description}
-                  titleStyle={{
-                    fontSize: 10,
-                    padding: 0,
-                    margin: 0,
-                  }}
-                  onPress={() => {
-                    setService(ite);
-                    setProfileSeriveModal(false);
-                  }}
-                  style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
-                />
-              );
-            })}
-          </View>
+          <>
+            <Pressable
+              onPress={() => {
+                setProfileSeriveModal(false)
+              }}
+              style={{
+                backgroundColor: "transparent",
+                position: "absolute",
+                width: width,
+                height: height,
+
+              }}>
+
+            </Pressable>
+            <View style={styles.modelContainerProfile}>
+              {serviceList.map((ite) => {
+                return (
+                  <List.Item
+                    key={ite.code}
+                    title={ite.description}
+                    titleStyle={{
+                      fontSize: 10,
+                      padding: 0,
+                      margin: 0,
+                    }}
+
+                    onPress={() => {
+                      setService(ite);
+                      setProfileSeriveModal(false);
+                    }}
+                    style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
+                  />
+                );
+              })}
+            </View>
+          </>
         )}
       </ImageBackground>
     );
