@@ -1,8 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import {
-  Alert, Image, Pressable,
-  ScrollView, StyleSheet, Switch, View
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  View,
+  TouchableOpacity,
+  FlatList,
 } from "react-native";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
+import { mockAnnouncementList } from "../../Utilities/Constants/Constant";
+import { ICON_STYLE } from "../../Utilities/Style/navBar";
+import AnnouIcon from "../../Assets/svg/anno.svg";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,17 +35,35 @@ import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
-import { DEFAULT_PROFILE_IMAGE, spacing, storageKeys } from "../../Utilities/Constants/Constant";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  spacing,
+  storageKeys,
+} from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import {
   getCustomerUUID,
-  getUserId
+  getUserId,
 } from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
+  // ref
+  const bottomSheetModalRef = useRef(BottomSheetModal);
+  // variables
+  const snapPoints = useMemo(() => ["60%"], []);
+  // callbacks
+  const openAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const closeAnnoncementModal = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
 
+  const handleSheetChanges = useCallback((index) => {
+    console.log("$$$-handleSheetChanges", index);
+  }, []);
   const [userInfo, setUserInfo] = useState({
     email: "",
     profilePicture: null,
@@ -96,6 +135,11 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
+  const onFaqPressed = () => {};
+  const onAnnouncementPressed = () => {
+    openAnnoncementModal();
+  };
+
   const performLogoutDeleUser = () => {
     //while logout we have to reset the data of first two tab as still it has logout info
     // dispatch(deleteNdLogoutUser(props.navigation, profile?.savedProfileData));
@@ -106,8 +150,9 @@ export const ViewProfile = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Image
           source={{
-            uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-              }`,
+            uri: `data:image/jpeg;base64,${
+              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+            }`,
           }}
           // imageStyle={{ borderRadius: 80 }}
           style={{ height: 110, width: 110 }}
@@ -174,7 +219,13 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Pressable
             onPress={() => {
               alert("To do");
@@ -230,6 +281,46 @@ export const ViewProfile = ({ navigation }) => {
             Delete Account
           </Text>
         </Pressable>
+        <Divider />
+        <Pressable onPress={onFaqPressed} style={styles.listItem}>
+          <Icon
+            name="bank-check"
+            size={ICON}
+            color={colors.onSurfaceDisabled}
+            style={{ marginRight: 14 }}
+          />
+
+          <Text
+            variant="bodyMedium"
+            style={{
+              fontWeight: "600",
+
+              color: colors.secondary,
+            }}
+          >
+            FAQ
+          </Text>
+        </Pressable>
+        <Divider />
+        <Pressable onPress={onAnnouncementPressed} style={styles.listItem}>
+          <Icon
+            name="arrow-expand-all"
+            size={ICON}
+            color={colors.onSurfaceDisabled}
+            style={{ marginRight: 14 }}
+          />
+
+          <Text
+            variant="bodyMedium"
+            style={{
+              fontWeight: "600",
+
+              color: colors.secondary,
+            }}
+          >
+            Announcement
+          </Text>
+        </Pressable>
         <ClearSpace size={2} />
         <CustomButton
           label="Logout"
@@ -251,6 +342,56 @@ export const ViewProfile = ({ navigation }) => {
 
         <ClearSpace size={8} />
       </ScrollView>
+      <BottomSheetModalProvider>
+        <View>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View style={styles.contentContainer}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginVertical: 10,
+                }}
+              >
+                <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#22374E",
+                    fontSize: 20,
+                    flex: 1,
+                    marginHorizontal: 15,
+                  }}
+                >
+                  Annoucements
+                </Text>
+                <TouchableOpacity onPress={closeAnnoncementModal}>
+                  <Image
+                    style={{ ...ICON_STYLE }}
+                    source={require("../../Assets/icons/close_black.png")}
+                  />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={mockAnnouncementList}
+                renderItem={({ item }) => (
+                  <AnnouncementItem
+                    title={item.title}
+                    desc={item.desc}
+                    date={item.date}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </View>
   );
 };

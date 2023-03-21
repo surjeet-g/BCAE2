@@ -502,7 +502,7 @@ function MyStack() {
                 </Text>
                 <TouchableOpacity onPress={closeAnnoncementModal}>
                   <Image
-                    style={{ ...ICON_STYLE, tintColor: "#36393D" }}
+                    style={{ ...ICON_STYLE }}
                     source={require("../Assets/icons/close_black.png")}
                   />
                 </TouchableOpacity>
