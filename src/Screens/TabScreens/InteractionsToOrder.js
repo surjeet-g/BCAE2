@@ -15,9 +15,8 @@ import {
   TextInput,
   View
 } from "react-native";
-import { Chip, List, Text } from "react-native-paper";
-
-import { useTheme } from "react-native-paper";
+import { Chip, List, Searchbar, Text, useTheme } from "react-native-paper";
+import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
@@ -54,14 +53,15 @@ import { ImagePicker } from "../../Components/ImagePicker";
 import { InteractionFailed } from "../../Components/InteractionFailed";
 import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
+
 import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
-import { setUserSearch } from "../../Redux/ProfileAction";
-import { fetchSavedProfileData, seachCustomers } from "../../Redux/ProfileDispatcher";
+import { setSearchProfileReset, setUserSearch } from "../../Redux/ProfileAction";
+import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
@@ -80,6 +80,7 @@ export const typeOfAccrodin = {
 };
 
 const InteractionsToOrder = ({ route, navigation }) => {
+  const [activeService, setService] = useState("")
   const [activeChatBotSec, setactiveChatBot] = useState("");
   //need enable screen loader
   const [loader, setLoader] = useState(true);
@@ -103,7 +104,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
   const [userSeachEnable, setUserSeachEnable] = useState(false)
   const [bottomBarTitle, setBottombartitle] = useState("");
-
   const interactionResponseScreen = {
     SUCCESS: "SUCCESS",
     FAILED: "FAILED",
@@ -130,7 +130,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
     if (exclude != "setInteractionResponse") {
       setInteractionResponse({});
     }
-    setUserType("");
+    // setUserType("");
+    // setService("")
     setSolutionFound(false);
     setRequestStatementHistory([]);
     setProfileSeriveModal(false);
@@ -213,7 +214,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
         SERVICE_CATEGORY,
         INTXN_CATEGORY,
       } = MASTER_DATA_CONSTANT;
-
+      //set service
+      //to get data from api
+      setService({
+        "code": "SC_INSURANCE",
+        "description": "Insurance"
+      })
       // await dispatchInteraction(fetchInteractionAction(true));
       await profileDispatch(fetchSavedProfileData(navigation));
       setLoader(false);
@@ -262,12 +268,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setautoSuggestionList(false);
     //search box end
   };
-  const onChangeKnowledgeSearchText = async (text) => {
-    setKnowledgeSearchText(text);
 
+  const onChangeKnowledgeSearchText = async (text) => {
+
+    setKnowledgeSearchText(text);
+    if (activeService == "") {
+      Toast.show({
+        type: "bctError",
+        text1: "Please select service",
+      });
+      return null
+    }
     if (text.length > 0) {
       // setresultLoader(true)
-      await knowledgeSearchDispatch(getKnowledgeSearchData(text));
+      await knowledgeSearchDispatch(getKnowledgeSearchData(text, activeService?.code));
       //enable list show
       setautoSuggestionList(true);
       // setresultLoader(false)
@@ -337,23 +351,23 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setKnowledgeSearchText("");
                   setautoSuggestionList(false);
                   //todo
-                  return null;
-                  //pre populating result
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "statement",
-                      value: item.requestStatement,
-                      clearError: true,
-                    })
-                  );
 
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "statementId",
-                      value: item.requestId,
-                      clearError: true,
-                    })
-                  );
+                  //pre populating result
+                  // dispatchInteraction(
+                  //   setInteractionFormField({
+                  //     field: "statement",
+                  //     value: item.requestStatement,
+                  //     clearError: true,
+                  //   })
+                  // );
+
+                  // dispatchInteraction(
+                  //   setInteractionFormField({
+                  //     field: "statementId",
+                  //     value: item.requestId,
+                  //     clearError: true,
+                  //   })
+                  // );
 
                   const interCat = get(
                     interactionCategoryList?.filter(
@@ -362,11 +376,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   const interType = get(
                     interactionList?.filter((it) => it.code == item.intxnType),
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   const serviveType = get(
                     serviceTypelist?.filter(
                       (it) => it.code == item.serviceType
@@ -374,6 +390,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+                  console.log('>>', serviveType, "master data", serviceTypelist, "api response", item.serviceType)
                   const serviveCatType = get(
                     serviceCategoryList?.filter(
                       (it) => it.code == item.serviceCategory
@@ -381,6 +398,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     "[0]",
                     { code: "", description: "" }
                   );
+
                   //to do from api response
                   const contactPerFromProfile = get(
                     profileReducer,
@@ -544,6 +562,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, []);
 
   const renderProfileTab = useMemo(() => {
+    const serviceList =
+      [{
+        "code": "SC_BANK",
+        "description": "Banking"
+      }, {
+        "code": "SC_INSURANCE",
+        "description": "Insurance"
+      }]
+
     return (
       <ImageBackground
         source={require("../../Assets/icons/login_card_background.png")}
@@ -692,9 +719,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Pressable
           onPress={() => {
-            setProfileSeriveModal(!modelProfileServiceModel);
+            if (serviceList.length > 0) {
+              setProfileSeriveModal(!modelProfileServiceModel);
+            }
+
           }}
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          style={{ zIndex: 9, flexDirection: "row", width: '50%', alignItems: "center", marginTop: 5 }}
         >
           <Image
             source={require("../../Assets/icons/interaction_service.png")}
@@ -708,35 +738,40 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginRight: 5,
             }}
           >
-            Services
+            Services :  {activeService?.description}
           </Text>
-          <Icon
-            name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
-            size={20}
-            color={colors.textColor}
-          />
+          {serviceList.length > 0 &&
+            <Icon
+              name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
+              size={20}
+              color={colors.textColor}
+            />
+          }
         </Pressable>
 
         {modelProfileServiceModel && (
           <View style={styles.modelContainerProfile}>
-            <List.Item
-              title={"onesdf"}
-              titleStyle={{
-                fontSize: 10,
-                padding: 0,
-                margin: 0,
-              }}
-              style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
-            />
-            <List.Item
-              title={"onesdf"}
-              titleStyle={{
-                fontSize: 10,
-                padding: 0,
-                margin: 0,
-              }}
-              style={{ borderWidthColor: "gray", borderBottomWidth: 0.15 }}
-            />
+            {serviceList.map(ite => {
+              return (
+                <List.Item
+                  key={ite.code}
+                  title={ite.description}
+                  titleStyle={{
+                    fontSize: 10,
+                    padding: 0,
+                    margin: 0,
+                  }}
+                  onPress={() => {
+                    setService(ite)
+                    setProfileSeriveModal(false)
+                  }}
+                  style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
+                />
+              )
+            })
+
+            }
+
           </View>
         )}
       </ImageBackground>
@@ -747,6 +782,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
     profileReducer,
     modelProfileServiceModel,
     userType,
+    setService,
+    activeService
   ]);
 
   const {
@@ -954,6 +991,208 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
+  /**
+  * Reset All params
+  *
+  *  @param {obj} navigation The obj to raise..
+  *  @param {func} setUserSeachEnable for handle main screen blue effect
+  * @param {boolean} loader reference for loader
+  */
+  const EnableSearchForUser = ({ navigation, setUserSeachEnable, loader = false, setLoader = () => { }, headerRightForNav = null, headerTitleForNav = "" }) => {
+    const profileDispatch = useDispatch([seachCustomers, setUserSearch, setSearchProfileReset, fetchSavedProfileDataByUser]);
+    const profileReducer = useSelector(
+      (state) => state.profile
+    );
+
+
+    return navigation.setOptions({
+      headerRight: () => {
+        return (
+          <View>
+            <Pressable
+              onPress={() => {
+                enableSearchBar(navigation, setUserSeachEnable,
+                  profileReducer,
+                  profileDispatch, loader, setLoader,
+                  headerRightForNav, headerTitleForNav)
+              }}
+            >
+              <Image source={require('../../Assets/icons/search_user.png')} style={{ width: 60, height: 60 }} />
+            </Pressable>
+          </View>
+        );
+      },
+    });
+    return null
+  }
+
+  /**
+  * Change Header middle section
+  * @param {obj} navigation The null to raise.
+  */
+
+  const renderResult = (navigation, setUserSeachEnable,
+    profile, dispatch1, loader, setLoader,
+    headerRightForNav, headerTitleForNav) => {
+
+    const profileSearchResult = get(profile, 'profileSearchData', [])
+    console.log('task renderResult ', profileSearchResult)
+    return (<UserSearchList
+      headerTitleForNav={headerTitleForNav}
+      profileSearchResult={profileSearchResult}
+      dispatch1={dispatch1}
+      navigation={navigation}
+      setLoader={setLoader}
+      headerRightForNav={headerRightForNav}
+      setUserSeachEnable={setUserSeachEnable}
+    />)
+  }
+
+  const enableSearchBar = async (navigation, setUserSeachEnable,
+    profile, dispatch1, loader, setLoader,
+    headerRightForNav, headerTitleForNav) => {
+
+
+
+    // const [search, setSearch] = useState("")
+
+
+    console.log('task - profile view', profile)
+
+
+    // const renderResult = useMemo(() => {
+    //     const profileSearchResult = get(profile, 'profileSearchData', [])
+    //     console.log('task - profil inside result ', profileSearchResult, profile)
+    //     return (<UserSearchList
+    //         headerTitleForNav={headerTitleForNav}
+    //         profileSearchResult={profileSearchResult}
+    //         dispatch1={dispatch1}
+    //         navigation={navigation}
+    //         setLoader={setLoader}
+    //         headerRightForNav={headerRightForNav}
+    //         setUserSeachEnable={setUserSeachEnable}
+    //     />)
+    // }, [headerTitleForNav, profileSearchResult, navigation, setLoader, headerRightForNav, setUserSeachEnable])
+
+
+
+
+  }
+
+  const UserSearchList = ({
+    setLoader, headerTitleForNav, setUserSeachEnable,
+    profileSearchResult, dispatch1, navigation,
+    headerRightForNav }) => {
+
+    console.log('>>task UserSearchList', profileSearchResult)
+    return (
+      <View style={{
+        top: 60,
+        position: "absolute",
+        width: width * 0.9
+      }}>
+        {profileSearchResult.length == 0 ?
+          <Text></Text> :
+          <FlatList
+            contentContainerStyle={{
+              height: 500
+            }}
+            data={profileSearchResult}
+            renderItem={({ item }) => {
+              return (
+                <List.Item
+                  title={`${item.firstName} ${item.lastName}`}
+                  titleStyle={{
+                    fontSize: 10,
+                    padding: 0,
+                    margin: 0,
+                  }}
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#fff",
+                    height: 40,
+
+                    borderBottomWidth: 0.5,
+                    paddingHorizontal: 4,
+                    // borderRadius: 3,
+                  }}
+                  onPress={async () => {
+                    console.log('>>nav', navigation)
+                    // setLoader(true)
+                    const status = await dispatch1(fetchSavedProfileDataByUser("ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"))
+                    // if (status) {
+                    navigation.setOptions({
+                      headerRight: headerRightForNav,
+                      headerTitle: "sdfsdf"
+                    })
+
+                    // }
+                    // setLoader(false)
+                    // setUserSeachEnable(false)
+                  }}
+                />
+              )
+
+            }}
+          />
+        }
+      </View>
+    )
+  }
+
+  const headerSet = () => {
+    if (1) {
+      navigation.setOptions({
+        headerRight: () => {
+          return (
+            <Icon
+              onPress={() => {
+                dispatch1(setSearchProfileReset())
+              }} name='close-circle' size={25} color={"#000"} />
+          )
+        },
+        headerTitle: () => {
+          return (
+            <>
+              <Searchbar
+                style={{ width: width * 0.7 }}
+                placeholder="Search customer"
+                onChangeText={async (text) => {
+                  console.log('task - profile text search', text)
+                  setLoader(true)
+                  await dispatch1(setUserSearch(text))
+                  await dispatch1(seachCustomers())
+                  setLoader(false)
+                }}
+
+                value={get(profileReducer, 'userSearchString', "")}
+              />
+              {/* {renderResult(navigation, setUserSeachEnable,
+                profile, dispatch1, loader, setLoader,
+                headerRightForNav, headerTitleForNav)} */}
+
+            </>
+          )
+        }
+      })
+      return null
+      return (
+        <EnableSearchForUser
+          headerRightForNav={headerRightForNav}
+          headerTitleForNav={"Interaction"}
+          loader={loader}
+          setLoader={setLoader}
+          navigation={navigation}
+          setUserSeachEnable={setUserSeachEnable}
+        />
+      )
+    }
+    else {
+      return null
+    }
+  }
+
 
   // const headerSet = () => {
   //   if (1) {
@@ -973,11 +1212,48 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //   }
   // }
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Icon
+            onPress={() => {
+              dispatch1(setSearchProfileReset())
+            }} name='close-circle' size={25} color={"#000"} />
+        )
+      },
+      headerTitle: () => {
+        let searchString = ""
+        return (
+          <>
+            <Searchbar
+              style={{ width: width * 0.7 }}
+              placeholder={"Search customer" + get(route, 'params.testValue', "")}
+              onChangeText={async (text) => {
 
+                searchString = text
+                console.log('>>', searchString)
+                setLoader(true)
+
+                await profileDispatch(seachCustomers())
+                setLoader(false)
+              }}
+
+            // value={ser}
+            />
+            {renderResult(navigation, setUserSeachEnable,
+              profileReducer, profileDispatch, loader, setLoader,
+              headerRightForNav, headerTitleForNav = "")}
+
+          </>
+        )
+      }
+    })
+  }, [profileReducer])
   return (
     <>
 
-      {/* {headerSet()} */}
+
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />
       )}
@@ -990,6 +1266,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
           backgroundColor: isModelOpen ? "gray" : "#d0d0d0",
           opacity: isModelOpen ? 0.3 : 1,
         }}
+
+
       >
         {/* profile card */}
         {renderProfileTab}

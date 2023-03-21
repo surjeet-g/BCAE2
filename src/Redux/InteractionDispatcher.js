@@ -6,6 +6,8 @@ import {
   setInteractionError,
   setInteractionsWorkFlowDataInStore,
   setInteractionsWorkFlowErrorDataInStore,
+  setInteractionsFollowupDataInStore,
+  setInteractionsFollowupErrorDataInStore,
   setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore,
   setFollowupDataInStore,
@@ -188,28 +190,33 @@ const validateFormData = async (formData, dispatch) => {
   return status;
 };
 
-export function getWorkFlowForInteractionID(
-  interactionId,
-  params = {},
-  navigation = null
-) {
-  console.log("$$$-getWorkFlowForInteractionID");
+export function getWorkFlowForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
     let url =
-      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
-    let result = await serverCall(url, requestMethod.GET, params, navigation);
+      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=false";
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
     if (result.success) {
-      console.log("$$$-getWorkFlowForInteractionID-data", result.data.data);
       dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
     } else {
-      console.log("$$$-getWorkFlowForInteractionID-error", result);
       dispatch(setInteractionsWorkFlowErrorDataInStore(result));
     }
   };
 }
 
+export function getFollowupForInteractionID(interactionId, navigation = null) {
+  return async (dispatch) => {
+    let url =
+      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    if (result.success) {
+      dispatch(setInteractionsFollowupDataInStore(result.data.data));
+    } else {
+      dispatch(setInteractionsFollowupErrorDataInStore(result));
+    }
+  };
+}
+
 export function getInteractionDetailsForID(interactionId, navigation = null) {
-  console.log("$$$-getInteractionDetailsForID");
   return async (dispatch) => {
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
     let params = {
@@ -219,18 +226,8 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     if (result.success) {
-      console.log("$$$-getInteractionDetailsForID-data", result.data.data);
-      console.log(
-        "$$$-getInteractionDetailsForID-data-stringify",
-        JSON.stringify(result.data.data)
-      );
-      console.log(
-        "$$$-getInteractionDetailsForID-data-stringify-row[0]",
-        JSON.stringify(result.data.data.rows[0])
-      );
       dispatch(setInteractionsDetailsDataInStore(result.data.data));
     } else {
-      console.log("$$$-getInteractionDetailsForID-error", result);
       dispatch(setInteractionsDetailsErrorDataInStore(result));
     }
   };
@@ -241,7 +238,6 @@ export function createFollowupForInteraction(
   remarks,
   navigation = null
 ) {
-  console.log("$$$-createFollowupForInteraction");
   return async (dispatch) => {
     let url = endPoints.INSERTFOLLOWUP;
     let params = {
@@ -250,10 +246,8 @@ export function createFollowupForInteraction(
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     if (result.success) {
-      console.log("$$$-createFollowupForInteraction-data", result.data.data);
       dispatch(setFollowupDataInStore(result.data.data));
     } else {
-      console.log("$$$-createFollowupForInteraction-error", result);
       dispatch(setFollowupErrorDataInStore(result));
     }
   };
@@ -264,7 +258,6 @@ export function assignInteractionToSelf(
   type,
   navigation = null
 ) {
-  console.log("$$$-assignInteractionToSelf");
   return async (dispatch) => {
     let url = endPoints.INTERACTION_ASSIGN_SELF + interactionId;
     let params = {
@@ -272,10 +265,8 @@ export function assignInteractionToSelf(
     };
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
     if (result.success) {
-      console.log("$$$-assignInteractionToSelf-data", result.data.data);
       dispatch(setAssignInteractionToSelfDataInStore(result.data.data));
     } else {
-      console.log("$$$-assignInteractionToSelf-error", result);
       dispatch(setAssignInteractionToSelfErrorDataInStore(result));
     }
   };

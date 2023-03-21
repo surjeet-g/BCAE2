@@ -8,6 +8,8 @@ import {
   INTERACTION_FORM_ERROR,
   INTERACTION_GET_WORKFLOW_FAILURE,
   INTERACTION_GET_WORKFLOW_SUCCESS,
+  INTERACTION_GET_FOLLOWUP_FAILURE,
+  INTERACTION_GET_FOLLOWUP_SUCCESS,
   INTERACTION_INIT,
   INTERACTION_RESET,
   INTERACTION_SET_FORM,
@@ -25,8 +27,10 @@ const InteractionInitialState = {
   loaderEdit: false,
   interactionError: false,
   InteractionData: {},
-  InteractionWorkFlowData: {},
+  InteractionWorkFlowData: [],
   interactionWorkFlowErrorData: {},
+  InteractionFollowupData: [],
+  interactionFollowupErrorData: {},
   formData: {
     statement: {
       field: "statement",
@@ -246,9 +250,23 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       return {
         // todo here logic
         ...state,
-        InteractionWorkFlowData: action.data,
+        InteractionWorkFlowData: action.data.rows,
         interactionWorkFlowErrorData: {},
       };
+
+    case INTERACTION_GET_FOLLOWUP_FAILURE:
+      return {
+        ...state,
+        interactionFollowupErrorData: action.data,
+      };
+    case INTERACTION_GET_FOLLOWUP_SUCCESS:
+      return {
+        // todo here logic
+        ...state,
+        interactionFollowupData: action.data.rows,
+        interactionFollowupErrorData: {},
+      };
+
     case INTERACTION_GET_DETAILS_FAILURE:
       return {
         ...state,
