@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
@@ -104,14 +104,16 @@ export const ImagePicker = ({
       });
 
       if (response[0]?.size < 5000000) {
-        fileAttachments.push({
-          fileType: response[0]?.type,
-          fileName: response[0]?.name,
-          fileSize: response[0]?.size,
-          uri: response[0]?.uri,
-          base64: await RNFS.readFile(response[0]?.uri, "base64"),
-        });
-        setFileAttachments(fileAttachments);
+        setFileAttachments([
+          ...fileAttachments,
+          {
+            fileType: response[0]?.type,
+            fileName: response[0]?.name,
+            fileSize: response[0]?.size,
+            uri: response[0]?.uri,
+            base64: await RNFS.readFile(response[0]?.uri, "base64"),
+          },
+        ]);
       } else {
         Toast.show({
           type: "bctError",
@@ -123,6 +125,7 @@ export const ImagePicker = ({
       // console.warn(err);
     }
   }, []);
+
   const onDeleteClicked = (key) => {
     Alert.alert(
       strings.attention,
@@ -135,7 +138,7 @@ export const ImagePicker = ({
           text: strings.ok,
           onPress: () => {
             const newArray = fileAttachments?.filter(
-              (data) => data?.fileName != key
+              (data) => data?.fileName !== key
             );
             setFileAttachments(newArray);
           },
@@ -153,12 +156,12 @@ export const ImagePicker = ({
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
-          { text: strings.ok, onPress: () => { } },
+          { text: strings.ok, onPress: () => {} },
         ]);
       }
     } else {
       Alert.alert(strings.attention, strings.max_number_of_file, [
-        { text: strings.ok, onPress: () => { } },
+        { text: strings.ok, onPress: () => {} },
       ]);
     }
   };
