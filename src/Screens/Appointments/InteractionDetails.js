@@ -24,9 +24,14 @@ import { Divider } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
+import {
+  getUserType,
+  USERTYPE,
+} from "./../../Utilities/UserManagement/userInfo";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
+  let userType = "";
   // const { interactionId = "116" } = route.params;
   let interactionId = 116;
   const { colors } = useTheme();
@@ -47,10 +52,11 @@ const InteractionDetails = (props) => {
   console.log("$$$-InteractionDetailsData", InteractionDetailsData);
 
   // Calling API to get interaction details & workflow/followup data
-  useEffect(() => {
+  useEffect(async () => {
     dispatch(getInteractionDetailsForID(interactionId, navigation));
     dispatch(getWorkFlowForInteractionID(interactionId, navigation));
     dispatch(getFollowupForInteractionID(interactionId, navigation));
+    userType = await getUserType();
   }, []);
 
   useLayoutEffect(() => {
@@ -439,14 +445,21 @@ const InteractionDetails = (props) => {
           right: 10,
         }}
       >
-        {/* Follow up */}
-        <PopUpMenuItem title={"Add followup"} />
-        <PopUpMenuDivider />
-        {/* Assign to self */}
-        <PopUpMenuItem title={"Assign to self"} />
-        <PopUpMenuDivider />
-        {/* Re-assign */}
-        <PopUpMenuItem title={"Re-Assign"} />
+        {userType === USERTYPE.CUSTOMER ? (
+          <View>
+            {/* Follow up */}
+            <PopUpMenuItem title={"Add followup"} />
+          </View>
+        ) : (
+          <View>
+            <PopUpMenuDivider />
+            {/* Assign to self */}
+            <PopUpMenuItem title={"Assign to self"} />
+            <PopUpMenuDivider />
+            {/* Re-assign */}
+            <PopUpMenuItem title={"Re-Assign"} />
+          </View>
+        )}
       </View>
     );
   };
