@@ -36,6 +36,7 @@ const InteractionDetails = (props) => {
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
+  const [modalIndex, setModalIndex] = useState(1);
   const [userType, setUserType] = useState("");
 
   const dispatch = useDispatch([
@@ -383,7 +384,7 @@ const InteractionDetails = (props) => {
   };
 
   const PopUpMenuItem = (props) => {
-    const { title } = props;
+    const { title, modalIndex } = props;
     return (
       <Pressable
         style={{
@@ -397,6 +398,7 @@ const InteractionDetails = (props) => {
         onPress={() => {
           setShowPopupMenu(!showPopupMenu);
           setShowBottomModal(true);
+          setModalIndex(modalIndex);
         }}
       >
         <Text
@@ -449,16 +451,16 @@ const InteractionDetails = (props) => {
         {userType === USERTYPE.CUSTOMER ? (
           <View>
             {/* Follow up */}
-            <PopUpMenuItem title={"Add followup"} />
+            <PopUpMenuItem title={"Add followup"} modalIndex={1} />
           </View>
         ) : (
           <View>
             {/* <PopUpMenuDivider /> */}
             {/* Assign to self */}
-            <PopUpMenuItem title={"Assign to self"} />
+            <PopUpMenuItem title={"Assign to self"} modalIndex={2} />
             <PopUpMenuDivider />
             {/* Re-assign */}
-            <PopUpMenuItem title={"Re-Assign"} />
+            <PopUpMenuItem title={"Re-Assign"} modalIndex={3} />
           </View>
         )}
       </View>
@@ -654,7 +656,9 @@ const InteractionDetails = (props) => {
         </View>
       </ScrollView>
 
-      {showBottomModal && <AddFollowUpModal />}
+      {showBottomModal && modalIndex === 1 && <AddFollowUpModal />}
+      {showBottomModal && modalIndex === 2 && <AssignToSelfModal />}
+      {showBottomModal && modalIndex === 3 && <ReAssignModal />}
     </View>
   );
 };
