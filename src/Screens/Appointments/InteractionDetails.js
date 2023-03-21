@@ -23,7 +23,7 @@ import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWi
 import { CustomInput } from "./../../Components/CustomInput";
 import { FooterModel } from "./../../Components/FooterModel";
 import {
-  createFollowupForInteraction, getFollowupForInteractionID,
+  createFollowupForInteraction, createFollowupForInteractionID, getFollowupForInteractionID,
   getInteractionDetailsForID,
   getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
@@ -49,7 +49,7 @@ const InteractionDetails = (props) => {
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
     getMasterData,
-    createFollowupForInteraction,
+    createFollowupForInteractionID,
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
@@ -538,7 +538,7 @@ const InteractionDetails = (props) => {
                   label={strings.submit}
                   onPress={() => {
                     dispatch(
-                      createFollowupForInteraction(
+                      createFollowupForInteractionID(
                         interactionID,
                         { formPriority, formSource, formRemarks },
                         navigation
