@@ -1,50 +1,41 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
-import {
-  Alert,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
+  BottomSheetScrollView
 } from "@gorhom/bottom-sheet";
-import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
-import { mockAnnouncementList } from "../../Utilities/Constants/Constant";
-import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import AnnouIcon from "../../Assets/svg/anno.svg";
+import React, {
+  useCallback, useEffect, useMemo,
+  useRef, useState
+} from "react";
+import {
+  Alert, FlatList, Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch, TouchableOpacity, View
+} from "react-native";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch } from "react-redux";
+import AnnouIcon from "../../Assets/svg/anno.svg";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
 import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
-  DEFAULT_PROFILE_IMAGE,
-  spacing,
-  storageKeys,
+  DEFAULT_PROFILE_IMAGE, mockAnnouncementList, spacing,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
+import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import {
   getCustomerUUID,
-  getUserId,
+  getUserId
 } from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
@@ -136,7 +127,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => {};
+  const onFaqPressed = () => { };
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -151,9 +142,8 @@ export const ViewProfile = ({ navigation }) => {
       <ScrollView nestedScrollEnabled={true}>
         <Image
           source={{
-            uri: `data:image/jpeg;base64,${
-              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-            }`,
+            uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+              }`,
           }}
           // imageStyle={{ borderRadius: 80 }}
           style={{ height: 110, width: 110 }}
@@ -351,7 +341,7 @@ export const ViewProfile = ({ navigation }) => {
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
           >
-            <View style={styles.contentContainer}>
+            <BottomSheetScrollView style={styles.contentContainer}>
               <View
                 style={{
                   flexDirection: "row",
@@ -378,20 +368,18 @@ export const ViewProfile = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
-              <BottomSheetScrollView>
-                <FlatList
-                  data={mockAnnouncementList}
-                  renderItem={({ item }) => (
-                    <AnnouncementItem
-                      title={item.title}
-                      desc={item.desc}
-                      date={item.date}
-                    />
-                  )}
-                  keyExtractor={(item) => item.id}
-                />
-              </BottomSheetScrollView>
-            </View>
+              <FlatList
+                data={mockAnnouncementList}
+                renderItem={({ item }) => (
+                  <AnnouncementItem
+                    title={item.title}
+                    desc={item.desc}
+                    date={item.date}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </BottomSheetScrollView>
           </BottomSheetModal>
         </View>
       </BottomSheetModalProvider>
