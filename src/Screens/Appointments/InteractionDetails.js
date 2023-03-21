@@ -27,6 +27,7 @@ import {
   getFollowupForInteractionID,
   getInteractionDetailsForID,
   getWorkFlowForInteractionID,
+  createFollowupForInteraction,
 } from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
@@ -36,7 +37,7 @@ import {
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionId = "116" } = route.params;
-  let interactionId = 116;
+  let interactionId = 197;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -44,11 +45,13 @@ const InteractionDetails = (props) => {
   const [userType, setUserType] = useState("");
   const [formPriority, setFormPriority] = useState({});
   const [formSource, setSource] = useState({});
+  const [formRemarks, setFormRemarks] = useState("");
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
     getMasterData,
+    createFollowupForInteraction,
   ]);
 
   const { masterReducer, interactionReducer } = useSelector((state) => {
@@ -514,10 +517,10 @@ const InteractionDetails = (props) => {
             placeHolder={"Select " + strings.user}
           />
           <CustomInput
-            value={""}
+            value={formRemarks}
             caption={strings.remarks}
             placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => setFormRemarks(text)}
           />
           {/* Bottom Button View */}
           <View
@@ -535,7 +538,18 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton
+                label={strings.submit}
+                onPress={() => {
+                  dispatch(
+                    createFollowupForInteraction(
+                      interactionId,
+                      { formPriority, formSource, formRemarks },
+                      navigation
+                    )
+                  );
+                }}
+              />
             </View>
           </View>
         </View>

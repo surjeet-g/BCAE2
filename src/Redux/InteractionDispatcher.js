@@ -235,16 +235,20 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
 
 export function createFollowupForInteraction(
   interactionId,
-  remarks,
+  param,
   navigation = null
 ) {
   return async (dispatch) => {
     let url = endPoints.INSERTFOLLOWUP;
     let params = {
-      intxnId: interactionId,
-      remarks,
+      interactionNumber: interactionId,
+      remarks: param.formRemarks,
+      priorityCode: param.formPriority.code,
+      source: param.formSource.code,
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-createFollowupForInteraction-result", result);
+
     if (result.success) {
       dispatch(setFollowupDataInStore(result.data.data));
     } else {
