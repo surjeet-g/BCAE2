@@ -63,6 +63,7 @@ export const endPoints = {
   UPDATE_WORKFLOW: "api/workflow/update/",
   DELETE_WORKFLOW: "api/workflow/delete/",
   CUSTOMER_ACCOUNT: "api/accounts/get-account-list",
+  ORDER_LIST_API: "api/order/search",
 };
 
 export const requestMethod = {

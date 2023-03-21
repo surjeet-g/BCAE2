@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 
 import MyTicketDetailsReducer from "../Redux/MyTicketDetailsReducer";
 import InteractionListReducer from "../Redux/InteractionListReducer";
+import OrderListReducer from "../Redux/OrderListReducer";
 import RegisterFormReducer from "../Redux/RegisterReducer";
 import AnnouncementsReducer from "../Screens/Announcement/AnnouncementReducer";
 import ForgotPasswordReducer from "../Screens/ForgotPassword/ForgotPasswordReducer";
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   inquiryNotifications: InquiryNotificationsReducer,
   knowledgeSearch: KnowledgeSearchReducer,
   customerAccount: CustomerAccountReducer,
+  orderList: OrderListReducer,
 });
 
 const RootReducer = (state, action) => {
