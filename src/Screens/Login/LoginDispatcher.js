@@ -3,10 +3,16 @@ import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
-  DEFAULT_PROFILE_IMAGE, storageKeys
+  DEFAULT_PROFILE_IMAGE,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import {
-  failureLogin, initLoginData, resetLoginData, resetShowSecondLoginAlertData, setLoginData, setShowSecondLoginAlert
+  failureLogin,
+  initLoginData,
+  resetLoginData,
+  resetShowSecondLoginAlertData,
+  setLoginData,
+  setShowSecondLoginAlert,
 } from "./LoginAction";
 
 export function verifyLoginData(navigation, params) {
@@ -59,7 +65,7 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.LOGIN_ID, loginId);
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
               await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
-              await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse)
+              await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
               let profileResult = {};
 
               if (
@@ -82,8 +88,7 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                  "/" +
-                  result?.data?.data?.user?.customerUuid,
+                    result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation
