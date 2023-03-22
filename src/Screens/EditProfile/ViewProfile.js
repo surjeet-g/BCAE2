@@ -1,18 +1,25 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import React, {
-  useCallback, useEffect, useMemo,
-  useRef, useState
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import {
-  Alert, FlatList, Image,
+  Alert,
+  FlatList,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch, TouchableOpacity, View
+  Switch,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -28,14 +35,16 @@ import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
-  DEFAULT_PROFILE_IMAGE, mockAnnouncementList, spacing,
-  storageKeys
+  DEFAULT_PROFILE_IMAGE,
+  mockAnnouncementList,
+  spacing,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import {
   getCustomerUUID,
-  getUserId
+  getUserId,
 } from "../../Utilities/UserManagement/userInfo";
 const ICON = 17;
 
@@ -69,7 +78,7 @@ export const ViewProfile = ({ navigation }) => {
       const customerUUDI = await getCustomerUUID();
 
       let profileResult = await serverCall(
-        endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+        endPoints.PROFILE_DETAILS + customerUUDI,
         requestMethod.GET,
         {},
         navigation
@@ -127,7 +136,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => { };
+  const onFaqPressed = () => {};
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -142,8 +151,9 @@ export const ViewProfile = ({ navigation }) => {
       <ScrollView nestedScrollEnabled={true}>
         <Image
           source={{
-            uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-              }`,
+            uri: `data:image/jpeg;base64,${
+              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+            }`,
           }}
           // imageStyle={{ borderRadius: 80 }}
           style={{ height: 110, width: 110 }}
@@ -390,6 +400,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
+    backgroundColor: "#F0F0F0",
   },
   contentContainer: {
     flex: 1,
