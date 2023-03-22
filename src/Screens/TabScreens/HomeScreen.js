@@ -25,7 +25,7 @@ import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
 function CustomCalendar(props) {
-  const initDate = new Date();
+  const initDate = new Date().toString();
   const [selected, setSelected] = useState(initDate);
   const [showIndex, setShowIndex] = useState(0);
 
