@@ -635,7 +635,7 @@ export const HomeScreen = ({ navigation }) => {
               renderItem={({ item, index }) => (
                 <FlatListItemTop item={item} index={index} />
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
           <Text
@@ -680,7 +680,7 @@ export const HomeScreen = ({ navigation }) => {
               renderItem={({ item, index }) => (
                 <FlatListItemBottom item={item} index={index} />
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
         </View>
