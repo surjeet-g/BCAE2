@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,7 +39,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
@@ -105,7 +105,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_INTERACTION}
+        initialRouteName={"Splash"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -377,7 +377,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -393,7 +393,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}

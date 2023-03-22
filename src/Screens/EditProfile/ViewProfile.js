@@ -29,7 +29,7 @@ import AnnouIcon from "../../Assets/svg/anno.svg";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
-import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
@@ -46,6 +46,7 @@ import {
   getCustomerUUID,
   getUserId,
 } from "../../Utilities/UserManagement/userInfo";
+import { useSelector } from "react-redux";
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
@@ -72,31 +73,21 @@ export const ViewProfile = ({ navigation }) => {
     userId: "",
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
+  let profileReducer = useSelector((state) => state.profile);
+  let profileResult = profileReducer.savedProfileData;
 
   useEffect(() => {
-    async function fetchMyAPI() {
-      const customerUUDI = await getCustomerUUID();
-
-      let profileResult = await serverCall(
-        endPoints.PROFILE_DETAILS + customerUUDI,
-        requestMethod.GET,
-        {},
-        navigation
-      );
+    dispatch(fetchMyProfileData(navigation));
+    async function getUserID() {
       const userID = await getUserId();
-      console.log("userid", profileResult);
-      if (profileResult?.success) {
-        setUserInfo({
-          email: profileResult?.data?.data?.customerContact[0]?.emailId,
-          name: `${profileResult?.data.data.firstName} ${profileResult?.data?.data?.lastName}`,
-          userId: userID,
-          profilePicture: profileResult?.data?.data?.customerPhoto,
-        });
-      } else {
-        console.log(">>err");
-      }
+      setUserInfo({
+        email: profileResult?.customerContact[0]?.emailId,
+        name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+        userId: userID,
+        profilePicture: profileResult?.customerPhoto,
+      });
     }
-    fetchMyAPI();
+    getUserID();
   }, []);
 
   const toggleSwitch = () => {
@@ -112,7 +103,7 @@ export const ViewProfile = ({ navigation }) => {
   };
   const dispatch = useDispatch([
     deleteNdLogoutUser,
-    fetchSavedProfileData,
+    fetchMyProfileData,
     logoutUser,
   ]);
   useEffect(() => {

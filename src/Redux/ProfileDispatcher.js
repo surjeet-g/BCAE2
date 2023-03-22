@@ -11,7 +11,7 @@ import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 
-export function fetchSavedProfileData(navigation = null) {
+export function fetchMyProfileData(navigation = null) {
   return async (dispatch) => {
     dispatch(initProfile());
     const customerUUDI = await getCustomerUUID();

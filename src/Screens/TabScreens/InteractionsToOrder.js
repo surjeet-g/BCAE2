@@ -13,10 +13,10 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { Chip, List, Text, useTheme } from "react-native-paper";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
@@ -25,7 +25,7 @@ import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
-  spacing
+  spacing,
 } from "../../Utilities/Constants/Constant";
 
 import { strings } from "../../Utilities/Language";
@@ -38,12 +38,12 @@ import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js
 import {
   addInteractionAction,
   fetchInteractionAction,
-  updateInteractionAction
+  updateInteractionAction,
 } from "../../Redux/InteractionDispatcher";
 
 import {
   setInteractionFormField,
-  setInteractionReset
+  setInteractionReset,
 } from "../../Redux/InteractionAction";
 
 import get from "lodash.get";
@@ -59,17 +59,21 @@ import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
 import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
-import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
+import {
+  fetchMyProfileData,
+  fetchSavedProfileDataByUser,
+  seachCustomers,
+} from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import {
   getCustomerID,
   getUserType,
-  USERTYPE
+  USERTYPE,
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -81,8 +85,7 @@ export const typeOfAccrodin = {
 };
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
-
-}
+};
 const InteractionsToOrder = ({ route, navigation }) => {
   const [activeService, setService] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState("");
@@ -180,7 +183,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([
-    fetchSavedProfileData,
+    fetchMyProfileData,
     seachCustomers,
     setUserSearch,
     fetchSavedProfileDataByUser,
@@ -230,7 +233,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         description: "Insurance",
       });
       // await dispatchInteraction(fetchInteractionAction(true));
-      await profileDispatch(fetchSavedProfileData(navigation));
+      await profileDispatch(fetchMyProfileData(navigation));
       setLoader(false);
       // master only invoke load
       masterDispatch(
@@ -296,57 +299,56 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
   };
 
-
   /**
-  * handleInteligenceResponse 
-  *
-  * @param {number} params The number to raise.
-  * @return {number} x raised to the n-th power.
-  */
+   * handleInteligenceResponse
+   *
+   * @param {number} params The number to raise.
+   * @return {number} x raised to the n-th power.
+   */
   const handleInteligenceResponse = async (resp, item = {}) => {
     try {
-      const debugg = true
-      if (debugg) console.log('parms resp', resp, "item", item)
-      const isCreateInteraction = get(resp, 'outcome.interactionCreation', false)
-      if (debugg) console.log('isCreateInteraction api response', isCreateInteraction)
-      //interaction creation part  
+      const debugg = true;
+      if (debugg) console.log("parms resp", resp, "item", item);
+      const isCreateInteraction = get(
+        resp,
+        "outcome.interactionCreation",
+        false
+      );
+      if (debugg)
+        console.log("isCreateInteraction api response", isCreateInteraction);
+      //interaction creation part
       if (isCreateInteraction) {
         //todo popup
-        const status = interactionDataToCreateInt(item)
-        if (debugg) console.log('interactionDataToCreateInt func response', status)
+        const status = interactionDataToCreateInt(item);
+        if (debugg)
+          console.log("interactionDataToCreateInt func response", status);
 
         if (status) {
-          setOpenBottomModal(true)
-          console.log('success',)
-          return true
+          setOpenBottomModal(true);
+          console.log("success");
+          return true;
+        } else {
+          console.log("failed");
         }
-        else {
-          console.log('failed',)
-        }
-        return 1
-      }
-      else {
-        const solutionList = get(resp, 'data', [])
-        const solutionCount = solutionList.length
+        return 1;
+      } else {
+        const solutionList = get(resp, "data", []);
+        const solutionCount = solutionList.length;
         if (solutionCount == 0) {
           //to do throw error
-
-
         }
         if (solutionCount == 1) {
           //directly navigate to corresponding order or product with payload [0]
+        } else {
+          //to do bottom list item
         }
-        else {
-          //to do bottom list item 
-        }
-        return true
-
+        return true;
       }
     } catch (error) {
-      console.log('error on handleInteligenceResponse', error)
-      return false
+      console.log("error on handleInteligenceResponse", error);
+      return false;
     }
-  }
+  };
   const RenderSearchResult = () => {
     if (!autosuggestionlist) return null;
     const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
@@ -396,7 +398,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 onPress={async () => {
                   //store selected result in cache
 
-
                   await setBottombartitle(typeOfAccrodin.searchbox.title);
                   const response = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.searchbox.value, {
@@ -404,17 +405,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     })
                   );
                   const mockresponse = {
-                    "outcome": {
-                      "appointmentRequired": false,
-                      "orderCreation": false,
-                      "interactionCreation": true
+                    outcome: {
+                      appointmentRequired: false,
+                      orderCreation: false,
+                      interactionCreation: true,
                     },
-                    "data": []
-                  }
-                  const status = await handleInteligenceResponse(mockresponse, item)
-                  console.log('response', status)
-                  return null
-                  console.log('>>', response)
+                    data: [],
+                  };
+                  const status = await handleInteligenceResponse(
+                    mockresponse,
+                    item
+                  );
+                  console.log("response", status);
+                  return null;
+                  console.log(">>", response);
                   setActiveInteraction(item);
                   //open form model
                   setOpenBottomModalChatBot(true);
@@ -441,8 +445,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   //     clearError: true,
                   //   })
                   // );
-
-
 
                   //set selected data into state value
                   setActiveInteraction(item);
@@ -485,45 +487,39 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const interactionDataToCreateInt = (item) => {
     try {
       const debuggg = true;
-      if (debuggg) console.log('parmas interactionDataToCreateInt', item)
+      if (debuggg) console.log("parmas interactionDataToCreateInt", item);
 
       const interCat = get(
-        interactionCategoryList?.filter(
-          (it) => it.code == item.intxnCategory
-        ),
+        interactionCategoryList?.filter((it) => it.code == item.intxnCategory),
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('category', interCat)
+      if (debuggg) console.log("category", interCat);
 
       const interType = get(
         interactionList?.filter((it) => it.code == item.intxnType),
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('interType', interType)
+      if (debuggg) console.log("interType", interType);
       const serviveType = get(
         serviceTypelist?.filter((it) => it.code == item.serviceType),
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('serviveType', serviveType)
+      if (debuggg) console.log("serviveType", serviveType);
       const serviveCatType = get(
-        serviceCategoryList?.filter(
-          (it) => it.code == item.serviceCategory
-        ),
+        serviceCategoryList?.filter((it) => it.code == item.serviceCategory),
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('serviveCatType', serviveCatType)
+      if (debuggg) console.log("serviveCatType", serviveCatType);
       const prirtyCode = get(
-        serviceCategoryList?.filter(
-          (it) => it.code == item.serviceCategory
-        ),
+        serviceCategoryList?.filter((it) => it.code == item.serviceCategory),
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('prirtyCode', prirtyCode)
+      if (debuggg) console.log("prirtyCode", prirtyCode);
       //to do from api response
       //make array
       const contactPerferance = get(
@@ -535,18 +531,31 @@ const InteractionsToOrder = ({ route, navigation }) => {
       );
 
       const problemCause = get(
-        problemList?.filter(
-          (it) => it.code == item.intxnCause
-        ),
+        problemList?.filter((it) => it.code == item.intxnCause),
         "[0]",
         { code: "", description: "" }
       );
 
-      if (debuggg) console.log('prirtyList', problemList, "api response", item.intxnCause)
+      if (debuggg)
+        console.log("prirtyList", problemList, "api response", item.intxnCause);
 
-      console.log('master data parse from ', "interationcar", interCat, "interType",
-        interType, "serviveType", serviveType, "serviveCatType", serviveCatType,
-        "prirtyCode", prirtyCode, "contactPerferance", contactPerferance, "problemCause", problemCause)
+      console.log(
+        "master data parse from ",
+        "interationcar",
+        interCat,
+        "interType",
+        interType,
+        "serviveType",
+        serviveType,
+        "serviveCatType",
+        serviveCatType,
+        "prirtyCode",
+        prirtyCode,
+        "contactPerferance",
+        contactPerferance,
+        "problemCause",
+        problemCause
+      );
 
       setDropDownFormField("priorityCode", prirtyCode);
 
@@ -560,22 +569,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       setDropDownFormField("serviceType", serviveType);
 
-      setDropDownFormField("problemCause", problemCause)
+      setDropDownFormField("problemCause", problemCause);
 
-
-      if (!get(item, 'requestId', false) != false) {
+      if (!get(item, "requestId", false) != false) {
         setFormField("statement", item.requestId);
       }
-      if (get(item, 'statementId', false) != false) {
+      if (get(item, "statementId", false) != false) {
         setFormField("statementId", item.requestStatement);
       }
 
-      return true
+      return true;
     } catch (error) {
-
       console.log("error in interactionTocreate", error);
-      return false
-
+      return false;
     }
   };
   const handleAccodin = async ({ value, title }) => {
@@ -827,17 +833,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <>
             <Pressable
               onPress={() => {
-                setProfileSeriveModal(false)
+                setProfileSeriveModal(false);
               }}
               style={{
                 backgroundColor: "transparent",
                 position: "absolute",
                 width: width,
                 height: height,
-
-              }}>
-
-            </Pressable>
+              }}
+            ></Pressable>
             <View style={styles.modelContainerProfile}>
               {serviceList.map((ite) => {
                 return (
@@ -849,7 +853,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       padding: 0,
                       margin: 0,
                     }}
-
                     onPress={() => {
                       setService(ite);
                       setProfileSeriveModal(false);
@@ -998,7 +1001,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       },
                       {
                         text: strings.close,
-                        onPress: () => { },
+                        onPress: () => {},
                         style: "cancel",
                       },
                     ]
@@ -1032,7 +1035,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Text variant="labelMedium" style={{ textAlign: "center" }}>
           Couldn't Find a resolution?
-          <Text onPress={() => { }} style={{ color: "red" }}>
+          <Text onPress={() => {}} style={{ color: "red" }}>
             {" "}
             Create Interaction
           </Text>{" "}
@@ -1064,7 +1067,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               interactionID: intereactionAddResponse?.intxnNo,
             });
           }}
-          cancelHandler={() => { }}
+          cancelHandler={() => {}}
         />
       </View>
     );
@@ -1084,7 +1087,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   return (
     <>
-
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
@@ -1128,7 +1130,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
           opacity: isModelOpen ? 0.3 : 1,
         }}
       >
-
         {/* profile card */}
         {renderProfileTab}
 
@@ -1193,7 +1194,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
           >
             {/* Field View */}
             <View style={{ marginHorizontal: 10 }}>
-
               <CustomDropDownFullWidth
                 selectedValue={get(interactionType, "value.description", "")}
                 data={interactionList}

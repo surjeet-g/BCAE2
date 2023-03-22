@@ -33,7 +33,7 @@ import {
   getOtpForNumber,
 } from "../../Redux/RegisterDispatcher";
 import {
-  fetchSavedProfileData,
+  fetchMyProfileData,
   updateProfileData,
 } from "../../Redux/ProfileDispatcher";
 import { strings } from "../../Utilities/Language/index";
@@ -119,12 +119,12 @@ const EditProfile = ({ navigation, props }) => {
     });
   }, [navigation]);
 
-  const dispatch2 = useDispatch([fetchSavedProfileData, updateProfileData]);
+  const dispatch2 = useDispatch([fetchMyProfileData, updateProfileData]);
   console.log("res.data.country : ", profile.savedProfileData);
 
   useEffect(() => {
     async function fetchMyAPI() {
-      await dispatch2(fetchSavedProfileData(navigation));
+      await dispatch2(fetchMyProfileData(navigation));
     }
     fetchMyAPI();
   }, []);
@@ -353,7 +353,7 @@ const EditProfile = ({ navigation, props }) => {
           updateProfileData(registerObject, navigation)
         );
         if (status) {
-          await dispatch2(fetchSavedProfileData(navigation));
+          await dispatch2(fetchMyProfileData(navigation));
         }
       }
       //dispatch2(updateProfileData(registerObject,profile.savedProfileData.userId));
