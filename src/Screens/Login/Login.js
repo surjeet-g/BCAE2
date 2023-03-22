@@ -79,17 +79,7 @@ export const Login = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
-
   const [isEmailLoginMode, setIsEmailLoginMode] = React.useState(true);
-
-  const onToggleSwitch = () => {
-    if (isEmailLoginMode) {
-      onSelectEmailLoginMode();
-    } else {
-      onSelectMobileLoginMode();
-    }
-    setIsEmailLoginMode(!isEmailLoginMode);
-  };
 
   let login = useSelector((state) => state.login);
 
@@ -100,6 +90,15 @@ export const Login = ({ navigation }) => {
     callLogoutAndLogin,
     sendLoginOTPData,
   ]);
+
+  const onToggleSwitch = () => {
+    if (isEmailLoginMode) {
+      onSelectEmailLoginMode();
+    } else {
+      onSelectMobileLoginMode();
+    }
+    setIsEmailLoginMode(!isEmailLoginMode);
+  };
 
   const onSelectBusinessUserType = () => {
     setFirstSelected(true);
@@ -336,37 +335,6 @@ export const Login = ({ navigation }) => {
                     fontWeight: 600,
                   }}
                 />
-
-                {/* <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <RadioButton
-                    value={EMAIL}
-                    status={loginMode === EMAIL ? "checked" : "unchecked"}
-                    onPress={onSelectEmailLoginMode}
-                  />
-                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
-                    {capitalizeFirstLetter(EMAIL)}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <RadioButton
-                    value={MOBILE}
-                    status={loginMode === MOBILE ? "checked" : "unchecked"}
-                    onPress={onSelectMobileLoginMode}
-                  />
-                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
-                    {capitalizeFirstLetter(MOBILE)}
-                  </Text>
-                </View> */}
               </View>
 
               {loginMode === EMAIL ? (
