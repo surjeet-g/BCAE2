@@ -14,6 +14,7 @@ import {
   setLoginData,
   setShowSecondLoginAlert,
 } from "./LoginAction";
+import { setProfileData } from "./../../Redux/ProfileAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
@@ -136,6 +137,7 @@ export function verifyLoginData(navigation, params) {
                 };
 
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setProfileData(profileData));
                 dispatch(setLoginData(result.data));
                 navigation.replace("BottomBar", {});
               } else if (
@@ -146,6 +148,7 @@ export function verifyLoginData(navigation, params) {
               ) {
                 let profileData = profileResult?.data?.data;
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setProfileData(profileData));
                 dispatch(setLoginData(result.data));
                 navigation.replace("BottomBar", {});
               }
