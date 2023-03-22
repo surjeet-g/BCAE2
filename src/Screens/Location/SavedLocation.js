@@ -34,7 +34,7 @@ import SavedLocationList from "../../Components/SavedLocationList";
 // import Header from "../TabScreens/Component/Header";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { ScrollView } from "react-native-gesture-handler";
-import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import { navBar } from "../../Utilities/Style/navBar";
 import { useTheme } from "react-native-paper";
 import { HEADER_MARGIN } from "../../Utilities/themeConfig";
@@ -54,8 +54,8 @@ const SavedLocation = ({ route, navigation }) => {
     fromPage: true,
   };
   let profile = useSelector((state) => state.profile);
-  const dispatch2 = useDispatch([fetchSavedProfileData, fetchRegisterFormData]);
-  const fetchMyProfileData = () => dispatch2(fetchSavedProfileData(navigation));
+  const dispatch2 = useDispatch([fetchMyProfileData, fetchRegisterFormData]);
+  const fetchMyProfileData = () => dispatch2(fetchMyProfileData(navigation));
 
   const dispatch = useDispatch([
     fetchSavedLocations,

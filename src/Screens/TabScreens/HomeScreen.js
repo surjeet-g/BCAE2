@@ -25,7 +25,7 @@ import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
 function CustomCalendar(props) {
-  const initDate = new Date();
+  const initDate = new Date().toString();
   const [selected, setSelected] = useState(initDate);
   const [showIndex, setShowIndex] = useState(0);
 
@@ -635,7 +635,7 @@ export const HomeScreen = ({ navigation }) => {
               renderItem={({ item, index }) => (
                 <FlatListItemTop item={item} index={index} />
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
           <Text
@@ -680,7 +680,7 @@ export const HomeScreen = ({ navigation }) => {
               renderItem={({ item, index }) => (
                 <FlatListItemBottom item={item} index={index} />
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
         </View>

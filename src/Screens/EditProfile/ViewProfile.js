@@ -1,18 +1,25 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import React, {
-  useCallback, useEffect, useMemo,
-  useRef, useState
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import {
-  Alert, FlatList, Image,
+  Alert,
+  FlatList,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch, TouchableOpacity, View
+  Switch,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -22,21 +29,24 @@ import AnnouIcon from "../../Assets/svg/anno.svg";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { deleteNdLogoutUser, logoutUser } from "../../Redux/LogoutDispatcher";
-import { fetchSavedProfileData } from "../../Redux/ProfileDispatcher";
+import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementItem";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
-  DEFAULT_PROFILE_IMAGE, mockAnnouncementList, spacing,
-  storageKeys
+  DEFAULT_PROFILE_IMAGE,
+  mockAnnouncementList,
+  spacing,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import {
   getCustomerUUID,
-  getUserId
+  getUserId,
 } from "../../Utilities/UserManagement/userInfo";
+import { useSelector } from "react-redux";
 const ICON = 17;
 
 export const ViewProfile = ({ navigation }) => {
@@ -63,31 +73,21 @@ export const ViewProfile = ({ navigation }) => {
     userId: "",
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
+  let profileReducer = useSelector((state) => state.profile);
+  let profileResult = profileReducer.savedProfileData;
 
   useEffect(() => {
-    async function fetchMyAPI() {
-      const customerUUDI = await getCustomerUUID();
-
-      let profileResult = await serverCall(
-        endPoints.PROFILE_DETAILS + "/" + customerUUDI,
-        requestMethod.GET,
-        {},
-        navigation
-      );
+    dispatch(fetchMyProfileData(navigation));
+    async function getUserID() {
       const userID = await getUserId();
-      console.log("userid", profileResult);
-      if (profileResult?.success) {
-        setUserInfo({
-          email: profileResult?.data?.data?.customerContact[0]?.emailId,
-          name: `${profileResult?.data.data.firstName} ${profileResult?.data?.data?.lastName}`,
-          userId: userID,
-          profilePicture: profileResult?.data?.data?.customerPhoto,
-        });
-      } else {
-        console.log(">>err");
-      }
+      setUserInfo({
+        email: profileResult?.customerContact[0]?.emailId,
+        name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+        userId: userID,
+        profilePicture: profileResult?.customerPhoto,
+      });
     }
-    fetchMyAPI();
+    getUserID();
   }, []);
 
   const toggleSwitch = () => {
@@ -103,7 +103,7 @@ export const ViewProfile = ({ navigation }) => {
   };
   const dispatch = useDispatch([
     deleteNdLogoutUser,
-    fetchSavedProfileData,
+    fetchMyProfileData,
     logoutUser,
   ]);
   useEffect(() => {
@@ -127,7 +127,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => { };
+  const onFaqPressed = () => {};
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -142,8 +142,9 @@ export const ViewProfile = ({ navigation }) => {
       <ScrollView nestedScrollEnabled={true}>
         <Image
           source={{
-            uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-              }`,
+            uri: `data:image/jpeg;base64,${
+              userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+            }`,
           }}
           // imageStyle={{ borderRadius: 80 }}
           style={{ height: 110, width: 110 }}
@@ -390,6 +391,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
+    backgroundColor: "#F0F0F0",
   },
   contentContainer: {
     flex: 1,

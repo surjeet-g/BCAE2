@@ -17,7 +17,7 @@ import CustomBottomBar from "./CustomBottomBar";
 import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useDispatch } from "react-redux";
-import { fetchSavedProfileData } from "../Redux/ProfileDispatcher";
+import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
@@ -31,10 +31,10 @@ const Drawer = createDrawerNavigator();
 
 const BottomBarNavigation = () => {
   const [profile, setProfile] = useState(null);
-  const dispatch2 = useDispatch([fetchSavedProfileData]);
+  const dispatch2 = useDispatch([fetchMyProfileData]);
   useEffect(() => {
     async function fetchMyAPI() {
-      const res = await dispatch2(fetchSavedProfileData());
+      const res = await dispatch2(fetchMyProfileData());
       if (res.status) {
         setProfile(res.data.profilePicture);
       }

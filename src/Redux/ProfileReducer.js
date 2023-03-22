@@ -1,13 +1,15 @@
 import get from "lodash.get";
 import {
   PROFILE_DATA,
-  PROFILE_ERROR, PROFILE_INIT, PROFILE_RESET,
+  PROFILE_ERROR,
+  PROFILE_INIT,
+  PROFILE_RESET,
   PROFILE_SEARCH_DATA,
   PROFILE_SEARCH_DATA_RESET,
   PROFILE_SEARCH_ERROR,
   PROFILE_SEARCH_INIT,
   PROFILE_SET_FORM,
-  SET_USER_SEARCH
+  SET_USER_SEARCH,
 } from "./ProfileAction";
 
 const mySavedProfileInitialState = {
@@ -33,7 +35,6 @@ const mySavedProfileInitialState = {
 };
 
 const ProfileReducer = (state = mySavedProfileInitialState, action) => {
-
   switch (action.type) {
     case PROFILE_SEARCH_INIT:
       return {
@@ -46,42 +47,35 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
       return {
         ...state,
         initSeachProfile: true,
-        profileSearchError: false,
+        profileError: false,
         profileSearchError: {},
       };
     case PROFILE_SEARCH_DATA_RESET:
       return {
         ...state,
-        profileSearchData: []
+        profileSearchData: [],
       };
     case SET_USER_SEARCH:
-      console.log('task - profile text search reducer', action.data)
+      console.log("task - profile text search reducer", action.data);
 
       return {
         ...state,
-        userSearchString: action.data
-      };
-    case PROFILE_INIT:
-      return {
-        ...state,
-        initSeachProfile: true,
-        profileSearchError: false,
-        profileSearchError: {},
+        userSearchString: action.data,
       };
     case PROFILE_SEARCH_ERROR:
       return {
         ...state,
         initSeachProfile: false,
-        profileSearchError: true,
+        profileError: true,
         profileSearchError: action.data,
       };
     case PROFILE_SEARCH_DATA:
       return {
         ...state,
         initSeachProfile: false,
-        profileSearchError: false,
+        profileError: false,
         profileSearchData: action.data,
-      }
+      };
     case PROFILE_DATA:
       return {
         ...state,
