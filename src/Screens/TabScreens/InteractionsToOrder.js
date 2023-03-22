@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import {
-  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -25,6 +24,7 @@ import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
+  INPUT_TYPE,
   spacing
 } from "../../Utilities/Constants/Constant";
 
@@ -78,12 +78,17 @@ export const typeOfAccrodin = {
   frequently: { value: "frequently", title: "Most frequently interaction" },
   rencently: { value: "rencently", title: "Recently inteaction" },
   searchbox: { value: "searchbox", title: "Seach input" },
+  productChoose: { value: "productChoose", title: "Select Product" },
+
 };
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
-
+  CREATE_INTERACTION_AUTO: "CREATE_INTERACTION_AUTO",
+  PRODUCT_WITH_MULTIPLE_ITEM: "PRODUCT_WITH_MULTIPLE_ITEM",
+  PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM"
 }
 const InteractionsToOrder = ({ route, navigation }) => {
+  const [createInteractionType, setCreateInteractionType] = useState("")
   const [activeService, setService] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState("");
   //need enable screen loader
@@ -137,6 +142,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
     // setUserType("");
     // setService("")
+    setCreateInteractionType("")
     setSolutionFound(false);
     setRequestStatementHistory([]);
     setProfileSeriveModal(false);
@@ -219,6 +225,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         PRIORITY,
         CONTACT_TYPE,
         INTXN_STATEMENT,
+        INTXN_CAUSE,
         PROBLEM_CAUSE,
         SERVICE_CATEGORY,
         INTXN_CATEGORY,
@@ -235,7 +242,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       // master only invoke load
       masterDispatch(
         getMasterData(
-          `${INTXN_TYPE},${SERVICE_TYPE},${PROBLEM_CAUSE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
+          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
         )
       );
       const userType = await getUserType();
@@ -249,7 +256,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
-  const problemList = get(masterReducer, "masterdataData.PROBLEM_CAUSE", []);
+  const problemList = get(masterReducer, "masterdataData.INTXN_CAUSE", []);
   const serviceTypelist = get(masterReducer, "masterdataData.SERVICE_TYPE", []);
   const serviceCategoryList = get(
     masterReducer,
@@ -306,17 +313,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const handleInteligenceResponse = async (resp, item = {}) => {
     try {
       const debugg = true
-      if (debugg) console.log('parms resp', resp, "item", item)
+      if (debugg) console.log('handleInteligenceResponse: parms resp', resp, "item", item)
       const isCreateInteraction = get(resp, 'outcome.interactionCreation', false)
-      if (debugg) console.log('isCreateInteraction api response', isCreateInteraction)
+      if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
       //interaction creation part  
       if (isCreateInteraction) {
         //todo popup
+        if (debugg) console.log('handleInteligenceResponse : crate interaction if condition')
+
         const status = interactionDataToCreateInt(item)
-        if (debugg) console.log('interactionDataToCreateInt func response', status)
+        if (debugg) console.log('handleInteligenceResponse : interactionDataToCreateInt func response', status)
 
         if (status) {
-          setOpenBottomModal(true)
+          await setBottombartitle("Create Interaction")
+          await setCreateInteractionType(INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO)
+          await setOpenBottomModal(true)
           console.log('success',)
           return true
         }
@@ -326,17 +337,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
         return 1
       }
       else {
+        if (debugg) console.log('handleInteligenceResponse : not create interaction else condition')
+
         const solutionList = get(resp, 'data', [])
         const solutionCount = solutionList.length
         if (solutionCount == 0) {
           //to do throw error
-
+          alert("//TO DO ")
 
         }
         if (solutionCount == 1) {
+          if (debugg) console.log('handleInteligenceResponse : one  solution')
+
           //directly navigate to corresponding order or product with payload [0]
         }
         else {
+          if (debugg) console.log('handleInteligenceResponse : multiple solution  solution')
+          await setCreateInteractionType(INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM)
+          setactiveChatBot(typeOfAccrodin.productChoose)
+          setOpenBottomModalChatBot(true)
           //to do bottom list item 
         }
         return true
@@ -406,11 +425,75 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const mockresponse = {
                     "outcome": {
                       "appointmentRequired": false,
-                      "orderCreation": false,
-                      "interactionCreation": true
+                      "orderCreation": true,
+                      "interactionCreation": false
                     },
-                    "data": []
+                    "data": [
+                      {
+                        "confirmMessage": "Would you like to proceed to order screen?",
+                        "message": "We have found excellent offers for you.",
+                        "displayType": "SELECTABLE",
+                        "result": [
+                          {
+                            "name": "Product name",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Debit Cards"
+                          },
+                          {
+                            "name": "Product category",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Service"
+                          },
+                          {
+                            "name": "Service type",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Bank Account"
+                          },
+                          {
+                            "name": "Warranty period",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "3 Years"
+                          }
+                        ]
+                      },
+                      {
+                        "confirmMessage": "Would you like to proceed to order screen?",
+                        "message": "We have found excellent offers for you.",
+                        "displayType": "SELECTABLE",
+                        "result": [
+                          {
+                            "name": "Product name",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Savings Accounts"
+                          },
+                          {
+                            "name": "Product category",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Service"
+                          },
+                          {
+                            "name": "Service type",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "Bank Account"
+                          },
+                          {
+                            "name": "Warranty period",
+                            "type": "text",
+                            "entity": "PRODUCT",
+                            "value": "3 Years"
+                          }
+                        ]
+                      }
+                    ]
                   }
+
                   const status = await handleInteligenceResponse(mockresponse, item)
                   console.log('response', status)
                   return null
@@ -456,7 +539,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
               />
             );
-          }}
+          }
+          }
         />
       );
     }
@@ -892,7 +976,63 @@ const InteractionsToOrder = ({ route, navigation }) => {
   let isButtonEnable = true;
 
   //handling loader
+  const HandleMultipleCaseInChatBoard = ({ suggestionList }) => {
+    //product list
+    if (createInteractionType == INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM) {
+      console.log('suggestion list', suggestionList)
+      return (
+        <View style={styles.bottomContainer}>
+          <ClearSpace size={2} />
+          <Text variant="labelMedium">Next Action - Resoltion</Text>
+          <ClearSpace size={2} />
 
+          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            {suggestionList.data.length > 0 ? (
+              suggestionList.data.map((ite) => (
+                <Chip
+                  mode="outlined"
+                  onPress={async () => {
+                    alert("navigate to product scrren with payload", JSON.stringify(ite))
+                  }}
+                  textStyle={{
+                    fontSize: 14,
+                    fontWeight: "400",
+                  }}
+                  style={{
+                    backgroundColor: "#edf1f7",
+                    borderRadius: 15,
+                    marginRight: 5,
+                    marginBottom: 5,
+                    borderColor: "transparent",
+                  }}
+                >
+                  {ite.message}
+                </Chip>
+              ))
+            ) : (
+              <View style={{ flex: 1 }}>
+                <Text style={{ textAlign: "center" }} variant="labelMedium">
+                  No data available!
+                </Text>
+              </View>
+            )}
+          </View>
+          <ClearSpace size={3} />
+
+          <Text variant="labelMedium" style={{ textAlign: "center" }}>
+            Couldn't Find a resolution?
+            <Text onPress={() => { }} style={{ color: "red" }}>
+              {" "}
+              Create Interaction
+            </Text>{" "}
+          </Text>
+        </View>
+      )
+    }
+    else {
+      <Text>Not Product</Text>
+    }
+  }
   /**
    * render bottom chat
    *
@@ -901,7 +1041,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     const suggestionList = get(interactionReducer, "InteractionData", []);
 
     if (activeChatBotSec == "") {
-      console.log("not active any section");
+      console.log("setactiveChatBot not set for title for chat bot");
       return null;
     }
     if (isSolutionFound) {
@@ -970,83 +1110,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </View>
       );
     }
+
     return (
-      <View style={styles.bottomContainer}>
-        <ClearSpace size={2} />
-        <Text variant="labelMedium">Next Action - Resoltion</Text>
-        <ClearSpace size={2} />
-
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          {suggestionList.length > 0 ? (
-            suggestionList.map((ite) => (
-              <Chip
-                mode="outlined"
-                onPress={() => {
-                  Alert.alert(
-                    strings.attention,
-                    "Are you sure want to create interaction",
-                    [
-                      {
-                        text: "Ok",
-                        onPress: () => {
-                          setLoader(true);
-                          let tempHistory = requestStatementHistory;
-                          tempHistory.push();
-                          setRequestStatementHistory(tempHistory);
-                          setLoader(false);
-                        },
-                      },
-                      {
-                        text: strings.close,
-                        onPress: () => { },
-                        style: "cancel",
-                      },
-                    ]
-                  );
-                }}
-                textStyle={{
-                  fontSize: 14,
-                  fontWeight: "400",
-                }}
-                style={{
-                  backgroundColor: "#edf1f7",
-                  borderRadius: 15,
-                  marginRight: 5,
-                  marginBottom: 5,
-                  borderColor: "transparent",
-                }}
-              >
-                {ite?.requestStatement}{" "}
-              </Chip>
-            ))
-          ) : (
-            <View style={{ flex: 1 }}>
-              <Text style={{ textAlign: "center" }} variant="labelMedium">
-                No data available!
-              </Text>
-            </View>
-          )}
-        </View>
-
-        <ClearSpace size={3} />
-
-        <Text variant="labelMedium" style={{ textAlign: "center" }}>
-          Couldn't Find a resolution?
-          <Text onPress={() => { }} style={{ color: "red" }}>
-            {" "}
-            Create Interaction
-          </Text>{" "}
-        </Text>
-      </View>
+      <HandleMultipleCaseInChatBoard suggestionList={suggestionList} />
     );
   };
+
   Object.keys(interactionRedux.formData).map((it) => {
     const item = interactionRedux.formData[it];
-
-    if (activeChatBotSec == "") {
-      console.log("not active any section");
-      return null;
+    if (item.type == INPUT_TYPE.INPUTBOX && item.required) {
+      if (item.value == "") {
+        isButtonEnable = false
+      }
     }
+    if (item.type == INPUT_TYPE.DROPDOWN && item.required) {
+      if (item.value.code == "") {
+        isButtonEnable == false
+      }
+    }
+    console.log('>>ffff', item)
+
   });
 
   const isModelOpen =
@@ -1184,7 +1267,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
         <RenderBottomChatBoard />
       </FooterModel>
 
-      <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}>
+      <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}
+        title={bottomBarTitle}>
         <ScrollView contentContainerStyle={{ flex: 1 }}>
           <KeyboardAvoidingView
             // keyboardVerticalOffset={50}
@@ -1193,141 +1277,143 @@ const InteractionsToOrder = ({ route, navigation }) => {
           >
             {/* Field View */}
             <View style={{ marginHorizontal: 10 }}>
+              {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
+                <>
+                  <CustomDropDownFullWidth
+                    selectedValue={get(interactionType, "value.description", "")}
+                    data={interactionList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "interactionType",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(interactionType, "value.code", "")}
+                    caption={strings.intractionType}
+                    placeHolder={"Select " + strings.intractionType}
+                  />
 
-              <CustomDropDownFullWidth
-                selectedValue={get(interactionType, "value.description", "")}
-                data={interactionList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionType",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(interactionType, "value.code", "")}
-                caption={strings.intractionType}
-                placeHolder={"Select " + strings.intractionType}
-              />
+                  {interactionType.error && showErrorMessage(interactionType.error)}
 
-              {interactionType.error && showErrorMessage(interactionType.error)}
+                  <CustomDropDownFullWidth
+                    selectedValue={get(serviceType, "value.description", "")}
+                    data={serviceTypelist}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "serviceType",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(serviceType, "value.code", "")}
+                    caption={strings.serviceType}
+                    placeHolder={"Select " + strings.serviceType}
+                  />
+                  {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
 
-              <CustomDropDownFullWidth
-                selectedValue={get(serviceType, "value.description", "")}
-                data={serviceTypelist}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceType",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(serviceType, "value.code", "")}
-                caption={strings.serviceType}
-                placeHolder={"Select " + strings.serviceType}
-              />
-              {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
+                  <CustomDropDownFullWidth
+                    selectedValue={get(
+                      interactionCategory,
+                      "value.description",
+                      ""
+                    )}
+                    data={interactionCategoryList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "interactionCategory",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(interactionCategory, "value.code", "")}
+                    caption={strings.serviceType}
+                    placeHolder={"Select interaction category"}
+                  />
 
-              <CustomDropDownFullWidth
-                selectedValue={get(
-                  interactionCategory,
-                  "value.description",
-                  ""
-                )}
-                data={interactionCategoryList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "interactionCategory",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(interactionCategory, "value.code", "")}
-                caption={strings.serviceType}
-                placeHolder={"Select interaction category"}
-              />
+                  {interactionCategory.error &&
+                    showErrorMessage(interactionCategory.error)}
 
-              {interactionCategory.error &&
-                showErrorMessage(interactionCategory.error)}
+                  <CustomDropDownFullWidth
+                    selectedValue={get(serviceCategory, "value.description", "")}
+                    data={serviceCategoryList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "serviceCategory",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(serviceCategory, "value.code", "")}
+                    caption={"Serive Category"}
+                    placeHolder={"Select Serive Category"}
+                  />
+                  {serviceCategory.error && showErrorMessage(serviceCategory.error)}
 
-              <CustomDropDownFullWidth
-                selectedValue={get(serviceCategory, "value.description", "")}
-                data={serviceCategoryList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "serviceCategory",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(serviceCategory, "value.code", "")}
-                caption={"Serive Category"}
-                placeHolder={"Select Serive Category"}
-              />
-              {serviceCategory.error && showErrorMessage(serviceCategory.error)}
+                  <CustomDropDownFullWidth
+                    selectedValue={get(problemCause, "value.description", "")}
+                    data={problemList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "problemCause",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(problemCause, "value.code", "")}
+                    caption={strings.problem_stat_cause}
+                    placeHolder={"Select " + strings.problem_stat_cause}
+                  />
+                  {problemCause.error && showErrorMessage(problemCause.error)}
 
-              <CustomDropDownFullWidth
-                selectedValue={get(problemCause, "value.description", "")}
-                data={problemList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "problemCause",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(problemCause, "value.code", "")}
-                caption={strings.problem_stat_cause}
-                placeHolder={"Select " + strings.problem_stat_cause}
-              />
-              {problemCause.error && showErrorMessage(problemCause.error)}
+                  <CustomDropDownFullWidth
+                    selectedValue={get(priorityCode, "value.description", "")}
+                    data={priorityList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "priorityCode",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(priorityCode, "value.code", "")}
+                    caption={strings.priority_type}
+                    placeHolder={"Select " + strings.priority_type}
+                  />
 
-              <CustomDropDownFullWidth
-                selectedValue={get(priorityCode, "value.description", "")}
-                data={priorityList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "priorityCode",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(priorityCode, "value.code", "")}
-                caption={strings.priority_type}
-                placeHolder={"Select " + strings.priority_type}
-              />
-
-              <CustomDropDownFullWidth
-                selectedValue={get(contactPerference, "value.description", "")}
-                data={contactTypeList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "contactPerference",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(contactPerference, "value.code", "")}
-                caption={strings.contact_type}
-                placeHolder={"Select " + strings.contact_type}
-              />
-              {contactPerference.error &&
-                showErrorMessage(contactPerference.error)}
-              {/* <KeyboardAwareView animated={false}> */}
-
+                  <CustomDropDownFullWidth
+                    selectedValue={get(contactPerference, "value.description", "")}
+                    data={contactTypeList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "contactPerference",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(contactPerference, "value.code", "")}
+                    caption={strings.contact_type}
+                    placeHolder={"Select " + strings.contact_type}
+                  />
+                  {contactPerference.error &&
+                    showErrorMessage(contactPerference.error)}
+                  {/* <KeyboardAwareView animated={false}> */}
+                </>
+              }
               <CustomInput
                 value={get(remarks, "value", "")}
                 caption={strings.remarks}
@@ -1359,12 +1445,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
               />
 
               {remarks.error && showErrorMessage(remarks.error)}
-              <ImagePicker
-                attachmentModalVisible={attachmentModalVisible}
-                setAttachmentModalVisible={setAttachmentModalVisible}
-                fileAttachments={fileAttachments}
-                setFileAttachments={setFileAttachments}
-              />
+              {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
+
+                <ImagePicker
+                  attachmentModalVisible={attachmentModalVisible}
+                  setAttachmentModalVisible={setAttachmentModalVisible}
+                  fileAttachments={fileAttachments}
+                  setFileAttachments={setFileAttachments}
+                />
+              }
               {/* </KeyboardAwareView> */}
               {/* <CustomInput
             value={attachment.value}
