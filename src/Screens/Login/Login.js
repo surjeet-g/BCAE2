@@ -63,7 +63,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(false);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [username, setUsername] = useState("kamal@yopmail.com");
   const [password, setPassword] = useState("Test@123");
   //bussiness
   // const [username, setUsername] = useState("mobappbcae@yopmail.com");
@@ -251,6 +251,130 @@ export const Login = ({ navigation }) => {
     }
   };
 
+  const renderBottomUI = () => {
+    return (
+      <StickyFooter>
+        {/* Login View */}
+        <CustomButton
+          loading={login.initLogin}
+          label={strings.login}
+          isDisabled={
+            loginMode === EMAIL
+              ? username == "" || password == ""
+                ? true
+                : false
+              : number == "" || password == ""
+              ? true
+              : false
+          }
+          onPress={() => {
+            loginMode === EMAIL
+              ? submitWithEmail(PASSWORD)
+              : submitWithMobile(PASSWORD);
+          }}
+        />
+        <Text
+          style={{
+            color: "#393939",
+            fontSize: fontSizes.FONT_14,
+            textAlign: "center",
+            fontWeight: 400,
+            marginTop: 10,
+          }}
+        >
+          By continuing, I accept and agree to BCAE
+        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#4B3694",
+              marginTop: 5,
+            }}
+            onPress={() => alert("Navigate to T&C")}
+          >
+            Terms & Conditions of Use
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#000000",
+              marginTop: 5,
+            }}
+          >
+            {" "}
+            &{" "}
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT_14,
+              textAlign: "center",
+              fontWeight: 600,
+              color: "#4B3694",
+              marginTop: 5,
+            }}
+            onPress={() => alert("Navigate to Privacy Policy")}
+          >
+            Privacy Policy
+          </Text>
+        </View>
+        <Text
+          style={{
+            color: "#393939",
+            fontSize: fontSizes.FONT_12,
+            textAlign: "center",
+            fontWeight: 400,
+            marginTop: 10,
+          }}
+        >
+          © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+        </Text>
+      </StickyFooter>
+    );
+  };
+
+  const renderModalUI = () => {
+    return (
+      <Modal
+        visible={login?.showSecondLoginAlert}
+        dismissable={false}
+        contentContainerStyle={{
+          backgroundColor: "white",
+          padding: 20,
+          margin: 20,
+          borderRadius: 10,
+        }}
+      >
+        <View>
+          <Text style={{ fontSize: 22 }}>Login Error</Text>
+          <Text style={{ marginTop: 10, fontSize: 18 }}>
+            {login?.secondLoginAlertInfo?.data?.message}
+          </Text>
+          <CustomButton
+            label={"Ok"}
+            onPress={() =>
+              dispatch(
+                callLogoutAndLogin(
+                  login?.secondLoginAlertInfo?.data?.data?.userId,
+                  navigation,
+                  params
+                )
+              )
+            }
+          />
+          <CustomButton
+            label={"Cancel"}
+            onPress={() => dispatch(resetShowSecondLoginAlert())}
+          />
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <ImageBackground
       style={styles.container}
@@ -277,32 +401,27 @@ export const Login = ({ navigation }) => {
               }}
             >
               {/* Toggle Button View */}
-              <View>
-                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
-                  {strings.check_usertype}
-                </Text> */}
-                <ToggleButton
-                  isFirstSelected={isFirstSelected}
-                  label={{
-                    first: BUSINESS,
-                    second: CONSUMER,
-                  }}
-                  bgColor={{
-                    selected: color.BCAE_PRIMARY,
-                    unselected: color.BCAE_LIGHT_BLUE_2,
-                  }}
-                  textColor={{
-                    selected: color.WHITE,
-                    unselected: color.BCAE_PRIMARY,
-                  }}
-                  textPro={{
-                    fontSize: fontSizes.FONT_13,
-                    lineHeight: spacing.HEIGHT_16,
-                  }}
-                  onPressFirst={onSelectBusinessUserType}
-                  onPressSecond={onSelectConsumerUserType}
-                ></ToggleButton>
-              </View>
+              <ToggleButton
+                isFirstSelected={isFirstSelected}
+                label={{
+                  first: BUSINESS,
+                  second: CONSUMER,
+                }}
+                bgColor={{
+                  selected: color.BCAE_PRIMARY,
+                  unselected: color.BCAE_LIGHT_BLUE_2,
+                }}
+                textColor={{
+                  selected: color.WHITE,
+                  unselected: color.BCAE_PRIMARY,
+                }}
+                textPro={{
+                  fontSize: fontSizes.FONT_13,
+                  lineHeight: spacing.HEIGHT_16,
+                }}
+                onPressFirst={onSelectBusinessUserType}
+                onPressSecond={onSelectConsumerUserType}
+              />
 
               {/* Radio Button View */}
               <View
@@ -454,25 +573,23 @@ export const Login = ({ navigation }) => {
               }}
             >
               {/* Login with OTP View */}
-              <View>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    alignSelf: "center",
-                    marginVertical: spacing.HEIGHT_10,
-                    color: "#BF873A",
-                    fontWeight: 700,
-                    fontSize: fontSizes.FONT_20,
-                  }}
-                  onPress={() => {
-                    loginMode === EMAIL
-                      ? submitWithEmailOTP(OTP)
-                      : submitWithMobileOTP(OTP);
-                  }}
-                >
-                  {strings.login_with_otp}
-                </Text>
-              </View>
+              <Text
+                style={{
+                  textAlign: "center",
+                  alignSelf: "center",
+                  marginVertical: spacing.HEIGHT_10,
+                  color: "#BF873A",
+                  fontWeight: 700,
+                  fontSize: fontSizes.FONT_20,
+                }}
+                onPress={() => {
+                  loginMode === EMAIL
+                    ? submitWithEmailOTP(OTP)
+                    : submitWithMobileOTP(OTP);
+                }}
+              >
+                {strings.login_with_otp}
+              </Text>
 
               {/* Forgot Password View */}
               <View
@@ -519,7 +636,7 @@ export const Login = ({ navigation }) => {
                     textPro={{
                       color: color.WHITE,
                       fontSize: fontSizes.FONT_14,
-                      fontWeight: "700",
+                      fontWeight: 700,
                     }}
                     img={
                       login?.loggedProfile?.errorCode == "10001"
@@ -535,124 +652,10 @@ export const Login = ({ navigation }) => {
                 </View>
               )}
           </ScrollView>
-          <StickyFooter>
-            {/* Login View */}
-            <View>
-              <CustomButton
-                loading={login.initLogin}
-                label={strings.login}
-                isDisabled={
-                  loginMode === EMAIL
-                    ? username == "" || password == ""
-                      ? true
-                      : false
-                    : number == "" || password == ""
-                    ? true
-                    : false
-                }
-                onPress={() => {
-                  loginMode === EMAIL
-                    ? submitWithEmail(PASSWORD)
-                    : submitWithMobile(PASSWORD);
-                }}
-              />
-            </View>
-            <Text
-              style={{
-                color: "#393939",
-                fontSize: fontSizes.FONT_14,
-                textAlign: "center",
-                fontWeight: 400,
-                marginTop: 10,
-              }}
-            >
-              By continuing, I accept and agree to BCAE
-            </Text>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <Text
-                style={{
-                  fontSize: fontSizes.FONT_14,
-                  textAlign: "center",
-                  fontWeight: 600,
-                  color: "#4B3694",
-                  marginTop: 5,
-                }}
-                onPress={() => alert("Navigate to T&C")}
-              >
-                Terms & Conditions of Use
-              </Text>
-              <Text
-                style={{
-                  fontSize: fontSizes.FONT_14,
-                  textAlign: "center",
-                  fontWeight: 600,
-                  color: "#000000",
-                  marginTop: 5,
-                }}
-              >
-                {" "}
-                &{" "}
-              </Text>
-              <Text
-                style={{
-                  fontSize: fontSizes.FONT_14,
-                  textAlign: "center",
-                  fontWeight: 600,
-                  color: "#4B3694",
-                  marginTop: 5,
-                }}
-                onPress={() => alert("Navigate to Privacy Policy")}
-              >
-                Privacy Policy
-              </Text>
-            </View>
-            <Text
-              style={{
-                color: "#393939",
-                fontSize: fontSizes.FONT_12,
-                textAlign: "center",
-                fontWeight: 400,
-                marginTop: 10,
-              }}
-            >
-              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
-            </Text>
-          </StickyFooter>
+          {renderBottomUI()}
         </View>
         {/* Modal for showing the second login alert */}
-        <Modal
-          visible={login?.showSecondLoginAlert}
-          dismissable={false}
-          contentContainerStyle={{
-            backgroundColor: "white",
-            padding: 20,
-            margin: 20,
-            borderRadius: 10,
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 22 }}>Login Error</Text>
-            <Text style={{ marginTop: 10, fontSize: 18 }}>
-              {login?.secondLoginAlertInfo?.data?.message}
-            </Text>
-            <CustomButton
-              label={"Ok"}
-              onPress={() =>
-                dispatch(
-                  callLogoutAndLogin(
-                    login?.secondLoginAlertInfo?.data?.data?.userId,
-                    navigation,
-                    params
-                  )
-                )
-              }
-            />
-            <CustomButton
-              label={"Cancel"}
-              onPress={() => dispatch(resetShowSecondLoginAlert())}
-            />
-          </View>
-        </Modal>
+        {renderModalUI()}
       </KeyboardAwareView>
     </ImageBackground>
   );
@@ -661,7 +664,7 @@ export const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.BCAE_OFF_WHITE,
+    backgroundColor: "#F0F0F0",
   },
   toast: {
     position: "absolute",
