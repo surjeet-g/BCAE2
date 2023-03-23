@@ -42,3 +42,27 @@ export const handleMultipleContact = (addr) => {
 
   return addresObjToString(primaryAddress[0]);
 };
+
+export const handleUserStatus = (status) => {
+  if (status == "") return ""
+  let result = ""
+  switch (status) {
+    case "AC":
+      result = "Active"
+      break;
+    case "IN":
+      result = "Inactive"
+      break;
+    case "SUS":
+      result = "Suspended"
+      break;
+
+    default:
+      return ""
+      break;
+
+  }
+  return result
+
+
+};
