@@ -14,6 +14,7 @@ import {
 import get from "lodash.get";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import Camara from "../../Assets/svg/camera_icon.svg";
+import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDown } from "../../Components/CustomDropDown";
@@ -21,6 +22,7 @@ import { CustomInput } from "../../Components/CustomInput";
 import { FullPageLoder } from "../../Components/FullPageLoder";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
   setProfileReset
@@ -36,26 +38,27 @@ import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
+import { getUserTypeForProfile } from "../../Utilities/UserManagement/userInfo";
 import {
   handleMultipleContact, handleUserStatus
 } from "../../Utilities/utils";
-
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
   let savedLocation = useSelector((state) => state.savedLocations);
+
   const dispatchSaveLocation = useDispatch([fetchSavedLocations]);
   const fetchSavedLocationData = () =>
     dispatchSaveLocation(fetchSavedLocations());
 
   const [locationdelete, setLocation] = useState("");
-
+  const [userTyp, setUserType] = useState("")
   const [isSaveButtonDisable, setSaveButtomEnableDisable] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [loginId, setLoginId] = useState("");
   const [countryError, setCountryError] = useState("");
   const [locationError, setLocationError] = useState("");
-
+  const [counter, setCounter] = useState(1)
   let registerForm = useSelector((state) => state.registerForm);
   const dispatch1 = useDispatch([
     fetchRegisterFormData,
@@ -81,7 +84,7 @@ const EditProfile = ({ navigation, props }) => {
   const [district, setDistrict] = useState("");
   const [country, setCountry] = useState("");
   const [postCode, setPostcode] = useState("");
-
+  const [contactValues, setContactValues] = useState([])
   useEffect(() => {
     // dispatch1(setProfileReset());
     getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
@@ -90,6 +93,7 @@ const EditProfile = ({ navigation, props }) => {
       }
     });
     dispatch1(fetchRegisterFormData());
+
   }, []);
 
   useLayoutEffect(() => {
@@ -101,11 +105,22 @@ const EditProfile = ({ navigation, props }) => {
   }, [navigation]);
 
   const dispatch2 = useDispatch([fetchMyProfileData, updateProfileData]);
-  console.log("res.data.country : ", profile.savedProfileData);
-
+  const masterDispatch = useDispatch([getMasterData]);
   useEffect(() => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
+      const userType = await getUserTypeForProfile();
+      const {
+        CONTACT_PREFERENCE,
+      } = MASTER_DATA_CONSTANT;
+
+      masterDispatch(
+        getMasterData(
+          `${CONTACT_PREFERENCE}`
+        )
+      );
+
+      setUserType(userType);
     }
     fetchMyAPI();
   }, []);
@@ -284,6 +299,12 @@ const EditProfile = ({ navigation, props }) => {
     buttonEnableDisable();
   };
 
+  const isbuttonEnable = () => {
+    if (get(contactValues, 'length', 0) === 0) return false
+    if (get(contactValues.filter(itm => itm.active == true), 'length', 0) == 0) return null
+    if (firstName == "" || lastName == "") return false
+    return true
+  }
   const submit = async () => {
 
     Keyboard.dismiss();
@@ -352,12 +373,30 @@ const EditProfile = ({ navigation, props }) => {
       </View>
     );
   };
-
+  const masterReducer = useSelector((state) => state.masterdata);
   const customerPic =
     get(profile, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
 
   const addresss = get(profile, "savedProfileData.customerAddress", []);
+  const contactPerference = get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []);
+  console.log('>>contactPerference', contactPerference)
+
+
+  // const profileCurrentPer =  get(profile, "savedProfileData.contactPreferences", "")}
+  const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
+  let contactPerf = []
+  if (get(contactPerference, 'length', 0) != 0 && get(profileCurrentPer, "length", 0) != 0) {
+    contactPerf = contactPerference.map(it => {
+
+      return ({
+        code: it.code,
+        description: it.description,
+        active: profileCurrentPer.includes(it.code)
+      })
+
+    })
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -491,6 +530,29 @@ const EditProfile = ({ navigation, props }) => {
                 {lastNameError && showErrorMessage(lastNameError)}
               </View>
 
+              <View style={{ marginTop: spacing.HEIGHT_5 }}>
+                <CustomInput
+                  editable={false}
+                  caption={strings.country}
+                  placeholder={strings.country}
+                  onChangeText={(text) => { }}
+                  value={get(profile, "savedProfileData.customerAddress[0].country", "")}
+
+                />
+
+              </View>
+              <View style={{ marginTop: spacing.HEIGHT_5 }}>
+                {contactPerf.length != 0 && <CheckGroupbox
+                  data={contactPerf}
+                  values={contactValues}
+                  setValues={(data) => {
+                    setContactValues(data)
+                    setCounter(counter + 1)
+                  }}
+                  label="Contact Preference"
+                />}
+
+              </View>
               {/* Gender */}
               <View style={{}}>
                 <CustomDropDown
@@ -571,6 +633,17 @@ const EditProfile = ({ navigation, props }) => {
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
                 {countryError !== "" && showErrorMessage(countryError)}
               </View> */}
+              <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  value={userTyp}
+                  placeHolder={"User Type"}
+                  caption={"User Type"}
+
+                  disabled={true}
+                />
+
+
+              </View>
 
               {/* Mobile Number */}
               <View style={{ marginTop: 10 }}>
@@ -628,7 +701,7 @@ const EditProfile = ({ navigation, props }) => {
               loading={false}
               label={"Update"}
               isDisabled={
-                false
+                !isbuttonEnable()
               }
               onPress={async () => {
 
