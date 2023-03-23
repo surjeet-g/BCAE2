@@ -73,3 +73,18 @@ export const getUserType = async () => {
 
   return userType;
 };
+export const getUserTypeForProfile = async () => {
+  let userType;
+  try {
+
+    userType = await getDataFromDB(storageKeys.USERTYPE)
+
+
+    if (userType == null) throw "User Type  empty";
+
+  } catch (error) {
+    console.log("user Type is ", error);
+  }
+
+  return userType;
+};
