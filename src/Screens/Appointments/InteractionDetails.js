@@ -9,7 +9,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
@@ -132,7 +131,7 @@ const InteractionDetails = (props) => {
             />
           </View>
           {/* View More view */}
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               if (index == 1) {
                 navigation.navigate("WorkflowHistory");
@@ -161,7 +160,7 @@ const InteractionDetails = (props) => {
                 style={{ marginLeft: 10, tintColor: "#EFA848" }}
               />
             </View>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     );
@@ -674,7 +673,7 @@ const InteractionDetails = (props) => {
             renderItem={({ item, index }) => (
               <HorizontalFlatListItem item={item} index={index} />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index}
           />
         </View>
       </ScrollView>

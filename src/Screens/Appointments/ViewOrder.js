@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
-  Dimensions,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   View,
   Image,
@@ -17,7 +16,6 @@ import { CustomButton } from "../../Components/CustomButton";
 import { strings } from "../../Utilities/Language";
 import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
-import FileName from "./../../Components/FileName";
 import Slot from "./../../Components/Slot";
 
 const ViewOrder = (props) => {
@@ -31,9 +29,8 @@ const ViewOrder = (props) => {
   const [contactType, setContactType] = useState("");
   const [remarks, setRemarks] = useState("");
   const [selectedSlots, setseSectedSlots] = useState("");
-  const [showIndex, setShowIndex] = useState(0);
 
-  const FlatListItem = (props) => {
+  const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
     return (
       <View
@@ -69,14 +66,19 @@ const ViewOrder = (props) => {
             />
           </View>
           {/* View More view */}
-          <TouchableOpacity onPress={() => setShowIndex(index)}>
+          <Pressable
+            onPress={() => {
+              if (index == 1) {
+                navigation.navigate("WorkflowHistory");
+              }
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
                 marginTop: 30,
                 justifyContent: "space-between",
               }}
-              onPress={() => setShowIndex(index)}
             >
               <Text
                 variant="bodySmall"
@@ -93,150 +95,8 @@ const ViewOrder = (props) => {
                 style={{ marginLeft: 10, tintColor: "#EFA848" }}
               />
             </View>
-          </TouchableOpacity>
+          </Pressable>
         </View>
-      </View>
-    );
-  };
-
-  const WorkFlowUI = () => {
-    return (
-      <View style={{ alignItems: "center" }}>
-        <Image
-          source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
-          style={{ width: 30, height: 30 }}
-        />
-        <Image
-          source={require("../../Assets/icons/ic_veritical_line.png")}
-          style={{ height: 100 }}
-        />
-        {/* Card View data */}
-        <View
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#FCEEDA",
-            padding: 10,
-            width: "100%",
-          }}
-        >
-          {/* Date & Time View */}
-          <Text
-            style={{
-              borderRadius: 10,
-              backgroundColor: "#EFA848",
-              padding: 10,
-              textAlign: "center",
-              width: "70%",
-              alignSelf: "center",
-              color: "white",
-              bottom: 30,
-              fontWeight: 600,
-              fontSize: 16,
-            }}
-          >
-            10 Feb 2023 09:30 AM
-          </Text>
-
-          {/* Row 1 */}
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            {/* Statement View */}
-            <WorkFlowItem
-              title={"Statement"}
-              value={"Dissatisfaction with Policies"}
-            />
-          </View>
-
-          {/* Row 2 */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 10,
-            }}
-          >
-            {/* Statement View */}
-            <WorkFlowItem title={"Statement"} value={" Dissatisfaction"} />
-
-            {/* Statement View */}
-            <WorkFlowItem title={"Statement"} value={" Dissatisfaction"} />
-          </View>
-
-          {/* Row 3 */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 10,
-            }}
-          >
-            {/* Statement View */}
-            <WorkFlowItem
-              title={"Statement"}
-              value={"Dissatisfaction with Policies"}
-            />
-          </View>
-
-          {/* Row 4 */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 10,
-            }}
-          >
-            {/* Comments View */}
-            <WorkFlowItem title={"Comments"} value={"Assign to self"} />
-          </View>
-        </View>
-        <Image
-          source={require("../../Assets/icons/ic_veritical_line.png")}
-          style={{ height: 50 }}
-        />
-        <Image
-          source={require("../../Assets/icons/ic_eclipse_orange.png")}
-          style={{ width: 20, height: 20 }}
-        />
-        {/* Follow up button view */}
-        <CustomButton
-          buttonStyle={{ width: "100%" }}
-          label={strings.follow_up}
-          onPress={() => alert("Go to Follow up history")}
-        />
-      </View>
-    );
-  };
-
-  const WorkFlowItem = (props) => {
-    const { title, value } = props;
-    return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-        }}
-      >
-        <Text
-          variant="bodySmall"
-          style={{
-            fontWeight: 400,
-            fontSize: 14,
-            color: "#686B6C",
-          }}
-        >
-          {title}
-        </Text>
-        <Text
-          variant="bodySmall"
-          style={{
-            fontWeight: 600,
-            fontSize: 16,
-            color: "#202223",
-            marginTop: 5,
-          }}
-        >
-          {value}
-        </Text>
       </View>
     );
   };
@@ -533,7 +393,7 @@ const ViewOrder = (props) => {
       <View
         style={{
           borderRadius: 10,
-          backgroundColor: "#FFEEEF",
+          backgroundColor: "#DADADA",
           width: "80%",
           marginTop: 20,
           alignSelf: "center",
@@ -544,7 +404,7 @@ const ViewOrder = (props) => {
       >
         <Text
           style={{
-            color: "#CA404A",
+            color: "#000000",
             fontWeight: 600,
             fontSize: 16,
             textAlign: "center",
@@ -568,7 +428,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 400,
                 fontSize: 14,
-                color: "#7E282E",
+                color: "#4A4A4A",
                 textAlign: "center",
               }}
             >
@@ -579,7 +439,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 700,
                 fontSize: 16,
-                color: "#CA404A",
+                color: "#000000",
                 marginTop: 5,
               }}
             >
@@ -604,7 +464,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 400,
                 fontSize: 14,
-                color: "#7E282E",
+                color: "#4A4A4A",
                 textAlign: "center",
               }}
             >
@@ -615,7 +475,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 700,
                 fontSize: 16,
-                color: "#CA404A",
+                color: "#000000",
                 marginTop: 5,
               }}
             >
@@ -640,7 +500,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 400,
                 fontSize: 14,
-                color: "#7E282E",
+                color: "#4A4A4A",
                 textAlign: "center",
               }}
             >
@@ -651,7 +511,7 @@ const ViewOrder = (props) => {
               style={{
                 fontWeight: 700,
                 fontSize: 16,
-                color: "#CA404A",
+                color: "#000000",
                 marginTop: 5,
               }}
             >
@@ -673,21 +533,17 @@ const ViewOrder = (props) => {
           <FlatList
             horizontal
             initialNumToRender={2}
+            showsHorizontalScrollIndicator={false}
             data={[
               { title: `Appointment${"\n"}Details` },
               { title: `Workflow${"\n"}History` },
-              { title: "Not Available kamal is good person" },
             ]}
             renderItem={({ item, index }) => (
-              <FlatListItem item={item} index={index} />
+              <HorizontalFlatListItem item={item} index={index} />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index}
           />
         </View>
-        {/* Appointment Details View */}
-        {showIndex === 0 ? <AppointmentUIForm /> : null}
-        {/* Workflow History View */}
-        {showIndex === 1 ? <WorkFlowUI /> : null}
       </ScrollView>
 
       {/* Bottom Button View */}
@@ -712,7 +568,8 @@ const ViewOrder = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    backgroundColor: "#F0F0F0",
+    paddingTop: 50,
   },
   scrollviewContainer: {
     margin: 15,
