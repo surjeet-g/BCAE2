@@ -262,128 +262,77 @@ const ViewOrder = (props) => {
     );
   };
 
-  const CustomerInfoItem = (props) => {
+  const ProfileInfoItem = (props) => {
     const { title, value } = props;
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          //   backgroundColor: "blue",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          variant="bodySmall"
-          style={{
-            fontWeight: 600,
-            fontSize: 14,
-            color: colors.inverseSecondary,
-            textAlign: "center",
-          }}
-        >
+      <View style={styles.interactionHistoryItemView}>
+        <Text variant="bodySmall" style={styles.profileInfoItemTitleTxt}>
           {title}
         </Text>
-        <Text
-          variant="bodySmall"
-          style={{
-            fontWeight: 400,
-            fontSize: 12,
-            color: colors.inverseSecondary,
-            marginTop: 5,
-          }}
-        >
+        <Text variant="bodySmall" style={styles.profileInfoItemValueTxt}>
           {value}
         </Text>
       </View>
     );
   };
 
-  const CustomerInfoUIFull = () => {
+  const ProfileInfoUIView = () => {
     return (
-      <View
-        style={{
-          margin: 5,
-          padding: 20,
-          backgroundColor: "#F26E77",
-          borderRadius: 10,
-          elevation: 5,
-        }}
-      >
+      <View style={styles.profileInfoView}>
         {/* Profile Image Name & Email View Container */}
         <View style={{ flexDirection: "row", marginTop: 10 }}>
           {/* Profile Image View */}
-          <View>
-            <Image
-              source={{
-                uri: `data:image/jpeg;base64,${DEFAULT_PROFILE_IMAGE}`,
-              }}
-              style={{ height: 60, width: 60, borderRadius: 10 }}
-            />
-          </View>
+          <Image
+            source={{
+              uri: `data:image/jpeg;base64,${DEFAULT_PROFILE_IMAGE}`,
+            }}
+            style={styles.profileInfoImg}
+          />
           {/* Profile Name & Email View */}
           <View style={{ flexDirection: "column", marginLeft: 10 }}>
-            <Text
-              variant="bodyMedium"
-              style={{
-                fontWeight: 700,
-                color: colors.inverseSecondary,
-              }}
-            >
+            <Text variant="bodyMedium" style={styles.profileInfoTitleTxt}>
               Rohit Sharma
             </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                color: colors.inverseSecondary,
-              }}
-            >
+            <Text variant="bodySmall" style={styles.profileInfoSubTitleTxt}>
               Customer Id: 10
             </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                color: colors.inverseSecondary,
-              }}
-            >
+            <Text variant="bodySmall" style={styles.profileInfoSubTitleTxt}>
               rohit@bahawancybertek.com
             </Text>
           </View>
         </View>
 
         {/* Divider line view */}
-        <View style={{ marginTop: 10 }}>
-          <Image source={require("../../Assets/icons/line.png")} />
-        </View>
+        <View
+          style={{ marginTop: 10, height: 1, backgroundColor: "#B2B2B2" }}
+        ></View>
 
         {/* More Profile Data View 1 */}
         <View style={{ flexDirection: "row", marginTop: 10 }}>
           {/* Customer Number View */}
-          <CustomerInfoItem title={`Customer${"\n"}Number`} value={"1123445"} />
+          <ProfileInfoItem title={`Customer${"\n"}Number`} value={"1123445"} />
 
           {/* Customer Type View */}
-          <CustomerInfoItem title={`Customer${"\n"}Type`} value={"Business"} />
+          <ProfileInfoItem title={`Customer${"\n"}Type`} value={"Business"} />
 
           {/* Service Type View */}
-          <CustomerInfoItem title={`Service${"\n"}Type`} value={"Postpaid"} />
+          <ProfileInfoItem title={`Service${"\n"}Type`} value={"Postpaid"} />
         </View>
 
         {/* More Profile Data View 2*/}
         <View style={{ flexDirection: "row", marginTop: 20 }}>
           {/* Plan Name View */}
-          <CustomerInfoItem title={`Plan Name`} value={" 10GB- Internet"} />
+          <ProfileInfoItem title={`Plan Name`} value={" 10GB- Internet"} />
 
           {/* ID Type View */}
-          <CustomerInfoItem title={`ID Type`} value={"Passport"} />
+          <ProfileInfoItem title={`ID Type`} value={"Passport"} />
 
           {/* Empty View */}
-          <CustomerInfoItem title={""} value={""} />
+          <ProfileInfoItem title={""} value={""} />
         </View>
 
         {/* Interaction History View */}
-        <CustomerInfoInteractionHistoryUI />
+        <InteractionHistoryUI />
       </View>
     );
   };
@@ -402,10 +351,12 @@ const ViewOrder = (props) => {
     );
   };
 
-  const CustomerInfoInteractionHistoryUI = () => {
+  const InteractionHistoryUI = () => {
     return (
       <View style={styles.interactionHistoryView}>
-        <Text style={styles.interactionHistoryTxt}>Interaction History</Text>
+        <Text style={styles.interactionHistoryTxt}>
+          {strings.interaction_history}
+        </Text>
         <View style={{ flexDirection: "row" }}>
           {/* Total View */}
           <InteractionHistoryItem title={"Total"} value={"02"} />
@@ -422,7 +373,7 @@ const ViewOrder = (props) => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Profile Information View Full Container */}
-        <CustomerInfoUIFull />
+        <ProfileInfoUIView />
         {/* Flatlist Horizontal view */}
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <FlatList
@@ -476,7 +427,7 @@ const styles = StyleSheet.create({
     width: "80%",
     marginTop: 20,
     alignSelf: "center",
-    elevation: 5,
+    elevation: 2,
     flexDirection: "column",
     padding: 10,
   },
@@ -504,5 +455,33 @@ const styles = StyleSheet.create({
     color: "#000000",
     marginTop: 5,
   },
+  profileInfoItemTitleTxt: {
+    fontWeight: 600,
+    fontSize: 14,
+    color: "#000000",
+    textAlign: "center",
+  },
+  profileInfoItemValueTxt: {
+    fontWeight: 400,
+    fontSize: 12,
+    color: "#000000",
+    marginTop: 5,
+  },
+  profileInfoView: {
+    margin: 5,
+    padding: 20,
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    elevation: 5,
+  },
+  profileInfoTitleTxt: {
+    fontWeight: 700,
+    color: "#000000",
+  },
+  profileInfoSubTitleTxt: {
+    fontWeight: 400,
+    color: "#000000",
+  },
+  profileInfoImg: { height: 60, width: 60, borderRadius: 10 },
 });
 export default ViewOrder;
