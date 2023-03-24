@@ -3,7 +3,7 @@ import {
   setProfileData,
   setProfileError,
   setSearchProfileData,
-  setSearchProfileDataError,
+  setSearchProfileDataError
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";

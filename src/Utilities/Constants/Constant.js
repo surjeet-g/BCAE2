@@ -15,6 +15,7 @@ export const ACCOUNT_TYPE = {
 export const INPUT_TYPE = {
   INPUTBOX: 0,
   DROPDOWN: 1,
+  ARRAY: 2
 
 }
 export const DATE_FORMAT = "YYYY-MM-DD"

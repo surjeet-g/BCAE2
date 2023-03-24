@@ -415,18 +415,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const contactPerFromProfile = get(
                     profileReducer,
                     "savedProfileData.contactPreferences",
-                    [{ code: "", description: "" }]
+                    []
                   );
                   //make array
-                  const contactPerferance = get(
-                    contactTypeList?.filter(
-                      (it) => it.code == contactPerFromProfile
-                    ),
-                    "[0]",
-                    { code: "", description: "" }
-                  );
 
-                  setDropDownFormField("contactPerference", contactPerferance);
+                  setFormField("contactPerference", contactPerFromProfile);
                   //set contact perferance
 
                   setDropDownFormField("interactionCategory", interCat);
@@ -460,6 +453,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
       setInteractionFormField({
         field,
         value: { code: code, description: description },
+        clearError: true,
+      })
+    );
+  };
+
+  const setFormField = (field, value) => {
+    dispatchInteraction(
+      setInteractionFormField({
+        field,
+        value,
         clearError: true,
       })
     );
@@ -1260,25 +1263,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 placeHolder={"Select " + strings.priority_type}
               />
 
-              <CustomDropDownFullWidth
-                selectedValue={get(contactPerference, "value.description", "")}
-                data={contactTypeList}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "contactPerference",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                value={get(contactPerference, "value.code", "")}
-                caption={strings.contact_type}
-                placeHolder={"Select " + strings.contact_type}
-              />
-              {contactPerference.error &&
-                showErrorMessage(contactPerference.error)}
-              {/* <KeyboardAwareView animated={false}> */}
+
 
               <CustomInput
                 value={get(remarks, "value", "")}
@@ -1373,7 +1358,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       serviceType: input.serviceType.value?.code,
                       channel: input.channel.value,
                       priorityCode: input.priorityCode.value?.code,
-                      contactPreference: [input.contactPerference.value?.code],
+                      contactPreference: input.contactPerference.value,
                       remarks: input.remarks.value,
                     };
                     console.log(">>", params);

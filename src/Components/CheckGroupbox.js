@@ -1,5 +1,5 @@
 import get from "lodash.get";
-import React from "react";
+import React, { useEffect } from "react";
 import { Pressable, View } from "react-native";
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +16,11 @@ import { commonStyle } from '../Utilities/Style/commonStyle';
 export const CheckGroupbox = ({
     data, label, setValues, values
 }) => {
+    useEffect(() => {
+        setValues(data)
+        console.log('>>useEfff', data)
+        // setValues(data)
+    }, [])
 
     console.log('intial data', data, "values", values)
     const { colors } = useTheme();
