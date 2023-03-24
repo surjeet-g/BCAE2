@@ -18,7 +18,7 @@ import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import Slot from "./../../Components/Slot";
 
-const ViewOrder = (props) => {
+const AppointmentDetails = (props) => {
   const { route, navigation } = props;
   const { colors, fonts, roundness } = useTheme();
 
@@ -489,4 +489,4 @@ const styles = StyleSheet.create({
   },
   profileInfoImg: { height: 60, width: 60, borderRadius: 10 },
 });
-export default ViewOrder;
+export default AppointmentDetails;

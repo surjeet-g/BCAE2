@@ -133,7 +133,9 @@ const InteractionDetails = (props) => {
           {/* View More view */}
           <Pressable
             onPress={() => {
-              if (index == 1) {
+              if (index == 0) {
+                navigation.navigate("AppointmentDetails");
+              } else if (index == 1) {
                 navigation.navigate("WorkflowHistory");
               }
             }}
