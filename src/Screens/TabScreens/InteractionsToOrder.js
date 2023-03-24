@@ -13,10 +13,10 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { Chip, List, Text, useTheme } from "react-native-paper";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
@@ -25,7 +25,7 @@ import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
-  spacing
+  spacing,
 } from "../../Utilities/Constants/Constant";
 
 import { strings } from "../../Utilities/Language";
@@ -38,12 +38,12 @@ import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js
 import {
   addInteractionAction,
   fetchInteractionAction,
-  updateInteractionAction
+  updateInteractionAction,
 } from "../../Redux/InteractionDispatcher";
 
 import {
   setInteractionFormField,
-  setInteractionReset
+  setInteractionReset,
 } from "../../Redux/InteractionAction";
 
 import get from "lodash.get";
@@ -59,17 +59,21 @@ import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
 import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
-import { fetchSavedProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
+import {
+  fetchSavedProfileData,
+  fetchSavedProfileDataByUser,
+  seachCustomers,
+} from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import {
   getCustomerID,
   getUserType,
-  USERTYPE
+  USERTYPE,
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -772,17 +776,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <>
             <Pressable
               onPress={() => {
-                setProfileSeriveModal(false)
+                setProfileSeriveModal(false);
               }}
               style={{
                 backgroundColor: "transparent",
                 position: "absolute",
                 width: width,
                 height: height,
-
-              }}>
-
-            </Pressable>
+              }}
+            ></Pressable>
             <View style={styles.modelContainerProfile}>
               {serviceList.map((ite) => {
                 return (
@@ -794,7 +796,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       padding: 0,
                       margin: 0,
                     }}
-
                     onPress={() => {
                       setService(ite);
                       setProfileSeriveModal(false);
@@ -923,8 +924,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {suggestionList.length > 0 ? (
-            suggestionList.map((ite) => (
+            suggestionList.map((ite, index) => (
               <Chip
+                key={index}
                 mode="outlined"
                 onPress={() => {
                   Alert.alert(
@@ -943,7 +945,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       },
                       {
                         text: strings.close,
-                        onPress: () => { },
+                        onPress: () => {},
                         style: "cancel",
                       },
                     ]
@@ -977,7 +979,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Text variant="labelMedium" style={{ textAlign: "center" }}>
           Couldn't Find a resolution?
-          <Text onPress={() => { }} style={{ color: "red" }}>
+          <Text onPress={() => {}} style={{ color: "red" }}>
             {" "}
             Create Interaction
           </Text>{" "}
@@ -1009,7 +1011,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               interactionID: intereactionAddResponse?.intxnNo,
             });
           }}
-          cancelHandler={() => { }}
+          cancelHandler={() => {}}
         />
       </View>
     );
@@ -1027,17 +1029,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
     );
   }
 
-
-
-
-
-
-
-
-
   return (
     <>
-
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
@@ -1081,7 +1074,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
           opacity: isModelOpen ? 0.3 : 1,
         }}
       >
-
         {/* profile card */}
         {renderProfileTab}
 
