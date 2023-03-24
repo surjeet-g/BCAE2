@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
@@ -39,7 +39,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
@@ -54,6 +54,7 @@ import Followup from "./../Screens/Appointments/Followup";
 import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
+import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -66,6 +67,8 @@ const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
+const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
+
 const Stack = createStackNavigator();
 
 function MyStack() {
@@ -105,7 +108,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"EditProfile"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -327,30 +330,34 @@ function MyStack() {
         <Stack.Screen
           options={({ navigation }) => ({
             ...{
-              headerTintColor: "black",
+              headerTintColor: "#fff",
               headerTitle: "View Order",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
-                ...{ color: "black", fontWeight: "700" },
+                ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {
-                return (
-                  <View style={{ marginRight: 15 }}>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
-                      <Image
-                        style={{ ...ICON_STYLE }}
-                        source={require("../Assets/icons/search.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
-              },
+              headerRight: () => {},
             },
           })}
           name={STACK_VIEW_ORDER}
           component={ViewOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Appointment Details",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {},
+            },
+          })}
+          name={STACK_APPOINTMENT_DETAILS}
+          component={AppointmentDetails}
         />
         <Stack.Screen
           options={({ navigation }) => ({
@@ -377,7 +384,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -393,7 +400,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
