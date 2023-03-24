@@ -388,136 +388,31 @@ const ViewOrder = (props) => {
     );
   };
 
+  const InteractionHistoryItem = (props) => {
+    const { title, value } = props;
+    return (
+      <View style={styles.interactionHistoryItemView}>
+        <Text variant="bodySmall" style={styles.interactionHistoryItemTitleTxt}>
+          {title}
+        </Text>
+        <Text variant="bodySmall" style={styles.interactionHistoryItemValueTxt}>
+          {value}
+        </Text>
+      </View>
+    );
+  };
+
   const CustomerInfoInteractionHistoryUI = () => {
     return (
-      <View
-        style={{
-          borderRadius: 10,
-          backgroundColor: "#DADADA",
-          width: "80%",
-          marginTop: 20,
-          alignSelf: "center",
-          elevation: 5,
-          flexDirection: "column",
-          padding: 10,
-        }}
-      >
-        <Text
-          style={{
-            color: "#000000",
-            fontWeight: 600,
-            fontSize: 16,
-            textAlign: "center",
-            marginVertical: 5,
-          }}
-        >
-          Interaction History
-        </Text>
+      <View style={styles.interactionHistoryView}>
+        <Text style={styles.interactionHistoryTxt}>Interaction History</Text>
         <View style={{ flexDirection: "row" }}>
           {/* Total View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "blue",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 14,
-                color: "#4A4A4A",
-                textAlign: "center",
-              }}
-            >
-              Total
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 700,
-                fontSize: 16,
-                color: "#000000",
-                marginTop: 5,
-              }}
-            >
-              02
-            </Text>
-          </View>
-
-          {/* Divider */}
-          <View style={{ width: 1, backgroundColor: "#DADADA" }} />
-
+          <InteractionHistoryItem title={"Total"} value={"02"} />
           {/* Open View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "blue",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 14,
-                color: "#4A4A4A",
-                textAlign: "center",
-              }}
-            >
-              Open
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 700,
-                fontSize: 16,
-                color: "#000000",
-                marginTop: 5,
-              }}
-            >
-              02
-            </Text>
-          </View>
-
-          {/* Divider */}
-          <View style={{ width: 1, backgroundColor: "#DADADA" }} />
-
+          <InteractionHistoryItem title={"Open"} value={"01"} />
           {/* Closed View */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              //   backgroundColor: "blue",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 400,
-                fontSize: 14,
-                color: "#4A4A4A",
-                textAlign: "center",
-              }}
-            >
-              Closed
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{
-                fontWeight: 700,
-                fontSize: 16,
-                color: "#000000",
-                marginTop: 5,
-              }}
-            >
-              02
-            </Text>
-          </View>
+          <InteractionHistoryItem title={"Closed"} value={"02"} />
         </View>
       </View>
     );
@@ -574,6 +469,40 @@ const styles = StyleSheet.create({
   scrollviewContainer: {
     margin: 15,
     backgroundColor: "#F0F0F0",
+  },
+  interactionHistoryView: {
+    borderRadius: 10,
+    backgroundColor: "#DADADA",
+    width: "80%",
+    marginTop: 20,
+    alignSelf: "center",
+    elevation: 5,
+    flexDirection: "column",
+    padding: 10,
+  },
+  interactionHistoryTxt: {
+    color: "#000000",
+    fontWeight: 600,
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 5,
+  },
+  interactionHistoryItemView: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  interactionHistoryItemTitleTxt: {
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#4A4A4A",
+    textAlign: "center",
+  },
+  interactionHistoryItemValueTxt: {
+    fontWeight: 700,
+    fontSize: 16,
+    color: "#000000",
+    marginTop: 5,
   },
 });
 export default ViewOrder;
