@@ -18,7 +18,7 @@ export const CheckGroupbox = ({
 }) => {
   useEffect(() => {
     setValues(data)
-    console.log('>>useEfff', data)
+
     // setValues(data)
   }, [])
 
@@ -86,7 +86,7 @@ const getStatus = (values, initialData) => {
   return result[0].active ? "checked" : "unchecked";
 };
 const setStatus = (selected, item) => {
-  console.log(">>items:", item);
+
   let values = selected;
   const data = {
     code: item.code,
