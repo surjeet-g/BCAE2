@@ -1,5 +1,9 @@
 import {
-  initProfile, setProfileData, setProfileError, setSearchProfileData, setSearchProfileDataError
+  initProfile,
+  setProfileData,
+  setProfileError,
+  setSearchProfileData,
+  setSearchProfileDataError,
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
@@ -7,13 +11,13 @@ import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 
-export function fetchSavedProfileData(navigation = null) {
+export function fetchMyProfileData(navigation = null) {
   return async (dispatch) => {
     dispatch(initProfile());
     const customerUUDI = await getCustomerUUID();
 
     let profileResult = await serverCall(
-      endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+      endPoints.PROFILE_DETAILS + customerUUDI,
       requestMethod.GET,
       {},
       navigation
@@ -32,13 +36,13 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
   return async (dispatch) => {
     // dispatch(initProfile());
 
-    console.log('task fetch',)
+    console.log("task fetch");
     let profileResult = await serverCall(
-      endPoints.PROFILE_DETAILS + "/" + customerUUDI,
+      endPoints.PROFILE_DETAILS + customerUUDI,
       requestMethod.GET,
       {}
     );
-    console.log('task fetch', profileResult)
+    console.log("task fetch", profileResult);
     if (profileResult?.success) {
       dispatch(setProfileData(profileResult?.data?.data));
       return true;
@@ -59,14 +63,14 @@ export function seachCustomers(limit = 5, page = 0) {
       {
         source: "string",
         filters: {
-          email: "a@gmail.com"
-        }
-      },
+          email: "a@gmail.com",
+        },
+      }
     );
     console.log("task - pro result", profileResult);
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
-      return true
+      return true;
     } else {
       dispatch(setSearchProfileDataError([]));
       return false;
@@ -102,29 +106,5 @@ export function updateProfileData(obj, navigation) {
       dispatch(setProfileError([]));
       return false;
     }
-
-    // let profileResult = await serverCall(
-    //   endPoints.PROFILE_DETAILS + "/" + customerUUDI,
-    //   requestMethod.GET,
-    //   profileParams
-    // );
-    // if (profileResult.success) {
-    //   // await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
-    //   dispatch(setProfileData(profileData.data));
-
-    //   // getDataFromDB(storageKeys.PROFILE_DETAILS).then((resultData) =>{
-    //   //     if (resultData) {//result.data.data
-    //   //         dispatch(setProfileData(result));
-    //   //     } else{
-    //   //         dispatch(setProfileError([]));
-    //   //     }
-    //   // });
-    // } else {
-    //   Toast.show({
-    //     type: "bctError",
-    //     text1: profileResult?.message,
-    //   });
-    //   dispatch(setProfileError([]));
-    // }
   };
 }

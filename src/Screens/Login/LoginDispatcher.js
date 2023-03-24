@@ -3,11 +3,18 @@ import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
-  DEFAULT_PROFILE_IMAGE, storageKeys
+  DEFAULT_PROFILE_IMAGE,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import {
-  failureLogin, initLoginData, resetLoginData, resetShowSecondLoginAlertData, setLoginData, setShowSecondLoginAlert
+  failureLogin,
+  initLoginData,
+  resetLoginData,
+  resetShowSecondLoginAlertData,
+  setLoginData,
+  setShowSecondLoginAlert,
 } from "./LoginAction";
+import { setProfileData } from "./../../Redux/ProfileAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
@@ -59,7 +66,7 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.LOGIN_ID, loginId);
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
               await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
-              await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse)
+              await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
               let profileResult = {};
 
               if (
@@ -82,8 +89,7 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                  "/" +
-                  result?.data?.data?.user?.customerUuid,
+                    result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation
@@ -131,6 +137,7 @@ export function verifyLoginData(navigation, params) {
                 };
 
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setProfileData(profileData));
                 dispatch(setLoginData(result.data));
                 navigation.replace("BottomBar", {});
               } else if (
@@ -141,6 +148,7 @@ export function verifyLoginData(navigation, params) {
               ) {
                 let profileData = profileResult?.data?.data;
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);
+                dispatch(setProfileData(profileData));
                 dispatch(setLoginData(result.data));
                 navigation.replace("BottomBar", {});
               }

@@ -31,7 +31,7 @@ import { CustomActivityIndicator } from "../../../Components/CustomActivityIndic
 import { strings } from "../../../Utilities/Language";
 import { Modal, TextInput, Button } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSavedProfileData } from "../../../Redux/ProfileDispatcher";
+import { fetchMyProfileData } from "../../../Redux/ProfileDispatcher";
 import {
   logoutUser,
   deleteNdLogoutUser,
@@ -84,7 +84,7 @@ const Header = (props, { IsShowBell }) => {
   };
 
   const dispatch = useDispatch([
-    fetchSavedProfileData,
+    fetchMyProfileData,
     changePassword,
     resetPasswordChangeData,
     logoutUser,
@@ -123,7 +123,7 @@ const Header = (props, { IsShowBell }) => {
   };
 
   const fetchMyProfileData = () =>
-    dispatch(fetchSavedProfileData(props.navigation));
+    dispatch(fetchMyProfileData(props.navigation));
 
   useEffect(() => {
     getDataFromDB(storageKeys.PUSH_NOTIFICATION).then((result) => {
