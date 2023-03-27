@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
 
 const ServiceCategory = (props) => {
-  const { categoryName = "NA", categoryIcon = "" } = props;
+  const { name = "NA", icon = "" } = props;
   return (
     <View style={styles.container}>
       <View style={styles.imgView}>
@@ -11,7 +11,7 @@ const ServiceCategory = (props) => {
           source={require("../Assets/icons/ic_word.png")}
         />
       </View>
-      <Text style={styles.nameTxt}>{categoryName}</Text>
+      <Text style={styles.nameTxt}>{name}</Text>
     </View>
   );
 };
@@ -19,7 +19,7 @@ const ServiceCategory = (props) => {
 export default ServiceCategory;
 
 const styles = StyleSheet.create({
-  container: { alignSelf: "flex-start", margin: 10 },
+  container: { alignSelf: "center", margin: 10 },
   imgView: {
     borderWidth: 1,
     borderColor: "#DADADA",
