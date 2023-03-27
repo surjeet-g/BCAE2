@@ -1,18 +1,33 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
 const ServiceCategory = (props) => {
   const { name = "NA", icon = "" } = props;
+  const [selected, setSelected] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.imgView}>
+    <Pressable style={styles.container} onPress={() => setSelected(!selected)}>
+      <View
+        style={{
+          ...styles.imgView,
+          borderColor: selected ? "#495470" : "#DADADA",
+        }}
+      >
         <Image
           style={styles.img}
           source={require("../Assets/icons/ic_word.png")}
         />
       </View>
-      <Text style={styles.nameTxt}>{name}</Text>
-    </View>
+      <Text
+        style={{
+          ...styles.nameTxt,
+          color: selected ? "#495470" : "#2B2B2B",
+          fontWeight: selected ? 700 : 400,
+        }}
+      >
+        {name}
+      </Text>
+    </Pressable>
   );
 };
 
