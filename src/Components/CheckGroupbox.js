@@ -1,7 +1,7 @@
 import get from "lodash.get";
-import React from "react";
+import React, { useEffect } from "react";
 import { Pressable, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { commonStyle } from "../Utilities/Style/commonStyle";
 
@@ -14,9 +14,11 @@ import { commonStyle } from "../Utilities/Style/commonStyle";
 
 */
 export const CheckGroupbox = ({ data, label, setValues, values }) => {
-  console.log("intial data", data, "values", values);
-  const { colors } = useTheme();
-  if (get(data, "length", 0) == 0) return null;
+  useEffect(() => {
+    setValues(data);
+
+    // setValues(data)
+  }, []);
 
   return (
     <View style={{ marginTop: 5 }}>
@@ -82,7 +84,6 @@ const getStatus = (values, initialData) => {
   return result[0].active ? "checked" : "unchecked";
 };
 const setStatus = (selected, item) => {
-  console.log(">>items:", item);
   let values = selected;
   const data = {
     code: item.code,

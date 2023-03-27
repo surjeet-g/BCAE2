@@ -108,7 +108,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"ViewProfile"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -150,17 +150,18 @@ function MyStack() {
             ...options,
             ...{
               headerTitle: "Profile",
+              headerStyle: {
+                backgroundColor: "#4C5A81",
+              },
               headerRight: () => {
                 return (
-                  <View style={navBar.navRightCon}>
+                  <View>
                     <Pressable
                       onPress={() => navigation.navigate("EditProfile")}
-                      style={navBar.roundIcon}
                     >
-                      <Icon
-                        name="pencil-outline"
-                        size={19}
-                        color={colors.inverseSecondary}
+                      <Image
+                        style={{ width: 80, height: 80 }}
+                        source={require("../Assets/icons/ic_edit.png")}
                       />
                     </Pressable>
                   </View>

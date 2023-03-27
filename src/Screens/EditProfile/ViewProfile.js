@@ -1,14 +1,14 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import {
   Alert,
@@ -19,7 +19,7 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Button, Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -35,14 +35,12 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import {
-  getUserId
-} from "../../Utilities/UserManagement/userInfo";
+import { getUserId } from "../../Utilities/UserManagement/userInfo";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -123,7 +121,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => { };
+  const onFaqPressed = () => {};
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -140,14 +138,20 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: `data:image/jpeg;base64,${
+                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
-              style={{ height: 110, width: 110 }}
+              style={{
+                height: 110,
+                width: 110,
+                borderRadius: 20,
+                elevation: 5,
+              }}
             />
           </View>
-          <View style={{ ...commonStyle.column_center_center, marginLeft: 10 }}>
+          <View style={{ marginLeft: 15, marginTop: 20 }}>
             <Text
               variant="bodyLarge"
               style={{ color: "#3E60A0", fontWeight: "600" }}
@@ -157,14 +161,12 @@ export const ViewProfile = ({ navigation }) => {
             <ClearSpace size={2} />
             <Text
               variant="bodySmall"
-              style={{ color: colors.onSurfaceDisabled, fontWeight: "500" }}
+              style={{ color: colors.profile_enabled, fontWeight: "500" }}
             >
               {userInfo.email}
             </Text>
           </View>
         </View>
-
-
 
         <ClearSpace size={2} />
         <Pressable
@@ -179,7 +181,7 @@ export const ViewProfile = ({ navigation }) => {
           <Icon
             name="lock-open-outline"
             size={ICON}
-            color={colors.onSurfaceDisabled}
+            color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
 
@@ -190,13 +192,57 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            {strings.change_password}{"\n"}
-            <Text variant="bodySmall"
+            {strings.change_password}
+            {"\n"}
+            <Text
+              variant="bodySmall"
               style={{
                 fontWeight: "600",
                 color: "gray",
-                lineHeight: 20
-              }}>Change your password</Text>
+                lineHeight: 20,
+              }}
+            >
+              Change your password
+            </Text>
+          </Text>
+        </Pressable>
+        <Divider />
+        <ClearSpace size={2} />
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Changepassword", {
+              isChangePassword: true,
+              email: userInfo.email,
+            });
+          }}
+          style={styles.listItem}
+        >
+          <Icon
+            name="google-translate"
+            size={ICON}
+            color={colors.profile_enabled}
+            style={{ marginRight: 14 }}
+          />
+
+          <Text
+            variant="bodyMedium"
+            style={{
+              fontWeight: "600",
+              color: colors.secondary,
+            }}
+          >
+            Change Language
+            {"\n"}
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "600",
+                color: "gray",
+                lineHeight: 20,
+              }}
+            >
+              Selected language : English
+            </Text>
           </Text>
         </Pressable>
         <Divider />
@@ -204,7 +250,7 @@ export const ViewProfile = ({ navigation }) => {
           <Icon
             name="map-marker-outline"
             size={ICON}
-            color={colors.onSurfaceDisabled}
+            color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
 
@@ -216,13 +262,18 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            {strings.saved_location}{"\n"}
-            <Text variant="bodySmall"
+            {strings.saved_location}
+            {"\n"}
+            <Text
+              variant="bodySmall"
               style={{
                 fontWeight: "600",
                 color: "gray",
-                lineHeight: 20
-              }}>Choose saved location</Text>
+                lineHeight: 20,
+              }}
+            >
+              Choose saved location
+            </Text>
           </Text>
         </Pressable>
         <Divider />
@@ -242,7 +293,7 @@ export const ViewProfile = ({ navigation }) => {
             <Icon
               name="bell-outline"
               size={ICON}
-              color={colors.onSurfaceDisabled}
+              color={colors.profile_enabled}
               style={{ marginRight: 14 }}
             />
 
@@ -254,19 +305,24 @@ export const ViewProfile = ({ navigation }) => {
                 color: colors.secondary,
               }}
             >
-              {strings.notification}{"\n"}
-              <Text variant="bodySmall"
+              {strings.notification}
+              {"\n"}
+              <Text
+                variant="bodySmall"
                 style={{
                   fontWeight: "600",
                   color: "gray",
-                  lineHeight: 20
-                }}>Notification Alert</Text>
+                  lineHeight: 20,
+                }}
+              >
+                Notification Alert
+              </Text>
             </Text>
           </Pressable>
           <Switch
             trackColor={{
               false: "#feeeda",
-              true: "##F5AD47",
+              true: "#F5AD47",
             }}
             thumbColor={isNotiEnabled ? "#F5AD47" : "#feeeda"}
             // ios_backgroundColor="#3e3e3e"
@@ -279,7 +335,7 @@ export const ViewProfile = ({ navigation }) => {
           <Icon
             name="bank-check"
             size={ICON}
-            color={colors.onSurfaceDisabled}
+            color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
 
@@ -292,12 +348,16 @@ export const ViewProfile = ({ navigation }) => {
             }}
           >
             FAQ{"\n"}
-            <Text variant="bodySmall"
+            <Text
+              variant="bodySmall"
               style={{
                 fontWeight: "600",
                 color: "gray",
-                lineHeight: 20
-              }}>FAQ</Text>
+                lineHeight: 20,
+              }}
+            >
+              FAQ
+            </Text>
           </Text>
         </Pressable>
         <Divider />
@@ -305,7 +365,7 @@ export const ViewProfile = ({ navigation }) => {
           <Icon
             name="arrow-expand-all"
             size={ICON}
-            color={colors.onSurfaceDisabled}
+            color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
 
@@ -318,12 +378,16 @@ export const ViewProfile = ({ navigation }) => {
             }}
           >
             Announcement{"\n"}
-            <Text variant="bodySmall"
+            <Text
+              variant="bodySmall"
               style={{
                 fontWeight: "600",
                 color: "gray",
-                lineHeight: 20
-              }}>Announcement</Text>
+                lineHeight: 20,
+              }}
+            >
+              Announcement
+            </Text>
           </Text>
         </Pressable>
         <Divider />
@@ -331,7 +395,7 @@ export const ViewProfile = ({ navigation }) => {
           <Icon
             name="delete-outline"
             size={ICON}
-            color={colors.onSurfaceDisabled}
+            color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
 
@@ -344,23 +408,32 @@ export const ViewProfile = ({ navigation }) => {
             }}
           >
             Delete Account{"\n"}
-            <Text variant="bodySmall"
+            <Text
+              variant="bodySmall"
               style={{
                 fontWeight: "600",
                 color: "gray",
-                lineHeight: 20
-              }}>Delete your account</Text>
+                lineHeight: 20,
+              }}
+            >
+              Delete your account
+            </Text>
           </Text>
         </Pressable>
 
         <ClearSpace size={2} />
 
         <Button
-          style={{ padding: 2, borderRadius: 21, width: '70%', alignSelf: "center" }}
+          style={{
+            padding: 2,
+            borderRadius: 21,
+            width: "70%",
+            alignSelf: "center",
+          }}
           icon="logout"
           mode="contained"
           // color={"white"}
-          buttonColor={colors.primary}
+          buttonColor={"#4C5A81"}
           onPress={async () => {
             Alert.alert(strings.attention, strings.are_you_sure_logout, [
               {
@@ -378,8 +451,6 @@ export const ViewProfile = ({ navigation }) => {
         >
           Logout
         </Button>
-
-
 
         <ClearSpace size={8} />
       </ScrollView>
@@ -455,5 +526,4 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,
   },
-
 });
