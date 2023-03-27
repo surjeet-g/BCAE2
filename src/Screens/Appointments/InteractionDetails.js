@@ -9,15 +9,14 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -28,12 +27,13 @@ import {
   createFollowupForInteractionID,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
-  getWorkFlowForInteractionID
+  getWorkFlowForInteractionID,
 } from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
-  USERTYPE
+  USERTYPE,
 } from "./../../Utilities/UserManagement/userInfo";
+import AttachmentItem from "./../../Components/AttachmentItem";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
@@ -131,9 +131,11 @@ const InteractionDetails = (props) => {
             />
           </View>
           {/* View More view */}
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
-              if (index == 1) {
+              if (index == 0) {
+                navigation.navigate("AppointmentDetails");
+              } else if (index == 1) {
                 navigation.navigate("WorkflowHistory");
               }
             }}
@@ -160,7 +162,7 @@ const InteractionDetails = (props) => {
                 style={{ marginLeft: 10, tintColor: "#EFA848" }}
               />
             </View>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     );
@@ -247,19 +249,9 @@ const InteractionDetails = (props) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={attachmentData}
-          key={(item) => item.id}
-          renderItem={({ item }) => (
-            <Image
-              source={require("../../Assets/icons/ic_word.png")}
-              style={{
-                borderRadius: 6,
-                borderWidth: 1,
-                borderColor: "#AEB3BE",
-                height: 70,
-                width: 70,
-                margin: 5,
-              }}
-            />
+          key={(item, index) => index}
+          renderItem={({ item, index }) => (
+            <AttachmentItem index={index} item={item} />
           )}
         />
       </View>
@@ -381,18 +373,15 @@ const InteractionDetails = (props) => {
           </View>
 
           {/* Row 6*/}
-          {InteractionDetailsData?.attachments?.length > 0 ? (
+          {InteractionDetailsData?.attachments?.length > 0 && (
             <View style={{ flexDirection: "row", marginTop: 20 }}>
               {/* Attachments View */}
               <DetailInfoAttachmentItem
                 title={"Attachments"}
-                attachmentData={[
-                  { id: 1, name: "../../Assets/icons/ic_word.png" },
-                  { id: 2, name: "../../Assets/icons/ic_pdf.png" },
-                ]}
+                attachmentData={[]}
               />
             </View>
-          ) : null}
+          )}
         </View>
       </View>
     );
@@ -605,7 +594,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => { }} />
+              <CustomButton label={strings.submit} onPress={() => {}} />
             </View>
           </View>
         </View>
@@ -656,7 +645,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => { }} />
+              <CustomButton label={strings.submit} onPress={() => {}} />
             </View>
           </View>
         </View>
@@ -686,7 +675,7 @@ const InteractionDetails = (props) => {
             renderItem={({ item, index }) => (
               <HorizontalFlatListItem item={item} index={index} />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index}
           />
         </View>
       </ScrollView>

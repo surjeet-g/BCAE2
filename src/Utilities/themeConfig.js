@@ -34,7 +34,8 @@ const theme = {
     graylabel: "#848A93",
     userTypeColor: "#F18888",
     toggleBackground: "#F2EFFF",
-    black: "#000000"
+    black: "#000000",
+    profile_enabled: "#4C5A81",
   },
   fonts: {
     bodyLarge: {

@@ -1,80 +1,64 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import {
+  Alert, Image, ImageBackground, Keyboard, Pressable,
+  SafeAreaView, ScrollView, StyleSheet,
+  View
+} from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  SafeAreaView,
-  ImageBackground,
-  Alert,
-  Keyboard,
-} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { getDataFromDB } from "../../Storage/token";
 import {
-  spacing,
-  color,
-  fontSizes,
-  buttonSize,
-  validateNumber,
-  validateEmail,
-  DEFAULT_PROFILE_IMAGE,
-  storageKeys,
+  color, DEFAULT_PROFILE_IMAGE, fontSizes, spacing, storageKeys
 } from "../../Utilities/Constants/Constant";
 
-import Camara from "../../Assets/svg/camera_icon.svg";
-import { Text, TextInput } from "react-native-paper";
-import { CustomDropDown } from "../../Components/CustomDropDown";
-import {
-  fetchRegisterFormData,
-  getOtpForNumber,
-} from "../../Redux/RegisterDispatcher";
-import {
-  fetchMyProfileData,
-  updateProfileData,
-} from "../../Redux/ProfileDispatcher";
-import { strings } from "../../Utilities/Language/index";
-import { FullPageLoder } from "../../Components/FullPageLoder";
-import ProfileHeader from "../TabScreens/Component/ProfileHeader";
-import LoadingAnimation from "../../Components/LoadingAnimation";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { TDLog } from "../../Utilities/Constants/Constant";
-import { useTheme } from "react-native-paper";
-import theme from "../../Utilities/themeConfig";
-import { ClearSpace } from "../../Components/ClearSpace";
-import { CustomInput } from "../../Components/CustomInput";
-import { navBar } from "../../Utilities/Style/navBar";
 import get from "lodash.get";
+import { Text, TextInput, useTheme } from "react-native-paper";
+import Camara from "../../Assets/svg/camera_icon.svg";
+import { CheckGroupbox } from "../../Components/CheckGroupbox";
+import { ClearSpace } from "../../Components/ClearSpace";
+import { CustomButton } from "../../Components/CustomButton";
+import { CustomDropDown } from "../../Components/CustomDropDown";
+import { CustomInput } from "../../Components/CustomInput";
+import { FullPageLoder } from "../../Components/FullPageLoder";
+import LoadingAnimation from "../../Components/LoadingAnimation";
+import { StickyFooter } from "../../Components/StickyFooter";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset,
+  setProfileReset
 } from "../../Redux/ProfileAction";
 import {
-  addresObjToString,
-  handleMultipleContact,
+  fetchMyProfileData,
+  updateProfileData
+} from "../../Redux/ProfileDispatcher";
+import {
+  fetchRegisterFormData
+} from "../../Redux/RegisterDispatcher";
+import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
+import { TDLog } from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language/index";
+import theme from "../../Utilities/themeConfig";
+import { getUserTypeForProfile } from "../../Utilities/UserManagement/userInfo";
+import {
+  handleMultipleContact, handleUserStatus
 } from "../../Utilities/utils";
-
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
   let savedLocation = useSelector((state) => state.savedLocations);
+
   const dispatchSaveLocation = useDispatch([fetchSavedLocations]);
   const fetchSavedLocationData = () =>
     dispatchSaveLocation(fetchSavedLocations());
 
   const [locationdelete, setLocation] = useState("");
-
+  const [userTyp, setUserType] = useState("")
   const [isSaveButtonDisable, setSaveButtomEnableDisable] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [loginId, setLoginId] = useState("");
   const [countryError, setCountryError] = useState("");
   const [locationError, setLocationError] = useState("");
-
+  const [counter, setCounter] = useState(1)
   let registerForm = useSelector((state) => state.registerForm);
   const dispatch1 = useDispatch([
     fetchRegisterFormData,
@@ -100,7 +84,7 @@ const EditProfile = ({ navigation, props }) => {
   const [district, setDistrict] = useState("");
   const [country, setCountry] = useState("");
   const [postCode, setPostcode] = useState("");
-
+  const [contactValues, setContactValues] = useState([])
   useEffect(() => {
     // dispatch1(setProfileReset());
     getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
@@ -109,6 +93,7 @@ const EditProfile = ({ navigation, props }) => {
       }
     });
     dispatch1(fetchRegisterFormData());
+
   }, []);
 
   useLayoutEffect(() => {
@@ -120,11 +105,22 @@ const EditProfile = ({ navigation, props }) => {
   }, [navigation]);
 
   const dispatch2 = useDispatch([fetchMyProfileData, updateProfileData]);
-  console.log("res.data.country : ", profile.savedProfileData);
-
+  const masterDispatch = useDispatch([getMasterData]);
   useEffect(() => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
+      const userType = await getUserTypeForProfile();
+      const {
+        CONTACT_PREFERENCE,
+      } = MASTER_DATA_CONSTANT;
+
+      masterDispatch(
+        getMasterData(
+          `${CONTACT_PREFERENCE}`
+        )
+      );
+
+      setUserType(userType);
     }
     fetchMyAPI();
   }, []);
@@ -303,59 +299,61 @@ const EditProfile = ({ navigation, props }) => {
     buttonEnableDisable();
   };
 
+  const isbuttonEnable = () => {
+    if (get(contactValues, 'length', 0) === 0) return false
+    if (get(contactValues.filter(itm => itm.active == true), 'length', 0) == 0) return null
+    if (firstName == "" || lastName == "") return false
+    return true
+  }
   const submit = async () => {
+
     Keyboard.dismiss();
-    if (false) {
+    if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
 
-      if (firstName?.trim() === "") {
-        setFirstNameError(strings.firstNameError);
-      } else if (lastName?.trim() === "") {
-        setLastNameError(strings.lastNameError);
-      } else if (gender?.code === "") {
-        setgenderError(strings.genderError);
-      }
       // else if (country === "") {
       //   setCountryError(strings.countryError);
       // }
       //else if (location === "") { setLocationError(strings.locationError) }
-      else {
-        let registerObject = {
-          details: {
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender?.code,
-            idValue: idValue,
-            // nationality : country
-            // profilePicture: profileImageData,
-            // address: {
-            //   address: location,
-            //   hno: "",
-            //   buildingName: "",
-            //   street: street,
-            //   road: "",
-            //   city: "",
-            //   state: state,
-            //   district: district,
-            //   country: country,
-            //   latitude: latitude,
-            //   longitude: longitude,
-            //   postCode: postCode,
-            // },
-          },
-        };
 
-        const status = await dispatch2(
-          updateProfileData(registerObject, navigation)
-        );
-        if (status) {
-          await dispatch2(fetchMyProfileData(navigation));
-        }
+      let registerObject = {
+        details: {
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender?.code,
+          idValue: idValue,
+          contactPreferences: contactValues.filter(it => it.active).map(ite => ite.code)
+          // nationality : country
+          // profilePicture: profileImageData,
+          // address: {
+          //   address: location,
+          //   hno: "",
+          //   buildingName: "",
+          //   street: street,
+          //   road: "",
+          //   city: "",
+          //   state: state,
+          //   district: district,
+          //   country: country,
+          //   latitude: latitude,
+          //   longitude: longitude,
+          //   postCode: postCode,
+          // },
+        },
+      };
+      console.log('>>', contactValues.filter(it => it.active).map(ite => ite.code))
+
+      const status = await dispatch2(
+        updateProfileData(registerObject, navigation)
+      );
+      if (status) {
+        await dispatch2(fetchMyProfileData(navigation));
       }
+
       //dispatch2(updateProfileData(registerObject,profile.savedProfileData.userId));
     }
   };
@@ -377,32 +375,35 @@ const EditProfile = ({ navigation, props }) => {
       </View>
     );
   };
-
+  const masterReducer = useSelector((state) => state.masterdata);
   const customerPic =
     get(profile, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
 
   const addresss = get(profile, "savedProfileData.customerAddress", []);
-  console.log(">>l", addresss);
+  const contactPerference = get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []);
+  console.log('>>contactPerference', contactPerference)
+
+
+  const profileCurrentPer = get(profile, "savedProfileData.contactPreferences", "")
+
+  // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
+  let contactPerf = []
+  if (get(contactPerference, 'length', 0) != 0 && get(profileCurrentPer, "length", 0) != 0) {
+    contactPerf = contactPerference.map(it => {
+
+      return ({
+        code: it.code,
+        description: it.description,
+        active: profileCurrentPer.includes(it.code)
+      })
+
+    })
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Pressable
-        style={{
-          position: "absolute",
-          zIndex: 999999999,
-          elevation: 10000,
-          width: 30,
-          right: 10,
-          top: "2%",
-          ...navBar.roundIcon,
-          // backgroundColor: "red",
-        }}
-        onPress={async () => {
-          await submit();
-        }}
-      >
-        <Icon name="content-save" size={19} color={colors.inverseSecondary} />
-      </Pressable>
+
 
       {profile.initProfile && (
         <View
@@ -444,31 +445,31 @@ const EditProfile = ({ navigation, props }) => {
                   <Camara width="20" height="20" />
                 </Pressable>
               </ImageBackground>
-
+              <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
                 {strings.customer_ID +
                   " : " +
                   get(profile, "savedProfileData.customerNo", "")}
               </Text>
+              <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
-                {strings.loginId + " : " + loginId}
-              </Text>
-              <ClearSpace />
-              <Text variant="bodySmall" style={styles.caption_small}>
-                {get(
+                {"Email Id :"} <Text variant="bodySmall" style={styles.caption_small}>{get(
                   profile,
                   "savedProfileData.customerContact[0].emailId",
                   ""
-                )}
+                )}</Text>
+              </Text>
+              <ClearSpace size={2} />
+              <Text variant="bodyLarge" style={styles.caption}>
+                {"Status: "} <Text variant="bodySmall" style={styles.caption_small}>{
+                  handleUserStatus(get(
+                    profile,
+                    "savedProfileData.status",
+                    ""
+                  ))}</Text>
               </Text>
               <ClearSpace />
-              <Text variant="bodyLarge" style={styles.caption}>
-                {get(
-                  profile,
-                  "savedProfileData.customerContact[0].mobileNo",
-                  ""
-                )}
-              </Text>
+
               <ClearSpace />
             </View>
           </View>
@@ -480,7 +481,12 @@ const EditProfile = ({ navigation, props }) => {
             />
           ) : (
             <ScrollView
-              style={{ flexGrow: 1, paddingHorizontal: spacing.WIDTH_30 }}
+              style={{
+                flexGrow: 1, paddingHorizontal: spacing.WIDTH_30,
+                backgroundColor: "white",
+                margin: 12,
+                borderRadius: 8
+              }}
               nestedScrollEnabled={true}
             >
               {/* First Name */}
@@ -527,6 +533,29 @@ const EditProfile = ({ navigation, props }) => {
                 {lastNameError && showErrorMessage(lastNameError)}
               </View>
 
+              <View style={{ marginTop: spacing.HEIGHT_5 }}>
+                <CustomInput
+                  editable={false}
+                  caption={strings.country}
+                  placeholder={strings.country}
+                  onChangeText={(text) => { }}
+                  value={get(profile, "savedProfileData.customerAddress[0].country", "")}
+
+                />
+
+              </View>
+              <View style={{ marginTop: spacing.HEIGHT_5 }}>
+                {contactPerf.length != 0 && <CheckGroupbox
+                  data={contactPerf}
+                  values={contactValues}
+                  setValues={(data) => {
+                    setContactValues(data)
+                    setCounter(counter + 1)
+                  }}
+                  label="Contact Preference"
+                />}
+
+              </View>
               {/* Gender */}
               <View style={{}}>
                 <CustomDropDown
@@ -607,11 +636,27 @@ const EditProfile = ({ navigation, props }) => {
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
                 {countryError !== "" && showErrorMessage(countryError)}
               </View> */}
+              <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  value={userTyp}
+                  placeHolder={"User Type"}
+                  caption={"User Type"}
+
+                  disabled={true}
+                />
+
+
+              </View>
 
               {/* Mobile Number */}
-              {/* <View style={{ marginTop: spacing.HEIGHT_40 }}>
+              <View style={{ marginTop: 10 }}>
                 <CustomInput
-                  value={mobileNo}
+                  value={
+                    get(
+                      profile,
+                      "savedProfileData.customerContact[0].mobileNo",
+                      ""
+                    )}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
                   right={
@@ -621,14 +666,11 @@ const EditProfile = ({ navigation, props }) => {
                       icon={require("../../Assets/icons/ic_close.png")}
                     />
                   }
-                  disabled={false}
+                  disabled={true}
                 />
 
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
-                  this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {numberError !== "" && showErrorMessage(numberError)}
-              </View> */}
+
+              </View>
 
               {/* Email */}
               {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
@@ -655,7 +697,21 @@ const EditProfile = ({ navigation, props }) => {
 
               <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
             </ScrollView>
+
           )}
+          <StickyFooter>
+            <CustomButton
+              loading={false}
+              label={"Update"}
+              isDisabled={
+                !isbuttonEnable()
+              }
+              onPress={async () => {
+
+                await submit();
+              }}
+            />
+          </StickyFooter>
         </View>
       )}
     </SafeAreaView>
