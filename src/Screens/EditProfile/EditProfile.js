@@ -1,14 +1,24 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
-  Alert, Image, ImageBackground, Keyboard, Pressable,
-  SafeAreaView, ScrollView, StyleSheet,
-  View
+  Alert,
+  Image,
+  ImageBackground,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataFromDB } from "../../Storage/token";
 import {
-  color, DEFAULT_PROFILE_IMAGE, fontSizes, spacing, storageKeys
+  color,
+  DEFAULT_PROFILE_IMAGE,
+  fontSizes,
+  spacing,
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 
 import get from "lodash.get";
@@ -22,26 +32,25 @@ import { CustomInput } from "../../Components/CustomInput";
 import { FullPageLoder } from "../../Components/FullPageLoder";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT,
+} from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset
+  setProfileReset,
 } from "../../Redux/ProfileAction";
 import {
   fetchMyProfileData,
-  updateProfileData
+  updateProfileData,
 } from "../../Redux/ProfileDispatcher";
-import {
-  fetchRegisterFormData
-} from "../../Redux/RegisterDispatcher";
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
 import { getUserTypeForProfile } from "../../Utilities/UserManagement/userInfo";
-import {
-  handleMultipleContact, handleUserStatus
-} from "../../Utilities/utils";
+import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
   let savedLocation = useSelector((state) => state.savedLocations);
@@ -51,14 +60,14 @@ const EditProfile = ({ navigation, props }) => {
     dispatchSaveLocation(fetchSavedLocations());
 
   const [locationdelete, setLocation] = useState("");
-  const [userTyp, setUserType] = useState("")
+  const [userTyp, setUserType] = useState("");
   const [isSaveButtonDisable, setSaveButtomEnableDisable] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [loginId, setLoginId] = useState("");
   const [countryError, setCountryError] = useState("");
   const [locationError, setLocationError] = useState("");
-  const [counter, setCounter] = useState(1)
+  const [counter, setCounter] = useState(1);
   let registerForm = useSelector((state) => state.registerForm);
   const dispatch1 = useDispatch([
     fetchRegisterFormData,
@@ -84,7 +93,7 @@ const EditProfile = ({ navigation, props }) => {
   const [district, setDistrict] = useState("");
   const [country, setCountry] = useState("");
   const [postCode, setPostcode] = useState("");
-  const [contactValues, setContactValues] = useState([])
+  const [contactValues, setContactValues] = useState([]);
   useEffect(() => {
     // dispatch1(setProfileReset());
     getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
@@ -93,7 +102,6 @@ const EditProfile = ({ navigation, props }) => {
       }
     });
     dispatch1(fetchRegisterFormData());
-
   }, []);
 
   useLayoutEffect(() => {
@@ -110,15 +118,9 @@ const EditProfile = ({ navigation, props }) => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
       const userType = await getUserTypeForProfile();
-      const {
-        CONTACT_PREFERENCE,
-      } = MASTER_DATA_CONSTANT;
+      const { CONTACT_PREFERENCE } = MASTER_DATA_CONSTANT;
 
-      masterDispatch(
-        getMasterData(
-          `${CONTACT_PREFERENCE}`
-        )
-      );
+      masterDispatch(getMasterData(`${CONTACT_PREFERENCE}`));
 
       setUserType(userType);
     }
@@ -300,17 +302,23 @@ const EditProfile = ({ navigation, props }) => {
   };
 
   const isbuttonEnable = () => {
-    if (get(contactValues, 'length', 0) === 0) return false
-    if (get(contactValues.filter(itm => itm.active == true), 'length', 0) == 0) return null
-    if (firstName == "" || lastName == "") return false
-    return true
-  }
+    if (get(contactValues, "length", 0) === 0) return false;
+    if (
+      get(
+        contactValues.filter((itm) => itm.active == true),
+        "length",
+        0
+      ) == 0
+    )
+      return null;
+    if (firstName == "" || lastName == "") return false;
+    return true;
+  };
   const submit = async () => {
-
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => { } },
+        { text: strings.ok, onPress: () => {} },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
@@ -326,7 +334,9 @@ const EditProfile = ({ navigation, props }) => {
           lastName: lastName,
           gender: gender?.code,
           idValue: idValue,
-          contactPreferences: contactValues.filter(it => it.active).map(ite => ite.code)
+          contactPreferences: contactValues
+            .filter((it) => it.active)
+            .map((ite) => ite.code),
           // nationality : country
           // profilePicture: profileImageData,
           // address: {
@@ -345,7 +355,10 @@ const EditProfile = ({ navigation, props }) => {
           // },
         },
       };
-      console.log('>>', contactValues.filter(it => it.active).map(ite => ite.code))
+      console.log(
+        ">>",
+        contactValues.filter((it) => it.active).map((ite) => ite.code)
+      );
 
       const status = await dispatch2(
         updateProfileData(registerObject, navigation)
@@ -381,30 +394,36 @@ const EditProfile = ({ navigation, props }) => {
     DEFAULT_PROFILE_IMAGE;
 
   const addresss = get(profile, "savedProfileData.customerAddress", []);
-  const contactPerference = get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []);
-  console.log('>>contactPerference', contactPerference)
+  const contactPerference = get(
+    masterReducer,
+    "masterdataData.CONTACT_PREFERENCE",
+    []
+  );
+  console.log(">>contactPerference", contactPerference);
 
-
-  const profileCurrentPer = get(profile, "savedProfileData.contactPreferences", "")
+  const profileCurrentPer = get(
+    profile,
+    "savedProfileData.contactPreferences",
+    ""
+  );
 
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
-  let contactPerf = []
-  if (get(contactPerference, 'length', 0) != 0 && get(profileCurrentPer, "length", 0) != 0) {
-    contactPerf = contactPerference.map(it => {
-
-      return ({
+  let contactPerf = [];
+  if (
+    get(contactPerference, "length", 0) != 0 &&
+    get(profileCurrentPer, "length", 0) != 0
+  ) {
+    contactPerf = contactPerference.map((it) => {
+      return {
         code: it.code,
         description: it.description,
-        active: profileCurrentPer.includes(it.code)
-      })
-
-    })
+        active: profileCurrentPer.includes(it.code),
+      };
+    });
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-
-
       {profile.initProfile && (
         <View
           style={{
@@ -453,20 +472,23 @@ const EditProfile = ({ navigation, props }) => {
               </Text>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
-                {"Email Id :"} <Text variant="bodySmall" style={styles.caption_small}>{get(
-                  profile,
-                  "savedProfileData.customerContact[0].emailId",
-                  ""
-                )}</Text>
+                {"Email Id :"}{" "}
+                <Text variant="bodySmall" style={styles.caption_small}>
+                  {get(
+                    profile,
+                    "savedProfileData.customerContact[0].emailId",
+                    ""
+                  )}
+                </Text>
               </Text>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
-                {"Status: "} <Text variant="bodySmall" style={styles.caption_small}>{
-                  handleUserStatus(get(
-                    profile,
-                    "savedProfileData.status",
-                    ""
-                  ))}</Text>
+                {"Status: "}{" "}
+                <Text variant="bodySmall" style={styles.caption_small}>
+                  {handleUserStatus(
+                    get(profile, "savedProfileData.status", "")
+                  )}
+                </Text>
               </Text>
               <ClearSpace />
 
@@ -482,10 +504,11 @@ const EditProfile = ({ navigation, props }) => {
           ) : (
             <ScrollView
               style={{
-                flexGrow: 1, paddingHorizontal: spacing.WIDTH_30,
+                flexGrow: 1,
+                paddingHorizontal: spacing.WIDTH_30,
                 backgroundColor: "white",
                 margin: 12,
-                borderRadius: 8
+                borderRadius: 8,
               }}
               nestedScrollEnabled={true}
             >
@@ -538,23 +561,26 @@ const EditProfile = ({ navigation, props }) => {
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
-                  onChangeText={(text) => { }}
-                  value={get(profile, "savedProfileData.customerAddress[0].country", "")}
-
+                  onChangeText={(text) => {}}
+                  value={get(
+                    profile,
+                    "savedProfileData.customerAddress[0].country",
+                    ""
+                  )}
                 />
-
               </View>
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                {contactPerf.length != 0 && <CheckGroupbox
-                  data={contactPerf}
-                  values={contactValues}
-                  setValues={(data) => {
-                    setContactValues(data)
-                    setCounter(counter + 1)
-                  }}
-                  label="Contact Preference"
-                />}
-
+                {contactPerf.length != 0 && (
+                  <CheckGroupbox
+                    data={contactPerf}
+                    values={contactValues}
+                    setValues={(data) => {
+                      setContactValues(data);
+                      setCounter(counter + 1);
+                    }}
+                    label="Contact Preference"
+                  />
+                )}
               </View>
               {/* Gender */}
               <View style={{}}>
@@ -641,22 +667,18 @@ const EditProfile = ({ navigation, props }) => {
                   value={userTyp}
                   placeHolder={"User Type"}
                   caption={"User Type"}
-
                   disabled={true}
                 />
-
-
               </View>
 
               {/* Mobile Number */}
               <View style={{ marginTop: 10 }}>
                 <CustomInput
-                  value={
-                    get(
-                      profile,
-                      "savedProfileData.customerContact[0].mobileNo",
-                      ""
-                    )}
+                  value={get(
+                    profile,
+                    "savedProfileData.customerContact[0].mobileNo",
+                    ""
+                  )}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
                   right={
@@ -668,8 +690,6 @@ const EditProfile = ({ navigation, props }) => {
                   }
                   disabled={true}
                 />
-
-
               </View>
 
               {/* Email */}
@@ -697,17 +717,13 @@ const EditProfile = ({ navigation, props }) => {
 
               <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
             </ScrollView>
-
           )}
           <StickyFooter>
             <CustomButton
               loading={false}
               label={"Update"}
-              isDisabled={
-                !isbuttonEnable()
-              }
+              isDisabled={!isbuttonEnable()}
               onPress={async () => {
-
                 await submit();
               }}
             />

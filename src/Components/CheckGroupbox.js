@@ -13,14 +13,12 @@ import { commonStyle } from "../Utilities/Style/commonStyle";
 * @return {JSX} return dom
 
 */
-export const CheckGroupbox = ({
-  data, label, setValues, values
-}) => {
+export const CheckGroupbox = ({ data, label, setValues, values }) => {
   useEffect(() => {
-    setValues(data)
+    setValues(data);
 
     // setValues(data)
-  }, [])
+  }, []);
 
   return (
     <View style={{ marginTop: 5 }}>
@@ -86,7 +84,6 @@ const getStatus = (values, initialData) => {
   return result[0].active ? "checked" : "unchecked";
 };
 const setStatus = (selected, item) => {
-
   let values = selected;
   const data = {
     code: item.code,
