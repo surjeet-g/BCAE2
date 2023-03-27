@@ -1,36 +1,23 @@
 import React from "react";
 import {
-  View,
   FlatList,
   StyleSheet,
-  Text,
-  Pressable,
-  Image,
-  Alert,
-  TouchableOpacity,
+  Text, TouchableOpacity, View
 } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonType,
-  buttonSize,
-} from "../Utilities/Constants/Constant";
-import { Divider } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
-import { strings } from "../Utilities/Language";
-import { navBar } from "../Utilities/Style/navBar";
-import { useTheme } from "react-native-paper";
-import { addresObjToString } from "../Utilities/utils";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import AddressImage from "../Assets/svg/location_green.svg";
-import EditImage from "../Assets/svg/edit_icon_round.svg";
-import DeleteImage from "../Assets/svg/delete.svg";
-import PrimaryAddress from "../Assets/svg/primary_address.svg";
 import get from "lodash.get";
+import { useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import DeleteImage from "../Assets/svg/delete.svg";
+import EditImage from "../Assets/svg/edit_icon_round.svg";
+import AddressImage from "../Assets/svg/location_green.svg";
+import PrimaryAddress from "../Assets/svg/primary_address.svg";
+import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
+import {
+  color, spacing
+} from "../Utilities/Constants/Constant";
+import { addresObjToString } from "../Utilities/utils";
+import { ClearSpace } from './ClearSpace';
 function SavedLocationItem({
   item,
   onDeleteClicked,
@@ -97,20 +84,22 @@ function SavedLocationItem({
           longitude: item.longitude,
         });
       }}
+
       style={({ pressed }) => pressed && styles.pressed}
+
     >
-      <View style={{ padding: 10 }}>
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ flex: 1, justifyContent: "center" }}>
+      <View style={{ borderColor: 'transparent', borderWidth: .5, borderBottomColor: "#38383885", marginTop: 12 }}>
+        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
+          <View style={{ flex: .7, justifyContent: "center", }}>
             <AddressImage></AddressImage>
           </View>
-          <View style={{ flex: 4, justifyContent: "center" }}>
+          <View style={{ flex: 5, }}>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: "700",
                 color: colors.secondary,
-                marginBottom: 5,
+                // marginBottom: 5,
               }}
             >
               {getAddresType(item.addressType)}
@@ -118,7 +107,7 @@ function SavedLocationItem({
             <Text
               style={{
                 fontSize: 12,
-                fontWeight: "400",
+                fontWeight: "500",
                 color: colors.secondary,
               }}
             >
@@ -127,9 +116,10 @@ function SavedLocationItem({
           </View>
           <View
             style={{
-              flex: 2,
+
+              flex: 2.3,
               flexDirection: "row",
-              alignItems: "center",
+              // alignItems: "center",
               justifyContent: "flex-end",
               color: color.BLACK,
             }}
@@ -145,6 +135,7 @@ function SavedLocationItem({
             {/* {item?.isPrimary == false && ( */}
             <TouchableOpacity
               activeOpacity={0.5}
+
               onPress={() =>
                 onEditClicked(item.addressNo, addresObjToString(item))
               }
@@ -165,13 +156,14 @@ function SavedLocationItem({
             )}
 
             {item?.isPrimary == true && (
-              <TouchableOpacity style={{ marginLeft: 10 }} activeOpacity={0.5}>
+              <TouchableOpacity style={{ marginLeft: 10 }}
+                activeOpacity={0.5}>
                 <PrimaryAddress></PrimaryAddress>
               </TouchableOpacity>
             )}
           </View>
         </View>
-        <Divider style={{ marginTop: 10 }} />
+        <ClearSpace size={4} />
       </View>
     </TouchableOpacity>
   );
@@ -184,13 +176,14 @@ const SavedLocationList = ({
   onItemClicked,
   onSetPrimary,
 }) => (
-  <View>
+  <View >
     {savedLocationList?.length > 0 ? (
       <FlatList
         contentContainerStyle={{
-          paddingBottom: 20,
+          // paddingBottom: 20,
           paddingLeft: 2,
           paddingRight: 2,
+
         }}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}

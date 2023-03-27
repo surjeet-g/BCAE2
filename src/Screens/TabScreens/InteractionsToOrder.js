@@ -13,7 +13,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View,
+  View
 } from "react-native";
 import { Chip, List, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -25,7 +25,7 @@ import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
-  spacing,
+  spacing
 } from "../../Utilities/Constants/Constant";
 
 import { strings } from "../../Utilities/Language";
@@ -38,12 +38,12 @@ import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js
 import {
   addInteractionAction,
   fetchInteractionAction,
-  updateInteractionAction,
+  updateInteractionAction
 } from "../../Redux/InteractionDispatcher";
 
 import {
   setInteractionFormField,
-  setInteractionReset,
+  setInteractionReset
 } from "../../Redux/InteractionAction";
 
 import get from "lodash.get";
@@ -59,13 +59,13 @@ import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
 import {
-  fetchSavedProfileData,
+  fetchMyProfileData,
   fetchSavedProfileDataByUser,
-  seachCustomers,
+  seachCustomers
 } from "../../Redux/ProfileDispatcher";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -73,7 +73,7 @@ import theme from "../../Utilities/themeConfig";
 import {
   getCustomerID,
   getUserType,
-  USERTYPE,
+  USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -181,7 +181,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const masterDispatch = useDispatch([getMasterData]);
   const profileDispatch = useDispatch([
-    fetchSavedProfileData,
+    fetchMyProfileData,
     seachCustomers,
     setUserSearch,
     fetchSavedProfileDataByUser,
@@ -231,7 +231,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         description: "Insurance",
       });
       // await dispatchInteraction(fetchInteractionAction(true));
-      await profileDispatch(fetchSavedProfileData(navigation));
+      await profileDispatch(fetchMyProfileData(navigation));
       setLoader(false);
       // master only invoke load
       masterDispatch(
@@ -948,7 +948,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       },
                       {
                         text: strings.close,
-                        onPress: () => {},
+                        onPress: () => { },
                         style: "cancel",
                       },
                     ]
@@ -982,7 +982,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         <Text variant="labelMedium" style={{ textAlign: "center" }}>
           Couldn't Find a resolution?
-          <Text onPress={() => {}} style={{ color: "red" }}>
+          <Text onPress={() => { }} style={{ color: "red" }}>
             {" "}
             Create Interaction
           </Text>{" "}
@@ -1014,7 +1014,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               interactionID: intereactionAddResponse?.intxnNo,
             });
           }}
-          cancelHandler={() => {}}
+          cancelHandler={() => { }}
         />
       </View>
     );

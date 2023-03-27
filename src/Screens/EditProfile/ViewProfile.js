@@ -1,14 +1,14 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
+  BottomSheetScrollView
 } from "@gorhom/bottom-sheet";
 import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import {
   Alert,
@@ -19,7 +19,7 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Button, Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -35,7 +35,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
@@ -121,7 +121,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => {};
+  const onFaqPressed = () => { };
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -138,9 +138,8 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{
@@ -246,7 +245,9 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <Pressable style={styles.listItem}>
+        <Pressable style={styles.listItem} onPress={() => {
+          navigation.navigate("SavedLocation");
+        }}>
           <Icon
             name="map-marker-outline"
             size={ICON}
