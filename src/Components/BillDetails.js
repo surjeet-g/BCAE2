@@ -1,6 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Divider } from "react-native-paper";
 
+// // Usage
+// <BillDetails
+// details={{ gTotal: 1250.0, total: 1250.0, gst: 50.0, discount: 100.0 }}
+// />
 const BillDetails = (props) => {
   const { gTotal, total, gst, discount } = props.details;
   const Item = (
@@ -16,22 +21,23 @@ const BillDetails = (props) => {
       </View>
     );
   };
+  const CDivider = () => {
+    return (
+      <Divider
+        style={{
+          borderWidth: 1,
+          borderColor: "#8E8F95",
+          borderStyle: "dashed",
+        }}
+      />
+    );
+  };
   return (
     <View style={styles.container}>
       {Item("Grand Total", "$1250.00", "#686B6C")}
-      <View
-        style={{
-          height: 1,
-          backgroundColor: "#8E8F95",
-        }}
-      />
+      <CDivider />
       {Item("GST", "$50.00", "#5677D2")}
-      <View
-        style={{
-          height: 1,
-          backgroundColor: "#8E8F95",
-        }}
-      />
+      <CDivider />
       {Item("Discount", "-$100.00", "#EFA848")}
       {Item("Total", "$1250.00", "#000000", "#DADADA")}
     </View>

@@ -2,6 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
+// Usage
+/* <SelectedProduct item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
+
 const SelectedProduct = (props) => {
   console.log("$$$-props", props);
   const { item } = props;
