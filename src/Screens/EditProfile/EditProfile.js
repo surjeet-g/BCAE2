@@ -334,7 +334,9 @@ const EditProfile = ({ navigation, props }) => {
           lastName: lastName,
           gender: gender?.code,
           idValue: idValue,
-          contactPreferences: contactValues.filter(it => it.active).map(ite => ite.code)
+          contactPreferences: contactValues
+            .filter((it) => it.active)
+            .map((ite) => ite.code),
           // nationality : country
           // profilePicture: profileImageData,
           // address: {
@@ -353,7 +355,10 @@ const EditProfile = ({ navigation, props }) => {
           // },
         },
       };
-      console.log('>>', contactValues.filter(it => it.active).map(ite => ite.code))
+      console.log(
+        ">>",
+        contactValues.filter((it) => it.active).map((ite) => ite.code)
+      );
 
       const status = await dispatch2(
         updateProfileData(registerObject, navigation)
@@ -402,14 +407,14 @@ const EditProfile = ({ navigation, props }) => {
     ""
   );
 
-  const profileCurrentPer = get(profile, "savedProfileData.contactPreferences", "")
-
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
-  let contactPerf = []
-  if (get(contactPerference, 'length', 0) != 0 && get(profileCurrentPer, "length", 0) != 0) {
-    contactPerf = contactPerference.map(it => {
-
-      return ({
+  let contactPerf = [];
+  if (
+    get(contactPerference, "length", 0) != 0 &&
+    get(profileCurrentPer, "length", 0) != 0
+  ) {
+    contactPerf = contactPerference.map((it) => {
+      return {
         code: it.code,
         description: it.description,
         active: profileCurrentPer.includes(it.code),
