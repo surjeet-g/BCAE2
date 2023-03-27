@@ -2,6 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Divider } from "react-native-paper";
 
+// // Usage
+// <BillDetails
+// details={{ gTotal: 1250.0, total: 1250.0, gst: 50.0, discount: 100.0 }}
+// />
 const BillDetails = (props) => {
   const { gTotal, total, gst, discount } = props.details;
   const Item = (
