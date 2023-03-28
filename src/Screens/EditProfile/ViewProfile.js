@@ -1,14 +1,14 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
+  BottomSheetScrollView
 } from "@gorhom/bottom-sheet";
 import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import {
   Alert,
@@ -19,7 +19,7 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Button, Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -35,9 +35,11 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
+import { getLanguage } from "../../Utilities/Language/language";
+import { changeLanguage } from '../../Utilities/Language/MulitLanguageSupport';
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
@@ -67,13 +69,18 @@ export const ViewProfile = ({ navigation }) => {
     userId: "",
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
+  const [ischangeLanguageModalVisible, setIschangeLanguageModalVisible] =
+    useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   let profileReducer = useSelector((state) => state.profile);
   let profileResult = profileReducer.savedProfileData;
 
   useEffect(() => {
     dispatch(fetchMyProfileData(navigation));
     async function getUserID() {
+      const language = await getLanguage();
       const userID = await getUserId();
+      setSelectedLanguage(language.name);
       setUserInfo({
         email: profileResult?.customerContact[0]?.emailId,
         name: `${profileResult?.firstName} ${profileResult?.lastName}`,
@@ -83,6 +90,60 @@ export const ViewProfile = ({ navigation }) => {
     }
     getUserID();
   }, []);
+
+  const showLanguageModal = () => {
+    setIschangeLanguageModalVisible(true);
+  };
+
+  const closeLanguageModal = () => {
+    setIschangeLanguageModalVisible(false);
+  };
+  const handlechangeLanguage = async (language) => {
+    const status = await changeLanguage(language)
+    if (status) {
+      navigation.navigate("Splash");
+    }
+    else {
+      console.log('somthing wents wrong',)
+    }
+  }
+  const selectLanguage = (language) => {
+    closeLanguageModal();
+    Alert.alert(
+      strings.attention,
+      "Do you want to change the language to " + language,
+      [
+        {
+          text: strings.cancel,
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        {
+          text: strings.ok,
+          onPress: () => {
+            switch (language) {
+              case "English":
+                handlechangeLanguage({ name: "English", langCode: "en" });
+                break;
+              case "Malay":
+                handlechangeLanguage({ name: "Malay", langCode: "ml" });
+                break;
+              case "Tamil":
+                handlechangeLanguage({ name: "Tamil", langCode: "ta" });
+                break;
+              case "Malayalam":
+                handlechangeLanguage({ name: "Malayalam", langCode: "en" });
+                break;
+              case "Hindi":
+                handlechangeLanguage({ name: "Hindi", langCode: "hi" });
+                break;
+              default:
+                break;
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const toggleSwitch = () => {
     setIsNotiEnabled(!isNotiEnabled);
@@ -121,7 +182,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => {};
+  const onFaqPressed = () => { };
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -138,9 +199,8 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{
@@ -208,15 +268,8 @@ export const ViewProfile = ({ navigation }) => {
         </Pressable>
         <Divider />
         <ClearSpace size={2} />
-        <Pressable
-          onPress={() => {
-            navigation.navigate("Changepassword", {
-              isChangePassword: true,
-              email: userInfo.email,
-            });
-          }}
-          style={styles.listItem}
-        >
+        <Pressable onPress={() => showLanguageModal()}
+          style={styles.listItem}>
           <Icon
             name="google-translate"
             size={ICON}
@@ -241,12 +294,14 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Selected language : English
+              Selected language : {selectedLanguage}
             </Text>
           </Text>
         </Pressable>
         <Divider />
-        <Pressable style={styles.listItem}>
+        <Pressable style={styles.listItem} onPress={() => {
+          navigation.navigate("SavedLocation");
+        }}>
           <Icon
             name="map-marker-outline"
             size={ICON}
@@ -504,7 +559,146 @@ export const ViewProfile = ({ navigation }) => {
           </BottomSheetModal>
         </View>
       </BottomSheetModalProvider>
-    </View>
+      {ischangeLanguageModalVisible && (
+        <View style={styles.changeLanguageContainer}>
+          <View style={{ ...commonStyle.row_start, ...commonStyle.borderBottom, width: "100%", paddingVertical: 10, }}>
+            <Text
+              variant="bodyLarge"
+              style={{
+                flex: .9,
+                textAlign: "center",
+                fontWeight: "700",
+                color: colors.secondary,
+              }}
+            >
+              Change Language
+            </Text>
+            <TouchableOpacity onPress={closeLanguageModal} style={{ flex: .1, }}>
+              <Image
+                style={{ width: 20, height: 20 }}
+                source={require("../../Assets/icons/close_black.png")}
+              />
+            </TouchableOpacity>
+          </View>
+          <Divider />
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("English")}
+              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  English
+                </Text>
+                {selectedLanguage == "English" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Malay")}
+              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Malay
+                </Text>
+                {selectedLanguage == "Malay" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Tamil")}
+              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Tamil
+                </Text>
+                {selectedLanguage == "Tamil" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Malayalam")}
+              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Malayalam
+                </Text>
+                {selectedLanguage == "Malayalam" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Hindi")}
+              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Hindi
+                </Text>
+                {selectedLanguage == "Hindi" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+        </View>
+      )
+      }
+    </View >
   );
 };
 const styles = StyleSheet.create({
@@ -525,5 +719,22 @@ const styles = StyleSheet.create({
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,
+  },
+  changeLanguageContainer: {
+    width: "90%",
+    top: '20%',
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "white",
+    alignSelf: "center",
+    borderRadius: 10,
+    elevation: 1,
+    shadowRadius: 1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
+    paddingBottom: 20,
+    marginBottom: 0,
+    alignItems: "center",
+    // marginTop: 20,
   },
 });

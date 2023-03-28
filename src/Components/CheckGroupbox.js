@@ -1,10 +1,9 @@
 import get from "lodash.get";
 import React, { useEffect } from "react";
 import { Pressable, View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { commonStyle } from "../Utilities/Style/commonStyle";
-
 /**
 * Group check box
 *
@@ -20,6 +19,7 @@ export const CheckGroupbox = ({ data, label, setValues, values }) => {
     // setValues(data)
   }, []);
 
+  const { colors } = useTheme();
   return (
     <View style={{ marginTop: 5 }}>
       <Text
