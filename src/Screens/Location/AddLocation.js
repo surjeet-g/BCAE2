@@ -1,14 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Dimensions, Image, SafeAreaView, StyleSheet,
-  Text, TextInput, TouchableOpacity, View
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { useTheme } from "react-native-paper";
 
 import MapView, {
   Callout,
-  Circle, Marker, PROVIDER_GOOGLE
+  Circle,
+  Marker,
+  PROVIDER_GOOGLE
 } from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
@@ -21,7 +29,7 @@ import RNLocation from "react-native-location";
 import get from "lodash.get";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
-import { CustomInput } from '../../Components/CustomInput';
+import { CustomInput } from "../../Components/CustomInput";
 import { FooterModel } from "../../Components/FooterModel";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
 import { StickyFooter } from "../../Components/StickyFooter";
@@ -59,7 +67,7 @@ const AddLocation = ({ route, navigation }) => {
   const [initAddLocation, setInitAddLocation] = useState(false);
 
   //  const { customerId,
-  //    fromPage,  
+  //    fromPage,
   //     excludingSavedAddress = [],
   //   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
 
@@ -109,7 +117,7 @@ const AddLocation = ({ route, navigation }) => {
       setValuePostcode("");
       setPostcodeName("");
       setSimpangText("");
-      setHno("")
+      setHno("");
     }
   };
 
@@ -360,13 +368,12 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-
     animateToCurrentLocation();
   }, [locationGet]);
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      CheckForGPSEnablement()
+      CheckForGPSEnablement();
     }
 
     permissionHandle();
@@ -660,7 +667,7 @@ const AddLocation = ({ route, navigation }) => {
           </View>
         </View>
       </View>
-      <StickyFooter isSplash={true}>
+      <StickyFooter isSplash={true} isAddlocation={true}>
         {/* <View
           style={[
             { marginBottom: 40, paddingStart: 10, paddingEnd: 10 },
@@ -681,18 +688,16 @@ const AddLocation = ({ route, navigation }) => {
         setOpen={setAddLocationModalVisible}
         title={`Enter address details`}
       >
-        <View >
+        <View>
           <View
             style={{
               // height: height * 0.65,
               backgroundColor: color.WHITE,
               borderRadius: 10,
-              padding: 20,
-              marginBottom: 40
+              paddingHorizontal: 20,
+              marginBottom: 20,
             }}
           >
-
-
             <View
               style={{
                 // flex: 1,
@@ -743,19 +748,14 @@ const AddLocation = ({ route, navigation }) => {
                   caption={strings.hno}
                   placeHolder={strings.hno}
                   onChangeText={setHno}
-
                 />
-
               </View>
               <View style={{ marginTop: 10 }}>
-
                 <CustomInput
                   onChangeText={setSimpangText}
                   value={simpangText}
                   caption={strings.simpang}
                   placeHolder={strings.simpang}
-
-
                 />
               </View>
 
@@ -824,13 +824,12 @@ const AddLocation = ({ route, navigation }) => {
                   elevation: 0,
                 }}
               >
-
                 <CustomButton
                   isDisabled={
-                    (distName === "" ||
-                      kampongName === "" ||
-                      postcode === "" ||
-                      simpangText === "")
+                    distName === "" ||
+                    kampongName === "" ||
+                    postcode === "" ||
+                    simpangText === ""
                   }
                   loading={initAddLocation}
                   label={strings.ok}
@@ -840,9 +839,7 @@ const AddLocation = ({ route, navigation }) => {
             </View>
           </View>
         </View>
-
       </FooterModel>
-
     </SafeAreaView>
   );
 };

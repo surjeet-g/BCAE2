@@ -451,7 +451,7 @@ export const HomeScreen = ({ navigation }) => {
                       : "#ffffff",
                 }}
               >
-                Id: {orderList?.orderListData[0]?.intxnId || "NA"}
+                {/* Id: {orderList?.orderListData[0]?.intxnId || "NA"} */}
               </Text>
               <Text
                 variant="bodyMedium"
@@ -466,10 +466,10 @@ export const HomeScreen = ({ navigation }) => {
                       : "#ffffff",
                 }}
               >
-                Date :
+                {/* Date :
                 {moment(orderList?.orderListData[0]?.createdAt).format(
                   DATE_FORMAT
-                )}
+                )} */}
               </Text>
             </View>
           )}

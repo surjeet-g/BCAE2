@@ -39,7 +39,7 @@ import {
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getLanguage } from "../../Utilities/Language/language";
-import { changeLanguage } from '../../Utilities/Language/MulitLanguageSupport';
+import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
@@ -99,14 +99,13 @@ export const ViewProfile = ({ navigation }) => {
     setIschangeLanguageModalVisible(false);
   };
   const handlechangeLanguage = async (language) => {
-    const status = await changeLanguage(language)
+    const status = await changeLanguage(language);
     if (status) {
       navigation.navigate("Splash");
+    } else {
+      console.log("somthing wents wrong");
     }
-    else {
-      console.log('somthing wents wrong',)
-    }
-  }
+  };
   const selectLanguage = (language) => {
     closeLanguageModal();
     Alert.alert(
@@ -152,7 +151,7 @@ export const ViewProfile = ({ navigation }) => {
     }).then(function () {
       Toast.show({
         type: "bctSuccess",
-        text1: strings.settings_updated,
+        text1: strings.notification_settings_updated,
       });
     });
   };
@@ -268,8 +267,7 @@ export const ViewProfile = ({ navigation }) => {
         </Pressable>
         <Divider />
         <ClearSpace size={2} />
-        <Pressable onPress={() => showLanguageModal()}
-          style={styles.listItem}>
+        <Pressable onPress={() => showLanguageModal()} style={styles.listItem}>
           <Icon
             name="google-translate"
             size={ICON}
@@ -299,9 +297,12 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <Pressable style={styles.listItem} onPress={() => {
-          navigation.navigate("SavedLocation");
-        }}>
+        <Pressable
+          style={styles.listItem}
+          onPress={() => {
+            navigation.navigate("SavedLocation");
+          }}
+        >
           <Icon
             name="map-marker-outline"
             size={ICON}
@@ -561,11 +562,18 @@ export const ViewProfile = ({ navigation }) => {
       </BottomSheetModalProvider>
       {ischangeLanguageModalVisible && (
         <View style={styles.changeLanguageContainer}>
-          <View style={{ ...commonStyle.row_start, ...commonStyle.borderBottom, width: "100%", paddingVertical: 10, }}>
+          <View
+            style={{
+              ...commonStyle.row_start,
+              ...commonStyle.borderBottom,
+              width: "100%",
+              paddingVertical: 10,
+            }}
+          >
             <Text
               variant="bodyLarge"
               style={{
-                flex: .9,
+                flex: 0.9,
                 textAlign: "center",
                 fontWeight: "700",
                 color: colors.secondary,
@@ -573,7 +581,10 @@ export const ViewProfile = ({ navigation }) => {
             >
               Change Language
             </Text>
-            <TouchableOpacity onPress={closeLanguageModal} style={{ flex: .1, }}>
+            <TouchableOpacity
+              onPress={closeLanguageModal}
+              style={{ flex: 0.1 }}
+            >
               <Image
                 style={{ width: 20, height: 20 }}
                 source={require("../../Assets/icons/close_black.png")}
@@ -584,7 +595,12 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Pressable
               onPress={() => selectLanguage("English")}
-              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
+              style={{
+                ...commonStyle.row_space_arround_evenly,
+                width: "50%",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
@@ -606,8 +622,12 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Pressable
               onPress={() => selectLanguage("Malay")}
-              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
-
+              style={{
+                ...commonStyle.row_space_arround_evenly,
+                width: "50%",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
@@ -629,8 +649,12 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Pressable
               onPress={() => selectLanguage("Tamil")}
-              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
-
+              style={{
+                ...commonStyle.row_space_arround_evenly,
+                width: "50%",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
@@ -652,8 +676,12 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Pressable
               onPress={() => selectLanguage("Malayalam")}
-              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
-
+              style={{
+                ...commonStyle.row_space_arround_evenly,
+                width: "50%",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
@@ -675,8 +703,12 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Pressable
               onPress={() => selectLanguage("Hindi")}
-              style={{ ...commonStyle.row_space_arround_evenly, width: "50%", paddingHorizontal: 10, paddingVertical: 10 }}
-
+              style={{
+                ...commonStyle.row_space_arround_evenly,
+                width: "50%",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
@@ -722,7 +754,7 @@ const styles = StyleSheet.create({
   },
   changeLanguageContainer: {
     width: "90%",
-    top: '20%',
+    top: "20%",
     flex: 1,
     position: "absolute",
     backgroundColor: "white",

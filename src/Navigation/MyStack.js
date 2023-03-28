@@ -107,7 +107,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_INTERACTION_DETAILS}
+        initialRouteName={STACK_SPLASH}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -277,7 +277,10 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "white", fontWeight: "500" },
               },
-
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4C5A81",
+              },
               headerRight: null,
             },
           })}
@@ -288,7 +291,6 @@ function MyStack() {
           options={() => ({
             ...options,
             ...{
-
               headerTintColor: "white",
               headerTitle: "Saved Locations",
               headerStyle: {
