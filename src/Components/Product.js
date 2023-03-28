@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./DashedDivider";
 
@@ -11,22 +11,7 @@ const Product = (props) => {
   const { item } = props;
   return (
     <View style={styles.container}>
-      <Text
-        style={{
-          backgroundColor: "rgba(63, 185, 77, 0.23)",
-          color: "#3FB94D",
-          paddingVertical: 2,
-          paddingHorizontal: 10,
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
-          position: "absolute",
-          top: 0,
-          right: 30,
-          fontSize: 14,
-          fontWeight: 600,
-        }}
-        numberOfLines={1}
-      >
+      <Text style={styles.bestvalue} numberOfLines={1}>
         {"Best Value"}
       </Text>
       {/* Product */}
@@ -79,7 +64,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
   },
-
+  bestvalue: {
+    backgroundColor: "rgba(63, 185, 77, 0.23)",
+    color: "#3FB94D",
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    position: "absolute",
+    top: 0,
+    right: 30,
+    fontSize: 14,
+    fontWeight: 600,
+  },
   productTxtView: { flexDirection: "column", padding: 10 },
   productNameTxt: {
     color: "#202223",
