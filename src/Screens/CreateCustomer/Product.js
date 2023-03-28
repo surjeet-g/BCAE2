@@ -10,7 +10,9 @@ const Product = (props) => {
   console.log("$$$-props", props);
   const { item } = props;
   return (
-    <View style={styles.container}>
+    <View
+      style={item.quantity > 0 ? styles.selectedContainer : styles.container}
+    >
       <Text style={styles.bestvalue} numberOfLines={1}>
         {"Best Value"}
       </Text>
@@ -64,6 +66,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     margin: 10,
+  },
+  selectedContainer: {
+    flexDirection: "column",
+    borderRadius: 10,
+    backgroundColor: "white",
+    padding: 10,
+    margin: 10,
+    borderWidth: 2,
+    borderColor: "#3FB94D",
   },
   bestvalue: {
     backgroundColor: "rgba(63, 185, 77, 0.23)",
