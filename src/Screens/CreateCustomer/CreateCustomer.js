@@ -1,4 +1,11 @@
-import { Text, View, StyleSheet, ScrollView, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Switch,
+} from "react-native";
 import React, { Component, useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
@@ -13,6 +20,7 @@ import BillDetails from "./BillDetails";
 
 const CreateCustomer = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
 
   const renderStepOneUI = () => {
     return (
@@ -105,6 +113,27 @@ const CreateCustomer = () => {
             discount: 100.0,
           }}
         />
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <CustomTitleText title={"Need Quote Only"} />
+          <Switch
+            trackColor={{
+              false: "#9A9A9A",
+              true: "#F5AD47",
+            }}
+            thumbColor={"#fff"}
+            // ios_backgroundColor="#3e3e3e"
+            onValueChange={() => setNeedQuoteOnly(!needQuoteOnly)}
+            value={needQuoteOnly}
+          />
+        </View>
       </View>
     );
   };
