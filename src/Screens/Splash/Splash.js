@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
@@ -14,7 +14,7 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
-
+  const [counter, setCounter] = useState(1)
   const { colors } = useTheme();
   // const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   // const versioncheck = useSelector((state) => state.versioncheck);
@@ -42,15 +42,20 @@ const Splash = ({ route, navigation }) => {
 
   const checkLanguage = async () => {
     let language = await getLanguage();
-    console.log('langua', language)
+
     if (language != null && language != undefined) {
       console.log('langua true',)
       changeLanguage(language);
+      strings.setLanguage(language.langCode);
+
     } else {
       console.log('langua true',)
 
+      strings.setLanguage("en");
       changeLanguage({ name: "English", langCode: "en" });
+
     }
+    setCounter(counter + 1)
   };
 
   const checkLogin = () => {
