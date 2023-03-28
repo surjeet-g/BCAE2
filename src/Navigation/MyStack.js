@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
@@ -50,11 +49,11 @@ import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
+import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
 import Followup from "./../Screens/Appointments/Followup";
 import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
-import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -108,7 +107,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"ViewProfile"}
+        initialRouteName={STACK_SPLASH}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -270,26 +269,34 @@ function MyStack() {
         />
         <Stack.Screen
           options={({ navigation }) => ({
+            ...options,
             ...{
-              headerTintColor: "black",
-              headerTitle: "AddLocation",
+              headerTintColor: "white",
+              headerTitle: "Location on Map",
               headerTitleStyle: {
                 ...fonts.titleLarge,
-                ...{ color: "black", fontWeight: "700" },
+                ...{ color: "white", fontWeight: "500" },
               },
-              headerRight: () => {
-                return <View style={{ marginRight: 15 }}></View>;
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4C5A81",
               },
+              headerRight: null,
             },
           })}
           name="AddLocation"
           component={AddLocation}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={() => ({
             ...options,
             ...{
-              title: "Saved Locations",
+              headerTintColor: "white",
+              headerTitle: "Saved Locations",
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4C5A81",
+              },
             },
           })}
           name="SavedLocation"

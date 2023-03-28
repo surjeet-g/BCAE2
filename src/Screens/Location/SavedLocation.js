@@ -1,46 +1,31 @@
 import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
+  useEffect, useLayoutEffect
 } from "react";
 import {
-  SafeAreaView,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Text,
-  View,
   Alert,
-  Pressable,
+  Pressable, SafeAreaView, StyleSheet,
+  Text,
+  View
 } from "react-native";
-import { strings } from "../../Utilities/Language";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import SavedLocationList from "../../Components/SavedLocationList";
 import {
-  fetchSavedLocations,
-  setPrimaryAddress,
-  deleteSavedLocation,
+  deleteSavedLocation, fetchSavedLocations,
+  setPrimaryAddress
 } from "../../Redux/SavedLocationDispatcher";
 import {
-  spacing,
-  fontSizes,
-  color,
-  buttonType,
-  buttonSize,
-  bottomBarHeight,
+  buttonSize, color, spacing
 } from "../../Utilities/Constants/Constant";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import SavedLocationList from "../../Components/SavedLocationList";
+import { strings } from "../../Utilities/Language";
 // import Header from "../TabScreens/Component/Header";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { ScrollView } from "react-native-gesture-handler";
-import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
-import { navBar } from "../../Utilities/Style/navBar";
-import { useTheme } from "react-native-paper";
-import { HEADER_MARGIN } from "../../Utilities/themeConfig";
-import { ClearSpace } from "../../Components/ClearSpace";
-import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import get from "lodash.get";
+import { ScrollView } from "react-native-gesture-handler";
+import { useTheme } from "react-native-paper";
+import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
+import { fetchMyProfileData } from '../../Redux/ProfileDispatcher';
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
+import { navBar } from "../../Utilities/Style/navBar";
 
 const SavedLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
@@ -50,12 +35,13 @@ const SavedLocation = ({ route, navigation }) => {
   //const { customerId } = route.params;
   // const { onPlaceChosen , fromPage  } = route.params;
   const { onPlaceChosen, fromPage } = {
-    onPlaceChosen: () => {},
+    onPlaceChosen: () => { },
     fromPage: true,
   };
   let profile = useSelector((state) => state.profile);
+
   const dispatch2 = useDispatch([fetchMyProfileData, fetchRegisterFormData]);
-  const fetchMyProfileData = () => dispatch2(fetchMyProfileData(navigation));
+
 
   const dispatch = useDispatch([
     fetchSavedLocations,
@@ -66,16 +52,18 @@ const SavedLocation = ({ route, navigation }) => {
   useEffect(() => {
     //get master
     dispatch2(fetchRegisterFormData());
-    fetchMyProfileData();
+    dispatch2(fetchMyProfileData(navigation));
     // fetchSavedLocationData();
 
     const willFocusSubscription = navigation.addListener("focus", () => {
       dispatch2(fetchRegisterFormData());
-      fetchMyProfileData();
+      dispatch2(fetchMyProfileData(navigation));
     });
     return willFocusSubscription;
-  }, []);
-  const onClickedSaveLocationButton = () => {};
+  }, [navigation]);
+
+
+  const onClickedSaveLocationButton = () => { };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -99,13 +87,13 @@ const SavedLocation = ({ route, navigation }) => {
                 });
               } else {
                 Alert.alert(strings.attention, strings.max_number_address, [
-                  { text: strings.ok, onPress: () => {} },
+                  { text: strings.ok, onPress: () => { } },
                 ]);
               }
             }}
-            style={navBar.roundIconColored}
+            style={{ ...navBar.roundIconColored, backgroundColor: "#8FA1C4" }}
           >
-            <Icon name="plus" size={25} color={colors.primary} />
+            <Icon name="plus" size={20} color={"#fff"} />
           </Pressable>
         </>
       ),
@@ -190,7 +178,7 @@ const SavedLocation = ({ route, navigation }) => {
       },
     ]);
   };
-  const performPrimaryAddressUpdate = () => {};
+  const performPrimaryAddressUpdate = () => { };
 
   // const onItemClicked = (item) => {
   //   Alert.alert(strings.attention, strings.confirm_primary_address, [
@@ -230,7 +218,7 @@ const SavedLocation = ({ route, navigation }) => {
           },
         },
       ]);
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -249,7 +237,7 @@ const SavedLocation = ({ route, navigation }) => {
           )}
 
         {address.length != 0 ? (
-          <View>
+          <View style={{ backgroundColor: "white", margin: 10, borderRadius: 3 }}>
             <SavedLocationList
               onSetPrimary={onSetPrimary}
               savedLocationList={address}

@@ -1,31 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet,
-  Text, TextInput, TouchableOpacity, View
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { useTheme } from "react-native-paper";
 
 import MapView, {
   Callout,
-  Circle, Marker, PROVIDER_GOOGLE
+  Circle,
+  Marker,
+  PROVIDER_GOOGLE,
 } from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
-import {
-  buttonSize, color, spacing
-} from "../../Utilities/Constants/Constant";
+import { color, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 
 // import Modal from "react-native-modal";
 import RNLocation from "react-native-location";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 
 import get from "lodash.get";
-import { Button } from "react-native-paper";
 import { CustomButton } from "../../Components/CustomButton";
-import { CustomDropDownAddress as CustomDropDown } from "../../Components/CustomDropDownAddress";
+import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "../../Components/CustomInput";
+import { FooterModel } from "../../Components/FooterModel";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
+import { StickyFooter } from "../../Components/StickyFooter";
 const { height } = Dimensions.get("screen");
 
 const AddLocation = ({ route, navigation }) => {
@@ -59,10 +66,10 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
-//  const { customerId,
-//    fromPage,  
-//     excludingSavedAddress = [],
-//   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
+  //  const { customerId,
+  //    fromPage,
+  //     excludingSavedAddress = [],
+  //   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
 
   const {
     fromPage,
@@ -92,7 +99,7 @@ const AddLocation = ({ route, navigation }) => {
   const [postcode, setPostcodeName] = useState("");
   const [simpangText, setSimpangText] = useState("");
   const [addreType, setAddrType] = useState("");
-
+  const [hno, setHno] = useState("");
   const hideAddLocationModal = () => setAddLocationModalVisible(false);
   const showAddLocationModal = () => setAddLocationModalVisible(true);
 
@@ -110,6 +117,7 @@ const AddLocation = ({ route, navigation }) => {
       setValuePostcode("");
       setPostcodeName("");
       setSimpangText("");
+      setHno("");
     }
   };
 
@@ -129,6 +137,7 @@ const AddLocation = ({ route, navigation }) => {
           longitude: currentLongitude,
           latitude: currentLatitude,
           postCode: postcode,
+          hno: hno,
           dialPick,
           addressType: addreType?.code,
         });
@@ -359,15 +368,14 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-
     animateToCurrentLocation();
   }, [locationGet]);
 
   useEffect(() => {
-  if(Platform.OS === "android" ){
-    CheckForGPSEnablement()
-  }
- 
+    if (Platform.OS === "android") {
+      CheckForGPSEnablement();
+    }
+
     permissionHandle();
   }, [location]);
 
@@ -659,218 +667,179 @@ const AddLocation = ({ route, navigation }) => {
           </View>
         </View>
       </View>
-      <View
-        style={[
-          { marginBottom: 40, paddingStart: 10, paddingEnd: 10 },
-          styles.bottomView,
-        ]}
-      >
+      <StickyFooter isSplash={true} isAddlocation={true}>
+        {/* <View
+          style={[
+            { marginBottom: 40, paddingStart: 10, paddingEnd: 10 },
+            styles.bottomView,
+          ]}
+        > */}
         <CustomButton
           loading={false}
           label={strings.save_location}
           isDisabled={false}
           onPress={() => onClickedSaveLocationButton()}
         />
-      </View>
+        {/* </View> */}
+      </StickyFooter>
 
-      {isAddLocationModalVisible && (
-        <ScrollView style={{ position: "absolute", top: "-3%", left: "5%" }}>
-          <View style={styles.addLocationContainer}>
+      <FooterModel
+        open={isAddLocationModalVisible}
+        setOpen={setAddLocationModalVisible}
+        title={`Enter address details`}
+      >
+        <View>
+          <View
+            style={{
+              // height: height * 0.65,
+              backgroundColor: color.WHITE,
+              borderRadius: 10,
+              paddingHorizontal: 20,
+              marginBottom: 20,
+            }}
+          >
             <View
               style={{
-                // height: height * 0.65,
-                backgroundColor: color.WHITE,
-                borderRadius: 10,
-                padding: 20,
+                // flex: 1,
+                // justifyContent: "center",
+                alignItems: "center",
+                marginTop: 2,
               }}
             >
-              <View
-                style={{
-                  padding: 10,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <Text
-                  style={{
-                    marginLeft: "8%",
-                    color: color.BLACK,
-                    fontSize: 14,
-                    color: color.BCAE_PRIMARY,
-                    // alignItems: "center",
-                  }}
-                >
-                  {fromPage === "Register" || fromPage === "EditProfile"
-                    ? strings.select_location_confirmation
-                    : strings.save_location_confirmation}
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    left: 12,
-                    position: "relative",
-                    marginLeft: "12%",
-                    marginTop: "-10%",
-                    alignItems: "flex-end",
-                  }}
-                  onPress={() => setAddLocationModalVisible(false)}
-                >
-                  <Image
-                    source={require("../../Assets/icons/close_black.png")}
-                    style={{
-                      resizeMode: "cover",
-                      width: spacing.WIDTH_16,
-                      height: spacing.WIDTH_16,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
+              <Text>{geoAddress}</Text>
+            </View>
+            <View style={{ marginTop: 5, alignItems: "center" }}>
+              <Text>{strings.additional_address_info}</Text>
+            </View>
 
-              <View
-                style={{
-                  // flex: 1,
-                  // justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 2,
+            <View
+              style={{
+                marginTop: 5,
+                marginBottom: 5,
+                zIndex: 4,
+                elevation: 12,
+              }}
+            >
+              <CustomDropDownFullWidth
+                setDropDownEnable={() => setActiveDropDown("setAddrType")}
+                isDisable={true}
+                selectedValue={selectedValueAddr}
+                setValue={(add) => {
+                  console.log(">>", add);
+                  setValueSelAddr(add);
                 }}
-              >
-                <Text>{geoAddress}</Text>
-              </View>
-              <View style={{ marginTop: 5, alignItems: "center" }}>
-                <Text>{strings.additional_address_info}</Text>
-              </View>
-              <View
-                style={{
-                  marginTop: 5,
-                  marginBottom: 5,
-                  zIndex: 4,
-                  elevation: 12,
+                data={
+                  getAddresType() ?? []
+                  // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                }
+                onChangeText={(text) => {
+                  console.log(">>", text);
+                  setAddrType(text);
                 }}
-              >
-                <CustomDropDown
-                  setDropDownEnable={() => setActiveDropDown("setAddrType")}
-                  isDisable={true}
-                  selectedValue={selectedValueAddr}
-                  setValue={(add) => {
-                    console.log(">>", add);
-                    setValueSelAddr(add);
-                  }}
-                  data={
-                    getAddresType() ?? []
-                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                  }
-                  onChangeText={(text) => {
-                    console.log(">>", text);
-                    setAddrType(text);
-                  }}
-                  value={addreType}
-                  isDisableDropDown={activeDropDown != "setAddrType"}
-                  placeHolder={strings.address_type + "*"}
+                value={addreType}
+                isDisableDropDown={activeDropDown != "setAddrType"}
+                placeHolder={strings.address_type + "*"}
+              />
+            </View>
+            <View>
+              <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  value={hno}
+                  caption={strings.hno}
+                  placeHolder={strings.hno}
+                  onChangeText={setHno}
                 />
               </View>
-              <View>
-                <View style={{ marginTop: 10 }}>
-                  <TextInput
-                    style={styles.searchInputStreet}
-                    onChangeText={setSimpangText}
-                    value={simpangText}
-                    placeholder={strings.simpang}
-                    keyboardType="default"
-                  />
-                </View>
+              <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  onChangeText={setSimpangText}
+                  value={simpangText}
+                  caption={strings.simpang}
+                  placeHolder={strings.simpang}
+                />
+              </View>
 
-                <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
-                  <CustomDropDown
-                    setDropDownEnable={() => setActiveDropDown("district")}
-                    isDisable={true}
-                    selectedValue={selectedValueDist}
-                    setValue={setValueDist}
-                    data={
-                      getUniqueDistricts() ?? []
-                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                    }
-                    onChangeText={(text) => onDistrictClick(text)}
-                    value={distName}
-                    isDisableDropDown={activeDropDown != "district"}
-                    placeHolder={strings.district + "*"}
-                  />
-                </View>
+              <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                <CustomDropDownFullWidth
+                  setDropDownEnable={() => setActiveDropDown("district")}
+                  isDisable={true}
+                  selectedValue={selectedValueDist}
+                  setValue={setValueDist}
+                  data={
+                    getUniqueDistricts() ?? []
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => onDistrictClick(text)}
+                  value={distName}
+                  isDisableDropDown={activeDropDown != "district"}
+                  placeHolder={strings.district + "*"}
+                />
+              </View>
 
-                <View style={{ marginTop: 12, zIndex: 3, elevation: 6 }}>
-                  <CustomDropDown
-                    setDropDownEnable={() => setActiveDropDown("kampong")}
-                    isDisableDropDown={activeDropDown != "kampong"}
-                    selectedValue={selectedValueKampong}
-                    setValue={setValueKampong}
-                    data={
-                      getKampongByDistrict() ?? []
-                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                    }
-                    onChangeText={(text) => onKampongClick(text)}
-                    value={kampongName}
-                    placeHolder={strings.kampong + "*"}
-                  />
-                </View>
-                <View
-                  style={{
-                    marginTop: 12,
-                    marginBottom: spacing.HEIGHT_40,
-                    zIndex: 2,
-                    elevation: 2,
-                  }}
-                >
-                  <CustomDropDown
-                    setDropDownEnable={() => setActiveDropDown("postCode")}
-                    isDisable={false}
-                    selectedValue={selectedValuePostcode}
-                    isDisableDropDown={activeDropDown != "postCode"}
-                    setValue={setValuePostcode}
-                    data={
-                      getPostCodeByKampong() ?? []
+              <View style={{ marginTop: 12, zIndex: 3, elevation: 6 }}>
+                <CustomDropDownFullWidth
+                  setDropDownEnable={() => setActiveDropDown("kampong")}
+                  isDisableDropDown={activeDropDown != "kampong"}
+                  selectedValue={selectedValueKampong}
+                  setValue={setValueKampong}
+                  data={
+                    getKampongByDistrict() ?? []
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => onKampongClick(text)}
+                  value={kampongName}
+                  placeHolder={strings.kampong + "*"}
+                />
+              </View>
+              <View
+                style={{
+                  marginTop: 12,
+                  marginBottom: spacing.HEIGHT_40,
+                  zIndex: 2,
+                  elevation: 2,
+                }}
+              >
+                <CustomDropDownFullWidth
+                  setDropDownEnable={() => setActiveDropDown("postCode")}
+                  isDisable={false}
+                  selectedValue={selectedValuePostcode}
+                  isDisableDropDown={activeDropDown != "postCode"}
+                  setValue={setValuePostcode}
+                  data={
+                    getPostCodeByKampong() ?? []
 
-                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                    }
-                    onChangeText={(text) => onPostcodeClick(text)}
-                    value={postcode}
-                    placeHolder={strings.postCode + "*"}
-                  />
-                </View>
-                <View
-                  style={{
-                    // position: "absolute",
-                    // bottom: -(height * 0.15),
-                    maringTop: 12,
-                    zIndex: 0,
-                    elevation: 0,
-                  }}
-                >
-                  {initAddLocation ? (
-                    <CustomActivityIndicator
-                      size={buttonSize.LARGE}
-                      bgColor={color.BLACK}
-                      loderColor={color.WHITE}
-                    />
-                  ) : (
-                    <Button
-                      label={strings.ok}
-                      disabled={
-                        distName === "" ||
-                        kampongName === "" ||
-                        postcode === "" ||
-                        simpangText === ""
-                      }
-                      onPress={onClickedAddLocationTitleButton}
-                    >
-                      {strings.ok}
-                    </Button>
-                  )}
-                </View>
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => onPostcodeClick(text)}
+                  value={postcode}
+                  placeHolder={strings.postCode + "*"}
+                />
+              </View>
+              <View
+                style={{
+                  // position: "absolute",
+                  // bottom: -(height * 0.15),
+                  maringTop: 12,
+                  zIndex: 0,
+                  elevation: 0,
+                }}
+              >
+                <CustomButton
+                  isDisabled={
+                    distName === "" ||
+                    kampongName === "" ||
+                    postcode === "" ||
+                    simpangText === ""
+                  }
+                  loading={initAddLocation}
+                  label={strings.ok}
+                  onPress={onClickedAddLocationTitleButton}
+                />
               </View>
             </View>
           </View>
-        </ScrollView>
-      )}
+        </View>
+      </FooterModel>
     </SafeAreaView>
   );
 };
@@ -879,7 +848,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
-    marginTop: 60,
+    // marginTop: 60,
   },
   addLocationContainer: {
     width: "90%",

@@ -2,6 +2,7 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    notification_settings_updated: "Notification settings updated!!",
     interaction_history: "Interaction History",
     current_dept_role: "Current Depart/Role",
     user: "User",
@@ -214,7 +215,8 @@ export let strings = new LocalizedStrings({
     otp_sent: "OTP sent.You can request OTP after ",
     inquiryInfo: "Inquiry info",
     no_info: "No info available currently!!!",
-    simpang: "H.No/Jalan/Simpang",
+    simpang: "Simpang*",
+    hno: "H.No/Jalan*",
     district: "District",
     address_type: "Address type",
     kampong: "Kampong",
@@ -227,6 +229,7 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
+    notification_settings_updated: "Notification settings updated!!",
     interaction_history: "Interaction History",
     current_dept_role: "Current Depart/Role",
     user: "User",
@@ -441,7 +444,8 @@ export let strings = new LocalizedStrings({
     otp_sent: "OTP sent.You can request OTP after ",
     inquiryInfo: "Inquiry info",
     no_info: "No info available currently!!!",
-    simpang: "H.No/Jalan/Simpang",
+    simpang: "Simpang",
+    hno: "H.No/Jalan",
     district: "District",
     address_type: "Address type",
     kampong: "Kampong",

@@ -3,7 +3,7 @@ import { serverCall } from "..//Utilities/API";
 import {
   initOrderListData,
   setOrderListData,
-  setOrderListError,
+  setOrderListError
 } from "./OrderListAction";
 // import Geocoder from "@timwangdev/react-native-geocoder";
 import { getCustomerID } from "../Utilities/UserManagement/userInfo";
@@ -16,7 +16,7 @@ export function getOrderListData(navigation, limit = 100, page = 0) {
 
     let params = {
       searchParams: {
-        customerId: customerID,
+        // customerId: customerID,
       },
     };
 

@@ -579,8 +579,8 @@ export const Login = ({ navigation }) => {
                       ? true
                       : false
                     : number == "" || password == ""
-                      ? true
-                      : false
+                    ? true
+                    : false
                 }
                 onPress={() => {
                   loginMode === EMAIL
