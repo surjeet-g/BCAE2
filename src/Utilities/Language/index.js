@@ -191,7 +191,6 @@ export let strings = new LocalizedStrings({
     location_on_map: "LOCATION ON MAP",
     please_try_later: "Please try later.",
     complaint_success: "Complaint created successfully",
-    inquiry_success: "Inquiry created successfully",
     mandatory_password_change:
       "It is mandatory to change the password for first time.",
     want_to_continue: "Do you want to continue?",
@@ -429,7 +428,6 @@ export let strings = new LocalizedStrings({
     location_on_map: "LOCATION ON MAP",
     please_try_later: "Please try later.",
     complaint_success: "Complaint created successfully",
-    inquiry_success: "Inquiry created successfully",
     mandatory_password_change:
       "It is mandatory to change the password for first time.",
     want_to_continue: "Do you want to continue?",
@@ -478,6 +476,7 @@ export let strings = new LocalizedStrings({
     notification_alert: "Notification Alert",
   },
   ml: {
+    selected_language: "bahasa yang dipilih",
     customer_name: "Customer Name",
     previous: "Previous",
     save: "Save",
