@@ -47,41 +47,6 @@ const CreateCustomer = () => {
   const renderStepTwoUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            margin: 10,
-            backgroundColor: "white",
-            borderRadius: 10,
-            padding: 10,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: 400, fontSize: 18, color: "#000" }}>
-              {"Create an account?"}
-            </Text>
-            <Switch
-              trackColor={{
-                false: "#9A9A9A",
-                true: "#F5AD47",
-              }}
-              thumbColor={"#fff"}
-              // ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setNeedQuoteOnly(!needQuoteOnly)}
-              value={needQuoteOnly}
-            />
-          </View>
-          <Text style={{ marginTop: 5 }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-        </View>
         <CustomTitleText title={"Customer Details"} />
         <View
           style={{
