@@ -73,10 +73,10 @@ const CustomSignature = ({ showPreview = false }) => {
 export default CustomSignature;
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "column", padding: 20, flex: 1 },
+  container: { flexDirection: "column" },
   signContainer: {
     height: 200,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#686B6C",
     borderStyle: "dashed",
     marginTop: 10,
