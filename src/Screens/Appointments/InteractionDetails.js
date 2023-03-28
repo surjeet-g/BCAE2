@@ -18,6 +18,7 @@ import {
   getMasterData,
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
+import { getOrderListData } from '../../Redux/OrderListDispatcher';
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
 import AttachmentItem from "./../../Components/AttachmentItem";
@@ -31,10 +32,10 @@ import {
   getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
 import {
+
   getUserType,
   USERTYPE
 } from "./../../Utilities/UserManagement/userInfo";
-
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionID = "116" } = route.params;
@@ -47,16 +48,19 @@ const InteractionDetails = (props) => {
   const [formPriority, setFormPriority] = useState({});
   const [formSource, setSource] = useState({});
   const [formRemarks, setFormRemarks] = useState("");
+
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
     getFollowupForInteractionID,
     getMasterData,
     createFollowupForInteractionID,
+    getOrderListData
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
   let interactionReducer = useSelector((state) => state.interaction);
+  let orderReducer = useSelector((state) => state.orderList);
 
   const {
     InteractionDetailsData,
@@ -67,6 +71,8 @@ const InteractionDetails = (props) => {
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
+    //fetch order list or enble button
+    dispatch(getOrderListData(navigation, 1, 0));
     dispatch(getInteractionDetailsForID(interactionID, navigation));
     dispatch(getWorkFlowForInteractionID(interactionID));
     dispatch(getFollowupForInteractionID(interactionID));
@@ -76,7 +82,7 @@ const InteractionDetails = (props) => {
     setUserType(userType);
   }, []);
 
-
+  console.log('>>order details', orderReducer)
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
