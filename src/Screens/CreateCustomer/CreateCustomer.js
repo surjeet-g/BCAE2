@@ -1,9 +1,11 @@
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import { Text, View, StyleSheet, ScrollView, FlatList } from "react-native";
 import React, { Component, useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
 import CustomTitleText from "./../../Components/CustomTitleText";
+import CustomerAgreement from "./CustomerAgreement";
+import Product from "./Product";
 
 const CreateCustomer = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -18,15 +20,46 @@ const CreateCustomer = () => {
   };
 
   const renderStepTwoUI = () => {
-    return <Text>Step Two</Text>;
+    return (
+      <View>
+        <CustomTitleText title={"Account Creation"} />
+        <CustomTitleText title={"Customer Details"} />
+        <CustomTitleText title={"Billing address"} />
+      </View>
+    );
   };
 
   const renderStepThreeUI = () => {
-    return <Text>Step Three</Text>;
+    return (
+      <View>
+        <CustomTitleText title={"Select Category"} />
+        <CustomTitleText title={"Select Service Type"} />
+        <CustomTitleText title={"Accessories"} />
+        <FlatList
+          data={[{}, {}, {}, {}, {}]}
+          renderItem={({ item, index }) => (
+            <Product
+              item={{
+                name: `Product ${index + 1}`,
+                type: "NA",
+                price: (index + 1) * 200,
+                quantity: 0,
+              }}
+            />
+          )}
+          keyExtractor={(item, index) => index}
+        />
+      </View>
+    );
   };
 
   const renderStepFourUI = () => {
-    return <Text>Step Four</Text>;
+    return (
+      <View>
+        <CustomTitleText title={"Customer Agreement"} />
+        <CustomerAgreement />
+      </View>
+    );
   };
 
   const handlePrevious = () => {
