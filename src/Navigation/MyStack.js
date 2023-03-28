@@ -54,19 +54,22 @@ import Followup from "./../Screens/Appointments/Followup";
 import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
+import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
+
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
-const STACK_VIEW_ORDER = "ViewOrder";
+export const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
+const STACK_CREATE_CUSTOMER = "CreateCustomer";
 
 const Stack = createStackNavigator();
 
@@ -413,6 +416,22 @@ function MyStack() {
           })}
           name={STACK_WORKFLOW_HISTORY}
           component={WorkflowHistory}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Create Customer",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {},
+            },
+          })}
+          name={STACK_CREATE_CUSTOMER}
+          component={CreateCustomer}
         />
         <Stack.Screen
           options={({ navigation }) => ({

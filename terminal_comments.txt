@@ -1,0 +1,12 @@
+
+surjeet
+
+git checkout sgd_develop && git pull && git checkout vp_develop && git merge sgd_develop 
+
+
+kamal
+
+git checkout mks_develop && git pull && git checkout vp_develop && git merge mks_develop 
+
+
+git stash apply

@@ -14,7 +14,7 @@ const SelectedProduct = (props) => {
       <View style={styles.imgView}>
         <Image
           style={styles.img}
-          source={require("../Assets/icons/ic_word.png")}
+          source={require("../../Assets/icons/ic_word.png")}
         />
       </View>
       {/* Product */}
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     padding: 10,
+    margin: 10,
   },
   imgView: { backgroundColor: "#F0F0F0", borderRadius: 10, padding: 10 },
   img: { height: 40, width: 40 },

@@ -16,7 +16,7 @@ import MapView, {
   Callout,
   Circle,
   Marker,
-  PROVIDER_GOOGLE,
+  PROVIDER_GOOGLE
 } from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";

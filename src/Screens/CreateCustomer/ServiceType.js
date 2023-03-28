@@ -29,9 +29,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#AEADB0",
     borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     alignSelf: "center",
+    margin: 10,
   },
   nameTxt: {
     color: "#2B2B2B",

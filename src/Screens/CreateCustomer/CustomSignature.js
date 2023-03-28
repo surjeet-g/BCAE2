@@ -40,7 +40,7 @@ const CustomSignature = ({ showPreview = false }) => {
         <Pressable onPress={handleClear} style={styles.clearView}>
           <Image
             style={styles.clearImg}
-            source={require("../Assets/icons/ic_close.png")}
+            source={require("../../Assets/icons/ic_close.png")}
           />
           <Text style={styles.clearTxt}>Clear</Text>
         </Pressable>

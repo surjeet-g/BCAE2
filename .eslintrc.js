@@ -1,0 +1,31 @@
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+  extends: ["eslint:recommended", "plugin:react/recommended"],
+  overrides: [],
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+  },
+  plugins: ["react"],
+  rules: {
+    "prettier/prettier": "warn",
+    "spaced-comment": "off",
+    "no-console": "warn",
+    "consistent-return": "off",
+    "func-names": "off",
+    "object-shorthand": "off",
+    "no-process-exit": "off",
+    "no-param-reassign": "off",
+    "no-return-await": "off",
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "prefer-destructuring": ["warn", { object: true, array: false }],
+    "no-unused-vars": ["warn", { argsIgnorePattern: "req|res|next|val" }],
+    "react/prop-types": ["warn", { ignore: ["navigation"] }],
+    "react/display-name": "off",
+  },
+};
