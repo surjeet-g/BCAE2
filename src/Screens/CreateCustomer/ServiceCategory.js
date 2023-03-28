@@ -15,7 +15,7 @@ const ServiceCategory = (props) => {
       >
         <Image
           style={styles.img}
-          source={require("../Assets/icons/ic_word.png")}
+          source={require("../../Assets/icons/ic_word.png")}
         />
       </View>
       <Text

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -38,7 +38,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider
+  BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
@@ -54,6 +54,7 @@ import Followup from "./../Screens/Appointments/Followup";
 import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
+import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
 
 
 const STACK_EDIT_PROFILE = "EditProfile";
@@ -68,6 +69,7 @@ export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
+const STACK_CREATE_CUSTOMER = "CreateCustomer";
 
 const Stack = createStackNavigator();
 
@@ -346,7 +348,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_VIEW_ORDER}
@@ -362,7 +364,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_APPOINTMENT_DETAILS}
@@ -393,7 +395,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -409,11 +411,27 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
           component={WorkflowHistory}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Create Customer",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => {},
+            },
+          })}
+          name={STACK_CREATE_CUSTOMER}
+          component={CreateCustomer}
         />
         <Stack.Screen
           options={({ navigation }) => ({

@@ -2,6 +2,9 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    customer_name: "Customer Name",
+    previous: "Previous",
+    save: "Save",
     notification_settings_updated: "Notification settings updated!!",
     interaction_history: "Interaction History",
     current_dept_role: "Current Depart/Role",
@@ -229,6 +232,9 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   en: {
+    customer_name: "Customer Name",
+    previous: "Previous",
+    save: "Save",
     notification_settings_updated: "Notification settings updated!!",
     interaction_history: "Interaction History",
     current_dept_role: "Current Depart/Role",
@@ -458,6 +464,9 @@ export let strings = new LocalizedStrings({
       "  Talian Darussalam 123 is a 24 by 7 national call centre for non-emergency services provided by Brunei Government for the citizen. \n\n  Using this application, you can snap the image of your complaint or queries, and send it directly to the contact centre, on-the-go. \n\n  It also equips you to track the history and latest status of your complaint and queries. Citizen can register using E-Darussalam account to log in.",
   },
   ml: {
+    customer_name: "Customer Name",
+    previous: "Previous",
+    save: "Save",
     interaction_history: "Interaction History",
     current_dept_role: "Current Depart/Role",
     user: "User",
@@ -505,6 +514,9 @@ export let strings = new LocalizedStrings({
     view_less: "View less",
   },
   hi: {
+    customer_name: "Customer Name",
+    previous: "Previous",
+    save: "Save",
     interaction_history: "Interaction History",
     welcome: "स्वागत",
     brand_name: `Business
