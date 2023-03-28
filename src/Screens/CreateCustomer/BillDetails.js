@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Divider } from "react-native-paper";
-import DashedDivider from "./DashedDivider";
+import DashedDivider from "./../../Components/DashedDivider";
 
 // // Usage
 // <BillDetails
@@ -38,11 +38,13 @@ const BillDetails = (props) => {
 export default BillDetails;
 
 const styles = StyleSheet.create({
-  container: { borderRadius: 10, backgroundColor: "white" },
+  container: { borderRadius: 10, backgroundColor: "white", margin: 10 },
   itemView: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
 });

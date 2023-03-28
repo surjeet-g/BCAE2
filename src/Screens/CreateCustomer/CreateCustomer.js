@@ -8,6 +8,8 @@ import CustomerAgreement from "./CustomerAgreement";
 import Product from "./Product";
 import ServiceCategory from "./ServiceCategory";
 import ServiceType from "./ServiceType";
+import SelectedProduct from "./SelectedProduct";
+import BillDetails from "./BillDetails";
 
 const CreateCustomer = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -75,6 +77,38 @@ const CreateCustomer = () => {
     );
   };
 
+  const renderStepThreeUIBillDetails = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Selected Product"} />
+        <FlatList
+          //   style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
+          data={[{}, {}, {}, {}, {}]}
+          renderItem={({ item, index }) => (
+            <SelectedProduct
+              item={{
+                name: `Product ${index + 1}`,
+                type: "NA",
+                price: 100,
+                quantity: 2,
+              }}
+            />
+          )}
+          keyExtractor={(item, index) => index}
+        />
+        <CustomTitleText title={"Bill Details"} />
+        <BillDetails
+          details={{
+            gTotal: 1250.0,
+            total: 1250.0,
+            gst: 50.0,
+            discount: 100.0,
+          }}
+        />
+      </View>
+    );
+  };
+
   const renderStepFourUI = () => {
     return (
       <View>
@@ -85,11 +119,19 @@ const CreateCustomer = () => {
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      if (currentStep === 4 || currentStep === 3.5)
+        setCurrentStep(currentStep - 0.5);
+      else setCurrentStep(currentStep - 1);
+    }
   };
 
   const handleSave = () => {
-    if (currentStep < 4) setCurrentStep(currentStep + 1);
+    if (currentStep < 4) {
+      if (currentStep === 3 || currentStep === 3.5)
+        setCurrentStep(currentStep + 0.5);
+      else setCurrentStep(currentStep + 1);
+    }
   };
 
   const handleSubmit = () => {
@@ -103,6 +145,7 @@ const CreateCustomer = () => {
         {currentStep == 1 && renderStepOneUI()}
         {currentStep == 2 && renderStepTwoUI()}
         {currentStep == 3 && renderStepThreeUI()}
+        {currentStep == 3.5 && renderStepThreeUIBillDetails()}
         {currentStep == 4 && renderStepFourUI()}
       </ScrollView>
       {/* Bottom Button View */}
