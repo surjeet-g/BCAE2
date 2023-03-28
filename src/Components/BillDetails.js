@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Divider } from "react-native-paper";
+import DashedDivider from "./DashedDivider";
 
 // // Usage
 // <BillDetails
@@ -21,23 +22,13 @@ const BillDetails = (props) => {
       </View>
     );
   };
-  const CDivider = () => {
-    return (
-      <Divider
-        style={{
-          borderWidth: 1,
-          borderColor: "#8E8F95",
-          borderStyle: "dashed",
-        }}
-      />
-    );
-  };
+
   return (
     <View style={styles.container}>
       {Item("Grand Total", "$1250.00", "#686B6C")}
-      <CDivider />
+      <DashedDivider />
       {Item("GST", "$50.00", "#5677D2")}
-      <CDivider />
+      <DashedDivider />
       {Item("Discount", "-$100.00", "#EFA848")}
       {Item("Total", "$1250.00", "#000000", "#DADADA")}
     </View>
