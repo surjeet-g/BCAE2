@@ -4,13 +4,17 @@ import { useTheme } from "react-native-paper";
 import { SHADOW_STYLE } from "../Utilities/themeConfig";
 var { height, width } = Dimensions.get("screen");
 
-export const StickyFooter = ({ children, isSplash = false }) => {
+export const StickyFooter = ({
+  children,
+  isSplash = false,
+  isAddlocation = false,
+}) => {
   const { colors } = useTheme();
 
   return (
     <View
       style={{
-        padding: 12,
+        padding: isAddlocation ? 2 : 12,
         position: isSplash ? "absolute" : "relative",
         bottom: 0,
         backgroundColor: colors.background,

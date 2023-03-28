@@ -8,7 +8,7 @@ Icon;
 var { height, width } = Dimensions.get("screen");
 
 export const FooterModel = ({
-  setOpen = () => { },
+  setOpen = () => {},
   open = false,
   children,
   title = "",
@@ -41,7 +41,7 @@ export const FooterModel = ({
             alignItems: "center",
           }}
         >
-          <ClearSpace size={4} />
+          <ClearSpace size={3} />
           <View
             style={{
               width: 70,
@@ -58,7 +58,7 @@ export const FooterModel = ({
             flexDirection: "row",
             justifyContent: "space-between",
             // position: "relative",
-            marginVertical: 10,
+            marginVertical: 5,
             // flex: 1,
             // height: 300,
             marginHorizontal: 15,
@@ -89,7 +89,7 @@ export const FooterModel = ({
             flexDirection: "row",
             justifyContent: "space-between",
             // position: "relative",
-            marginVertical: 10,
+            marginVertical: 5,
             // flex: 1,
             // height: 300,
             marginHorizontal: 15,

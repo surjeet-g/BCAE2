@@ -109,7 +109,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_CREATE_CUSTOMER}
+        initialRouteName={STACK_SPLASH}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -279,7 +279,10 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "white", fontWeight: "500" },
               },
-
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4C5A81",
+              },
               headerRight: null,
             },
           })}

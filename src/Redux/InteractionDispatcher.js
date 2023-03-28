@@ -104,7 +104,7 @@ export function updateInteractionAction(obj) {
     );
 
     if (result.success) {
-      dispatch(enableLoaderEditInteractionAdd(false));
+      dispatch(enableLoaderEditInteraction(false));
       Toast.show({
         type: "bctSuccess",
         text1: result?.data?.message,
