@@ -41,6 +41,7 @@ import { strings } from "../../Utilities/Language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
+import { getLanguage } from "../../Utilities/Language/language";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -67,13 +68,18 @@ export const ViewProfile = ({ navigation }) => {
     userId: "",
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
+  const [ischangeLanguageModalVisible, setIschangeLanguageModalVisible] =
+    useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   let profileReducer = useSelector((state) => state.profile);
   let profileResult = profileReducer.savedProfileData;
 
   useEffect(() => {
     dispatch(fetchMyProfileData(navigation));
     async function getUserID() {
+      const language = await getLanguage();
       const userID = await getUserId();
+      setSelectedLanguage(language.name);
       setUserInfo({
         email: profileResult?.customerContact[0]?.emailId,
         name: `${profileResult?.firstName} ${profileResult?.lastName}`,
@@ -83,6 +89,51 @@ export const ViewProfile = ({ navigation }) => {
     }
     getUserID();
   }, []);
+
+  const changeLanguage = () => {
+    setIschangeLanguageModalVisible(true);
+  };
+
+  const closeLanguageModal = () => {
+    setIschangeLanguageModalVisible(false);
+  };
+  const selectLanguage = (language) => {
+    closeLanguageModal();
+    Alert.alert(
+      strings.attention,
+      "Do you want to change the language to " + language,
+      [
+        {
+          text: strings.cancel,
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        {
+          text: strings.ok,
+          onPress: () => {
+            switch (language) {
+              case "English":
+                changeLanguage({ name: "English", langCode: "en" });
+                break;
+              case "Malay":
+                changeLanguage({ name: "Malay", langCode: "ml" });
+                break;
+              case "Tamil":
+                changeLanguage({ name: "Tamil", langCode: "ta" });
+                break;
+              case "Malayalam":
+                changeLanguage({ name: "Malayalam", langCode: "en" });
+                break;
+              case "Hindi":
+                changeLanguage({ name: "Hindi", langCode: "hi" });
+                break;
+              default:
+                break;
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const toggleSwitch = () => {
     setIsNotiEnabled(!isNotiEnabled);
@@ -207,15 +258,7 @@ export const ViewProfile = ({ navigation }) => {
         </Pressable>
         <Divider />
         <ClearSpace size={2} />
-        <Pressable
-          onPress={() => {
-            navigation.navigate("Changepassword", {
-              isChangePassword: true,
-              email: userInfo.email,
-            });
-          }}
-          style={styles.listItem}
-        >
+        <Pressable onPress={() => changeLanguage()} style={styles.listItem}>
           <Icon
             name="google-translate"
             size={ICON}
@@ -505,6 +548,138 @@ export const ViewProfile = ({ navigation }) => {
           </BottomSheetModal>
         </View>
       </BottomSheetModalProvider>
+      {ischangeLanguageModalVisible && (
+        <View style={styles.changeLanguageContainer}>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              variant="bodyLarge"
+              style={{
+                fontWeight: "700",
+                color: colors.secondary,
+              }}
+            >
+              Change Language
+            </Text>
+            <TouchableOpacity onPress={closeLanguageModal}>
+              <Image
+                style={{ ...ICON_STYLE }}
+                source={require("../../Assets/icons/close_black.png")}
+              />
+            </TouchableOpacity>
+          </View>
+          <Divider />
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("English")}
+              style={{ margin: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  English
+                </Text>
+                {selectedLanguage == "English" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Malay")}
+              style={{ margin: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Malay
+                </Text>
+                {selectedLanguage == "Malay" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Tamil")}
+              style={{ margin: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Tamil
+                </Text>
+                {selectedLanguage == "Tamil" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Malayalam")}
+              style={{ margin: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Malayalam
+                </Text>
+                {selectedLanguage == "Malayalam" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => selectLanguage("Hindi")}
+              style={{ margin: 10 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    fontWeight: "600",
+                    color: colors.secondary,
+                  }}
+                >
+                  Hindi
+                </Text>
+                {selectedLanguage == "Hindi" && (
+                  <Icon name="hand-pointing-left" size={25} color={"red"} />
+                )}
+              </View>
+            </Pressable>
+            <Divider></Divider>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -526,5 +701,19 @@ const styles = StyleSheet.create({
   toast: {
     position: "absolute",
     bottom: spacing.HEIGHT_31 * 2,
+  },
+  changeLanguageContainer: {
+    width: "90%",
+    backgroundColor: "white",
+    alignSelf: "center",
+    borderRadius: 10,
+    elevation: 3,
+    shadowRadius: 1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
+    paddingBottom: 20,
+    marginBottom: 0,
+    alignItems: "center",
+    marginTop: 20,
   },
 });
