@@ -105,4 +105,10 @@ export const commonStyle = StyleSheet.create({
     justifyContent: "center",
 
   },
+  borderBottom: {
+    borderColor: 'transparent',
+    borderBottomColor: "gray",
+    borderWidth: .5,
+
+  }
 });

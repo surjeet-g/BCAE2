@@ -11,22 +11,28 @@ import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
+import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
+
   const { colors } = useTheme();
   const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   const versioncheck = useSelector((state) => state.versioncheck);
 
   useEffect(() => {
-    checkLanguage();
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      checkLanguage();
+    });
+    return willFocusSubscription;
   }, []);
 
-  const fetchVersionData = async () => {
-    await dispatchVersionCheck(getVersionCheckData(navigation));
-  };
+
+
+  // const fetchVersionData = async () => {
+  //   await dispatchVersionCheck(getVersionCheckData(navigation));
+  // };
 
   // useEffect(() => {
   //   const willFocusSubscription = navigation.addListener("focus", () => {
