@@ -70,7 +70,7 @@ export const ViewProfile = ({ navigation }) => {
   });
   const [isNotiEnabled, setIsNotiEnabled] = useState(false);
   const [ischangeLanguageModalVisible, setIschangeLanguageModalVisible] =
-    useState(true);
+    useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   let profileReducer = useSelector((state) => state.profile);
   let profileResult = profileReducer.savedProfileData;

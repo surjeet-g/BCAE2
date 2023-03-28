@@ -32,14 +32,13 @@ import {
   getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
 import {
-
   getUserType,
   USERTYPE
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // const { interactionID = "116" } = route.params;
-  let interactionID = 246;
+  // const { interactionID } = route.params;
+  const interactionID = 325
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -67,17 +66,24 @@ const InteractionDetails = (props) => {
     InteractionWorkFlowData,
     InteractionFollowupData,
   } = interactionReducer;
+
   console.log("$$$-InteractionDetailsData", InteractionDetailsData);
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
     //fetch order list or enble button
     dispatch(getOrderListData(navigation, 1, 0));
+
     dispatch(getInteractionDetailsForID(interactionID, navigation));
+
     dispatch(getWorkFlowForInteractionID(interactionID));
+
     dispatch(getFollowupForInteractionID(interactionID));
+
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
+
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
+
     let userType = await getUserType();
     setUserType(userType);
   }, []);
@@ -661,7 +667,7 @@ const InteractionDetails = (props) => {
   };
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
   const sourceList = get(masterReducer, "masterdataData.SOURCE", []);
-
+  const orderLen = get(orderReducer, 'orderListData.length', 0)
   return (
     <View style={styles.container}>
       {showPopupMenu && <PopUpMenu />}
@@ -685,6 +691,14 @@ const InteractionDetails = (props) => {
             keyExtractor={(item, index) => index}
           />
         </View>
+        {orderLen != 0 &&
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              label={"View order"}
+              onPress={() => navigation.navigate("ViewOrder")}
+            />
+          </View>
+        }
       </ScrollView>
 
       {showBottomModal && modalIndex === 1 && AddFollowUpModal()}

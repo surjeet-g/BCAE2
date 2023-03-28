@@ -3,11 +3,9 @@ import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
 
-import { useDispatch, useSelector } from "react-redux";
 import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { getVersionCheckData } from "../../Redux/VersionCheckDispatcher";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
@@ -18,12 +16,13 @@ var { height, width } = Dimensions.get("screen");
 const Splash = ({ route, navigation }) => {
 
   const { colors } = useTheme();
-  const dispatchVersionCheck = useDispatch([getVersionCheckData]);
-  const versioncheck = useSelector((state) => state.versioncheck);
+  // const dispatchVersionCheck = useDispatch([getVersionCheckData]);
+  // const versioncheck = useSelector((state) => state.versioncheck);
 
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       checkLanguage();
+
     });
     return willFocusSubscription;
   }, []);
@@ -43,9 +42,13 @@ const Splash = ({ route, navigation }) => {
 
   const checkLanguage = async () => {
     let language = await getLanguage();
+    console.log('langua', language)
     if (language != null && language != undefined) {
+      console.log('langua true',)
       changeLanguage(language);
     } else {
+      console.log('langua true',)
+
       changeLanguage({ name: "English", langCode: "en" });
     }
   };
@@ -106,6 +109,7 @@ const Splash = ({ route, navigation }) => {
               marginBottom: 10,
             }}
           >
+
             <CustomButton
               loading={false}
               label={strings.get_started}
