@@ -6,6 +6,8 @@ import UploadDocument from "./UploadDocument";
 import CustomTitleText from "./../../Components/CustomTitleText";
 import CustomerAgreement from "./CustomerAgreement";
 import Product from "./Product";
+import ServiceCategory from "./ServiceCategory";
+import ServiceType from "./ServiceType";
 
 const CreateCustomer = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,7 +35,27 @@ const CreateCustomer = () => {
     return (
       <View>
         <CustomTitleText title={"Select Category"} />
+        <FlatList
+          style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={[{}, {}, {}, {}, {}]}
+          renderItem={({ item, index }) => (
+            <ServiceCategory name={`Category ${index + 1}`} />
+          )}
+          keyExtractor={(item, index) => index}
+        />
         <CustomTitleText title={"Select Service Type"} />
+        <FlatList
+          style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={[{}, {}, {}, {}, {}]}
+          renderItem={({ item, index }) => (
+            <ServiceType name={`Service Type ${index + 1}`} />
+          )}
+          keyExtractor={(item, index) => index}
+        />
         <CustomTitleText title={"Accessories"} />
         <FlatList
           data={[{}, {}, {}, {}, {}]}

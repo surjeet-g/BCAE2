@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     alignSelf: "center",
+    margin: 10,
   },
   nameTxt: {
     color: "#2B2B2B",
