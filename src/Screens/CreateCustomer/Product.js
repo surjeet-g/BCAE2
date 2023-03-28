@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import DashedDivider from "./DashedDivider";
+import DashedDivider from "./../../Components/DashedDivider";
 
 // Usage
 /* <Product item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
@@ -16,7 +16,7 @@ const Product = (props) => {
       </Text>
       {/* Product */}
       <View style={styles.productTxtView}>
-        <Text style={styles.productNameTxt}>{"Product 1"}</Text>
+        <Text style={styles.productNameTxt}>{item.name}</Text>
         <Text style={styles.productTypeTxt}>
           {"\u2B24 1 Regular + 3 Free family add-ons"}
         </Text>
@@ -31,8 +31,8 @@ const Product = (props) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.priceTxt}>{`$ 350`}</Text>
-          <Text style={styles.oldpriceTxt}>{`$ 550`}</Text>
+          <Text style={styles.priceTxt}>{"$" + item.price}</Text>
+          <Text style={styles.oldpriceTxt}>{"$" + (item.price + 200)}</Text>
         </View>
         {/* Quantity */}
         <View style={styles.quantityView}>
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     padding: 10,
+    margin: 10,
   },
   bestvalue: {
     backgroundColor: "rgba(63, 185, 77, 0.23)",
