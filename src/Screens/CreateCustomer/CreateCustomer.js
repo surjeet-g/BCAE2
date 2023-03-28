@@ -233,8 +233,7 @@ const CreateCustomer = () => {
         <CustomTitleText title={"Select Category"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
-          horizontal
-          showsHorizontalScrollIndicator={false}
+          numColumns={4}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <ServiceCategory name={`Category ${index + 1}`} />
@@ -244,8 +243,7 @@ const CreateCustomer = () => {
         <CustomTitleText title={"Select Service Type"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
-          horizontal
-          showsHorizontalScrollIndicator={false}
+          numColumns={3}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <ServiceType name={`Service Type ${index + 1}`} />
