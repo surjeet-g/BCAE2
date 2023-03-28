@@ -9,17 +9,18 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
+import AttachmentItem from "./../../Components/AttachmentItem";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
 import { FooterModel } from "./../../Components/FooterModel";
@@ -27,18 +28,17 @@ import {
   createFollowupForInteractionID,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
-  getWorkFlowForInteractionID,
+  getWorkFlowForInteractionID
 } from "./../../Redux/InteractionDispatcher";
 import {
   getUserType,
-  USERTYPE,
+  USERTYPE
 } from "./../../Utilities/UserManagement/userInfo";
-import AttachmentItem from "./../../Components/AttachmentItem";
 
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
   // const { interactionID = "116" } = route.params;
-  let interactionID = 197;
+  let interactionID = 246;
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -68,13 +68,14 @@ const InteractionDetails = (props) => {
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
     dispatch(getInteractionDetailsForID(interactionID, navigation));
-    dispatch(getWorkFlowForInteractionID(interactionID, navigation));
-    dispatch(getFollowupForInteractionID(interactionID, navigation));
+    dispatch(getWorkFlowForInteractionID(interactionID));
+    dispatch(getFollowupForInteractionID(interactionID));
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
     let userType = await getUserType();
     setUserType(userType);
   }, []);
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -594,7 +595,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>
@@ -645,7 +646,7 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {}} />
+              <CustomButton label={strings.submit} onPress={() => { }} />
             </View>
           </View>
         </View>
