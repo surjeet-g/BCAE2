@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
+import { strings } from "../../Utilities/Language";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
@@ -238,7 +239,7 @@ function CustomCalendar(props) {
               moment(date?.year + "-" + date?.month + "-" + date?.day).format(
                 "YYYY-MM-DD"
               ) < moment(new Date()).format("YYYY-MM-DD")
-                ? "completed appointment"
+                ? strings.completed_appointment
                 : marked.indexOf(
                     "" +
                       moment(
@@ -249,7 +250,7 @@ function CustomCalendar(props) {
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD") >
                     moment(new Date()).format("YYYY-MM-DD")
-                ? "Upcomming appointment"
+                ? strings.upcoming_appointment
                 : ""}
             </Text>
           </View>
@@ -384,7 +385,7 @@ export const HomeScreen = ({ navigation }) => {
                     color: "#EFA848",
                   }}
                 >
-                  View More
+                  {strings.view_more}
                 </Text>
                 <Image
                   source={require("../../Assets/icons/right_arrow.png")}
@@ -503,7 +504,7 @@ export const HomeScreen = ({ navigation }) => {
                       : "#ffffff",
                 }}
               >
-                Date :
+                {strings.date} :
                 {moment(
                   interactionList?.interactionListData[0]?.createdAt
                 ).format(DATE_FORMAT)}
@@ -540,7 +541,7 @@ export const HomeScreen = ({ navigation }) => {
                       : "#ffffff",
                 }}
               >
-                {"Date : 10 Jan 2023"}
+                {strings.date}:{"10 Jan 2023"}
               </Text>
             </View>
           )}
@@ -568,7 +569,7 @@ export const HomeScreen = ({ navigation }) => {
                         : "#ffffff",
                   }}
                 >
-                  View More
+                  {strings.view_more}
                 </Text>
                 <Image
                   source={require("../../Assets/icons/right_arrow.png")}
@@ -620,7 +621,7 @@ export const HomeScreen = ({ navigation }) => {
               marginLeft: 10,
             }}
           >
-            Account Details
+            {strings.account_details}
           </Text>
           <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
             <FlatList
@@ -628,9 +629,9 @@ export const HomeScreen = ({ navigation }) => {
               horizontal
               initialNumToRender={2}
               data={[
-                { title: "Balance" },
-                { title: "Usage" },
-                { title: "Not Available" },
+                { title: strings.balance },
+                { title: strings.usage },
+                { title: strings.not_available },
               ]}
               renderItem={({ item, index }) => (
                 <FlatListItemTop item={item} index={index} />
@@ -647,7 +648,7 @@ export const HomeScreen = ({ navigation }) => {
               marginLeft: 10,
             }}
           >
-            Appointments
+            {strings.appointment}
           </Text>
           <View style={{ margin: 10 }}>
             <CustomCalendar
@@ -665,7 +666,7 @@ export const HomeScreen = ({ navigation }) => {
               marginLeft: 10,
             }}
           >
-            History
+            {strings.history}
           </Text>
           <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
             <FlatList
@@ -673,9 +674,9 @@ export const HomeScreen = ({ navigation }) => {
               horizontal
               initialNumToRender={2}
               data={[
-                { title: "Orders" },
-                { title: "Interactions" },
-                { title: "Appointments" },
+                { title: strings.order },
+                { title: strings.interaction },
+                { title: strings.appointment },
               ]}
               renderItem={({ item, index }) => (
                 <FlatListItemBottom item={item} index={index} />
