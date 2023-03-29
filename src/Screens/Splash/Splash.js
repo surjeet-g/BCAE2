@@ -14,16 +14,20 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
+  const [counter, setCounter] = useState(1)
   const { colors } = useTheme();
   // const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   // const versioncheck = useSelector((state) => state.versioncheck);
-  const [counter, setCounter] = useState("1");
+
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       checkLanguage();
+
     });
     return willFocusSubscription;
   }, []);
+
+
 
   // const fetchVersionData = async () => {
   //   await dispatchVersionCheck(getVersionCheckData(navigation));
@@ -43,7 +47,7 @@ const Splash = ({ route, navigation }) => {
     } else {
       changeLanguage({ name: "English", langCode: "en" });
     }
-    setCounter(1);
+    setCounter(counter + 1)
   };
 
   const checkLogin = () => {
