@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
@@ -14,20 +14,16 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
-
   const { colors } = useTheme();
   // const dispatchVersionCheck = useDispatch([getVersionCheckData]);
   // const versioncheck = useSelector((state) => state.versioncheck);
-
+  const [counter, setCounter] = useState("1");
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       checkLanguage();
-
     });
     return willFocusSubscription;
   }, []);
-
-
 
   // const fetchVersionData = async () => {
   //   await dispatchVersionCheck(getVersionCheckData(navigation));
@@ -47,6 +43,7 @@ const Splash = ({ route, navigation }) => {
     } else {
       changeLanguage({ name: "English", langCode: "en" });
     }
+    setCounter(1);
   };
 
   const checkLogin = () => {
