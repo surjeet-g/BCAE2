@@ -1,25 +1,40 @@
-import React, { useState } from "react";
+import get from 'lodash.get';
+import React, { useEffect, useState } from "react";
 import {
-  Pressable,
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  FlatList,
-  ScrollView,
+  FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View
 } from "react-native";
-import { DEFAULT_PROFILE_IMAGE } from "../../Utilities/Constants/Constant";
-import { useTheme, Switch } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDispatch, useSelector } from "react-redux";
+import { Switch, useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from 'react-redux';
 import { CustomButton } from "../../Components/CustomButton";
+import { getOrderListData } from '../../Redux/OrderListDispatcher';
+import { fetchMyProfileData } from '../../Redux/ProfileDispatcher';
+import { DEFAULT_PROFILE_IMAGE } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { CustomInput } from "./../../Components/CustomInput";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "./../../Components/CustomInput";
 import Slot from "./../../Components/Slot";
+
 
 const ViewOrder = (props) => {
   const { route, navigation } = props;
+  const dispatch = useDispatch([
+    getOrderListData,
+    fetchMyProfileData
+  ]);
+
+  useEffect(() => {
+    dispatch(getOrderListData(navigation, 1, 0));
+    dispatch(fetchMyProfileData());
+
+  }, [])
+  const { orderReducer, profileReducer } = useSelector((state) => {
+    return {
+      orderReducer: state.orderList,
+      profileReducer: state.profile
+    }
+  });
+  console.log(orderReducer)
+
   const { colors, fonts, roundness } = useTheme();
 
   const [isGetSlotsEnabled, setIsGetSlotsEnabled] = useState(false);
@@ -293,13 +308,18 @@ const ViewOrder = (props) => {
           {/* Profile Name & Email View */}
           <View style={{ flexDirection: "column", marginLeft: 10 }}>
             <Text variant="bodyMedium" style={styles.profileInfoTitleTxt}>
-              Rohit Sharma
+              {get(profileReducer, "savedProfileData.firstName", "")}{" "}
+              {get(profileReducer, "savedProfileData.lastName", "")}
             </Text>
             <Text variant="bodySmall" style={styles.profileInfoSubTitleTxt}>
-              Customer Id: 10
+              Customer Id:  {get(profileReducer, "savedProfileData.customerNo", "")}
             </Text>
             <Text variant="bodySmall" style={styles.profileInfoSubTitleTxt}>
-              rohit@bahawancybertek.com
+              {get(
+                profileReducer,
+                "savedProfileData.customerContact[0].emailId",
+                ""
+              )}
             </Text>
           </View>
         </View>
@@ -371,6 +391,8 @@ const ViewOrder = (props) => {
     );
   };
 
+
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
@@ -403,10 +425,10 @@ const ViewOrder = (props) => {
         }}
       >
         <View style={{ flex: 1 }}>
-          <CustomButton label={strings.cancel} onPress={() => {}} />
+          <CustomButton label={strings.cancel} onPress={() => { }} />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomButton label={strings.submit} onPress={() => {}} />
+          <CustomButton label={strings.submit} onPress={() => { }} />
         </View>
       </View>
     </View>

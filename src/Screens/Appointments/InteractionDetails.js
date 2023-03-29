@@ -48,6 +48,14 @@ const InteractionDetails = (props) => {
   const [formSource, setSource] = useState({});
   const [formRemarks, setFormRemarks] = useState("");
 
+  const [followupLoader, setFollowupLoader] = useState(false)
+
+  const resetFollup = () => {
+    setSource("")
+    setFormRemarks("")
+    setFormPriority("")
+  }
+
   const dispatch = useDispatch([
     getInteractionDetailsForID,
     getWorkFlowForInteractionID,
@@ -540,15 +548,22 @@ const InteractionDetails = (props) => {
               </View>
               <View style={{ flex: 1 }}>
                 <CustomButton
+                  isDisabled={
+                    (formRemarks === "" || get(formSource, 'code', '') === "" || get(formPriority, 'code', '') === "")
+                  }
+                  loading={followupLoader}
                   label={strings.submit}
-                  onPress={() => {
-                    dispatch(
+                  onPress={async () => {
+                    setFollowupLoader(true)
+                    await dispatch(
                       createFollowupForInteractionID(
-                        interactionID,
+                        interactionID.toString(),
                         { formPriority, formSource, formRemarks },
                         navigation
                       )
                     );
+                    setFollowupLoader(false)
+                    resetFollup()
                   }}
                 />
               </View>
