@@ -5,8 +5,9 @@ import {
   ScrollView,
   FlatList,
   Switch,
+  Image,
 } from "react-native";
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
@@ -27,7 +28,7 @@ import {
 } from "./../../Utilities/utils";
 
 const CreateCustomer = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(4);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
@@ -328,7 +329,7 @@ const CreateCustomer = () => {
           <View style={styles.stepsCountView}>
             <Text
               style={
-                currentStep === 1
+                currentStep > 1
                   ? styles.stepsCountTxtCurrent
                   : styles.stepsCountTxt
               }
@@ -336,10 +337,22 @@ const CreateCustomer = () => {
               1
             </Text>
           </View>
+          {currentStep <= 1 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_normal.png")}
+            />
+          )}
+          {currentStep > 1 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_selected.png")}
+            />
+          )}
           <View style={styles.stepsCountView}>
             <Text
               style={
-                currentStep === 2
+                currentStep > 2
                   ? styles.stepsCountTxtCurrent
                   : styles.stepsCountTxt
               }
@@ -347,10 +360,24 @@ const CreateCustomer = () => {
               2
             </Text>
           </View>
+
+          {currentStep <= 2 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_normal.png")}
+            />
+          )}
+          {currentStep > 2 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_selected.png")}
+            />
+          )}
+
           <View style={styles.stepsCountView}>
             <Text
               style={
-                currentStep === 3 || currentStep === 3.5
+                currentStep > 3
                   ? styles.stepsCountTxtCurrent
                   : styles.stepsCountTxt
               }
@@ -358,6 +385,26 @@ const CreateCustomer = () => {
               3
             </Text>
           </View>
+
+          {currentStep === 3 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_normal.png")}
+            />
+          )}
+          {currentStep === 3.5 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_half_selected.png")}
+            />
+          )}
+          {currentStep >= 4 && (
+            <Image
+              style={{ flex: 1 }}
+              source={require("../../Assets/icons/line_selected.png")}
+            />
+          )}
+
           <View style={styles.stepsCountView}>
             <Text
               style={
@@ -460,6 +507,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   stepsCountTxt: {
+    padding: 4,
     textAlign: "center",
     alignSelf: "center",
     justifyContent: "center",
@@ -473,6 +521,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   stepsCountTxtCurrent: {
+    padding: 4,
     textAlign: "center",
     alignSelf: "center",
     justifyContent: "center",
