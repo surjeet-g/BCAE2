@@ -43,6 +43,7 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
+import RNRestart from "react-native-restart";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -101,7 +102,8 @@ export const ViewProfile = ({ navigation }) => {
   const handlechangeLanguage = async (language) => {
     const status = await changeLanguage(language);
     if (status) {
-      navigation.navigate("Splash");
+      // navigation.navigate("Splash");
+      RNRestart.restart();
     } else {
       console.log("somthing wents wrong");
     }
@@ -193,7 +195,10 @@ export const ViewProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView nestedScrollEnabled={true}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+      >
         <View style={commonStyle.row_start}>
           <View>
             <Image
@@ -261,7 +266,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Change your password
+              {strings.change_your_password}
             </Text>
           </Text>
         </Pressable>
@@ -282,7 +287,7 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Change Language
+            {strings.change_language}
             {"\n"}
             <Text
               variant="bodySmall"
@@ -292,7 +297,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Selected language : {selectedLanguage}
+              {strings.selected_language}: {selectedLanguage}
             </Text>
           </Text>
         </Pressable>
@@ -328,7 +333,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Choose saved location
+              {strings.choose_saved_location}
             </Text>
           </Text>
         </Pressable>
@@ -371,7 +376,7 @@ export const ViewProfile = ({ navigation }) => {
                   lineHeight: 20,
                 }}
               >
-                Notification Alert
+                {strings.notification_alert}
               </Text>
             </Text>
           </Pressable>
@@ -403,7 +408,8 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            FAQ{"\n"}
+            {strings.faq}
+            {"\n"}
             <Text
               variant="bodySmall"
               style={{
@@ -412,7 +418,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              FAQ
+              {strings.faq}
             </Text>
           </Text>
         </Pressable>
@@ -433,7 +439,8 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Announcement{"\n"}
+            {strings.announcement}
+            {"\n"}
             <Text
               variant="bodySmall"
               style={{
@@ -442,7 +449,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Announcement
+              {strings.announcement}
             </Text>
           </Text>
         </Pressable>
@@ -463,7 +470,8 @@ export const ViewProfile = ({ navigation }) => {
               color: colors.secondary,
             }}
           >
-            Delete Account{"\n"}
+            {strings.delete_account}
+            {"\n"}
             <Text
               variant="bodySmall"
               style={{
@@ -472,7 +480,7 @@ export const ViewProfile = ({ navigation }) => {
                 lineHeight: 20,
               }}
             >
-              Delete your account
+              {strings.delete_your_account}
             </Text>
           </Text>
         </Pressable>
@@ -505,7 +513,7 @@ export const ViewProfile = ({ navigation }) => {
             ]);
           }}
         >
-          Logout
+          {strings.logout}
         </Button>
 
         <ClearSpace size={8} />
