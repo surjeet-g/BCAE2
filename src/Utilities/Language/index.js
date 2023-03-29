@@ -245,6 +245,7 @@ export let strings = new LocalizedStrings({
     not_available: "Not Available",
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
+    //add en-US
   },
   en: {
     customer_name: "Customer Name",
@@ -490,6 +491,7 @@ export let strings = new LocalizedStrings({
     not_available: "Not Available",
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
+    //add en
   },
   ml: {
     customer_name: "Nama Pelanggan",

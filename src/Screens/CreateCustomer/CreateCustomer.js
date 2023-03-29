@@ -47,41 +47,6 @@ const CreateCustomer = () => {
   const renderStepTwoUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            margin: 10,
-            backgroundColor: "white",
-            borderRadius: 10,
-            padding: 10,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: 400, fontSize: 18, color: "#000" }}>
-              {"Create an account?"}
-            </Text>
-            <Switch
-              trackColor={{
-                false: "#9A9A9A",
-                true: "#F5AD47",
-              }}
-              thumbColor={"#fff"}
-              // ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setNeedQuoteOnly(!needQuoteOnly)}
-              value={needQuoteOnly}
-            />
-          </View>
-          <Text style={{ marginTop: 5 }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-        </View>
         <CustomTitleText title={"Customer Details"} />
         <View
           style={{
@@ -356,9 +321,88 @@ const CreateCustomer = () => {
     setNumberError("");
   };
 
+  const renderStepsView = () => {
+    return (
+      <View style={styles.stepsView}>
+        <View style={styles.stepsSubView}>
+          <View style={styles.stepsCountView}>
+            <Text
+              style={
+                currentStep === 1
+                  ? styles.stepsCountTxtCurrent
+                  : styles.stepsCountTxt
+              }
+            >
+              1
+            </Text>
+          </View>
+          <View style={styles.stepsCountView}>
+            <Text
+              style={
+                currentStep === 2
+                  ? styles.stepsCountTxtCurrent
+                  : styles.stepsCountTxt
+              }
+            >
+              2
+            </Text>
+          </View>
+          <View style={styles.stepsCountView}>
+            <Text
+              style={
+                currentStep === 3 || currentStep === 3.5
+                  ? styles.stepsCountTxtCurrent
+                  : styles.stepsCountTxt
+              }
+            >
+              3
+            </Text>
+          </View>
+          <View style={styles.stepsCountView}>
+            <Text
+              style={
+                currentStep === 4
+                  ? styles.stepsCountTxtCurrent
+                  : styles.stepsCountTxt
+              }
+            >
+              4
+            </Text>
+          </View>
+        </View>
+        <View style={styles.stepsSubView}>
+          <Text
+            style={currentStep === 1 ? styles.stepsTxtCurrent : styles.stepsTxt}
+          >
+            Customer
+          </Text>
+          <Text
+            style={currentStep === 2 ? styles.stepsTxtCurrent : styles.stepsTxt}
+          >
+            Account
+          </Text>
+          <Text
+            style={
+              currentStep === 3 || currentStep === 3.5
+                ? styles.stepsTxtCurrent
+                : styles.stepsTxt
+            }
+          >
+            Services
+          </Text>
+          <Text
+            style={currentStep === 4 ? styles.stepsTxtCurrent : styles.stepsTxt}
+          >
+            Agreement
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.stepsView}></View>
+      {renderStepsView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 1 && renderStepOneUI()}
         {currentStep == 2 && renderStepTwoUI()}
@@ -390,8 +434,58 @@ const styles = StyleSheet.create({
   },
   stepsView: {
     backgroundColor: "#4C5A81",
-    height: 100,
+    paddingVertical: 10,
   },
+  stepsSubView: {
+    flexDirection: "row",
+    marginVertical: 5,
+  },
+  stepsTxt: {
+    flex: 1,
+    textAlign: "center",
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#8FA1C4",
+  },
+  stepsTxtCurrent: {
+    flex: 1,
+    textAlign: "center",
+    fontWeight: 700,
+    fontSize: 14,
+    color: "#fff",
+  },
+  stepsCountView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  stepsCountTxt: {
+    textAlign: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    backgroundColor: "#8FA1C4",
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#fff",
+  },
+  stepsCountTxtCurrent: {
+    textAlign: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+    fontWeight: 700,
+    fontSize: 14,
+    color: "#4C5A81",
+  },
+
   bottomButtonView: {
     flexDirection: "row",
     bottom: 0,
