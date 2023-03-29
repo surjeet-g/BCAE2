@@ -250,12 +250,14 @@ export function createFollowupForInteractionID(
         text1: result?.data?.message,
       });
       dispatch(setFollowupDataInStore(result.data.data));
+      return true
     } else {
       Toast.show({
         type: "bctError",
         text1: result.message,
       });
       dispatch(setFollowupErrorDataInStore(result));
+      return false
     }
   };
 }

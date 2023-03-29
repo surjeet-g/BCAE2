@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -38,7 +38,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider,
+  BottomSheetModalProvider
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
@@ -110,7 +110,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Splash"}
+        initialRouteName={STACK_INTERACTION_DETAILS}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -348,7 +348,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_VIEW_ORDER}
@@ -364,7 +364,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_APPOINTMENT_DETAILS}
@@ -395,7 +395,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_FOLLOWUP}
@@ -411,7 +411,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
@@ -427,7 +427,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_CREATE_CUSTOMER}
