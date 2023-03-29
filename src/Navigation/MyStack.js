@@ -56,12 +56,13 @@ import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
 import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
 
+
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
 const STACK_SAVED_LOC = "SavedLocation";
 const STACK_LOGIN = "Login";
 const STACK_SPLASH = "Splash";
-const STACK_VIEW_ORDER = "ViewOrder";
+export const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
@@ -109,7 +110,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"Splash"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",

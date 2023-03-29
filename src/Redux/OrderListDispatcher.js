@@ -16,7 +16,7 @@ export function getOrderListData(navigation, limit = 100, page = 0) {
 
     let params = {
       searchParams: {
-        // customerId: customerID,
+        customerId: customerID,
       },
     };
 
@@ -26,10 +26,11 @@ export function getOrderListData(navigation, limit = 100, page = 0) {
       params,
       navigation
     );
+    console.log('order list', result)
 
     if (result.success) {
       //result.data.data.rows
-      dispatch(setOrderListData(result.data.data.rows));
+      dispatch(setOrderListData(result.data.data.row));
     } else {
       dispatch(setOrderListError(result));
     }
