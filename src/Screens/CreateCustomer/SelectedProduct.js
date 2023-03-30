@@ -6,7 +6,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 /* <SelectedProduct item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
 
 const SelectedProduct = (props) => {
-  console.log("$$$-props", props);
   const { item } = props;
   return (
     <View style={styles.container}>

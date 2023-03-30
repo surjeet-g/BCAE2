@@ -65,8 +65,8 @@ export const CustomInputWithCC = (props) => {
           </Text>
         </TouchableOpacity>
         <View
-          style={{ width: 2, backgroundColor: "#D9D9D9", marginVertical: 3 }}
-        />
+          style={{ width: 1, backgroundColor: "#D9D9D9", marginVertical: 3 }}
+        ></View>
         <TextInput
           {...props}
           underlineColor="transparent"

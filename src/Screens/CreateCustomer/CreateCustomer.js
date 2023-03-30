@@ -6,6 +6,8 @@ import {
   FlatList,
   Switch,
   Image,
+  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
@@ -26,8 +28,13 @@ import {
   excludedCountriesList,
   getPhoneNumberLength,
 } from "./../../Utilities/utils";
+import { SwipeListView } from "react-native-swipe-list-view";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useTheme } from "react-native-paper";
 
 const CreateCustomer = () => {
+  const { colors } = useTheme();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
@@ -325,8 +332,8 @@ const CreateCustomer = () => {
     return (
       <View>
         <CustomTitleText title={"Selected Product"} />
-        <FlatList
-          //   style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
+        <SwipeListView
+          showsVerticalScrollIndicator={false}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <SelectedProduct
@@ -339,6 +346,9 @@ const CreateCustomer = () => {
             />
           )}
           keyExtractor={(item, index) => index}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-75}
+          onRowDidOpen={onRowDidOpen}
         />
         <CustomTitleText title={"Bill Details"} />
         <BillDetails
@@ -407,6 +417,26 @@ const CreateCustomer = () => {
     setNumber(textStr);
     setNumberError("");
   };
+
+  const onRowDidOpen = (rowKey) => {
+    console.log("This row opened", rowKey);
+  };
+
+  const renderHiddenItem = (data, rowMap) => (
+    <View style={styles.rowBack}>
+      <Pressable
+        style={[styles.backRightBtn]}
+        onPress={() => {
+          alert("Index: ", data.index);
+          console.log("$$$-rowMap", rowMap);
+          console.log("$$$-data", data);
+        }}
+      >
+        <Icon name="delete" size={19} color={"#D13D3D"} />
+        <Text style={{ color: "#D13D3D" }}>Delete</Text>
+      </Pressable>
+    </View>
+  );
 
   const renderStepsView = () => {
     return (
@@ -626,6 +656,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     bottom: 0,
     backgroundColor: "white",
+  },
+  rowBack: {
+    alignItems: "center",
+    backgroundColor: "#DDD",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 15,
+  },
+  backRightBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    width: 75,
+    height: 80,
+    backgroundColor: "#FEE5E4",
+    right: 0,
+    margin: 15,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
   },
 });
 
