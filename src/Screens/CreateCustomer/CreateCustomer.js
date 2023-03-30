@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
@@ -32,9 +32,9 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme } from "react-native-paper";
 
-const CreateCustomer = () => {
+const CreateCustomer = (props) => {
   const { colors } = useTheme();
-
+  const { navigation } = props;
   const [currentStep, setCurrentStep] = useState(1);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
@@ -42,6 +42,33 @@ const CreateCustomer = () => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
+
+  useLayoutEffect(() => {
+    let title = "";
+    switch (currentStep) {
+      case 1:
+        title = "Create Customer";
+        break;
+      case 2:
+        title = "Account";
+        break;
+      case 3:
+        title = "Services";
+        break;
+      case 3.5:
+        title = "Services";
+        break;
+      case 4:
+        title = "Agreement";
+        break;
+      default:
+        title = "Create Customer";
+    }
+
+    navigation.setOptions({
+      headerTitle: title,
+    });
+  }, [currentStep]);
 
   const renderStepOneUI = () => {
     return (
