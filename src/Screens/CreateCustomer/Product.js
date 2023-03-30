@@ -7,7 +7,6 @@ import DashedDivider from "./../../Components/DashedDivider";
 /* <Product item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
 
 const Product = (props) => {
-  console.log("$$$-props", props);
   const { item } = props;
   return (
     <View

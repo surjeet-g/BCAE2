@@ -6,6 +6,8 @@ import {
   FlatList,
   Switch,
   Image,
+  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
@@ -26,8 +28,13 @@ import {
   excludedCountriesList,
   getPhoneNumberLength,
 } from "./../../Utilities/utils";
+import { SwipeListView } from "react-native-swipe-list-view";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useTheme } from "react-native-paper";
 
 const CreateCustomer = () => {
+  const { colors } = useTheme();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
@@ -41,13 +48,6 @@ const CreateCustomer = () => {
       <View>
         <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
-      </View>
-    );
-  };
-
-  const renderStepTwoUI = () => {
-    return (
-      <View>
         <CustomTitleText title={"Customer Details"} />
         <View
           style={{
@@ -59,21 +59,51 @@ const CreateCustomer = () => {
         >
           <CustomInput
             value={""}
-            caption={strings.title}
-            placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
             caption={strings.customer_name}
             placeHolder={strings.customer_name}
             onChangeText={(text) => text}
           />
           <CustomInput
             value={""}
-            caption={strings.email}
-            placeHolder={strings.email}
+            caption={strings.dob}
+            placeHolder={strings.dob}
             onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.gender}
+            placeHolder={strings.gender}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.place_of_issue}
+            placeHolder={strings.place_of_issue}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country_code}
+            placeHolder={"Select " + strings.country_code}
           />
           <CountryPicker
             show={countryPickModel}
@@ -100,14 +130,52 @@ const CreateCustomer = () => {
             keyboardType="numeric"
             maxLength={numberMaxLength}
           />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
+          <CustomInput
             value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  const renderStepTwoUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Customer Details"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={strings.title}
+            placeHolder={strings.title}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.surname}
+            placeHolder={strings.surname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.forename}
+            placeHolder={strings.forename}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -117,6 +185,31 @@ const CreateCustomer = () => {
             value={""}
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
+          />
+          <CountryPicker
+            show={countryPickModel}
+            excludedCountries={excludedCountriesList()}
+            pickerButtonOnPress={(item) => {
+              setCountryCode(item.dial_code);
+              setCountryPickModel(false);
+              setNumberMaxLength(getPhoneNumberLength(item.code));
+            }}
+            onBackdropPress={() => setCountryPickModel(false)}
+            style={{
+              modal: {
+                height: "65%",
+              },
+            }}
+          />
+          <CustomInputWithCC
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={countryCode}
+            caption={strings.mobile_no}
+            onChangeText={(text) => handleNumberChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            maxLength={numberMaxLength}
           />
         </View>
         <CustomTitleText title={"Billing address"} />
@@ -225,7 +318,7 @@ const CreateCustomer = () => {
                 name: `Product ${index + 1}`,
                 type: "NA",
                 price: (index + 1) * 200,
-                quantity: 0,
+                quantity: Math.floor(Math.random() * index),
               }}
             />
           )}
@@ -239,8 +332,8 @@ const CreateCustomer = () => {
     return (
       <View>
         <CustomTitleText title={"Selected Product"} />
-        <FlatList
-          //   style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
+        <SwipeListView
+          showsVerticalScrollIndicator={false}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <SelectedProduct
@@ -253,6 +346,9 @@ const CreateCustomer = () => {
             />
           )}
           keyExtractor={(item, index) => index}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-75}
+          onRowDidOpen={onRowDidOpen}
         />
         <CustomTitleText title={"Bill Details"} />
         <BillDetails
@@ -321,6 +417,26 @@ const CreateCustomer = () => {
     setNumber(textStr);
     setNumberError("");
   };
+
+  const onRowDidOpen = (rowKey) => {
+    console.log("This row opened", rowKey);
+  };
+
+  const renderHiddenItem = (data, rowMap) => (
+    <View style={styles.rowBack}>
+      <Pressable
+        style={[styles.backRightBtn]}
+        onPress={() => {
+          alert("Index: ", data.index);
+          console.log("$$$-rowMap", rowMap);
+          console.log("$$$-data", data);
+        }}
+      >
+        <Icon name="delete" size={19} color={"#D13D3D"} />
+        <Text style={{ color: "#D13D3D" }}>Delete</Text>
+      </Pressable>
+    </View>
+  );
 
   const renderStepsView = () => {
     return (
@@ -540,6 +656,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     bottom: 0,
     backgroundColor: "white",
+  },
+  rowBack: {
+    alignItems: "center",
+    backgroundColor: "#DDD",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 15,
+  },
+  backRightBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    width: 75,
+    height: 80,
+    backgroundColor: "#FEE5E4",
+    right: 0,
+    margin: 15,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
   },
 });
 

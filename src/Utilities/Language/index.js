@@ -246,6 +246,11 @@ export let strings = new LocalizedStrings({
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
     //add en-US
+    dob: "DOB",
+    place_of_issue: "Place of Issue",
+    country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   en: {
     customer_name: "Customer Name",
@@ -492,6 +497,11 @@ export let strings = new LocalizedStrings({
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
     //add en
+    dob: "DOB",
+    place_of_issue: "Place of Issue",
+    country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   ml: {
     customer_name: "Nama Pelanggan",
@@ -740,6 +750,11 @@ export let strings = new LocalizedStrings({
     not_available: "Tidak Tersedia",
     completed_appointment: "selesai temu janji",
     upcoming_appointment: "janji temu akan datang",
+    dob: "DOB",
+    place_of_issue: "Place of Issue",
+    country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   hi: {
     get_started: "चलो शुरू करो",
