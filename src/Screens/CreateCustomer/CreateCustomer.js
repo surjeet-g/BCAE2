@@ -41,6 +41,95 @@ const CreateCustomer = () => {
       <View>
         <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
+        <CustomTitleText title={"Customer Details"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={strings.customer_name}
+            placeHolder={strings.customer_name}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.dob}
+            placeHolder={strings.dob}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.gender}
+            placeHolder={strings.gender}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.place_of_issue}
+            placeHolder={strings.place_of_issue}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country_code}
+            placeHolder={"Select " + strings.country_code}
+          />
+          <CountryPicker
+            show={countryPickModel}
+            excludedCountries={excludedCountriesList()}
+            pickerButtonOnPress={(item) => {
+              setCountryCode(item.dial_code);
+              setCountryPickModel(false);
+              setNumberMaxLength(getPhoneNumberLength(item.code));
+            }}
+            onBackdropPress={() => setCountryPickModel(false)}
+            style={{
+              modal: {
+                height: "65%",
+              },
+            }}
+          />
+          <CustomInputWithCC
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={countryCode}
+            caption={strings.mobile_no}
+            onChangeText={(text) => handleNumberChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            maxLength={numberMaxLength}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
+          />
+        </View>
       </View>
     );
   };
