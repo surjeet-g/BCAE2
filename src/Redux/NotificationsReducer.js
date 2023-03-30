@@ -1,22 +1,9 @@
 import {
-  NOTIFICATIONS_INIT,
   NOTIFICATIONS_DATA,
-  NOTIFICATIONS_ERROR,
+  NOTIFICATIONS_ERROR, NOTIFICATIONS_INIT
 } from "./NotificationsAction";
 
 const DATA = [
-  {
-    title: "title name ",
-    createdAt: "2022-09-08T16:57:19.445Z",
-    description:
-      "descipriotn descipriotndescipriotndescipriotndescipriotndescipriotndescipriotn",
-  },
-  {
-    createdAt: "2022-09-08T16:57:19.445Z",
-    title: "title name ",
-    description:
-      "descipriotn descipriotndescipriotndescipriotndescipriotndescipriotndescipriotn",
-  },
 ];
 const notificationsInitialState = {
   initNotifications: false,
@@ -27,6 +14,7 @@ const notificationsInitialState = {
 const NotificationsReducer = (state = notificationsInitialState, action) => {
   switch (action.type) {
     case NOTIFICATIONS_INIT:
+      console.log('hitting reducer init',)
       return {
         ...state,
         initNotifications: true,
@@ -43,6 +31,7 @@ const NotificationsReducer = (state = notificationsInitialState, action) => {
       };
 
     case NOTIFICATIONS_DATA:
+      console.log('hitting reducer data',)
       return {
         ...state,
         initNotifications: false,

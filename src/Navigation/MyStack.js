@@ -47,6 +47,7 @@ import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 
+import Notification from "../Screens/Notification/Notification";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
@@ -55,7 +56,6 @@ import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
 import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
-import Notification from "../Screens/Notification/Notification";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -150,6 +150,7 @@ function MyStack() {
       >
         <Stack.Screen
           options={({ navigation }) => ({
+            ...options,
             ...{
               headerTitle: "Profile",
               headerStyle: {

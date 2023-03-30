@@ -53,7 +53,8 @@ export const endPoints = {
   INQUIRY_NOTIFICATIONS: "api/KnowledgeBase/inquiry-notification",
   ORGANIZATION: "api/organization",
   ADDRESS_LOOKUP: "api/lookup/address-lookup",
-  ADDRESS_LOOKUP_REGISTRATION: "api/users/address-lookup",
+  ADDRESS_LOOKUP_REGISTRATION: "api/master/address-lookup",
+
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
   KNOWLEDGE_SEARCH: "api/knowledge-Base/search",

@@ -19,6 +19,7 @@ import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
+import { styles as modalStyle } from "../../Components/InteractionSuccess";
 
 import {
   color,
@@ -55,7 +56,7 @@ import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 
 import { RenderUserSelectResult } from "../../Components/UserSearch";
-import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
+import { STACK_CREATE_CUSTOMER, STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
@@ -218,6 +219,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
       };
     }
   );
+  //handle customer empty case
+  useEffect(() => {
+    if (profileReducer.IsSearchEmpty) {
+      setTimeout(() => {
+        navigation.navigate(STACK_CREATE_CUSTOMER)
+      }, 5000)
+    }
+  }, [profileReducer.IsSearchEmpty])
+
   useEffect(() => {
     async function fetchMyAPI() {
       const {
@@ -1156,6 +1166,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
+
+
   if (enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) {
     return (
       <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
@@ -1185,22 +1197,46 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
-
+  console.log('data', profileReducer.IsSearchEmpty)
   return (
     <>
+      {profileReducer.IsSearchEmpty &&
+        <View style={{
+          ...modalStyle.successContainer,
+          height,
+          top: 30,
+          width,
+          zIndex: 99999,
+          position: "absolute"
+        }}>
+          <Image
+            source={require("../../Assets/icons/no_customer.gif")}
+            style={modalStyle.gif}
+          />
+          <Text style={modalStyle.interactionText}>
+            Provided details doesn’t match any customer kindly go ahead and search
+          </Text>
 
+
+
+
+
+        </View>
+      }
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
             navigation,
-            setEnableSuccessScreen: () => setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER),
+            setEnableSuccessScreens: () => {
+              setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER)
+            },
             setLoader,
             profileDispatch,
             headerRightForNav,
             headerTitle: "headerTitle",
             profileSearchData: get(profileReducer, "profileSearchData", [])
           });
-        }, [headerRightForNav, setLoader, navigation, profileDispatch])}
+        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen])}
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return (
