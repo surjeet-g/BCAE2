@@ -45,7 +45,7 @@ export const userNavigationIcon = (props) => {
                           await props.profileDispatch(
                             seachCustomers()
                           );
-                          console.log('data', props.profileSearchData)
+
                           props.setLoader(false);
                         }}
                       />

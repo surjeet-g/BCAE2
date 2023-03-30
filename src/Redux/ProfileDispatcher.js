@@ -1,8 +1,7 @@
 import {
   initProfile,
   setProfileData,
-  setProfileError,
-  setSearchProfileData,
+  setProfileError, setSearchEmpty, setSearchProfileData,
   setSearchProfileDataError
 } from "./ProfileAction";
 
@@ -70,10 +69,11 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
     console.log("task - pro result", profileResult);
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
-      // return profileResult?.data?.data?.rows?.length;
+      const len = profileResult?.data?.data?.rows?.length;
+      if (len == 0) dispatch(setSearchEmpty(true));
     } else {
       dispatch(setSearchProfileDataError([]));
-      // return false;
+      return false;
     }
   };
 }
