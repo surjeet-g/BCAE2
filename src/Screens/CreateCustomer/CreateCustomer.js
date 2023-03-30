@@ -334,6 +334,7 @@ const CreateCustomer = () => {
         <CustomTitleText title={"Selected Product"} />
         <SwipeListView
           showsVerticalScrollIndicator={false}
+          disableRightSwipe={true}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <SelectedProduct
@@ -347,7 +348,8 @@ const CreateCustomer = () => {
           )}
           keyExtractor={(item, index) => index}
           renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-75}
+          rightOpenValue={-100}
+          stopRightSwipe={-100}
           onRowDidOpen={onRowDidOpen}
         />
         <CustomTitleText title={"Bill Details"} />
@@ -428,8 +430,8 @@ const CreateCustomer = () => {
         style={[styles.backRightBtn]}
         onPress={() => {
           alert("Index: ", data.index);
-          console.log("$$$-rowMap", rowMap);
           console.log("$$$-data", data);
+          console.log("$$$-data", JSON.stringify(data));
         }}
       >
         <Icon name="delete" size={19} color={"#D13D3D"} />
@@ -669,7 +671,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    width: 75,
+    width: 100,
     height: 80,
     backgroundColor: "#FEE5E4",
     right: 0,
