@@ -62,7 +62,7 @@
     "react-native-step-indicator": "^1.0.3",
     "react-native-svg": "^13.8.0",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-swipe-list-view": "./libaries/react-native-swipe-list-view",
+    "react-native-swipe-list-view": "^3.2.9",
     "react-native-toast-message": "^2.1.5",
     "react-native-vector-icons": "^9.2.0",
     "react-native-webview": "^11.26.1",
