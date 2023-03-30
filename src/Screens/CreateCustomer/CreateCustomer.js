@@ -28,7 +28,7 @@ import {
 } from "./../../Utilities/utils";
 
 const CreateCustomer = () => {
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(1);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
@@ -386,7 +386,7 @@ const CreateCustomer = () => {
             </Text>
           </View>
 
-          {currentStep === 3 && (
+          {currentStep < 3.5 && (
             <Image
               style={{ flex: 1 }}
               source={require("../../Assets/icons/line_normal.png")}
@@ -486,6 +486,7 @@ const styles = StyleSheet.create({
   stepsSubView: {
     flexDirection: "row",
     marginVertical: 5,
+    alignItems: "center",
   },
   stepsTxt: {
     flex: 1,

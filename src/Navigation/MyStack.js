@@ -55,7 +55,7 @@ import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
 import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
-
+import Notification from "../Screens/Notification/Notification";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -70,6 +70,7 @@ const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
 const STACK_CREATE_CUSTOMER = "CreateCustomer";
+const STACK_NOTIFICATION = "Notification";
 
 const Stack = createStackNavigator();
 
@@ -110,7 +111,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={STACK_CREATE_CUSTOMER}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -149,7 +150,6 @@ function MyStack() {
       >
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
               headerTitle: "Profile",
               headerStyle: {
@@ -174,6 +174,23 @@ function MyStack() {
           name="Profile"
           component={ViewProfile}
         />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Notification",
+              headerStyle: {
+                backgroundColor: "#4C5A81",
+              },
+              headerRight: () => {
+                return <View></View>;
+              },
+            },
+          })}
+          name={STACK_NOTIFICATION}
+          component={Notification}
+        />
+
         <Stack.Screen
           options={({ navigation }) => ({
             ...options,

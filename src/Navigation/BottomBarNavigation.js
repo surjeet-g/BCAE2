@@ -61,7 +61,7 @@ const BottomBarNavigation = () => {
       return (
         <View style={navBar.navRightCon}>
           <Pressable
-            onPress={() => alert("ToDo - Navigate to Notifications Screen")}
+            onPress={() => navigation.navigate("Notification")}
             style={navBar.roundIcon}
           >
             <Image
