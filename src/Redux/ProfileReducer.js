@@ -9,7 +9,7 @@ import {
   PROFILE_SEARCH_ERROR,
   PROFILE_SEARCH_INIT,
   PROFILE_SET_FORM,
-  SET_USER_SEARCH,
+  SET_USER_SEARCH
 } from "./ProfileAction";
 
 const mySavedProfileInitialState = {
@@ -19,7 +19,7 @@ const mySavedProfileInitialState = {
   profileError: false,
   profileSearchError: false,
   savedProfileData: {},
-  profileSearchData: [],
+  profileSearchData: {},
   formData: {
     firstName: "",
     firstNameError: "",
