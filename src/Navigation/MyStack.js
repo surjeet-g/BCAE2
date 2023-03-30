@@ -47,7 +47,6 @@ import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 
-import Notifications from "../Screens/Notification/Notification";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
@@ -251,17 +250,6 @@ function MyStack() {
           options={{ headerShown: false }}
           name="Splash"
           component={Splash}
-        />
-        <Stack.Screen
-          options={({ _ }) => ({
-            ...options,
-            ...{
-              headerTitle: "Notifications",
-              headerRight: () => null,
-            },
-          })}
-          name="Notification"
-          component={Notifications}
         />
         <Stack.Screen
           options={{ headerShown: false }}
