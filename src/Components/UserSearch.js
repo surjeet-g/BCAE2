@@ -5,14 +5,14 @@ import {
   Image,
   Pressable,
   Text,
-  View,
+  View
 } from "react-native";
 import { List, Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { setProfileReset, setSearchProfileReset } from "../Redux/ProfileAction";
 import {
   fetchSavedProfileDataByUser,
-  seachCustomers,
+  seachCustomers
 } from "../Redux/ProfileDispatcher";
 
 const { height, width } = Dimensions.get("screen");
@@ -36,16 +36,16 @@ export const userNavigationIcon = (props) => {
                       }}
                     >
                       <Searchbar
-                        style={{ width: width * 0.7 }}
+                        style={{ width: width * 0.7, height: 50 }}
                         placeholder={"Search customer"}
                         onChangeText={async (text) => {
                           searchString = text;
                           props.setLoader(true);
 
-                          const d = await props.profileDispatch(
+                          await props.profileDispatch(
                             seachCustomers()
                           );
-
+                          console.log('data', props.profileSearchData)
                           props.setLoader(false);
                         }}
                       />

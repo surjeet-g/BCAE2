@@ -41,13 +41,6 @@ const CreateCustomer = () => {
       <View>
         <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
-      </View>
-    );
-  };
-
-  const renderStepTwoUI = () => {
-    return (
-      <View>
         <CustomTitleText title={"Customer Details"} />
         <View
           style={{
@@ -59,21 +52,51 @@ const CreateCustomer = () => {
         >
           <CustomInput
             value={""}
-            caption={strings.title}
-            placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
             caption={strings.customer_name}
             placeHolder={strings.customer_name}
             onChangeText={(text) => text}
           />
           <CustomInput
             value={""}
-            caption={strings.email}
-            placeHolder={strings.email}
+            caption={strings.dob}
+            placeHolder={strings.dob}
             onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.gender}
+            placeHolder={strings.gender}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.place_of_issue}
+            placeHolder={strings.place_of_issue}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country_code}
+            placeHolder={"Select " + strings.country_code}
           />
           <CountryPicker
             show={countryPickModel}
@@ -100,14 +123,52 @@ const CreateCustomer = () => {
             keyboardType="numeric"
             maxLength={numberMaxLength}
           />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
+          <CustomInput
             value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  const renderStepTwoUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Customer Details"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={strings.title}
+            placeHolder={strings.title}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.surname}
+            placeHolder={strings.surname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.forename}
+            placeHolder={strings.forename}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -117,6 +178,31 @@ const CreateCustomer = () => {
             value={""}
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
+          />
+          <CountryPicker
+            show={countryPickModel}
+            excludedCountries={excludedCountriesList()}
+            pickerButtonOnPress={(item) => {
+              setCountryCode(item.dial_code);
+              setCountryPickModel(false);
+              setNumberMaxLength(getPhoneNumberLength(item.code));
+            }}
+            onBackdropPress={() => setCountryPickModel(false)}
+            style={{
+              modal: {
+                height: "65%",
+              },
+            }}
+          />
+          <CustomInputWithCC
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={countryCode}
+            caption={strings.mobile_no}
+            onChangeText={(text) => handleNumberChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            maxLength={numberMaxLength}
           />
         </View>
         <CustomTitleText title={"Billing address"} />

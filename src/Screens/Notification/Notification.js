@@ -1,33 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   Dimensions,
-  Pressable,
-  FlatList,
   Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+import moment from "moment";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SwipeListView } from "react-native-swipe-list-view";
 import { useDispatch, useSelector } from "react-redux";
-import { strings } from "../../Utilities/Language/index";
+import { ClearSpace } from "../../Components/ClearSpace";
+import LoadingAnimation from "../../Components/LoadingAnimation";
+import { getNotificationsData } from "../../Redux/NotificationsDispatcher";
 import {
   bottomBarHeight,
-  spacing,
-  fontSizes,
   color,
-  buttonType,
-  buttonSize,
+  spacing,
 } from "../../Utilities/Constants/Constant";
-import { commonStyle } from "../../Utilities/Style/commonStyle";
-import { getNotificationsData } from "../../Redux/NotificationsDispatcher";
-import moment from "moment";
-import LoadingAnimation from "../../Components/LoadingAnimation";
+import { strings } from "../../Utilities/Language/index";
+import { navBar } from "../../Utilities/Style/navBar";
 // const dispatchNotifications= useDispatch([Notifications]);
 
 var { height, width } = Dimensions.get("screen");
 
-const Notification = ({ route, navigation }) => {
+const Notifications = ({ route, navigation }) => {
+  const { colors } = useTheme();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      // headerLeft: () => {
+      //   return (
+      //     <View style={{ ...navBar.navRightCon, marginLeft: 10 }}>
+      //       <Pressable onPress={() => navigation.goBack()} style={{ marginLeft: 0 }}>
+      //         <Icon
+      //           name="close"
+      //           size={19}
+      //           color={colors.inverseSecondary}
+      //         />
+      //       </Pressable>
+      //     </View>
+      //   );
+      // },
+      headerRight: () => {
+        return (
+          <View style={navBar.navRightCon}>
+            <Pressable
+              onPress={() => {
+                alert("dsfd");
+              }}
+              style={{ marginLeft: 0 }}
+            >
+              <Icon name="delete" size={19} color={colors.inverseSecondary} />
+            </Pressable>
+          </View>
+        );
+      },
+    });
+  }, []);
   const notifications = useSelector((state) => state.notifications);
 
   // const { fromLogin } = route.params;
@@ -39,6 +74,24 @@ const Notification = ({ route, navigation }) => {
   useEffect(() => {
     fetchNotificationData();
   }, []);
+  const renderHiddenItem = (data, rowMap) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity onPress={() => console.log(rowMap, data.item.key)}>
+        <Text style={styles.backTextWhite}>Delete</Text>
+      </TouchableOpacity>
+      <Pressable
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => {
+          console.log(">>", data);
+        }}
+      >
+        <Icon name="delete" size={19} color={colors.inverseSecondary} />
+      </Pressable>
+    </View>
+  );
+  const onRowDidOpen = (rowKey) => {
+    console.log("This row opened", rowKey);
+  };
   return (
     <SafeAreaView
       style={{
@@ -74,42 +127,62 @@ const Notification = ({ route, navigation }) => {
                 backgroundColor: "#fff",
                 borderRadius: 10,
                 elevation: 5,
+                width: "100%",
               }}
             >
-              <FlatList
+              <SwipeListView
                 showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
+                style={{ width: "100%" }}
                 data={notifications?.notificationsData}
-                ItemSeparatorComponent={() => <View style={styles.line} />}
                 renderItem={({ item }) => {
                   return (
-                    <View
+                    <TouchableHighlight
                       style={{
-                        width: width - spacing.WIDTH_10,
+                        ...styles.rowFront,
+                        // width: width - spacing.WIDTH_10,
                         flexDirection: "row",
                         flexWrap: "wrap",
-                        backgroundColor: "red",
+                        backgroundColor: "white",
                       }}
                     >
-                      <View style={{ flexDirection: "row", flex: 1 }}>
-                        <View style={{ flex: 0.1 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View style={{ flex: 0.1, marginRight: "4%" }}>
                           <Image
                             style={styles.editImage}
                             source={require("../../Assets/icons/noti_icon.png")}
                           ></Image>
                         </View>
-                        <View style={{ flexDirection: "column", flex: 0.7 }}>
+
+                        <View style={{ flexDirection: "column", flex: 0.65 }}>
                           <Text>{item?.subject}</Text>
-                          <Text>{item?.title}</Text>
+                          <Text style={{ color: "#D72C0D", fontWeight: "500" }}>
+                            {item?.title}
+                          </Text>
+                          <ClearSpace />
                           <Text>{item?.reason}</Text>
                         </View>
-                        <View style={{ flexDirection: "column", flex: 0.2 }}>
-                          <Text>time</Text>
+
+                        <View style={{ flexDirection: "column", flex: 0.25 }}>
+                          <Text style={{ fontSize: 12 }}>
+                            {" "}
+                            {moment(item?.createdAt).fromNow()}
+                          </Text>
                         </View>
                       </View>
-                    </View>
+                    </TouchableHighlight>
                   );
                 }}
+                renderHiddenItem={renderHiddenItem}
+                leftOpenValue={75}
+                // rightOpenValue={-75}
+                onRowDidOpen={onRowDidOpen}
               />
             </View>
           ) : (
@@ -143,6 +216,43 @@ const Notification = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    flex: 1,
+  },
+  backTextWhite: {
+    color: "#FFF",
+  },
+  rowFront: {
+    alignItems: "center",
+    backgroundColor: "#CCC",
+
+    justifyContent: "center",
+  },
+  rowBack: {
+    alignItems: "center",
+    backgroundColor: "#DDD",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 15,
+  },
+  backRightBtn: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    width: 75,
+  },
+  backRightBtnLeft: {
+    backgroundColor: "blue",
+    right: 75,
+  },
+  backRightBtnRight: {
+    backgroundColor: "red",
+    right: 0,
+  },
   roundIcon: {
     width: spacing.WIDTH_8,
     height: spacing.WIDTH_8,
@@ -185,4 +295,4 @@ const styles = StyleSheet.create({
     color: color.BCAE_PRIMARY,
   },
 });
-export default Notification;
+export default Notifications;

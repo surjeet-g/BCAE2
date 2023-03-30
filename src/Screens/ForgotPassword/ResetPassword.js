@@ -99,7 +99,13 @@ const ResetPassword = ({ route, navigation }) => {
       {
         text: strings.ok,
         onPress: () => {
-          navigation.navigate("Splash", {});
+          if (isChangePassword) {
+            navigation.goBack()
+
+          }
+          else {
+            navigation.navigate("Splash", {});
+          }
         },
       },
     ]);

@@ -43,7 +43,7 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
-import RNRestart from "react-native-restart";
+// import RNRestart from "react-native-restart";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -103,7 +103,7 @@ export const ViewProfile = ({ navigation }) => {
     const status = await changeLanguage(language);
     if (status) {
       // navigation.navigate("Splash");
-      RNRestart.restart();
+      // RNRestart.restart();
     } else {
       console.log("somthing wents wrong");
     }

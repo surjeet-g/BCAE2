@@ -7,7 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { useTheme } from "react-native-paper";
@@ -315,7 +315,7 @@ const AddLocation = ({ route, navigation }) => {
     } catch (error) {
       console.log(
         "There has been a problem with RNLocation fetch operation: " +
-          error.message
+        error.message
       );
     }
   };

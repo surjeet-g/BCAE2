@@ -53,7 +53,7 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
   };
 }
 
-export function seachCustomers(limit = 5, page = 0) {
+export function seachCustomers(search = "", limit = 5, page = 0) {
   return async (dispatch) => {
     // dispatch(initProfileSearch());
     //todo search params
@@ -63,17 +63,17 @@ export function seachCustomers(limit = 5, page = 0) {
       {
         source: "string",
         filters: {
-          email: "a@gmail.com",
+          email: "adsfsdfsd@gmail.comsdas",
         },
       }
     );
     console.log("task - pro result", profileResult);
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
-      return true;
+      // return profileResult?.data?.data?.rows?.length;
     } else {
       dispatch(setSearchProfileDataError([]));
-      return false;
+      // return false;
     }
   };
 }
