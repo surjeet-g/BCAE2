@@ -318,7 +318,7 @@ const CreateCustomer = () => {
                 name: `Product ${index + 1}`,
                 type: "NA",
                 price: (index + 1) * 200,
-                quantity: 0,
+                quantity: Math.floor(Math.random() * index),
               }}
             />
           )}
