@@ -7,8 +7,7 @@ import {
   PROFILE_SEARCH_DATA,
   PROFILE_SEARCH_DATA_RESET,
   PROFILE_SEARCH_ERROR,
-  PROFILE_SEARCH_INIT,
-  PROFILE_SET_FORM,
+  PROFILE_SEARCH_INIT, PROFILE_SET_EMPTY, PROFILE_SET_FORM,
   SET_USER_SEARCH
 } from "./ProfileAction";
 
@@ -20,6 +19,7 @@ const mySavedProfileInitialState = {
   profileSearchError: false,
   savedProfileData: {},
   profileSearchData: {},
+  IsSearchEmpty: false,
   formData: {
     firstName: "",
     firstNameError: "",
@@ -49,6 +49,12 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
         initSeachProfile: true,
         profileError: false,
         profileSearchError: {},
+      };
+    case PROFILE_SET_EMPTY:
+      console.log('data', action)
+      return {
+        ...state,
+        IsSearchEmpty: action.data
       };
     case PROFILE_SEARCH_DATA_RESET:
       return {

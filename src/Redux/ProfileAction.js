@@ -11,6 +11,7 @@ export const PROFILE_SEARCH_DATA_RESET = "PROFILE_SEARCH_DATA_RESET";
 export const PROFILE_RESET = "PROFILE_RESET";
 export const PROFILE_SET_FORM = "PROFILE_SET_FORM";
 export const SET_USER_SEARCH = "SET_USER_SEARCH";
+export const PROFILE_SET_EMPTY = "PROFILE_SET_EMPTY";
 
 export const PROFILE_SEARCH_INIT = "PROFILE_SEARCH_INIT";
 
@@ -21,6 +22,11 @@ export function initProfile() {
 export function initProfileSearch() {
   return { type: PROFILE_SEARCH_INIT };
 }
+
+export function setSearchEmpty(data) {
+  return { type: PROFILE_SET_EMPTY, data };
+}
+
 
 export function setProfileData(data) {
   return { type: PROFILE_DATA, data };

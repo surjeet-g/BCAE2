@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -37,7 +37,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import {
   BottomSheetModal,
-  BottomSheetModalProvider,
+  BottomSheetModalProvider
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
@@ -47,6 +47,7 @@ import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 
+import Notification from "../Screens/Notification/Notification";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
@@ -55,7 +56,6 @@ import InteractionDetails from "./../Screens/Appointments/InteractionDetails";
 import WorkflowHistory from "./../Screens/Appointments/WorkflowHistory";
 import ComingSoon from "./../Screens/ComingSoon";
 import CreateCustomer from "./../Screens/CreateCustomer/CreateCustomer";
-import Notification from "../Screens/Notification/Notification";
 
 const STACK_EDIT_PROFILE = "EditProfile";
 const STACK_REGISTER = "Register with us";
@@ -111,7 +111,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Notification"}
+        initialRouteName={STACK_INTERACTION}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -365,7 +365,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_VIEW_ORDER}
@@ -381,7 +381,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_APPOINTMENT_DETAILS}
@@ -412,7 +412,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_FOLLOWUP}
@@ -428,7 +428,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
@@ -444,7 +444,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_CREATE_CUSTOMER}
