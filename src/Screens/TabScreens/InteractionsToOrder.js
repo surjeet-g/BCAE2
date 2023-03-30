@@ -116,6 +116,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const interactionResponseScreen = {
     SUCCESS: "SUCCESS",
     FAILED: "FAILED",
+    EMPTY_CUSTOMER: "EMPTY_CUSTOMER",
     NONE: "NONE",
   };
   const [enableSuccessScreen, setEnableSuccessScreen] = useState(
@@ -991,6 +992,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {suggestionList.data.length > 0 ? (
               suggestionList.data.map((ite) => (
+                // eslint-disable-next-line react/jsx-key
                 <Chip
                   mode="outlined"
                   onPress={async () => {
@@ -1154,6 +1156,23 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
+  if (enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) {
+    return (
+      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
+        <InteractionSuccess
+          intxId={intereactionAddResponse?.intxnNo}
+          cancelButtonRequired={true}
+          okHandler={async () => {
+            await resetStateData("setInteractionResponse");
+            navigation.navigate(STACK_INTERACTION_DETAILS, {
+              interactionID: intereactionAddResponse?.intxnNo,
+            });
+          }}
+          cancelHandler={() => { }}
+        />
+      </View>
+    );
+  }
   if (enableSuccessScreen == interactionResponseScreen.FAILED) {
     return (
       <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
@@ -1174,10 +1193,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
         useMemo(() => {
           return userNavigationIcon({
             navigation,
+            setEnableSuccessScreen: () => setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER),
             setLoader,
             profileDispatch,
             headerRightForNav,
             headerTitle: "headerTitle",
+            profileSearchData: get(profileReducer, "profileSearchData", [])
           });
         }, [headerRightForNav, setLoader, navigation, profileDispatch])}
       {userType == USERTYPE.USER &&
@@ -1532,8 +1553,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     if (status) {
                       console.log("interaction type response ", response);
                       setInteractionResponse(response);
-                      dispatchInteraction(setInteractionReset());
                       setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
+                      dispatchInteraction(setInteractionReset());
+
                     } else {
                       setEnableSuccessScreen(interactionResponseScreen.FAILED);
                     }
