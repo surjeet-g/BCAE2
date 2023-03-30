@@ -299,7 +299,7 @@ const CreateCustomer = () => {
           )}
           keyExtractor={(item, index) => index}
         />
-        <CustomTitleText title={"Select Service Type"} />
+        {/* <CustomTitleText title={"Select Service Type"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={3}
@@ -308,7 +308,7 @@ const CreateCustomer = () => {
             <ServiceType name={`Service Type ${index + 1}`} />
           )}
           keyExtractor={(item, index) => index}
-        />
+        /> */}
         <CustomTitleText title={"Accessories"} />
         <FlatList
           data={[{}, {}, {}, {}, {}]}
