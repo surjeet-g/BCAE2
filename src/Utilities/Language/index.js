@@ -249,6 +249,8 @@ export let strings = new LocalizedStrings({
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   en: {
     customer_name: "Customer Name",
@@ -498,6 +500,8 @@ export let strings = new LocalizedStrings({
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   ml: {
     customer_name: "Nama Pelanggan",
@@ -749,6 +753,8 @@ export let strings = new LocalizedStrings({
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
+    surname: "Surname",
+    forename: "Forename",
   },
   hi: {
     get_started: "चलो शुरू करो",

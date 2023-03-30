@@ -154,8 +154,14 @@ const CreateCustomer = () => {
           />
           <CustomInput
             value={""}
-            caption={strings.customer_name}
-            placeHolder={strings.customer_name}
+            caption={strings.surname}
+            placeHolder={strings.surname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.forename}
+            placeHolder={strings.forename}
             onChangeText={(text) => text}
           />
           <CustomInput
@@ -163,6 +169,15 @@ const CreateCustomer = () => {
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.contact_type}
+            placeHolder={"Select " + strings.contact_type}
           />
           <CountryPicker
             show={countryPickModel}
@@ -188,24 +203,6 @@ const CreateCustomer = () => {
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.contact_type}
-            placeHolder={"Select " + strings.contact_type}
           />
         </View>
         <CustomTitleText title={"Billing address"} />
