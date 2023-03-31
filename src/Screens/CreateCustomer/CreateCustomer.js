@@ -31,7 +31,7 @@ import {
 } from "./../../Utilities/utils";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme, Modal } from "react-native-paper";
+import { useTheme, Modal, Checkbox } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
 
@@ -42,6 +42,7 @@ const CreateCustomer = (props) => {
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [customerType, setCustomerType] = useState("");
+  const [isSameAddress, setIsSameAddress] = useState(true);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -214,7 +215,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderCustomerFormUI = () => {
+  const renderCustomerAddressFormUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -443,6 +444,26 @@ const CreateCustomer = (props) => {
             value={needQuoteOnly}
           />
         </View>
+        {/* Service address checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+            justifyContent: "center",
+          }}
+        >
+          <Checkbox
+            status={isSameAddress ? "checked" : "unchecked"}
+            onPress={() => {
+              setIsSameAddress(!isSameAddress);
+            }}
+          />
+          <CustomTitleText
+            title={"Service address same as customer address"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
       </View>
     );
   };
@@ -521,7 +542,7 @@ const CreateCustomer = (props) => {
           customStyles={styles.firstIndicatorStyles}
           currentPosition={currentStep}
           stepCount={5}
-          labels={["Customer", "Account", "Services", "Agreement", "Preview"]}
+          labels={["Customer", "Address", "Services", "Agreement", "Preview"]}
         />
       </View>
     );
@@ -586,7 +607,7 @@ const CreateCustomer = (props) => {
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
         {currentStep == 0.5 && renderCustomerDetailsUI()}
-        {currentStep == 1 && renderCustomerFormUI()}
+        {currentStep == 1 && renderCustomerAddressFormUI()}
         {currentStep == 2 && renderServicesUI()}
         {currentStep == 2.5 && renderSelectedServicesUI()}
         {currentStep == 3 && renderAgreementUI()}
