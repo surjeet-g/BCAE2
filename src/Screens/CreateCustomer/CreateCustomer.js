@@ -38,6 +38,7 @@ import CustomerType from "./CustomerType";
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
+  const [formCustomerData, setFormCustomerData] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -49,35 +50,35 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
-  useLayoutEffect(() => {
-    let title = "";
-    switch (currentStep) {
-      case 0:
-        title = "Create Customer";
-        break;
-      case 1:
-        title = "Account";
-        break;
-      case 2:
-        title = "Services";
-        break;
-      case 2.5:
-        title = "Services";
-        break;
-      case 3:
-        title = "Agreement";
-        break;
-      case 4:
-        title = "Preview";
-        break;
-      default:
-        title = "Create Customer";
-    }
+  // useLayoutEffect(() => {
+  //   let title = "";
+  //   switch (currentStep) {
+  //     case 0:
+  //       title = "Create Customer";
+  //       break;
+  //     case 1:
+  //       title = "Account";
+  //       break;
+  //     case 2:
+  //       title = "Services";
+  //       break;
+  //     case 2.5:
+  //       title = "Services";
+  //       break;
+  //     case 3:
+  //       title = "Agreement";
+  //       break;
+  //     case 4:
+  //       title = "Preview";
+  //       break;
+  //     default:
+  //       title = "Create Customer";
+  //   }
 
-    navigation.setOptions({
-      headerTitle: title,
-    });
-  }, [currentStep]);
+  //   navigation.setOptions({
+  //     headerTitle: title,
+  //   });
+  // }, [currentStep]);
 
   const renderUploadDocsUI = () => {
     return (
@@ -444,6 +445,13 @@ const CreateCustomer = (props) => {
             value={needQuoteOnly}
           />
         </View>
+      </View>
+    );
+  };
+
+  const renderServiceAddressUI = () => {
+    return (
+      <View>
         {/* Service address checkbox */}
         <View
           style={{
@@ -464,6 +472,29 @@ const CreateCustomer = (props) => {
             textStyle={{ marginTop: 0 }}
           />
         </View>
+        <CustomTitleText title={"Service Address"} />
+
+        <Text>Copy Address form here</Text>
+      </View>
+    );
+  };
+
+  const renderCreateAccountUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Create Account"} />
+
+        <Text>Create account here form to be added</Text>
+      </View>
+    );
+  };
+
+  const renderAccountAddressUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Add Account address"} />
+
+        <Text>address form to be added</Text>
       </View>
     );
   };
@@ -480,30 +511,21 @@ const CreateCustomer = (props) => {
   const renderPreviewUI = () => {
     return (
       <View>
-        <Text>Show Preview here</Text>
+        <CustomTitleText title={"Show Preview"} />
       </View>
     );
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      if (
-        currentStep === 3 ||
-        currentStep === 2.5 ||
-        currentStep === 1 ||
-        currentStep === 0.5
-      )
-        setCurrentStep(currentStep - 0.5);
-      else setCurrentStep(currentStep - 1);
-    }
+    if (needQuoteOnly) {
+      setCurrentStep(4);
+    } else setCurrentStep(currentStep - 1);
   };
 
   const handleSave = () => {
-    if (currentStep < 4) {
-      if (currentStep === 2 || currentStep === 2.5 || currentStep === 0.5)
-        setCurrentStep(currentStep + 0.5);
-      else setCurrentStep(currentStep + 1);
-    }
+    if (needQuoteOnly) {
+      setCurrentStep(9);
+    } else setCurrentStep(currentStep + 1);
   };
 
   const handleSubmit = () => {
@@ -561,7 +583,7 @@ const CreateCustomer = (props) => {
         </View>
       );
     }
-    if (currentStep === 3) {
+    if (currentStep === 8) {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
@@ -576,7 +598,7 @@ const CreateCustomer = (props) => {
         </View>
       );
     }
-    if (currentStep === 4) {
+    if (currentStep === 9) {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
@@ -603,15 +625,18 @@ const CreateCustomer = (props) => {
 
   return (
     <View style={styles.container}>
-      {renderStepsIndicatorView()}
+      {/* {renderStepsIndicatorView()} */}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
-        {currentStep == 0.5 && renderCustomerDetailsUI()}
-        {currentStep == 1 && renderCustomerAddressFormUI()}
-        {currentStep == 2 && renderServicesUI()}
-        {currentStep == 2.5 && renderSelectedServicesUI()}
-        {currentStep == 3 && renderAgreementUI()}
-        {currentStep == 4 && renderPreviewUI()}
+        {currentStep == 1 && renderCustomerDetailsUI()}
+        {currentStep == 2 && renderCustomerAddressFormUI()}
+        {currentStep == 3 && renderServicesUI()}
+        {currentStep == 4 && renderSelectedServicesUI()}
+        {currentStep == 5 && renderServiceAddressUI()}
+        {currentStep == 6 && renderCreateAccountUI()}
+        {currentStep == 7 && renderAccountAddressUI()}
+        {currentStep == 8 && renderAgreementUI()}
+        {currentStep == 9 && renderPreviewUI()}
       </ScrollView>
       {/* Bottom Button View */}
       {renderBottomButtonsUI()}
@@ -632,7 +657,7 @@ const CreateCustomer = (props) => {
               onPress={() => {
                 setCustomerType("Business");
                 setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 0.5);
+                setCurrentStep(currentStep + 1);
               }}
             />
             <CustomerType
@@ -640,7 +665,7 @@ const CreateCustomer = (props) => {
               onPress={() => {
                 setCustomerType("Government");
                 setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 0.5);
+                setCurrentStep(currentStep + 1);
               }}
             />
             <CustomerType
@@ -648,7 +673,7 @@ const CreateCustomer = (props) => {
               onPress={() => {
                 setCustomerType("Regular");
                 setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 0.5);
+                setCurrentStep(currentStep + 1);
               }}
             />
           </View>
