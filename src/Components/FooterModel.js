@@ -8,7 +8,7 @@ Icon;
 var { height, width } = Dimensions.get("screen");
 
 export const FooterModel = ({
-  setOpen = () => {},
+  setOpen = () => { },
   open = false,
   children,
   title = "",

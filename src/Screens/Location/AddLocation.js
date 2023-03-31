@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
-  Image,
-  SafeAreaView,
+  Image, Platform, SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -28,11 +27,12 @@ import RNLocation from "react-native-location";
 
 import get from "lodash.get";
 import { CustomButton } from "../../Components/CustomButton";
-import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
+import { CustomDropDownSearch as CustomDropDownFullWidth } from "../../Components/CustomDropDownSearch";
 import { CustomInput } from "../../Components/CustomInput";
 import { FooterModel } from "../../Components/FooterModel";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
 import { StickyFooter } from "../../Components/StickyFooter";
+import { fetchRegisterFormData } from '../../Redux/RegisterDispatcher';
 const { height } = Dimensions.get("screen");
 
 const AddLocation = ({ route, navigation }) => {
@@ -66,17 +66,17 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
-  //  const { customerId,
-  //    fromPage,
-  //     excludingSavedAddress = [],
-  //   includingSavedAddress = [],isEditAddress} = { isEditAddress:false,customerId: 123132, fromPage: false ,excludingSavedAddress: [],includingSavedAddress};
-
-  const {
+  const { customerId,
     fromPage,
     excludingSavedAddress = [],
-    includingSavedAddress = [],
-    isEditAddress = false,
-  } = route.params;
+    includingSavedAddress = [], isEditAddress } = { isEditAddress: false, customerId: 123132, fromPage: false, excludingSavedAddress: [], includingSavedAddress };
+
+  // const {
+  //   fromPage,
+  //   excludingSavedAddress = [],
+  //   includingSavedAddress = [],
+  //   isEditAddress = false,
+  // } = route.params;
 
   console.log(
     ">>",
@@ -366,8 +366,11 @@ const AddLocation = ({ route, navigation }) => {
     }
     return result;
   };
-
+  const dispatch1 = useDispatch([
+    fetchRegisterFormData,
+  ]);
   useEffect(() => {
+    dispatch1(fetchRegisterFormData());
     animateToCurrentLocation();
   }, [locationGet]);
 
@@ -452,19 +455,36 @@ const AddLocation = ({ route, navigation }) => {
     getLocationAddress(currentLatitude, currentLongitude);
   };
 
-  const getKampongByDistrict = () => {
+  const getCityByDistrict = () => {
     // let finalKampongData = [{ description: "sdfsdf", id: 12 }];
     let finalKampongData = [];
+    let uniqueDistrictKey = [];
+
+    let uniqueDistrictData = [];
     //("entering inside");
     if (savedLocation?.addressLoopupData?.length > 0 && distName != "") {
+
+
       // console.warn("entering inside");
       const addrByDistrict = savedLocation?.addressLoopupData.filter(
         (addr) => addr.district == distName
       );
       //console.warn("point", addrByDistrict);
-      finalKampongData = addrByDistrict.map((item) => {
-        return { description: item.kampong, id: item.kampong };
-      });
+      if (addrByDistrict.length != 0) {
+        console.log('point 1', addrByDistrict)
+        addrByDistrict.map((item) => {
+          if (!(uniqueDistrictKey.indexOf(item.city) > -1)) {
+            uniqueDistrictKey.push(item.city);
+          }
+        });
+
+
+        console.log('point 2', uniqueDistrictKey)
+        finalKampongData = uniqueDistrictKey.map((item) => {
+          return { description: item, id: item };
+        });
+        console.log('point 3', finalKampongData)
+      }
     }
     // console.warn("", savedLocation?.addressLoopupData);
 
@@ -477,7 +497,7 @@ const AddLocation = ({ route, navigation }) => {
 
     if (savedLocation?.addressLoopupData?.length > 0 && kampongName != "") {
       const addrByDistrict = savedLocation?.addressLoopupData.filter(
-        (addr) => addr.kampong == kampongName
+        (addr) => addr.city == kampongName
       );
 
       finalPostcodeData = addrByDistrict.map((item) => {
@@ -778,17 +798,18 @@ const AddLocation = ({ route, navigation }) => {
 
               <View style={{ marginTop: 12, zIndex: 3, elevation: 6 }}>
                 <CustomDropDownFullWidth
+
                   setDropDownEnable={() => setActiveDropDown("kampong")}
                   isDisableDropDown={activeDropDown != "kampong"}
                   selectedValue={selectedValueKampong}
                   setValue={setValueKampong}
                   data={
-                    getKampongByDistrict() ?? []
+                    getCityByDistrict() ?? []
                     // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
                   }
                   onChangeText={(text) => onKampongClick(text)}
                   value={kampongName}
-                  placeHolder={strings.kampong + "*"}
+                  placeHolder={"City *"}
                 />
               </View>
               <View

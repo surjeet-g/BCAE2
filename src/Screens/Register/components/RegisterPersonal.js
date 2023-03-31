@@ -12,14 +12,14 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../../Redux/RegisterDispatcher";
 
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
@@ -30,10 +30,7 @@ import { StickyFooter } from "../../../Components/StickyFooter";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import {
   color,
-  fontSizes,
-  spacing,
-  isValidNumber,
-  validatePassword,
+  fontSizes, isValidNumber, spacing, validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -82,6 +79,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setStateProfile(params.state);
     setDistrict(params.district);
     setCountry(params.country);
+    alert(params.country)
     setPostcode(params.postCode);
     // setDialPick(params.dialPick);
     setAddrType(params.addressType);
@@ -811,7 +809,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobile"
+                    registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -854,7 +852,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobileOtp"
+                    registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -906,7 +904,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "email"
+                    registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -948,7 +946,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "emailOtp"
+                    registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }

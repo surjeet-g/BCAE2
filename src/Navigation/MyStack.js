@@ -91,7 +91,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={"AddLocation"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
