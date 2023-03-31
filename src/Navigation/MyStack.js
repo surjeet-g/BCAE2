@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
@@ -34,12 +34,7 @@ import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
-
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { useTheme } from "react-native-paper";
+import { useTheme, Modal } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
@@ -75,6 +70,7 @@ const STACK_NOTIFICATION = "Notification";
 const Stack = createStackNavigator();
 
 function MyStack() {
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const { colors, fonts } = useTheme();
   const options = {
     headerTintColor: colors.inverseSecondary,
@@ -90,22 +86,6 @@ function MyStack() {
       ...{ color: colors.inverseSecondary, fontWeight: "700" },
     },
   };
-
-  // ref
-  const bottomSheetModalRef = useRef(BottomSheetModal);
-  // variables
-  const snapPoints = useMemo(() => ["60%"], []);
-  // callbacks
-  const openAnnoncementModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const closeAnnoncementModal = useCallback(() => {
-    bottomSheetModalRef.current?.dismiss();
-  }, []);
-
-  const handleSheetChanges = useCallback((index) => {
-    console.log("$$$-handleSheetChanges", index);
-  }, []);
 
   return (
     <NavigationContainer>
@@ -135,12 +115,7 @@ function MyStack() {
                   <TermIcon {...ICON_STYLE} />
                 </Pressable>
                 <View style={navBar.divider} />
-                <Pressable
-                  onPress={
-                    // () => navigation.navigate("Announcements")
-                    openAnnoncementModal
-                  }
-                >
+                <Pressable onPress={() => setShowAnnouncementModal(true)}>
                   <AnnouIcon {...ICON_STYLE} />
                 </Pressable>
               </View>
@@ -150,7 +125,6 @@ function MyStack() {
       >
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
               headerTitle: "Profile",
               headerStyle: {
@@ -517,63 +491,61 @@ function MyStack() {
           component={InquiryNotification}
         /> */}
       </Stack.Navigator>
-      <BottomSheetModalProvider>
-        <View>
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
+      <Modal
+        visible={showAnnouncementModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <View style={styles.modalContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: 10,
+            }}
           >
-            <View style={styles.contentContainer}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginVertical: 10,
-                }}
-              >
-                <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
-                <Text
-                  style={{
-                    fontWeight: 600,
-                    color: "#22374E",
-                    fontSize: 20,
-                    flex: 1,
-                    marginHorizontal: 15,
-                  }}
-                >
-                  Annoucements
-                </Text>
-                <TouchableOpacity onPress={closeAnnoncementModal}>
-                  <Image
-                    style={{ ...ICON_STYLE }}
-                    source={require("../Assets/icons/close_black.png")}
-                  />
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={mockAnnouncementList}
-                renderItem={({ item }) => (
-                  <AnnouncementItem
-                    title={item.title}
-                    desc={item.desc}
-                    date={item.date}
-                  />
-                )}
-                keyExtractor={(item) => item.id}
+            <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
+            <Text
+              style={{
+                fontWeight: 600,
+                color: "#22374E",
+                fontSize: 20,
+                flex: 1,
+                marginHorizontal: 15,
+              }}
+            >
+              Annoucements
+            </Text>
+            <TouchableOpacity onPress={() => setShowAnnouncementModal(false)}>
+              <Image
+                style={{ ...ICON_STYLE }}
+                source={require("../Assets/icons/close_black.png")}
               />
-            </View>
-          </BottomSheetModal>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={mockAnnouncementList}
+            renderItem={({ item }) => (
+              <AnnouncementItem
+                title={item.title}
+                desc={item.desc}
+                date={item.date}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
         </View>
-      </BottomSheetModalProvider>
+      </Modal>
     </NavigationContainer>
   );
 }
 const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
+  modalContainer: {
     padding: 10,
+    height: "70%",
+    backgroundColor: "white",
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
   },
 });
 

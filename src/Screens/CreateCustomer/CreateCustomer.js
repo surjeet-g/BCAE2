@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
@@ -32,9 +32,9 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme } from "react-native-paper";
 
-const CreateCustomer = (props) => {
+const CreateCustomer = () => {
   const { colors } = useTheme();
-  const { navigation } = props;
+
   const [currentStep, setCurrentStep] = useState(1);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
@@ -42,33 +42,6 @@ const CreateCustomer = (props) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
-
-  useLayoutEffect(() => {
-    let title = "";
-    switch (currentStep) {
-      case 1:
-        title = "Create Customer";
-        break;
-      case 2:
-        title = "Account";
-        break;
-      case 3:
-        title = "Services";
-        break;
-      case 3.5:
-        title = "Services";
-        break;
-      case 4:
-        title = "Agreement";
-        break;
-      default:
-        title = "Create Customer";
-    }
-
-    navigation.setOptions({
-      headerTitle: title,
-    });
-  }, [currentStep]);
 
   const renderStepOneUI = () => {
     return (
@@ -326,7 +299,7 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
         />
-        {/* <CustomTitleText title={"Select Service Type"} />
+        <CustomTitleText title={"Select Service Type"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={3}
@@ -335,7 +308,7 @@ const CreateCustomer = (props) => {
             <ServiceType name={`Service Type ${index + 1}`} />
           )}
           keyExtractor={(item, index) => index}
-        /> */}
+        />
         <CustomTitleText title={"Accessories"} />
         <FlatList
           data={[{}, {}, {}, {}, {}]}
@@ -361,7 +334,6 @@ const CreateCustomer = (props) => {
         <CustomTitleText title={"Selected Product"} />
         <SwipeListView
           showsVerticalScrollIndicator={false}
-          disableRightSwipe={true}
           data={[{}, {}, {}, {}, {}]}
           renderItem={({ item, index }) => (
             <SelectedProduct
@@ -375,8 +347,7 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
           renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-100}
-          stopRightSwipe={-100}
+          rightOpenValue={-75}
           onRowDidOpen={onRowDidOpen}
         />
         <CustomTitleText title={"Bill Details"} />
@@ -457,8 +428,8 @@ const CreateCustomer = (props) => {
         style={[styles.backRightBtn]}
         onPress={() => {
           alert("Index: ", data.index);
+          console.log("$$$-rowMap", rowMap);
           console.log("$$$-data", data);
-          console.log("$$$-data", JSON.stringify(data));
         }}
       >
         <Icon name="delete" size={19} color={"#D13D3D"} />
@@ -698,7 +669,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    width: 100,
+    width: 75,
     height: 80,
     backgroundColor: "#FEE5E4",
     right: 0,

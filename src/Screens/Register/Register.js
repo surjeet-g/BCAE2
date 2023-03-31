@@ -7,9 +7,7 @@ import { ToggleButton } from "../../Components/ToggleButton";
 import {
   ImageBackground,
   Platform,
-  StyleSheet,
-  Text,
-  View,
+  StyleSheet, View
 } from "react-native";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 
@@ -18,7 +16,7 @@ import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
 
@@ -47,7 +45,7 @@ const Register = ({ navigation, props }) => {
   ]);
 
   const preRequiredDataFetch = () => {
-    dispatch(fetchRegisterFormData());
+
 
     dispatch(setOtpFormData({}, "Register"));
     dispatch(setOtpFormData({}, "mobile"));
