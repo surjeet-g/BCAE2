@@ -90,7 +90,7 @@ const CreateCustomer = (props) => {
   const renderCustomerDetailsUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Customer Details"} />
+        <CustomTitleText title={"Customer Information"} />
         <View
           style={{
             padding: 10,
@@ -101,8 +101,14 @@ const CreateCustomer = (props) => {
         >
           <CustomInput
             value={""}
-            caption={strings.customer_name}
-            placeHolder={strings.customer_name}
+            caption={strings.firstname}
+            placeHolder={strings.firstname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.lastname}
+            placeHolder={strings.lastname}
             onChangeText={(text) => text}
           />
           <CustomInput
@@ -116,6 +122,15 @@ const CreateCustomer = (props) => {
             caption={strings.gender}
             placeHolder={strings.gender}
             onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.id_type}
+            placeHolder={"Select " + strings.id_type}
           />
           <CustomInput
             value={""}
@@ -145,7 +160,7 @@ const CreateCustomer = (props) => {
               onChangeText={(text) => text}
             />
           )}
-          <CustomDropDownFullWidth
+          {/* <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
@@ -193,7 +208,7 @@ const CreateCustomer = (props) => {
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => text}
-          />
+          /> */}
         </View>
       </View>
     );
@@ -215,18 +230,6 @@ const CreateCustomer = (props) => {
             value={""}
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.surname}
-            placeHolder={strings.surname}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.forename}
-            placeHolder={strings.forename}
             onChangeText={(text) => text}
           />
           <CustomInput
@@ -476,7 +479,7 @@ const CreateCustomer = (props) => {
 
   const handleSave = () => {
     if (currentStep < 4) {
-      if (currentStep === 2 || currentStep === 2.5)
+      if (currentStep === 2 || currentStep === 2.5 || currentStep === 0.5)
         setCurrentStep(currentStep + 0.5);
       else setCurrentStep(currentStep + 1);
     }
