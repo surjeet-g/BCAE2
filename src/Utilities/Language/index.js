@@ -257,6 +257,9 @@ export let strings = new LocalizedStrings({
     completed_appointments: "Completed Appointments",
     cancelled_appointments: "Cancelled Appointments",
     appointment_list: "Appointment List",
+    calendar: "Calendar",
+    booked_slots: "Booked Slots",
+    available_slots: "Available Slots",
   },
   en: {
     customer_name: "Customer Name",
@@ -514,6 +517,9 @@ export let strings = new LocalizedStrings({
     completed_appointments: "Completed Appointments",
     cancelled_appointments: "Cancelled Appointments",
     appointment_list: "Appointment List",
+    calendar: "Calendar",
+    booked_slots: "Booked Slots",
+    available_slots: "Available Slots",
   },
   ml: {
     customer_name: "Nama Pelanggan",
@@ -773,6 +779,9 @@ export let strings = new LocalizedStrings({
     completed_appointments: "Completed Appointments",
     cancelled_appointments: "Cancelled Appointments",
     appointment_list: "Appointment List",
+    calendar: "Calendar",
+    booked_slots: "Booked Slots",
+    available_slots: "Available Slots",
   },
   hi: {
     get_started: "चलो शुरू करो",

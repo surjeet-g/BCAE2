@@ -37,7 +37,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 import { useTheme, Modal } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
 import ViewOrder from "../Screens/Appointments/ViewOrder";
-import Appointment from "../Screens/Appointments/Appointment";
+import { Appointment } from "../Screens/Appointments/Appointment";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
