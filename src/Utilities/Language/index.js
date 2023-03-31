@@ -255,6 +255,8 @@ export let strings = new LocalizedStrings({
     save_continue: "Continue",
     proceed_to_preview: "Preview",
     download_pdf: "Download as PDF",
+    registereredDate: "Registered Date",
+    registereredNo: "Registered Number",
   },
   en: {
     customer_name: "Customer Name",
