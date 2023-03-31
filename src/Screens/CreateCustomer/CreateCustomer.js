@@ -42,6 +42,9 @@ const CreateCustomer = (props) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
+  const [showAccountCreationModal, setShowAccountCreationModal] =
+    useState(false);
+  const [createAccount, setCreateAccount] = useState(true);
   const [customerType, setCustomerType] = useState("");
   const [isSameAddress, setIsSameAddress] = useState(true);
   const [number, setNumber] = useState("");
@@ -80,6 +83,7 @@ const CreateCustomer = (props) => {
   //   });
   // }, [currentStep]);
 
+  // Step = 0
   const renderUploadDocsUI = () => {
     return (
       <View>
@@ -89,6 +93,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
       <View>
@@ -216,6 +221,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 2
   const renderCustomerAddressFormUI = () => {
     return (
       <View>
@@ -349,6 +355,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 3
   const renderServicesUI = () => {
     return (
       <View>
@@ -391,6 +398,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 4
   const renderSelectedServicesUI = () => {
     return (
       <View>
@@ -449,6 +457,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 5
   const renderServiceAddressUI = () => {
     return (
       <View>
@@ -546,6 +555,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 6
   const renderCreateAccountUI = () => {
     return (
       <View>
@@ -556,16 +566,105 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 7
   const renderAccountAddressUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Add Account address"} />
-
-        <Text>address form to be added</Text>
+        {/* Account address checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+            justifyContent: "center",
+          }}
+        >
+          <Checkbox
+            status={isSameAddress ? "checked" : "unchecked"}
+            onPress={() => {
+              setIsSameAddress(!isSameAddress);
+            }}
+          />
+          <CustomTitleText
+            title={"Account address same as customer address"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
+        <CustomTitleText title={"Account Address"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={"Flat/House/Unit No/ Block"}
+            placeHolder={"Flat/House/Unit No/ Block"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Building Name/Others"}
+            placeHolder={"Building Name/Others"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Street/Area"}
+            placeHolder={"Street/Area"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"State/Region"}
+            placeHolder={"Select " + "State/Region"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+        </View>
       </View>
     );
   };
 
+  // Step = 8
   const renderAgreementUI = () => {
     return (
       <View>
@@ -575,6 +674,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // Step = 9
   const renderPreviewUI = () => {
     return (
       <View>
@@ -584,19 +684,35 @@ const CreateCustomer = (props) => {
   };
 
   const handlePrevious = () => {
-    if (needQuoteOnly && currentStep === 9) {
+    if (currentStep === 9 && needQuoteOnly) {
       setCurrentStep(4);
+    } else if (currentStep === 8 && !createAccount) {
+      setCurrentStep(5);
     } else setCurrentStep(currentStep - 1);
   };
 
   const handleSave = () => {
-    if (needQuoteOnly) {
+    if (currentStep === 5) {
+      setShowAccountCreationModal(true);
+    } else if (currentStep === 4 && needQuoteOnly) {
       setCurrentStep(9);
     } else setCurrentStep(currentStep + 1);
   };
 
   const handleSubmit = () => {
     alert("Submit with create customer API");
+  };
+
+  const handleAccountCreationNo = () => {
+    setShowAccountCreationModal(false);
+    setCreateAccount(false);
+    setCurrentStep(8);
+  };
+
+  const handleAccountCreationYes = () => {
+    setShowAccountCreationModal(false);
+    setCreateAccount(true);
+    setCurrentStep(currentStep + 1);
   };
 
   const handleNumberChange = (textStr) => {
@@ -743,6 +859,51 @@ const CreateCustomer = (props) => {
                 setCurrentStep(currentStep + 1);
               }}
             />
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Account Creation Modal */}
+      <Modal
+        visible={showAccountCreationModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showAccountCreationModal}
+          setOpen={setShowAccountCreationModal}
+          title={"Do you want to create an account?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleAccountCreationYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleAccountCreationNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
           </View>
         </FooterModel>
       </Modal>
