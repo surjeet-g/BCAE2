@@ -251,6 +251,10 @@ export let strings = new LocalizedStrings({
     country_code: "Country Code",
     surname: "Surname",
     forename: "Forename",
+    skip_proceed: "Skip & Proceed",
+    save_continue: "Continue",
+    proceed_to_preview: "Preview",
+    download_pdf: "Download as PDF",
   },
   en: {
     customer_name: "Customer Name",
@@ -502,6 +506,10 @@ export let strings = new LocalizedStrings({
     country_code: "Country Code",
     surname: "Surname",
     forename: "Forename",
+    skip_proceed: "Skip & Proceed",
+    save_continue: "Save & Continue",
+    proceed_to_preview: "Proceed to Preview",
+    download_pdf: "Download as PDF",
   },
   ml: {
     customer_name: "Nama Pelanggan",
@@ -755,6 +763,10 @@ export let strings = new LocalizedStrings({
     country_code: "Country Code",
     surname: "Surname",
     forename: "Forename",
+    skip_proceed: "Skip & Proceed",
+    save_continue: "Save & Continue",
+    proceed_to_preview: "Proceed to Preview",
+    download_pdf: "Download as PDF",
   },
   hi: {
     get_started: "चलो शुरू करो",

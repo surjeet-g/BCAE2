@@ -74,7 +74,7 @@ const CreateCustomer = (props) => {
     });
   }, [currentStep]);
 
-  const renderStepOneUI = () => {
+  const renderUploadDocsUI = () => {
     return (
       <View>
         <CustomTitleText title={"Upload your documents"} />
@@ -492,11 +492,61 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const renderBottomButtonsUI = () => {
+    if (currentStep === 0) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.skip_proceed} onPress={handleSave} />
+          </View>
+        </View>
+      );
+    }
+    if (currentStep === 3) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.previous} onPress={handlePrevious} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              label={strings.proceed_to_preview}
+              onPress={handleSave}
+            />
+          </View>
+        </View>
+      );
+    }
+    if (currentStep === 4) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.previous} onPress={handlePrevious} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.submit} onPress={handleSubmit} />
+          </View>
+        </View>
+      );
+    }
+    // For currentStep = 1 & 2 & 2.5
+    return (
+      <View style={styles.bottomButtonView}>
+        <View style={{ flex: 1 }}>
+          <CustomButton label={strings.previous} onPress={handlePrevious} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <CustomButton label={strings.save_continue} onPress={handleSave} />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
-        {currentStep == 0 && renderStepOneUI()}
+        {currentStep == 0 && renderUploadDocsUI()}
         {currentStep == 1 && renderStepTwoUI()}
         {currentStep == 2 && renderStepThreeUI()}
         {currentStep == 2.5 && renderStepThreeUIBillDetails()}
@@ -504,17 +554,7 @@ const CreateCustomer = (props) => {
         {currentStep == 4 && renderStepFiveUI()}
       </ScrollView>
       {/* Bottom Button View */}
-      <View style={styles.bottomButtonView}>
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.previous} onPress={handlePrevious} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomButton
-            label={currentStep === 4 ? strings.submit : strings.save}
-            onPress={currentStep === 4 ? handleSubmit : handleSave}
-          />
-        </View>
-      </View>
+      {renderBottomButtonsUI()}
     </View>
   );
 };
