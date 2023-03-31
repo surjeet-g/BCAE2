@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
+import StepIndicator from "react-native-step-indicator";
 import React, { useState, useLayoutEffect } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
@@ -35,7 +36,7 @@ import { useTheme } from "react-native-paper";
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
@@ -46,20 +47,23 @@ const CreateCustomer = (props) => {
   useLayoutEffect(() => {
     let title = "";
     switch (currentStep) {
-      case 1:
+      case 0:
         title = "Create Customer";
         break;
-      case 2:
+      case 1:
         title = "Account";
         break;
-      case 3:
+      case 2:
         title = "Services";
         break;
-      case 3.5:
+      case 2.5:
         title = "Services";
+        break;
+      case 3:
+        title = "Agreement";
         break;
       case 4:
-        title = "Agreement";
+        title = "Preview";
         break;
       default:
         title = "Create Customer";
@@ -422,9 +426,17 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const renderStepFiveUI = () => {
+    return (
+      <View>
+        <Text>Show Preview here</Text>
+      </View>
+    );
+  };
+
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      if (currentStep === 4 || currentStep === 3.5)
+    if (currentStep > 0) {
+      if (currentStep === 3 || currentStep === 2.5)
         setCurrentStep(currentStep - 0.5);
       else setCurrentStep(currentStep - 1);
     }
@@ -432,7 +444,7 @@ const CreateCustomer = (props) => {
 
   const handleSave = () => {
     if (currentStep < 4) {
-      if (currentStep === 3 || currentStep === 3.5)
+      if (currentStep === 2 || currentStep === 2.5)
         setCurrentStep(currentStep + 0.5);
       else setCurrentStep(currentStep + 1);
     }
@@ -467,140 +479,29 @@ const CreateCustomer = (props) => {
     </View>
   );
 
-  const renderStepsView = () => {
+  const renderStepsIndicatorView = () => {
     return (
       <View style={styles.stepsView}>
-        <View style={styles.stepsSubView}>
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 1
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              1
-            </Text>
-          </View>
-          {currentStep <= 1 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
-            />
-          )}
-          {currentStep > 1 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 2
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              2
-            </Text>
-          </View>
-
-          {currentStep <= 2 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
-            />
-          )}
-          {currentStep > 2 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 3
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              3
-            </Text>
-          </View>
-
-          {currentStep < 3.5 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
-            />
-          )}
-          {currentStep === 3.5 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_half_selected.png")}
-            />
-          )}
-          {currentStep >= 4 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep === 4
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              4
-            </Text>
-          </View>
-        </View>
-        <View style={styles.stepsSubView}>
-          <Text
-            style={currentStep === 1 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Customer
-          </Text>
-          <Text
-            style={currentStep === 2 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Account
-          </Text>
-          <Text
-            style={
-              currentStep === 3 || currentStep === 3.5
-                ? styles.stepsTxtCurrent
-                : styles.stepsTxt
-            }
-          >
-            Services
-          </Text>
-          <Text
-            style={currentStep === 4 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Agreement
-          </Text>
-        </View>
+        <StepIndicator
+          customStyles={styles.firstIndicatorStyles}
+          currentPosition={currentStep}
+          stepCount={5}
+          labels={["Customer", "Account", "Services", "Agreement", "Preview"]}
+        />
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      {renderStepsView()}
+      {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
-        {currentStep == 1 && renderStepOneUI()}
-        {currentStep == 2 && renderStepTwoUI()}
-        {currentStep == 3 && renderStepThreeUI()}
-        {currentStep == 3.5 && renderStepThreeUIBillDetails()}
-        {currentStep == 4 && renderStepFourUI()}
+        {currentStep == 0 && renderStepOneUI()}
+        {currentStep == 1 && renderStepTwoUI()}
+        {currentStep == 2 && renderStepThreeUI()}
+        {currentStep == 2.5 && renderStepThreeUIBillDetails()}
+        {currentStep == 3 && renderStepFourUI()}
+        {currentStep == 4 && renderStepFiveUI()}
       </ScrollView>
       {/* Bottom Button View */}
       <View style={styles.bottomButtonView}>
@@ -628,59 +529,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#4C5A81",
     paddingVertical: 10,
   },
-  stepsSubView: {
-    flexDirection: "row",
-    marginVertical: 5,
-    alignItems: "center",
-  },
-  stepsTxt: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: 400,
-    fontSize: 14,
-    color: "#8FA1C4",
-  },
-  stepsTxtCurrent: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: 700,
-    fontSize: 14,
-    color: "#fff",
-  },
-  stepsCountView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  stepsCountTxt: {
-    padding: 4,
-    textAlign: "center",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    backgroundColor: "#8FA1C4",
-    fontWeight: 400,
-    fontSize: 14,
-    color: "#fff",
-  },
-  stepsCountTxtCurrent: {
-    padding: 4,
-    textAlign: "center",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    backgroundColor: "#fff",
-    fontWeight: 700,
-    fontSize: 14,
-    color: "#4C5A81",
-  },
-
   bottomButtonView: {
     flexDirection: "row",
     bottom: 0,
@@ -705,6 +553,30 @@ const styles = StyleSheet.create({
     margin: 15,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
+  },
+  firstIndicatorStyles: {
+    stepIndicatorSize: 30,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 3,
+    currentStepStrokeWidth: 5,
+    stepStrokeCurrentColor: "#4C5A81",
+    separatorFinishedColor: "#fff",
+    separatorUnFinishedColor: "#8FA1C4",
+
+    stepIndicatorFinishedColor: "#fff",
+    stepIndicatorUnFinishedColor: "#8FA1C4",
+    stepIndicatorCurrentColor: "#ffffff",
+
+    stepIndicatorLabelFontSize: 14,
+    currentStepIndicatorLabelFontSize: 18,
+
+    stepIndicatorLabelCurrentColor: "#000000",
+    stepIndicatorLabelFinishedColor: "#4C5A81",
+    stepIndicatorLabelUnFinishedColor: "#fff",
+
+    labelColor: "#8FA1C4",
+    labelSize: 14,
+    currentStepLabelColor: "#fff",
   },
 });
 
