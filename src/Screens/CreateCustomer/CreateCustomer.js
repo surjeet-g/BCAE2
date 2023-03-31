@@ -118,6 +118,18 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
+          <CustomInput
+            value={""}
+            caption={strings.registereredNo}
+            placeHolder={strings.registereredNo}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.registereredDate}
+            placeHolder={strings.registereredDate}
+            onChangeText={(text) => text}
+          />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
