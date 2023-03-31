@@ -172,7 +172,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderStepTwoUI = () => {
+  const renderCustomerFormUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -317,7 +317,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderStepThreeUI = () => {
+  const renderServicesUI = () => {
     return (
       <View>
         <CustomTitleText title={"Select Category"} />
@@ -359,7 +359,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderStepThreeUIBillDetails = () => {
+  const renderSelectedServicesUI = () => {
     return (
       <View>
         <CustomTitleText title={"Selected Product"} />
@@ -417,7 +417,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderStepFourUI = () => {
+  const renderAgreementUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Agreement"} />
@@ -426,7 +426,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const renderStepFiveUI = () => {
+  const renderPreviewUI = () => {
     return (
       <View>
         <Text>Show Preview here</Text>
@@ -547,11 +547,11 @@ const CreateCustomer = (props) => {
       {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
-        {currentStep == 1 && renderStepTwoUI()}
-        {currentStep == 2 && renderStepThreeUI()}
-        {currentStep == 2.5 && renderStepThreeUIBillDetails()}
-        {currentStep == 3 && renderStepFourUI()}
-        {currentStep == 4 && renderStepFiveUI()}
+        {currentStep == 1 && renderCustomerFormUI()}
+        {currentStep == 2 && renderServicesUI()}
+        {currentStep == 2.5 && renderSelectedServicesUI()}
+        {currentStep == 3 && renderAgreementUI()}
+        {currentStep == 4 && renderPreviewUI()}
       </ScrollView>
       {/* Bottom Button View */}
       {renderBottomButtonsUI()}
