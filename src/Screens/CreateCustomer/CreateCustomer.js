@@ -473,8 +473,75 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Service Address"} />
-
-        <Text>Copy Address form here</Text>
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={"Flat/House/Unit No/ Block"}
+            placeHolder={"Flat/House/Unit No/ Block"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Building Name/Others"}
+            placeHolder={"Building Name/Others"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Street/Area"}
+            placeHolder={"Street/Area"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"State/Region"}
+            placeHolder={"Select " + "State/Region"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+        </View>
       </View>
     );
   };
@@ -517,7 +584,7 @@ const CreateCustomer = (props) => {
   };
 
   const handlePrevious = () => {
-    if (needQuoteOnly) {
+    if (needQuoteOnly && currentStep === 9) {
       setCurrentStep(4);
     } else setCurrentStep(currentStep - 1);
   };
