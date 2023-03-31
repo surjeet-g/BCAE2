@@ -31,13 +31,17 @@ import {
 } from "./../../Utilities/utils";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme } from "react-native-paper";
+import { useTheme, Modal } from "react-native-paper";
+import { FooterModel } from "./../../Components/FooterModel";
+import CustomerType from "./CustomerType";
 
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
   const [currentStep, setCurrentStep] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
+  const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
+  const [customerType, setCustomerType] = useState("");
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -79,6 +83,13 @@ const CreateCustomer = (props) => {
       <View>
         <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
+      </View>
+    );
+  };
+
+  const renderCustomerDetailsUI = () => {
+    return (
+      <View>
         <CustomTitleText title={"Customer Details"} />
         <View
           style={{
@@ -118,18 +129,22 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
-          <CustomInput
-            value={""}
-            caption={strings.registereredNo}
-            placeHolder={strings.registereredNo}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.registereredDate}
-            placeHolder={strings.registereredDate}
-            onChangeText={(text) => text}
-          />
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredNo}
+              placeHolder={strings.registereredNo}
+              onChangeText={(text) => text}
+            />
+          )}
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredDate}
+              placeHolder={strings.registereredDate}
+              onChangeText={(text) => text}
+            />
+          )}
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
@@ -448,7 +463,12 @@ const CreateCustomer = (props) => {
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      if (currentStep === 3 || currentStep === 2.5)
+      if (
+        currentStep === 3 ||
+        currentStep === 2.5 ||
+        currentStep === 1 ||
+        currentStep === 0.5
+      )
         setCurrentStep(currentStep - 0.5);
       else setCurrentStep(currentStep - 1);
     }
@@ -509,7 +529,10 @@ const CreateCustomer = (props) => {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
-            <CustomButton label={strings.skip_proceed} onPress={handleSave} />
+            <CustomButton
+              label={strings.skip_proceed}
+              onPress={() => setShowCustomerTypeModal(true)}
+            />
           </View>
         </View>
       );
@@ -559,6 +582,7 @@ const CreateCustomer = (props) => {
       {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
+        {currentStep == 0.5 && renderCustomerDetailsUI()}
         {currentStep == 1 && renderCustomerFormUI()}
         {currentStep == 2 && renderServicesUI()}
         {currentStep == 2.5 && renderSelectedServicesUI()}
@@ -567,11 +591,54 @@ const CreateCustomer = (props) => {
       </ScrollView>
       {/* Bottom Button View */}
       {renderBottomButtonsUI()}
+      {/* Choose customer type modal */}
+      <Modal
+        visible={showCustomerTypeModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showCustomerTypeModal}
+          setOpen={setShowCustomerTypeModal}
+          title={"Choose purpose of customer creation"}
+        >
+          <View style={styles.modalContainer}>
+            <CustomerType
+              name={`Business`}
+              onPress={() => {
+                setCustomerType("Business");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 0.5);
+              }}
+            />
+            <CustomerType
+              name={`Government`}
+              onPress={() => {
+                setCustomerType("Government");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 0.5);
+              }}
+            />
+            <CustomerType
+              name={`Regular`}
+              onPress={() => {
+                setCustomerType("Regular");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 0.5);
+              }}
+            />
+          </View>
+        </FooterModel>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F0F0F0",
