@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   },
   rowBack: {
     alignItems: "center",
-    backgroundColor: "#DDD",
+    backgroundColor: "#F0F0F0",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
