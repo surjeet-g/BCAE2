@@ -29,7 +29,7 @@ function CustomCalendar(props) {
   const initDate = new Date().toString();
   const [selected, setSelected] = useState(initDate);
   const [showIndex, setShowIndex] = useState(0);
-
+  const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
   // const marked = useMemo(
   //   () => ({
   //     [selected]: {
@@ -40,7 +40,6 @@ function CustomCalendar(props) {
   //   }),
   //   [selected]
   // );
-  const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
 
   return (
     <Calendar

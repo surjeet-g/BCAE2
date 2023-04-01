@@ -16,6 +16,7 @@ import {
   Switch,
   TouchableOpacity,
   View,
+  Modal,
 } from "react-native";
 import { Button, Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -27,6 +28,7 @@ import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
+import Timetable from "react-native-calendar-timetable";
 
 const TAB_INTERACTIVE = true;
 const TAB_INFORMATIVE = false;
@@ -34,6 +36,12 @@ const TAB_INFORMATIVE = false;
 export const Appointment = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_INTERACTIVE);
+  const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false);
+
+  const changeCalendarModalVisibility = () => {
+    setIsCalendarModalVisible(true);
+  };
+  const hideCalendarModal = () => setIsCalendarModalVisible(false);
   const SLOTS = [
     {
       id: "1",
@@ -174,6 +182,147 @@ export const Appointment = ({ navigation }) => {
   ];
   let datesBlacklist = []; // 1 day disabled
 
+  const AppointItems = ({ style, item, dayIndex, daysTotal }) => {
+    return (
+      <View
+        style={{
+          ...style, // apply calculated styles, be careful not to override these accidentally (unless you know what you are doing)
+          backgroundColor: item.isAudio ? "#95B9C7" : "#BF97D4",
+          borderRadius: 10,
+          elevation: 5,
+          padding: 5,
+        }}
+      >
+        <View style={{ flexDirection: "column" }}>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                flex: 0.7,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ color: item.isAudio ? "#0C6B90" : "#652087" }}>
+                {item.title}
+              </Text>
+            </View>
+            <View style={{ flex: 0.3 }}>
+              {item.isAudio && (
+                <Image source={require("../../Assets/icons/audio_join.png")} />
+              )}
+              {!item.isAudio && (
+                <Image source={require("../../Assets/icons/video_join.png")} />
+              )}
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <View
+              style={{
+                flex: 0.7,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: item.isAudio ? "#0C6B90" : "#652087",
+                  fontSize: 10,
+                }}
+              >
+                {moment(item.startDate).format("hh-mm A")} -
+                {moment(item.endDate).format("hh-mm A")}
+              </Text>
+            </View>
+            <View style={{ flex: 0.3 }}>
+              <View style={{ flexDirection: "row" }}>
+                <Image
+                  style={{ marginRight: 10 }}
+                  source={require("../../Assets/icons/appointment_mask.png")}
+                />
+
+                <Image
+                  source={require("../../Assets/icons/appointment_edit.png")}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+  let i = 0;
+  const HourComponent = ({ props }) => {
+    i = i + 1;
+    return (
+      <View
+        style={{
+          flex: 1,
+          // apply calculated styles, be careful not to override these accidentally (unless you know what you are doing)
+          backgroundColor: "white",
+          borderRadius: 10,
+          elevation: 5,
+          padding: 5,
+        }}
+      >
+        {/* {alert(moment(new Date()).format("YYYY-MM-DD hh-mm-ss"))} */}
+        {i == 1 && <Text style={{ fontSize: 8 }}>12:00 AM </Text>}
+        {i == 2 && <Text style={{ fontSize: 8 }}>1:00 AM</Text>}
+        {i == 3 && <Text style={{ fontSize: 8 }}>2:00 AM</Text>}
+        {i == 4 && <Text style={{ fontSize: 8 }}>3:00 AM</Text>}
+        {i == 5 && <Text style={{ fontSize: 8 }}>4:00 AM</Text>}
+        {i == 6 && <Text style={{ fontSize: 8 }}>5:00 AM</Text>}
+        {i == 7 && <Text style={{ fontSize: 8 }}>6:00 AM</Text>}
+        {i == 8 && <Text style={{ fontSize: 8 }}>7:00 AM</Text>}
+        {i == 9 && <Text style={{ fontSize: 8 }}>8:00 AM</Text>}
+        {i == 10 && <Text style={{ fontSize: 8 }}>9:00 AM</Text>}
+        {i == 11 && <Text style={{ fontSize: 8 }}>10:00 AM</Text>}
+        {i == 12 && <Text style={{ fontSize: 8 }}>11:00 AM</Text>}
+        {i == 13 && <Text style={{ fontSize: 8 }}>12:00 PM</Text>}
+        {i == 14 && <Text style={{ fontSize: 8 }}>1:00 PM</Text>}
+        {i == 15 && <Text style={{ fontSize: 8 }}>2:00 PM</Text>}
+        {i == 16 && <Text style={{ fontSize: 8 }}>3:00 PM</Text>}
+        {i == 17 && <Text style={{ fontSize: 8 }}>4:00 PM</Text>}
+        {i == 18 && <Text style={{ fontSize: 8 }}>5:00 PM</Text>}
+        {i == 19 && <Text style={{ fontSize: 8 }}>6:00 PM</Text>}
+        {i == 20 && <Text style={{ fontSize: 8 }}>7:00 PM</Text>}
+        {i == 21 && <Text style={{ fontSize: 8 }}>8:00 PM</Text>}
+        {i == 22 && <Text style={{ fontSize: 8 }}>9:00 PM</Text>}
+        {i == 23 && <Text style={{ fontSize: 8 }}>10:00 PM</Text>}
+        {i == 24 && <Text style={{ fontSize: 8 }}>11:00 PM</Text>}
+        {i == 25 && <Text style={{ fontSize: 8 }}>12:00 PM</Text>}
+      </View>
+    );
+  };
+  const [date] = React.useState(new Date());
+  const [from] = React.useState(moment().subtract(1, "hours").toDate());
+  const [till] = React.useState(moment().add(1, "hours").toDate());
+  const range = { from, till };
+  const [items] = React.useState([
+    {
+      title: "Payment not working",
+      isAudio: true,
+      startDate: moment("2023-04-01 0:45:00"),
+      endDate: moment("2023-04-01 1:45:00"),
+    },
+    {
+      title: "New connection",
+      isAudio: false,
+      startDate: moment("2023-04-01 2:00:00"),
+      endDate: moment("2023-04-01 2:45:00"),
+    },
+    {
+      title: "Billing Problems",
+      isAudio: true,
+      startDate: moment("2023-04-01 3:45:00"),
+      endDate: moment("2023-04-01 4:45:00"),
+    },
+    {
+      title: "Postpaid connection address change",
+      isAudio: false,
+      startDate: moment("2023-04-01 12:45:00"),
+      endDate: moment("2023-04-01 15:45:00"),
+    },
+  ]);
   return (
     <View style={styles.container}>
       <ScrollView
@@ -253,7 +402,13 @@ export const Appointment = ({ navigation }) => {
           >
             {strings.calendar}
           </Text>
-          <Icon name="calendar" size={25} color={"#000"} />
+          <Pressable
+            onPress={() => {
+              changeCalendarModalVisibility();
+            }}
+          >
+            <Icon name="calendar" size={25} color={"#000"} />
+          </Pressable>
         </View>
         <View
           style={{
@@ -342,7 +497,6 @@ export const Appointment = ({ navigation }) => {
                   key={slot.id}
                   style={{
                     flexDirection: "row",
-
                     backgroundColor: slot.isAvailable ? "#CBFFD1" : "#FFC8C8",
                     borderRadius: 20,
                     padding: 5,
@@ -354,8 +508,48 @@ export const Appointment = ({ navigation }) => {
               );
             })}
           </View>
+          <View style={{ alignItems: "center" }}>
+            <Timetable
+              // these two are required
+              items={items}
+              renderItem={(props) => <AppointItems {...props} />}
+              // provide only one of these
+              date={date}
+              range={range}
+              fromHour={0}
+              toHour={24}
+              width={"300"}
+              timeWidth={50}
+              renderHour={(props) => <HourComponent {...props} />}
+            />
+          </View>
         </View>
       </ScrollView>
+      <Modal
+        animationType="fade"
+        visible={isCalendarModalVisible}
+        mode="overFullScreen"
+        onBackdropPress={() => {
+          hideCalendarModal();
+        }}
+        transparent={true}
+      >
+        <View style={styles.ProfileContainer}>
+          <View
+            style={{
+              backgroundColor: "white",
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              justifyContent: "center",
+              padding: 10,
+            }}
+          >
+            <Pressable onPress={hideCalendarModal} style={styles.clearView}>
+              <Image source={require("../../Assets/icons/close_black.png")} />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -369,5 +563,17 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     padding: 10,
+  },
+  ProfileContainer: {
+    width: "90%",
+    backgroundColor: "white",
+    alignSelf: "center",
+    borderRadius: 10,
+    elevation: 3,
+    shadowRadius: 1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
+    paddingBottom: 20,
+    marginBottom: 0,
   },
 });
