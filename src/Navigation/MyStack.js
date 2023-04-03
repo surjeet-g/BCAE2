@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   FlatList,
   Image,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
