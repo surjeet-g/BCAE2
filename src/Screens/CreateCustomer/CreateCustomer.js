@@ -44,6 +44,8 @@ const CreateCustomer = (props) => {
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
     useState(false);
+  const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
+    useState(false);
   const [createAccount, setCreateAccount] = useState(true);
   const [customerType, setCustomerType] = useState("");
   const [isSameAddress, setIsSameAddress] = useState(true);
@@ -559,9 +561,70 @@ const CreateCustomer = (props) => {
   const renderCreateAccountUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Create Account"} />
-
-        <Text>Create account here form to be added</Text>
+        <CustomTitleText title={"Account Creation"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_category}
+            placeHolder={"Select " + strings.account_category}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_level}
+            placeHolder={"Select " + strings.account_level}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.bill_lang}
+            placeHolder={"Select " + strings.bill_lang}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_type}
+            placeHolder={"Select " + strings.account_type}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.notification_pref}
+            placeHolder={"Select " + strings.notification_pref}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.currency}
+            placeHolder={"Select " + strings.currency}
+          />
+        </View>
       </View>
     );
   };
@@ -712,6 +775,17 @@ const CreateCustomer = (props) => {
   const handleAccountCreationYes = () => {
     setShowAccountCreationModal(false);
     setCreateAccount(true);
+    setShowSameAccountDetailsModal(true);
+  };
+
+  const handleSameAccountDetailsNo = () => {
+    // setShowAccountCreationModal(false);
+    // setCreateAccount(false);
+    // setCurrentStep(8);
+  };
+
+  const handleSameAccountDetailsYes = () => {
+    setShowSameAccountDetailsModal(false);
     setCurrentStep(currentStep + 1);
   };
 
@@ -890,6 +964,51 @@ const CreateCustomer = (props) => {
               </Text>
             </Pressable>
             <Pressable onPress={handleAccountCreationNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Use customer details same as Account details Modal */}
+      <Modal
+        visible={showSameAccountDetailsModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showSameAccountDetailsModal}
+          setOpen={setShowSameAccountDetailsModal}
+          title={"Do you want to use account details same as customer details?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleSameAccountDetailsYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleSameAccountDetailsNo}>
               <Text
                 style={{
                   paddingVertical: 10,
