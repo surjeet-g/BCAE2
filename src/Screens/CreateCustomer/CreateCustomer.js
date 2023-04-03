@@ -792,7 +792,7 @@ const CreateCustomer = (props) => {
   const handlePrevious = () => {
     if (currentStep === 10 && needQuoteOnly) {
       setCurrentStep(4);
-    } else if (currentStep === 8 && !createAccount) {
+    } else if (currentStep === 9 && !createAccount) {
       setCurrentStep(5);
     } else setCurrentStep(currentStep - 1);
   };
@@ -812,7 +812,7 @@ const CreateCustomer = (props) => {
   const handleAccountCreationNo = () => {
     setShowAccountCreationModal(false);
     setCreateAccount(false);
-    setCurrentStep(8);
+    setCurrentStep(9);
   };
 
   const handleAccountCreationYes = () => {
