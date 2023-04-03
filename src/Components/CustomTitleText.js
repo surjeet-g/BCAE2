@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const CustomTitleText = ({ title }) => {
+const CustomTitleText = ({ title, textStyle }) => {
   return (
     <Text
       style={{
@@ -10,6 +10,7 @@ const CustomTitleText = ({ title }) => {
         fontSize: 18,
         fontWeight: 600,
         color: "#000",
+        ...textStyle,
       }}
     >
       {title}
