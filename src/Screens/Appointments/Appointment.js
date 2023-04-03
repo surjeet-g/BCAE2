@@ -753,14 +753,16 @@ export const Appointment = ({ navigation }) => {
                   elevation: 5,
                 }}
               >
+
                 <CalendarStrip
+
                   calendarAnimation={{ type: "sequence", duration: 30 }}
                   daySelectionAnimation={{
                     type: "background",
                     duration: 300,
                     highlightColor: "#EFA848",
                   }}
-                  style={{ height: 100, paddingTop: 10, paddingBottom: 10 }}
+                  style={{ height: 100, paddingTop: 10, paddingBottom: 10, backgroundColor: "red" }}
                   calendarHeaderStyle={{ color: "black" }}
                   calendarColor={"#ffffff"}
                   monthNameStyle={{ color: "black" }}
