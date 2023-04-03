@@ -49,6 +49,10 @@ const CreateCustomer = (props) => {
   const [createAccount, setCreateAccount] = useState(true);
   const [customerType, setCustomerType] = useState("");
   const [isSameAddress, setIsSameAddress] = useState(true);
+  const [
+    useSameDetailsForAccountCreation,
+    setUseSameDetailsForAccountCreation,
+  ] = useState(true);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -558,7 +562,46 @@ const CreateCustomer = (props) => {
   };
 
   // Step = 6
-  const renderCreateAccountUI = () => {
+  const renderCreateAccount_DetailsUI = () => {
+    return (
+      <View>
+        {/* Customer details checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+            justifyContent: "center",
+          }}
+        >
+          <Checkbox
+            status={useSameDetailsForAccountCreation ? "checked" : "unchecked"}
+            onPress={() => {
+              setUseSameDetailsForAccountCreation(
+                !useSameDetailsForAccountCreation
+              );
+            }}
+          />
+          <CustomTitleText
+            title={"Use same customer details"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
+        <CustomTitleText title={"Account Creation"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        ></View>
+      </View>
+    );
+  };
+
+  // Step = 7
+  const renderCreateAccount_PreferencesUI = () => {
     return (
       <View>
         <CustomTitleText title={"Account Creation"} />
@@ -629,8 +672,8 @@ const CreateCustomer = (props) => {
     );
   };
 
-  // Step = 7
-  const renderAccountAddressUI = () => {
+  // Step = 8
+  const renderCreateAccount_AddressUI = () => {
     return (
       <View>
         {/* Account address checkbox */}
@@ -727,7 +770,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  // Step = 8
+  // Step = 9
   const renderAgreementUI = () => {
     return (
       <View>
@@ -737,7 +780,7 @@ const CreateCustomer = (props) => {
     );
   };
 
-  // Step = 9
+  // Step = 10
   const renderPreviewUI = () => {
     return (
       <View>
@@ -747,7 +790,7 @@ const CreateCustomer = (props) => {
   };
 
   const handlePrevious = () => {
-    if (currentStep === 9 && needQuoteOnly) {
+    if (currentStep === 10 && needQuoteOnly) {
       setCurrentStep(4);
     } else if (currentStep === 8 && !createAccount) {
       setCurrentStep(5);
@@ -758,7 +801,7 @@ const CreateCustomer = (props) => {
     if (currentStep === 5) {
       setShowAccountCreationModal(true);
     } else if (currentStep === 4 && needQuoteOnly) {
-      setCurrentStep(9);
+      setCurrentStep(10);
     } else setCurrentStep(currentStep + 1);
   };
 
@@ -779,8 +822,7 @@ const CreateCustomer = (props) => {
   };
 
   const handleSameAccountDetailsNo = () => {
-    // setShowAccountCreationModal(false);
-    // setCreateAccount(false);
+    setShowSameAccountDetailsModal(false);
     // setCurrentStep(8);
   };
 
@@ -840,7 +882,7 @@ const CreateCustomer = (props) => {
         </View>
       );
     }
-    if (currentStep === 8) {
+    if (currentStep === 9) {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
@@ -855,7 +897,7 @@ const CreateCustomer = (props) => {
         </View>
       );
     }
-    if (currentStep === 9) {
+    if (currentStep === 10) {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
@@ -867,7 +909,7 @@ const CreateCustomer = (props) => {
         </View>
       );
     }
-    // For currentStep = 1 & 2 & 2.5
+    // For all other currentStep
     return (
       <View style={styles.bottomButtonView}>
         <View style={{ flex: 1 }}>
@@ -890,10 +932,11 @@ const CreateCustomer = (props) => {
         {currentStep == 3 && renderServicesUI()}
         {currentStep == 4 && renderSelectedServicesUI()}
         {currentStep == 5 && renderServiceAddressUI()}
-        {currentStep == 6 && renderCreateAccountUI()}
-        {currentStep == 7 && renderAccountAddressUI()}
-        {currentStep == 8 && renderAgreementUI()}
-        {currentStep == 9 && renderPreviewUI()}
+        {currentStep == 6 && renderCreateAccount_DetailsUI()}
+        {currentStep == 7 && renderCreateAccount_PreferencesUI()}
+        {currentStep == 8 && renderCreateAccount_AddressUI()}
+        {currentStep == 9 && renderAgreementUI()}
+        {currentStep == 10 && renderPreviewUI()}
       </ScrollView>
       {/* Bottom Button View */}
       {renderBottomButtonsUI()}
