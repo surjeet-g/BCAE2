@@ -36,6 +36,7 @@ import { Playground } from "../Screens/Playground";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 import { useTheme, Modal } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
+import { Appointment } from "../Screens/Appointments/Appointment";
 import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
@@ -125,6 +126,7 @@ function MyStack() {
       >
         <Stack.Screen
           options={({ navigation }) => ({
+            ...options,
             ...{
               headerTitle: "Profile",
               headerStyle: {
@@ -149,6 +151,33 @@ function MyStack() {
           name="Profile"
           component={ViewProfile}
         />
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...options,
+            ...{
+              headerTitle: "Appointment",
+              headerStyle: {
+                backgroundColor: "#4C5A81",
+              },
+              headerRight: () => {
+                return (
+                  <View>
+                    <Pressable>
+                      <Image
+                        style={{ width: 80, height: 80 }}
+                        source={require("../Assets/icons/ic_edit.png")}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              },
+            },
+          })}
+          name="Appointment"
+          component={Appointment}
+        />
+
         <Stack.Screen
           options={({ navigation }) => ({
             ...options,
