@@ -43,6 +43,12 @@ export const handleMultipleContact = (addr) => {
   return addresObjToString(primaryAddress[0]);
 };
 
+export const subString = (str, length = 10) => {
+  if (str == "") return ""
+  let resul = ""
+  if (str.length < length) return str;
+  return str.substring(0, length) + "..."
+}
 export const handleUserStatus = (status) => {
   if (status == "") return ""
   let result = ""
