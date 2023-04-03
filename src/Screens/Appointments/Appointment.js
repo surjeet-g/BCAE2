@@ -378,6 +378,278 @@ export const Appointment = ({ navigation }) => {
     },
   ]);
   return (
+    <>
+      {isCalendarModalVisible &&
+        <View style={{
+          position: "absolute",
+          zIndex: 99999,
+          // justifyContent: "center",
+          width: width,
+          height: height,
+          left: -5,
+
+          alignItems: "center"
+        }}>
+
+
+          <Calendar
+            style={{
+              paddingBottom: 12,
+              borderRadius: 10,
+              width: width * 0.9,
+              height: height * 0.6
+            }}
+            theme={{
+              "stylesheet.calendar.header": {
+                dayTextAtIndex0: {
+                  color: "white",
+                  backgroundColor: "red",
+                },
+                dayTextAtIndex6: {
+                  color: "white",
+                  backgroundColor: "red",
+                },
+                dayTextAtIndex1: {
+                  color: "black",
+                  backgroundColor: "#F5AD47",
+                },
+                dayTextAtIndex2: {
+                  color: "black",
+                  backgroundColor: "#F5AD47",
+                },
+                dayTextAtIndex3: {
+                  color: "black",
+                  backgroundColor: "#F5AD47",
+                },
+                dayTextAtIndex4: {
+                  color: "black",
+                  backgroundColor: "#F5AD47",
+                },
+                dayTextAtIndex5: {
+                  color: "black",
+                  backgroundColor: "#F5AD47",
+                },
+              },
+              "stylesheet.calendar.main": {
+                dayContainer: {
+                  borderColor: "#ffffff",
+                  borderWidth: 2,
+                  backgroundColor: "#E1E4EB",
+                  flex: 1,
+                },
+                emptyDayContainer: {
+                  borderColor: "#D1D3D4",
+                  borderWidth: 1,
+                  flex: 1,
+                  padding: 5,
+                },
+                week: {
+                  marginTop: 0,
+                  marginBottom: 0,
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                },
+              },
+            }}
+            current={new Date().toString()}
+            dayComponent={({ date, state }) => {
+              return (
+                <View
+                  style={{
+                    // flex: 1,
+                    height: height * .1,
+                    paddingTop: 5,
+                    backgroundColor:
+                      marked.indexOf(
+                        "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                      ) > -1 &&
+                        moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                          "YYYY-MM-DD"
+                        ) < moment(new Date()).format("YYYY-MM-DD")
+                        ? "green"
+                        : marked.indexOf(
+                          "" +
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
+                        ) > -1 &&
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD") >
+                          moment(new Date()).format("YYYY-MM-DD")
+                          ? "#F5AD47"
+                          : "#E1E4EB",
+                  }}
+                >
+                  <Text
+                    style={
+                      ([
+                        styles.customDay,
+                        state === "disabled"
+                          ? styles.disabledText
+                          : styles.defaultText,
+                      ],
+                      {
+                        color:
+                          marked.indexOf(
+                            "" +
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1
+                            ? "white"
+                            : "black",
+                        textAlign:
+                          marked.indexOf(
+                            "" +
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1
+                            ? "right"
+                            : "center",
+                        fontSize:
+                          marked.indexOf(
+                            "" +
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1
+                            ? 5
+                            : 10,
+                        paddingRight:
+                          marked.indexOf(
+                            "" +
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1
+                            ? 5
+                            : 0,
+                      })
+                    }
+                  >
+                    {date?.day}
+                    {/* {console.log(
+                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                  "YYYY-MM-DD"
+                )
+              )} */}
+
+                    {/* {
+                console.log(
+                  marked.indexOf(
+                    "" +
+                    moment(
+                      date?.year + "-" + date?.month + "-" + date?.day
+                    ).format("YYYY-MM-DD")
+                  ) > -1
+                )
+                // console.log(item.name);
+                // console.log(date?.year + "-" + date?.month + "-" + date?.day);
+              } */}
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 5,
+                      paddingBottom: 5,
+                      color:
+                        marked.indexOf(
+                          "" +
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
+                        ) > -1 &&
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD") <
+                          moment(new Date()).format("YYYY-MM-DD")
+                          ? "white"
+                          : marked.indexOf(
+                            "" +
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1 &&
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD") >
+                            moment(new Date()).format("YYYY-MM-DD")
+                            ? "black"
+                            : "black",
+                    }}
+                  >
+                    {marked.indexOf(
+                      "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                    ) > -1 &&
+                      moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                        "YYYY-MM-DD"
+                      ) < moment(new Date()).format("YYYY-MM-DD")
+                      ? strings.completed_appointment
+                      : marked.indexOf(
+                        "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                      ) > -1 &&
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD") >
+                        moment(new Date()).format("YYYY-MM-DD")
+                        ? strings.upcoming_appointment
+                        : ""}
+                  </Text>
+                </View>
+              );
+            }}
+            // markedDates={marked}
+            markingType={"custom"}
+            onDayPress={(day) => {
+              setSelected(day.dateString);
+              // props.onDaySelect && props.onDaySelect(day);
+            }}
+          />
+          <View style={{
+            ...commonStyle.row_space_arround,
+            marginTop: height * 0.13,
+            backgroundColor: "white",
+            width: width * .88,
+            zIndex: 9
+          }}>
+            <CustomButton label="Close"
+              onPress={() => {
+                setIsCalendarModalVisible(false)
+              }}
+            />
+            <CustomButton label="Save"
+              onPress={() => { alert("save") }}
+            />
+          </View>
+
+          <Pressable
+            onPress={() => {
+              setIsCalendarModalVisible(false)
+            }}
+            style={{
+              left: -4,
+              position: "absolute",
+              width: width, height: height,
+              backgroundColor: "gray",
+              opacity: .7,
+              zIndex: -1
+            }} />
+
+
+        </View>
+
+      }
       <View style={styles.container}>
 
         <ScrollView
@@ -624,7 +896,8 @@ export const Appointment = ({ navigation }) => {
 
         </View>
       </Modal> */}
-    </View>
+      </View>
+    </>
   );
 };
 
