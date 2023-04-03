@@ -48,11 +48,7 @@ const CreateCustomer = (props) => {
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
   const [customerType, setCustomerType] = useState("");
-  const [isSameAddress, setIsSameAddress] = useState(true);
-  const [
-    useSameDetailsForAccountCreation,
-    setUseSameDetailsForAccountCreation,
-  ] = useState(true);
+  const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -477,9 +473,9 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAddress ? "checked" : "unchecked"}
+            status={isSameAddressChecked ? "checked" : "unchecked"}
             onPress={() => {
-              setIsSameAddress(!isSameAddress);
+              setIsSameAddressChecked(!isSameAddressChecked);
             }}
           />
           <CustomTitleText
@@ -575,11 +571,9 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={useSameDetailsForAccountCreation ? "checked" : "unchecked"}
+            status={isSameAddressChecked ? "checked" : "unchecked"}
             onPress={() => {
-              setUseSameDetailsForAccountCreation(
-                !useSameDetailsForAccountCreation
-              );
+              setIsSameAddressChecked(!isSameAddressChecked);
             }}
           />
           <CustomTitleText
@@ -686,9 +680,9 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAddress ? "checked" : "unchecked"}
+            status={isSameAddressChecked ? "checked" : "unchecked"}
             onPress={() => {
-              setIsSameAddress(!isSameAddress);
+              setIsSameAddressChecked(!isSameAddressChecked);
             }}
           />
           <CustomTitleText
@@ -825,7 +819,7 @@ const CreateCustomer = (props) => {
 
   const handleSameAccountDetailsNo = () => {
     setShowSameAccountDetailsModal(false);
-    // setCurrentStep(8);
+    setCurrentStep(currentStep + 1);
   };
 
   const handleSameAccountDetailsYes = () => {
