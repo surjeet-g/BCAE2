@@ -470,7 +470,6 @@ const CreateCustomer = (props) => {
             flexDirection: "row",
             alignItems: "center",
             marginVertical: 10,
-            justifyContent: "center",
           }}
         >
           <Checkbox
@@ -568,7 +567,6 @@ const CreateCustomer = (props) => {
             flexDirection: "row",
             alignItems: "center",
             marginVertical: 10,
-            justifyContent: "center",
           }}
         >
           <Checkbox
@@ -590,7 +588,101 @@ const CreateCustomer = (props) => {
             backgroundColor: "#fff",
             margin: 10,
           }}
-        ></View>
+        >
+          <CustomInput
+            value={""}
+            caption={strings.firstname}
+            placeHolder={strings.firstname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.lastname}
+            placeHolder={strings.lastname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.dob}
+            placeHolder={strings.dob}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.gender}
+            placeHolder={strings.gender}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.id_type}
+            placeHolder={"Select " + strings.id_type}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.place_of_issue}
+            placeHolder={strings.place_of_issue}
+            onChangeText={(text) => text}
+          />
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredNo}
+              placeHolder={strings.registereredNo}
+              onChangeText={(text) => text}
+            />
+          )}
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredDate}
+              placeHolder={strings.registereredDate}
+              onChangeText={(text) => text}
+            />
+          )}
+
+          <CountryPicker
+            show={countryPickModel}
+            excludedCountries={excludedCountriesList()}
+            pickerButtonOnPress={(item) => {
+              setCountryCode(item.dial_code);
+              setCountryPickModel(false);
+              setNumberMaxLength(getPhoneNumberLength(item.code));
+            }}
+            onBackdropPress={() => setCountryPickModel(false)}
+            style={{
+              modal: {
+                height: "65%",
+              },
+            }}
+          />
+          <CustomInputWithCC
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={countryCode}
+            caption={strings.mobile_no}
+            onChangeText={(text) => handleNumberChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            maxLength={numberMaxLength}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
+          />
+        </View>
       </View>
     );
   };
@@ -677,7 +769,6 @@ const CreateCustomer = (props) => {
             flexDirection: "row",
             alignItems: "center",
             marginVertical: 10,
-            justifyContent: "center",
           }}
         >
           <Checkbox
