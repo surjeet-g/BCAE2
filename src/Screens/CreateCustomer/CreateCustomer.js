@@ -794,6 +794,8 @@ const CreateCustomer = (props) => {
       setCurrentStep(4);
     } else if (currentStep === 9 && !createAccount) {
       setCurrentStep(5);
+    } else if (currentStep === 7) {
+      setCurrentStep(5);
     } else setCurrentStep(currentStep - 1);
   };
 
@@ -828,7 +830,7 @@ const CreateCustomer = (props) => {
 
   const handleSameAccountDetailsYes = () => {
     setShowSameAccountDetailsModal(false);
-    setCurrentStep(currentStep + 1);
+    setCurrentStep(7);
   };
 
   const handleNumberChange = (textStr) => {
