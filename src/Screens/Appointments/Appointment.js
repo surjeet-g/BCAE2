@@ -26,6 +26,7 @@ import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
 import { navBar } from "../../Utilities/Style/navBar";
+import { subString } from "../../Utilities/utils";
 
 
 const TAB_INTERACTIVE = true;
@@ -216,6 +217,10 @@ export const Appointment = ({ navigation }) => {
   let datesBlacklist = []; // 1 day disabled
 
   const AppointItems = ({ style, item, dayIndex, daysTotal }) => {
+    console.log('>>', item.endDate.diff(item.startDate, 'minutes'), item.startDate
+    )
+    const isSmallStrip = (item.endDate.diff(item.startDate, 'minutes')) < 45 ? true : false
+
     return (
       <View
         style={{
@@ -230,54 +235,69 @@ export const Appointment = ({ navigation }) => {
           <View style={{ flexDirection: "row" }}>
             <View
               style={{
-                flex: 0.7,
+                flex: isSmallStrip ? 0.5 : 0.7,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <Text style={{ color: item.isAudio ? "#0C6B90" : "#652087" }}>
-                {item.title}
+                {subString(item.title, isSmallStrip ? 10 : 90)}
               </Text>
             </View>
-            <View style={{ flex: 0.3 }}>
+            <View style={{ flex: 0.3, flexDirection: 'row' }}>
               {item.isAudio && (
                 <Image source={require("../../Assets/icons/audio_join.png")} />
               )}
               {!item.isAudio && (
                 <Image source={require("../../Assets/icons/video_join.png")} />
               )}
+              {isSmallStrip &&
+                <>
+                  <Image style={{ marginHorizontal: 3 }}
+                    source={require("../../Assets/icons/appointment_edit.png")}
+                  />
+                  <Image
+                    style={{ marginRight: 10 }}
+                    source={require("../../Assets/icons/appointment_mask.png")}
+                  />
+                </>}
+
             </View>
           </View>
           <View style={{ flexDirection: "row", marginTop: 5 }}>
-            <View
-              style={{
-                flex: 0.7,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
+            {!isSmallStrip &&
+              <View
                 style={{
-                  color: item.isAudio ? "#0C6B90" : "#652087",
-                  fontSize: 10,
+                  flex: 0.7,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                {moment(item.startDate).format("hh-mm A")} -
-                {moment(item.endDate).format("hh-mm A")}
-              </Text>
-            </View>
-            <View style={{ flex: 0.3 }}>
-              <View style={{ flexDirection: "row" }}>
-                <Image
-                  style={{ marginRight: 10 }}
-                  source={require("../../Assets/icons/appointment_mask.png")}
-                />
-
-                <Image
-                  source={require("../../Assets/icons/appointment_edit.png")}
-                />
+                <Text
+                  style={{
+                    color: item.isAudio ? "#0C6B90" : "#652087",
+                    fontSize: 10,
+                  }}
+                >
+                  {moment(item.startDate).format("hh-mm A")} -
+                  {moment(item.endDate).format("hh-mm A")}
+                </Text>
               </View>
-            </View>
+            }
+            {!isSmallStrip &&
+              <View style={{ flex: 0.3 }}>
+                <View style={{ flexDirection: "row" }}>
+                  <Image
+                    style={{ marginRight: 10 }}
+                    source={require("../../Assets/icons/appointment_mask.png")}
+                  />
+
+                  <Image
+                    source={require("../../Assets/icons/appointment_edit.png")}
+                  />
+                </View>
+              </View>
+            }
           </View>
         </View>
       </View>
