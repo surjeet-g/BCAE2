@@ -49,6 +49,7 @@ const CreateCustomer = (props) => {
   const [createAccount, setCreateAccount] = useState(true);
   const [customerType, setCustomerType] = useState("");
   const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
+  const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -788,7 +789,7 @@ const CreateCustomer = (props) => {
       setCurrentStep(4);
     } else if (currentStep === 9 && !createAccount) {
       setCurrentStep(5);
-    } else if (currentStep === 7) {
+    } else if (currentStep === 7 && useSameCustomerDetails) {
       setCurrentStep(5);
     } else setCurrentStep(currentStep - 1);
   };
@@ -819,11 +820,13 @@ const CreateCustomer = (props) => {
 
   const handleSameAccountDetailsNo = () => {
     setShowSameAccountDetailsModal(false);
+    setUseSameCustomerDetails(false);
     setCurrentStep(currentStep + 1);
   };
 
   const handleSameAccountDetailsYes = () => {
     setShowSameAccountDetailsModal(false);
+    setUseSameCustomerDetails(true);
     setCurrentStep(7);
   };
 
