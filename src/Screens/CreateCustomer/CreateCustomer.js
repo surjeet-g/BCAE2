@@ -57,6 +57,25 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
+  // Used for step 3 & 4 to display list of available & selected products
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: `Product 1`,
+      type: "NA",
+      price: 200,
+      quantity: 0,
+    },
+    {
+      id: 2,
+      name: `Product 2`,
+      type: "NA",
+      price: 300,
+      quantity: 0,
+    },
+  ]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
     let title = "";
@@ -114,6 +133,8 @@ const CreateCustomer = (props) => {
         break;
     }
   }, [currentStep]);
+
+  console.log("$$$-selectedProducts: ", selectedProducts);
 
   // Step = 0
   const renderUploadDocsUI = () => {
@@ -413,15 +434,12 @@ const CreateCustomer = (props) => {
         /> */}
         <CustomTitleText title={"Accessories"} />
         <FlatList
-          data={[{}, {}, {}, {}, {}]}
+          data={products}
           renderItem={({ item, index }) => (
             <Product
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: (index + 1) * 200,
-                quantity: Math.floor(Math.random() * index),
-              }}
+              item={item}
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
             />
           )}
           keyExtractor={(item, index) => index}
@@ -434,37 +452,6 @@ const CreateCustomer = (props) => {
   const renderSelectedServicesUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Selected Product"} />
-        <SwipeListView
-          showsVerticalScrollIndicator={false}
-          disableRightSwipe={true}
-          data={[{}, {}, {}, {}, {}]}
-          renderItem={({ item, index }) => (
-            <SelectedProduct
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: 100,
-                quantity: 2,
-              }}
-            />
-          )}
-          keyExtractor={(item, index) => index}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-100}
-          stopRightSwipe={-100}
-          onRowDidOpen={onRowDidOpen}
-        />
-        <CustomTitleText title={"Bill Details"} />
-        <BillDetails
-          details={{
-            gTotal: 1250.0,
-            total: 1250.0,
-            gst: 50.0,
-            discount: 100.0,
-          }}
-        />
-
         <View
           style={{
             flexDirection: "row",
@@ -485,6 +472,27 @@ const CreateCustomer = (props) => {
             value={needQuoteOnly}
           />
         </View>
+        <CustomTitleText title={"Selected Product"} />
+        <SwipeListView
+          showsVerticalScrollIndicator={false}
+          disableRightSwipe={true}
+          data={selectedProducts}
+          renderItem={({ item, index }) => <SelectedProduct item={item} />}
+          keyExtractor={(item, index) => index}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-100}
+          stopRightSwipe={-100}
+          onRowDidOpen={onRowDidOpen}
+        />
+        <CustomTitleText title={"Bill Details"} />
+        <BillDetails
+          details={{
+            gTotal: calculateGTotal(),
+            total: calculateGTotal() + 50 - 100,
+            gst: 50.0,
+            discount: 100.0,
+          }}
+        />
       </View>
     );
   };
@@ -904,6 +912,14 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const calculateGTotal = () => {
+    let gTotal = 0;
+    selectedProducts.forEach((product) => {
+      gTotal = gTotal + product.quantity * product.price;
+    });
+    return gTotal;
+  };
+
   const handlePrevious = () => {
     if (currentStep === 10 && needQuoteOnly) {
       setCurrentStep(4);
@@ -915,7 +931,9 @@ const CreateCustomer = (props) => {
   };
 
   const handleContinue = () => {
-    if (currentStep === 5) {
+    if (currentStep === 3 && selectedProducts.length === 0) {
+      alert("Select atleast one service to continue!!!");
+    } else if (currentStep === 5) {
       setShowAccountCreationModal(true);
     } else if (currentStep === 4 && needQuoteOnly) {
       setCurrentStep(10);

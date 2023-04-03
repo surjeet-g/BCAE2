@@ -1,17 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./../../Components/DashedDivider";
 
 // Usage
-/* <Product item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
+/* <Product item={{ id: 21, name: "", type: "", price: 0 }} />; */
 
 const Product = (props) => {
-  const { item } = props;
+  const { item, selectedProducts, setSelectedProducts } = props;
+  const [quantity, setQuantity] = useState(0);
+
+  const handleQuantity = (step) => {
+    if (step === 1) setQuantity(quantity + step);
+    else if (step === -1) {
+      if (quantity > 0) setQuantity(quantity + step);
+    }
+
+    let selectedItem = selectedProducts.find(
+      (product) => product.id === item.id
+    );
+    if (selectedItem === undefined) {
+      selectedItem = item;
+      selectedItem.quantity = quantity + step;
+      setSelectedProducts([...selectedProducts, selectedItem]);
+    } else {
+      selectedItem.quantity = quantity + step;
+      setSelectedProducts([
+        ...selectedProducts.filter((product) => product.id !== item.id),
+        selectedItem,
+      ]);
+    }
+  };
+
   return (
-    <View
-      style={item.quantity > 0 ? styles.selectedContainer : styles.container}
-    >
+    <View style={quantity > 0 ? styles.selectedContainer : styles.container}>
       <Text style={styles.bestvalue} numberOfLines={1}>
         {"Best Value"}
       </Text>
@@ -39,14 +61,14 @@ const Product = (props) => {
         <View style={styles.quantityView}>
           <Pressable
             style={styles.quantityIcon}
-            onPress={() => alert("- Clicked")}
+            onPress={() => handleQuantity(-1)}
           >
             <Icon name={"minus"} size={20} color={"#4C5A81"} />
           </Pressable>
-          <Text style={styles.quantityTxt}>{item.quantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity}</Text>
           <Pressable
             style={styles.quantityIcon}
-            onPress={() => alert("+ Clicked")}
+            onPress={() => handleQuantity(1)}
           >
             <Icon name={"plus"} size={20} color={"#4C5A81"} />
           </Pressable>
