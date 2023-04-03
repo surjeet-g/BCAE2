@@ -61,6 +61,12 @@ const BottomBarNavigation = () => {
       return (
         <View style={navBar.navRightCon}>
           <Pressable
+            onPress={() => navigation.navigate("Appointment")}
+            style={{ ...navBar.roundIcon, marginRight: 10 }}
+          >
+            <Icon name="calendar" size={30} color={colors.primary} />
+          </Pressable>
+          <Pressable
             onPress={() => navigation.navigate("Notification")}
             style={navBar.roundIcon}
           >
