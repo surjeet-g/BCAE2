@@ -57,6 +57,7 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
+  // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
     let title = "";
     switch (stepIndicator) {
@@ -84,6 +85,7 @@ const CreateCustomer = (props) => {
     });
   }, [stepIndicator]);
 
+  // For handling the step indicator in header based on currentStep
   useEffect(() => {
     switch (currentStep) {
       case 0:
@@ -933,7 +935,7 @@ const CreateCustomer = (props) => {
   const handleAccountCreationYes = () => {
     setShowAccountCreationModal(false);
     setCreateAccount(true);
-    setShowSameAccountDetailsModal(true);
+    setTimeout(() => setShowSameAccountDetailsModal(true), 100);
   };
 
   const handleSameAccountDetailsNo = () => {
@@ -953,10 +955,12 @@ const CreateCustomer = (props) => {
     setNumberError("");
   };
 
+  // For selected product swipe
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
 
+  // Delete feature on swiping the selected product
   const renderHiddenItem = (data, rowMap) => (
     <View style={styles.rowBack}>
       <Pressable
@@ -986,6 +990,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  // render the buttons in the bottom based on the currentStep
   const renderBottomButtonsUI = () => {
     if (currentStep === 0) {
       return (
