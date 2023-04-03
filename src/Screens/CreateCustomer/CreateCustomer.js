@@ -912,7 +912,7 @@ const CreateCustomer = (props) => {
     } else setCurrentStep(currentStep - 1);
   };
 
-  const handleSave = () => {
+  const handleContinue = () => {
     if (currentStep === 5) {
       setShowAccountCreationModal(true);
     } else if (currentStep === 4 && needQuoteOnly) {
@@ -1008,7 +1008,7 @@ const CreateCustomer = (props) => {
           <View style={{ flex: 1 }}>
             <CustomButton
               label={strings.proceed_to_preview}
-              onPress={handleSave}
+              onPress={handleContinue}
             />
           </View>
         </View>
@@ -1033,7 +1033,10 @@ const CreateCustomer = (props) => {
           <CustomButton label={strings.previous} onPress={handlePrevious} />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomButton label={strings.save_continue} onPress={handleSave} />
+          <CustomButton
+            label={strings.save_continue}
+            onPress={handleContinue}
+          />
         </View>
       </View>
     );
