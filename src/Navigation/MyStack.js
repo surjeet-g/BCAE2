@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import {
   FlatList,
   Image,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -93,7 +94,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Playground"}
+        initialRouteName={"Appointment"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",

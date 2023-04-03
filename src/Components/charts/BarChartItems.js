@@ -26,7 +26,7 @@ export const BarChartItems = () => {
     const legend = get(data, 'legend', []);
 
     return (
-        <Card style={{ backgroundColor: "white", padding: 5 }}>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15 }}>
             <View style={commonStyle.row_start_center}>
                 {legend.length && legend.map((it, idx) => {
                     return (

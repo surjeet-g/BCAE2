@@ -40,7 +40,7 @@ export const PieCharts = () => {
             <PieChart
                 data={data}
 
-                width={width * .8}
+                width={width * .9}
                 height={220}
                 chartConfig={{
                     backgroundGradientFrom: "white",
