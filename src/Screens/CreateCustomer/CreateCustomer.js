@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "react-native";
 import StepIndicator from "react-native-step-indicator";
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
@@ -40,6 +40,7 @@ const CreateCustomer = (props) => {
   const { navigation } = props;
   const [formCustomerData, setFormCustomerData] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
+  const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -56,35 +57,61 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
-  // useLayoutEffect(() => {
-  //   let title = "";
-  //   switch (currentStep) {
-  //     case 0:
-  //       title = "Create Customer";
-  //       break;
-  //     case 1:
-  //       title = "Account";
-  //       break;
-  //     case 2:
-  //       title = "Services";
-  //       break;
-  //     case 2.5:
-  //       title = "Services";
-  //       break;
-  //     case 3:
-  //       title = "Agreement";
-  //       break;
-  //     case 4:
-  //       title = "Preview";
-  //       break;
-  //     default:
-  //       title = "Create Customer";
-  //   }
+  useLayoutEffect(() => {
+    let title = "";
+    switch (stepIndicator) {
+      case 0:
+        title = "Create Customer";
+        break;
+      case 1:
+        title = "Services";
+        break;
+      case 2:
+        title = "Create Account";
+        break;
+      case 3:
+        title = "Agreement";
+        break;
+      case 4:
+        title = "Preview";
+        break;
+      default:
+        title = "Create Customer";
+    }
 
-  //   navigation.setOptions({
-  //     headerTitle: title,
-  //   });
-  // }, [currentStep]);
+    navigation.setOptions({
+      headerTitle: title,
+    });
+  }, [stepIndicator]);
+
+  useEffect(() => {
+    switch (currentStep) {
+      case 0:
+      case 1:
+      case 2:
+        setStepIndicator(0);
+        break;
+      case 3:
+      case 4:
+      case 5:
+        setStepIndicator(1);
+        break;
+      case 6:
+      case 7:
+      case 8:
+        setStepIndicator(2);
+        break;
+      case 9:
+        setStepIndicator(3);
+        break;
+      case 10:
+        setStepIndicator(4);
+        break;
+      default:
+        setStepIndicator(0);
+        break;
+    }
+  }, [currentStep]);
 
   // Step = 0
   const renderUploadDocsUI = () => {
@@ -951,9 +978,9 @@ const CreateCustomer = (props) => {
       <View style={styles.stepsView}>
         <StepIndicator
           customStyles={styles.firstIndicatorStyles}
-          currentPosition={currentStep}
+          currentPosition={stepIndicator}
           stepCount={5}
-          labels={["Customer", "Address", "Services", "Agreement", "Preview"]}
+          labels={["Customer", "Services", "Account", "Agreement", "Preview"]}
         />
       </View>
     );
@@ -1014,7 +1041,7 @@ const CreateCustomer = (props) => {
 
   return (
     <View style={styles.container}>
-      {/* {renderStepsIndicatorView()} */}
+      {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
         {currentStep == 1 && renderCustomerDetailsUI()}
