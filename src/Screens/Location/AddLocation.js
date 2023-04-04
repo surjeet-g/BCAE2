@@ -165,9 +165,9 @@ const AddLocation = ({ route, navigation }) => {
           address: {
             isPrimary: false,
             addressType: addreType?.code,
-            address1: buildNameText,
+            address1: `${hno},${buildNameText}`,
             address2: `${distName},${stateName}`,
-            address3: `${country},${postcode}`,
+            address3: `${countyName},${postcode}`,
             addrZone: countyName,
             city: kampongName,
             district: distName,
@@ -251,7 +251,7 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
-        setCountry(res["0"]?.country);
+        // setCountry(res["0"]?.country);
 
         if (countryCode != "") {
           setDialPick(
@@ -469,7 +469,10 @@ const AddLocation = ({ route, navigation }) => {
 
   const onCountyClick = (text) => {
     setCountryName(text.code)
+    setStateName("")
+    setValueState("")
     setDistName("");
+    setValueDist("")
     setValueKampong("");
     setKampongName("");
     setValuePostcode("");

@@ -139,7 +139,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   // const [street, setStreet] = useState("kerala");
   // const [state, setStateProfile] = useState("kerala");
   // const [district, setDistrict] = useState("thrissur");
-  // const [postcode, setPostcode] = useState("123123");
+  // const [postcode, setPostcoonde] = useState("123123");
   // const [password, setPassword] = useState("Mock@123");
   // const [confirmPassword, setConfirmPassword] = useState("Mock@123");
   //  mockend
@@ -195,7 +195,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setLatitude(params.currentLatitude);
     setLongitude(params.currentLongitude);
     setLocation(
-      `${params.street},${params.state},${params.country},${params.postCode}`
+      `${params.hno},${params.buildingName},${params.street},${params.city},${params.district},${params.state},${params.country},${params.postCode}`
     );
     setBuildingNo(params.buildingName)
     setStreet(params.street);
@@ -227,7 +227,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     //   });
     //   return null;
     // }
-    if (emailOTPVerification) {
+    if (!emailOTPVerification) {
       Toast.show({
         type: "bctError",
         text1: strings.otpErrorMsgForEmail,
@@ -283,7 +283,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           addressType: addreType,
           buildingName: buildingNo,
           houseNo: hno,
-          address1: buildingNo,
+          address1: `${hno},${buildingNo}`,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
           city,

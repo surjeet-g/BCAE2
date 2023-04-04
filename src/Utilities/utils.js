@@ -25,14 +25,9 @@ export const excludedCountriesList = () => {
   return excludedCountriesList;
 };
 
-export const addresObjToString = (data) => {
-  let addressString = "";
+export const addresObjToString = (params) => {
 
-  if (data?.address1) addressString += data?.address1 + ", ";
-  if (data?.address2) addressString += data?.address2 + ", ";
-  if (data?.address3) addressString += data?.address3;
-
-  return addressString;
+  return `${params.address1},${params.city},${params.district},${params.state},${params.country},${params.postcode}`;
 };
 export const handleMultipleContact = (addr) => {
   if (addr.length == 0) return "";
@@ -53,19 +48,19 @@ export const handleUserStatus = (status) => {
   if (status == "") return ""
   let result = ""
   switch (status) {
-    case "AC":
+    case "CS_ACTIVE":
       result = "Active"
       break;
-    case "IN":
+    case "CS_INACTIVE":
       result = "Inactive"
       break;
-    case "SUS":
+    case "CS_SUSPEND":
       result = "Suspended"
       break;
 
     default:
-      return ""
-      break;
+      return status
+
 
   }
   return result
