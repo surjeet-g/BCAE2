@@ -42,7 +42,7 @@ const CreateCustomer = (props) => {
   const { navigation } = props;
   const dispatch = useDispatch([fetchServiceProducts]);
   const [formCustomerData, setFormCustomerData] = useState({});
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
