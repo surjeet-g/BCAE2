@@ -22,6 +22,7 @@ import {
   userRegister
 } from "../../../Redux/RegisterDispatcher";
 
+import get from 'lodash.get';
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
 import { ClearSpace } from "../../../Components/ClearSpace";
 import { CustomButton as Button } from "../../../Components/CustomButton";
@@ -30,7 +31,7 @@ import { StickyFooter } from "../../../Components/StickyFooter";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import {
   color,
-  fontSizes, isValidNumber, spacing, validatePassword
+  fontSizes, isValidNumber, spacing, validateEmail, validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -68,22 +69,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   //4 minute
   const OTP_TIMER = 90;
 
-  const onPlaceChosen = (params) => {
-    console.log("hitting back with ", params);
-    setLatitude(params.currentLatitude);
-    setLongitude(params.currentLongitude);
-    setLocation(
-      `${params.street},${params.state},${params.country},${params.postCode}`
-    );
-    setStreet(params.street);
-    setStateProfile(params.state);
-    setDistrict(params.district);
-    setCountry(params.country);
-    alert(params.country)
-    setPostcode(params.postCode);
-    // setDialPick(params.dialPick);
-    setAddrType(params.addressType);
-  };
+
 
   const formatOtpTimer = (otpTmr) => {
     let minute = 0;
@@ -195,11 +181,32 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [dobError, setDobError] = useState("");
   const [open, setOpen] = useState(false);
   const [addreType, setAddrType] = useState("");
+  const [hno, setHno] = useState("")
+  const [buildingNo, setBuildingNo] = useState("")
+  const [city, setCity] = useState("")
   const onCheckBoxClickTerm = () => {
     //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
 
     setTermError("");
+  };
+  const onPlaceChosen = (params) => {
+    console.log("hitting back with ", params);
+    setLatitude(params.currentLatitude);
+    setLongitude(params.currentLongitude);
+    setLocation(
+      `${params.street},${params.state},${params.country},${params.postCode}`
+    );
+    setBuildingNo(params.buildingName)
+    setStreet(params.street);
+    setStateProfile(params.state);
+    setDistrict(params.district);
+    setCountry(params.country);
+    setHno(params.hno)
+    setPostcode(params.postCode);
+    // setDialPick(params.dialPick);
+    setAddrType(params.addressType);
+    setCity(params.city)
   };
   const onFirstNameChange = (textStr) => {
     setFirstName(textStr);
@@ -220,7 +227,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     //   });
     //   return null;
     // }
-    if (!emailOTPVerification) {
+    if (emailOTPVerification) {
       Toast.show({
         type: "bctError",
         text1: strings.otpErrorMsgForEmail,
@@ -274,12 +281,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         idValue: idNumber,
         address: {
           addressType: addreType,
-          buildingName: "",
-          houseNo: street,
-          address1: street,
+          buildingName: buildingNo,
+          houseNo: hno,
+          address1: buildingNo,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
-          city: street,
+          city,
           town: street,
           state: state,
           district: district,
@@ -293,6 +300,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         isVerified: true,
       };
       console.log("submit validation success", registerObject);
+
       dispatch(
         userRegister(registerObject, "Register", (message) => {
           dispatch(setOtpFormData({}, "Register"));
@@ -311,6 +319,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       // });
     }
   };
+  let masterReducer = useSelector((state) => state.masterdata);
+  const genderList = get(masterReducer, "masterdataData.GENDER", []);
+  const addreList = get(masterReducer, "masterdataData.ADDRESS_TYPE", []);
+  const customerIdList = get(masterReducer, "masterdataData.CUSTOMER_ID_TYPE", []);
+
   const showAlert = (message = "") => {
     // if (
     //   !registerForm.initRegisterForm &&
@@ -580,10 +593,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
 
-  console.log(
-    "registerForm?.registerFormData?.GENDER",
-    registerForm?.registerFormData?.GENDER
-  );
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
@@ -669,7 +679,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               <CustomDropDown
                 selectedValue={selectedValueGender}
                 setValue={setValueGender}
-                data={registerForm?.registerFormData?.GENDER ?? []}
+                data={genderList}
                 onChangeText={(text) => onGenderClick(text)}
                 value={gender?.description}
                 placeHolder={strings.gender}
@@ -717,7 +727,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               <CustomDropDown
                 selectedValue={selectedValueIdType}
                 setValue={setValueIdType}
-                data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+                data={customerIdList}
                 onChangeText={(text) => onIdTypeClick(text)}
                 value={gender?.description}
                 placeHolder={strings.id_type}

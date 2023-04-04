@@ -13,10 +13,7 @@ const ServiceCategory = (props) => {
           borderColor: selected ? "#495470" : "#DADADA",
         }}
       >
-        <Image
-          style={styles.img}
-          source={require("../../Assets/icons/ic_word.png")}
-        />
+        <Image style={styles.img} source={icon} />
       </View>
       <Text
         style={{
@@ -34,7 +31,7 @@ const ServiceCategory = (props) => {
 export default ServiceCategory;
 
 const styles = StyleSheet.create({
-  container: { alignSelf: "center", margin: 10 },
+  container: { alignSelf: "center", margin: 10, flex: 1, alignItems: "center" },
   imgView: {
     borderWidth: 1,
     borderColor: "#DADADA",

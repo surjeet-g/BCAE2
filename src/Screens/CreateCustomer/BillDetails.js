@@ -25,12 +25,12 @@ const BillDetails = (props) => {
 
   return (
     <View style={styles.container}>
-      {Item("Grand Total", "$1250.00", "#686B6C")}
+      {Item("Grand Total", `$ ${gTotal}`, "#686B6C")}
       <DashedDivider />
-      {Item("GST", "$50.00", "#5677D2")}
+      {Item("GST", `$ ${gst}`, "#5677D2")}
       <DashedDivider />
-      {Item("Discount", "-$100.00", "#EFA848")}
-      {Item("Total", "$1250.00", "#000000", "#DADADA")}
+      {Item("Discount", `$ ${discount}`, "#EFA848")}
+      {Item("Total", `$ ${total}`, "#000000", "#DADADA")}
     </View>
   );
 };

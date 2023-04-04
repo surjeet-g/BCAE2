@@ -8,22 +8,39 @@ import {
 import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
-import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
+import { getCustomerUUID, getUserId, getUserType, USERTYPE } from "../Utilities/UserManagement/userInfo";
 
 export function fetchMyProfileData(navigation = null) {
   return async (dispatch) => {
     dispatch(initProfile());
-    const customerUUDI = await getCustomerUUID();
+    let profileResult;
+    const userType = await getUserType();
+    let typeOfUser = userType == USERTYPE.CUSTOMER ? USERTYPE.CUSTOMER : USERTYPE.USER
+    if (userType == USERTYPE.CUSTOMER) {
+      const customerUUDI = await getCustomerUUID();
 
-    let profileResult = await serverCall(
-      endPoints.PROFILE_DETAILS + customerUUDI,
-      requestMethod.GET,
-      {},
-      navigation
-    );
+      profileResult = await serverCall(
+        endPoints.PROFILE_DETAILS + customerUUDI,
+        requestMethod.GET,
+        {},
+        navigation
+      );
+    }
+    //bussines user
+    else {
+      const userId = await getUserId();
+      profileResult = await serverCall(
+        endPoints.USERS_SEARCH + userId,
+        requestMethod.GET,
+        {},
+        navigation
+      );
+    }
+
+
     console.log("hiting", profileResult);
     if (profileResult?.success) {
-      dispatch(setProfileData(profileResult?.data?.data));
+      dispatch(setProfileData({ ...profileResult?.data?.data, typeOfUser: typeOfUser }));
       return true;
     } else {
       dispatch(setProfileError([]));

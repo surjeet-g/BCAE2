@@ -54,16 +54,16 @@ const UploadDocument = () => {
             <Text style={{ color: "#fff", fontWeight: 600 }}>{"License"}</Text>
           </View>
         </View>
-        <Icon
-          name={"file-upload"}
-          size={150}
-          color={"white"}
-          style={{
-            alignSelf: "center",
-            justifyContent: "center",
-            marginTop: 20,
-          }}
-        />
+        <Pressable onPress={() => alert("Open file picker")}>
+          <Image
+            source={require("../../Assets/icons/ic_upload_doc.png")}
+            style={{
+              alignSelf: "center",
+              justifyContent: "center",
+              marginTop: 20,
+            }}
+          />
+        </Pressable>
         <View
           style={{
             justifyContent: "center",

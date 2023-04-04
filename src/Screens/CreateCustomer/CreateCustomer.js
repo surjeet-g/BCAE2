@@ -39,7 +39,7 @@ const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
   const [formCustomerData, setFormCustomerData] = useState({});
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(3);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -56,6 +56,24 @@ const CreateCustomer = (props) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
+
+  // Used for step 3 & 4 to display list of available & selected products
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: `Product 1`,
+      type: "NA",
+      price: 200,
+      quantity: 0,
+    },
+    {
+      id: 2,
+      name: `Product 2`,
+      type: "NA",
+      price: 300,
+      quantity: 0,
+    },
+  ]);
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
@@ -395,9 +413,25 @@ const CreateCustomer = (props) => {
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={4}
-          data={[{}, {}, {}, {}, {}]}
+          data={[
+            {
+              id: 1,
+              name: "Postpaid",
+              icon: require("../../Assets/icons/ic_postpaid.png"),
+            },
+            {
+              id: 2,
+              name: "Prepaid",
+              icon: require("../../Assets/icons/ic_prepaid.png"),
+            },
+            {
+              id: 3,
+              name: "Hybrid",
+              icon: require("../../Assets/icons/ic_word.png"),
+            },
+          ]}
           renderItem={({ item, index }) => (
-            <ServiceCategory name={`Category ${index + 1}`} />
+            <ServiceCategory name={item.name} icon={item.icon} />
           )}
           keyExtractor={(item, index) => index}
         />
@@ -411,17 +445,14 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
         /> */}
-        <CustomTitleText title={"Accessories"} />
+        <CustomTitleText title={"Available Products"} />
         <FlatList
-          data={[{}, {}, {}, {}, {}]}
+          data={products}
           renderItem={({ item, index }) => (
             <Product
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: (index + 1) * 200,
-                quantity: Math.floor(Math.random() * index),
-              }}
+              item={item}
+              products={products}
+              setProducts={setProducts}
             />
           )}
           keyExtractor={(item, index) => index}
@@ -434,37 +465,6 @@ const CreateCustomer = (props) => {
   const renderSelectedServicesUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Selected Product"} />
-        <SwipeListView
-          showsVerticalScrollIndicator={false}
-          disableRightSwipe={true}
-          data={[{}, {}, {}, {}, {}]}
-          renderItem={({ item, index }) => (
-            <SelectedProduct
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: 100,
-                quantity: 2,
-              }}
-            />
-          )}
-          keyExtractor={(item, index) => index}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-100}
-          stopRightSwipe={-100}
-          onRowDidOpen={onRowDidOpen}
-        />
-        <CustomTitleText title={"Bill Details"} />
-        <BillDetails
-          details={{
-            gTotal: 1250.0,
-            total: 1250.0,
-            gst: 50.0,
-            discount: 100.0,
-          }}
-        />
-
         <View
           style={{
             flexDirection: "row",
@@ -485,6 +485,27 @@ const CreateCustomer = (props) => {
             value={needQuoteOnly}
           />
         </View>
+        <CustomTitleText title={"Selected Product"} />
+        <SwipeListView
+          showsVerticalScrollIndicator={false}
+          disableRightSwipe={true}
+          data={products.filter((product) => product.quantity > 0)}
+          renderItem={({ item, index }) => <SelectedProduct item={item} />}
+          keyExtractor={(item, index) => index}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-100}
+          stopRightSwipe={-100}
+          onRowDidOpen={onRowDidOpen}
+        />
+        <CustomTitleText title={"Bill Details"} />
+        <BillDetails
+          details={{
+            gTotal: calculateGTotal(),
+            total: calculateGTotal() + 50 - 100,
+            gst: 50.0,
+            discount: 100.0,
+          }}
+        />
       </View>
     );
   };
@@ -904,6 +925,15 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const calculateGTotal = () => {
+    let gTotal = 0;
+    products.forEach((product) => {
+      if (product.quantity > 0)
+        gTotal = gTotal + product.quantity * product.price;
+    });
+    return gTotal;
+  };
+
   const handlePrevious = () => {
     if (currentStep === 10 && needQuoteOnly) {
       setCurrentStep(4);
@@ -915,7 +945,12 @@ const CreateCustomer = (props) => {
   };
 
   const handleContinue = () => {
-    if (currentStep === 5) {
+    if (currentStep === 3) {
+      let item = products.find((product) => product.quantity > 0);
+      if (item === undefined)
+        alert("Select atleast one service to continue!!!");
+      else setCurrentStep(currentStep + 1);
+    } else if (currentStep === 5) {
       setShowAccountCreationModal(true);
     } else if (currentStep === 4 && needQuoteOnly) {
       setCurrentStep(10);
@@ -1079,6 +1114,7 @@ const CreateCustomer = (props) => {
           <View style={styles.modalContainer}>
             <CustomerType
               name={`Business`}
+              icon={require("../../Assets/icons/ic_business.png")}
               onPress={() => {
                 setCustomerType("Business");
                 setShowCustomerTypeModal(false);
@@ -1087,6 +1123,7 @@ const CreateCustomer = (props) => {
             />
             <CustomerType
               name={`Government`}
+              icon={require("../../Assets/icons/ic_government.png")}
               onPress={() => {
                 setCustomerType("Government");
                 setShowCustomerTypeModal(false);
@@ -1095,6 +1132,7 @@ const CreateCustomer = (props) => {
             />
             <CustomerType
               name={`Regular`}
+              icon={require("../../Assets/icons/ic_regular.png")}
               onPress={() => {
                 setCustomerType("Regular");
                 setShowCustomerTypeModal(false);

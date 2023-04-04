@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import SavedLocationList from "../../Components/SavedLocationList";
 import {
   deleteSavedLocation,
   fetchSavedLocations,
-  setPrimaryAddress,
+  setPrimaryAddress
 } from "../../Redux/SavedLocationDispatcher";
 import { buttonSize, color, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
@@ -22,8 +22,8 @@ import get from "lodash.get";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
-import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { navBar } from "../../Utilities/Style/navBar";
 
 const SavedLocation = ({ route, navigation }) => {
@@ -34,33 +34,35 @@ const SavedLocation = ({ route, navigation }) => {
   //const { customerId } = route.params;
   // const { onPlaceChosen , fromPage  } = route.params;
   const { onPlaceChosen, fromPage } = {
-    onPlaceChosen: () => {},
+    onPlaceChosen: () => { },
     fromPage: true,
   };
   let profile = useSelector((state) => state.profile);
 
-  const dispatch2 = useDispatch([fetchMyProfileData, fetchRegisterFormData]);
+  const dispatch2 = useDispatch([fetchMyProfileData, getMasterData]);
 
   const dispatch = useDispatch([
     fetchSavedLocations,
     deleteSavedLocation,
     setPrimaryAddress,
   ]);
-
+  const { ADDRESS_TYPE } = MASTER_DATA_CONSTANT;
   useEffect(() => {
     //get master
-    dispatch2(fetchRegisterFormData());
-    dispatch2(fetchMyProfileData(navigation));
+    // dispatch2(fetchRegisterFormData());
+
+    // dispatch2(fetchMyProfileData(navigation));
     // fetchSavedLocationData();
 
     const willFocusSubscription = navigation.addListener("focus", () => {
-      dispatch2(fetchRegisterFormData());
+      // dispatch2(fetchRegisterFormData());
+      dispatch(getMasterData(`${ADDRESS_TYPE}`));
       dispatch2(fetchMyProfileData(navigation));
     });
     return willFocusSubscription;
   }, [navigation]);
 
-  const onClickedSaveLocationButton = () => {};
+  const onClickedSaveLocationButton = () => { };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -84,7 +86,7 @@ const SavedLocation = ({ route, navigation }) => {
                 });
               } else {
                 Alert.alert(strings.attention, strings.max_number_address, [
-                  { text: strings.ok, onPress: () => {} },
+                  { text: strings.ok, onPress: () => { } },
                 ]);
               }
             }}
@@ -112,9 +114,9 @@ const SavedLocation = ({ route, navigation }) => {
           text: strings.ok,
           onPress: async () => {
             const res = await dispatch(deleteSavedLocation(key, navigation));
-            if (res) {
-              fetchMyProfileData();
-            }
+            // if (res) {
+            fetchMyProfileData();
+            // }
           },
         },
       ]
@@ -145,7 +147,7 @@ const SavedLocation = ({ route, navigation }) => {
     }
   };
 
-  onClickedEditButton = (key, address) => {
+  const onClickedEditButton = (key, address) => {
     Alert.alert(strings.attention, strings.confirm_edit_address, [
       {
         text: strings.cancel,
@@ -175,7 +177,7 @@ const SavedLocation = ({ route, navigation }) => {
       },
     ]);
   };
-  const performPrimaryAddressUpdate = () => {};
+  const performPrimaryAddressUpdate = () => { };
 
   // const onItemClicked = (item) => {
   //   Alert.alert(strings.attention, strings.confirm_primary_address, [
@@ -215,7 +217,9 @@ const SavedLocation = ({ route, navigation }) => {
           },
         },
       ]);
-    } catch (error) {}
+    } catch (error) {
+      console.log('>>', error)
+    }
   };
   return (
     <SafeAreaView style={styles.container}>

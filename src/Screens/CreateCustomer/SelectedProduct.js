@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 // Usage
-/* <SelectedProduct item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
+/* <SelectedProduct item={{ id: 1,name: "", type: "", price: 0, quantity: 0 }} />; */
 
 const SelectedProduct = (props) => {
   const { item } = props;
@@ -26,19 +26,19 @@ const SelectedProduct = (props) => {
       </View>
       {/* Quantity */}
       <View style={styles.quantityView}>
-        <Pressable
+        {/* <Pressable
           style={styles.quantityIcon}
           onPress={() => alert("- Clicked")}
         >
           <Icon name={"minus"} size={20} color={"#4C5A81"} />
-        </Pressable>
-        <Text style={styles.quantityTxt}>{item.quantity}</Text>
-        <Pressable
+        </Pressable> */}
+        <Text style={styles.quantityTxt}>Q:{item.quantity}</Text>
+        {/* <Pressable
           style={styles.quantityIcon}
           onPress={() => alert("+ Clicked")}
         >
           <Icon name={"plus"} size={20} color={"#4C5A81"} />
-        </Pressable>
+        </Pressable> */}
       </View>
     </View>
   );

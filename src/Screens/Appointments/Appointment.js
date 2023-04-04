@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, {
   useEffect, useLayoutEffect, useState
 } from "react";
@@ -6,21 +7,22 @@ import {
   Image, Pressable,
   ScrollView,
   StyleSheet, TouchableOpacity,
-  View,
-  Modal
+  View
 } from "react-native";
-import moment from "moment";
+
 import CalendarStrip from "react-native-calendar-strip";
 import Timetable from "react-native-calendar-timetable";
 import { Calendar } from 'react-native-calendars';
-import { Text, useTheme } from "react-native-paper";
+import { Card, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { BarChartItems } from '../../Components/charts/BarChartItems';
 import { LineCharts } from '../../Components/charts/LineCharts';
 import { PieCharts } from '../../Components/charts/PieCharts';
 import { ProgressBarCharts } from '../../Components/charts/ProgressBarCharts';
+import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from '../../Components/CustomButton';
+import { FooterModel } from '../../Components/FooterModel';
 import { ToggleButton } from "../../Components/ToggleButton";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
@@ -36,10 +38,17 @@ export const Appointment = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_INTERACTIVE);
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false);
-  const { height, width } = Dimensions.get("screen");
+  const { height, width } = Dimensions.get('screen');
   const changeCalendarModalVisibility = () => {
     setIsCalendarModalVisible(true);
   };
+  const [filterService, setFilterService] = useState([{ description: "Event Type", code: "123", active: "checked" },
+  { description: "Appointment Type", code: "123", active: "checked" },
+  { description: "Customer", code: "123", active: "checked" },
+  { description: "Customer Type", code: "123", active: "checked" }]);
+
+
+  const [isFilterModal, setIsFilterModal] = useState(false)
   const [selected, setSelected] = useState(new Date().toString());
   const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
 
@@ -88,7 +97,10 @@ export const Appointment = ({ navigation }) => {
       headerRight: () => (
         <>
           <Pressable
-            style={{ ...navBar.roundIconColored, backgroundColor: "#8FA1C4" }}
+            style={{
+              ...navBar.roundIconColored,
+              backgroundColor: "#8FA1C4"
+            }}
           >
             <Icon name="plus" size={25} color={"#fff"} />
           </Pressable>
@@ -195,7 +207,7 @@ export const Appointment = ({ navigation }) => {
     );
   };
 
-  let startDate = moment(); // today
+  let startDate = moment(); //today
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState("");
 
@@ -217,8 +229,9 @@ export const Appointment = ({ navigation }) => {
   let datesBlacklist = []; // 1 day disabled
 
   const AppointItems = ({ style, item, dayIndex, daysTotal }) => {
-    console.log('>>', item.endDate.diff(item.startDate, 'minutes'), item.startDate
-    )
+    console.log('>>',
+      item.endDate.diff(item.startDate, 'minutes'),
+      item.startDate)
     const isSmallStrip = (item.endDate.diff(item.startDate, 'minutes')) < 45 ? true : false
 
     return (
@@ -377,8 +390,94 @@ export const Appointment = ({ navigation }) => {
       endDate: moment("2023-04-03 15:45:00"),
     },
   ]);
+  const AppointListItem = ({ data }) => {
+
+    const appointmentList = ({ item, index }) => {
+
+      return (
+        <>
+
+          <Card style={styles.app_container}>
+            <View style={{
+              ...commonStyle.row_end,
+              paddingHorizontal: '3%',
+              paddingVertical: '3%'
+            }}>
+              <View style={{ width: '50%' }}>
+                <Text style={styles.appoint_label}>Customer Name</Text>
+                <ClearSpace />
+                <Text style={styles.appoint_value}>Daina David</Text>
+                <ClearSpace size={2} />
+                <Text style={styles.appoint_label}>Time</Text>
+                <ClearSpace />
+                <Text style={styles.appoint_value}>11:00AM - 12:00 PM</Text>
+                <ClearSpace size={2} />
+                <Text style={styles.appoint_label}>Location</Text>
+                <ClearSpace />
+                <Text style={styles.appoint_value}>Chennai</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.appoint_value}></Text>
+                <ClearSpace />
+                <Text style={styles.appoint_label}></Text>
+                <ClearSpace size={2} />
+                <View>
+                  <Image source={require("../../Assets/icons/video_join.png")} />
+                </View>
+
+                <ClearSpace />
+                <Text style={styles.appoint_value}>value</Text>
+                <ClearSpace size={2} />
+                <Text style={styles.appoint_label}>Status</Text>
+                <ClearSpace />
+                <Text style={{ ...styles.appoint_value, color: '#3FB94D' }}>Booked</Text>
+                <ClearSpace size={2} />
+              </View>
+            </View>
+          </Card>
+        </>)
+    }
+
+    return (
+      <>
+
+        <View style={commonStyle.row_space_arround_between_center}>
+          <Text
+            style={{
+              color: "#2B2B2B",
+              fontSize: 16,
+              fontWeight: "600",
+              padding: 5,
+              marginLeft: 10,
+            }}
+          >
+            Appointment List
+          </Text>
+          <Pressable
+            style={{ marginRight: 15 }}
+            onPress={() => {
+              setIsFilterModal(!isFilterModal);
+            }}
+          >
+            <Icon name="filter" size={25} color={"#000"} />
+          </Pressable>
+        </View>
+        <ClearSpace size={2} />
+        <FlatList
+          ItemSeparatorComponent={<ClearSpace size={2} />}
+          contentContainerStyle={{ flex: 1, }}
+          data={data}
+          showsHorizontalScrollIndicator={false}
+          renderItem={appointmentList}
+        />
+
+      </>
+    )
+  }
+
   return (
     <>
+
       {isCalendarModalVisible &&
         <View style={{
           position: "absolute",
@@ -753,16 +852,14 @@ export const Appointment = ({ navigation }) => {
                   elevation: 5,
                 }}
               >
-
                 <CalendarStrip
-
                   calendarAnimation={{ type: "sequence", duration: 30 }}
                   daySelectionAnimation={{
                     type: "background",
                     duration: 300,
                     highlightColor: "#EFA848",
                   }}
-            style={{ height: 100, paddingTop: 10, paddingBottom: 10 }}
+                  style={{ height: 100, paddingTop: 10, paddingBottom: 10, backgroundColor: "red" }}
                   calendarHeaderStyle={{ color: "black" }}
                   calendarColor={"#ffffff"}
                   monthNameStyle={{ color: "black" }}
@@ -862,6 +959,7 @@ export const Appointment = ({ navigation }) => {
                     renderHour={(props) => <HourComponent {...props} />}
                   />
                 </View>
+                <AppointListItem data={["one", "tow"]} />
               </View>
             </> :
             <RenderInformative />
@@ -897,6 +995,28 @@ export const Appointment = ({ navigation }) => {
         </View>
       </Modal> */}
       </View>
+      <FooterModel
+        open={isFilterModal}
+        setOpen={setIsFilterModal}
+        title={"Filter by"}
+        subtitle={``}
+      >
+        <CheckGroupbox
+          data={filterService}
+          values={{ description: "Event Type", code: "123", active: "checked" }}
+          setValues={(data) => {
+            setFilterService(data);
+
+          }}
+          label="Contact Preference"
+        />
+        <CustomButton
+          label={"Apply"}
+          onPress={() => {
+            setIsFilterModal(false)
+          }}
+        />
+      </FooterModel>
     </>
   );
 };
@@ -926,6 +1046,23 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: '600'
   },
+  //apointment list strip
+  app_container: {
+    borderRadius: 5,
+    padding: 10,
+    paddingVertical: 12,
+    marginBottom: 4,
+
+
+  },
+  appoint_value: {
+    fontWeight: '600',
+    color: '#000000'
+  },
+  appoint_label: {
+    fontWeight: '400',
+    color: '#000000'
+  }
 });

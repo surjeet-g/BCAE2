@@ -1,7 +1,6 @@
 import {
-  failureOtpFormData, failureRegisterFormData,
-  initOtpForm, initRegisterForm, setAddressLoopUpData, setLoaderPreVerify, setOtpFormData, setPreVerifyUserData,
-  setPreVerifyUserData_ERROR, setRegisterFormData
+  failureOtpFormData, initOtpForm, initRegisterForm, setAddressLoopUpData, setLoaderPreVerify, setOtpFormData, setPreVerifyUserData,
+  setPreVerifyUserData_ERROR
 } from "./RegisterAction";
 
 import Toast from "react-native-toast-message";
@@ -9,49 +8,59 @@ import Toast from "react-native-toast-message";
 import { serverCall } from "../Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
-export function fetchRegisterFormData() {
+export function fetchRegisterFormData({ type = "", search = "" }, callback = () => { }) {
   return async (dispatch) => {
-    dispatch(initRegisterForm());
 
+    if (type != "COUNTRY") {
+      dispatch(initRegisterForm());
+    }
+    let url;
+    if (type == "COUNTRY") {
+      url = `?country=${search}`
+    }
+    else {
+      url = `?postCode=${search}`
+    }
     let params = {};
     let addressLookUpResult = await serverCall(
-      endPoints.ADDRESS_LOOKUP_REGISTRATION,
+      endPoints.ADDRESS_LOOKUP_REGISTRATION + url,
       requestMethod.GET,
       params
     );
 
 
+    callback()
     if (addressLookUpResult) {
       //result.data.data.
 
       dispatch(setAddressLoopUpData(addressLookUpResult?.data?.data));
 
-      let bussineEntities = "GENDER,ADDRESS_TYPE,CUSTOMER_ID_TYPE";
-      let result = await serverCall(
-        `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
-        requestMethod.GET
-      );
+      // let bussineEntities = "GENDER,ADDRESS_TYPE,CUSTOMER_ID_TYPE";
+      // let result = await serverCall(
+      //   `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
+      //   requestMethod.GET
+      // );
 
-      if (result.success && result?.data?.data) {
-        let serviceCode = {
-          SERVICECODE: [
-            {
-              code: "",
-              description: "TD123",
-              codeType: "TD123",
-              mapping: null,
-              status: "AC",
-            },
-          ],
-        };
+      // if (result.success && result?.data?.data) {
+      //   let serviceCode = {
+      //     SERVICECODE: [
+      //       {
+      //         code: "",
+      //         description: "TD123",
+      //         codeType: "TD123",
+      //         mapping: null,
+      //         status: "AC",
+      //       },
+      //     ],
+      //   };
 
-        let Data = Object.assign(result.data.data, serviceCode);
-        dispatch(setRegisterFormData(result.data.data));
-      } else {
-        dispatch(failureRegisterFormData(result));
-      }
+      //   let Data = Object.assign(result.data.data, serviceCode);
+      //   dispatch(setRegisterFormData(result.data.data));
+      // } else {
+      //   dispatch(failureRegisterFormData(result));
+      // }
     } else {
-      dispatch(setAddressLoopUpData(MOCK.data));
+      dispatch(setAddressLoopUpData(addressLookUpResult.data));
     }
   };
 }
