@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
 import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
@@ -7,7 +7,7 @@ import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
-    setValue = () => { },
+    setValue = () => {},
     caption = "",
     placeHolder = "",
     data,
@@ -36,9 +36,7 @@ export const CustomDropDownFullWidth = (props) => {
         padding: 0,
         margin: 0,
       }}
-      style={{
-
-      }}
+      style={{}}
       onPress={() => onSelected(item)}
     />
   );
@@ -48,7 +46,6 @@ export const CustomDropDownFullWidth = (props) => {
       <View
         style={{
           flexDirection: "column",
-
         }}
       >
         <Text
@@ -61,7 +58,7 @@ export const CustomDropDownFullWidth = (props) => {
         >
           {caption}
         </Text>
-        <View style={{}}>
+        <Pressable onPress={() => ondropDownClick()}>
           <CustomInput
             hideCaption={true}
             editable={false}
@@ -77,8 +74,7 @@ export const CustomDropDownFullWidth = (props) => {
               />
             }
           />
-        </View>
-        {/* </Pressable> */}
+        </Pressable>
       </View>
 
       {hideShow && (
@@ -89,7 +85,7 @@ export const CustomDropDownFullWidth = (props) => {
             contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-          // keyExtractor={item => item.description}
+            // keyExtractor={item => item.description}
           />
         </View>
       )}

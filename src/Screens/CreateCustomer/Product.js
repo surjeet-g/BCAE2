@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./../../Components/DashedDivider";
 
 // Usage
-/* <Product item={{ name: "", type: "", price: 0, quantity: 0 }} />; */
+/* <Product item={{ id: 21, name: "", type: "", price: 0, quantity:0 }} />; */
 
 const Product = (props) => {
-  const { item } = props;
+  const { item, products, setProducts } = props;
+
+  const handleQuantity = (step) => {
+    let currentQuantity = item.quantity;
+    if (step === 1) {
+      currentQuantity = currentQuantity + step;
+    } else if (step === -1) {
+      if (currentQuantity > 0) currentQuantity = currentQuantity + step;
+    }
+
+    let newProducts = products.map((product) => {
+      if (product.id === item.id) {
+        product.quantity = currentQuantity;
+      }
+      return product;
+    });
+    setProducts(newProducts);
+  };
+
   return (
     <View
       style={item.quantity > 0 ? styles.selectedContainer : styles.container}
@@ -39,14 +57,14 @@ const Product = (props) => {
         <View style={styles.quantityView}>
           <Pressable
             style={styles.quantityIcon}
-            onPress={() => alert("- Clicked")}
+            onPress={() => handleQuantity(-1)}
           >
             <Icon name={"minus"} size={20} color={"#4C5A81"} />
           </Pressable>
           <Text style={styles.quantityTxt}>{item.quantity}</Text>
           <Pressable
             style={styles.quantityIcon}
-            onPress={() => alert("+ Clicked")}
+            onPress={() => handleQuantity(1)}
           >
             <Icon name={"plus"} size={20} color={"#4C5A81"} />
           </Pressable>

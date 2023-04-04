@@ -1,14 +1,9 @@
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetScrollView
-} from "@gorhom/bottom-sheet";
 import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import {
   Alert,
@@ -19,9 +14,9 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
-import { Button, Divider, Text, useTheme } from "react-native-paper";
+import { Button, Divider, Text, useTheme, Modal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +30,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getLanguage } from "../../Utilities/Language/language";
@@ -48,21 +43,7 @@ const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
-  // ref
-  const bottomSheetModalRef = useRef(BottomSheetModal);
-  // variables
-  const snapPoints = useMemo(() => ["60%"], []);
-  // callbacks
-  const openAnnoncementModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const closeAnnoncementModal = useCallback(() => {
-    bottomSheetModalRef.current?.dismiss();
-  }, []);
-
-  const handleSheetChanges = useCallback((index) => {
-    console.log("$$$-handleSheetChanges", index);
-  }, []);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [userInfo, setUserInfo] = useState({
     email: "",
     profilePicture: null,
@@ -81,23 +62,19 @@ export const ViewProfile = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-
     async function getUserID() {
-
       const userID = await getUserId();
       const language = await getLanguage();
       setSelectedLanguage(language.name);
       if (profileResult.typeOfUser == USERTYPE.CUSTOMER) {
-
         setUserInfo({
           email: profileResult?.customerContact[0]?.emailId,
           name: `${profileResult?.firstName} ${profileResult?.lastName}`,
           userId: userID,
           profilePicture: profileResult?.profilePicture,
         });
-      }
-      else {
-        console.log('hititn', profileResult)
+      } else {
+        console.log("hititn", profileResult);
         setUserInfo({
           email: profileResult?.email,
           name: `${profileResult?.firstName} ${profileResult?.lastName}`,
@@ -106,8 +83,8 @@ export const ViewProfile = ({ navigation }) => {
         });
       }
     }
-    getUserID()
-  }, [profileResult.typeOfUser])
+    getUserID();
+  }, [profileResult.typeOfUser]);
 
   // async function getUserID() {
   //   const language = await getLanguage();
@@ -213,7 +190,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => { };
+  const onFaqPressed = () => {};
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -233,8 +210,9 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: `data:image/jpeg;base64,${
+                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{
@@ -453,7 +431,10 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <Pressable onPress={onAnnouncementPressed} style={styles.listItem}>
+        <Pressable
+          onPress={() => setShowAnnouncementModal(true)}
+          style={styles.listItem}
+        >
           <Icon
             name="arrow-expand-all"
             size={ICON}
@@ -548,56 +529,51 @@ export const ViewProfile = ({ navigation }) => {
 
         <ClearSpace size={8} />
       </ScrollView>
-      <BottomSheetModalProvider>
-        <View>
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
+      <Modal
+        visible={showAnnouncementModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <View style={styles.modalContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: 10,
+            }}
           >
-            <BottomSheetScrollView style={styles.contentContainer}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginVertical: 10,
-                }}
-              >
-                <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
-                <Text
-                  style={{
-                    fontWeight: 600,
-                    color: "#22374E",
-                    fontSize: 20,
-                    flex: 1,
-                    marginHorizontal: 15,
-                  }}
-                >
-                  Annoucements
-                </Text>
-                <TouchableOpacity onPress={closeAnnoncementModal}>
-                  <Image
-                    style={{ ...ICON_STYLE }}
-                    source={require("../../Assets/icons/close_black.png")}
-                  />
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={mockAnnouncementList}
-                renderItem={({ item }) => (
-                  <AnnouncementItem
-                    title={item.title}
-                    desc={item.desc}
-                    date={item.date}
-                  />
-                )}
-                keyExtractor={(item) => item.id}
+            <AnnouIcon fill={"#22374E"} style={{ ...ICON_STYLE }} />
+            <Text
+              style={{
+                fontWeight: 600,
+                color: "#22374E",
+                fontSize: 20,
+                flex: 1,
+                marginHorizontal: 15,
+              }}
+            >
+              Annoucements
+            </Text>
+            <TouchableOpacity onPress={() => setShowAnnouncementModal(false)}>
+              <Image
+                style={{ ...ICON_STYLE }}
+                source={require("../../Assets/icons/close_black.png")}
               />
-            </BottomSheetScrollView>
-          </BottomSheetModal>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={mockAnnouncementList}
+            renderItem={({ item }) => (
+              <AnnouncementItem
+                title={item.title}
+                desc={item.desc}
+                date={item.date}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
         </View>
-      </BottomSheetModalProvider>
+      </Modal>
       {ischangeLanguageModalVisible && (
         <View style={styles.changeLanguageContainer}>
           <View
@@ -776,9 +752,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F0F0F0",
   },
-  contentContainer: {
-    flex: 1,
+  modalContainer: {
     padding: 10,
+    height: "70%",
+    backgroundColor: "white",
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
   },
   listItem: {
     flexDirection: "row",

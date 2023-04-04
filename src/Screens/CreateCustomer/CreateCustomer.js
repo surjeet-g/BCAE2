@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import StepIndicator from "react-native-step-indicator";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { CustomButton } from "./../../Components/CustomButton";
 import { strings } from "./../../Utilities/Language/index";
 import UploadDocument from "./UploadDocument";
@@ -30,25 +31,123 @@ import {
 } from "./../../Utilities/utils";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme } from "react-native-paper";
+import { useTheme, Modal, Checkbox } from "react-native-paper";
+import { FooterModel } from "./../../Components/FooterModel";
+import CustomerType from "./CustomerType";
 
-const CreateCustomer = () => {
+const CreateCustomer = (props) => {
   const { colors } = useTheme();
-
-  const [currentStep, setCurrentStep] = useState(1);
+  const { navigation } = props;
+  const [formCustomerData, setFormCustomerData] = useState({});
+  const [currentStep, setCurrentStep] = useState(3);
+  const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
+  const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
+  const [showAccountCreationModal, setShowAccountCreationModal] =
+    useState(false);
+  const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
+    useState(false);
+  const [createAccount, setCreateAccount] = useState(true);
+  const [customerType, setCustomerType] = useState("");
+  const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
+  const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
-  const renderStepOneUI = () => {
+  // Used for step 3 & 4 to display list of available & selected products
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: `Product 1`,
+      type: "NA",
+      price: 200,
+      quantity: 0,
+    },
+    {
+      id: 2,
+      name: `Product 2`,
+      type: "NA",
+      price: 300,
+      quantity: 0,
+    },
+  ]);
+
+  // For handling the header title based on stepIndicator
+  useLayoutEffect(() => {
+    let title = "";
+    switch (stepIndicator) {
+      case 0:
+        title = "Create Customer";
+        break;
+      case 1:
+        title = "Services";
+        break;
+      case 2:
+        title = "Create Account";
+        break;
+      case 3:
+        title = "Agreement";
+        break;
+      case 4:
+        title = "Preview";
+        break;
+      default:
+        title = "Create Customer";
+    }
+
+    navigation.setOptions({
+      headerTitle: title,
+    });
+  }, [stepIndicator]);
+
+  // For handling the step indicator in header based on currentStep
+  useEffect(() => {
+    switch (currentStep) {
+      case 0:
+      case 1:
+      case 2:
+        setStepIndicator(0);
+        break;
+      case 3:
+      case 4:
+      case 5:
+        setStepIndicator(1);
+        break;
+      case 6:
+      case 7:
+      case 8:
+        setStepIndicator(2);
+        break;
+      case 9:
+        setStepIndicator(3);
+        break;
+      case 10:
+        setStepIndicator(4);
+        break;
+      default:
+        setStepIndicator(0);
+        break;
+    }
+  }, [currentStep]);
+
+  // Step = 0
+  const renderUploadDocsUI = () => {
     return (
       <View>
         <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
-        <CustomTitleText title={"Customer Details"} />
+      </View>
+    );
+  };
+
+  // Step = 1
+  const renderCustomerDetailsUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Customer Information"} />
         <View
           style={{
             padding: 10,
@@ -59,8 +158,14 @@ const CreateCustomer = () => {
         >
           <CustomInput
             value={""}
-            caption={strings.customer_name}
-            placeHolder={strings.customer_name}
+            caption={strings.firstname}
+            placeHolder={strings.firstname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.lastname}
+            placeHolder={strings.lastname}
             onChangeText={(text) => text}
           />
           <CustomInput
@@ -75,6 +180,15 @@ const CreateCustomer = () => {
             placeHolder={strings.gender}
             onChangeText={(text) => text}
           />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.id_type}
+            placeHolder={"Select " + strings.id_type}
+          />
           <CustomInput
             value={""}
             caption={strings.id_number}
@@ -87,7 +201,23 @@ const CreateCustomer = () => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
-          <CustomDropDownFullWidth
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredNo}
+              placeHolder={strings.registereredNo}
+              onChangeText={(text) => text}
+            />
+          )}
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredDate}
+              placeHolder={strings.registereredDate}
+              onChangeText={(text) => text}
+            />
+          )}
+          {/* <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
@@ -135,13 +265,14 @@ const CreateCustomer = () => {
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => text}
-          />
+          /> */}
         </View>
       </View>
     );
   };
 
-  const renderStepTwoUI = () => {
+  // Step = 2
+  const renderCustomerAddressFormUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -157,18 +288,6 @@ const CreateCustomer = () => {
             value={""}
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.surname}
-            placeHolder={strings.surname}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.forename}
-            placeHolder={strings.forename}
             onChangeText={(text) => text}
           />
           <CustomInput
@@ -286,20 +405,37 @@ const CreateCustomer = () => {
     );
   };
 
-  const renderStepThreeUI = () => {
+  // Step = 3
+  const renderServicesUI = () => {
     return (
       <View>
         <CustomTitleText title={"Select Category"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={4}
-          data={[{}, {}, {}, {}, {}]}
+          data={[
+            {
+              id: 1,
+              name: "Postpaid",
+              icon: require("../../Assets/icons/ic_postpaid.png"),
+            },
+            {
+              id: 2,
+              name: "Prepaid",
+              icon: require("../../Assets/icons/ic_prepaid.png"),
+            },
+            {
+              id: 3,
+              name: "Hybrid",
+              icon: require("../../Assets/icons/ic_word.png"),
+            },
+          ]}
           renderItem={({ item, index }) => (
-            <ServiceCategory name={`Category ${index + 1}`} />
+            <ServiceCategory name={item.name} icon={item.icon} />
           )}
           keyExtractor={(item, index) => index}
         />
-        <CustomTitleText title={"Select Service Type"} />
+        {/* <CustomTitleText title={"Select Service Type"} />
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={3}
@@ -308,18 +444,15 @@ const CreateCustomer = () => {
             <ServiceType name={`Service Type ${index + 1}`} />
           )}
           keyExtractor={(item, index) => index}
-        />
-        <CustomTitleText title={"Accessories"} />
+        /> */}
+        <CustomTitleText title={"Available Products"} />
         <FlatList
-          data={[{}, {}, {}, {}, {}]}
+          data={products}
           renderItem={({ item, index }) => (
             <Product
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: (index + 1) * 200,
-                quantity: Math.floor(Math.random() * index),
-              }}
+              item={item}
+              products={products}
+              setProducts={setProducts}
             />
           )}
           keyExtractor={(item, index) => index}
@@ -328,38 +461,10 @@ const CreateCustomer = () => {
     );
   };
 
-  const renderStepThreeUIBillDetails = () => {
+  // Step = 4
+  const renderSelectedServicesUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Selected Product"} />
-        <SwipeListView
-          showsVerticalScrollIndicator={false}
-          data={[{}, {}, {}, {}, {}]}
-          renderItem={({ item, index }) => (
-            <SelectedProduct
-              item={{
-                name: `Product ${index + 1}`,
-                type: "NA",
-                price: 100,
-                quantity: 2,
-              }}
-            />
-          )}
-          keyExtractor={(item, index) => index}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-75}
-          onRowDidOpen={onRowDidOpen}
-        />
-        <CustomTitleText title={"Bill Details"} />
-        <BillDetails
-          details={{
-            gTotal: 1250.0,
-            total: 1250.0,
-            gst: 50.0,
-            discount: 100.0,
-          }}
-        />
-
         <View
           style={{
             flexDirection: "row",
@@ -380,11 +485,429 @@ const CreateCustomer = () => {
             value={needQuoteOnly}
           />
         </View>
+        <CustomTitleText title={"Selected Product"} />
+        <SwipeListView
+          showsVerticalScrollIndicator={false}
+          disableRightSwipe={true}
+          data={products.filter((product) => product.quantity > 0)}
+          renderItem={({ item, index }) => <SelectedProduct item={item} />}
+          keyExtractor={(item, index) => index}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-100}
+          stopRightSwipe={-100}
+          onRowDidOpen={onRowDidOpen}
+        />
+        <CustomTitleText title={"Bill Details"} />
+        <BillDetails
+          details={{
+            gTotal: calculateGTotal(),
+            total: calculateGTotal() + 50 - 100,
+            gst: 50.0,
+            discount: 100.0,
+          }}
+        />
       </View>
     );
   };
 
-  const renderStepFourUI = () => {
+  // Step = 5
+  const renderServiceAddressUI = () => {
+    return (
+      <View>
+        {/* Service address checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <Checkbox
+            status={isSameAddressChecked ? "checked" : "unchecked"}
+            onPress={() => {
+              setIsSameAddressChecked(!isSameAddressChecked);
+            }}
+          />
+          <CustomTitleText
+            title={"Service address same as customer address"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
+        <CustomTitleText title={"Service Address"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={"Flat/House/Unit No/ Block"}
+            placeHolder={"Flat/House/Unit No/ Block"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Building Name/Others"}
+            placeHolder={"Building Name/Others"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Street/Area"}
+            placeHolder={"Street/Area"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"State/Region"}
+            placeHolder={"Select " + "State/Region"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  // Step = 6
+  const renderCreateAccount_DetailsUI = () => {
+    return (
+      <View>
+        {/* Customer details checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <Checkbox
+            status={isSameAddressChecked ? "checked" : "unchecked"}
+            onPress={() => {
+              setIsSameAddressChecked(!isSameAddressChecked);
+            }}
+          />
+          <CustomTitleText
+            title={"Use same customer details"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
+        <CustomTitleText title={"Account Creation"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={strings.firstname}
+            placeHolder={strings.firstname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.lastname}
+            placeHolder={strings.lastname}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.dob}
+            placeHolder={strings.dob}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.gender}
+            placeHolder={strings.gender}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.id_type}
+            placeHolder={"Select " + strings.id_type}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.id_number}
+            placeHolder={strings.id_number}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.place_of_issue}
+            placeHolder={strings.place_of_issue}
+            onChangeText={(text) => text}
+          />
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredNo}
+              placeHolder={strings.registereredNo}
+              onChangeText={(text) => text}
+            />
+          )}
+          {(customerType === "Business" || customerType === "Government") && (
+            <CustomInput
+              value={""}
+              caption={strings.registereredDate}
+              placeHolder={strings.registereredDate}
+              onChangeText={(text) => text}
+            />
+          )}
+
+          <CountryPicker
+            show={countryPickModel}
+            excludedCountries={excludedCountriesList()}
+            pickerButtonOnPress={(item) => {
+              setCountryCode(item.dial_code);
+              setCountryPickModel(false);
+              setNumberMaxLength(getPhoneNumberLength(item.code));
+            }}
+            onBackdropPress={() => setCountryPickModel(false)}
+            style={{
+              modal: {
+                height: "65%",
+              },
+            }}
+          />
+          <CustomInputWithCC
+            onPressOnCountyCode={() => setCountryPickModel(true)}
+            countryCode={countryCode}
+            caption={strings.mobile_no}
+            onChangeText={(text) => handleNumberChange(text)}
+            value={number}
+            placeHolder={strings.mobile_no}
+            keyboardType="numeric"
+            maxLength={numberMaxLength}
+          />
+          <CustomInput
+            value={""}
+            caption={strings.email}
+            placeHolder={strings.email}
+            onChangeText={(text) => text}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  // Step = 7
+  const renderCreateAccount_PreferencesUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Account Creation"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_category}
+            placeHolder={"Select " + strings.account_category}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_level}
+            placeHolder={"Select " + strings.account_level}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.bill_lang}
+            placeHolder={"Select " + strings.bill_lang}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.account_type}
+            placeHolder={"Select " + strings.account_type}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.notification_pref}
+            placeHolder={"Select " + strings.notification_pref}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.currency}
+            placeHolder={"Select " + strings.currency}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  // Step = 8
+  const renderCreateAccount_AddressUI = () => {
+    return (
+      <View>
+        {/* Account address checkbox */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <Checkbox
+            status={isSameAddressChecked ? "checked" : "unchecked"}
+            onPress={() => {
+              setIsSameAddressChecked(!isSameAddressChecked);
+            }}
+          />
+          <CustomTitleText
+            title={"Account address same as customer address"}
+            textStyle={{ marginTop: 0 }}
+          />
+        </View>
+        <CustomTitleText title={"Account Address"} />
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            margin: 10,
+          }}
+        >
+          <CustomInput
+            value={""}
+            caption={"Flat/House/Unit No/ Block"}
+            placeHolder={"Flat/House/Unit No/ Block"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Building Name/Others"}
+            placeHolder={"Building Name/Others"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"Street/Area"}
+            placeHolder={"Street/Area"}
+            onChangeText={(text) => text}
+          />
+          <CustomInput
+            value={""}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+            onChangeText={(text) => text}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"State/Region"}
+            placeHolder={"Select " + "State/Region"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={""}
+            setValue={""}
+            data={[]}
+            onChangeText={(text) => console.log(text)}
+            value={""}
+            caption={strings.country}
+            placeHolder={"Select " + strings.country}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  // Step = 9
+  const renderAgreementUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Agreement"} />
@@ -393,24 +916,73 @@ const CreateCustomer = () => {
     );
   };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      if (currentStep === 4 || currentStep === 3.5)
-        setCurrentStep(currentStep - 0.5);
-      else setCurrentStep(currentStep - 1);
-    }
+  // Step = 10
+  const renderPreviewUI = () => {
+    return (
+      <View>
+        <CustomTitleText title={"Show Preview"} />
+      </View>
+    );
   };
 
-  const handleSave = () => {
-    if (currentStep < 4) {
-      if (currentStep === 3 || currentStep === 3.5)
-        setCurrentStep(currentStep + 0.5);
+  const calculateGTotal = () => {
+    let gTotal = 0;
+    products.forEach((product) => {
+      if (product.quantity > 0)
+        gTotal = gTotal + product.quantity * product.price;
+    });
+    return gTotal;
+  };
+
+  const handlePrevious = () => {
+    if (currentStep === 10 && needQuoteOnly) {
+      setCurrentStep(4);
+    } else if (currentStep === 9 && !createAccount) {
+      setCurrentStep(5);
+    } else if (currentStep === 7 && useSameCustomerDetails) {
+      setCurrentStep(5);
+    } else setCurrentStep(currentStep - 1);
+  };
+
+  const handleContinue = () => {
+    if (currentStep === 3) {
+      let item = products.find((product) => product.quantity > 0);
+      if (item === undefined)
+        alert("Select atleast one service to continue!!!");
       else setCurrentStep(currentStep + 1);
-    }
+    } else if (currentStep === 5) {
+      setShowAccountCreationModal(true);
+    } else if (currentStep === 4 && needQuoteOnly) {
+      setCurrentStep(10);
+    } else setCurrentStep(currentStep + 1);
   };
 
   const handleSubmit = () => {
     alert("Submit with create customer API");
+  };
+
+  const handleAccountCreationNo = () => {
+    setShowAccountCreationModal(false);
+    setCreateAccount(false);
+    setCurrentStep(9);
+  };
+
+  const handleAccountCreationYes = () => {
+    setShowAccountCreationModal(false);
+    setCreateAccount(true);
+    setTimeout(() => setShowSameAccountDetailsModal(true), 100);
+  };
+
+  const handleSameAccountDetailsNo = () => {
+    setShowSameAccountDetailsModal(false);
+    setUseSameCustomerDetails(false);
+    setCurrentStep(currentStep + 1);
+  };
+
+  const handleSameAccountDetailsYes = () => {
+    setShowSameAccountDetailsModal(false);
+    setUseSameCustomerDetails(true);
+    setCurrentStep(7);
   };
 
   const handleNumberChange = (textStr) => {
@@ -418,18 +990,20 @@ const CreateCustomer = () => {
     setNumberError("");
   };
 
+  // For selected product swipe
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
 
+  // Delete feature on swiping the selected product
   const renderHiddenItem = (data, rowMap) => (
     <View style={styles.rowBack}>
       <Pressable
         style={[styles.backRightBtn]}
         onPress={() => {
           alert("Index: ", data.index);
-          console.log("$$$-rowMap", rowMap);
           console.log("$$$-data", data);
+          console.log("$$$-data", JSON.stringify(data));
         }}
       >
         <Icon name="delete" size={19} color={"#D13D3D"} />
@@ -438,126 +1012,71 @@ const CreateCustomer = () => {
     </View>
   );
 
-  const renderStepsView = () => {
+  const renderStepsIndicatorView = () => {
     return (
       <View style={styles.stepsView}>
-        <View style={styles.stepsSubView}>
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 1
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              1
-            </Text>
-          </View>
-          {currentStep <= 1 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
-            />
-          )}
-          {currentStep > 1 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 2
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              2
-            </Text>
-          </View>
+        <StepIndicator
+          customStyles={styles.firstIndicatorStyles}
+          currentPosition={stepIndicator}
+          stepCount={5}
+          labels={["Customer", "Services", "Account", "Agreement", "Preview"]}
+        />
+      </View>
+    );
+  };
 
-          {currentStep <= 2 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
+  // render the buttons in the bottom based on the currentStep
+  const renderBottomButtonsUI = () => {
+    if (currentStep === 0) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              label={strings.skip_proceed}
+              onPress={() => setShowCustomerTypeModal(true)}
             />
-          )}
-          {currentStep > 2 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep > 3
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              3
-            </Text>
-          </View>
-
-          {currentStep < 3.5 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_normal.png")}
-            />
-          )}
-          {currentStep === 3.5 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_half_selected.png")}
-            />
-          )}
-          {currentStep >= 4 && (
-            <Image
-              style={{ flex: 1 }}
-              source={require("../../Assets/icons/line_selected.png")}
-            />
-          )}
-
-          <View style={styles.stepsCountView}>
-            <Text
-              style={
-                currentStep === 4
-                  ? styles.stepsCountTxtCurrent
-                  : styles.stepsCountTxt
-              }
-            >
-              4
-            </Text>
           </View>
         </View>
-        <View style={styles.stepsSubView}>
-          <Text
-            style={currentStep === 1 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Customer
-          </Text>
-          <Text
-            style={currentStep === 2 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Account
-          </Text>
-          <Text
-            style={
-              currentStep === 3 || currentStep === 3.5
-                ? styles.stepsTxtCurrent
-                : styles.stepsTxt
-            }
-          >
-            Services
-          </Text>
-          <Text
-            style={currentStep === 4 ? styles.stepsTxtCurrent : styles.stepsTxt}
-          >
-            Agreement
-          </Text>
+      );
+    }
+    if (currentStep === 9) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.previous} onPress={handlePrevious} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              label={strings.proceed_to_preview}
+              onPress={handleContinue}
+            />
+          </View>
+        </View>
+      );
+    }
+    if (currentStep === 10) {
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.previous} onPress={handlePrevious} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={strings.submit} onPress={handleSubmit} />
+          </View>
+        </View>
+      );
+    }
+    // For all other currentStep
+    return (
+      <View style={styles.bottomButtonView}>
+        <View style={{ flex: 1 }}>
+          <CustomButton label={strings.previous} onPress={handlePrevious} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <CustomButton
+            label={strings.save_continue}
+            onPress={handleContinue}
+          />
         </View>
       </View>
     );
@@ -565,31 +1084,163 @@ const CreateCustomer = () => {
 
   return (
     <View style={styles.container}>
-      {renderStepsView()}
+      {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
-        {currentStep == 1 && renderStepOneUI()}
-        {currentStep == 2 && renderStepTwoUI()}
-        {currentStep == 3 && renderStepThreeUI()}
-        {currentStep == 3.5 && renderStepThreeUIBillDetails()}
-        {currentStep == 4 && renderStepFourUI()}
+        {currentStep == 0 && renderUploadDocsUI()}
+        {currentStep == 1 && renderCustomerDetailsUI()}
+        {currentStep == 2 && renderCustomerAddressFormUI()}
+        {currentStep == 3 && renderServicesUI()}
+        {currentStep == 4 && renderSelectedServicesUI()}
+        {currentStep == 5 && renderServiceAddressUI()}
+        {currentStep == 6 && renderCreateAccount_DetailsUI()}
+        {currentStep == 7 && renderCreateAccount_PreferencesUI()}
+        {currentStep == 8 && renderCreateAccount_AddressUI()}
+        {currentStep == 9 && renderAgreementUI()}
+        {currentStep == 10 && renderPreviewUI()}
       </ScrollView>
       {/* Bottom Button View */}
-      <View style={styles.bottomButtonView}>
-        <View style={{ flex: 1 }}>
-          <CustomButton label={strings.previous} onPress={handlePrevious} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomButton
-            label={currentStep === 4 ? strings.submit : strings.save}
-            onPress={currentStep === 4 ? handleSubmit : handleSave}
-          />
-        </View>
-      </View>
+      {renderBottomButtonsUI()}
+      {/* Choose customer type modal */}
+      <Modal
+        visible={showCustomerTypeModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showCustomerTypeModal}
+          setOpen={setShowCustomerTypeModal}
+          title={"Choose purpose of customer creation"}
+        >
+          <View style={styles.modalContainer}>
+            <CustomerType
+              name={`Business`}
+              icon={require("../../Assets/icons/ic_business.png")}
+              onPress={() => {
+                setCustomerType("Business");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 1);
+              }}
+            />
+            <CustomerType
+              name={`Government`}
+              icon={require("../../Assets/icons/ic_government.png")}
+              onPress={() => {
+                setCustomerType("Government");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 1);
+              }}
+            />
+            <CustomerType
+              name={`Regular`}
+              icon={require("../../Assets/icons/ic_regular.png")}
+              onPress={() => {
+                setCustomerType("Regular");
+                setShowCustomerTypeModal(false);
+                setCurrentStep(currentStep + 1);
+              }}
+            />
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Account Creation Modal */}
+      <Modal
+        visible={showAccountCreationModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showAccountCreationModal}
+          setOpen={setShowAccountCreationModal}
+          title={"Do you want to create an account?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleAccountCreationYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleAccountCreationNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Use customer details same as Account details Modal */}
+      <Modal
+        visible={showSameAccountDetailsModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showSameAccountDetailsModal}
+          setOpen={setShowSameAccountDetailsModal}
+          title={"Do you want to use account details same as customer details?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleSameAccountDetailsYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleSameAccountDetailsNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
+          </View>
+        </FooterModel>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F0F0F0",
@@ -599,59 +1250,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#4C5A81",
     paddingVertical: 10,
   },
-  stepsSubView: {
-    flexDirection: "row",
-    marginVertical: 5,
-    alignItems: "center",
-  },
-  stepsTxt: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: 400,
-    fontSize: 14,
-    color: "#8FA1C4",
-  },
-  stepsTxtCurrent: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: 700,
-    fontSize: 14,
-    color: "#fff",
-  },
-  stepsCountView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  stepsCountTxt: {
-    padding: 4,
-    textAlign: "center",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    backgroundColor: "#8FA1C4",
-    fontWeight: 400,
-    fontSize: 14,
-    color: "#fff",
-  },
-  stepsCountTxtCurrent: {
-    padding: 4,
-    textAlign: "center",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    backgroundColor: "#fff",
-    fontWeight: 700,
-    fontSize: 14,
-    color: "#4C5A81",
-  },
-
   bottomButtonView: {
     flexDirection: "row",
     bottom: 0,
@@ -659,7 +1257,7 @@ const styles = StyleSheet.create({
   },
   rowBack: {
     alignItems: "center",
-    backgroundColor: "#DDD",
+    backgroundColor: "#F0F0F0",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -669,13 +1267,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    width: 75,
+    width: 100,
     height: 80,
     backgroundColor: "#FEE5E4",
     right: 0,
     margin: 15,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
+  },
+  firstIndicatorStyles: {
+    stepIndicatorSize: 30,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 3,
+    currentStepStrokeWidth: 5,
+    stepStrokeCurrentColor: "#4C5A81",
+    separatorFinishedColor: "#fff",
+    separatorUnFinishedColor: "#8FA1C4",
+
+    stepIndicatorFinishedColor: "#fff",
+    stepIndicatorUnFinishedColor: "#8FA1C4",
+    stepIndicatorCurrentColor: "#ffffff",
+
+    stepIndicatorLabelFontSize: 14,
+    currentStepIndicatorLabelFontSize: 18,
+
+    stepIndicatorLabelCurrentColor: "#000000",
+    stepIndicatorLabelFinishedColor: "#4C5A81",
+    stepIndicatorLabelUnFinishedColor: "#fff",
+
+    labelColor: "#8FA1C4",
+    labelSize: 14,
+    currentStepLabelColor: "#fff",
   },
 });
 
