@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 
 import get from "lodash.get";
@@ -34,22 +34,22 @@ import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset,
+  setProfileReset
 } from "../../Redux/ProfileAction";
 import {
   fetchMyProfileData,
-  updateProfileData,
+  updateProfileData
 } from "../../Redux/ProfileDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
-import { getUserTypeForProfile } from "../../Utilities/UserManagement/userInfo";
+import { getUserTypeForProfile, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -302,15 +302,18 @@ const EditProfile = ({ navigation, props }) => {
   };
 
   const isbuttonEnable = () => {
-    if (get(contactValues, "length", 0) === 0) return false;
-    if (
-      get(
-        contactValues.filter((itm) => itm.active == true),
-        "length",
-        0
-      ) == 0
-    )
-      return null;
+    const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
+    if (isConsumer) {
+      if (get(contactValues, "length", 0) === 0) return false;
+      if (
+        get(
+          contactValues.filter((itm) => itm.active == true),
+          "length",
+          0
+        ) == 0
+      )
+        return null;
+    }
     if (firstName == "" || lastName == "") return false;
     return true;
   };
@@ -318,7 +321,7 @@ const EditProfile = ({ navigation, props }) => {
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
@@ -421,6 +424,13 @@ const EditProfile = ({ navigation, props }) => {
       };
     });
   }
+  console.log('profile reducers', profile)
+  const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
+  console.log('is consumer', isConsumer)
+  const emailPath = isConsumer ? "savedProfileData.customerContact[0].emailId" : "savedProfileData.email"
+  const custoPath = isConsumer ? "savedProfileData.customerNo" : "savedProfileData.userId"
+  const countyPath = isConsumer ? "savedProfileData.customerAddress[0].country" : "savedProfileData.country"
+  const mobilePath = isConsumer ? "savedProfileData.customerContact[0].mobileNo" : "savedProfileData.contactNo"
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -468,7 +478,7 @@ const EditProfile = ({ navigation, props }) => {
               <Text variant="bodyLarge" style={styles.caption}>
                 {strings.customer_ID +
                   " : " +
-                  get(profile, "savedProfileData.customerNo", "")}
+                  get(profile, custoPath, "")}
               </Text>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
@@ -476,7 +486,7 @@ const EditProfile = ({ navigation, props }) => {
                 <Text variant="bodySmall" style={styles.caption_small}>
                   {get(
                     profile,
-                    "savedProfileData.customerContact[0].emailId",
+                    emailPath,
                     ""
                   )}
                 </Text>
@@ -561,10 +571,10 @@ const EditProfile = ({ navigation, props }) => {
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
-                  onChangeText={(text) => {}}
+                  onChangeText={(text) => { }}
                   value={get(
                     profile,
-                    "savedProfileData.customerAddress[0].country",
+                    countyPath,
                     ""
                   )}
                 />
@@ -676,7 +686,7 @@ const EditProfile = ({ navigation, props }) => {
                 <CustomInput
                   value={get(
                     profile,
-                    "savedProfileData.customerContact[0].mobileNo",
+                    mobilePath,
                     ""
                   )}
                   placeHolder={strings.mobile_number}

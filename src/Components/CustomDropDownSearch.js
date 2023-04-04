@@ -17,7 +17,7 @@ export const CustomDropDownSearch = (props) => {
   } = props;
   let filteredData = data;
   if (searchText != "") {
-    filteredData = data.length == 0 ? [] : data.filter(item => (item?.description?.search(searchText) != -1))
+    filteredData = data.length == 0 ? [] : data.filter(item => (item?.description?.toLowerCase().search(searchText.toLowerCase()) != -1))
   }
 
   const [hideShow, setHideShow] = useState(false);
@@ -77,7 +77,7 @@ export const CustomDropDownSearch = (props) => {
             caption={placeHolder}
             placeholder={placeHolder}
             style={{ ...styles.textInput, ...customStyle }}
-            placeHolder="dsfsdf"
+            placeHolder=""
             onChangeText={(text) => {
               if (!hideShow) {
                 setHideShow(true)

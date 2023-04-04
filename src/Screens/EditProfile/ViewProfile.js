@@ -1,14 +1,14 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
+  BottomSheetScrollView
 } from "@gorhom/bottom-sheet";
 import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import {
   Alert,
@@ -19,7 +19,7 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Button, Divider, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -35,14 +35,14 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import { getUserId } from "../../Utilities/UserManagement/userInfo";
+import { getUserId, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 // import RNRestart from "react-native-restart";
 const ICON = 25;
 
@@ -78,19 +78,49 @@ export const ViewProfile = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(fetchMyProfileData(navigation));
-    async function getUserID() {
-      const language = await getLanguage();
-      const userID = await getUserId();
-      setSelectedLanguage(language.name);
-      setUserInfo({
-        email: profileResult?.customerContact[0]?.emailId,
-        name: `${profileResult?.firstName} ${profileResult?.lastName}`,
-        userId: userID,
-        profilePicture: profileResult?.customerPhoto,
-      });
-    }
-    getUserID();
   }, []);
+
+  useEffect(() => {
+
+    async function getUserID() {
+
+      const userID = await getUserId();
+      const language = await getLanguage();
+      setSelectedLanguage(language.name);
+      if (profileResult.typeOfUser == USERTYPE.CUSTOMER) {
+
+        setUserInfo({
+          email: profileResult?.customerContact[0]?.emailId,
+          name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.profilePicture,
+        });
+      }
+      else {
+        console.log('hititn', profileResult)
+        setUserInfo({
+          email: profileResult?.email,
+          name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.customerPhoto,
+        });
+      }
+    }
+    getUserID()
+  }, [profileResult.typeOfUser])
+
+  // async function getUserID() {
+  //   const language = await getLanguage();
+  //   const userID = await getUserId();
+  //   setSelectedLanguage(language.name);
+  //   setUserInfo({
+  //     email: profileResult?.email,
+  //     name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+  //     userId: userID,
+  //     profilePicture: profileResult?.customerPhoto,
+  //   });
+  // }
+  // getUserID();
 
   const showLanguageModal = () => {
     setIschangeLanguageModalVisible(true);
@@ -183,7 +213,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => {};
+  const onFaqPressed = () => { };
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -203,9 +233,8 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{

@@ -4,12 +4,11 @@ import {
   Image, Platform, SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
-import { useTheme } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 
 import MapView, {
   Callout,
@@ -30,19 +29,22 @@ import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDownSearch as CustomDropDownFullWidth } from "../../Components/CustomDropDownSearch";
 import { CustomInput } from "../../Components/CustomInput";
 import { FooterModel } from "../../Components/FooterModel";
+import LoadingAnimation from "../../Components/LoadingAnimation";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
 import { StickyFooter } from "../../Components/StickyFooter";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from '../../Redux/RegisterDispatcher';
 const { height } = Dimensions.get("screen");
 
 const AddLocation = ({ route, navigation }) => {
+
   const { colors, fonts, roundness } = useTheme();
   const [activeDropDown, setActiveDropDown] = useState("district");
 
   let savedLocation = useSelector((state) => state.savedLocations);
 
   let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
-  const dispatch = useDispatch([addNewLocations]);
+  const dispatch = useDispatch([addNewLocations, getMasterData]);
   const { width, height } = Dimensions.get("window");
   const ASPECT_RATIO = width / height;
   const [isCurrentLocation, setIsCurrentLocation] = useState(true);
@@ -59,6 +61,8 @@ const AddLocation = ({ route, navigation }) => {
   const [dialPick, setDialPick] = useState("+673");
   const [locationGet, setCurrentLocationget] = useState(false);
   const [country, setCountry] = useState("");
+  const [searchPostalCode, setSerachPostalCode] = useState("")
+  const [loader, setLoader] = useState(false)
   const mapRef = useRef(null);
   const latitudeDelta = 0.0922;
   const longitudeDelta = latitudeDelta * ASPECT_RATIO;
@@ -66,38 +70,42 @@ const AddLocation = ({ route, navigation }) => {
   let location;
   const [initAddLocation, setInitAddLocation] = useState(false);
 
-  const { customerId,
-    fromPage,
-    excludingSavedAddress = [],
-    includingSavedAddress = [], isEditAddress } = { isEditAddress: false, customerId: 123132, fromPage: false, excludingSavedAddress: [], includingSavedAddress };
-
-  // const {
+  // const { customerId,
   //   fromPage,
   //   excludingSavedAddress = [],
-  //   includingSavedAddress = [],
-  //   isEditAddress = false,
-  // } = route.params;
+  //   includingSavedAddress = [], isEditAddress } = { isEditAddress: false, customerId: 123132, fromPage: false, excludingSavedAddress: [], includingSavedAddress };
 
-  console.log(
-    ">>",
-    isEditAddress,
-    includingSavedAddress,
-    excludingSavedAddress
-  );
+  const {
+    fromPage,
+    excludingSavedAddress = [],
+    includingSavedAddress = [],
+    isEditAddress = false,
+  } = route.params;
+
+
 
   if (fromPage === "Register") {
     savedLocation = savedLocationWithoutAuth;
   }
 
   const [selectedValueDist, setValueDist] = useState("");
+  const [selectedValueState, setValueState] = useState("");
+
+  const [selectedValueCountry, setValueCounty] = useState("");
+
   const [selectedValueAddr, setValueSelAddr] = useState("");
   const [selectedValueKampong, setValueKampong] = useState("");
   const [selectedValuePostcode, setValuePostcode] = useState("");
 
   const [distName, setDistName] = useState("");
+  const [stateName, setStateName] = useState("");
+
+  const [countyName, setCountryName] = useState("");
+
   const [kampongName, setKampongName] = useState("");
   const [postcode, setPostcodeName] = useState("");
-  const [simpangText, setSimpangText] = useState("");
+  const [streetText, setStreetText] = useState("");
+  const [buildNameText, setbuildNameText] = useState("");
   const [addreType, setAddrType] = useState("");
   const [hno, setHno] = useState("");
   const hideAddLocationModal = () => setAddLocationModalVisible(false);
@@ -107,16 +115,21 @@ const AddLocation = ({ route, navigation }) => {
     // isAddLocationModalVisible
     setAddLocationModalVisible(!isAddLocationModalVisible);
     if (geoAddress != "") {
+      setValueCounty("")
+      setValueState("")
       showAddLocationModal();
       setValueDist("");
       setDistName("");
+      setStateName("")
+      setCountryName("")
+      setbuildNameText("")
       setAddrType("");
       setValueSelAddr("");
       setValueKampong("");
       setKampongName("");
       setValuePostcode("");
       setPostcodeName("");
-      setSimpangText("");
+      setStreetText("");
       setHno("");
     }
   };
@@ -130,14 +143,16 @@ const AddLocation = ({ route, navigation }) => {
           geoAddress: geoAddress,
           currentLatitude: currentLatitude,
           currentLongitude: currentLongitude,
-          street: simpangText,
-          state: kampongName,
+          street: streetText,
+          state: stateName,
           district: distName,
-          country: country,
+          country: countyName,
           longitude: currentLongitude,
           latitude: currentLatitude,
           postCode: postcode,
           hno: hno,
+          city: kampongName,
+          buildingName: buildNameText,
           dialPick,
           addressType: addreType?.code,
         });
@@ -148,15 +163,16 @@ const AddLocation = ({ route, navigation }) => {
           address: {
             isPrimary: false,
             addressType: addreType?.code,
-            address1: simpangText,
-            address2: kampongName,
+            address1: buildNameText,
+            address2: `${distName},${stateName}`,
             address3: `${country},${postcode}`,
-            addrZone: country,
-            city: simpangText,
-            district: simpangText,
-            state: kampongName,
+            addrZone: countyName,
+            city: kampongName,
+            houseNo: hno,
+            district: distName,
+            state: stateName,
             postcode: postcode,
-            country: country,
+            country: countyName,
             longitude: currentLongitude.toString(),
             latitude: currentLatitude.toString(),
           },
@@ -319,7 +335,15 @@ const AddLocation = ({ route, navigation }) => {
       );
     }
   };
-
+  const getAddressForCustomDropDown = (adrs) => {
+    const data = adrs.map(item => {
+      return ({
+        code: JSON.stringify(item),
+        description: `${item.state},${item.region},${item.country},${item.district}`
+      })
+    })
+    return data
+  }
   const getUniqueDistricts = () => {
     let uniqueDistrictKey = [];
 
@@ -327,7 +351,28 @@ const AddLocation = ({ route, navigation }) => {
     if (savedLocation?.addressLoopupData?.length > 0) {
       savedLocation?.addressLoopupData?.map((item) => {
         if (!(uniqueDistrictKey.indexOf(item.district) > -1)) {
-          uniqueDistrictKey.push(item.district);
+          if (item.state == stateName) {
+            uniqueDistrictKey.push(item.district);
+          }
+        }
+      });
+
+      uniqueDistrictKey?.map((item) => {
+        uniqueDistrictData.push({ description: item, id: item });
+      });
+    }
+
+    return uniqueDistrictData;
+  };
+
+  const getUniqueState = () => {
+    let uniqueDistrictKey = [];
+
+    let uniqueDistrictData = [];
+    if (savedLocation?.addressLoopupData?.length > 0) {
+      savedLocation?.addressLoopupData?.map((item) => {
+        if (!(uniqueDistrictKey.indexOf(item.state) > -1)) {
+          uniqueDistrictKey.push(item.state);
         }
       });
 
@@ -339,6 +384,8 @@ const AddLocation = ({ route, navigation }) => {
     return uniqueDistrictData;
   };
   const getAddresType = () => {
+    const addressTypeList = get(masterReducer, "masterdataData.ADDRESS_TYPE", []);
+
     let excludeAddressType = [];
     let includeAddressTypes = [];
     if (excludingSavedAddress.length != 0) {
@@ -354,8 +401,8 @@ const AddLocation = ({ route, navigation }) => {
     console.log("from getadd", includeAddressTypes);
     let result = [];
 
-    if (savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE?.length > 0) {
-      savedLocationWithoutAuth?.registerFormData?.ADDRESS_TYPE.map((item) => {
+    if (addressTypeList?.length > 0) {
+      addressTypeList.map((item) => {
         if (!isEditAddress && !excludeAddressType.includes(item.code)) {
           result.push({ description: item.description, code: item.code });
         }
@@ -370,7 +417,9 @@ const AddLocation = ({ route, navigation }) => {
     fetchRegisterFormData,
   ]);
   useEffect(() => {
-    dispatch1(fetchRegisterFormData());
+    // dispatch1(fetchRegisterFormData());
+    const { COUNTRY, ADDRESS_TYPE } = MASTER_DATA_CONSTANT;
+    dispatch(getMasterData(`${COUNTRY},${ADDRESS_TYPE}`));
     animateToCurrentLocation();
   }, [locationGet]);
 
@@ -385,6 +434,7 @@ const AddLocation = ({ route, navigation }) => {
   useEffect(() => {
     getUniqueDistricts();
   }, []);
+  const masterReducer = useSelector((state) => state.masterdata);
 
   const CheckForGPSEnablement = () => {
     return new Promise((resolve) => {
@@ -418,6 +468,23 @@ const AddLocation = ({ route, navigation }) => {
     });
   };
 
+  const onCountyClick = (text) => {
+    setCountryName(text.code)
+    setDistName("");
+    setValueKampong("");
+    setKampongName("");
+    setValuePostcode("");
+    setPostcodeName("");
+  };
+
+  const onStateClick = (text) => {
+    setStateName(text.description)
+    setDistName("");
+    setValueKampong("");
+    setKampongName("");
+    setValuePostcode("");
+    setPostcodeName("");
+  };
   const onDistrictClick = (text) => {
     setDistName(text.description);
     setValueKampong("");
@@ -507,9 +574,19 @@ const AddLocation = ({ route, navigation }) => {
 
     return finalPostcodeData;
   };
+  const getCountryList = () => {
 
+    const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
+    if (countryGetList.length == 0) return []
+    return countryGetList.map(item => (
+      { code: item?.code, description: item.description }
+    ))
+  }
   return (
     <SafeAreaView style={styles.container}>
+      {loader && (
+        <LoadingAnimation title="while we are fetching country" />
+      )}
       <MapView
         showsUserLocation={true}
         provider={PROVIDER_GOOGLE}
@@ -756,12 +833,69 @@ const AddLocation = ({ route, navigation }) => {
                   console.log(">>", text);
                   setAddrType(text);
                 }}
+
                 value={addreType}
                 isDisableDropDown={activeDropDown != "setAddrType"}
                 placeHolder={strings.address_type + "*"}
               />
             </View>
             <View>
+              {/*point select postal code  */}
+              {/* <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  value={searchPostalCode}
+                  caption={"Enter post code"}
+                  placeHolder={"Enter post code"}
+                  onChangeText={(text) => {
+                    setSerachPostalCode(text)
+                  }}
+                  right={
+                    (<TextInput.Icon
+                      onPress={() => {
+                        dispatch1(fetchRegisterFormData(searchPostalCode));
+                      }}
+                      style={{ width: 23, height: 23 }}
+                      icon="eature-search-outline"
+                    />
+                    )
+
+                  }
+                />
+              </View> */}
+
+              {/* {savedLocation?.addressLoopupData?.length > 0 &&
+                <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                  <CustomDropDownFullWidth
+                    setDropDownEnable={() => setActiveDropDown("district")}
+                    isDisable={true}
+                    selectedValue={selectedValueDist}
+                    setValue={setValueDist}
+                    data={
+                      getAddressForCustomDropDown(savedLocation?.addressLoopupData) ?? []
+                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                    }
+                    onChangeText={(text) => {
+
+                      const addressSel = JSON.parse(text.code)
+                      console.log('address', addressSel)
+                      setDistName(addressSel.district)
+                      setValueDist(addressSel.district)
+                      setStreetText(addressSel?.region || "")
+                      setCountry(addressSel.country)
+                      setValueKampong(addressSel.city)
+                      setKampongName(addressSel.city)
+                      setPostcodeName(addressSel.postCode)
+                      setValuePostcode(addressSel.postCode)
+
+                    }
+                    }
+                    value={distName}
+                    isDisableDropDown={activeDropDown != "district"}
+                    placeHolder={"Choose address"}
+                  />
+                </View>
+              } */}
+
               <View style={{ marginTop: 10 }}>
                 <CustomInput
                   value={hno}
@@ -772,13 +906,64 @@ const AddLocation = ({ route, navigation }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <CustomInput
-                  onChangeText={setSimpangText}
-                  value={simpangText}
-                  caption={strings.simpang}
-                  placeHolder={strings.simpang}
+                  onChangeText={setbuildNameText}
+                  value={buildNameText}
+                  caption={strings.building_name}
+                  placeHolder={strings.building_name}
                 />
               </View>
 
+              <View style={{ marginTop: 10 }}>
+                <CustomInput
+                  onChangeText={setStreetText}
+                  value={streetText}
+                  caption={strings.street}
+                  placeHolder={strings.street}
+                />
+              </View>
+              <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                <CustomDropDownFullWidth
+                  setDropDownEnable={() => setActiveDropDown("country")}
+                  isDisable={true}
+                  selectedValue={selectedValueCountry}
+                  setValue={setValueCounty}
+                  data={
+                    getCountryList() ?? []
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => {
+                    console.log('>>', text)
+                    onCountyClick(text)
+                    setLoader(true)
+                    dispatch1(fetchRegisterFormData({
+                      type: "COUNTRY",
+                      search: text?.code
+                    }, () => setLoader(false)));
+
+
+                  }}
+                  value={countyName}
+                  isDisableDropDown={activeDropDown != "country"}
+                  placeHolder={strings.country + "*"}
+                />
+              </View>
+
+              <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                <CustomDropDownFullWidth
+                  setDropDownEnable={() => setActiveDropDown("state")}
+                  isDisable={true}
+                  selectedValue={selectedValueState}
+                  setValue={setValueState}
+                  data={
+                    getUniqueState() ?? []
+                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                  }
+                  onChangeText={(text) => onStateClick(text)}
+                  value={stateName}
+                  isDisableDropDown={activeDropDown != "state"}
+                  placeHolder={"State" + "*"}
+                />
+              </View>
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("district")}
@@ -798,7 +983,6 @@ const AddLocation = ({ route, navigation }) => {
 
               <View style={{ marginTop: 12, zIndex: 3, elevation: 6 }}>
                 <CustomDropDownFullWidth
-
                   setDropDownEnable={() => setActiveDropDown("kampong")}
                   isDisableDropDown={activeDropDown != "kampong"}
                   selectedValue={selectedValueKampong}
@@ -820,10 +1004,11 @@ const AddLocation = ({ route, navigation }) => {
                   elevation: 2,
                 }}
               >
+
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("postCode")}
                   isDisable={false}
-                  selectedValue={selectedValuePostcode}
+                  selectedValue={"2313"}
                   isDisableDropDown={activeDropDown != "postCode"}
                   setValue={setValuePostcode}
                   data={
@@ -850,7 +1035,7 @@ const AddLocation = ({ route, navigation }) => {
                     distName === "" ||
                     kampongName === "" ||
                     postcode === "" ||
-                    simpangText === ""
+                    streetText === ""
                   }
                   loading={initAddLocation}
                   label={strings.ok}
