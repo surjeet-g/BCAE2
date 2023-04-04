@@ -9,17 +9,6 @@ import DashedDivider from "./../../Components/DashedDivider";
 const Product = (props) => {
   const { item, products, setProducts } = props;
 
-  const calculatePrice = () => {
-    let price = 0;
-    const { productChargesList } = item;
-    if (productChargesList?.length > 0) {
-      productChargesList?.forEach((element) => {
-        price = price + parseInt(element.chargeAmount);
-      });
-    }
-    return price;
-  };
-
   const handleQuantity = (step) => {
     let currentQuantity = item.quantity;
     if (step === 1) {
@@ -63,10 +52,8 @@ const Product = (props) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.priceTxt}>{"$ " + calculatePrice()}</Text>
-          <Text style={styles.oldpriceTxt}>
-            {"$ " + (calculatePrice() + 200)}
-          </Text>
+          <Text style={styles.priceTxt}>{"$ " + item.price}</Text>
+          <Text style={styles.oldpriceTxt}>{"$ " + (item.price + 200)}</Text>
         </View>
         {/* Quantity */}
         <View style={styles.quantityView}>
