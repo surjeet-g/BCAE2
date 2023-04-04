@@ -101,7 +101,7 @@ const EditProfile = ({ navigation, props }) => {
         setLoginId(result.loginId);
       }
     });
-    dispatch1(fetchRegisterFormData());
+    // dispatch1(fetchRegisterFormData());
   }, []);
 
   useLayoutEffect(() => {

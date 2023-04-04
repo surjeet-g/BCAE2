@@ -14,9 +14,10 @@ export const CustomDropDownSearch = (props) => {
     data,
     customStyle = {},
     onChangeText,
+    searchEnable = false
   } = props;
   let filteredData = data;
-  if (searchText != "") {
+  if (searchText != "" && searchEnable) {
     filteredData = data.length == 0 ? [] : data.filter(item => (item?.description?.toLowerCase().search(searchText.toLowerCase()) != -1))
   }
 
@@ -71,9 +72,9 @@ export const CustomDropDownSearch = (props) => {
         </Text>
         <View style={{}}>
           <CustomInput
-            value={searchText}
+            value={searchEnable ? searchText : selectedValue}
             hideCaption={true}
-            editable={true}
+            editable={searchEnable ? true : false}
             caption={placeHolder}
             placeholder={placeHolder}
             style={{ ...styles.textInput, ...customStyle }}
@@ -100,7 +101,7 @@ export const CustomDropDownSearch = (props) => {
         <View style={styles.dropDownCard}>
           <FlatList
             data={filteredData ?? []}
-
+            nestedScrollEnabled
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
           // keyExtractor={item => item.description}

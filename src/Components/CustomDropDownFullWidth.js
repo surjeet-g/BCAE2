@@ -44,7 +44,7 @@ export const CustomDropDownFullWidth = (props) => {
   );
 
   return (
-    <View style={{ zIndex: 0, marginTop: 10 }}>
+    <View style={{ zIndex: 1, marginTop: 10 }}>
       <View
         style={{
           flexDirection: "column",
@@ -84,8 +84,9 @@ export const CustomDropDownFullWidth = (props) => {
       {hideShow && (
         <View style={styles.dropDownCard}>
           <FlatList
+            nestedScrollEnabled
             data={data ?? []}
-
+            contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
           // keyExtractor={item => item.description}
