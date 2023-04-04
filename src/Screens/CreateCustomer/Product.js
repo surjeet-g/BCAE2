@@ -29,7 +29,7 @@ const Product = (props) => {
     }
 
     let newProducts = products.map((product) => {
-      if (product.id === item.id) {
+      if (product.productId === item.productId) {
         product.quantity = currentQuantity;
       }
       return product;
