@@ -416,9 +416,25 @@ const CreateCustomer = (props) => {
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={4}
-          data={[{}, {}, {}, {}, {}]}
+          data={[
+            {
+              id: 1,
+              name: "Postpaid",
+              icon: require("../../Assets/icons/ic_postpaid.png"),
+            },
+            {
+              id: 2,
+              name: "Prepaid",
+              icon: require("../../Assets/icons/ic_prepaid.png"),
+            },
+            {
+              id: 3,
+              name: "Hybrid",
+              icon: require("../../Assets/icons/ic_word.png"),
+            },
+          ]}
           renderItem={({ item, index }) => (
-            <ServiceCategory name={`Category ${index + 1}`} />
+            <ServiceCategory name={item.name} icon={item.icon} />
           )}
           keyExtractor={(item, index) => index}
         />
