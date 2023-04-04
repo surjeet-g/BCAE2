@@ -34,10 +34,13 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme, Modal, Checkbox } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchServiceProducts } from "./CreateCustomerDispatcher";
 
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
+  const dispatch = useDispatch([fetchServiceProducts]);
   const [formCustomerData, setFormCustomerData] = useState({});
   const [currentStep, setCurrentStep] = useState(3);
   const [stepIndicator, setStepIndicator] = useState(0);
@@ -74,6 +77,19 @@ const CreateCustomer = (props) => {
       quantity: 0,
     },
   ]);
+
+  let createCustomerReducerData = useSelector(
+    (state) => state.createCustomerReducerData
+  );
+
+  useEffect(() => {
+    console.log("$$$-useEffect for setting the products");
+    console.log(
+      "$$$-useEffect createCustomerReducerData.products.length",
+      createCustomerReducerData.products.length
+    );
+    setProducts(createCustomerReducerData.products);
+  }, []);
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
@@ -417,21 +433,30 @@ const CreateCustomer = (props) => {
             {
               id: 1,
               name: "Postpaid",
+              code: "PT_POSTPAID",
               icon: require("../../Assets/icons/ic_postpaid.png"),
             },
             {
               id: 2,
               name: "Prepaid",
+              code: "PT_PREPAID",
               icon: require("../../Assets/icons/ic_prepaid.png"),
             },
             {
               id: 3,
               name: "Hybrid",
+              code: "PT_HYBRID",
               icon: require("../../Assets/icons/ic_word.png"),
             },
           ]}
           renderItem={({ item, index }) => (
-            <ServiceCategory name={item.name} icon={item.icon} />
+            <ServiceCategory
+              name={item.name}
+              icon={item.icon}
+              onClick={() => {
+                dispatch(fetchServiceProducts(item.code, navigation));
+              }}
+            />
           )}
           keyExtractor={(item, index) => index}
         />
@@ -445,18 +470,22 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
         /> */}
-        <CustomTitleText title={"Available Products"} />
-        <FlatList
-          data={products}
-          renderItem={({ item, index }) => (
-            <Product
-              item={item}
-              products={products}
-              setProducts={setProducts}
+        {products.length > 0 && (
+          <View>
+            <CustomTitleText title={"Available Products"} />
+            <FlatList
+              data={products}
+              renderItem={({ item, index }) => (
+                <Product
+                  item={item}
+                  products={products}
+                  setProducts={setProducts}
+                />
+              )}
+              keyExtractor={(item, index) => index}
             />
-          )}
-          keyExtractor={(item, index) => index}
-        />
+          </View>
+        )}
       </View>
     );
   };

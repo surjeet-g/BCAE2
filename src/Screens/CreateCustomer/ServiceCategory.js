@@ -2,11 +2,15 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 
 const ServiceCategory = (props) => {
-  const { name = "NA", icon = "" } = props;
+  const { name = "NA", icon = "", onClick } = props;
   const [selected, setSelected] = useState(false);
 
+  const handleOnPress = () => {
+    onClick();
+    setSelected(!selected);
+  };
   return (
-    <Pressable style={styles.container} onPress={() => setSelected(!selected)}>
+    <Pressable style={styles.container} onPress={handleOnPress}>
       <View
         style={{
           ...styles.imgView,
@@ -33,7 +37,7 @@ export default ServiceCategory;
 const styles = StyleSheet.create({
   container: { alignSelf: "center", margin: 10, flex: 1, alignItems: "center" },
   imgView: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#DADADA",
     borderRadius: 10,
     padding: 10,

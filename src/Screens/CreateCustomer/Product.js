@@ -8,6 +8,18 @@ import DashedDivider from "./../../Components/DashedDivider";
 
 const Product = (props) => {
   const { item, products, setProducts } = props;
+  console.log("$$$-item", item);
+
+  const calculatePrice = () => {
+    let price = 0;
+    const { productChargesList } = item;
+    if (productChargesList?.length > 0) {
+      productChargesList?.forEach((element) => {
+        price = price + parseInt(element.chargeAmount);
+      });
+    }
+    return price;
+  };
 
   const handleQuantity = (step) => {
     let currentQuantity = item.quantity;
@@ -35,11 +47,13 @@ const Product = (props) => {
       </Text>
       {/* Product */}
       <View style={styles.productTxtView}>
-        <Text style={styles.productNameTxt}>{item.name}</Text>
+        <Text style={styles.productNameTxt}>{item.productName}</Text>
         <Text style={styles.productTypeTxt}>
-          {"\u2B24 1 Regular + 3 Free family add-ons"}
+          {"\u2B24 Service Type: " + item.serviceTypeDescription?.description}
         </Text>
-        <Text style={styles.productTypeTxt}>{"\u2B24 Specification"}</Text>
+        <Text style={styles.productTypeTxt}>
+          {"\u2B24 Product Type: " + item.productTypeDescription?.description}
+        </Text>
       </View>
       <DashedDivider />
       <View
@@ -50,8 +64,8 @@ const Product = (props) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.priceTxt}>{"$" + item.price}</Text>
-          <Text style={styles.oldpriceTxt}>{"$" + (item.price + 200)}</Text>
+          <Text style={styles.priceTxt}>{"$ 1989"}</Text>
+          <Text style={styles.oldpriceTxt}>{"$" + (1989 + 200)}</Text>
         </View>
         {/* Quantity */}
         <View style={styles.quantityView}>
