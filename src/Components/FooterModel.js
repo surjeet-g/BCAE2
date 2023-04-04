@@ -27,8 +27,8 @@ export const FooterModel = ({
           backgroundColor: "white",
           minHeight: height * 0.2,
           maxHeight: height * 0.8,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
           ...SHADOW_STYLE,
         }}
       >

@@ -101,7 +101,7 @@ const EditProfile = ({ navigation, props }) => {
         setLoginId(result.loginId);
       }
     });
-    dispatch1(fetchRegisterFormData());
+    // dispatch1(fetchRegisterFormData());
   }, []);
 
   useLayoutEffect(() => {
@@ -424,14 +424,14 @@ const EditProfile = ({ navigation, props }) => {
       };
     });
   }
-  console.log('profile reducers', profile)
+
   const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
   console.log('is consumer', isConsumer)
   const emailPath = isConsumer ? "savedProfileData.customerContact[0].emailId" : "savedProfileData.email"
   const custoPath = isConsumer ? "savedProfileData.customerNo" : "savedProfileData.userId"
   const countyPath = isConsumer ? "savedProfileData.customerAddress[0].country" : "savedProfileData.country"
   const mobilePath = isConsumer ? "savedProfileData.customerContact[0].mobileNo" : "savedProfileData.contactNo"
-
+  console.log('profile reducers', addresss)
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {profile.initProfile && (

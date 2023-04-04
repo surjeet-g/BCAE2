@@ -26,13 +26,14 @@ function SavedLocationItem({
   onSetPrimary,
 }) {
   const { colors } = useTheme();
-  let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
-  console.log("saved date", savedLocationWithoutAuth);
+  let masterReducer = useSelector((state) => state.masterdata);
+  console.log("saved date", masterReducer);
   const getAllAddressType = get(
-    savedLocationWithoutAuth,
-    "registerFormData.ADDRESS_TYPE",
+    masterReducer,
+    "masterdataData.ADDRESS_TYPE",
     []
   );
+
   const dispatch = useDispatch([deleteSavedLocation]);
 
   const getAddressString = (data) => {

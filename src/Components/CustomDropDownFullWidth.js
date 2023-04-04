@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
 import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
@@ -42,7 +42,7 @@ export const CustomDropDownFullWidth = (props) => {
   );
 
   return (
-    <View style={{ zIndex: 0, marginTop: 10 }}>
+    <View style={{ zIndex: 1, marginTop: 10 }}>
       <View
         style={{
           flexDirection: "column",
@@ -80,7 +80,9 @@ export const CustomDropDownFullWidth = (props) => {
       {hideShow && (
         <View style={styles.dropDownCard}>
           <FlatList
+            nestedScrollEnabled
             data={data ?? []}
+            contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
             // keyExtractor={item => item.description}

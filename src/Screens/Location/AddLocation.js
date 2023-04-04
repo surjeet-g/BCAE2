@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
-  Image, Platform, SafeAreaView,
+  Image,
+  Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -163,12 +165,11 @@ const AddLocation = ({ route, navigation }) => {
           address: {
             isPrimary: false,
             addressType: addreType?.code,
-            address1: buildNameText,
+            address1: `${hno},${buildNameText}`,
             address2: `${distName},${stateName}`,
-            address3: `${country},${postcode}`,
+            address3: `${countyName},${postcode}`,
             addrZone: countyName,
             city: kampongName,
-            houseNo: hno,
             district: distName,
             state: stateName,
             postcode: postcode,
@@ -250,7 +251,7 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
-        setCountry(res["0"]?.country);
+        // setCountry(res["0"]?.country);
 
         if (countryCode != "") {
           setDialPick(
@@ -413,9 +414,7 @@ const AddLocation = ({ route, navigation }) => {
     }
     return result;
   };
-  const dispatch1 = useDispatch([
-    fetchRegisterFormData,
-  ]);
+  const dispatch1 = useDispatch([fetchRegisterFormData]);
   useEffect(() => {
     // dispatch1(fetchRegisterFormData());
     const { COUNTRY, ADDRESS_TYPE } = MASTER_DATA_CONSTANT;
@@ -470,7 +469,10 @@ const AddLocation = ({ route, navigation }) => {
 
   const onCountyClick = (text) => {
     setCountryName(text.code)
+    setStateName("")
+    setValueState("")
     setDistName("");
+    setValueDist("")
     setValueKampong("");
     setKampongName("");
     setValuePostcode("");
@@ -480,6 +482,7 @@ const AddLocation = ({ route, navigation }) => {
   const onStateClick = (text) => {
     setStateName(text.description)
     setDistName("");
+    setValueDist("")
     setValueKampong("");
     setKampongName("");
     setValuePostcode("");
@@ -530,27 +533,24 @@ const AddLocation = ({ route, navigation }) => {
     let uniqueDistrictData = [];
     //("entering inside");
     if (savedLocation?.addressLoopupData?.length > 0 && distName != "") {
-
-
       // console.warn("entering inside");
       const addrByDistrict = savedLocation?.addressLoopupData.filter(
         (addr) => addr.district == distName
       );
       //console.warn("point", addrByDistrict);
       if (addrByDistrict.length != 0) {
-        console.log('point 1', addrByDistrict)
+        console.log("point 1", addrByDistrict);
         addrByDistrict.map((item) => {
           if (!(uniqueDistrictKey.indexOf(item.city) > -1)) {
             uniqueDistrictKey.push(item.city);
           }
         });
 
-
-        console.log('point 2', uniqueDistrictKey)
+        console.log("point 2", uniqueDistrictKey);
         finalKampongData = uniqueDistrictKey.map((item) => {
           return { description: item, id: item };
         });
-        console.log('point 3', finalKampongData)
+        console.log("point 3", finalKampongData);
       }
     }
     // console.warn("", savedLocation?.addressLoopupData);
@@ -785,7 +785,7 @@ const AddLocation = ({ route, navigation }) => {
         setOpen={setAddLocationModalVisible}
         title={`Enter address details`}
       >
-        <View>
+        <View style={{ marginBottom: 30 }}>
           <View
             style={{
               // height: height * 0.65,
@@ -923,6 +923,7 @@ const AddLocation = ({ route, navigation }) => {
               </View>
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                 <CustomDropDownFullWidth
+                  searchEnable={true}
                   setDropDownEnable={() => setActiveDropDown("country")}
                   isDisable={true}
                   selectedValue={selectedValueCountry}
@@ -945,6 +946,7 @@ const AddLocation = ({ route, navigation }) => {
                   value={countyName}
                   isDisableDropDown={activeDropDown != "country"}
                   placeHolder={strings.country + "*"}
+                  caption={strings.country + "*"}
                 />
               </View>
 
@@ -962,6 +964,7 @@ const AddLocation = ({ route, navigation }) => {
                   value={stateName}
                   isDisableDropDown={activeDropDown != "state"}
                   placeHolder={"State" + "*"}
+                  caption={"State" + "*"}
                 />
               </View>
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
@@ -978,6 +981,8 @@ const AddLocation = ({ route, navigation }) => {
                   value={distName}
                   isDisableDropDown={activeDropDown != "district"}
                   placeHolder={strings.district + "*"}
+                  caption={strings.district + "*"}
+
                 />
               </View>
 
@@ -994,6 +999,7 @@ const AddLocation = ({ route, navigation }) => {
                   onChangeText={(text) => onKampongClick(text)}
                   value={kampongName}
                   placeHolder={"City *"}
+                  caption={"City *"}
                 />
               </View>
               <View
@@ -1008,7 +1014,7 @@ const AddLocation = ({ route, navigation }) => {
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("postCode")}
                   isDisable={false}
-                  selectedValue={"2313"}
+                  selectedValue={selectedValuePostcode}
                   isDisableDropDown={activeDropDown != "postCode"}
                   setValue={setValuePostcode}
                   data={

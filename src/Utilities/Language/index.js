@@ -2,9 +2,8 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
-    building_name: "Building Name/Others",
-
-    street: "Street",
+    building_name: "Building Name/Others*",
+    street: "Street*",
     customer_name: "Customer Name",
     previous: "Previous",
     save: "Save",
@@ -225,8 +224,9 @@ export let strings = new LocalizedStrings({
     inquiryInfo: "Inquiry info",
     no_info: "No info available currently!!!",
     simpang: "Simpang*",
-    hno: "H.No/Jalan*",
+    hno: "House No/Block*",
     district: "District",
+    city: "City",
     address_type: "Address type",
     kampong: "Kampong",
     postCode: "Postcode",
@@ -280,7 +280,6 @@ export let strings = new LocalizedStrings({
   },
   en: {
     building_name: "Building Name/Others",
-
     street: "Street",
     customer_name: "Customer Name",
     previous: "Previous",
@@ -502,8 +501,9 @@ export let strings = new LocalizedStrings({
     inquiryInfo: "Inquiry info",
     no_info: "No info available currently!!!",
     simpang: "Simpang*",
-    hno: "H.No/Jalan*",
-    district: "District",
+    hno: "House No/Block*",
+    district: "District*",
+    city: "City*",
     address_type: "Address type",
     kampong: "Kampong",
     postCode: "Postcode",
@@ -779,8 +779,9 @@ export let strings = new LocalizedStrings({
     inquiryInfo: "Maklumat pertanyaan",
     no_info: "Tiada maklumat tersedia buat masa ini!!!",
     simpang: "Simpang*",
-    hno: "H.No/Jalan*",
+    hno: "House No/Block*",
     district: "Daerah",
+    city: "City",
     address_type: "Jenis Alamat",
     kampong: "Kampong",
     postCode: "Poskod",
