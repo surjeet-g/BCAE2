@@ -37,7 +37,7 @@ import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import { getUserId } from "../../Utilities/UserManagement/userInfo";
+import { getUserId, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 // import RNRestart from "react-native-restart";
 const ICON = 25;
 
@@ -59,19 +59,45 @@ export const ViewProfile = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(fetchMyProfileData(navigation));
+  }, []);
+
+  useEffect(() => {
     async function getUserID() {
-      const language = await getLanguage();
       const userID = await getUserId();
+      const language = await getLanguage();
       setSelectedLanguage(language.name);
-      setUserInfo({
-        email: profileResult?.customerContact[0]?.emailId,
-        name: `${profileResult?.firstName} ${profileResult?.lastName}`,
-        userId: userID,
-        profilePicture: profileResult?.customerPhoto,
-      });
+      if (profileResult.typeOfUser == USERTYPE.CUSTOMER) {
+        setUserInfo({
+          email: profileResult?.customerContact[0]?.emailId,
+          name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.profilePicture,
+        });
+      } else {
+        console.log("hititn", profileResult);
+        setUserInfo({
+          email: profileResult?.email,
+          name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+          userId: userID,
+          profilePicture: profileResult?.customerPhoto,
+        });
+      }
     }
     getUserID();
-  }, []);
+  }, [profileResult.typeOfUser]);
+
+  // async function getUserID() {
+  //   const language = await getLanguage();
+  //   const userID = await getUserId();
+  //   setSelectedLanguage(language.name);
+  //   setUserInfo({
+  //     email: profileResult?.email,
+  //     name: `${profileResult?.firstName} ${profileResult?.lastName}`,
+  //     userId: userID,
+  //     profilePicture: profileResult?.customerPhoto,
+  //   });
+  // }
+  // getUserID();
 
   const showLanguageModal = () => {
     setIschangeLanguageModalVisible(true);
@@ -165,6 +191,9 @@ export const ViewProfile = ({ navigation }) => {
     ]);
 
   const onFaqPressed = () => {};
+  const onAnnouncementPressed = () => {
+    openAnnoncementModal();
+  };
 
   const performLogoutDeleUser = () => {
     //while logout we have to reset the data of first two tab as still it has logout info

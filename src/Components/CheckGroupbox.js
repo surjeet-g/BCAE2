@@ -37,12 +37,17 @@ export const CheckGroupbox = ({ data, label, setValues, values }) => {
           ...commonStyle.row_start_center,
           la: "flex-start",
           flexWrap: "wrap",
+          marginLeft: 12,
         }}
       >
         {data.map((item, index) => (
           <Pressable
             key={index}
-            style={{ ...commonStyle.row_space_arround_center, marginRight: 15 }}
+            style={{
+              ...commonStyle.row_space_arround_center, marginRight: 15,
+              borderColor: "gray", borderWidth: .5, borderRadius: 6,
+              paddingHorizontal: 6, marginBottom: 5
+            }}
             onPress={() => {
               const data = setStatus(values, item);
               console.log("result after ", data);
@@ -55,12 +60,12 @@ export const CheckGroupbox = ({ data, label, setValues, values }) => {
                   ? "checkbox-marked"
                   : "checkbox-blank-outline"
               }
-              size={25}
+              size={20}
               color={colors.primary}
             />
             <Text
               variant="labelMedium"
-              style={{ margin: 10, alignSelf: "baseline", fontSize: 17 }}
+              style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
             >
               {item.description}
             </Text>

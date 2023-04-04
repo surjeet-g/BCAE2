@@ -1,11 +1,11 @@
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "../Utilities/API";
 import {
-  initmasterDataData,
   setmasterDataData,
   setmasterDataError
 } from "./masterDataAction";
 export const MASTER_DATA_CONSTANT = {
+  COUNTRY: "COUNTRY",
   SERVICE_CATEGORY: "SERVICE_CATEGORY",
   STATUS: "STATUS",
   GENDER: "GENDER",
@@ -36,6 +36,7 @@ export const MASTER_DATA_CONSTANT = {
   INTXN_CAUSE: "INTXN_CAUSE", //Interaction Cause
   ENTITY_CATEGORY: "ENTITY_CATEGORY", // Contact Category
   SOURCE: "SOURCE"
+
 };
 export const getMasterData = (valueParam = "") => {
   console.log('hititnf',)
@@ -44,7 +45,7 @@ export const getMasterData = (valueParam = "") => {
   }
   console.log('masterdate para', valueParam)
   return async (dispatch) => {
-    dispatch(initmasterDataData());
+    // dispatch(initmasterDataData());
     let params = {};
     let result = await serverCall(
       `${endPoints.MASTERDATA}?searchParam=code&valueParam=${valueParam}`,

@@ -1,4 +1,5 @@
 import get from "lodash.get";
+import { USERTYPE } from "../Utilities/UserManagement/userInfo";
 import {
   PROFILE_DATA,
   PROFILE_ERROR,
@@ -83,6 +84,13 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
         profileSearchData: action.data,
       };
     case PROFILE_DATA:
+      // eslint-disable-next-line no-case-declarations
+      const isConsumer = (USERTYPE.CUSTOMER == get(action.data, 'typeOfUser'))
+      const emailPath = isConsumer ? "customerContact[0].emailId" : "email"
+      const custoPath = isConsumer ? "customerNo" : "userId"
+      const countyPath = isConsumer ? "customerAddress[0].country" : "country"
+      const mobilePath = isConsumer ? "customerContact[0].mobileNo" : "contactNo"
+
       return {
         ...state,
         initProfile: false,
@@ -99,7 +107,7 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
           idValue: get(action.data, "idValue", ""),
           location: get(action.data, "customerAddress[0]", ""),
 
-          nationality: get(action.data, "customerContact[0].country", ""),
+          nationality: get(action.data, countyPath, ""),
         },
       };
     case PROFILE_ERROR:

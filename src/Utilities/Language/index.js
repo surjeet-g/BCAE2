@@ -2,6 +2,9 @@ import LocalizedStrings from "react-native-localization";
 
 export let strings = new LocalizedStrings({
   "en-US": {
+    building_name: "Building Name/Others",
+
+    street: "Street",
     customer_name: "Customer Name",
     previous: "Previous",
     save: "Save",
@@ -276,6 +279,9 @@ export let strings = new LocalizedStrings({
     currency: "Currency",
   },
   en: {
+    building_name: "Building Name/Others",
+
+    street: "Street",
     customer_name: "Customer Name",
     previous: "Previous",
     save: "Save",
@@ -548,6 +554,8 @@ export let strings = new LocalizedStrings({
     currency: "Currency",
   },
   ml: {
+    building_name: "Building Name/Others",
+    street: "Street",
     customer_name: "Nama Pelanggan",
     previous: "Sebelumnya",
     save: "Jimat",
