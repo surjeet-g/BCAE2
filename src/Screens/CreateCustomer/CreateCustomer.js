@@ -68,13 +68,8 @@ const CreateCustomer = (props) => {
   );
 
   useEffect(() => {
-    console.log("$$$-useEffect for setting the products");
-    console.log(
-      "$$$-useEffect createCustomerReducerData.products.length",
-      createCustomerReducerData.products.length
-    );
     setProducts(createCustomerReducerData.products);
-  }, []);
+  }, [createCustomerReducerData.products]);
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
