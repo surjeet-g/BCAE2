@@ -61,22 +61,7 @@ const CreateCustomer = (props) => {
   const [countryPickModel, setCountryPickModel] = useState(false);
 
   // Used for step 3 & 4 to display list of available & selected products
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: `Product 1`,
-      type: "NA",
-      price: 200,
-      quantity: 0,
-    },
-    {
-      id: 2,
-      name: `Product 2`,
-      type: "NA",
-      price: 300,
-      quantity: 0,
-    },
-  ]);
+  const [products, setProducts] = useState([]);
 
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
