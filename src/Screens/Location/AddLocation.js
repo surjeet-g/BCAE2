@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
-  Image, Platform, SafeAreaView,
+  Image,
+  Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -412,9 +414,7 @@ const AddLocation = ({ route, navigation }) => {
     }
     return result;
   };
-  const dispatch1 = useDispatch([
-    fetchRegisterFormData,
-  ]);
+  const dispatch1 = useDispatch([fetchRegisterFormData]);
   useEffect(() => {
     // dispatch1(fetchRegisterFormData());
     const { COUNTRY, ADDRESS_TYPE } = MASTER_DATA_CONSTANT;
@@ -530,27 +530,24 @@ const AddLocation = ({ route, navigation }) => {
     let uniqueDistrictData = [];
     //("entering inside");
     if (savedLocation?.addressLoopupData?.length > 0 && distName != "") {
-
-
       // console.warn("entering inside");
       const addrByDistrict = savedLocation?.addressLoopupData.filter(
         (addr) => addr.district == distName
       );
       //console.warn("point", addrByDistrict);
       if (addrByDistrict.length != 0) {
-        console.log('point 1', addrByDistrict)
+        console.log("point 1", addrByDistrict);
         addrByDistrict.map((item) => {
           if (!(uniqueDistrictKey.indexOf(item.city) > -1)) {
             uniqueDistrictKey.push(item.city);
           }
         });
 
-
-        console.log('point 2', uniqueDistrictKey)
+        console.log("point 2", uniqueDistrictKey);
         finalKampongData = uniqueDistrictKey.map((item) => {
           return { description: item, id: item };
         });
-        console.log('point 3', finalKampongData)
+        console.log("point 3", finalKampongData);
       }
     }
     // console.warn("", savedLocation?.addressLoopupData);
@@ -947,7 +944,6 @@ const AddLocation = ({ route, navigation }) => {
                   isDisableDropDown={activeDropDown != "country"}
                   placeHolder={strings.country + "*"}
                   caption={strings.country + "*"}
-
                 />
               </View>
 
@@ -966,7 +962,6 @@ const AddLocation = ({ route, navigation }) => {
                   isDisableDropDown={activeDropDown != "state"}
                   placeHolder={"State" + "*"}
                   caption={"State" + "*"}
-
                 />
               </View>
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
