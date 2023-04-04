@@ -7,10 +7,7 @@ const CustomerType = (props) => {
   return (
     <View style={{ flexDirection: "column", backgroundColor: "transparent" }}>
       <Pressable style={styles.imgView} onPress={onPress}>
-        <Image
-          style={styles.img}
-          source={require("../../Assets/icons/ic_word.png")}
-        />
+        <Image style={styles.img} source={icon} />
       </Pressable>
       <Text style={styles.nameTxt}>{name}</Text>
     </View>

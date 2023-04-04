@@ -1097,6 +1097,7 @@ const CreateCustomer = (props) => {
           <View style={styles.modalContainer}>
             <CustomerType
               name={`Business`}
+              icon={require("../../Assets/icons/ic_business.png")}
               onPress={() => {
                 setCustomerType("Business");
                 setShowCustomerTypeModal(false);
@@ -1105,6 +1106,7 @@ const CreateCustomer = (props) => {
             />
             <CustomerType
               name={`Government`}
+              icon={require("../../Assets/icons/ic_government.png")}
               onPress={() => {
                 setCustomerType("Government");
                 setShowCustomerTypeModal(false);
@@ -1113,6 +1115,7 @@ const CreateCustomer = (props) => {
             />
             <CustomerType
               name={`Regular`}
+              icon={require("../../Assets/icons/ic_regular.png")}
               onPress={() => {
                 setCustomerType("Regular");
                 setShowCustomerTypeModal(false);
