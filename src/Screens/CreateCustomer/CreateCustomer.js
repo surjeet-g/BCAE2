@@ -39,7 +39,7 @@ const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
   const [formCustomerData, setFormCustomerData] = useState({});
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(3);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -74,7 +74,6 @@ const CreateCustomer = (props) => {
       quantity: 0,
     },
   ]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
@@ -133,8 +132,6 @@ const CreateCustomer = (props) => {
         break;
     }
   }, [currentStep]);
-
-  console.log("$$$-selectedProducts: ", selectedProducts);
 
   // Step = 0
   const renderUploadDocsUI = () => {
@@ -448,14 +445,14 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
         /> */}
-        <CustomTitleText title={"Accessories"} />
+        <CustomTitleText title={"Available Products"} />
         <FlatList
           data={products}
           renderItem={({ item, index }) => (
             <Product
               item={item}
-              selectedProducts={selectedProducts}
-              setSelectedProducts={setSelectedProducts}
+              products={products}
+              setProducts={setProducts}
             />
           )}
           keyExtractor={(item, index) => index}
@@ -492,7 +489,7 @@ const CreateCustomer = (props) => {
         <SwipeListView
           showsVerticalScrollIndicator={false}
           disableRightSwipe={true}
-          data={selectedProducts}
+          data={products.filter((product) => product.quantity > 0)}
           renderItem={({ item, index }) => <SelectedProduct item={item} />}
           keyExtractor={(item, index) => index}
           renderHiddenItem={renderHiddenItem}
@@ -930,8 +927,9 @@ const CreateCustomer = (props) => {
 
   const calculateGTotal = () => {
     let gTotal = 0;
-    selectedProducts.forEach((product) => {
-      gTotal = gTotal + product.quantity * product.price;
+    products.forEach((product) => {
+      if (product.quantity > 0)
+        gTotal = gTotal + product.quantity * product.price;
     });
     return gTotal;
   };
@@ -947,8 +945,11 @@ const CreateCustomer = (props) => {
   };
 
   const handleContinue = () => {
-    if (currentStep === 3 && selectedProducts.length === 0) {
-      alert("Select atleast one service to continue!!!");
+    if (currentStep === 3) {
+      let item = products.find((product) => product.quantity > 0);
+      if (item === undefined)
+        alert("Select atleast one service to continue!!!");
+      else setCurrentStep(currentStep + 1);
     } else if (currentStep === 5) {
       setShowAccountCreationModal(true);
     } else if (currentStep === 4 && needQuoteOnly) {
