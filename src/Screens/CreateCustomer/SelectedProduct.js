@@ -19,8 +19,10 @@ const SelectedProduct = (props) => {
       {/* Product */}
       <View style={styles.productView}>
         <View style={styles.productTxtView}>
-          <Text style={styles.productNameTxt}>{item.name}</Text>
-          <Text style={styles.productTypeTxt}>{`(${item.type})`}</Text>
+          <Text style={styles.productNameTxt}>{item.productName}</Text>
+          <Text
+            style={styles.productTypeTxt}
+          >{`(${item.productTypeDescription?.description})`}</Text>
         </View>
         <Text style={styles.priceTxt}>{`$ ${item.price}`}</Text>
       </View>
