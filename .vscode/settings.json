@@ -8,12 +8,20 @@
         "source.organizeImports": true,
         "source.sortMembers": true
       },
-      "eslint.validate": [
+    "eslint.alwaysShowStatus": true,  
+    "eslint.validate": [
         "vue",
         "html",
         "javascript",
         "typescript",
         "javascriptreact",
         "typescriptreact"
-    ]
+    ],
+    "eslint.run": "onSave",
+    "git.ignoreLimitWarning": true,
+    "prettier.bracketSameLine": true,
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    }
 }
