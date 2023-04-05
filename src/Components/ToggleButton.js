@@ -24,7 +24,7 @@ export const ToggleButton = (props) => {
         flexDirection: "row",
         backgroundColor: colors.toggleBackground,
         ...SHADOW_STYLE,
-        // padding: 2,
+        padding: 2,
         borderRadius: spacing.HEIGHT_24,
       }}
     >
