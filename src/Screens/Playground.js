@@ -1,106 +1,12 @@
 import React from "react";
-import { Platform, StyleSheet, Text } from "react-native";
-import { CustomDropDownFullWidth } from "../Components/CustomDropDownFullWidth";
-import { FooterModel } from "../Components/FooterModel";
+import { Platform, StyleSheet } from "react-native";
+import { Timeline } from "../Components/TimeLine";
 // import { Success } from "../Components/InteractionSuccess";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 export const Playground = () => {
 
   return (
-    <FooterModel
-      open={true}
-      setOpen={() => { }}
-      title={`Enter address details`}
-    >
-
-
-      <CustomDropDownFullWidth
-        setDropDownEnable={() => { }}
-        isDisable={true}
-        selectedValue={"dfdsf"}
-        setValue={() => { }}
-        data={
-          [
-            { code: "sdfsf", description: "sdfsdf" },
-            { code: "sdfsf", description: "sdfsdf" },
-
-            { code: "sdfsf", description: "sdfsdf" },
-
-            { code: "sdfsf", description: "sdfsdf" },
-
-            { code: "sdfsf", description: "sdfsdf" },
-
-            { code: "sdfsf", description: "sdfsdf" },
-
-
-            { code: "sdfsf", description: "sdfsdf" },
-
-          ]
-          // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-        }
-        onChangeText={(text) => {
-
-
-
-        }}
-        value={"dfdsf"}
-        isDisableDropDown={true}
-        placeHolder={"asdadd*"}
-        caption={"asdasdsd*"}
-
-      />
-
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-      <Text>sdfsdf</Text>
-
-
-    </FooterModel>
+    <Timeline />
   );
 };
 const styles = StyleSheet.create({

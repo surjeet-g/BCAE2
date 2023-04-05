@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
@@ -20,18 +20,16 @@ import { Toast } from "../../Components/Toast";
 import { ToggleButton } from "../../Components/ToggleButton";
 import {
   color,
-  fontSizes,
-  spacing,
-  isValidNumber,
+  fontSizes, isValidNumber, spacing
 } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
-  requestUserPermission,
+  requestUserPermission
 } from "../../Utilities/FCM/NotificationService";
 import { strings } from "../../Utilities/Language";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../Utilities/utils";
 import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
@@ -40,7 +38,7 @@ import {
   resetLogin,
   resetShowSecondLoginAlert,
   sendLoginOTPData,
-  verifyLoginData,
+  verifyLoginData
 } from "./LoginDispatcher";
 
 const BUSINESS = "Business";
@@ -298,7 +296,7 @@ export const Login = ({ navigation }) => {
                   }}
                   textPro={{
                     fontSize: fontSizes.FONT_13,
-                    lineHeight: spacing.HEIGHT_16,
+                    lineHeight: spacing.HEIGHT_20,
                   }}
                   onPressFirst={onSelectBusinessUserType}
                   onPressSecond={onSelectConsumerUserType}
@@ -569,26 +567,26 @@ export const Login = ({ navigation }) => {
           </ScrollView>
           <StickyFooter>
             {/* Login View */}
-            <View>
-              <CustomButton
-                loading={login.initLogin}
-                label={strings.login}
-                isDisabled={
-                  loginMode === EMAIL
-                    ? username == "" || password == ""
-                      ? true
-                      : false
-                    : number == "" || password == ""
+            {/* <View> */}
+            <CustomButton
+              loading={login.initLogin}
+              label={strings.login}
+              isDisabled={
+                loginMode === EMAIL
+                  ? username == "" || password == ""
                     ? true
                     : false
-                }
-                onPress={() => {
-                  loginMode === EMAIL
-                    ? submitWithEmail(PASSWORD)
-                    : submitWithMobile(PASSWORD);
-                }}
-              />
-            </View>
+                  : number == "" || password == ""
+                    ? true
+                    : false
+              }
+              onPress={() => {
+                loginMode === EMAIL
+                  ? submitWithEmail(PASSWORD)
+                  : submitWithMobile(PASSWORD);
+              }}
+            />
+            {/* </View> */}
             <Text
               style={{
                 color: "#393939",

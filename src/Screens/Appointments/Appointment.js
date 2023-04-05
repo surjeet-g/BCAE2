@@ -9,11 +9,13 @@ import {
   StyleSheet, TouchableOpacity,
   View
 } from "react-native";
+// import Timeline from 'react-native-timeline-listview';
 
 import CalendarStrip from "react-native-calendar-strip";
 import Timetable from "react-native-calendar-timetable";
 import { Calendar } from 'react-native-calendars';
-import { Card, Text, useTheme } from "react-native-paper";
+import DatePicker from 'react-native-date-picker';
+import { Card, Divider, Text, TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { BarChartItems } from '../../Components/charts/BarChartItems';
 import { LineCharts } from '../../Components/charts/LineCharts';
@@ -22,12 +24,16 @@ import { ProgressBarCharts } from '../../Components/charts/ProgressBarCharts';
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from '../../Components/CustomButton';
+import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "../../Components/CustomInput";
 import { FooterModel } from '../../Components/FooterModel';
+import { Timeline } from "../../Components/TimeLine";
 import { ToggleButton } from "../../Components/ToggleButton";
-import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
+import { color, DEFAULT_PROFILE_IMAGE, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
 import { navBar } from "../../Utilities/Style/navBar";
+import { SHADOW_STYLE } from "../../Utilities/themeConfig";
 import { subString } from "../../Utilities/utils";
 
 
@@ -35,8 +41,16 @@ const TAB_INTERACTIVE = true;
 const TAB_INFORMATIVE = false;
 
 export const Appointment = ({ navigation }) => {
+  const [createModal, setCreateModal] = useState(false)
+  const [editModel, showEditModel] = useState(false)
+  const [showviewEventModel, setviewEventModel] = useState(true)
+
   const { colors, fonts, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_INTERACTIVE);
+  const [open, setOpen] = useState(false);
+  const [datePickerStartD, setdatePickerStartD] = useState(false)
+  const [datePickerEndD, setdatePickerEndD] = useState(false)
+
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false);
   const { height, width } = Dimensions.get('screen');
   const changeCalendarModalVisibility = () => {
@@ -46,11 +60,12 @@ export const Appointment = ({ navigation }) => {
   { description: "Appointment Type", code: "123", active: "checked" },
   { description: "Customer", code: "123", active: "checked" },
   { description: "Customer Type", code: "123", active: "checked" }]);
+  const [dob, setDob] = useState("");
 
 
   const [isFilterModal, setIsFilterModal] = useState(false)
   const [selected, setSelected] = useState(new Date().toString());
-  const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
+  const marked = ["2023-03-08", "20<C23-03-18", "2023-03-23", "2023-03-28"];
 
   const hideCalendarModal = () => setIsCalendarModalVisible(false);
   const SLOTS = [
@@ -90,7 +105,13 @@ export const Appointment = ({ navigation }) => {
       name: "04.00 - 05.00 ",
     },
   ];
-
+  const viewWorkflow = [
+    { time: '09:00', title: 'Event 1', description: 'Event 1 Description' },
+    { time: '10:45', title: 'Event 2', description: 'Event 2 Description' },
+    { time: '12:00', title: 'Event 3', description: 'Event 3 Description' },
+    { time: '14:00', title: 'Event 4', description: 'Event 4 Description' },
+    { time: '16:30', title: 'Event 5', description: 'Event 5 Description' }
+  ]
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -101,6 +122,7 @@ export const Appointment = ({ navigation }) => {
               ...navBar.roundIconColored,
               backgroundColor: "#8FA1C4"
             }}
+            onPress={() => setCreateModal(true)}
           >
             <Icon name="plus" size={25} color={"#fff"} />
           </Pressable>
@@ -148,10 +170,12 @@ export const Appointment = ({ navigation }) => {
           width: 140,
           height: 100,
           margin: 5,
+          marginLeft: 0,
           padding: 15,
           backgroundColor: "#FFF",
-          borderRadius: 3,
-          elevation: 5,
+          borderRadius: 6,
+          elevation: 1,
+          ...SHADOW_STYLE
         }}
       >
         <View style={{ flex: 1, flexDirection: "column" }}>
@@ -164,10 +188,12 @@ export const Appointment = ({ navigation }) => {
               style={{
                 fontWeight: 700,
                 fontSize: 16,
+                marginBottom: 6,
                 color: colors.secondary,
               }}
             >
               {item.title || "No Name"}
+
             </Text>
           </View>
           {/*required Text to sho like amount */}
@@ -398,12 +424,15 @@ export const Appointment = ({ navigation }) => {
         <>
 
           <Card style={styles.app_container}>
+            <View style={styles.small_strip}>
+              <Text style={styles.small_strip_txt}>Appointment ID: 123213</Text>
+            </View>
             <View style={{
               ...commonStyle.row_end,
               paddingHorizontal: '3%',
-              paddingVertical: '3%'
+              paddingVertical: '1%'
             }}>
-              <View style={{ width: '50%' }}>
+              <View style={{ width: '60%' }}>
                 <Text style={styles.appoint_label}>Customer Name</Text>
                 <ClearSpace />
                 <Text style={styles.appoint_value}>Daina David</Text>
@@ -416,17 +445,17 @@ export const Appointment = ({ navigation }) => {
                 <ClearSpace />
                 <Text style={styles.appoint_value}>Chennai</Text>
               </View>
-              <View style={{ width: "50%" }}>
+              <View style={{ width: "40%" }}>
                 <Text style={styles.appoint_value}></Text>
                 <ClearSpace />
                 <Text style={styles.appoint_label}></Text>
                 <ClearSpace size={2} />
+
+                <Text style={styles.appoint_value}>Appt. type</Text>
+                <ClearSpace />
                 <View>
                   <Image source={require("../../Assets/icons/video_join.png")} />
                 </View>
-
-                <ClearSpace />
-                <Text style={styles.appoint_value}>value</Text>
                 <ClearSpace size={2} />
                 <Text style={styles.appoint_label}>Status</Text>
                 <ClearSpace />
@@ -451,7 +480,7 @@ export const Appointment = ({ navigation }) => {
               marginLeft: 10,
             }}
           >
-            Appointment List
+            Filter  by Appointment
           </Text>
           <Pressable
             style={{ marginRight: 15 }}
@@ -459,13 +488,13 @@ export const Appointment = ({ navigation }) => {
               setIsFilterModal(!isFilterModal);
             }}
           >
-            <Icon name="filter" size={25} color={"#000"} />
+            <Icon name="filter-outline" size={25} color={"#000"} />
           </Pressable>
         </View>
         <ClearSpace size={2} />
         <FlatList
           ItemSeparatorComponent={<ClearSpace size={2} />}
-          contentContainerStyle={{ flex: 1, }}
+          contentContainerStyle={{ flex: 1, paddingHorizontal: 10 }}
           data={data}
           showsHorizontalScrollIndicator={false}
           renderItem={appointmentList}
@@ -502,11 +531,11 @@ export const Appointment = ({ navigation }) => {
               "stylesheet.calendar.header": {
                 dayTextAtIndex0: {
                   color: "white",
-                  backgroundColor: "red",
+                  // backgroundColor: "red",
                 },
                 dayTextAtIndex6: {
                   color: "white",
-                  backgroundColor: "red",
+                  // backgroundColor: "red",
                 },
                 dayTextAtIndex1: {
                   color: "black",
@@ -850,6 +879,7 @@ export const Appointment = ({ navigation }) => {
                   backgroundColor: "#fff",
                   borderRadius: 16,
                   elevation: 5,
+                  paddingBottom: 20
                 }}
               >
                 <CalendarStrip
@@ -859,7 +889,7 @@ export const Appointment = ({ navigation }) => {
                     duration: 300,
                     highlightColor: "#EFA848",
                   }}
-                  style={{ height: 100, paddingTop: 10, paddingBottom: 10, backgroundColor: "red" }}
+                  style={{ height: 100, paddingTop: 10, paddingBottom: 10 }}
                   calendarHeaderStyle={{ color: "black" }}
                   calendarColor={"#ffffff"}
                   monthNameStyle={{ color: "black" }}
@@ -879,7 +909,7 @@ export const Appointment = ({ navigation }) => {
                 {selectedDate ? (
                   <Text style={{ fontSize: 16 }}>Selected Date: {selectedDate}</Text>
                 ) : (
-                  <Text style={{ fontSize: 16 }}>
+                  <Text style={{ fontSize: 16, marginLeft: 10 }}>
                     Selected Date: {moment().format("YYYY-MM-DD")}
                   </Text>
                 )}
@@ -921,8 +951,10 @@ export const Appointment = ({ navigation }) => {
                     flex: 1,
                     flexDirection: "row",
                     padding: 10,
-                    justifyContent: "center",
+                    // paddingLeft: 0,
+                    justifyContent: "flex-start",
                     flexWrap: 'wrap',
+                    // backgroundColor: "red"
                   }}
                 >
                   {SLOTS.map((slot) => {
@@ -944,6 +976,7 @@ export const Appointment = ({ navigation }) => {
                     );
                   })}
                 </View>
+
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
@@ -959,8 +992,9 @@ export const Appointment = ({ navigation }) => {
                     renderHour={(props) => <HourComponent {...props} />}
                   />
                 </View>
-                <AppointListItem data={["one", "tow"]} />
               </View>
+              <AppointListItem data={["one", "tow"]} />
+
             </> :
             <RenderInformative />
           }
@@ -995,6 +1029,454 @@ export const Appointment = ({ navigation }) => {
         </View>
       </Modal> */}
       </View>
+      <FooterModel
+        open={showviewEventModel}
+        setOpen={setviewEventModel}
+        title={"View Event"}
+        subtitle={``}
+      >
+        <View style={{ paddingHorizontal: '3%' }}>
+          <View style={commonStyle.row_start}>
+            <View>
+
+              <Image
+                source={{
+                  uri: `data:image/jpeg;base64,${null || DEFAULT_PROFILE_IMAGE
+                    }`,
+                }}
+                // imageStyle={{ borderRadius: 80 }}
+                style={{
+                  height: 80,
+                  width: 80,
+                  borderRadius: 20,
+                  elevation: 5,
+                }}
+              />
+            </View>
+            <View style={{ marginLeft: 15, marginTop: 0 }}>
+              <Text
+                variant="bodyLarge"
+                style={{ color: "#3E60A0", fontWeight: "600" }}
+              >
+                Rohit Sharma
+              </Text>
+
+              <Text
+                variant="bodySmall"
+                style={{ color: colors.profile_enabled, fontWeight: "500" }}
+              >
+                Appoinment ID : 12323
+              </Text>
+              <ClearSpace size={2} />
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("Profile")
+                }}
+              >
+                <Text
+                  variant="bodySmall"
+                  style={{ color: 'blue', fontWeight: "500" }}
+                >
+                  View Full Profile
+                </Text>
+              </Pressable>
+
+            </View>
+          </View>
+          <ClearSpace />
+          <Divider />
+          <ClearSpace size={2} />
+          <Text style={styles.title}>{strings.statement}</Text>
+          <ClearSpace />
+          <Text>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </Text>
+          <ClearSpace size={2} />
+          <View style={{ ...commonStyle.row_start, flexWrap: 'wrap' }}>
+            <View style={commonStyle.row_start_center}>
+              <View style={{ width: 10, height: 10, borderRadius: 10, marginRight: 5, backgroundColor: 'blue' }} />
+              <Text style={styles.smalltext}>Service Type 1</Text>
+            </View>
+
+            <View style={commonStyle.row_start_center}>
+              <View style={{ width: 10, height: 10, borderRadius: 10, marginRight: 5, backgroundColor: 'blue' }} />
+              <Text style={styles.smalltext}>Service Type 1</Text>
+            </View>
+            <View style={commonStyle.row_start_center}>
+              <View style={{ width: 10, height: 10, borderRadius: 10, marginRight: 5, backgroundColor: 'blue' }} />
+              <Text style={styles.smalltext}>Service Type 1</Text>
+            </View>
+            <View style={commonStyle.row_start_center}>
+              <View style={{ width: 10, height: 10, borderRadius: 10, marginRight: 5, backgroundColor: 'blue' }} />
+              <Text style={styles.smalltext}>Service Type 1</Text>
+            </View>
+            <View style={commonStyle.row_start_center}>
+              <View style={{ width: 10, height: 10, borderRadius: 10, marginRight: 5, backgroundColor: 'blue' }} />
+              <Text style={styles.smalltext}>Service Type 1</Text>
+            </View>
+          </View>
+          <ClearSpace size={2} />
+          <Divider />
+          <ClearSpace size={4} />
+          <Text style={styles.title}>{strings.workflow}</Text>
+          <ClearSpace size={2} />
+          <ClearSpace size={4} />
+          <Timeline
+
+          />
+          <View style={commonStyle.row_space_arround}>
+
+            <View style={{ width: '50%' }}>
+              <CustomButton
+                isDisabled={true}
+                label={strings.rescedule}
+                onPress={() => {
+                  // setOpenBottomModal(false);
+                  // dispatchInteraction(setInteractionReset());
+                }}
+              />
+            </View>
+            <View style={{ width: '50%' }}>
+              <CustomButton
+                isDisabled={false}
+                label={strings.save}
+                onPress={() => {
+                  // setOpenBottomModal(false);
+                  // dispatchInteraction(setInteractionReset());
+                }}
+              />
+            </View>
+          </View>
+
+        </View>
+      </FooterModel>
+      <FooterModel
+        open={editModel}
+        setOpen={showEditModel}
+        title={"Edit Event"}
+        subtitle={``}
+      >
+        <View style={{ paddingHorizontal: '3%' }}>
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.title}
+              placeHolder={strings.title}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.location}
+              placeHolder={strings.city}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={datePickerStartD}
+            onCancel={() => setdatePickerStartD(false)}
+            // date={dob == "" ? new Date() : dob}
+            date={new Date()}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+
+              setdatePickerStartD(false);
+              // setDob(params);
+
+            }}
+          />
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              // onChangeText={(text) => onIDChange(text)}
+              // value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+              caption={strings.start_date}
+              onFocus={() => setdatePickerStartD(true)}
+              placeHolder={strings.start_date}
+              right={
+                <TextInput.Icon
+                  onPress={() => setdatePickerStartD(true)}
+                  theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                  icon="calendar"
+                />
+              }
+            />
+
+          </View>
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={datePickerEndD}
+            onCancel={() => setdatePickerEndD(false)}
+            //  date={dob == "" ? new Date() : dob}
+            date={new Date()}
+
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+
+              setdatePickerEndD(false);
+              // setDob(params);
+
+            }}
+          />
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              // onChangeText={(text) => onIDChange(text)}
+              value={""}
+              //  value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+              caption={strings.end_date}
+              onFocus={() => setdatePickerEndD(true)}
+              placeHolder={strings.end_date}
+              right={
+                <TextInput.Icon
+                  onPress={() => setdatePickerEndD(true)}
+                  theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                  icon="calendar"
+                />
+              }
+            />
+
+          </View>
+          <CheckGroupbox
+            data={[
+              { description: "All", code: "all", active: "unchecked" },
+              { description: "Time Zone", code: "timezone", active: "checked" }
+
+            ]}
+
+
+            values={[{ description: "All", code: "all", active: "checked" }]}
+            setValues={(data) => {
+              // setFilterService(data);
+
+            }}
+            label=""
+          />
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.remarks}
+              placeHolder={strings.remarks}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.description}
+              placeHolder={strings.description}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <ClearSpace size={4} />
+          <View style={commonStyle.row_space_arround}>
+
+            <View style={{ width: '50%' }}>
+              <CustomButton
+                isDisabled={true}
+                label={strings.rescedule}
+                onPress={() => {
+                  // setOpenBottomModal(false);
+                  // dispatchInteraction(setInteractionReset());
+                }}
+              />
+            </View>
+            <View style={{ width: '50%' }}>
+              <CustomButton
+                isDisabled={false}
+                label={strings.save}
+                onPress={() => {
+                  // setOpenBottomModal(false);
+                  // dispatchInteraction(setInteractionReset());
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+      <FooterModel
+        open={createModal}
+        setOpen={setCreateModal}
+        title={"Create Appointment"}
+        subtitle={``}
+      >
+        <View style={{ paddingHorizontal: '3%' }}>
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={open}
+            onCancel={() => setOpen(false)}
+            date={dob == "" ? new Date() : dob}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+
+              setOpen(false);
+              setDob(params);
+
+            }}
+          />
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              // onChangeText={(text) => onIDChange(text)}
+              value={dob == "" ? "" : moment(dob).format("YYYY-MM-DD")}
+              caption={strings.appointment_date}
+              onFocus={() => setOpen(true)}
+              placeHolder={strings.appointment_date}
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpen(true)}
+                  theme={{ colors: { onSurfaceVariant: colors.primary } }}
+                  icon="calendar"
+                />
+              }
+            />
+
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.contact_number}
+              placeHolder={strings.contact_number}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <CustomInput
+              style={{
+                backgroundColor: "transparent",
+              }}
+              onChangeText={(text) => () => { }}
+              value={""}
+              caption={strings.contact_name}
+              placeHolder={strings.contact_name}
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
+            />
+
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={""}
+              data={""}
+              onChangeText={(text) => {
+                // dispatchInteraction(
+                //   setInteractionFormField({
+                //     field: "interactionType",
+                //     value: text,
+                //     clearError: true,
+                //   })
+                // );
+              }}
+              value={""}
+              caption={strings.appoinment_type}
+              placeHolder={"Select " + strings.appoinment_type}
+            />
+
+          </View>
+          <ClearSpace size={3} />
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              label={strings.save}
+              onPress={() => {
+                // setOpenBottomModal(false);
+                // dispatchInteraction(setInteractionReset());
+              }}
+            />
+          </View>
+
+        </View>
+
+      </FooterModel>
       <FooterModel
         open={isFilterModal}
         setOpen={setIsFilterModal}
@@ -1050,10 +1532,11 @@ const styles = StyleSheet.create({
   },
   //apointment list strip
   app_container: {
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 10,
     paddingVertical: 12,
     marginBottom: 4,
+    backgroundColor: "#fff"
 
 
   },
@@ -1064,5 +1547,33 @@ const styles = StyleSheet.create({
   appoint_label: {
     fontWeight: '400',
     color: '#000000'
+  },
+  small_strip: {
+    position: "relative",
+    top: -12,
+    right: 0,
+    marginRight: 20,
+    paddingHorizontal: 5,
+    width: '55%',
+    alignSelf: "flex-end",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#d3efd6",
+    borderBottomEndRadius: 10,
+    borderBottomLeftRadius: 10
+  },
+  small_strip_txt: {
+    color: "#3FB94D"
+  },
+  title: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: "#000"
+  },
+  smalltext: {
+    fontSize: 12,
+    marginRight: 10,
+    textAlign: "center"
   }
+
 });
