@@ -16,7 +16,6 @@
     "ios:pre:prod": "rm -rf ./ios/Pods && rm -rf ./ios/Podfile.lock && rm -rf ./ios/BCAE2.xcworkspace && rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm run pod_install_m1 && npm run ios:img-fix && npm run build:ios && cd ./ios/ && xcrun agvtool next-version -all &&  cd ../   && npm run ios"
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^4.4.5",
     "@react-native-community/async-storage": "^1.11.0-alpha.0",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/geolocation": "^3.0.5",
