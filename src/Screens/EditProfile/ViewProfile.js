@@ -13,6 +13,7 @@ import {
   View
 } from "react-native";
 import { Button, Divider, Modal, Text, useTheme } from "react-native-paper";
+import RNRestart from "react-native-restart";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,7 +35,6 @@ import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
 import { getUserId, getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
-// import RNRestart from "react-native-restart";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -109,8 +109,8 @@ export const ViewProfile = ({ navigation }) => {
   const handlechangeLanguage = async (language) => {
     const status = await changeLanguage(language);
     if (status) {
-      // navigation.navigate("Splash");
-      // RNRestart.restart();
+      navigation.navigate("Splash");
+      RNRestart.restart();
     } else {
       console.log("somthing wents wrong");
     }

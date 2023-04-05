@@ -50,7 +50,7 @@ export const CustomInput = (props) => {
             backgroundColor: "transparent"
           }}
           placeholderTextColor="#C7CAD1"
-          placeholder={placeHolder}
+          placeholder={placeHolder || caption}
           onFocus={() => {
             setActive(true);
           }}

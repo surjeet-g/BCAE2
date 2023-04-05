@@ -7,7 +7,7 @@ import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
-    setValue = () => {},
+    setValue = () => { },
     caption = "",
     placeHolder = "",
     data,
@@ -62,8 +62,8 @@ export const CustomDropDownFullWidth = (props) => {
           <CustomInput
             hideCaption={true}
             editable={false}
-            caption={placeHolder}
-            placeholder={placeHolder}
+            caption={placeHolder || caption}
+            placeholder={placeHolder || caption}
             style={{ ...styles.textInput, ...customStyle }}
             value={selectedValue}
             right={
@@ -85,7 +85,7 @@ export const CustomDropDownFullWidth = (props) => {
             contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-            // keyExtractor={item => item.description}
+          // keyExtractor={item => item.description}
           />
         </View>
       )}

@@ -75,7 +75,7 @@ export const CustomDropDownSearch = (props) => {
             value={searchEnable ? searchText : selectedValue}
             hideCaption={true}
             editable={searchEnable ? true : false}
-            caption={placeHolder}
+            caption={placeHolder || caption}
             placeholder={placeHolder}
             style={{ ...styles.textInput, ...customStyle }}
             placeHolder=""
