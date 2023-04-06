@@ -249,7 +249,6 @@ export let strings = new LocalizedStrings({
     not_available: "Not Available",
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
-    //add en-US
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
@@ -278,6 +277,16 @@ export let strings = new LocalizedStrings({
     bill_lang: "Bill Language",
     notification_pref: "Notification Preference",
     currency: "Currency",
+    appointment_date: "Appointment Date",
+    appoinment_type: "Appoinment Type",
+    start_date: "Start Date",
+    end_date: "End Date",
+    repeat: "Repeat",
+
+    rescedule: "Rescedule",
+    statement: "Statement",
+
+    workflow: "WorkFlow",
   },
   en: {
     building_name: "Building Name/Others*",
@@ -527,7 +536,7 @@ export let strings = new LocalizedStrings({
     not_available: "Not Available",
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
-    //add en
+
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
@@ -554,6 +563,8 @@ export let strings = new LocalizedStrings({
     bill_lang: "Bill Language",
     notification_pref: "Notification Preference",
     currency: "Currency",
+    appointment_date: "Appoiment Date"
+    //add en
   },
   ml: {
     building_name: "Building Name/Others*",

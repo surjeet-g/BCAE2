@@ -1,15 +1,11 @@
-import {
-  initSavedLocation,
-  setSavedLocation,
-  savedLocationError,
-  setAddressLoopUpData,
-} from "./SavedLocationAction";
-import { storageKeys } from "../Utilities/Constants/Constant";
-import { saveDataToDB, getDataFromDB } from "../Storage/token";
+import Toast from "react-native-toast-message";
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "..//Utilities/API";
 import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
-import Toast from "react-native-toast-message";
+import {
+  initSavedLocation, savedLocationError,
+  setAddressLoopUpData, setSavedLocation
+} from "./SavedLocationAction";
 
 export function fetchSavedLocations(customerId) {
   return async (dispatch) => {
@@ -79,7 +75,7 @@ export function addNewLocations(obj, navigation) {
     }
   };
 }
-export function setPrimaryAddress(address, navigation) {
+export function setPrimaryAddress(address, navigation, cb = () => { }) {
   return async (dispatch) => {
     const customerUUDI = await getCustomerUUID();
 
@@ -97,7 +93,7 @@ export function setPrimaryAddress(address, navigation) {
         type: "bctSuccess",
         text1: result?.data?.message,
       });
-      return true;
+      cb()
     } else {
       Toast.show({
         type: "bctError",

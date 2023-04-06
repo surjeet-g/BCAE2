@@ -1,12 +1,13 @@
 
 surjeet
 
-git checkout sgd_develop && git pull && git checkout vp_develop && git merge sgd_develop 
+git checkout sgd_develop && git pull && git checkout vp_develop && git merge sgd_develop --no-commit --no-ff
 
 
 kamal
 
-git checkout mks_develop && git pull && git checkout vp_develop && git merge mks_develop 
+git checkout mks_develop && git pull && git checkout vp_develop && git merge mks_develop --no-commit --no-ff
 
 
 git stash apply
+

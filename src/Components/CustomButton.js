@@ -9,7 +9,7 @@ export const CustomButton = (props) => {
   const {
     label = "",
     isDisabled = false,
-    onPress = () => {},
+    onPress = () => { },
     loading = false,
     mode = "contained",
     buttonStyle,
@@ -19,6 +19,7 @@ export const CustomButton = (props) => {
     <View
       style={{
         margin: spacing.HEIGHT_10,
+        // flex: 1
       }}
     >
       <Button
@@ -28,7 +29,7 @@ export const CustomButton = (props) => {
         label={label}
         color={isDisabled ? colors.inverseSecondary : colors.buttonDisableColor}
         buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
-        onPress={isDisabled ? () => {} : () => onPress()}
+        onPress={isDisabled ? () => { } : () => onPress()}
       >
         {label}
       </Button>

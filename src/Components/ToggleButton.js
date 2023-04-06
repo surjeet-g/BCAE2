@@ -25,6 +25,7 @@ export const ToggleButton = (props) => {
         backgroundColor: colors.toggleBackground,
         ...SHADOW_STYLE,
         padding: 2,
+        elevation: 1,
         borderRadius: spacing.HEIGHT_24,
       }}
     >

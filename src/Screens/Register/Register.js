@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import { ToggleButton } from "../../Components/ToggleButton";
 
-import { ImageBackground, Platform, StyleSheet, View } from "react-native";
+import {
+  ImageBackground,
+  Platform,
+  StyleSheet, View
+} from "react-native";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 
 import { FullPageLoder } from "../../Components/FullPageLoder";
@@ -12,7 +16,7 @@ import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../Redux/RegisterDispatcher";
 import { strings } from "../../Utilities/Language/index";
 
@@ -20,10 +24,7 @@ import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../../Components/headerTitle";
-import {
-  getMasterData,
-  MASTER_DATA_CONSTANT,
-} from "../../Redux/masterDataDispatcher";
+import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import theme from "../../Utilities/themeConfig";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
 import { RegisterPersonal } from "./components/RegisterPersonal";
@@ -42,10 +43,11 @@ const Register = ({ navigation, props }) => {
     sendOtp,
     userRegister,
     getOtpForCheck,
-    getMasterData,
+    getMasterData
   ]);
 
   const preRequiredDataFetch = () => {
+
     const { GENDER, ADDRESS_TYPE, CUSTOMER_ID_TYPE } = MASTER_DATA_CONSTANT;
 
     dispatch(getMasterData(`${GENDER},${ADDRESS_TYPE},${CUSTOMER_ID_TYPE}`));
@@ -154,7 +156,7 @@ const Register = ({ navigation, props }) => {
               textPro={{
                 fontSize: fontSizes.FONT_13,
                 fontWeight: "600",
-                lineHeight: spacing.HEIGHT_20,
+                lineHeight: spacing.HEIGHT_16,
               }}
               onPressFirst={async () => {
                 dispatch(resetRegister());

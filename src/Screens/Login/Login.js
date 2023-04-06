@@ -298,7 +298,7 @@ export const Login = ({ navigation }) => {
                   }}
                   textPro={{
                     fontSize: fontSizes.FONT_13,
-                    lineHeight: spacing.HEIGHT_16,
+                    lineHeight: spacing.HEIGHT_20,
                   }}
                   onPressFirst={onSelectBusinessUserType}
                   onPressSecond={onSelectConsumerUserType}
