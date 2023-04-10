@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
@@ -20,16 +20,18 @@ import { Toast } from "../../Components/Toast";
 import { ToggleButton } from "../../Components/ToggleButton";
 import {
   color,
-  fontSizes, isValidNumber, spacing
+  fontSizes,
+  isValidNumber,
+  spacing,
 } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
-  requestUserPermission
+  requestUserPermission,
 } from "../../Utilities/FCM/NotificationService";
 import { strings } from "../../Utilities/Language";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../Utilities/utils";
 import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
@@ -38,9 +40,10 @@ import {
   resetLogin,
   resetShowSecondLoginAlert,
   sendLoginOTPData,
-  verifyLoginData
+  verifyLoginData,
 } from "./LoginDispatcher";
 
+const USERGROUP = "UG_CONSUMER";
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
 const EMAIL = "Email Address";
@@ -57,6 +60,7 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
+  const [userGroup, setUserGroup] = useState(USERGROUP); // BUSINESS or CONSUMER
   const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
@@ -175,7 +179,7 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: username,
           password,
-          userType,
+          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -202,7 +206,7 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: number,
           password,
-          userType,
+          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -220,7 +224,7 @@ export const Login = ({ navigation }) => {
       } else {
         let param = {
           loginId: username,
-          userType,
+          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
           extn: 0,
@@ -240,7 +244,7 @@ export const Login = ({ navigation }) => {
     } else {
       let param = {
         loginId: number,
-        userType,
+        userGroup,
         loginType: loginType.toUpperCase(),
         loginMode,
         extn: countryCode.substring(1),
@@ -577,8 +581,8 @@ export const Login = ({ navigation }) => {
                     ? true
                     : false
                   : number == "" || password == ""
-                    ? true
-                    : false
+                  ? true
+                  : false
               }
               onPress={() => {
                 loginMode === EMAIL
