@@ -334,40 +334,70 @@ const EditProfile = ({ navigation, props }) => {
       //   setCountryError(strings.countryError);
       // }
       //else if (location === "") { setLocationError(strings.locationError) }
+      const isCustomer =
+        USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
 
-      let registerObject = {
-        details: {
+      if (isCustomer) {
+        let registerObject = {
+          details: {
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender?.code,
+            idValue: idValue,
+            contactPreferences: contactValues
+              .filter((it) => it.active)
+              .map((ite) => ite.code),
+            // nationality : country
+            // profilePicture: profileImageData,
+            // address: {
+            //   address: location,
+            //   hno: "",
+            //   buildingName: "",
+            //   street: street,
+            //   road: "",
+            //   city: "",
+            //   state: state,
+            //   district: district,
+            //   country: country,
+            //   latitude: latitude,
+            //   longitude: longitude,
+            //   postCode: postCode,
+            // },
+          },
+        };
+      } else {
+        let userObject = {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
-          idValue: idValue,
-          contactPreferences: contactValues
-            .filter((it) => it.active)
-            .map((ite) => ite.code),
-          // nationality : country
-          // profilePicture: profileImageData,
-          // address: {
-          //   address: location,
-          //   hno: "",
-          //   buildingName: "",
-          //   street: street,
-          //   road: "",
-          //   city: "",
-          //   state: state,
-          //   district: district,
-          //   country: country,
-          //   latitude: latitude,
-          //   longitude: longitude,
-          //   postCode: postCode,
-          // },
-        },
-      };
+          // "userId": 0,
+          // "contactNo": 0,
+          // "email": "string",
+          // "userType": "string",
+          // "title": "string",
+          // "firstName": "string",
+          // "lastName": "string",
+          // "gender": "string",
+          // "dob": "2023-04-10",
+          // "officeNo": 0,
+          // "extn": 0,
+          // "notificationType": "string",
+          // "biAccess": true,
+          // "waAccess": true,
+          // "status": "string",
+          // "location": "string",
+          // "country": "string",
+          // "profilePicture": "string",
+          // "activationDate": "2023-04-10",
+          // "expiryDate": "2023-04-10",
+          // "mappingPayload": {}
+        };
+      }
       console.log(
         ">>",
         contactValues.filter((it) => it.active).map((ite) => ite.code)
       );
-      const isCustomer =
-        USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
+
       const status = await dispatch2(
         updateProfileData(registerObject, navigation, isCustomer)
       );
