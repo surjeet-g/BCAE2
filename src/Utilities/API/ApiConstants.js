@@ -39,6 +39,7 @@ export const endPoints = {
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
   PROFILE_DETAILS: "api/customer/",
   UPDATE_MOBILE_USER: "api/customer/",
+  UPDATE_BUSINESS_USER: "api/users/update/",
   REGISTER: "api/customer/register",
   GET_FAVOURITE_LOCATION: "api/customer/address/",
   ADD_FAVOURITE_LOCATION: "api/customer/address/",

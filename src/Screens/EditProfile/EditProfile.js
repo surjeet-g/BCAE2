@@ -49,7 +49,10 @@ import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
-import { getUserTypeForProfile, USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import {
+  getUserTypeForProfile,
+  USERTYPE
+} from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -302,7 +305,8 @@ const EditProfile = ({ navigation, props }) => {
   };
 
   const isbuttonEnable = () => {
-    const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
+    const isConsumer =
+      USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
     if (isConsumer) {
       if (get(contactValues, "length", 0) === 0) return false;
       if (
@@ -330,41 +334,72 @@ const EditProfile = ({ navigation, props }) => {
       //   setCountryError(strings.countryError);
       // }
       //else if (location === "") { setLocationError(strings.locationError) }
+      const isCustomer =
+        USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
 
-      let registerObject = {
-        details: {
+      if (isCustomer) {
+        let registerObject = {
+          details: {
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender?.code,
+            idValue: idValue,
+            contactPreferences: contactValues
+              .filter((it) => it.active)
+              .map((ite) => ite.code),
+            // nationality : country
+            // profilePicture: profileImageData,
+            // address: {
+            //   address: location,
+            //   hno: "",
+            //   buildingName: "",
+            //   street: street,
+            //   road: "",
+            //   city: "",
+            //   state: state,
+            //   district: district,
+            //   country: country,
+            //   latitude: latitude,
+            //   longitude: longitude,
+            //   postCode: postCode,
+            // },
+          },
+        };
+      } else {
+        let userObject = {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
-          idValue: idValue,
-          contactPreferences: contactValues
-            .filter((it) => it.active)
-            .map((ite) => ite.code),
-          // nationality : country
-          // profilePicture: profileImageData,
-          // address: {
-          //   address: location,
-          //   hno: "",
-          //   buildingName: "",
-          //   street: street,
-          //   road: "",
-          //   city: "",
-          //   state: state,
-          //   district: district,
-          //   country: country,
-          //   latitude: latitude,
-          //   longitude: longitude,
-          //   postCode: postCode,
-          // },
-        },
-      };
+          // "userId": 0,
+          // "contactNo": 0,
+          // "email": "string",
+          // "userType": "string",
+          // "title": "string",
+          // "firstName": "string",
+          // "lastName": "string",
+          // "gender": "string",
+          // "dob": "2023-04-10",
+          // "officeNo": 0,
+          // "extn": 0,
+          // "notificationType": "string",
+          // "biAccess": true,
+          // "waAccess": true,
+          // "status": "string",
+          // "location": "string",
+          // "country": "string",
+          // "profilePicture": "string",
+          // "activationDate": "2023-04-10",
+          // "expiryDate": "2023-04-10",
+          // "mappingPayload": {}
+        };
+      }
       console.log(
         ">>",
         contactValues.filter((it) => it.active).map((ite) => ite.code)
       );
 
       const status = await dispatch2(
-        updateProfileData(registerObject, navigation)
+        updateProfileData(registerObject, navigation, isCustomer)
       );
       if (status) {
         await dispatch2(fetchMyProfileData(navigation));
@@ -425,13 +460,22 @@ const EditProfile = ({ navigation, props }) => {
     });
   }
 
-  const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
-  console.log('is consumer', isConsumer)
-  const emailPath = isConsumer ? "savedProfileData.customerContact[0].emailId" : "savedProfileData.email"
-  const custoPath = isConsumer ? "savedProfileData.customerNo" : "savedProfileData.userId"
-  const countyPath = isConsumer ? "savedProfileData.customerAddress[0].country" : "savedProfileData.country"
-  const mobilePath = isConsumer ? "savedProfileData.customerContact[0].mobileNo" : "savedProfileData.contactNo"
-  console.log('profile reducers', addresss)
+  const isConsumer =
+    USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
+  console.log("is consumer", isConsumer);
+  const emailPath = isConsumer
+    ? "savedProfileData.customerContact[0].emailId"
+    : "savedProfileData.email";
+  const custoPath = isConsumer
+    ? "savedProfileData.customerNo"
+    : "savedProfileData.userId";
+  const countyPath = isConsumer
+    ? "savedProfileData.customerAddress[0].country"
+    : "savedProfileData.country";
+  const mobilePath = isConsumer
+    ? "savedProfileData.customerContact[0].mobileNo"
+    : "savedProfileData.contactNo";
+  console.log("profile reducers", addresss);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {profile.initProfile && (
@@ -476,19 +520,13 @@ const EditProfile = ({ navigation, props }) => {
               </ImageBackground>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
-                {strings.customer_ID +
-                  " : " +
-                  get(profile, custoPath, "")}
+                {strings.customer_ID + " : " + get(profile, custoPath, "")}
               </Text>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
                 {"Email Id :"}{" "}
                 <Text variant="bodySmall" style={styles.caption_small}>
-                  {get(
-                    profile,
-                    emailPath,
-                    ""
-                  )}
+                  {get(profile, emailPath, "")}
                 </Text>
               </Text>
               <ClearSpace size={2} />
@@ -572,11 +610,7 @@ const EditProfile = ({ navigation, props }) => {
                   caption={strings.country}
                   placeholder={strings.country}
                   onChangeText={(text) => { }}
-                  value={get(
-                    profile,
-                    countyPath,
-                    ""
-                  )}
+                  value={get(profile, countyPath, "")}
                 />
               </View>
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
@@ -597,7 +631,7 @@ const EditProfile = ({ navigation, props }) => {
                 <CustomDropDown
                   selectedValue={get(gender, "description", "")}
                   setValue={(text) => onGenderClick(text)}
-                  data={get(masterReducer, 'masterdataData.GENDER', [])}
+                  data={get(masterReducer, "masterdataData.GENDER", [])}
                   onChangeText={(text) => onGenderClick(text)}
                   value={get(gender, "description", "")}
                   placeHolder={strings.gender}
@@ -684,11 +718,7 @@ const EditProfile = ({ navigation, props }) => {
               {/* Mobile Number */}
               <View style={{ marginTop: 10 }}>
                 <CustomInput
-                  value={get(
-                    profile,
-                    mobilePath,
-                    ""
-                  )}
+                  value={get(profile, mobilePath, "")}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
                   right={

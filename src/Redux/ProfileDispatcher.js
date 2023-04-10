@@ -1,21 +1,29 @@
 import {
   initProfile,
   setProfileData,
-  setProfileError, setSearchEmpty, setSearchProfileData,
-  setSearchProfileDataError
+  setProfileError,
+  setSearchEmpty,
+  setSearchProfileData,
+  setSearchProfileDataError,
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
-import { getCustomerUUID, getUserId, getUserType, USERTYPE } from "../Utilities/UserManagement/userInfo";
+import {
+  getCustomerUUID,
+  getUserId,
+  getUserType,
+  USERTYPE,
+} from "../Utilities/UserManagement/userInfo";
 
 export function fetchMyProfileData(navigation = null) {
   return async (dispatch) => {
     dispatch(initProfile());
     let profileResult;
     const userType = await getUserType();
-    let typeOfUser = userType == USERTYPE.CUSTOMER ? USERTYPE.CUSTOMER : USERTYPE.USER
+    let typeOfUser =
+      userType == USERTYPE.CUSTOMER ? USERTYPE.CUSTOMER : USERTYPE.USER;
     if (userType == USERTYPE.CUSTOMER) {
       const customerUUDI = await getCustomerUUID();
 
@@ -37,10 +45,11 @@ export function fetchMyProfileData(navigation = null) {
       );
     }
 
-
     console.log("hiting", profileResult);
     if (profileResult?.success) {
-      dispatch(setProfileData({ ...profileResult?.data?.data, typeOfUser: typeOfUser }));
+      dispatch(
+        setProfileData({ ...profileResult?.data?.data, typeOfUser: typeOfUser })
+      );
       return true;
     } else {
       dispatch(setProfileError([]));
@@ -95,14 +104,17 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
   };
 }
 
-export function updateProfileData(obj, navigation) {
+export function updateProfileData(obj, navigation, isCustomer) {
   return async (dispatch) => {
     dispatch(initProfile());
 
     const customerUUDI = await getCustomerUUID();
+    const userId = await getUserId();
 
     let result = await serverCall(
-      endPoints.UPDATE_MOBILE_USER + customerUUDI,
+      isCustomer
+        ? endPoints.UPDATE_MOBILE_USER + customerUUDI
+        : endPoints.UPDATE_BUSINESS_USER + userId,
       requestMethod.PUT,
       obj,
       navigation
