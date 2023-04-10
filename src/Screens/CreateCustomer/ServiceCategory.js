@@ -3,11 +3,9 @@ import React, { useState } from "react";
 
 const ServiceCategory = (props) => {
   const { item, onSelect, onDeSelect } = props;
-  const [selected, setSelected] = useState(false);
 
   const handleOnPress = () => {
-    selected ? onDeSelect() : onSelect();
-    setSelected(!selected);
+    item.selected ? onDeSelect() : onSelect();
   };
 
   return (
@@ -15,7 +13,7 @@ const ServiceCategory = (props) => {
       <View
         style={{
           ...styles.imgView,
-          borderColor: selected ? "#495470" : "#DADADA",
+          borderColor: item.selected ? "#495470" : "#DADADA",
         }}
       >
         <Image style={styles.img} source={item?.icon} />
@@ -23,8 +21,8 @@ const ServiceCategory = (props) => {
       <Text
         style={{
           ...styles.nameTxt,
-          color: selected ? "#495470" : "#2B2B2B",
-          fontWeight: selected ? 700 : 400,
+          color: item.selected ? "#495470" : "#2B2B2B",
+          fontWeight: item.selected ? 700 : 400,
         }}
       >
         {item?.name}

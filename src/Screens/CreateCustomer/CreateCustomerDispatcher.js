@@ -11,7 +11,7 @@ export function fetchServiceProducts(serviceType, navigation = null) {
       endPoints.FETCH_SERVICE_PRODUCTS_API + "?serviceType=" + serviceType;
     let result = await serverCall(url, requestMethod.GET, {}, navigation);
     if (result.success) {
-      dispatch(setServiceProductsDataInStore(result.data.data));
+      dispatch(setServiceProductsDataInStore(result.data.data, serviceType));
     } else {
       dispatch(setServiceProductsErrorDataInStore(result));
     }

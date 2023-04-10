@@ -8,8 +8,8 @@ export function initData() {
   return { type: INIT_CREATE_CUSTOMER };
 }
 
-export function setServiceProductsDataInStore(data) {
-  return { type: FETCH_SERVICE_PRODUCTS_SUCCESS, data };
+export function setServiceProductsDataInStore(data, serviceType) {
+  return { type: FETCH_SERVICE_PRODUCTS_SUCCESS, data, serviceType };
 }
 
 export function setServiceProductsErrorDataInStore(data) {

@@ -61,13 +61,12 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
-  // Used for step 3 & 4 to display list of available & selected products
-  const [products, setProducts] = useState([]);
-
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
 
+  // Used for step 3 & 4 to display list of available & selected products
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     setProducts(createCustomerReducerData.products);
   }, [createCustomerReducerData.products]);
@@ -410,26 +409,7 @@ const CreateCustomer = (props) => {
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={4}
-          data={[
-            {
-              id: 1,
-              name: "Postpaid",
-              code: "PT_POSTPAID",
-              icon: require("../../Assets/icons/ic_postpaid.png"),
-            },
-            {
-              id: 2,
-              name: "Prepaid",
-              code: "PT_PREPAID",
-              icon: require("../../Assets/icons/ic_prepaid.png"),
-            },
-            {
-              id: 3,
-              name: "Hybrid",
-              code: "PT_HYBRID",
-              icon: require("../../Assets/icons/ic_word.png"),
-            },
-          ]}
+          data={createCustomerReducerData.serviceCategories}
           renderItem={({ item, index }) => (
             <ServiceCategory
               item={item}
