@@ -11,7 +11,7 @@ import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 export function fetchRegisterFormData({ type = "", search = "" }, callback = () => { }) {
   return async (dispatch) => {
 
-    if (type != "COUNTRY") {
+    if (type != "COUNTRY" && type != "POSTAL_CODE") {
       dispatch(initRegisterForm());
     }
     let url;
@@ -29,12 +29,12 @@ export function fetchRegisterFormData({ type = "", search = "" }, callback = () 
     );
 
 
-    callback()
+
     if (addressLookUpResult) {
       //result.data.data.
 
       dispatch(setAddressLoopUpData(addressLookUpResult?.data?.data));
-
+      callback(addressLookUpResult?.data?.data)
       // let bussineEntities = "GENDER,ADDRESS_TYPE,CUSTOMER_ID_TYPE";
       // let result = await serverCall(
       //   `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
@@ -60,6 +60,7 @@ export function fetchRegisterFormData({ type = "", search = "" }, callback = () 
       //   dispatch(failureRegisterFormData(result));
       // }
     } else {
+      callback([])
       dispatch(setAddressLoopUpData(addressLookUpResult.data));
     }
   };

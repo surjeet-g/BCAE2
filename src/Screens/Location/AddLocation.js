@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
-  Platform,
-  SafeAreaView,
+  Platform, Pressable, SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,6 +26,7 @@ import { strings } from "../../Utilities/Language";
 import RNLocation from "react-native-location";
 
 import get from "lodash.get";
+import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDownSearch as CustomDropDownFullWidth } from "../../Components/CustomDropDownSearch";
 import { CustomInput } from "../../Components/CustomInput";
@@ -65,6 +65,10 @@ const AddLocation = ({ route, navigation }) => {
   const [country, setCountry] = useState("");
   const [searchPostalCode, setSerachPostalCode] = useState("")
   const [loader, setLoader] = useState(false)
+  const [suggestPostCode, setSuggestPostalCode] = useState("")
+  const [isPostalCodeModal, setPostalModalCode] = useState(false)
+  const [searchPostal, setSearchPostal] = useState("");
+  const [locModalNaviFrom, setAddNaviFrom] = useState("manual")
   const mapRef = useRef(null);
   const latitudeDelta = 0.0922;
   const longitudeDelta = latitudeDelta * ASPECT_RATIO;
@@ -115,11 +119,11 @@ const AddLocation = ({ route, navigation }) => {
 
   const onClickedSaveLocationButton = () => {
     // isAddLocationModalVisible
-    setAddLocationModalVisible(!isAddLocationModalVisible);
+    setPostalModalCode(!isPostalCodeModal);
     if (geoAddress != "") {
       setValueCounty("")
       setValueState("")
-      showAddLocationModal();
+      // showAddLocationModal();
       setValueDist("");
       setDistName("");
       setStateName("")
@@ -133,6 +137,7 @@ const AddLocation = ({ route, navigation }) => {
       setPostcodeName("");
       setStreetText("");
       setHno("");
+      setSearchPostal("");
     }
   };
 
@@ -251,6 +256,7 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
+        setSuggestPostalCode(res["0"]?.postalCode)
         // setCountry(res["0"]?.country);
 
         if (countryCode != "") {
@@ -780,11 +786,79 @@ const AddLocation = ({ route, navigation }) => {
         {/* </View> */}
       </StickyFooter>
 
+
+      <FooterModel
+        open={isPostalCodeModal}
+        setOpen={setPostalModalCode}
+        title={`Enter address details`}
+      >
+        <View style={{ paddingHorizontal: '4%' }}>
+          {suggestPostCode &&
+            <Text style={{ marginLeft: 5 }}>Is this is your postal code : {suggestPostCode}?</Text>
+          }
+          <CustomInput
+            value={searchPostal}
+            caption={strings.postCode}
+            placeHolder={strings.postCode}
+            onChangeText={setSearchPostal}
+          />
+          <ClearSpace size={2} />
+          <Pressable style={{ paddingVertical: 5 }}
+            onPress={() => {
+              setAddNaviFrom("manual")
+              setAddLocationModalVisible(true)
+
+            }}
+          >
+            <Text style={{ color: "#0061ff", marginLeft: 5 }}>Do you know postal code ?</Text>
+          </Pressable>
+          <CustomButton
+            loading={false}
+            label={strings.search}
+            isDisabled={(searchPostal == "")}
+            onPress={() => {
+              setLoader(true)
+              dispatch1(fetchRegisterFormData({
+                type: "POSTAL_CODE",
+                search: searchPostal
+              }, (addressRes = []) => {
+                setLoader(false)
+                setPostalModalCode(false)
+                setAddLocationModalVisible(true)
+
+
+
+
+                if (addressRes.length == 0) return null
+                setAddNaviFrom("auto")
+                if (addressRes.length == 1) {
+                  setValueState(addressRes[0]?.state)
+                  setStateName(addressRes[0]?.state)
+
+                  setValueState(addressRes[0]?.state)
+                  setStateName(addressRes[0]?.state)
+
+                  setValueDist(addressRes[0]?.district)
+                  setDistName(addressRes[0]?.district)
+
+                  setKampongName(addressRes[0]?.city)
+                  setValueKampong(addressRes[0]?.city)
+
+                  setPostcodeName(addressRes[0]?.postCode)
+                  setValuePostcode(addressRes[0]?.postCode)
+
+                }
+              }));
+            }}
+          />
+        </View>
+      </FooterModel>
       <FooterModel
         open={isAddLocationModalVisible}
         setOpen={setAddLocationModalVisible}
         title={`Enter address details`}
       >
+
         <View style={{ marginBottom: 30 }}>
           <View
             style={{
@@ -839,6 +913,7 @@ const AddLocation = ({ route, navigation }) => {
                 placeHolder={strings.address_type + "*"}
               />
             </View>
+
             <View>
               {/*point select postal code  */}
               {/* <View style={{ marginTop: 10 }}>
@@ -921,35 +996,36 @@ const AddLocation = ({ route, navigation }) => {
                   placeHolder={strings.street}
                 />
               </View>
-              <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
-                <CustomDropDownFullWidth
-                  searchEnable={true}
-                  setDropDownEnable={() => setActiveDropDown("country")}
-                  isDisable={true}
-                  selectedValue={selectedValueCountry}
-                  setValue={setValueCounty}
-                  data={
-                    getCountryList() ?? []
-                    // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
-                  }
-                  onChangeText={(text) => {
-                    console.log('>>', text)
-                    onCountyClick(text)
-                    setLoader(true)
-                    dispatch1(fetchRegisterFormData({
-                      type: "COUNTRY",
-                      search: text?.code
-                    }, () => setLoader(false)));
+              {locModalNaviFrom == "manual" &&
+                <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
+                  <CustomDropDownFullWidth
+                    searchEnable={true}
+                    setDropDownEnable={() => setActiveDropDown("country")}
+                    isDisable={true}
+                    selectedValue={selectedValueCountry}
+                    setValue={setValueCounty}
+                    data={
+                      getCountryList() ?? []
+                      // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
+                    }
+                    onChangeText={(text) => {
+                      console.log('>>', text)
+                      onCountyClick(text)
+                      setLoader(true)
+                      dispatch1(fetchRegisterFormData({
+                        type: "COUNTRY",
+                        search: text?.code
+                      }, () => setLoader(false)));
 
 
-                  }}
-                  value={countyName}
-                  isDisableDropDown={activeDropDown != "country"}
-                  placeHolder={strings.country + "*"}
-                  caption={strings.country + "*"}
-                />
-              </View>
-
+                    }}
+                    value={countyName}
+                    isDisableDropDown={activeDropDown != "country"}
+                    placeHolder={strings.country + "*"}
+                    caption={strings.country + "*"}
+                  />
+                </View>
+              }
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("state")}
@@ -1025,6 +1101,7 @@ const AddLocation = ({ route, navigation }) => {
                   onChangeText={(text) => onPostcodeClick(text)}
                   value={postcode}
                   placeHolder={strings.postCode + "*"}
+                  caption={strings.postCode + "*"}
                 />
               </View>
               <View
@@ -1049,6 +1126,7 @@ const AddLocation = ({ route, navigation }) => {
                 />
               </View>
             </View>
+
           </View>
         </View>
       </FooterModel>
