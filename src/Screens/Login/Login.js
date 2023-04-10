@@ -49,8 +49,10 @@ const PASSWORD = "password";
 const OTP = "otp";
 
 export const Login = ({ navigation }) => {
+
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
+
       requestUserPermission();
       notificationListener(navigation);
     });

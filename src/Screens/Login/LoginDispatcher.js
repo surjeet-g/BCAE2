@@ -1,20 +1,21 @@
+import { get } from 'lodash.get';
 import Toast from "react-native-toast-message";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
   DEFAULT_PROFILE_IMAGE,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
+import { setProfileData } from "./../../Redux/ProfileAction";
 import {
   failureLogin,
   initLoginData,
   resetLoginData,
   resetShowSecondLoginAlertData,
   setLoginData,
-  setShowSecondLoginAlert,
+  setShowSecondLoginAlert
 } from "./LoginAction";
-import { setProfileData } from "./../../Redux/ProfileAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
@@ -121,12 +122,22 @@ export function verifyLoginData(navigation, params) {
               ];
 
               const businessGroup = businessEntityUserTypes.filter((item) => {
-                return item.mapping == "UG_BUSINESS";
+                return item?.mapping?.userGroup == "UT_BUS_CONSUMER";
               });
 
               const consumerGroup = businessEntityUserTypes.filter((item) => {
-                return item.mapping == "UG_CONSUMER";
+                return item?.mapping?.userGroup == "UT_PRS_CONSUMER";
               });
+
+              if (get(consumerGroup, 'length', 0) == 0 || get(businessGroup, 'length', 0) == 0) {
+
+                dispatch(failureLogin(result));
+                Toast.show({
+                  type: "bctError",
+                  text1: "Something wents wrong" || "",
+                });
+                return null
+              }
 
               if (
                 userTypeInResponse.length !== 0 &&
@@ -146,19 +157,19 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                    result?.data?.data?.user?.customerUuid,
+                  result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation
                 );
               } else {
                 dispatch(failureLogin(result));
-                if (result.errorCode === 422) {
-                  Toast.show({
-                    type: "bctError",
-                    text1: "Current user type not supported!!" || "",
-                  });
-                }
+
+                Toast.show({
+                  type: "bctError",
+                  text1: "Current user type not supported!!" || "",
+                });
+
               }
 
               if (
