@@ -16,9 +16,9 @@ const CreateCustomerReducer = (state = initialState, action) => {
         let price = 0;
         const { productChargesList } = product;
         if (productChargesList?.length > 0) {
-          productChargesList?.forEach((element) => {
-            price = price + parseInt(element.chargeAmount);
-          });
+          productChargesList?.reduce((price, element) => {
+            price + parseInt(element.chargeAmount);
+          }, price);
         }
         product.price = price;
         product.quantity = 0;
