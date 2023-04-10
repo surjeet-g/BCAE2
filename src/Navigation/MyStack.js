@@ -33,15 +33,15 @@ import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo
 // import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
-import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
-import { useTheme, Modal } from "react-native-paper";
+import { Modal, useTheme } from "react-native-paper";
 import AnnouncementItem from "../Screens/Announcement/component/AnnouncementItem";
-import ViewOrder from "../Screens/Appointments/ViewOrder";
 import { Appointment } from "../Screens/Appointments/Appointment";
+import ViewOrder from "../Screens/Appointments/ViewOrder";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import { ViewProfile } from "../Screens/EditProfile/ViewProfile";
 import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
+import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import Notification from "../Screens/Notification/Notification";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
@@ -156,7 +156,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              headerTitle: "Appointment",
+              headerTitle: "Appointment Dashboard",
               headerStyle: {
                 backgroundColor: "#4C5A81",
               },

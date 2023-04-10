@@ -569,26 +569,26 @@ export const Login = ({ navigation }) => {
           </ScrollView>
           <StickyFooter>
             {/* Login View */}
-            <View>
-              <CustomButton
-                loading={login.initLogin}
-                label={strings.login}
-                isDisabled={
-                  loginMode === EMAIL
-                    ? username == "" || password == ""
-                      ? true
-                      : false
-                    : number == "" || password == ""
+            {/* <View> */}
+            <CustomButton
+              loading={login.initLogin}
+              label={strings.login}
+              isDisabled={
+                loginMode === EMAIL
+                  ? username == "" || password == ""
                     ? true
                     : false
-                }
-                onPress={() => {
-                  loginMode === EMAIL
-                    ? submitWithEmail(PASSWORD)
-                    : submitWithMobile(PASSWORD);
-                }}
-              />
-            </View>
+                  : number == "" || password == ""
+                    ? true
+                    : false
+              }
+              onPress={() => {
+                loginMode === EMAIL
+                  ? submitWithEmail(PASSWORD)
+                  : submitWithMobile(PASSWORD);
+              }}
+            />
+            {/* </View> */}
             <Text
               style={{
                 color: "#393939",

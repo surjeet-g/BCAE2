@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
   spacing,
-  storageKeys
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 
 import get from "lodash.get";
@@ -34,22 +34,25 @@ import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset
+  setProfileReset,
 } from "../../Redux/ProfileAction";
 import {
   fetchMyProfileData,
-  updateProfileData
+  updateProfileData,
 } from "../../Redux/ProfileDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
-import { getUserTypeForProfile, USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import {
+  getUserTypeForProfile,
+  USERTYPE,
+} from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
@@ -302,7 +305,8 @@ const EditProfile = ({ navigation, props }) => {
   };
 
   const isbuttonEnable = () => {
-    const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
+    const isConsumer =
+      USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
     if (isConsumer) {
       if (get(contactValues, "length", 0) === 0) return false;
       if (
@@ -321,7 +325,7 @@ const EditProfile = ({ navigation, props }) => {
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => { } },
+        { text: strings.ok, onPress: () => {} },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
@@ -362,9 +366,10 @@ const EditProfile = ({ navigation, props }) => {
         ">>",
         contactValues.filter((it) => it.active).map((ite) => ite.code)
       );
-
+      const isCustomer =
+        USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
       const status = await dispatch2(
-        updateProfileData(registerObject, navigation)
+        updateProfileData(registerObject, navigation, isCustomer)
       );
       if (status) {
         await dispatch2(fetchMyProfileData(navigation));
@@ -425,13 +430,22 @@ const EditProfile = ({ navigation, props }) => {
     });
   }
 
-  const isConsumer = (USERTYPE.CUSTOMER == get(profile, 'savedProfileData.typeOfUser'))
-  console.log('is consumer', isConsumer)
-  const emailPath = isConsumer ? "savedProfileData.customerContact[0].emailId" : "savedProfileData.email"
-  const custoPath = isConsumer ? "savedProfileData.customerNo" : "savedProfileData.userId"
-  const countyPath = isConsumer ? "savedProfileData.customerAddress[0].country" : "savedProfileData.country"
-  const mobilePath = isConsumer ? "savedProfileData.customerContact[0].mobileNo" : "savedProfileData.contactNo"
-  console.log('profile reducers', addresss)
+  const isConsumer =
+    USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
+  console.log("is consumer", isConsumer);
+  const emailPath = isConsumer
+    ? "savedProfileData.customerContact[0].emailId"
+    : "savedProfileData.email";
+  const custoPath = isConsumer
+    ? "savedProfileData.customerNo"
+    : "savedProfileData.userId";
+  const countyPath = isConsumer
+    ? "savedProfileData.customerAddress[0].country"
+    : "savedProfileData.country";
+  const mobilePath = isConsumer
+    ? "savedProfileData.customerContact[0].mobileNo"
+    : "savedProfileData.contactNo";
+  console.log("profile reducers", addresss);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {profile.initProfile && (
@@ -476,19 +490,13 @@ const EditProfile = ({ navigation, props }) => {
               </ImageBackground>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
-                {strings.customer_ID +
-                  " : " +
-                  get(profile, custoPath, "")}
+                {strings.customer_ID + " : " + get(profile, custoPath, "")}
               </Text>
               <ClearSpace size={2} />
               <Text variant="bodyLarge" style={styles.caption}>
                 {"Email Id :"}{" "}
                 <Text variant="bodySmall" style={styles.caption_small}>
-                  {get(
-                    profile,
-                    emailPath,
-                    ""
-                  )}
+                  {get(profile, emailPath, "")}
                 </Text>
               </Text>
               <ClearSpace size={2} />
@@ -571,12 +579,8 @@ const EditProfile = ({ navigation, props }) => {
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
-                  onChangeText={(text) => { }}
-                  value={get(
-                    profile,
-                    countyPath,
-                    ""
-                  )}
+                  onChangeText={(text) => {}}
+                  value={get(profile, countyPath, "")}
                 />
               </View>
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
@@ -597,7 +601,7 @@ const EditProfile = ({ navigation, props }) => {
                 <CustomDropDown
                   selectedValue={get(gender, "description", "")}
                   setValue={(text) => onGenderClick(text)}
-                  data={get(masterReducer, 'masterdataData.GENDER', [])}
+                  data={get(masterReducer, "masterdataData.GENDER", [])}
                   onChangeText={(text) => onGenderClick(text)}
                   value={get(gender, "description", "")}
                   placeHolder={strings.gender}
@@ -684,11 +688,7 @@ const EditProfile = ({ navigation, props }) => {
               {/* Mobile Number */}
               <View style={{ marginTop: 10 }}>
                 <CustomInput
-                  value={get(
-                    profile,
-                    mobilePath,
-                    ""
-                  )}
+                  value={get(profile, mobilePath, "")}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
                   right={
