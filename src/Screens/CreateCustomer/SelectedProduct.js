@@ -18,10 +18,10 @@ const SelectedProduct = (props) => {
       </View>
       {/* Product */}
       <View style={styles.productView}>
-        <View style={styles.productTxtView}>
-          <Text style={styles.productNameTxt}>{item.name}</Text>
-          <Text style={styles.productTypeTxt}>{`(${item.type})`}</Text>
-        </View>
+        <Text style={styles.productNameTxt}>{item.productName}</Text>
+        <Text
+          style={styles.productTypeTxt}
+        >{`${item.productTypeDescription?.description}`}</Text>
         <Text style={styles.priceTxt}>{`$ ${item.price}`}</Text>
       </View>
       {/* Quantity */}
@@ -63,13 +63,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: 10,
   },
-  productTxtView: { flexDirection: "row", alignItems: "center" },
-  productNameTxt: { color: "#202223", fontWeight: 600, fontSize: 16 },
+  productNameTxt: {
+    color: "#202223",
+    fontWeight: 600,
+    fontSize: 16,
+    numberOfLines: 2,
+  },
   productTypeTxt: {
     color: "#686B6C",
     fontWeight: 400,
     fontSize: 12,
-    marginLeft: 5,
+    numberOfLines: 1,
   },
   priceTxt: { color: "#EFA848", fontWeight: 700, fontSize: 18 },
   quantityView: { flexDirection: "row", alignItems: "center" },
