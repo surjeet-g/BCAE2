@@ -30,11 +30,10 @@ import {
   callLogoutAndLogin,
 } from ".././LoginDispatcher";
 import { useDispatch, useSelector } from "react-redux";
-import { StickyFooter } from "./../../../Components/StickyFooter";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
-  const { loginId, loginMode, loginType, userType } = route.params;
+  const { loginId, loginMode, loginType } = route.params;
   const [otp, setOTP] = useState("");
   const [params, setParams] = useState("");
   const dispatch = useDispatch([
@@ -50,7 +49,6 @@ const VerifyLoginOTP = (props) => {
       let param = {
         loginId,
         password: otp,
-        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
       };
@@ -64,7 +62,6 @@ const VerifyLoginOTP = (props) => {
     otpRef.current.reset();
     let param = {
       loginId,
-      userType,
       loginType,
       loginMode,
     };
