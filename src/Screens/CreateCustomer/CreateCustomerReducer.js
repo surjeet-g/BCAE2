@@ -12,12 +12,12 @@ const initialState = {
 const CreateCustomerReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
-      let newdata = action.data.map((product) => {
+      let newProducts = action.data.map((product) => {
         let price = 0;
         const { productChargesList } = product;
         if (productChargesList?.length > 0) {
-          productChargesList?.reduce((price, element) => {
-            price + parseInt(element.chargeAmount);
+          price = productChargesList?.reduce((price, element) => {
+            return price + parseInt(element.chargeAmount);
           }, price);
         }
         product.price = price;
@@ -26,7 +26,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
       });
       return {
         ...state,
-        products: newdata,
+        products: newProducts,
       };
     }
     case FETCH_SERVICE_PRODUCTS_FAILURE:
