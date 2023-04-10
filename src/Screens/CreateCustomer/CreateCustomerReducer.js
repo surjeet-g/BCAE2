@@ -1,6 +1,7 @@
 import {
   FETCH_SERVICE_PRODUCTS_SUCCESS,
   FETCH_SERVICE_PRODUCTS_FAILURE,
+  REMOVE_SERVICE_PRODUCTS,
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -34,6 +35,15 @@ const CreateCustomerReducer = (state = initialState, action) => {
         ...state,
         productsError: action.data,
       };
+    case REMOVE_SERVICE_PRODUCTS: {
+      const newProducts = state.products.filter(
+        (product) => action.data !== product?.productTypeDescription?.code
+      );
+      return {
+        ...state,
+        products: newProducts,
+      };
+    }
     default:
       return state;
   }

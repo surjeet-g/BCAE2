@@ -2,13 +2,14 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 
 const ServiceCategory = (props) => {
-  const { name = "NA", icon = "", onClick } = props;
+  const { item, onSelect, onDeSelect } = props;
   const [selected, setSelected] = useState(false);
 
   const handleOnPress = () => {
-    onClick();
+    selected ? onDeSelect() : onSelect();
     setSelected(!selected);
   };
+
   return (
     <Pressable style={styles.container} onPress={handleOnPress}>
       <View
@@ -17,7 +18,7 @@ const ServiceCategory = (props) => {
           borderColor: selected ? "#495470" : "#DADADA",
         }}
       >
-        <Image style={styles.img} source={icon} />
+        <Image style={styles.img} source={item?.icon} />
       </View>
       <Text
         style={{
@@ -26,7 +27,7 @@ const ServiceCategory = (props) => {
           fontWeight: selected ? 700 : 400,
         }}
       >
-        {name}
+        {item?.name}
       </Text>
     </Pressable>
   );

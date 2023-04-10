@@ -36,11 +36,12 @@ import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchServiceProducts } from "./CreateCustomerDispatcher";
+import { removeCategoryProducts } from "./CreateCustomerAction";
 
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
-  const dispatch = useDispatch([fetchServiceProducts]);
+  const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
   const [formCustomerData, setFormCustomerData] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
@@ -431,10 +432,12 @@ const CreateCustomer = (props) => {
           ]}
           renderItem={({ item, index }) => (
             <ServiceCategory
-              name={item.name}
-              icon={item.icon}
-              onClick={() => {
+              item={item}
+              onSelect={() => {
                 dispatch(fetchServiceProducts(item.code, navigation));
+              }}
+              onDeSelect={() => {
+                dispatch(removeCategoryProducts(item.code));
               }}
             />
           )}
