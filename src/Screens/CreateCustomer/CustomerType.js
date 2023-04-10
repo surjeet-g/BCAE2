@@ -5,7 +5,7 @@ const CustomerType = (props) => {
   const { name = "NA", icon = "", onPress = () => {} } = props;
 
   return (
-    <View style={{ flexDirection: "column", backgroundColor: "transparent" }}>
+    <View style={styles.container}>
       <Pressable style={styles.imgView} onPress={onPress}>
         <Image style={styles.img} source={icon} />
       </Pressable>
@@ -17,6 +17,12 @@ const CustomerType = (props) => {
 export default CustomerType;
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    backgroundColor: "transparent",
+    margin: 10,
+    flex: 1,
+  },
   imgView: {
     backgroundColor: "white",
     borderRadius: 10,

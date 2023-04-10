@@ -5,8 +5,6 @@ import {
   ScrollView,
   FlatList,
   Switch,
-  Image,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
 import StepIndicator from "react-native-step-indicator";
@@ -18,7 +16,6 @@ import CustomTitleText from "./../../Components/CustomTitleText";
 import CustomerAgreement from "./CustomerAgreement";
 import Product from "./Product";
 import ServiceCategory from "./ServiceCategory";
-import ServiceType from "./ServiceType";
 import SelectedProduct from "./SelectedProduct";
 import BillDetails from "./BillDetails";
 import { CustomInput } from "./../../Components/CustomInput";
@@ -39,7 +36,6 @@ import { fetchServiceProducts } from "./CreateCustomerDispatcher";
 import { removeCategoryProducts } from "./CreateCustomerAction";
 
 const CreateCustomer = (props) => {
-  const { colors } = useTheme();
   const { navigation } = props;
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
   const [formCustomerData, setFormCustomerData] = useState({});
@@ -197,7 +193,7 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
-          {(customerType === "Business" || customerType === "Government") && (
+          {(customerType === "BUS" || customerType === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredNo}
@@ -205,7 +201,7 @@ const CreateCustomer = (props) => {
               onChangeText={(text) => text}
             />
           )}
-          {(customerType === "Business" || customerType === "Government") && (
+          {(customerType === "BUS" || customerType === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredDate}
@@ -1104,32 +1100,21 @@ const CreateCustomer = (props) => {
           title={"Choose purpose of customer creation"}
         >
           <View style={styles.modalContainer}>
-            <CustomerType
-              name={`Business`}
-              icon={require("../../Assets/icons/ic_business.png")}
-              onPress={() => {
-                setCustomerType("Business");
-                setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 1);
-              }}
-            />
-            <CustomerType
-              name={`Government`}
-              icon={require("../../Assets/icons/ic_government.png")}
-              onPress={() => {
-                setCustomerType("Government");
-                setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 1);
-              }}
-            />
-            <CustomerType
-              name={`Regular`}
-              icon={require("../../Assets/icons/ic_regular.png")}
-              onPress={() => {
-                setCustomerType("Regular");
-                setShowCustomerTypeModal(false);
-                setCurrentStep(currentStep + 1);
-              }}
+            <FlatList
+              data={createCustomerReducerData.customerTypes}
+              numColumns={4}
+              renderItem={({ item, index }) => (
+                <CustomerType
+                  name={item.name}
+                  icon={item.icon}
+                  onPress={() => {
+                    setCustomerType(item.code);
+                    setShowCustomerTypeModal(false);
+                    setCurrentStep(currentStep + 1);
+                  }}
+                />
+              )}
+              keyExtractor={(item, index) => index}
             />
           </View>
         </FooterModel>
