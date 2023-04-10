@@ -43,7 +43,6 @@ import {
   verifyLoginData,
 } from "./LoginDispatcher";
 
-const USERGROUP = "UG_CONSUMER";
 const BUSINESS = "Business";
 const CONSUMER = "Consumer";
 const EMAIL = "Email Address";
@@ -60,7 +59,6 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [userGroup, setUserGroup] = useState(USERGROUP); // BUSINESS or CONSUMER
   const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
@@ -179,7 +177,6 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: username,
           password,
-          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -206,7 +203,6 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: number,
           password,
-          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -224,7 +220,6 @@ export const Login = ({ navigation }) => {
       } else {
         let param = {
           loginId: username,
-          userGroup,
           loginType: loginType.toUpperCase(),
           loginMode,
           extn: 0,
@@ -244,7 +239,6 @@ export const Login = ({ navigation }) => {
     } else {
       let param = {
         loginId: number,
-        userGroup,
         loginType: loginType.toUpperCase(),
         loginMode,
         extn: countryCode.substring(1),

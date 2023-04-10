@@ -18,7 +18,7 @@ import { setProfileData } from "./../../Redux/ProfileAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { loginId, password, userGroup, loginType, loginMode } = params;
+    const { loginId, password, loginType, loginMode } = params;
     dispatch(initLoginData());
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
@@ -30,7 +30,7 @@ export function verifyLoginData(navigation, params) {
           password,
           channel: "US_MOBILEAPP",
           deviceId: fcmDeviceId,
-          userGroup,
+          userGroup: "UG_CONSUMER",
           loginType,
         };
 
