@@ -1,7 +1,5 @@
 import {
-  FETCH_SERVICE_PRODUCTS_SUCCESS,
-  FETCH_SERVICE_PRODUCTS_FAILURE,
-  REMOVE_SERVICE_PRODUCTS,
+  FETCH_SERVICE_PRODUCTS_FAILURE, FETCH_SERVICE_PRODUCTS_SUCCESS, REMOVE_SERVICE_PRODUCTS
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -29,6 +27,26 @@ const initialState = {
       code: "PT_HYBRID",
       icon: require("../../Assets/icons/ic_word.png"),
       selected: false,
+    },
+  ],
+  customerTypes: [
+    {
+      id: 1,
+      name: "Business",
+      code: "BUS",
+      icon: require("../../Assets/icons/ic_business.png"),
+    },
+    {
+      id: 2,
+      name: "Government",
+      code: "GOVN",
+      icon: require("../../Assets/icons/ic_government.png"),
+    },
+    {
+      id: 3,
+      name: "Regular",
+      code: "REG",
+      icon: require("../../Assets/icons/ic_regular.png"),
     },
   ],
 };

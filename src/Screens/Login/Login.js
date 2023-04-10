@@ -20,7 +20,9 @@ import { Toast } from "../../Components/Toast";
 import { ToggleButton } from "../../Components/ToggleButton";
 import {
   color,
-  fontSizes, isValidNumber, spacing
+  fontSizes,
+  isValidNumber,
+  spacing
 } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
@@ -177,7 +179,6 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: username,
           password,
-          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -204,7 +205,6 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: number,
           password,
-          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -222,7 +222,6 @@ export const Login = ({ navigation }) => {
       } else {
         let param = {
           loginId: username,
-          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
           extn: 0,
@@ -242,7 +241,6 @@ export const Login = ({ navigation }) => {
     } else {
       let param = {
         loginId: number,
-        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
         extn: countryCode.substring(1),

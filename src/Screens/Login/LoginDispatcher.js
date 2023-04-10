@@ -19,7 +19,7 @@ import {
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { loginId, password, userType, loginType, loginMode } = params;
+    const { loginId, password, loginType, loginMode } = params;
     dispatch(initLoginData());
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
@@ -29,9 +29,9 @@ export function verifyLoginData(navigation, params) {
         let params = {
           loginId,
           password,
-          channel: "MOBILE_APP",
+          channel: "US_MOBILEAPP",
           deviceId: fcmDeviceId,
-          userType,
+          userGroup: "UG_CONSUMER",
           loginType,
         };
 
@@ -40,6 +40,10 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params,
           navigation
+        );
+        console.log(
+          "Surjeet ==============USER_LOGIN==============>" +
+          JSON.stringify(result)
         );
         if (result.success) {
           if (result.data?.data?.anotherSession) {
@@ -70,63 +74,27 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
               let profileResult = {};
 
-              const businessEntityUserTypes = [
-                {
-                  code: "UT_ADMIN",
-                  description: "Admin",
-                  codeType: "USER_TYPE",
-                  mapping: {},
-                  status: "AC",
-                },
-                {
-                  code: "UT_BUSINESS",
-                  description: "Business",
-                  codeType: "USER_TYPE",
-                  mapping: {
-                    userGroup: "UG_BUSINESS",
-                  },
-                  status: "AC",
-                },
-                {
-                  code: "UT_CONSUMER",
-                  description: "Consumer",
-                  codeType: "USER_TYPE",
-                  mapping: {
-                    userGroup: "UG_CONSUMER",
-                  },
-                  status: "AC",
-                },
-                {
-                  code: "UT_INTERNAL",
-                  description: "Internal",
-                  codeType: "USER_TYPE",
-                  mapping: {},
-                  status: "AC",
-                },
-                {
-                  code: "UT_POWER",
-                  description: "Power",
-                  codeType: "USER_TYPE",
-                  mapping: {
-                    userGroup: "UG_BUSINESS",
-                  },
-                  status: "AC",
-                },
-                {
-                  code: "UT_VENDOR",
-                  description: "Vendor",
-                  codeType: "USER_TYPE",
-                  mapping: {},
-                  status: "AC",
-                },
-              ];
+              let params = {};
+              let valueParam = "USER_TYPE";
+              let userTypeResult = await serverCall(
+                `${endPoints.MASTERDATA}?searchParam=code&valueParam=${valueParam}`,
+                requestMethod.GET,
+                params
+              );
 
-              const businessGroup = businessEntityUserTypes.filter((item) => {
-                return item?.mapping?.userGroup == "UT_BUS_CONSUMER";
+              const businessEntityUserTypes =
+                userTypeResult.data.data.USER_TYPE;
+
+              const businessGroup = businessEntityUserTypes.map((item) => {
+                if (item.mapping.userGroup[0] == "UG_BUSINESS") {
+                  return item.code;
+                }
               });
 
-              const consumerGroup = businessEntityUserTypes.filter((item) => {
-                return item?.mapping?.userGroup == "UT_PRS_CONSUMER";
+              const consumerGroup = businessEntityUserTypes.map((item) => {
+                if (item.mapping.userGroup[0] == "UG_CONSUMER") {
+                  return item.code;
+                }
               });
 
               if (get(consumerGroup, 'length', 0) == 0 || get(businessGroup, 'length', 0) == 0) {
@@ -163,20 +131,19 @@ export function verifyLoginData(navigation, params) {
                   navigation
                 );
               } else {
+                //data without any group mapping
                 dispatch(failureLogin(result));
 
                 Toast.show({
                   type: "bctError",
-                  text1: "Current user type not supported!!" || "",
+                  text1: "Current user type is not supported!!" || "",
                 });
-
               }
 
               if (
                 profileResult?.success &&
                 userTypeInResponse.length !== 0 &&
-                (consumerGroup.includes(userTypeInResponse) ||
-                  businessGroup.includes(userTypeInResponse))
+                consumerGroup.includes(userTypeInResponse)
               ) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,

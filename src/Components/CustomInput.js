@@ -47,7 +47,7 @@ export const CustomInput = (props) => {
             padding: 0,
             margin: 0,
             borderRadius: 10,
-            backgroundColor: "transparent"
+            backgroundColor: "transparent",
           }}
           placeholderTextColor="#C7CAD1"
           placeholder={placeHolder || caption}

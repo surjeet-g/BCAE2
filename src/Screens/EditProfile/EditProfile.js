@@ -606,6 +606,7 @@ const EditProfile = ({ navigation, props }) => {
 
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
                 <CustomInput
+                  disabled={true}
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
@@ -721,13 +722,6 @@ const EditProfile = ({ navigation, props }) => {
                   value={get(profile, mobilePath, "")}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
-                  right={
-                    <TextInput.Icon
-                      onPress={clearFirstName}
-                      style={{ width: 23, height: 23 }}
-                      icon={require("../../Assets/icons/ic_close.png")}
-                    />
-                  }
                   disabled={true}
                 />
               </View>
