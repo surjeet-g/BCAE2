@@ -296,7 +296,7 @@ const EditProfile = ({ navigation, props }) => {
   };
   const onCountryClick = (textStr) => {
     setCountry(textStr?.description);
-    setCountryCode(textStr?.mapping?.countryCode ?? "");
+    // setCountryCode(textStr?.mapping?.countryCode ?? "");
     buttonEnableDisable();
   };
   const onLocationClick = (textStr) => {
@@ -336,9 +336,9 @@ const EditProfile = ({ navigation, props }) => {
       //else if (location === "") { setLocationError(strings.locationError) }
       const isCustomer =
         USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
-
+      let registerObject, userObject;
       if (isCustomer) {
-        let registerObject = {
+        registerObject = {
           details: {
             firstName: firstName,
             lastName: lastName,
@@ -366,7 +366,7 @@ const EditProfile = ({ navigation, props }) => {
           },
         };
       } else {
-        let userObject = {
+        userObject = {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
@@ -399,7 +399,7 @@ const EditProfile = ({ navigation, props }) => {
       );
 
       const status = await dispatch2(
-        updateProfileData(registerObject, navigation, isCustomer)
+        updateProfileData(isCustomer ? registerObject : userObject, navigation, isCustomer)
       );
       if (status) {
         await dispatch2(fetchMyProfileData(navigation));
@@ -444,6 +444,7 @@ const EditProfile = ({ navigation, props }) => {
     "savedProfileData.contactPreferences",
     ""
   );
+  console.log('>>profileCurrentPer', profile)
 
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
   let contactPerf = [];
@@ -724,6 +725,22 @@ const EditProfile = ({ navigation, props }) => {
                   caption={strings.mobile_number}
                   disabled={true}
                 />
+                <Text></Text>
+              </View>
+              <View style={{ marginTop: spacing.HEIGHT_30 }}>
+                <CustomInput
+                  disabled={true}
+                  // editable={false}
+                  placeHolder={strings.mobile_number}
+                  caption={strings.mobile_number}
+                  onChangeText={(text) => onFirstNameChange(text)}
+                  value={get(profile, mobilePath, "")}
+
+                />
+                {/* {!registerForm.initRegisterForm &&
+                  registerForm?.loggedProfile?.errorCode == "404" &&
+                  this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
+                {firstNameError && showErrorMessage(firstNameError)}
               </View>
 
               {/* Email */}

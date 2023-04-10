@@ -92,7 +92,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={"Login"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",

@@ -1,4 +1,3 @@
-import { get } from 'lodash.get';
 import Toast from "react-native-toast-message";
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import { serverCall } from "../../Utilities/API";
@@ -97,15 +96,6 @@ export function verifyLoginData(navigation, params) {
                 }
               });
 
-              if (get(consumerGroup, 'length', 0) == 0 || get(businessGroup, 'length', 0) == 0) {
-
-                dispatch(failureLogin(result));
-                Toast.show({
-                  type: "bctError",
-                  text1: "Something wents wrong" || "",
-                });
-                return null
-              }
 
               if (
                 userTypeInResponse.length !== 0 &&
