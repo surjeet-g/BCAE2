@@ -26,7 +26,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
       });
       return {
         ...state,
-        products: newProducts,
+        products: [...state.products, ...newProducts],
       };
     }
     case FETCH_SERVICE_PRODUCTS_FAILURE:
