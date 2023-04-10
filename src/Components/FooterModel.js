@@ -14,10 +14,14 @@ export const FooterModel = ({
   title = "",
   subtitle = "",
 }) => {
+
   if (!open) return null;
   return (
     <View
       style={{
+        position: "absolute",
+        bottom: 1,
+        width: width,
         backgroundColor: "transparent",
       }}
     >

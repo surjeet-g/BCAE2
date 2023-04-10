@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./../../Components/DashedDivider";
@@ -18,7 +18,7 @@ const Product = (props) => {
     }
 
     let newProducts = products.map((product) => {
-      if (product.id === item.id) {
+      if (product.productId === item.productId) {
         product.quantity = currentQuantity;
       }
       return product;
@@ -35,11 +35,13 @@ const Product = (props) => {
       </Text>
       {/* Product */}
       <View style={styles.productTxtView}>
-        <Text style={styles.productNameTxt}>{item.name}</Text>
+        <Text style={styles.productNameTxt}>{item.productName}</Text>
         <Text style={styles.productTypeTxt}>
-          {"\u2B24 1 Regular + 3 Free family add-ons"}
+          {"\u2B24 Service Type: " + item.serviceTypeDescription?.description}
         </Text>
-        <Text style={styles.productTypeTxt}>{"\u2B24 Specification"}</Text>
+        <Text style={styles.productTypeTxt}>
+          {"\u2B24 Product Type: " + item.productTypeDescription?.description}
+        </Text>
       </View>
       <DashedDivider />
       <View
@@ -50,8 +52,8 @@ const Product = (props) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.priceTxt}>{"$" + item.price}</Text>
-          <Text style={styles.oldpriceTxt}>{"$" + (item.price + 200)}</Text>
+          <Text style={styles.priceTxt}>{"$ " + item.price}</Text>
+          <Text style={styles.oldpriceTxt}>{"$ " + (item.price + 200)}</Text>
         </View>
         {/* Quantity */}
         <View style={styles.quantityView}>

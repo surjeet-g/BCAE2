@@ -2,27 +2,30 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 
 const ServiceCategory = (props) => {
-  const { name = "NA", icon = "" } = props;
-  const [selected, setSelected] = useState(false);
+  const { item, onSelect, onDeSelect } = props;
+
+  const handleOnPress = () => {
+    item.selected ? onDeSelect() : onSelect();
+  };
 
   return (
-    <Pressable style={styles.container} onPress={() => setSelected(!selected)}>
+    <Pressable style={styles.container} onPress={handleOnPress}>
       <View
         style={{
           ...styles.imgView,
-          borderColor: selected ? "#495470" : "#DADADA",
+          borderColor: item.selected ? "#495470" : "#DADADA",
         }}
       >
-        <Image style={styles.img} source={icon} />
+        <Image style={styles.img} source={item?.icon} />
       </View>
       <Text
         style={{
           ...styles.nameTxt,
-          color: selected ? "#495470" : "#2B2B2B",
-          fontWeight: selected ? 700 : 400,
+          color: item.selected ? "#495470" : "#2B2B2B",
+          fontWeight: item.selected ? 700 : 400,
         }}
       >
-        {name}
+        {item?.name}
       </Text>
     </Pressable>
   );
@@ -33,7 +36,7 @@ export default ServiceCategory;
 const styles = StyleSheet.create({
   container: { alignSelf: "center", margin: 10, flex: 1, alignItems: "center" },
   imgView: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#DADADA",
     borderRadius: 10,
     padding: 10,

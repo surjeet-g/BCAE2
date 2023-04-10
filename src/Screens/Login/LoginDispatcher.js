@@ -121,11 +121,11 @@ export function verifyLoginData(navigation, params) {
               ];
 
               const businessGroup = businessEntityUserTypes.filter((item) => {
-                return item.mapping == "UG_BUSINESS";
+                return item.mapping.userGroup == "UG_BUSINESS";
               });
 
               const consumerGroup = businessEntityUserTypes.filter((item) => {
-                return item.mapping == "UG_CONSUMER";
+                return item.mapping.userGroup == "UG_CONSUMER";
               });
 
               if (
@@ -152,11 +152,12 @@ export function verifyLoginData(navigation, params) {
                   navigation
                 );
               } else {
+                //data without any group mapping
                 dispatch(failureLogin(result));
                 if (result.errorCode === 422) {
                   Toast.show({
                     type: "bctError",
-                    text1: "Current user type not supported!!" || "",
+                    text1: "Current user type is not supported!!" || "",
                   });
                 }
               }
@@ -164,8 +165,7 @@ export function verifyLoginData(navigation, params) {
               if (
                 profileResult?.success &&
                 userTypeInResponse.length !== 0 &&
-                (consumerGroup.includes(userTypeInResponse) ||
-                  businessGroup.includes(userTypeInResponse))
+                consumerGroup.includes(userTypeInResponse)
               ) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,

@@ -361,6 +361,7 @@ export let strings = new LocalizedStrings({
     id_number: "ID Number",
     title: "Title",
     country: "Country*",
+
     location: "Location",
     mobile_number: "Mobile Number",
     otp: "OTP",
@@ -536,7 +537,6 @@ export let strings = new LocalizedStrings({
     not_available: "Not Available",
     completed_appointment: "completed appointment",
     upcoming_appointment: "upcoming appointment",
-
     dob: "DOB",
     place_of_issue: "Place of Issue",
     country_code: "Country Code",
@@ -544,9 +544,11 @@ export let strings = new LocalizedStrings({
     firstname: "Firstname",
     lastname: "Lastname",
     skip_proceed: "Skip & Proceed",
-    save_continue: "Save & Continue",
-    proceed_to_preview: "Proceed to Preview",
+    save_continue: "Continue",
+    proceed_to_preview: "Preview",
     download_pdf: "Download as PDF",
+    registereredDate: "Registered Date",
+    registereredNo: "Registered Number",
     forename: "Forename",
     tab_interactive: "Interactive",
     tab_informative: "Informative",
@@ -563,9 +565,18 @@ export let strings = new LocalizedStrings({
     bill_lang: "Bill Language",
     notification_pref: "Notification Preference",
     currency: "Currency",
-    appointment_date: "Appoiment Date"
-    //add en
+    appointment_date: "Appointment Date",
+    appoinment_type: "Appoinment Type",
+    start_date: "Start Date",
+    end_date: "End Date",
+    repeat: "Repeat",
+
+    rescedule: "Rescedule",
+    statement: "Statement",
+
+    workflow: "WorkFlow",
   },
+
   ml: {
     building_name: "Building Name/Others*",
     street: "Street*",

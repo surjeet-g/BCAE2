@@ -34,12 +34,16 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme, Modal, Checkbox } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchServiceProducts } from "./CreateCustomerDispatcher";
+import { removeCategoryProducts } from "./CreateCustomerAction";
 
 const CreateCustomer = (props) => {
   const { colors } = useTheme();
   const { navigation } = props;
+  const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
   const [formCustomerData, setFormCustomerData] = useState({});
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -57,23 +61,15 @@ const CreateCustomer = (props) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
 
+  let createCustomerReducerData = useSelector(
+    (state) => state.createCustomerReducerData
+  );
+
   // Used for step 3 & 4 to display list of available & selected products
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: `Product 1`,
-      type: "NA",
-      price: 200,
-      quantity: 0,
-    },
-    {
-      id: 2,
-      name: `Product 2`,
-      type: "NA",
-      price: 300,
-      quantity: 0,
-    },
-  ]);
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    setProducts(createCustomerReducerData.products);
+  }, [createCustomerReducerData.products]);
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
@@ -413,25 +409,17 @@ const CreateCustomer = (props) => {
         <FlatList
           style={{ backgroundColor: "#fff", margin: 10, borderRadius: 10 }}
           numColumns={4}
-          data={[
-            {
-              id: 1,
-              name: "Postpaid",
-              icon: require("../../Assets/icons/ic_postpaid.png"),
-            },
-            {
-              id: 2,
-              name: "Prepaid",
-              icon: require("../../Assets/icons/ic_prepaid.png"),
-            },
-            {
-              id: 3,
-              name: "Hybrid",
-              icon: require("../../Assets/icons/ic_word.png"),
-            },
-          ]}
+          data={createCustomerReducerData.serviceCategories}
           renderItem={({ item, index }) => (
-            <ServiceCategory name={item.name} icon={item.icon} />
+            <ServiceCategory
+              item={item}
+              onSelect={() => {
+                dispatch(fetchServiceProducts(item.code, navigation));
+              }}
+              onDeSelect={() => {
+                dispatch(removeCategoryProducts(item.code));
+              }}
+            />
           )}
           keyExtractor={(item, index) => index}
         />
@@ -445,18 +433,22 @@ const CreateCustomer = (props) => {
           )}
           keyExtractor={(item, index) => index}
         /> */}
-        <CustomTitleText title={"Available Products"} />
-        <FlatList
-          data={products}
-          renderItem={({ item, index }) => (
-            <Product
-              item={item}
-              products={products}
-              setProducts={setProducts}
+        {products.length > 0 && (
+          <View>
+            <CustomTitleText title={"Available Products"} />
+            <FlatList
+              data={products}
+              renderItem={({ item, index }) => (
+                <Product
+                  item={item}
+                  products={products}
+                  setProducts={setProducts}
+                />
+              )}
+              keyExtractor={(item, index) => index}
             />
-          )}
-          keyExtractor={(item, index) => index}
-        />
+          </View>
+        )}
       </View>
     );
   };
