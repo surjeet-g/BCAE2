@@ -1,9 +1,5 @@
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+  useEffect, useState
 } from "react";
 import {
   Alert,
@@ -14,9 +10,10 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { Button, Divider, Text, useTheme, Modal } from "react-native-paper";
+import { Button, Divider, Modal, Text, useTheme } from "react-native-paper";
+import RNRestart from "react-native-restart";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,15 +27,14 @@ import {
   DEFAULT_PROFILE_IMAGE,
   mockAnnouncementList,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import { getUserId, USERTYPE } from "../../Utilities/UserManagement/userInfo";
-// import RNRestart from "react-native-restart";
+import { getUserId, getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 const ICON = 25;
 
 export const ViewProfile = ({ navigation }) => {
@@ -60,9 +56,13 @@ export const ViewProfile = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchMyProfileData(navigation));
   }, []);
+  const [userType, setUserType] = useState("");
 
   useEffect(() => {
     async function getUserID() {
+      const userType = await getUserType();
+      console.log(">>rrr", userType);
+      setUserType(userType);
       const userID = await getUserId();
       const language = await getLanguage();
       setSelectedLanguage(language.name);
@@ -109,8 +109,8 @@ export const ViewProfile = ({ navigation }) => {
   const handlechangeLanguage = async (language) => {
     const status = await changeLanguage(language);
     if (status) {
-      // navigation.navigate("Splash");
-      // RNRestart.restart();
+      navigation.navigate("Splash");
+      RNRestart.restart();
     } else {
       console.log("somthing wents wrong");
     }
@@ -190,7 +190,7 @@ export const ViewProfile = ({ navigation }) => {
       },
     ]);
 
-  const onFaqPressed = () => {};
+  const onFaqPressed = () => { };
   const onAnnouncementPressed = () => {
     openAnnoncementModal();
   };
@@ -210,9 +210,8 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{
@@ -310,41 +309,44 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <Pressable
-          style={styles.listItem}
-          onPress={() => {
-            navigation.navigate("SavedLocation");
-          }}
-        >
-          <Icon
-            name="map-marker-outline"
-            size={ICON}
-            color={colors.profile_enabled}
-            style={{ marginRight: 14 }}
-          />
+        {userType == USERTYPE.CUSTOMER &&
 
-          <Text
-            variant="bodyMedium"
-            style={{
-              fontWeight: "600",
-
-              color: colors.secondary,
+          <Pressable
+            style={styles.listItem}
+            onPress={() => {
+              navigation.navigate("SavedLocation");
             }}
           >
-            {strings.saved_location}
-            {"\n"}
+            <Icon
+              name="map-marker-outline"
+              size={ICON}
+              color={colors.profile_enabled}
+              style={{ marginRight: 14 }}
+            />
+
             <Text
-              variant="bodySmall"
+              variant="bodyMedium"
               style={{
                 fontWeight: "600",
-                color: "gray",
-                lineHeight: 20,
+
+                color: colors.secondary,
               }}
             >
-              {strings.choose_saved_location}
+              {strings.saved_location}
+              {"\n"}
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: "600",
+                  color: "gray",
+                  lineHeight: 20,
+                }}
+              >
+                {strings.choose_saved_location}
+              </Text>
             </Text>
-          </Text>
-        </Pressable>
+          </Pressable>
+        }
         <Divider />
         <View
           style={{
@@ -574,176 +576,178 @@ export const ViewProfile = ({ navigation }) => {
           />
         </View>
       </Modal>
-      {ischangeLanguageModalVisible && (
-        <View style={styles.changeLanguageContainer}>
-          <View
-            style={{
-              ...commonStyle.row_start,
-              ...commonStyle.borderBottom,
-              width: "100%",
-              paddingVertical: 10,
-            }}
-          >
-            <Text
-              variant="bodyLarge"
+      {
+        ischangeLanguageModalVisible && (
+          <View style={styles.changeLanguageContainer}>
+            <View
               style={{
-                flex: 0.9,
-                textAlign: "center",
-                fontWeight: "700",
-                color: colors.secondary,
-              }}
-            >
-              Change Language
-            </Text>
-            <TouchableOpacity
-              onPress={closeLanguageModal}
-              style={{ flex: 0.1 }}
-            >
-              <Image
-                style={{ width: 20, height: 20 }}
-                source={require("../../Assets/icons/close_black.png")}
-              />
-            </TouchableOpacity>
-          </View>
-          <Divider />
-          <View>
-            <Pressable
-              onPress={() => selectLanguage("English")}
-              style={{
-                ...commonStyle.row_space_arround_evenly,
-                width: "50%",
-                paddingHorizontal: 10,
+                ...commonStyle.row_start,
+                ...commonStyle.borderBottom,
+                width: "100%",
                 paddingVertical: 10,
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "600",
-                    color: colors.secondary,
-                  }}
-                >
-                  English
-                </Text>
-                {selectedLanguage == "English" && (
-                  <Icon name="hand-pointing-left" size={25} color={"red"} />
-                )}
-              </View>
-            </Pressable>
-            <Divider></Divider>
+              <Text
+                variant="bodyLarge"
+                style={{
+                  flex: 0.9,
+                  textAlign: "center",
+                  fontWeight: "700",
+                  color: colors.secondary,
+                }}
+              >
+                Change Language
+              </Text>
+              <TouchableOpacity
+                onPress={closeLanguageModal}
+                style={{ flex: 0.1 }}
+              >
+                <Image
+                  style={{ width: 20, height: 20 }}
+                  source={require("../../Assets/icons/close_black.png")}
+                />
+              </TouchableOpacity>
+            </View>
+            <Divider />
+            <View>
+              <Pressable
+                onPress={() => selectLanguage("English")}
+                style={{
+                  ...commonStyle.row_space_arround_evenly,
+                  width: "50%",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "600",
+                      color: colors.secondary,
+                    }}
+                  >
+                    English
+                  </Text>
+                  {selectedLanguage == "English" && (
+                    <Icon name="hand-pointing-left" size={25} color={"red"} />
+                  )}
+                </View>
+              </Pressable>
+              <Divider></Divider>
+            </View>
+            <View>
+              <Pressable
+                onPress={() => selectLanguage("Malay")}
+                style={{
+                  ...commonStyle.row_space_arround_evenly,
+                  width: "50%",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "600",
+                      color: colors.secondary,
+                    }}
+                  >
+                    Malay
+                  </Text>
+                  {selectedLanguage == "Malay" && (
+                    <Icon name="hand-pointing-left" size={25} color={"red"} />
+                  )}
+                </View>
+              </Pressable>
+              <Divider></Divider>
+            </View>
+            <View>
+              <Pressable
+                onPress={() => selectLanguage("Tamil")}
+                style={{
+                  ...commonStyle.row_space_arround_evenly,
+                  width: "50%",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "600",
+                      color: colors.secondary,
+                    }}
+                  >
+                    Tamil
+                  </Text>
+                  {selectedLanguage == "Tamil" && (
+                    <Icon name="hand-pointing-left" size={25} color={"red"} />
+                  )}
+                </View>
+              </Pressable>
+              <Divider></Divider>
+            </View>
+            <View>
+              <Pressable
+                onPress={() => selectLanguage("Malayalam")}
+                style={{
+                  ...commonStyle.row_space_arround_evenly,
+                  width: "50%",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "600",
+                      color: colors.secondary,
+                    }}
+                  >
+                    Malayalam
+                  </Text>
+                  {selectedLanguage == "Malayalam" && (
+                    <Icon name="hand-pointing-left" size={25} color={"red"} />
+                  )}
+                </View>
+              </Pressable>
+              <Divider></Divider>
+            </View>
+            <View>
+              <Pressable
+                onPress={() => selectLanguage("Hindi")}
+                style={{
+                  ...commonStyle.row_space_arround_evenly,
+                  width: "50%",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "600",
+                      color: colors.secondary,
+                    }}
+                  >
+                    Hindi
+                  </Text>
+                  {selectedLanguage == "Hindi" && (
+                    <Icon name="hand-pointing-left" size={25} color={"red"} />
+                  )}
+                </View>
+              </Pressable>
+              <Divider></Divider>
+            </View>
           </View>
-          <View>
-            <Pressable
-              onPress={() => selectLanguage("Malay")}
-              style={{
-                ...commonStyle.row_space_arround_evenly,
-                width: "50%",
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "600",
-                    color: colors.secondary,
-                  }}
-                >
-                  Malay
-                </Text>
-                {selectedLanguage == "Malay" && (
-                  <Icon name="hand-pointing-left" size={25} color={"red"} />
-                )}
-              </View>
-            </Pressable>
-            <Divider></Divider>
-          </View>
-          <View>
-            <Pressable
-              onPress={() => selectLanguage("Tamil")}
-              style={{
-                ...commonStyle.row_space_arround_evenly,
-                width: "50%",
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "600",
-                    color: colors.secondary,
-                  }}
-                >
-                  Tamil
-                </Text>
-                {selectedLanguage == "Tamil" && (
-                  <Icon name="hand-pointing-left" size={25} color={"red"} />
-                )}
-              </View>
-            </Pressable>
-            <Divider></Divider>
-          </View>
-          <View>
-            <Pressable
-              onPress={() => selectLanguage("Malayalam")}
-              style={{
-                ...commonStyle.row_space_arround_evenly,
-                width: "50%",
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "600",
-                    color: colors.secondary,
-                  }}
-                >
-                  Malayalam
-                </Text>
-                {selectedLanguage == "Malayalam" && (
-                  <Icon name="hand-pointing-left" size={25} color={"red"} />
-                )}
-              </View>
-            </Pressable>
-            <Divider></Divider>
-          </View>
-          <View>
-            <Pressable
-              onPress={() => selectLanguage("Hindi")}
-              style={{
-                ...commonStyle.row_space_arround_evenly,
-                width: "50%",
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "600",
-                    color: colors.secondary,
-                  }}
-                >
-                  Hindi
-                </Text>
-                {selectedLanguage == "Hindi" && (
-                  <Icon name="hand-pointing-left" size={25} color={"red"} />
-                )}
-              </View>
-            </Pressable>
-            <Divider></Divider>
-          </View>
-        </View>
-      )}
-    </View>
+        )
+      }
+    </View >
   );
 };
 const styles = StyleSheet.create({

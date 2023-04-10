@@ -118,9 +118,9 @@ const EditProfile = ({ navigation, props }) => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
       const userType = await getUserTypeForProfile();
-      const { CONTACT_PREFERENCE } = MASTER_DATA_CONSTANT;
+      const { CONTACT_PREFERENCE, GENDER } = MASTER_DATA_CONSTANT;
 
-      masterDispatch(getMasterData(`${CONTACT_PREFERENCE}`));
+      masterDispatch(getMasterData(`${CONTACT_PREFERENCE},${GENDER}`));
 
       setUserType(userType);
     }
@@ -597,7 +597,7 @@ const EditProfile = ({ navigation, props }) => {
                 <CustomDropDown
                   selectedValue={get(gender, "description", "")}
                   setValue={(text) => onGenderClick(text)}
-                  data={registerForm?.registerFormData?.GENDER ?? []}
+                  data={get(masterReducer, 'masterdataData.GENDER', [])}
                   onChangeText={(text) => onGenderClick(text)}
                   value={get(gender, "description", "")}
                   placeHolder={strings.gender}

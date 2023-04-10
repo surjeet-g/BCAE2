@@ -156,7 +156,7 @@ function MyStack() {
           options={({ navigation }) => ({
             ...options,
             ...{
-              headerTitle: "Appointment",
+              headerTitle: "Appointment Dashboard",
               headerStyle: {
                 backgroundColor: "#4C5A81",
               },

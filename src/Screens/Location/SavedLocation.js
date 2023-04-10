@@ -114,9 +114,10 @@ const SavedLocation = ({ route, navigation }) => {
           text: strings.ok,
           onPress: async () => {
             const res = await dispatch(deleteSavedLocation(key, navigation));
-            // if (res) {
-            fetchMyProfileData();
-            // }
+            if (res) {
+              dispatch2(fetchMyProfileData(navigation));
+
+            }
           },
         },
       ]
@@ -208,12 +209,10 @@ const SavedLocation = ({ route, navigation }) => {
             delete selectedAddressObj.status;
             const formatedData = { ...selectedAddressObj, isPrimary: true };
 
-            const res = await dispatch(
-              setPrimaryAddress(formatedData, navigation)
+            dispatch(
+              setPrimaryAddress(formatedData, navigation, () => dispatch2(fetchMyProfileData(navigation)))
             );
-            if (res) {
-              fetchMyProfileData();
-            }
+
           },
         },
       ]);

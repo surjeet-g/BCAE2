@@ -5,7 +5,7 @@ import { Text, TextInput, useTheme } from "react-native-paper";
 export const CustomInput = (props) => {
   const {
     caption = "",
-    placeholder = "",
+    placeHolder = "",
     multiline = false,
     hideCaption = false,
   } = props;
@@ -50,7 +50,7 @@ export const CustomInput = (props) => {
             backgroundColor: "transparent"
           }}
           placeholderTextColor="#C7CAD1"
-          placeholder={caption}
+          placeholder={placeHolder || caption}
           onFocus={() => {
             setActive(true);
           }}
