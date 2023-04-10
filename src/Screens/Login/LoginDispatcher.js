@@ -18,7 +18,7 @@ import { setProfileData } from "./../../Redux/ProfileAction";
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { loginId, password, userType, loginType, loginMode } = params;
+    const { loginId, password, userGroup, loginType, loginMode } = params;
     dispatch(initLoginData());
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
@@ -28,9 +28,9 @@ export function verifyLoginData(navigation, params) {
         let params = {
           loginId,
           password,
-          channel: "MOBILE_APP",
+          channel: "US_MOBILEAPP",
           deviceId: fcmDeviceId,
-          userType,
+          userGroup,
           loginType,
         };
 
@@ -39,6 +39,10 @@ export function verifyLoginData(navigation, params) {
           requestMethod.POST,
           params,
           navigation
+        );
+        console.log(
+          "Surjeet ==============USER_LOGIN==============>" +
+            JSON.stringify(result)
         );
         if (result.success) {
           if (result.data?.data?.anotherSession) {
@@ -69,10 +73,32 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
               let profileResult = {};
 
+              let params = {};
+              let valueParam = "USER_TYPE";
+              let userTypeResult = await serverCall(
+                `${endPoints.MASTERDATA}?searchParam=code&valueParam=${valueParam}`,
+                requestMethod.GET,
+                params
+              );
+
+              const businessEntityUserTypes =
+                userTypeResult.data.data.USER_TYPE;
+
+              const businessGroup = businessEntityUserTypes.map((item) => {
+                if (item.mapping.userGroup[0] == "UG_BUSINESS") {
+                  return item.code;
+                }
+              });
+
+              const consumerGroup = businessEntityUserTypes.map((item) => {
+                if (item.mapping.userGroup[0] == "UG_CONSUMER") {
+                  return item.code;
+                }
+              });
+
               if (
                 userTypeInResponse.length !== 0 &&
-                (userTypeInResponse === "UT_INTERNAL" ||
-                  userTypeInResponse === "UT_VENDOR")
+                businessGroup.includes(userTypeInResponse)
               ) {
                 // Business User Type
                 profileResult = await serverCall(
@@ -83,8 +109,7 @@ export function verifyLoginData(navigation, params) {
                 );
               } else if (
                 userTypeInResponse.length !== 0 &&
-                (userTypeInResponse === "PersonalCustomer" ||
-                  userTypeInResponse === "BusinessCustomer")
+                consumerGroup.includes(userTypeInResponse)
               ) {
                 // Consumer User Type
                 profileResult = await serverCall(
@@ -94,13 +119,20 @@ export function verifyLoginData(navigation, params) {
                   {},
                   navigation
                 );
+              } else {
+                //data without any group mapping
+                dispatch(failureLogin(result));
+
+                Toast.show({
+                  type: "bctError",
+                  text1: "Current user type is not supported!!" || "",
+                });
               }
 
               if (
                 profileResult?.success &&
                 userTypeInResponse.length !== 0 &&
-                (userTypeInResponse === "PersonalCustomer" ||
-                  userTypeInResponse === "BusinessCustomer")
+                consumerGroup.includes(userTypeInResponse)
               ) {
                 let profileData = {
                   userId: result.data?.data?.user?.userId,
@@ -143,8 +175,7 @@ export function verifyLoginData(navigation, params) {
               } else if (
                 profileResult?.success &&
                 userTypeInResponse.length !== 0 &&
-                (userTypeInResponse === "UT_INTERNAL" ||
-                  userTypeInResponse === "UT_VENDOR")
+                businessGroup.includes(userTypeInResponse)
               ) {
                 let profileData = profileResult?.data?.data;
                 await saveDataToDB(storageKeys.PROFILE_DETAILS, profileData);

@@ -12,17 +12,17 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister
+  userRegister,
 } from "../../../Redux/RegisterDispatcher";
 
-import get from 'lodash.get';
+import get from "lodash.get";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
 import { ClearSpace } from "../../../Components/ClearSpace";
 import { CustomButton as Button } from "../../../Components/CustomButton";
@@ -31,7 +31,11 @@ import { StickyFooter } from "../../../Components/StickyFooter";
 import { TextBoxWithCTA } from "../../../Components/TextBoxWithCTA";
 import {
   color,
-  fontSizes, isValidNumber, spacing, validateEmail, validatePassword
+  fontSizes,
+  isValidNumber,
+  spacing,
+  validateEmail,
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -68,8 +72,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
   const OTP_TIMER = 90;
-
-
 
   const formatOtpTimer = (otpTmr) => {
     let minute = 0;
@@ -181,9 +183,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const [dobError, setDobError] = useState("");
   const [open, setOpen] = useState(false);
   const [addreType, setAddrType] = useState("");
-  const [hno, setHno] = useState("")
-  const [buildingNo, setBuildingNo] = useState("")
-  const [city, setCity] = useState("")
+  const [hno, setHno] = useState("");
+  const [buildingNo, setBuildingNo] = useState("");
+  const [city, setCity] = useState("");
   const onCheckBoxClickTerm = () => {
     //console.log("onCheckBoxClickTerm====>isSelectedTerm==>"+isSelectedTerm)
     setSelectionTerm(!isSelectedTerm);
@@ -197,16 +199,16 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setLocation(
       `${params.hno},${params.buildingName},${params.street},${params.city},${params.district},${params.state},${params.country},${params.postCode}`
     );
-    setBuildingNo(params.buildingName)
+    setBuildingNo(params.buildingName);
     setStreet(params.street);
     setStateProfile(params.state);
     setDistrict(params.district);
     setCountry(params.country);
-    setHno(params.hno)
+    setHno(params.hno);
     setPostcode(params.postCode);
     // setDialPick(params.dialPick);
     setAddrType(params.addressType);
-    setCity(params.city)
+    setCity(params.city);
   };
   const onFirstNameChange = (textStr) => {
     setFirstName(textStr);
@@ -269,6 +271,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
       let registerObject = {
         accountType: "personal",
+        //userSource:"US_MOBILEAPP",
         title: title,
         firstName: firstName,
         lastName: lastName,
@@ -322,7 +325,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   let masterReducer = useSelector((state) => state.masterdata);
   const genderList = get(masterReducer, "masterdataData.GENDER", []);
   const addreList = get(masterReducer, "masterdataData.ADDRESS_TYPE", []);
-  const customerIdList = get(masterReducer, "masterdataData.CUSTOMER_ID_TYPE", []);
+  const customerIdList = get(
+    masterReducer,
+    "masterdataData.CUSTOMER_ID_TYPE",
+    []
+  );
 
   const showAlert = (message = "") => {
     // if (
@@ -593,7 +600,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
 
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
@@ -819,7 +825,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobile"
+                  registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -862,7 +868,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobileOtp"
+                  registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -914,7 +920,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "email"
+                  registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -956,7 +962,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "emailOtp"
+                  registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }
