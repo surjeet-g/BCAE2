@@ -31,6 +31,26 @@ const initialState = {
       selected: false,
     },
   ],
+  customerTypes: [
+    {
+      id: 1,
+      name: "Business",
+      code: "BUS",
+      icon: require("../../Assets/icons/ic_business.png"),
+    },
+    {
+      id: 2,
+      name: "Government",
+      code: "GOVN",
+      icon: require("../../Assets/icons/ic_government.png"),
+    },
+    {
+      id: 3,
+      name: "Regular",
+      code: "REG",
+      icon: require("../../Assets/icons/ic_regular.png"),
+    },
+  ],
 };
 
 const CreateCustomerReducer = (state = initialState, action) => {
