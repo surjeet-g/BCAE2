@@ -4,7 +4,7 @@ import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
   DEFAULT_PROFILE_IMAGE,
-  storageKeys
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { setProfileData } from "./../../Redux/ProfileAction";
 import {
@@ -13,7 +13,7 @@ import {
   resetLoginData,
   resetShowSecondLoginAlertData,
   setLoginData,
-  setShowSecondLoginAlert
+  setShowSecondLoginAlert,
 } from "./LoginAction";
 
 export function verifyLoginData(navigation, params) {
@@ -28,7 +28,7 @@ export function verifyLoginData(navigation, params) {
         let params = {
           loginId,
           password,
-          channel: "US_MOBILEAPP",
+          channel: "UAM_MOBILE",
           deviceId: fcmDeviceId,
           userGroup: "UG_CONSUMER",
           loginType,
@@ -42,7 +42,7 @@ export function verifyLoginData(navigation, params) {
         );
         console.log(
           "Surjeet ==============USER_LOGIN==============>" +
-          JSON.stringify(result)
+            JSON.stringify(result)
         );
         if (result.success) {
           if (result.data?.data?.anotherSession) {
@@ -96,7 +96,6 @@ export function verifyLoginData(navigation, params) {
                 }
               });
 
-
               if (
                 userTypeInResponse.length !== 0 &&
                 businessGroup.includes(userTypeInResponse)
@@ -115,7 +114,7 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                  result?.data?.data?.user?.customerUuid,
+                    result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation
