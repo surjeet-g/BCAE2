@@ -51,7 +51,6 @@ const CreateCustomer = (props) => {
   const [customerType, setCustomerType] = useState("");
   const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
-  const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
@@ -61,7 +60,7 @@ const CreateCustomer = (props) => {
     (state) => state.createCustomerReducerData
   );
 
-  console.log("$$$-formData", formData);
+  console.log("$$$-formData", JSON.stringify(formData));
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -137,7 +136,9 @@ const CreateCustomer = (props) => {
     );
   };
 
-  let customerDetails = { details: {} };
+  const customerDetails = { details: {}, address: {}, contact: {} };
+  const serviceDetails = {};
+  const accountDetails = {};
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -152,10 +153,26 @@ const CreateCustomer = (props) => {
           }}
         >
           <CustomInput
+            value={formData?.customerDetails?.details?.title}
+            caption={strings.title}
+            placeHolder={strings.title}
+            onChangeText={(text) => (customerDetails.details.title = text)}
+          />
+          <CustomInput
             value={formData?.customerDetails?.details?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => (customerDetails.details.firstName = text)}
+            onChangeText={(text) =>
+              // approch 1 - working
+              // setFormData({
+              //   ...formData,
+              //   customerDetails: {
+              //     ...customerDetails,
+              //     details: { ...customerDetails.details, firstName: text },
+              //   },
+              // })
+              (customerDetails.details.firstName = text)
+            }
           />
           <CustomInput
             value={formData?.customerDetails?.details?.lastName}
@@ -222,9 +239,11 @@ const CreateCustomer = (props) => {
   };
 
   const handleCustomerDetails = (data) => {
+    console.log("$$$-handleCustomerDetails-data", data);
     let { customerDetails } = formData;
     customerDetails = { ...customerDetails, ...data };
-    console.log("$$$-customerDetails", customerDetails);
+    console.log("$$$-handleCustomerDetails-customerDetails", customerDetails);
+
     setFormData({ ...formData, customerDetails });
   };
 
@@ -242,16 +261,10 @@ const CreateCustomer = (props) => {
           }}
         >
           <CustomInput
-            value={""}
-            caption={strings.title}
-            placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
+            value={formData?.customerDetails?.contact?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.contact.emailId = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -266,6 +279,7 @@ const CreateCustomer = (props) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
+              customerDetails.contact.mobilePrefix = item.dial_code;
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -281,8 +295,11 @@ const CreateCustomer = (props) => {
             onPressOnCountyCode={() => setCountryPickModel(true)}
             countryCode={countryCode}
             caption={strings.mobile_no}
-            onChangeText={(text) => handleNumberChange(text)}
-            value={number}
+            onChangeText={(text) => {
+              customerDetails.contact.mobileNo = text;
+              setNumberError("");
+            }}
+            value={formData?.customerDetails?.contact?.mobileNo}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
@@ -298,35 +315,35 @@ const CreateCustomer = (props) => {
           }}
         >
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address1}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address1 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address2}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address2 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address3}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address3 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.city}
             caption={"City/Town"}
             placeHolder={"City/Town"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.city = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.district = text)}
+            value={formData?.customerDetails?.address?.district}
             caption={"District/Province"}
             placeHolder={"Select " + "District/Province"}
           />
@@ -334,8 +351,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.state = text)}
+            value={formData?.customerDetails?.address?.state}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
@@ -343,8 +360,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.postcode = text)}
+            value={formData?.customerDetails?.address?.postcode}
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
           />
@@ -352,8 +369,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.country = text)}
+            value={formData?.customerDetails?.address?.country}
             caption={strings.country}
             placeHolder={"Select " + strings.country}
           />
@@ -903,6 +920,11 @@ const CreateCustomer = (props) => {
         handleCustomerDetails({ details: customerDetails.details });
         setCurrentStep(currentStep + 1);
         break;
+      case 2:
+        handleCustomerDetails({ address: customerDetails.address });
+        handleCustomerDetails({ contact: customerDetails.contact });
+        setCurrentStep(currentStep + 1);
+        break;
       case 3:
         {
           let item = products.find((product) => product.quantity > 0);
@@ -974,6 +996,15 @@ const CreateCustomer = (props) => {
   const handleNumberChange = (textStr) => {
     setNumber(textStr);
     setNumberError("");
+  };
+
+  const handleAccountTypeSelection = (item) => {
+    const details = { ...accountDetails?.details };
+    details.accountType = item;
+    setFormData({ ...formData, acountDetails: { ...accountDetails, details } });
+    setCustomerType(item.code);
+    setShowCustomerTypeModal(false);
+    setCurrentStep(currentStep + 1);
   };
 
   // For selected product swipe
@@ -1105,11 +1136,7 @@ const CreateCustomer = (props) => {
                 <CustomerType
                   name={item.name}
                   icon={item.icon}
-                  onPress={() => {
-                    setCustomerType(item.code);
-                    setShowCustomerTypeModal(false);
-                    setCurrentStep(currentStep + 1);
-                  }}
+                  onPress={() => handleAccountTypeSelection(item)}
                 />
               )}
               keyExtractor={(item, index) => index}
