@@ -28,7 +28,7 @@ import {
 } from "./../../Utilities/utils";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme, Modal, Checkbox } from "react-native-paper";
+import { Modal, Checkbox } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
 import { useSelector, useDispatch } from "react-redux";
@@ -38,17 +38,15 @@ import { removeCategoryProducts } from "./CreateCustomerAction";
 const CreateCustomer = (props) => {
   const { navigation } = props;
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ getQuote: false });
   const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
-  const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
     useState(false);
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
-  const [customerType, setCustomerType] = useState("");
   const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
   const [numberError, setNumberError] = useState("");
@@ -137,6 +135,7 @@ const CreateCustomer = (props) => {
   };
 
   const customerDetails = { details: {}, address: {} };
+  const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -194,7 +193,7 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => (customerDetails.details.idPlace = text)}
           />
-          {(customerType === "BUS" || customerType === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={formData?.customerDetails?.details?.registeredNo}
               caption={strings.registereredNo}
@@ -204,7 +203,7 @@ const CreateCustomer = (props) => {
               }
             />
           )}
-          {(customerType === "BUS" || customerType === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={formData?.customerDetails?.details?.registeredDate}
               caption={strings.registereredDate}
@@ -426,8 +425,10 @@ const CreateCustomer = (props) => {
             }}
             thumbColor={"#fff"}
             // ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setNeedQuoteOnly(!needQuoteOnly)}
-            value={needQuoteOnly}
+            onValueChange={() =>
+              setFormData({ ...formData, getQuote: !formData?.getQuote })
+            }
+            value={formData?.getQuote}
           />
         </View>
         <CustomTitleText title={"Selected Product"} />
@@ -623,7 +624,7 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
-          {(customerType === "Business" || customerType === "Government") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredNo}
@@ -631,7 +632,7 @@ const CreateCustomer = (props) => {
               onChangeText={(text) => text}
             />
           )}
-          {(customerType === "Business" || customerType === "Government") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredDate}
@@ -660,7 +661,7 @@ const CreateCustomer = (props) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => handleNumberChange(text)}
-            value={number}
+            value={""}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
@@ -860,7 +861,7 @@ const CreateCustomer = (props) => {
   };
 
   const handlePrevious = () => {
-    if (currentStep === 10 && needQuoteOnly) {
+    if (currentStep === 10 && formData?.getQuote) {
       setCurrentStep(4);
     } else if (currentStep === 9 && !createAccount) {
       setCurrentStep(5);
@@ -888,14 +889,18 @@ const CreateCustomer = (props) => {
             const selectedProducts = products.filter(
               (product) => product.quantity > 0
             );
-            const serviceDetails = { details: selectedProducts };
+            serviceDetails.details = selectedProducts;
             setFormData({ ...formData, serviceDetails });
             setCurrentStep(currentStep + 1);
           }
         }
         break;
       case 4:
-        if (needQuoteOnly) setCurrentStep(10);
+        {
+          formData?.getQuote
+            ? setCurrentStep(10)
+            : setCurrentStep(currentStep + 1);
+        }
         break;
       case 5:
         setShowAccountCreationModal(true);
@@ -945,7 +950,6 @@ const CreateCustomer = (props) => {
       ...formData,
       accountDetails: { ...accountDetails, details },
     });
-    setCustomerType(item.code);
     setShowCustomerTypeModal(false);
     setCurrentStep(currentStep + 1);
   };
