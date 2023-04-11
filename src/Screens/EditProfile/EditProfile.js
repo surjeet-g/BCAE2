@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 
 import get from "lodash.get";
@@ -34,15 +34,15 @@ import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset,
+  setProfileReset
 } from "../../Redux/ProfileAction";
 import {
   fetchMyProfileData,
-  updateProfileData,
+  updateProfileData
 } from "../../Redux/ProfileDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
@@ -51,7 +51,7 @@ import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
 import {
   getUserTypeForProfile,
-  USERTYPE,
+  USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
@@ -296,7 +296,7 @@ const EditProfile = ({ navigation, props }) => {
   };
   const onCountryClick = (textStr) => {
     setCountry(textStr?.description);
-    setCountryCode(textStr?.mapping?.countryCode ?? "");
+    // setCountryCode(textStr?.mapping?.countryCode ?? "");
     buttonEnableDisable();
   };
   const onLocationClick = (textStr) => {
@@ -325,7 +325,7 @@ const EditProfile = ({ navigation, props }) => {
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
@@ -336,9 +336,9 @@ const EditProfile = ({ navigation, props }) => {
       //else if (location === "") { setLocationError(strings.locationError) }
       const isCustomer =
         USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
-
+      let registerObject, userObject;
       if (isCustomer) {
-        let registerObject = {
+        registerObject = {
           details: {
             firstName: firstName,
             lastName: lastName,
@@ -366,7 +366,7 @@ const EditProfile = ({ navigation, props }) => {
           },
         };
       } else {
-        let userObject = {
+        userObject = {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
@@ -399,7 +399,7 @@ const EditProfile = ({ navigation, props }) => {
       );
 
       const status = await dispatch2(
-        updateProfileData(registerObject, navigation, isCustomer)
+        updateProfileData(isCustomer ? registerObject : userObject, navigation, isCustomer)
       );
       if (status) {
         await dispatch2(fetchMyProfileData(navigation));
@@ -444,6 +444,7 @@ const EditProfile = ({ navigation, props }) => {
     "savedProfileData.contactPreferences",
     ""
   );
+  console.log('>>profileCurrentPer', profile)
 
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
   let contactPerf = [];
@@ -606,10 +607,11 @@ const EditProfile = ({ navigation, props }) => {
 
               <View style={{ marginTop: spacing.HEIGHT_5 }}>
                 <CustomInput
+                  disabled={true}
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
-                  onChangeText={(text) => {}}
+                  onChangeText={(text) => { }}
                   value={get(profile, countyPath, "")}
                 />
               </View>
@@ -721,15 +723,24 @@ const EditProfile = ({ navigation, props }) => {
                   value={get(profile, mobilePath, "")}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
-                  right={
-                    <TextInput.Icon
-                      onPress={clearFirstName}
-                      style={{ width: 23, height: 23 }}
-                      icon={require("../../Assets/icons/ic_close.png")}
-                    />
-                  }
                   disabled={true}
                 />
+                <Text></Text>
+              </View>
+              <View style={{ marginTop: spacing.HEIGHT_30 }}>
+                <CustomInput
+                  disabled={true}
+                  // editable={false}
+                  placeHolder={strings.mobile_number}
+                  caption={strings.mobile_number}
+                  onChangeText={(text) => onFirstNameChange(text)}
+                  value={get(profile, mobilePath, "")}
+
+                />
+                {/* {!registerForm.initRegisterForm &&
+                  registerForm?.loggedProfile?.errorCode == "404" &&
+                  this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
+                {firstNameError && showErrorMessage(firstNameError)}
               </View>
 
               {/* Email */}

@@ -57,7 +57,7 @@ export const getUserType = async () => {
   try {
 
     userType = await getDataFromDB(storageKeys.USERTYPE)
-    if (["PersonalCustomer"].includes(userType)) {
+    if (["UT_CONSUMER"].includes(userType)) {
 
       userType = USERTYPE.CUSTOMER
     }
