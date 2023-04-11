@@ -136,22 +136,13 @@ const CreateCustomer = (props) => {
     );
   };
 
-  const customerDetails = { details: {}, address: {}, contact: {} };
-  const serviceDetails = {};
-  const accountDetails = {};
+  const customerDetails = { details: {}, address: {} };
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Information"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={formData?.customerDetails?.details?.title}
             caption={strings.title}
@@ -162,17 +153,7 @@ const CreateCustomer = (props) => {
             value={formData?.customerDetails?.details?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) =>
-              // approch 1 - working
-              // setFormData({
-              //   ...formData,
-              //   customerDetails: {
-              //     ...customerDetails,
-              //     details: { ...customerDetails.details, firstName: text },
-              //   },
-              // })
-              (customerDetails.details.firstName = text)
-            }
+            onChangeText={(text) => (customerDetails.details.firstName = text)}
           />
           <CustomInput
             value={formData?.customerDetails?.details?.lastName}
@@ -252,19 +233,12 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
-            value={formData?.customerDetails?.contact?.emailId}
+            value={formData?.customerDetails?.address?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => (customerDetails.contact.emailId = text)}
+            onChangeText={(text) => (customerDetails.address.emailId = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -279,7 +253,7 @@ const CreateCustomer = (props) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
-              customerDetails.contact.mobilePrefix = item.dial_code;
+              customerDetails.address.mobilePrefix = item.dial_code;
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -296,10 +270,10 @@ const CreateCustomer = (props) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => {
-              customerDetails.contact.mobileNo = text;
+              customerDetails.address.mobileNo = text;
               setNumberError("");
             }}
-            value={formData?.customerDetails?.contact?.mobileNo}
+            value={formData?.customerDetails?.address?.mobileNo}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
@@ -379,6 +353,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const serviceDetails = { details: [], address: {} };
   // Step = 3
   const renderServicesUI = () => {
     return (
@@ -577,6 +552,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const accountDetails = { details: {}, address: {} };
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -601,14 +577,7 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={""}
             caption={strings.firstname}
@@ -712,14 +681,7 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
@@ -803,14 +765,7 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Account Address"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={""}
             caption={"Flat/House/Unit No/ Block"}
@@ -922,7 +877,6 @@ const CreateCustomer = (props) => {
         break;
       case 2:
         handleCustomerDetails({ address: customerDetails.address });
-        handleCustomerDetails({ contact: customerDetails.contact });
         setCurrentStep(currentStep + 1);
         break;
       case 3:
@@ -950,19 +904,6 @@ const CreateCustomer = (props) => {
         setCurrentStep(currentStep + 1);
         break;
     }
-    // if (currentStep === 1) {
-    //   handleCustomerDetails({ details: customerDetails.details });
-    //   setCurrentStep(currentStep + 1);
-    // } else if (currentStep === 3) {
-    //   let item = products.find((product) => product.quantity > 0);
-    //   if (item === undefined)
-    //     alert("Select atleast one service to continue!!!");
-    //   else setCurrentStep(currentStep + 1);
-    // } else if (currentStep === 5) {
-    //   setShowAccountCreationModal(true);
-    // } else if (currentStep === 4 && needQuoteOnly) {
-    //   setCurrentStep(10);
-    // } else setCurrentStep(currentStep + 1);
   };
 
   const handleSubmit = () => {
@@ -994,14 +935,16 @@ const CreateCustomer = (props) => {
   };
 
   const handleNumberChange = (textStr) => {
-    setNumber(textStr);
     setNumberError("");
   };
 
   const handleAccountTypeSelection = (item) => {
     const details = { ...accountDetails?.details };
     details.accountType = item;
-    setFormData({ ...formData, acountDetails: { ...accountDetails, details } });
+    setFormData({
+      ...formData,
+      accountDetails: { ...accountDetails, details },
+    });
     setCustomerType(item.code);
     setShowCustomerTypeModal(false);
     setCurrentStep(currentStep + 1);
@@ -1019,8 +962,6 @@ const CreateCustomer = (props) => {
         style={[styles.backRightBtn]}
         onPress={() => {
           alert("Index: ", data.index);
-          console.log("$$$-data", data);
-          console.log("$$$-data", JSON.stringify(data));
         }}
       >
         <Icon name="delete" size={19} color={"#D13D3D"} />
@@ -1239,6 +1180,12 @@ const CreateCustomer = (props) => {
 };
 
 const styles = StyleSheet.create({
+  backgroundView: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    margin: 10,
+  },
   modalContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
