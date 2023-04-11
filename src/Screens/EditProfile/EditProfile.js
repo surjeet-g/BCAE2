@@ -94,9 +94,10 @@ const EditProfile = ({ navigation, props }) => {
   const [street, setStreet] = useState("");
   const [state, setStateProfile] = useState("");
   const [district, setDistrict] = useState("");
-  const [country, setCountry] = useState("");
+  const [coupedintry, setCountry] = useState("");
   const [postCode, setPostcode] = useState("");
   const [contactValues, setContactValues] = useState([]);
+  const [notificationValues, setNotificationValues] = useState([]);
   useEffect(() => {
     // dispatch1(setProfileReset());
     getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
@@ -121,9 +122,12 @@ const EditProfile = ({ navigation, props }) => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
       const userType = await getUserTypeForProfile();
-      const { CONTACT_PREFERENCE, GENDER } = MASTER_DATA_CONSTANT;
+      const { CONTACT_PREFERENCE, GENDER, NOTIFICATION_TYPE } =
+        MASTER_DATA_CONSTANT;
 
-      masterDispatch(getMasterData(`${CONTACT_PREFERENCE},${GENDER}`));
+      masterDispatch(
+        getMasterData(`${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE}`)
+      );
 
       setUserType(userType);
     }
@@ -237,7 +241,6 @@ const EditProfile = ({ navigation, props }) => {
       firstName === "" ||
       lastName === "" ||
       gender === "" ||
-      country === "" ||
       location === ""
     ) {
       setSaveButtomEnableDisable(true);
@@ -317,6 +320,16 @@ const EditProfile = ({ navigation, props }) => {
         ) == 0
       )
         return null;
+    } else {
+      if (get(notificationValues, "length", 0) === 0) return false;
+      if (
+        get(
+          notificationValues.filter((itm) => itm.active == true),
+          "length",
+          0
+        ) == 0
+      )
+        return null;
     }
     if (firstName == "" || lastName == "") return false;
     return true;
@@ -370,6 +383,19 @@ const EditProfile = ({ navigation, props }) => {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
+          userId: get(profile, "savedProfileData.userId", ""),
+          contactNo: get(profile, "savedProfileData.contactNo", ""),
+          email: get(profile, "savedProfileData.email", ""),
+          userType: get(profile, "savedProfileData.userType", ""),
+
+          dob: get(profile, "savedProfileData.dob", ""),
+          status: get(profile, "savedProfileData.status", ""),
+          country: get(profile, "savedProfileData.country", ""),
+          extn: get(profile, "savedProfileData.extn", ""),
+          mappingPayload: get(profile, "savedProfileData.mappingPayload", ""),
+          notificationType: notificationValues
+            .filter((it) => it.active)
+            .map((ite) => ite.code),
           // "userId": 0,
           // "contactNo": 0,
           // "email": "string",
@@ -393,11 +419,8 @@ const EditProfile = ({ navigation, props }) => {
           // "mappingPayload": {}
         };
       }
-      console.log(
-        ">>",
-        contactValues.filter((it) => it.active).map((ite) => ite.code)
-      );
 
+      console.log("update profile 11", userObject);
       const status = await dispatch2(
         updateProfileData(
           isCustomer ? registerObject : userObject,
@@ -441,7 +464,18 @@ const EditProfile = ({ navigation, props }) => {
     "masterdataData.CONTACT_PREFERENCE",
     []
   );
-  console.log(">>contactPerference", contactPerference);
+  const notificationTypesList = get(
+    masterReducer,
+    "masterdataData.NOTIFICATION_TYPE",
+    []
+  );
+  console.log(">>contactPerference", notificationTypesList);
+
+  const currentnotificationType = get(
+    profile,
+    "savedProfileData.notificationType",
+    []
+  );
 
   const profileCurrentPer = get(
     profile,
@@ -467,6 +501,21 @@ const EditProfile = ({ navigation, props }) => {
 
   const isConsumer =
     USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
+  let notifTypesFiltered = [];
+  if (!isConsumer && get(notificationTypesList, "length", 0) != 0) {
+    notifTypesFiltered = notificationTypesList.map((it) => {
+      return {
+        code: it.code,
+        description: it.description,
+        active:
+          get(currentnotificationType, "length", 0) == 0
+            ? false
+            : currentnotificationType.includes(it.code),
+      };
+    });
+  }
+  console.log("current notifcation type", notifTypesFiltered);
+
   console.log("is consumer", isConsumer);
   const emailPath = isConsumer
     ? "savedProfileData.customerContact[0].emailId"
@@ -619,8 +668,8 @@ const EditProfile = ({ navigation, props }) => {
                   value={get(profile, countyPath, "")}
                 />
               </View>
-              <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                {contactPerf.length != 0 && (
+              {contactPerf.length != 0 && (
+                <View style={{ marginTop: spacing.HEIGHT_5 }}>
                   <CheckGroupbox
                     data={contactPerf}
                     values={contactValues}
@@ -630,8 +679,21 @@ const EditProfile = ({ navigation, props }) => {
                     }}
                     label="Contact Preference"
                   />
-                )}
-              </View>
+                </View>
+              )}
+              {!isConsumer && notifTypesFiltered.length != 0 && (
+                <View style={{ marginTop: spacing.HEIGHT_5 }}>
+                  <CheckGroupbox
+                    data={notifTypesFiltered}
+                    values={notificationValues}
+                    setValues={(data) => {
+                      setNotificationValues(data);
+                      setCounter(counter + 1);
+                    }}
+                    label="Notification Type"
+                  />
+                </View>
+              )}
               {/* Gender */}
               <View style={{}}>
                 <CustomDropDown
@@ -721,15 +783,18 @@ const EditProfile = ({ navigation, props }) => {
                 />
               </View>
 
-              {/* Mobile Number */}
-              <View style={{ marginTop: 10 }}>
+              <View style={{ marginTop: spacing.HEIGHT_30 }}>
                 <CustomInput
-                  value={get(profile, mobilePath, "")}
+                  disabled={true}
+                  // editable={false}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
-                  disabled={true}
+                  value={get(profile, mobilePath, "")}
                 />
-                <Text></Text>
+                {/* {!registerForm.initRegisterForm &&
+                  registerForm?.loggedProfile?.errorCode == "404" &&
+                  this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
+                {firstNameError && showErrorMessage(firstNameError)}
               </View>
 
               {/* Email */}
