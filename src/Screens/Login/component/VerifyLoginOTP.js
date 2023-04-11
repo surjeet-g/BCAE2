@@ -1,39 +1,24 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
+  ImageBackground, StyleSheet, Text, View
 } from "react-native";
-import { SvgBG } from "../../../Components/SvgBG";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import { TextInput, Modal } from "react-native-paper";
+import OtpInputs from "react-native-otp-inputs";
+import { Modal } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../../Components/CustomButton";
 import {
-  spacing,
-  fontSizes,
-  color,
-  buttonSize,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-  WEBCLIENT_ID,
+  color, fontSizes, spacing
 } from "../../../Utilities/Constants/Constant";
-import { HEADER_MARGIN } from "../../../Utilities/themeConfig";
-import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 import { strings } from "../../../Utilities/Language";
+import { HEADER_MARGIN } from "../../../Utilities/themeConfig";
 import {
-  verifyLoginData,
-  sendLoginOTPData,
-  resetShowSecondLoginAlert,
-  callLogoutAndLogin,
+  callLogoutAndLogin, resetShowSecondLoginAlert, sendLoginOTPData, verifyLoginData
 } from ".././LoginDispatcher";
-import { useDispatch, useSelector } from "react-redux";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
-  const { loginId, loginMode, loginType } = route.params;
+  const { loginId, loginMode, loginType, userType } = route.params;
   const [otp, setOTP] = useState("");
   const [params, setParams] = useState("");
   const dispatch = useDispatch([
@@ -49,6 +34,7 @@ const VerifyLoginOTP = (props) => {
       let param = {
         loginId,
         password: otp,
+        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
       };
@@ -62,6 +48,7 @@ const VerifyLoginOTP = (props) => {
     otpRef.current.reset();
     let param = {
       loginId,
+      userType,
       loginType,
       loginMode,
     };
