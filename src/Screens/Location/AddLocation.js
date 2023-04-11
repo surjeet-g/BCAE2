@@ -810,7 +810,7 @@ const AddLocation = ({ route, navigation }) => {
 
             }}
           >
-            <Text style={{ color: "#0061ff", marginLeft: 5 }}>Do you know postal code ?</Text>
+            <Text style={{ color: "#0061ff", marginLeft: 5 }}>Don't you know postal code ?</Text>
           </Pressable>
           <CustomButton
             loading={false}

@@ -106,6 +106,7 @@ const Splash = ({ route, navigation }) => {
               marginBottom: 10,
             }}
           >
+
             <CustomButton
               loading={false}
               label={strings.get_started}
