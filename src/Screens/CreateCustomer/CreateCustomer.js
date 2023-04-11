@@ -38,7 +38,7 @@ import { removeCategoryProducts } from "./CreateCustomerAction";
 const CreateCustomer = (props) => {
   const { navigation } = props;
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
-  const [formCustomerData, setFormCustomerData] = useState({});
+  const [formData, setFormData] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
@@ -60,6 +60,8 @@ const CreateCustomer = (props) => {
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
+
+  console.log("$$$-formData", formData);
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -135,6 +137,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  let customerDetails = { details: {} };
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -149,118 +152,80 @@ const CreateCustomer = (props) => {
           }}
         >
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.firstName = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.lastName = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.birthDate}
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.birthDate = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.gender}
             caption={strings.gender}
             placeHolder={strings.gender}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.gender = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => (customerDetails.details.idType = text)}
             value={""}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.idValue}
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.idValue = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.idPlace = text)}
           />
           {(customerType === "BUS" || customerType === "GOVN") && (
             <CustomInput
-              value={""}
+              value={formData?.customerDetails?.details?.registeredNo}
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (customerDetails.details.registeredNo = text)
+              }
             />
           )}
           {(customerType === "BUS" || customerType === "GOVN") && (
             <CustomInput
-              value={""}
+              value={formData?.customerDetails?.details?.registeredDate}
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (customerDetails.details.registeredDate = text)
+              }
             />
           )}
-          {/* <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country_code}
-            placeHolder={"Select " + strings.country_code}
-          />
-          <CountryPicker
-            show={countryPickModel}
-            excludedCountries={excludedCountriesList()}
-            pickerButtonOnPress={(item) => {
-              setCountryCode(item.dial_code);
-              setCountryPickModel(false);
-              setNumberMaxLength(getPhoneNumberLength(item.code));
-            }}
-            onBackdropPress={() => setCountryPickModel(false)}
-            style={{
-              modal: {
-                height: "65%",
-              },
-            }}
-          />
-          <CustomInputWithCC
-            onPressOnCountyCode={() => setCountryPickModel(true)}
-            countryCode={countryCode}
-            caption={strings.mobile_no}
-            onChangeText={(text) => handleNumberChange(text)}
-            value={number}
-            placeHolder={strings.mobile_no}
-            keyboardType="numeric"
-            maxLength={numberMaxLength}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.email}
-            placeHolder={strings.email}
-            onChangeText={(text) => text}
-          /> */}
         </View>
       </View>
     );
+  };
+
+  const handleCustomerDetails = (data) => {
+    let { customerDetails } = formData;
+    customerDetails = { ...customerDetails, ...data };
+    console.log("$$$-customerDetails", customerDetails);
+    setFormData({ ...formData, customerDetails });
   };
 
   // Step = 2
@@ -933,16 +898,49 @@ const CreateCustomer = (props) => {
   };
 
   const handleContinue = () => {
-    if (currentStep === 3) {
-      let item = products.find((product) => product.quantity > 0);
-      if (item === undefined)
-        alert("Select atleast one service to continue!!!");
-      else setCurrentStep(currentStep + 1);
-    } else if (currentStep === 5) {
-      setShowAccountCreationModal(true);
-    } else if (currentStep === 4 && needQuoteOnly) {
-      setCurrentStep(10);
-    } else setCurrentStep(currentStep + 1);
+    switch (currentStep) {
+      case 1:
+        handleCustomerDetails({ details: customerDetails.details });
+        setCurrentStep(currentStep + 1);
+        break;
+      case 3:
+        {
+          let item = products.find((product) => product.quantity > 0);
+          if (item === undefined)
+            alert("Select atleast one service to continue!!!");
+          else {
+            const selectedProducts = products.filter(
+              (product) => product.quantity > 0
+            );
+            const serviceDetails = { details: selectedProducts };
+            setFormData({ ...formData, serviceDetails });
+            setCurrentStep(currentStep + 1);
+          }
+        }
+        break;
+      case 4:
+        if (needQuoteOnly) setCurrentStep(10);
+        break;
+      case 5:
+        setShowAccountCreationModal(true);
+        break;
+      default:
+        setCurrentStep(currentStep + 1);
+        break;
+    }
+    // if (currentStep === 1) {
+    //   handleCustomerDetails({ details: customerDetails.details });
+    //   setCurrentStep(currentStep + 1);
+    // } else if (currentStep === 3) {
+    //   let item = products.find((product) => product.quantity > 0);
+    //   if (item === undefined)
+    //     alert("Select atleast one service to continue!!!");
+    //   else setCurrentStep(currentStep + 1);
+    // } else if (currentStep === 5) {
+    //   setShowAccountCreationModal(true);
+    // } else if (currentStep === 4 && needQuoteOnly) {
+    //   setCurrentStep(10);
+    // } else setCurrentStep(currentStep + 1);
   };
 
   const handleSubmit = () => {
