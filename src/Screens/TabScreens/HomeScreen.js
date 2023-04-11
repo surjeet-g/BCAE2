@@ -11,7 +11,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
@@ -109,26 +109,26 @@ export const CustomCalendar = (props) => {
               backgroundColor:
                 marked.indexOf(
                   "" +
-                  moment(
-                    date?.year + "-" + date?.month + "-" + date?.day
-                  ).format("YYYY-MM-DD")
-                ) > -1 &&
-                  moment(date?.year + "-" + date?.month + "-" + date?.day).format(
-                    "YYYY-MM-DD"
-                  ) < moment(new Date()).format("YYYY-MM-DD")
-                  ? "green"
-                  : marked.indexOf(
-                    "" +
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD")
-                  ) > -1 &&
+                ) > -1 &&
+                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                  "YYYY-MM-DD"
+                ) < moment(new Date()).format("YYYY-MM-DD")
+                  ? "green"
+                  : marked.indexOf(
+                      "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                    ) > -1 &&
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD") >
-                    moment(new Date()).format("YYYY-MM-DD")
-                    ? "#F5AD47"
-                    : "#E1E4EB",
+                      moment(new Date()).format("YYYY-MM-DD")
+                  ? "#F5AD47"
+                  : "#E1E4EB",
             }}
           >
             <Text
@@ -143,36 +143,36 @@ export const CustomCalendar = (props) => {
                   color:
                     marked.indexOf(
                       "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
                     ) > -1
                       ? "white"
                       : "black",
                   textAlign:
                     marked.indexOf(
                       "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
                     ) > -1
                       ? "right"
                       : "center",
                   fontSize:
                     marked.indexOf(
                       "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
                     ) > -1
                       ? 5
                       : 10,
                   paddingRight:
                     marked.indexOf(
                       "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
                     ) > -1
                       ? 5
                       : 0,
@@ -207,51 +207,51 @@ export const CustomCalendar = (props) => {
                 color:
                   marked.indexOf(
                     "" +
-                    moment(
-                      date?.year + "-" + date?.month + "-" + date?.day
-                    ).format("YYYY-MM-DD")
-                  ) > -1 &&
-                    moment(
-                      date?.year + "-" + date?.month + "-" + date?.day
-                    ).format("YYYY-MM-DD") <
-                    moment(new Date()).format("YYYY-MM-DD")
-                    ? "white"
-                    : marked.indexOf(
-                      "" +
                       moment(
                         date?.year + "-" + date?.month + "-" + date?.day
                       ).format("YYYY-MM-DD")
-                    ) > -1 &&
+                  ) > -1 &&
+                  moment(
+                    date?.year + "-" + date?.month + "-" + date?.day
+                  ).format("YYYY-MM-DD") <
+                    moment(new Date()).format("YYYY-MM-DD")
+                    ? "white"
+                    : marked.indexOf(
+                        "" +
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
+                      ) > -1 &&
                       moment(
                         date?.year + "-" + date?.month + "-" + date?.day
                       ).format("YYYY-MM-DD") >
-                      moment(new Date()).format("YYYY-MM-DD")
-                      ? "black"
-                      : "black",
+                        moment(new Date()).format("YYYY-MM-DD")
+                    ? "black"
+                    : "black",
               }}
             >
               {marked.indexOf(
                 "" +
-                moment(
-                  date?.year + "-" + date?.month + "-" + date?.day
-                ).format("YYYY-MM-DD")
-              ) > -1 &&
-                moment(date?.year + "-" + date?.month + "-" + date?.day).format(
-                  "YYYY-MM-DD"
-                ) < moment(new Date()).format("YYYY-MM-DD")
-                ? strings.completed_appointment
-                : marked.indexOf(
-                  "" +
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD")
-                ) > -1 &&
+              ) > -1 &&
+              moment(date?.year + "-" + date?.month + "-" + date?.day).format(
+                "YYYY-MM-DD"
+              ) < moment(new Date()).format("YYYY-MM-DD")
+                ? strings.completed_appointment
+                : marked.indexOf(
+                    "" +
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
+                  ) > -1 &&
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD") >
-                  moment(new Date()).format("YYYY-MM-DD")
-                  ? strings.upcoming_appointment
-                  : ""}
+                    moment(new Date()).format("YYYY-MM-DD")
+                ? strings.upcoming_appointment
+                : ""}
             </Text>
           </View>
         );
@@ -266,7 +266,7 @@ export const CustomCalendar = (props) => {
       {...props}
     />
   );
-}
+};
 
 export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
@@ -290,6 +290,9 @@ export const HomeScreen = ({ navigation }) => {
     fetchAccountAPI();
   }, []);
 
+  const onHandleAppointment = () => {
+    navigation.navigate("Appointment");
+  };
   const FlatListItemTop = (props) => {
     const { item, index } = props;
     return (
@@ -448,8 +451,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 {/* Id: {orderList?.orderListData[0]?.intxnId || "NA"} */}
@@ -463,8 +466,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 {/* Date :
@@ -485,8 +488,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 Id: {interactionList?.interactionListData[0]?.intxnId || "NA"}
@@ -500,8 +503,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 {strings.date} :
@@ -522,8 +525,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 {"Appt. ID : 1234"}
@@ -537,8 +540,8 @@ export const HomeScreen = ({ navigation }) => {
                     index === 0
                       ? "#ffffff"
                       : index === 1
-                        ? "#775324"
-                        : "#ffffff",
+                      ? "#775324"
+                      : "#ffffff",
                 }}
               >
                 {strings.date}:{"10 Jan 2023"}
@@ -547,14 +550,13 @@ export const HomeScreen = ({ navigation }) => {
           )}
           {/* View More view */}
           <View style={styles.bottomView}>
-            <TouchableOpacity onPress={() => setShowIndex(index)}>
+            <TouchableOpacity onPress={() => onHandleAppointment()}>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
-                onPress={() => setShowIndex(index)}
               >
                 <Text
                   variant="bodySmall"
@@ -565,8 +567,8 @@ export const HomeScreen = ({ navigation }) => {
                       index === 0
                         ? "#ffffff"
                         : index === 1
-                          ? "#775324"
-                          : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                   }}
                 >
                   {strings.view_more}
@@ -579,8 +581,8 @@ export const HomeScreen = ({ navigation }) => {
                       index === 0
                         ? "#ffffff"
                         : index === 1
-                          ? "#775324"
-                          : "#ffffff",
+                        ? "#775324"
+                        : "#ffffff",
                   }}
                 />
               </View>
