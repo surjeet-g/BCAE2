@@ -28,7 +28,7 @@ export function verifyLoginData(navigation, params) {
         let params = {
           loginId,
           password,
-          channel: "US_MOBILEAPP",
+          channel: "UAM_MOBILE",
           deviceId: fcmDeviceId,
           userGroup: (userType == "Business") ? "UG_BUSINESS" : "UG_CONSUMER",
           loginType,

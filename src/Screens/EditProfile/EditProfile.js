@@ -477,6 +477,7 @@ const EditProfile = ({ navigation, props }) => {
     "savedProfileData.contactPreferences",
     ""
   );
+  console.log(">>profileCurrentPer", profile);
 
 
 
