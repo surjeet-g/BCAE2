@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import SavedLocationList from "../../Components/SavedLocationList";
 import {
   deleteSavedLocation,
   fetchSavedLocations,
-  setPrimaryAddress,
+  setPrimaryAddress
 } from "../../Redux/SavedLocationDispatcher";
 import { buttonSize, color, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
@@ -24,7 +24,7 @@ import { useTheme } from "react-native-paper";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -35,11 +35,11 @@ const SavedLocation = ({ route, navigation }) => {
   let savedLocation = useSelector((state) => state.savedLocations);
 
   //const { customerId } = route.params;
-  // const { onPlaceChosen , fromPage  } = route.params;
-  const { onPlaceChosen, fromPage } = {
-    onPlaceChosen: () => {},
-    fromPage: true,
-  };
+  const { onPlaceChosen = () => { }, fromPage = "", onPlaceChosen_2 = () => { } } = route.params;
+  // const { onPlaceChosen, fromPage } = {
+  //   onPlaceChosen: () => {},
+  //   fromPage: true,
+  // };
   let profile = useSelector((state) => state.profile);
 
   const dispatch2 = useDispatch([fetchMyProfileData, getMasterData]);
@@ -65,7 +65,7 @@ const SavedLocation = ({ route, navigation }) => {
     return willFocusSubscription;
   }, [navigation]);
 
-  const onClickedSaveLocationButton = () => {};
+  const onClickedSaveLocationButton = () => { };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,7 +89,7 @@ const SavedLocation = ({ route, navigation }) => {
                 });
               } else {
                 Alert.alert(strings.attention, strings.max_number_address, [
-                  { text: strings.ok, onPress: () => {} },
+                  { text: strings.ok, onPress: () => { } },
                 ]);
               }
             }}
@@ -180,7 +180,7 @@ const SavedLocation = ({ route, navigation }) => {
       },
     ]);
   };
-  const performPrimaryAddressUpdate = () => {};
+  const performPrimaryAddressUpdate = () => { };
 
   // const onItemClicked = (item) => {
   //   Alert.alert(strings.attention, strings.confirm_primary_address, [
@@ -199,10 +199,13 @@ const SavedLocation = ({ route, navigation }) => {
 
   const address = get(profile, "savedProfileData.customerAddress", []);
   const onSetPrimary = async (selectedAddressObj) => {
+
     if (route.params.fromPage === "CreateCustomer_2") {
-      route.params.onPlaceChosen_2({
-        geoAddress: address,
-      });
+
+      route.params.onPlaceChosen_2(
+        selectedAddressObj
+      );
+      navigation.goBack();
     } else {
       try {
         Alert.alert(strings.attention, strings.confirm_primary_address, [
