@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
+import { UserHomeScreen } from "../Screens/TabScreens/UserHomeScreen";
 import { navBar } from "../Utilities/Style/navBar";
 // import Chat from "../Screens/TabScreens/Chat";
 // import Announcement from "../Screens/TabScreens/Announcement";
@@ -14,11 +15,13 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomBottomBar from "./CustomBottomBar";
 // import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
 // import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
+import get from 'lodash.get';
 import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
+import { USERTYPE } from '../Utilities/UserManagement/userInfo';
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import Search from "./../Screens/Search";
@@ -30,14 +33,19 @@ const initialRoutByPlat =
 const Drawer = createDrawerNavigator();
 
 const BottomBarNavigation = () => {
-  const [profile, setProfile] = useState(null);
+  // const [profile, setProfile] = useState(null);
   const dispatch2 = useDispatch([fetchMyProfileData]);
+
+  const profileRed = useSelector((state) => state.profile);
+
   useEffect(() => {
     async function fetchMyAPI() {
-      const res = await dispatch2(fetchMyProfileData());
-      if (res.status) {
-        setProfile(res.data.profilePicture);
-      }
+      await dispatch2(fetchMyProfileData());
+
+      // if (res.status) {
+      //   console.log('data', res)
+      //   setProfile(res.data.profilePicture);
+      // }
 
       // console.warn("useeffect", profile?.savedProfileData);
     }
@@ -45,11 +53,16 @@ const BottomBarNavigation = () => {
     fetchMyAPI();
   }, []);
 
+
+  const userType = get(profileRed, 'savedProfileData.typeOfUser', '');
+  const isConsumer = (userType == USERTYPE.CUSTOMER)
+  const profilePath = isConsumer ? 'savedProfileData.customerPhoto' : 'savedProfileData.profilePicture'
+  const profile = get(profileRed, profilePath, null)
+
   const { colors, fonts } = useTheme();
   const options = (navigation) => ({
     activeTintColor: "#e91e63",
     headerShown: true,
-
     headerStyle: {
       backgroundColor: "white",
     },
@@ -73,9 +86,8 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  profile || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                  }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -108,7 +120,7 @@ const BottomBarNavigation = () => {
           ...options(navigation),
         })}
         name="HomeScreen"
-        component={HomeScreen}
+        component={isConsumer ? UserHomeScreen : HomeScreen}
       />
 
       <BottomTab.Screen
@@ -135,9 +147,8 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
+                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}
@@ -172,9 +183,8 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
+                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}
@@ -210,9 +220,8 @@ const BottomBarNavigation = () => {
                 <Pressable onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${
-                        profile || DEFAULT_PROFILE_IMAGE
-                      }`,
+                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                     }}
                     // imageStyle={{ borderRadius: 80 }}
                     style={navBar.roundIcon}
