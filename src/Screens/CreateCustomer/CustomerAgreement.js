@@ -3,7 +3,8 @@ import React from "react";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomSignature from "./CustomSignature";
 
-const CustomerAgreement = () => {
+const CustomerAgreement = (props) => {
+  const { signature, setSignature } = props;
   return (
     <View style={styles.container}>
       <View style={styles.headerView}>
@@ -14,7 +15,7 @@ const CustomerAgreement = () => {
         Lorem Ipsum is simply dummy text of the printing and typesetting
         industry.
       </Text>
-      <CustomSignature />
+      <CustomSignature signature={signature} setSignature={setSignature} />
     </View>
   );
 };

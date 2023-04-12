@@ -2,8 +2,8 @@ import { StyleSheet, Text, View, Pressable, Image, Button } from "react-native";
 import React, { useRef, useState } from "react";
 import SignatureScreen from "react-native-signature-canvas";
 
-const CustomSignature = ({ showPreview = false }) => {
-  const [signature, setSignature] = useState(null);
+const CustomSignature = (props) => {
+  const { signature, setSignature, showPreview = false } = props;
   const ref = useRef();
 
   const imgHeight = 200;
@@ -48,6 +48,7 @@ const CustomSignature = ({ showPreview = false }) => {
       <View style={styles.signContainer}>
         <SignatureScreen
           ref={ref}
+          dataURL={signature}
           onOK={handleOK}
           onEmpty={handleEmpty}
           onEnd={handleEnd}

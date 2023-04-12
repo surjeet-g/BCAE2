@@ -6,6 +6,7 @@ import {
   FlatList,
   Switch,
   Pressable,
+  Image,
 } from "react-native";
 import StepIndicator from "react-native-step-indicator";
 import React, { useState, useLayoutEffect, useEffect } from "react";
@@ -56,6 +57,7 @@ const CreateCustomer = (props) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
+  const [signature, setSignature] = useState(null);
 
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
@@ -858,7 +860,7 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Customer Agreement"} />
-        <CustomerAgreement />
+        <CustomerAgreement signature={signature} setSignature={setSignature} />
       </View>
     );
   };
@@ -868,6 +870,14 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Show Preview"} />
+        {/* Show Preview View */}
+        {signature !== null && (
+          <Image
+            resizeMode={"cover"}
+            style={styles.previewImgStyle}
+            source={{ uri: signature }}
+          />
+        )}
       </View>
     );
   };
@@ -925,6 +935,10 @@ const CreateCustomer = (props) => {
         break;
       case 5:
         setShowAccountCreationModal(true);
+        break;
+      case 9:
+        setFormData({ ...formData, signature });
+        setCurrentStep(currentStep + 1);
         break;
       default:
         setCurrentStep(currentStep + 1);
@@ -1272,6 +1286,13 @@ const styles = StyleSheet.create({
     labelColor: "#8FA1C4",
     labelSize: 14,
     currentStepLabelColor: "#fff",
+  },
+  previewImgStyle: {
+    alignSelf: "center",
+    width: "80%",
+    height: 180,
+    margin: 20,
+    backgroundColor: "red",
   },
 });
 
