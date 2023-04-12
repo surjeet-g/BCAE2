@@ -47,7 +47,10 @@ const CreateCustomer = (props) => {
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
-  const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
+  const [isSameServiceAddressChecked, setIsSameServiceAddressChecked] =
+    useState(true);
+  const [isSameAccountAddressChecked, setIsSameAccountAddressChecked] =
+    useState(true);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -462,8 +465,10 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAddressChecked ? "checked" : "unchecked"}
-            onPress={() => setIsSameAddressChecked(!isSameAddressChecked)}
+            status={isSameServiceAddressChecked ? "checked" : "unchecked"}
+            onPress={() =>
+              setIsSameServiceAddressChecked(!isSameServiceAddressChecked)
+            }
           />
           <CustomTitleText
             title={"Service address same as customer address"}
@@ -474,7 +479,7 @@ const CreateCustomer = (props) => {
         <View style={styles.backgroundView}>
           <CustomInput
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.address1
                 : formData?.serviceDetails?.address?.address1
             }
@@ -484,7 +489,7 @@ const CreateCustomer = (props) => {
           />
           <CustomInput
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.address2
                 : formData?.serviceDetails?.address?.address2
             }
@@ -494,7 +499,7 @@ const CreateCustomer = (props) => {
           />
           <CustomInput
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.address3
                 : formData?.serviceDetails?.address?.address3
             }
@@ -504,7 +509,7 @@ const CreateCustomer = (props) => {
           />
           <CustomInput
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.city
                 : formData?.serviceDetails?.address?.city
             }
@@ -518,7 +523,7 @@ const CreateCustomer = (props) => {
             data={[]}
             onChangeText={(text) => (serviceDetails.address.district = text)}
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.district
                 : formData?.serviceDetails?.address?.district
             }
@@ -531,7 +536,7 @@ const CreateCustomer = (props) => {
             data={[]}
             onChangeText={(text) => (serviceDetails.address.state = text)}
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.state
                 : formData?.serviceDetails?.address?.state
             }
@@ -544,7 +549,7 @@ const CreateCustomer = (props) => {
             data={[]}
             onChangeText={(text) => (serviceDetails.address.postcode = text)}
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.postcode
                 : formData?.serviceDetails?.address?.postcode
             }
@@ -557,7 +562,7 @@ const CreateCustomer = (props) => {
             data={[]}
             onChangeText={(text) => (serviceDetails.address.country = text)}
             value={
-              isSameAddressChecked
+              isSameServiceAddressChecked
                 ? formData?.customerDetails?.address?.country
                 : formData?.serviceDetails?.address?.country
             }
@@ -583,10 +588,10 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAddressChecked ? "checked" : "unchecked"}
-            onPress={() => {
-              setIsSameAddressChecked(!isSameAddressChecked);
-            }}
+            status={isSameAccountAddressChecked ? "checked" : "unchecked"}
+            onPress={() =>
+              setIsSameAccountAddressChecked(!isSameAccountAddressChecked)
+            }
           />
           <CustomTitleText
             title={"Use same customer details"}
@@ -771,10 +776,10 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAddressChecked ? "checked" : "unchecked"}
-            onPress={() => {
-              setIsSameAddressChecked(!isSameAddressChecked);
-            }}
+            status={isSameAccountAddressChecked ? "checked" : "unchecked"}
+            onPress={() =>
+              setIsSameAccountAddressChecked(!isSameAccountAddressChecked)
+            }
           />
           <CustomTitleText
             title={"Account address same as customer address"}
