@@ -2,7 +2,9 @@ import React from "react";
 import {
   FlatList,
   StyleSheet,
-  Text, TouchableOpacity, View
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import get from "lodash.get";
@@ -13,17 +15,16 @@ import EditImage from "../Assets/svg/edit_icon_round.svg";
 import AddressImage from "../Assets/svg/location_green.svg";
 import PrimaryAddress from "../Assets/svg/primary_address.svg";
 import { deleteSavedLocation } from "../Redux/SavedLocationDispatcher";
-import {
-  color, spacing
-} from "../Utilities/Constants/Constant";
+import { color, spacing } from "../Utilities/Constants/Constant";
 import { addresObjToString } from "../Utilities/utils";
-import { ClearSpace } from './ClearSpace';
+import { ClearSpace } from "./ClearSpace";
 function SavedLocationItem({
   item,
   onDeleteClicked,
   onEditClicked,
   onItemClicked,
   onSetPrimary,
+  isFromCreateCustomer,
 }) {
   const { colors } = useTheme();
   let masterReducer = useSelector((state) => state.masterdata);
@@ -67,34 +68,64 @@ function SavedLocationItem({
     <TouchableOpacity
       activeOpacity={0.5}
       onPress={() => {
-        if (item.isPrimary) return null;
-        onSetPrimary({
-          addressNo: item.addressNo,
-          addressType: item.addressType,
-          isPrimary: item.isPrimary,
-          address1: item.address1,
-          address2: item.address2,
-          address3: item.address3,
-          addrZone: item.addrZone,
-          city: item.city,
-          district: item.district,
-          state: item.state,
-          postcode: item.postcode,
-          country: item.country,
-          latitude: item.latitude,
-          longitude: item.longitude,
-        });
+        if (isFromCreateCustomer === "CreateCustomer_2") {
+          onSetPrimary({
+            addressNo: item.addressNo,
+            addressType: item.addressType,
+            isPrimary: item.isPrimary,
+            address1: item.address1,
+            address2: item.address2,
+            address3: item.address3,
+            addrZone: item.addrZone,
+            city: item.city,
+            district: item.district,
+            state: item.state,
+            postcode: item.postcode,
+            country: item.country,
+            latitude: item.latitude,
+            longitude: item.longitude,
+          });
+        } else {
+          if (item.isPrimary) return null;
+          onSetPrimary({
+            addressNo: item.addressNo,
+            addressType: item.addressType,
+            isPrimary: item.isPrimary,
+            address1: item.address1,
+            address2: item.address2,
+            address3: item.address3,
+            addrZone: item.addrZone,
+            city: item.city,
+            district: item.district,
+            state: item.state,
+            postcode: item.postcode,
+            country: item.country,
+            latitude: item.latitude,
+            longitude: item.longitude,
+          });
+        }
       }}
-
       style={({ pressed }) => pressed && styles.pressed}
-
     >
-      <View style={{ borderColor: 'transparent', borderWidth: .5, borderBottomColor: "#38383885", marginTop: 12 }}>
-        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
-          <View style={{ flex: .7, justifyContent: "center", }}>
+      <View
+        style={{
+          borderColor: "transparent",
+          borderWidth: 0.5,
+          borderBottomColor: "#38383885",
+          marginTop: 12,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flex: 0.7, justifyContent: "center" }}>
             <AddressImage></AddressImage>
           </View>
-          <View style={{ flex: 5, }}>
+          <View style={{ flex: 5 }}>
             <Text
               style={{
                 fontSize: 17,
@@ -117,7 +148,6 @@ function SavedLocationItem({
           </View>
           <View
             style={{
-
               flex: 2.3,
               flexDirection: "row",
               // alignItems: "center",
@@ -136,7 +166,6 @@ function SavedLocationItem({
             {/* {item?.isPrimary == false && ( */}
             <TouchableOpacity
               activeOpacity={0.5}
-
               onPress={() =>
                 onEditClicked(item.addressNo, addresObjToString(item))
               }
@@ -157,8 +186,7 @@ function SavedLocationItem({
             )}
 
             {item?.isPrimary == true && (
-              <TouchableOpacity style={{ marginLeft: 10 }}
-                activeOpacity={0.5}>
+              <TouchableOpacity style={{ marginLeft: 10 }} activeOpacity={0.5}>
                 <PrimaryAddress></PrimaryAddress>
               </TouchableOpacity>
             )}
@@ -176,15 +204,15 @@ const SavedLocationList = ({
   onEditClicked,
   onItemClicked,
   onSetPrimary,
+  isFromCreateCustomer,
 }) => (
-  <View >
+  <View>
     {savedLocationList?.length > 0 ? (
       <FlatList
         contentContainerStyle={{
           // paddingBottom: 20,
           paddingLeft: 2,
           paddingRight: 2,
-
         }}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -197,6 +225,7 @@ const SavedLocationList = ({
             onEditClicked={onEditClicked}
             onItemClicked={onItemClicked}
             onSetPrimary={onSetPrimary}
+            isFromCreateCustomer={isFromCreateCustomer}
           />
         )}
       />

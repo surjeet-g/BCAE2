@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import SavedLocationList from "../../Components/SavedLocationList";
 import {
   deleteSavedLocation,
   fetchSavedLocations,
-  setPrimaryAddress
+  setPrimaryAddress,
 } from "../../Redux/SavedLocationDispatcher";
 import { buttonSize, color, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
@@ -22,7 +22,10 @@ import get from "lodash.get";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT,
+} from "../../Redux/masterDataDispatcher";
 import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import { navBar } from "../../Utilities/Style/navBar";
 
@@ -34,7 +37,7 @@ const SavedLocation = ({ route, navigation }) => {
   //const { customerId } = route.params;
   // const { onPlaceChosen , fromPage  } = route.params;
   const { onPlaceChosen, fromPage } = {
-    onPlaceChosen: () => { },
+    onPlaceChosen: () => {},
     fromPage: true,
   };
   let profile = useSelector((state) => state.profile);
@@ -62,7 +65,7 @@ const SavedLocation = ({ route, navigation }) => {
     return willFocusSubscription;
   }, [navigation]);
 
-  const onClickedSaveLocationButton = () => { };
+  const onClickedSaveLocationButton = () => {};
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -86,7 +89,7 @@ const SavedLocation = ({ route, navigation }) => {
                 });
               } else {
                 Alert.alert(strings.attention, strings.max_number_address, [
-                  { text: strings.ok, onPress: () => { } },
+                  { text: strings.ok, onPress: () => {} },
                 ]);
               }
             }}
@@ -116,7 +119,6 @@ const SavedLocation = ({ route, navigation }) => {
             const res = await dispatch(deleteSavedLocation(key, navigation));
             if (res) {
               dispatch2(fetchMyProfileData(navigation));
-
             }
           },
         },
@@ -178,7 +180,7 @@ const SavedLocation = ({ route, navigation }) => {
       },
     ]);
   };
-  const performPrimaryAddressUpdate = () => { };
+  const performPrimaryAddressUpdate = () => {};
 
   // const onItemClicked = (item) => {
   //   Alert.alert(strings.attention, strings.confirm_primary_address, [
@@ -197,27 +199,34 @@ const SavedLocation = ({ route, navigation }) => {
 
   const address = get(profile, "savedProfileData.customerAddress", []);
   const onSetPrimary = async (selectedAddressObj) => {
-    try {
-      Alert.alert(strings.attention, strings.confirm_primary_address, [
-        {
-          text: strings.cancel,
-          onPress: () => console.log("Cancel Pressed"),
-        },
-        {
-          text: strings.ok,
-          onPress: async () => {
-            delete selectedAddressObj.status;
-            const formatedData = { ...selectedAddressObj, isPrimary: true };
-
-            dispatch(
-              setPrimaryAddress(formatedData, navigation, () => dispatch2(fetchMyProfileData(navigation)))
-            );
-
+    if (route.params.fromPage === "CreateCustomer_2") {
+      route.params.onPlaceChosen_2({
+        geoAddress: address,
+      });
+    } else {
+      try {
+        Alert.alert(strings.attention, strings.confirm_primary_address, [
+          {
+            text: strings.cancel,
+            onPress: () => console.log("Cancel Pressed"),
           },
-        },
-      ]);
-    } catch (error) {
-      console.log('>>', error)
+          {
+            text: strings.ok,
+            onPress: async () => {
+              delete selectedAddressObj.status;
+              const formatedData = { ...selectedAddressObj, isPrimary: true };
+
+              dispatch(
+                setPrimaryAddress(formatedData, navigation, () =>
+                  dispatch2(fetchMyProfileData(navigation))
+                )
+              );
+            },
+          },
+        ]);
+      } catch (error) {
+        console.log(">>", error);
+      }
     }
   };
   return (
@@ -246,6 +255,7 @@ const SavedLocation = ({ route, navigation }) => {
               onDeleteClicked={onClickedDeleteButton}
               onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
+              isFromCreateCustomer={route.params.fromPage}
             />
           </View>
         ) : (
