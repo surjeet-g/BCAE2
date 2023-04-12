@@ -28,7 +28,7 @@ import {
 } from "./../../Utilities/utils";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme, Modal, Checkbox } from "react-native-paper";
+import { Modal, Checkbox } from "react-native-paper";
 import { FooterModel } from "./../../Components/FooterModel";
 import CustomerType from "./CustomerType";
 import { useSelector, useDispatch } from "react-redux";
@@ -38,20 +38,17 @@ import { removeCategoryProducts } from "./CreateCustomerAction";
 const CreateCustomer = (props) => {
   const { navigation } = props;
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
-  const [formCustomerData, setFormCustomerData] = useState({});
+  const [formData, setFormData] = useState({ getQuote: false });
   const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
-  const [needQuoteOnly, setNeedQuoteOnly] = useState(false);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
     useState(false);
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
-  const [customerType, setCustomerType] = useState("");
   const [isSameAddressChecked, setIsSameAddressChecked] = useState(true);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
-  const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
@@ -60,6 +57,8 @@ const CreateCustomer = (props) => {
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
+
+  console.log("$$$-formData", JSON.stringify(formData));
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -135,132 +134,109 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const customerDetails = { details: {}, address: {} };
+  const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
       <View>
         <CustomTitleText title={"Customer Information"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.title}
+            caption={strings.title}
+            placeHolder={strings.title}
+            onChangeText={(text) => (customerDetails.details.title = text)}
+          />
+          <CustomInput
+            value={formData?.customerDetails?.details?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.firstName = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.lastName = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.birthDate}
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.birthDate = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.gender}
             caption={strings.gender}
             placeHolder={strings.gender}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.gender = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => (customerDetails.details.idType = text)}
             value={""}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.idValue}
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.idValue = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.details?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.details.idPlace = text)}
           />
-          {(customerType === "BUS" || customerType === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={""}
+              value={formData?.customerDetails?.details?.registeredNo}
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (customerDetails.details.registeredNo = text)
+              }
             />
           )}
-          {(customerType === "BUS" || customerType === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={""}
+              value={formData?.customerDetails?.details?.registeredDate}
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (customerDetails.details.registeredDate = text)
+              }
             />
           )}
-          {/* <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country_code}
-            placeHolder={"Select " + strings.country_code}
-          />
-          <CountryPicker
-            show={countryPickModel}
-            excludedCountries={excludedCountriesList()}
-            pickerButtonOnPress={(item) => {
-              setCountryCode(item.dial_code);
-              setCountryPickModel(false);
-              setNumberMaxLength(getPhoneNumberLength(item.code));
-            }}
-            onBackdropPress={() => setCountryPickModel(false)}
-            style={{
-              modal: {
-                height: "65%",
-              },
-            }}
-          />
-          <CustomInputWithCC
-            onPressOnCountyCode={() => setCountryPickModel(true)}
-            countryCode={countryCode}
-            caption={strings.mobile_no}
-            onChangeText={(text) => handleNumberChange(text)}
-            value={number}
-            placeHolder={strings.mobile_no}
-            keyboardType="numeric"
-            maxLength={numberMaxLength}
-          />
-          <CustomInput
-            value={""}
-            caption={strings.email}
-            placeHolder={strings.email}
-            onChangeText={(text) => text}
-          /> */}
         </View>
       </View>
     );
+  };
+
+  const handleCustomerDetails = (data) => {
+    console.log("$$$-handleCustomerDetails-data", data);
+    let { customerDetails } = formData;
+    customerDetails = { ...customerDetails, ...data };
+    console.log("$$$-handleCustomerDetails-customerDetails", customerDetails);
+
+    setFormData({ ...formData, customerDetails });
+  };
+
+  const locationIconClick = () => {
+    navigation.navigate("SavedLocation", {
+      onPlaceChosen_2,
+      fromPage: "CreateCustomer_2",
+    });
+  };
+
+  const onPlaceChosen_2 = (params) => {
+    // here is your callback function
+    console.log("onPlaceChosen_2", JSON.stringify(params));
   };
 
   // Step = 2
@@ -268,25 +244,12 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
-            value={""}
-            caption={strings.title}
-            placeHolder={strings.title}
-            onChangeText={(text) => text}
-          />
-          <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.emailId = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -301,6 +264,7 @@ const CreateCustomer = (props) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
+              customerDetails.address.mobilePrefix = item.dial_code;
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -316,14 +280,25 @@ const CreateCustomer = (props) => {
             onPressOnCountyCode={() => setCountryPickModel(true)}
             countryCode={countryCode}
             caption={strings.mobile_no}
-            onChangeText={(text) => handleNumberChange(text)}
-            value={number}
+            onChangeText={(text) => {
+              customerDetails.address.mobileNo = text;
+              setNumberError("");
+            }}
+            value={formData?.customerDetails?.address?.mobileNo}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
           />
         </View>
-        <CustomTitleText title={"Billing address"} />
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <CustomTitleText title={"Billing address"} />
+          <Icon
+            onPress={() => locationIconClick()}
+            name="map"
+            size={25}
+            color={"#F5AD47"}
+          />
+        </View>
         <View
           style={{
             padding: 10,
@@ -333,35 +308,35 @@ const CreateCustomer = (props) => {
           }}
         >
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address1}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address1 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address2}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address2 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.address3}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.address3 = text)}
           />
           <CustomInput
-            value={""}
+            value={formData?.customerDetails?.address?.city}
             caption={"City/Town"}
             placeHolder={"City/Town"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (customerDetails.address.city = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.district = text)}
+            value={formData?.customerDetails?.address?.district}
             caption={"District/Province"}
             placeHolder={"Select " + "District/Province"}
           />
@@ -369,8 +344,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.state = text)}
+            value={formData?.customerDetails?.address?.state}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
@@ -378,8 +353,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.postcode = text)}
+            value={formData?.customerDetails?.address?.postcode}
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
           />
@@ -387,8 +362,8 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (customerDetails.address.country = text)}
+            value={formData?.customerDetails?.address?.country}
             caption={strings.country}
             placeHolder={"Select " + strings.country}
           />
@@ -397,6 +372,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const serviceDetails = { details: [], address: {} };
   // Step = 3
   const renderServicesUI = () => {
     return (
@@ -469,8 +445,10 @@ const CreateCustomer = (props) => {
             }}
             thumbColor={"#fff"}
             // ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setNeedQuoteOnly(!needQuoteOnly)}
-            value={needQuoteOnly}
+            onValueChange={() =>
+              setFormData({ ...formData, getQuote: !formData?.getQuote })
+            }
+            value={formData?.getQuote}
           />
         </View>
         <CustomTitleText title={"Selected Product"} />
@@ -595,6 +573,7 @@ const CreateCustomer = (props) => {
     );
   };
 
+  const accountDetails = { details: {}, address: {} };
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -619,14 +598,7 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={""}
             caption={strings.firstname}
@@ -672,7 +644,7 @@ const CreateCustomer = (props) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => text}
           />
-          {(customerType === "Business" || customerType === "Government") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredNo}
@@ -680,7 +652,7 @@ const CreateCustomer = (props) => {
               onChangeText={(text) => text}
             />
           )}
-          {(customerType === "Business" || customerType === "Government") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
               value={""}
               caption={strings.registereredDate}
@@ -709,7 +681,7 @@ const CreateCustomer = (props) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => handleNumberChange(text)}
-            value={number}
+            value={""}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
@@ -730,14 +702,7 @@ const CreateCustomer = (props) => {
     return (
       <View>
         <CustomTitleText title={"Account Creation"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
@@ -821,14 +786,7 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Account Address"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={""}
             caption={"Flat/House/Unit No/ Block"}
@@ -923,7 +881,7 @@ const CreateCustomer = (props) => {
   };
 
   const handlePrevious = () => {
-    if (currentStep === 10 && needQuoteOnly) {
+    if (currentStep === 10 && formData?.getQuote) {
       setCurrentStep(4);
     } else if (currentStep === 9 && !createAccount) {
       setCurrentStep(5);
@@ -933,16 +891,44 @@ const CreateCustomer = (props) => {
   };
 
   const handleContinue = () => {
-    if (currentStep === 3) {
-      let item = products.find((product) => product.quantity > 0);
-      if (item === undefined)
-        alert("Select atleast one service to continue!!!");
-      else setCurrentStep(currentStep + 1);
-    } else if (currentStep === 5) {
-      setShowAccountCreationModal(true);
-    } else if (currentStep === 4 && needQuoteOnly) {
-      setCurrentStep(10);
-    } else setCurrentStep(currentStep + 1);
+    switch (currentStep) {
+      case 1:
+        handleCustomerDetails({ details: customerDetails.details });
+        setCurrentStep(currentStep + 1);
+        break;
+      case 2:
+        handleCustomerDetails({ address: customerDetails.address });
+        setCurrentStep(currentStep + 1);
+        break;
+      case 3:
+        {
+          let item = products.find((product) => product.quantity > 0);
+          if (item === undefined)
+            alert("Select atleast one service to continue!!!");
+          else {
+            const selectedProducts = products.filter(
+              (product) => product.quantity > 0
+            );
+            serviceDetails.details = selectedProducts;
+            setFormData({ ...formData, serviceDetails });
+            setCurrentStep(currentStep + 1);
+          }
+        }
+        break;
+      case 4:
+        {
+          formData?.getQuote
+            ? setCurrentStep(10)
+            : setCurrentStep(currentStep + 1);
+        }
+        break;
+      case 5:
+        setShowAccountCreationModal(true);
+        break;
+      default:
+        setCurrentStep(currentStep + 1);
+        break;
+    }
   };
 
   const handleSubmit = () => {
@@ -974,8 +960,18 @@ const CreateCustomer = (props) => {
   };
 
   const handleNumberChange = (textStr) => {
-    setNumber(textStr);
     setNumberError("");
+  };
+
+  const handleAccountTypeSelection = (item) => {
+    const details = { ...accountDetails?.details };
+    details.accountType = item;
+    setFormData({
+      ...formData,
+      accountDetails: { ...accountDetails, details },
+    });
+    setShowCustomerTypeModal(false);
+    setCurrentStep(currentStep + 1);
   };
 
   // For selected product swipe
@@ -990,8 +986,6 @@ const CreateCustomer = (props) => {
         style={[styles.backRightBtn]}
         onPress={() => {
           alert("Index: ", data.index);
-          console.log("$$$-data", data);
-          console.log("$$$-data", JSON.stringify(data));
         }}
       >
         <Icon name="delete" size={19} color={"#D13D3D"} />
@@ -1107,11 +1101,7 @@ const CreateCustomer = (props) => {
                 <CustomerType
                   name={item.name}
                   icon={item.icon}
-                  onPress={() => {
-                    setCustomerType(item.code);
-                    setShowCustomerTypeModal(false);
-                    setCurrentStep(currentStep + 1);
-                  }}
+                  onPress={() => handleAccountTypeSelection(item)}
                 />
               )}
               keyExtractor={(item, index) => index}
@@ -1214,6 +1204,12 @@ const CreateCustomer = (props) => {
 };
 
 const styles = StyleSheet.create({
+  backgroundView: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    margin: 10,
+  },
   modalContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
