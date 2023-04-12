@@ -268,14 +268,18 @@ const CreateCustomer = ({ navigation }) => {
             value={formData?.customerDetails?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => (customerDetails.emailId = text)}
+            onChangeText={(text) => {
+              customerDetails.emailId = text;
+            }}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => {
+              customerDetails.contactType = text;
+            }}
+            value={formData?.customerDetails?.contactType}
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
           />
