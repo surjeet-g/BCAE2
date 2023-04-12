@@ -50,6 +50,8 @@ const CreateCustomer = (props) => {
   const [createAccount, setCreateAccount] = useState(true);
   const [isSameServiceAddressChecked, setIsSameServiceAddressChecked] =
     useState(true);
+  const [isSameCustomerDetailsChecked, setIsSameCustomerDetailsChecked] =
+    useState(true);
   const [isSameAccountAddressChecked, setIsSameAccountAddressChecked] =
     useState(true);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
@@ -590,9 +592,9 @@ const CreateCustomer = (props) => {
           }}
         >
           <Checkbox
-            status={isSameAccountAddressChecked ? "checked" : "unchecked"}
+            status={isSameCustomerDetailsChecked ? "checked" : "unchecked"}
             onPress={() =>
-              setIsSameAccountAddressChecked(!isSameAccountAddressChecked)
+              setIsSameCustomerDetailsChecked(!isSameCustomerDetailsChecked)
             }
           />
           <CustomTitleText
@@ -603,64 +605,114 @@ const CreateCustomer = (props) => {
         <CustomTitleText title={"Account Creation"} />
         <View style={styles.backgroundView}>
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.title
+                : formData?.accountDetails?.details?.title
+            }
+            caption={strings.title}
+            placeHolder={strings.title}
+            onChangeText={(text) => (accountDetails.details.title = text)}
+          />
+          <CustomInput
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.firstName
+                : formData?.accountDetails?.details?.firstName
+            }
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.firstName = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.lastName
+                : formData?.accountDetails?.details?.lastName
+            }
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.lastName = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.birthDate
+                : formData?.accountDetails?.details?.birthDate
+            }
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.birthDate = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.gender
+                : formData?.accountDetails?.details?.gender
+            }
             caption={strings.gender}
             placeHolder={strings.gender}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.gender = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (accountDetails.details.idType = text)}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.idType
+                : formData?.accountDetails?.details?.idType
+            }
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.idValue
+                : formData?.accountDetails?.details?.idValue
+            }
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.idValue = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.details?.idPlace
+                : formData?.accountDetails?.details?.idPlace
+            }
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.details.idPlace = text)}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={""}
+              value={
+                isSameCustomerDetailsChecked
+                  ? formData?.customerDetails?.details?.registeredNo
+                  : formData?.accountDetails?.details?.registeredNo
+              }
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (accountDetails.details.registeredNo = text)
+              }
             />
           )}
           {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={""}
+              value={
+                isSameCustomerDetailsChecked
+                  ? formData?.customerDetails?.details?.registeredDate
+                  : formData?.accountDetails?.details?.registeredDate
+              }
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) => text}
+              onChangeText={(text) =>
+                (accountDetails.details.registeredDate = text)
+              }
             />
           )}
 
@@ -683,17 +735,28 @@ const CreateCustomer = (props) => {
             onPressOnCountyCode={() => setCountryPickModel(true)}
             countryCode={countryCode}
             caption={strings.mobile_no}
-            onChangeText={(text) => handleNumberChange(text)}
-            value={""}
+            onChangeText={(text) => {
+              accountDetails.address.mobileNo = text;
+              setNumberError("");
+            }}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.address?.mobileNo
+                : formData?.accountDetails?.address?.mobileNo
+            }
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.address?.emailId
+                : formData?.accountDetails?.address?.emailId
+            }
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (accountDetails.address.emailId = text)}
           />
         </View>
       </View>
