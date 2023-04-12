@@ -38,7 +38,12 @@ import UploadDocument from "./UploadDocument";
 
 const CreateCustomer = ({ navigation }) => {
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
-  const [formData, setFormData] = useState({ getQuote: false });
+  const [formData, setFormData] = useState({
+    getQuote: false,
+    customerDetails: {},
+    accountDetails: {},
+    serviceDetails: { details: [], address: {} },
+  });
   const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -48,11 +53,11 @@ const CreateCustomer = ({ navigation }) => {
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
   const [isSameServiceAddressChecked, setIsSameServiceAddressChecked] =
-    useState(true);
+    useState(false);
   const [isSameCustomerDetailsChecked, setIsSameCustomerDetailsChecked] =
-    useState(true);
+    useState(false);
   const [isSameAccountAddressChecked, setIsSameAccountAddressChecked] =
-    useState(true);
+    useState(false);
   const [useSameCustomerDetails, setUseSameCustomerDetails] = useState(false);
   const [numberError, setNumberError] = useState("");
   const [countryCode, setCountryCode] = useState("+673");
@@ -63,6 +68,11 @@ const CreateCustomer = ({ navigation }) => {
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
+
+  const customerDetails = {};
+  const serviceDetails = { details: [], address: {} };
+  const accountDetails = {};
+  const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
 
@@ -140,8 +150,6 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const customerDetails = { details: {}, address: {} };
-  const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -149,74 +157,70 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Customer Information"} />
         <View style={styles.backgroundView}>
           <CustomInput
-            value={formData?.customerDetails?.details?.title}
+            value={formData?.customerDetails?.title}
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => (customerDetails.details.title = text)}
+            onChangeText={(text) => (customerDetails.title = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.firstName}
+            value={formData?.customerDetails?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => (customerDetails.details.firstName = text)}
+            onChangeText={(text) => (customerDetails.firstName = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.lastName}
+            value={formData?.customerDetails?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => (customerDetails.details.lastName = text)}
+            onChangeText={(text) => (customerDetails.lastName = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.birthDate}
+            value={formData?.customerDetails?.birthDate}
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => (customerDetails.details.birthDate = text)}
+            onChangeText={(text) => (customerDetails.birthDate = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.gender}
+            value={formData?.customerDetails?.gender}
             caption={strings.gender}
             placeHolder={strings.gender}
-            onChangeText={(text) => (customerDetails.details.gender = text)}
+            onChangeText={(text) => (customerDetails.gender = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.details.idType = text)}
+            onChangeText={(text) => (customerDetails.idType = text)}
             value={""}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.idValue}
+            value={formData?.customerDetails?.idValue}
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => (customerDetails.details.idValue = text)}
+            onChangeText={(text) => (customerDetails.idValue = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.details?.idPlace}
+            value={formData?.customerDetails?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => (customerDetails.details.idPlace = text)}
+            onChangeText={(text) => (customerDetails.idPlace = text)}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={formData?.customerDetails?.details?.registeredNo}
+              value={formData?.customerDetails?.registeredNo}
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
-              onChangeText={(text) =>
-                (customerDetails.details.registeredNo = text)
-              }
+              onChangeText={(text) => (customerDetails.registeredNo = text)}
             />
           )}
           {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
             <CustomInput
-              value={formData?.customerDetails?.details?.registeredDate}
+              value={formData?.customerDetails?.registeredDate}
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) =>
-                (customerDetails.details.registeredDate = text)
-              }
+              onChangeText={(text) => (customerDetails.registeredDate = text)}
             />
           )}
         </View>
@@ -227,8 +231,16 @@ const CreateCustomer = ({ navigation }) => {
   const handleCustomerDetails = (data) => {
     console.log("$$$-handleCustomerDetails-data", data);
     let { customerDetails } = formData;
+    console.log(
+      "$$$-handleCustomerDetails-customerDetails-old",
+      customerDetails
+    );
+
     customerDetails = { ...customerDetails, ...data };
-    console.log("$$$-handleCustomerDetails-customerDetails", customerDetails);
+    console.log(
+      "$$$-handleCustomerDetails-customerDetails-new",
+      customerDetails
+    );
 
     setFormData({ ...formData, customerDetails });
   };
@@ -253,10 +265,10 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Customer Details"} />
         <View style={styles.backgroundView}>
           <CustomInput
-            value={formData?.customerDetails?.address?.emailId}
+            value={formData?.customerDetails?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => (customerDetails.address.emailId = text)}
+            onChangeText={(text) => (customerDetails.emailId = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
@@ -271,7 +283,7 @@ const CreateCustomer = ({ navigation }) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
-              customerDetails.address.mobilePrefix = item.dial_code;
+              customerDetails.mobilePrefix = item.dial_code;
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -288,10 +300,10 @@ const CreateCustomer = ({ navigation }) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => {
-              customerDetails.address.mobileNo = text;
+              customerDetails.mobileNo = text;
               setNumberError("");
             }}
-            value={formData?.customerDetails?.address?.mobileNo}
+            value={formData?.customerDetails?.mobileNo}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
@@ -308,35 +320,35 @@ const CreateCustomer = ({ navigation }) => {
         </View>
         <View style={styles.backgroundView}>
           <CustomInput
-            value={formData?.customerDetails?.address?.address1}
+            value={formData?.customerDetails?.address1}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => (customerDetails.address.address1 = text)}
+            onChangeText={(text) => (customerDetails.address1 = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.address?.address2}
+            value={formData?.customerDetails?.address2}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => (customerDetails.address.address2 = text)}
+            onChangeText={(text) => (customerDetails.address2 = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.address?.address3}
+            value={formData?.customerDetails?.address3}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => (customerDetails.address.address3 = text)}
+            onChangeText={(text) => (customerDetails.address3 = text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.address?.city}
+            value={formData?.customerDetails?.city}
             caption={"City/Town"}
             placeHolder={"City/Town"}
-            onChangeText={(text) => (customerDetails.address.city = text)}
+            onChangeText={(text) => (customerDetails.city = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.address.district = text)}
-            value={formData?.customerDetails?.address?.district}
+            onChangeText={(text) => (customerDetails.district = text)}
+            value={formData?.customerDetails?.district}
             caption={"District/Province"}
             placeHolder={"Select " + "District/Province"}
           />
@@ -344,8 +356,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.address.state = text)}
-            value={formData?.customerDetails?.address?.state}
+            onChangeText={(text) => (customerDetails.state = text)}
+            value={formData?.customerDetails?.state}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
@@ -353,8 +365,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.address.postcode = text)}
-            value={formData?.customerDetails?.address?.postcode}
+            onChangeText={(text) => (customerDetails.postcode = text)}
+            value={formData?.customerDetails?.postcode}
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
           />
@@ -362,8 +374,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.address.country = text)}
-            value={formData?.customerDetails?.address?.country}
+            onChangeText={(text) => (customerDetails.country = text)}
+            value={formData?.customerDetails?.country}
             caption={strings.country}
             placeHolder={"Select " + strings.country}
           />
@@ -372,7 +384,6 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const serviceDetails = { details: [], address: {} };
   // Step = 3
   const renderServicesUI = () => {
     return (
@@ -504,7 +515,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.address1
+                ? formData?.customerDetails?.address1
                 : formData?.serviceDetails?.address?.address1
             }
             caption={"Flat/House/Unit No/ Block"}
@@ -514,7 +525,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.address2
+                ? formData?.customerDetails?.address2
                 : formData?.serviceDetails?.address?.address2
             }
             caption={"Building Name/Others"}
@@ -524,7 +535,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.address3
+                ? formData?.customerDetails?.address3
                 : formData?.serviceDetails?.address?.address3
             }
             caption={"Street/Area"}
@@ -534,7 +545,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.city
+                ? formData?.customerDetails?.city
                 : formData?.serviceDetails?.address?.city
             }
             caption={"City/Town"}
@@ -548,7 +559,7 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => (serviceDetails.address.district = text)}
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.district
+                ? formData?.customerDetails?.district
                 : formData?.serviceDetails?.address?.district
             }
             caption={"District/Province"}
@@ -561,7 +572,7 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => (serviceDetails.address.state = text)}
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.state
+                ? formData?.customerDetails?.state
                 : formData?.serviceDetails?.address?.state
             }
             caption={"State/Region"}
@@ -574,7 +585,7 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => (serviceDetails.address.postcode = text)}
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.postcode
+                ? formData?.customerDetails?.postcode
                 : formData?.serviceDetails?.address?.postcode
             }
             caption={"Post/Zip Code"}
@@ -587,7 +598,7 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => (serviceDetails.address.country = text)}
             value={
               isSameServiceAddressChecked
-                ? formData?.customerDetails?.address?.country
+                ? formData?.customerDetails?.country
                 : formData?.serviceDetails?.address?.country
             }
             caption={strings.country}
@@ -598,7 +609,23 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const accountDetails = { details: {}, address: {} };
+  const handleAccountDetails = (key, data) => {
+    console.log("$$$-handleAccountDetails-key", key);
+    console.log("$$$-handleAccountDetails-data", data);
+    let { accountDetails } = formData;
+    console.log("$$$-handleAccountDetails-accountDetails", accountDetails);
+
+    let obj = accountDetails[key];
+    console.log("$$$-handleAccountDetails-obj", obj);
+
+    obj = { ...obj, ...data };
+    console.log("$$$-handleAccountDetails-new-obj", obj);
+
+    accountDetails = { ...accountDetails, ...obj };
+    console.log("$$$-handleAccountDetails-accountDetails", accountDetails);
+
+    setFormData({ ...formData, accountDetails });
+  };
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -627,7 +654,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.title
+                ? formData?.customerDetails?.title
                 : formData?.accountDetails?.details?.title
             }
             caption={strings.title}
@@ -637,7 +664,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.firstName
+                ? formData?.customerDetails?.firstName
                 : formData?.accountDetails?.details?.firstName
             }
             caption={strings.firstname}
@@ -647,7 +674,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.lastName
+                ? formData?.customerDetails?.lastName
                 : formData?.accountDetails?.details?.lastName
             }
             caption={strings.lastname}
@@ -657,7 +684,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.birthDate
+                ? formData?.customerDetails?.birthDate
                 : formData?.accountDetails?.details?.birthDate
             }
             caption={strings.dob}
@@ -667,7 +694,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.gender
+                ? formData?.customerDetails?.gender
                 : formData?.accountDetails?.details?.gender
             }
             caption={strings.gender}
@@ -681,7 +708,7 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => (accountDetails.details.idType = text)}
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.idType
+                ? formData?.customerDetails?.idType
                 : formData?.accountDetails?.details?.idType
             }
             caption={strings.id_type}
@@ -690,7 +717,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.idValue
+                ? formData?.customerDetails?.idValue
                 : formData?.accountDetails?.details?.idValue
             }
             caption={strings.id_number}
@@ -700,7 +727,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.details?.idPlace
+                ? formData?.customerDetails?.idPlace
                 : formData?.accountDetails?.details?.idPlace
             }
             caption={strings.place_of_issue}
@@ -711,7 +738,7 @@ const CreateCustomer = ({ navigation }) => {
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
-                  ? formData?.customerDetails?.details?.registeredNo
+                  ? formData?.customerDetails?.registeredNo
                   : formData?.accountDetails?.details?.registeredNo
               }
               caption={strings.registereredNo}
@@ -725,7 +752,7 @@ const CreateCustomer = ({ navigation }) => {
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
-                  ? formData?.customerDetails?.details?.registeredDate
+                  ? formData?.customerDetails?.registeredDate
                   : formData?.accountDetails?.details?.registeredDate
               }
               caption={strings.registereredDate}
@@ -761,7 +788,7 @@ const CreateCustomer = ({ navigation }) => {
             }}
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.address?.mobileNo
+                ? formData?.customerDetails?.mobileNo
                 : formData?.accountDetails?.address?.mobileNo
             }
             placeHolder={strings.mobile_no}
@@ -771,7 +798,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.address?.emailId
+                ? formData?.customerDetails?.emailId
                 : formData?.accountDetails?.address?.emailId
             }
             caption={strings.email}
@@ -793,8 +820,10 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) =>
+              (accountDetails.details.accountCategory = text)
+            }
+            value={formData?.accountDetails?.details?.accountCategory}
             caption={strings.account_category}
             placeHolder={"Select " + strings.account_category}
           />
@@ -802,8 +831,10 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) =>
+              (accountDetails.details.accountLevel = text)
+            }
+            value={formData?.accountDetails?.details?.accountLevel}
             caption={strings.account_level}
             placeHolder={"Select " + strings.account_level}
           />
@@ -811,8 +842,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (accountDetails.details.billLang = text)}
+            value={formData?.accountDetails?.details?.billLang}
             caption={strings.bill_lang}
             placeHolder={"Select " + strings.bill_lang}
           />
@@ -820,8 +851,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (accountDetails.details.accountType = text)}
+            value={formData?.accountDetails?.details?.accountType}
             caption={strings.account_type}
             placeHolder={"Select " + strings.account_type}
           />
@@ -829,8 +860,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (accountDetails.details.notifPref = text)}
+            value={formData?.accountDetails?.details?.notifPref}
             caption={strings.notification_pref}
             placeHolder={"Select " + strings.notification_pref}
           />
@@ -838,8 +869,8 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (accountDetails.details.currency = text)}
+            value={formData?.accountDetails?.details?.currency}
             caption={strings.currency}
             placeHolder={"Select " + strings.currency}
           />
@@ -987,11 +1018,11 @@ const CreateCustomer = ({ navigation }) => {
   const handleContinue = () => {
     switch (currentStep) {
       case 1:
-        handleCustomerDetails({ details: customerDetails.details });
+        handleCustomerDetails(customerDetails);
         setCurrentStep(currentStep + 1);
         break;
       case 2:
-        handleCustomerDetails({ address: customerDetails.address });
+        handleCustomerDetails(customerDetails);
         setCurrentStep(currentStep + 1);
         break;
       case 3:
@@ -1018,6 +1049,14 @@ const CreateCustomer = ({ navigation }) => {
         break;
       case 5:
         setShowAccountCreationModal(true);
+        break;
+      case 6:
+        handleAccountDetails("details", accountDetails.details);
+        setCurrentStep(currentStep + 1);
+        break;
+      case 7:
+        handleAccountDetails("details", accountDetails.details);
+        setCurrentStep(currentStep + 1);
         break;
       case 9:
         setFormData({ ...formData, signature });
@@ -1057,16 +1096,21 @@ const CreateCustomer = ({ navigation }) => {
     setCurrentStep(7);
   };
 
-  const handleNumberChange = (textStr) => {
-    setNumberError("");
-  };
-
   const handleAccountTypeSelection = (item) => {
-    const details = { ...accountDetails?.details };
-    details.accountType = item;
+    // const details = { ...accountDetails?.details };
+    // details.accountType = item;
+    // setFormData({
+    //   ...formData,
+    //   accountDetails: { ...accountDetails, details },
+    // });
+    // setShowCustomerTypeModal(false);
+    // setCurrentStep(currentStep + 1);
+
+    let { accountDetails } = formData;
+    accountDetails = { ...accountDetails, accountType: item };
     setFormData({
       ...formData,
-      accountDetails: { ...accountDetails, details },
+      accountDetails,
     });
     setShowCustomerTypeModal(false);
     setCurrentStep(currentStep + 1);
