@@ -279,14 +279,7 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Billing address"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
             value={formData?.customerDetails?.address?.address1}
             caption={"Flat/House/Unit No/ Block"}
@@ -470,9 +463,7 @@ const CreateCustomer = (props) => {
         >
           <Checkbox
             status={isSameAddressChecked ? "checked" : "unchecked"}
-            onPress={() => {
-              setIsSameAddressChecked(!isSameAddressChecked);
-            }}
+            onPress={() => setIsSameAddressChecked(!isSameAddressChecked)}
           />
           <CustomTitleText
             title={"Service address same as customer address"}
@@ -480,44 +471,57 @@ const CreateCustomer = (props) => {
           />
         </View>
         <CustomTitleText title={"Service Address"} />
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            margin: 10,
-          }}
-        >
+        <View style={styles.backgroundView}>
           <CustomInput
-            value={""}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.address1
+                : formData?.serviceDetails?.address?.address1
+            }
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (serviceDetails.address.address1 = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.address2
+                : formData?.serviceDetails?.address?.address2
+            }
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (serviceDetails.address.address2 = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.address3
+                : formData?.serviceDetails?.address?.address3
+            }
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (serviceDetails.address.address3 = text)}
           />
           <CustomInput
-            value={""}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.city
+                : formData?.serviceDetails?.address?.city
+            }
             caption={"City/Town"}
             placeHolder={"City/Town"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => (serviceDetails.address.city = text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (serviceDetails.address.district = text)}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.district
+                : formData?.serviceDetails?.address?.district
+            }
             caption={"District/Province"}
             placeHolder={"Select " + "District/Province"}
           />
@@ -525,8 +529,12 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (serviceDetails.address.state = text)}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.state
+                : formData?.serviceDetails?.address?.state
+            }
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
@@ -534,8 +542,12 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (serviceDetails.address.postcode = text)}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.postcode
+                : formData?.serviceDetails?.address?.postcode
+            }
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
           />
@@ -543,8 +555,12 @@ const CreateCustomer = (props) => {
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            onChangeText={(text) => (serviceDetails.address.country = text)}
+            value={
+              isSameAddressChecked
+                ? formData?.customerDetails?.address?.country
+                : formData?.serviceDetails?.address?.country
+            }
             caption={strings.country}
             placeHolder={"Select " + strings.country}
           />
