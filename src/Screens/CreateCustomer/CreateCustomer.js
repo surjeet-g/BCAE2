@@ -30,8 +30,8 @@ import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
 
-const CreateCustomer = (props) => {
-  const { navigation } = props;
+const CreateCustomer = ({ navigation }) => {
+
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
   const [formData, setFormData] = useState({ getQuote: false });
   const [currentStep, setCurrentStep] = useState(0);
@@ -53,7 +53,7 @@ const CreateCustomer = (props) => {
     (state) => state.createCustomerReducerData
   );
 
-  console.log("$$$-formData", JSON.stringify(formData));
+  console.log("formData", JSON.stringify(formData));
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -232,6 +232,8 @@ const CreateCustomer = (props) => {
   const onPlaceChosen_2 = (params) => {
     // here is your callback function
     console.log("onPlaceChosen_2", JSON.stringify(params));
+    // {"addressNo":"ADD00001016","addressType":"ADDBUSINESS","isPrimary":false,"address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351","addrZone":"India","city":"Karwar","district":"Uttara kannada","state":"Karnataka","postcode":"581351","country":"India","latitude":"0","longitude":"0"}
+
   };
 
   // Step = 2
