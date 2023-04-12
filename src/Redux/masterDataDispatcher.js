@@ -1,9 +1,6 @@
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "../Utilities/API";
-import {
-  setmasterDataData,
-  setmasterDataError
-} from "./masterDataAction";
+import { setmasterDataData, setmasterDataError } from "./masterDataAction";
 export const MASTER_DATA_CONSTANT = {
   COUNTRY: "COUNTRY",
   NOTIFICATION_TYPE: "NOTIFICATION_TYPE",
@@ -36,15 +33,20 @@ export const MASTER_DATA_CONSTANT = {
   INTXN_FLOW: "INTXN_FLOW", //Interaction Flow
   INTXN_CAUSE: "INTXN_CAUSE", //Interaction Cause
   ENTITY_CATEGORY: "ENTITY_CATEGORY", // Contact Category
-  SOURCE: "SOURCE"
-
+  SOURCE: "SOURCE",
+  BILL_LANGUAGE: "BILL_LANGUAGE",
+  CURRENCY: "CURRENCY",
+  ACCOUNT_CATEGORY: "ACCOUNT_CATEGORY",
+  ACCOUNT_LEVEL: "ACCOUNT_LEVEL",
+  ACCOUNT_TYPE: "ACCOUNT_TYPE",
+  ACCOUNT_CLASS: "ACCOUNT_CLASS",
 };
 export const getMasterData = (valueParam = "") => {
-  console.log('hititnf',)
+  console.log("hititnf");
   if (typeof valueParam != "string") {
     console.log("params should be string");
   }
-  console.log('masterdate para', valueParam)
+  console.log("masterdate para", valueParam);
   return async (dispatch) => {
     // dispatch(initmasterDataData());
     let params = {};
@@ -53,7 +55,7 @@ export const getMasterData = (valueParam = "") => {
       requestMethod.GET,
       params
     );
-    console.log('>>master date', result)
+    console.log(">>master date", result);
     if (result.success) {
       dispatch(setmasterDataData(result?.data?.data));
     } else {

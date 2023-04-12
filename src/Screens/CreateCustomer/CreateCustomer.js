@@ -35,9 +35,17 @@ import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT,
+} from "../../Redux/masterDataDispatcher";
 
 const CreateCustomer = ({ navigation }) => {
-  const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
+  const dispatch = useDispatch([
+    fetchServiceProducts,
+    removeCategoryProducts,
+    getMasterData,
+  ]);
   const [formData, setFormData] = useState({
     getQuote: false,
     customerDetails: {},
@@ -68,6 +76,7 @@ const CreateCustomer = ({ navigation }) => {
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
+  let masterReducer = useSelector((state) => state.masterdata);
 
   const customerDetails = {};
   const serviceDetails = { details: [], address: {} };
@@ -75,6 +84,29 @@ const CreateCustomer = ({ navigation }) => {
   const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
+
+  // Used to fetch master data
+  useEffect(() => {
+    const {
+      CUSTOMER_ID_TYPE,
+      CUSTOMER_CATEGORY,
+      CONTACT_PREFERENCE,
+      GENDER,
+      NOTIFICATION_TYPE,
+      BILL_LANGUAGE,
+      CURRENCY,
+      ACCOUNT_CATEGORY,
+      ACCOUNT_LEVEL,
+      ACCOUNT_TYPE,
+      ACCOUNT_CLASS,
+    } = MASTER_DATA_CONSTANT;
+
+    dispatch(
+      getMasterData(
+        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
+      )
+    );
+  }, []);
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
