@@ -18,7 +18,7 @@ import {
 
 export function verifyLoginData(navigation, params) {
   return async (dispatch) => {
-    const { loginId, password, loginType, loginMode } = params;
+    const { loginId, password, userType, loginType, loginMode } = params;
     dispatch(initLoginData());
     getDataFromDB(storageKeys.FCM_DEVICE_ID)
       .then(function (deviceId) {
@@ -30,9 +30,10 @@ export function verifyLoginData(navigation, params) {
           password,
           channel: "UAM_MOBILE",
           deviceId: fcmDeviceId,
-          userGroup: "UG_CONSUMER",
+          userGroup: (userType == "Business") ? "UG_BUSINESS" : "UG_CONSUMER",
           loginType,
         };
+
 
         let result = await serverCall(
           endPoints.USER_LOGIN,
@@ -42,7 +43,7 @@ export function verifyLoginData(navigation, params) {
         );
         console.log(
           "Surjeet ==============USER_LOGIN==============>" +
-            JSON.stringify(result)
+          JSON.stringify(result)
         );
         if (result.success) {
           if (result.data?.data?.anotherSession) {

@@ -43,8 +43,8 @@ import {
   verifyLoginData,
 } from "./LoginDispatcher";
 
-const BUSINESS = "Business";
-const CONSUMER = "Consumer";
+export const BUSINESS = "Business";
+export const CONSUMER = "Consumer";
 const EMAIL = "Email Address";
 const MOBILE = "Mobile Number";
 const PASSWORD = "password";
@@ -177,6 +177,7 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: username,
           password,
+          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -203,6 +204,7 @@ export const Login = ({ navigation }) => {
         let param = {
           loginId: number,
           password,
+          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
         };
@@ -220,6 +222,7 @@ export const Login = ({ navigation }) => {
       } else {
         let param = {
           loginId: username,
+          userType,
           loginType: loginType.toUpperCase(),
           loginMode,
           extn: 0,
@@ -239,6 +242,7 @@ export const Login = ({ navigation }) => {
     } else {
       let param = {
         loginId: number,
+        userType,
         loginType: loginType.toUpperCase(),
         loginMode,
         extn: countryCode.substring(1),
