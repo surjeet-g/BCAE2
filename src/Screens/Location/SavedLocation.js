@@ -22,7 +22,10 @@ import get from "lodash.get";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
-import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT
+} from "../../Redux/masterDataDispatcher";
 import { fetchMyProfileData } from "../../Redux/ProfileDispatcher";
 import { navBar } from "../../Utilities/Style/navBar";
 
@@ -32,11 +35,11 @@ const SavedLocation = ({ route, navigation }) => {
   let savedLocation = useSelector((state) => state.savedLocations);
 
   //const { customerId } = route.params;
-  // const { onPlaceChosen , fromPage  } = route.params;
-  const { onPlaceChosen, fromPage } = {
-    onPlaceChosen: () => { },
-    fromPage: true,
-  };
+  const { onPlaceChosen = () => { }, fromPage = "", onPlaceChosen_2 = () => { } } = route.params;
+  // const { onPlaceChosen, fromPage } = {
+  //   onPlaceChosen: () => {},
+  //   fromPage: true,
+  // };
   let profile = useSelector((state) => state.profile);
 
   const dispatch2 = useDispatch([fetchMyProfileData, getMasterData]);
@@ -116,7 +119,6 @@ const SavedLocation = ({ route, navigation }) => {
             const res = await dispatch(deleteSavedLocation(key, navigation));
             if (res) {
               dispatch2(fetchMyProfileData(navigation));
-
             }
           },
         },
@@ -197,27 +199,37 @@ const SavedLocation = ({ route, navigation }) => {
 
   const address = get(profile, "savedProfileData.customerAddress", []);
   const onSetPrimary = async (selectedAddressObj) => {
-    try {
-      Alert.alert(strings.attention, strings.confirm_primary_address, [
-        {
-          text: strings.cancel,
-          onPress: () => console.log("Cancel Pressed"),
-        },
-        {
-          text: strings.ok,
-          onPress: async () => {
-            delete selectedAddressObj.status;
-            const formatedData = { ...selectedAddressObj, isPrimary: true };
 
-            dispatch(
-              setPrimaryAddress(formatedData, navigation, () => dispatch2(fetchMyProfileData(navigation)))
-            );
+    if (route.params.fromPage === "CreateCustomer_2") {
 
+      route.params.onPlaceChosen_2(
+        selectedAddressObj
+      );
+      navigation.goBack();
+    } else {
+      try {
+        Alert.alert(strings.attention, strings.confirm_primary_address, [
+          {
+            text: strings.cancel,
+            onPress: () => console.log("Cancel Pressed"),
           },
-        },
-      ]);
-    } catch (error) {
-      console.log('>>', error)
+          {
+            text: strings.ok,
+            onPress: async () => {
+              delete selectedAddressObj.status;
+              const formatedData = { ...selectedAddressObj, isPrimary: true };
+
+              dispatch(
+                setPrimaryAddress(formatedData, navigation, () =>
+                  dispatch2(fetchMyProfileData(navigation))
+                )
+              );
+            },
+          },
+        ]);
+      } catch (error) {
+        console.log(">>", error);
+      }
     }
   };
   return (
@@ -246,6 +258,7 @@ const SavedLocation = ({ route, navigation }) => {
               onDeleteClicked={onClickedDeleteButton}
               onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
+              isFromCreateCustomer={route.params.fromPage}
             />
           </View>
         ) : (

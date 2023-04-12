@@ -1,43 +1,42 @@
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
   Text,
   View,
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  Switch,
-  Pressable,
   Image,
 } from "react-native";
+import { CountryPicker } from "react-native-country-codes-picker";
+import { Checkbox, Modal } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import { SwipeListView } from "react-native-swipe-list-view";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "./../../Components/CustomButton";
-import { strings } from "./../../Utilities/Language/index";
-import UploadDocument from "./UploadDocument";
-import CustomTitleText from "./../../Components/CustomTitleText";
-import CustomerAgreement from "./CustomerAgreement";
-import Product from "./Product";
-import ServiceCategory from "./ServiceCategory";
-import SelectedProduct from "./SelectedProduct";
-import BillDetails from "./BillDetails";
+import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
 import { CustomInputWithCC } from "./../../Components/CustomInputWithCC";
-import { CountryPicker } from "react-native-country-codes-picker";
-import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import CustomTitleText from "./../../Components/CustomTitleText";
+import { FooterModel } from "./../../Components/FooterModel";
+import { strings } from "./../../Utilities/Language/index";
 import {
   excludedCountriesList,
   getPhoneNumberLength,
 } from "./../../Utilities/utils";
-import { SwipeListView } from "react-native-swipe-list-view";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Modal, Checkbox } from "react-native-paper";
-import { FooterModel } from "./../../Components/FooterModel";
-import CustomerType from "./CustomerType";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchServiceProducts } from "./CreateCustomerDispatcher";
+import BillDetails from "./BillDetails";
 import { removeCategoryProducts } from "./CreateCustomerAction";
+import { fetchServiceProducts } from "./CreateCustomerDispatcher";
+import CustomerAgreement from "./CustomerAgreement";
+import CustomerType from "./CustomerType";
+import Product from "./Product";
+import SelectedProduct from "./SelectedProduct";
+import ServiceCategory from "./ServiceCategory";
+import UploadDocument from "./UploadDocument";
 
-const CreateCustomer = (props) => {
-  const { navigation } = props;
+const CreateCustomer = ({ navigation }) => {
   const dispatch = useDispatch([fetchServiceProducts, removeCategoryProducts]);
   const [formData, setFormData] = useState({ getQuote: false });
   const [currentStep, setCurrentStep] = useState(0);
@@ -65,7 +64,7 @@ const CreateCustomer = (props) => {
     (state) => state.createCustomerReducerData
   );
 
-  console.log("$$$-formData", JSON.stringify(formData));
+  console.log("formData", JSON.stringify(formData));
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -234,6 +233,19 @@ const CreateCustomer = (props) => {
     setFormData({ ...formData, customerDetails });
   };
 
+  const locationIconClick = () => {
+    navigation.navigate("SavedLocation", {
+      onPlaceChosen_2,
+      fromPage: "CreateCustomer_2",
+    });
+  };
+
+  const onPlaceChosen_2 = (params) => {
+    // here is your callback function
+    console.log("onPlaceChosen_2", JSON.stringify(params));
+    // {"addressNo":"ADD00001016","addressType":"ADDBUSINESS","isPrimary":false,"address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351","addrZone":"India","city":"Karwar","district":"Uttara kannada","state":"Karnataka","postcode":"581351","country":"India","latitude":"0","longitude":"0"}
+  };
+
   // Step = 2
   const renderCustomerAddressFormUI = () => {
     return (
@@ -285,7 +297,15 @@ const CreateCustomer = (props) => {
             maxLength={numberMaxLength}
           />
         </View>
-        <CustomTitleText title={"Billing address"} />
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <CustomTitleText title={"Billing address"} />
+          <Icon
+            onPress={() => locationIconClick()}
+            name="map"
+            size={25}
+            color={"#F5AD47"}
+          />
+        </View>
         <View style={styles.backgroundView}>
           <CustomInput
             value={formData?.customerDetails?.address?.address1}

@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
   spacing,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 
 import get from "lodash.get";
@@ -34,15 +34,15 @@ import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import {
   setProfileFormField,
-  setProfileReset,
+  setProfileReset
 } from "../../Redux/ProfileAction";
 import {
   fetchMyProfileData,
-  updateProfileData,
+  updateProfileData
 } from "../../Redux/ProfileDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
@@ -51,7 +51,7 @@ import { strings } from "../../Utilities/Language/index";
 import theme from "../../Utilities/themeConfig";
 import {
   getUserTypeForProfile,
-  USERTYPE,
+  USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
@@ -122,12 +122,9 @@ const EditProfile = ({ navigation, props }) => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData(navigation));
       const userType = await getUserTypeForProfile();
-      const { CONTACT_PREFERENCE, GENDER, NOTIFICATION_TYPE } =
-        MASTER_DATA_CONSTANT;
+      const { CONTACT_PREFERENCE, GENDER, NOTIFICATION_TYPE } = MASTER_DATA_CONSTANT;
 
-      masterDispatch(
-        getMasterData(`${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE}`)
-      );
+      masterDispatch(getMasterData(`${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE}`));
 
       setUserType(userType);
     }
@@ -338,7 +335,7 @@ const EditProfile = ({ navigation, props }) => {
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     } else {
       // const myArray = location.split(",").reverse();
@@ -383,16 +380,16 @@ const EditProfile = ({ navigation, props }) => {
           firstName: firstName,
           lastName: lastName,
           gender: gender?.code,
-          userId: get(profile, "savedProfileData.userId", ""),
-          contactNo: get(profile, "savedProfileData.contactNo", ""),
-          email: get(profile, "savedProfileData.email", ""),
-          userType: get(profile, "savedProfileData.userType", ""),
+          userId: get(profile, "savedProfileData.userId", ''),
+          contactNo: get(profile, "savedProfileData.contactNo", ''),
+          email: get(profile, "savedProfileData.email", ''),
+          userType: get(profile, "savedProfileData.userType", ''),
 
-          dob: get(profile, "savedProfileData.dob", ""),
-          status: get(profile, "savedProfileData.status", ""),
-          country: get(profile, "savedProfileData.country", ""),
+          dob: get(profile, "savedProfileData.dob", ''),
+          status: get(profile, "savedProfileData.status", ''),
+          country: get(profile, "savedProfileData.country", ''),
           extn: get(profile, "savedProfileData.extn", ""),
-          mappingPayload: get(profile, "savedProfileData.mappingPayload", ""),
+          mappingPayload: get(profile, "savedProfileData.mappingPayload", ''),
           notificationType: notificationValues
             .filter((it) => it.active)
             .map((ite) => ite.code),
@@ -420,13 +417,10 @@ const EditProfile = ({ navigation, props }) => {
         };
       }
 
-      console.log("update profile 11", userObject);
+
+      console.log('update profile 11', userObject)
       const status = await dispatch2(
-        updateProfileData(
-          isCustomer ? registerObject : userObject,
-          navigation,
-          isCustomer
-        )
+        updateProfileData(isCustomer ? registerObject : userObject, navigation, isCustomer)
       );
       if (status) {
         await dispatch2(fetchMyProfileData(navigation));
@@ -477,12 +471,15 @@ const EditProfile = ({ navigation, props }) => {
     []
   );
 
+
   const profileCurrentPer = get(
     profile,
     "savedProfileData.contactPreferences",
     ""
   );
   console.log(">>profileCurrentPer", profile);
+
+
 
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
   let contactPerf = [];
@@ -499,22 +496,25 @@ const EditProfile = ({ navigation, props }) => {
     });
   }
 
+
   const isConsumer =
     USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
   let notifTypesFiltered = [];
-  if (!isConsumer && get(notificationTypesList, "length", 0) != 0) {
+  if (
+    !isConsumer &&
+    get(notificationTypesList, "length", 0) != 0
+  ) {
     notifTypesFiltered = notificationTypesList.map((it) => {
+
       return {
         code: it.code,
         description: it.description,
-        active:
-          get(currentnotificationType, "length", 0) == 0
-            ? false
-            : currentnotificationType.includes(it.code),
+        active: get(currentnotificationType, 'length', 0) == 0 ? false : currentnotificationType.includes(it.code),
       };
     });
   }
-  console.log("current notifcation type", notifTypesFiltered);
+  console.log('current notifcation type', notifTypesFiltered)
+
 
   console.log("is consumer", isConsumer);
   const emailPath = isConsumer
@@ -664,7 +664,7 @@ const EditProfile = ({ navigation, props }) => {
                   editable={false}
                   caption={strings.country}
                   placeholder={strings.country}
-                  onChangeText={(text) => {}}
+                  onChangeText={(text) => { }}
                   value={get(profile, countyPath, "")}
                 />
               </View>
@@ -783,13 +783,16 @@ const EditProfile = ({ navigation, props }) => {
                 />
               </View>
 
+
               <View style={{ marginTop: spacing.HEIGHT_30 }}>
                 <CustomInput
                   disabled={true}
                   // editable={false}
                   placeHolder={strings.mobile_number}
                   caption={strings.mobile_number}
+
                   value={get(profile, mobilePath, "")}
+
                 />
                 {/* {!registerForm.initRegisterForm &&
                   registerForm?.loggedProfile?.errorCode == "404" &&
