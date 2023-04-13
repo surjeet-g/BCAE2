@@ -107,15 +107,18 @@ const CreateCustomer = ({ navigation }) => {
       )
     );
   }, []);
-  const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
-  const GENDER_LIST = masterReducer.masterdataData.GENDER;
-  const CONTACT_TYPE_LIST = masterReducer.masterdataData.CONTACT_TYPE;
-  const ACCOUNT_CATEGORY_LIST = masterReducer.masterdataData.ACCOUNT_CATEGORY;
-  const ACCOUNT_TYPE_LIST = masterReducer.masterdataData.ACCOUNT_TYPE;
-  const ACCOUNT_LEVEL_LIST = masterReducer.masterdataData.ACCOUNT_LEVEL;
-  const NOTIFICATION_TYPE_LIST = masterReducer.masterdataData.NOTIFICATION_TYPE;
-  const BILL_LANGUAGE_LIST = masterReducer.masterdataData.BILL_LANGUAGE;
-  const CURRENCY_LIST = masterReducer.masterdataData.CURRENCY;
+  const ID_TYPE_LIST = masterReducer?.masterdataData?.CUSTOMER_ID_TYPE;
+  const CUSTOMER_CATEGORY_LIST =
+    masterReducer?.masterdataData?.CUSTOMER_CATEGORY;
+  const GENDER_LIST = masterReducer?.masterdataData?.GENDER;
+  const CONTACT_TYPE_LIST = masterReducer?.masterdataData?.CONTACT_TYPE;
+  const ACCOUNT_CATEGORY_LIST = masterReducer?.masterdataData?.ACCOUNT_CATEGORY;
+  const ACCOUNT_TYPE_LIST = masterReducer?.masterdataData?.ACCOUNT_TYPE;
+  const ACCOUNT_LEVEL_LIST = masterReducer?.masterdataData?.ACCOUNT_LEVEL;
+  const NOTIFICATION_TYPE_LIST =
+    masterReducer?.masterdataData?.NOTIFICATION_TYPE;
+  const BILL_LANGUAGE_LIST = masterReducer?.masterdataData?.BILL_LANGUAGE;
+  const CURRENCY_LIST = masterReducer?.masterdataData?.CURRENCY;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -1215,7 +1218,6 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleCustomerTypeIcon = (item) => {
-    // const Category = masterReducer.masterdataData.CUSTOMER_CATEGORY;
     let icon = "";
     if (item.code === "BUS")
       icon = require("../../Assets/icons/ic_business.png");
@@ -1257,7 +1259,7 @@ const CreateCustomer = ({ navigation }) => {
         >
           <View style={styles.modalContainer}>
             <FlatList
-              data={masterReducer.masterdataData.CUSTOMER_CATEGORY}
+              data={CUSTOMER_CATEGORY_LIST}
               numColumns={4}
               renderItem={({ item, index }) => (
                 <CustomerType
