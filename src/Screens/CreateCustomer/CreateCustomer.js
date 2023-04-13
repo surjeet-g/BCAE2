@@ -821,7 +821,7 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.mobileNo
-                : formData?.accountDetails?.address?.mobileNo
+                : formData?.accountDetails?.mobileNo
             }
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
@@ -831,7 +831,7 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.emailId
-                : formData?.accountDetails?.address?.emailId
+                : formData?.accountDetails?.emailId
             }
             caption={strings.email}
             placeHolder={strings.email}
