@@ -1,4 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
+import get from "lodash.get";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -11,18 +12,18 @@ import {
 } from "react-native";
 import DatePicker from "react-native-date-picker";
 import moment from "moment";
-
-import get from "lodash.get";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { Checkbox, Modal, TextInput, useTheme } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
   MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { CustomButton } from "./../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
@@ -43,6 +44,7 @@ import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
+import { getUniqueState } from "./utilities";
 
 const CreateCustomer = ({ navigation }) => {
   const { colors } = useTheme();
@@ -51,13 +53,30 @@ const CreateCustomer = ({ navigation }) => {
     fetchServiceProducts,
     removeCategoryProducts,
     getMasterData,
+    fetchRegisterFormData,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
-    customerDetails: {},
+    customerDetails: {
+      address1: "",
+      address2: "",
+      address3: "",
+      city: "",
+      district: "",
+      state: "",
+      postCode: "",
+      email: "",
+      contactType: "",
+      mobile: "",
+    },
     accountDetails: {},
     serviceDetails: { details: [], address: {} },
   });
+  const [loader, setLoader] = useState(false);
+  const [activeDropDown, setActiveDropDown] = useState("district");
+  const [selectedValueCountry, setValueCounty] = useState("");
+  const [countyName, setCountryName] = useState("");
+
   const [currentStep, setCurrentStep] = useState(1);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
@@ -84,6 +103,7 @@ const CreateCustomer = ({ navigation }) => {
     (state) => state.createCustomerReducerData
   );
   let masterReducer = useSelector((state) => state.masterdata);
+  const savedLocation = useSelector((state) => state.savedLocations);
 
   const customerDetails = {};
   const serviceDetails = { details: [], address: {} };
@@ -105,11 +125,13 @@ const CreateCustomer = ({ navigation }) => {
       ACCOUNT_CATEGORY,
       ACCOUNT_LEVEL,
       ACCOUNT_TYPE,
+      ACCOUNT_CLASS,
+      COUNTRY,
     } = MASTER_DATA_CONSTANT;
 
     dispatch(
       getMasterData(
-        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE}`
+        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
       )
     );
   }, []);
@@ -207,6 +229,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   // Step = 1
+
   const renderCustomerDetailsUI = () => {
     return (
       <View>
@@ -351,6 +374,14 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 2
   const renderCustomerAddressFormUI = () => {
+    const getCountryList = () => {
+      const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
+      if (countryGetList.length == 0) return [];
+      return countryGetList.map((item) => ({
+        code: item?.code,
+        description: item.description,
+      }));
+    };
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -409,45 +440,62 @@ const CreateCustomer = ({ navigation }) => {
           />
         </View>
         <View style={styles.backgroundView}>
+          <CustomDropDownFullWidth
+            searchEnable={true}
+            setDropDownEnable={() => setActiveDropDown("country")}
+            isDisable={true}
+            selectedValue={selectedValueCountry}
+            setValue={setValueCounty}
+            data={getCountryList() ?? []}
+            onChangeText={(text) => {
+              console.log(">>", text);
+              // onCountyClick(text)
+              setLoader(true);
+              dispatch(
+                fetchRegisterFormData(
+                  {
+                    type: "COUNTRY",
+                    search: text?.code,
+                  },
+                  () => setLoader(false)
+                )
+              );
+            }}
+            value={countyName}
+            isDisableDropDown={activeDropDown != "country"}
+            placeHolder={strings.country + "*"}
+            caption={strings.country + "*"}
+          />
+
           <CustomInput
-            value={formData?.customerDetails?.address1}
+            value={get(formData, "customerDetail.address1", "")}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => (customerDetails.address1 = text)}
+            onChangeText={(text) => {
+              handleCustomerDetails("address1", text);
+            }}
           />
           <CustomInput
-            value={formData?.customerDetails?.address2}
+            value={get(formData, "customerDetails.address2", "")}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => (customerDetails.address2 = text)}
+            onChangeText={(text) => handleCustomerDetails("address2", text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.address3}
+            value={get(formData, "customerDetails.address3", "")}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => (customerDetails.address3 = text)}
+            onChangeText={(text) => handleCustomerDetails("address3", text)}
           />
-          <CustomInput
-            value={formData?.customerDetails?.city}
-            caption={"City/Town"}
-            placeHolder={"City/Town"}
-            onChangeText={(text) => (customerDetails.city = text)}
-          />
+
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.district = text)}
-            value={formData?.customerDetails?.district}
-            caption={"District/Province"}
-            placeHolder={"Select " + "District/Province"}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.state = text)}
-            value={formData?.customerDetails?.state}
+            selectedValue={get(formData, "customerDetails.state", "")}
+            setValue={() => {}}
+            data={getUniqueState(savedLocation.addressLoopupData) ?? []}
+            onChangeText={(text) => {
+              handleCustomerDetails("state", text?.id);
+            }}
+            value={get(formData, "customerDetails.state", "")}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
@@ -455,8 +503,25 @@ const CreateCustomer = ({ navigation }) => {
             selectedValue={""}
             setValue={""}
             data={[]}
+            onChangeText={(text) => (customerDetails.district = text)}
+            value={get(formData, "customerDetails.district", "")}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+          />
+          <CustomInput
+            value={get(formData, "customerDetails.city", "")}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+            onChangeText={(text) => (customerDetails.city = text)}
+          />
+          <CustomDropDownFullWidth
+            setDropDownEnable={() => setActiveDropDown("state")}
+            isDisable={false}
+            selectedValue={""}
+            setValue={""}
+            // data={getUniqueState(savedLocation.addressLoopupData) ?? []}
             onChangeText={(text) => (customerDetails.postcode = text)}
-            value={formData?.customerDetails?.postcode}
+            value={get(formData, "customerDetails.postcode", "")}
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
           />
@@ -704,6 +769,7 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails[key] = value;
     setFormData({ ...formData, accountDetails });
   };
+
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -1059,6 +1125,7 @@ const CreateCustomer = ({ navigation }) => {
           />
         </View>
         <CustomTitleText title={"Account Address"} />
+
         <View style={styles.backgroundView}>
           <CustomInput
             value={""}
@@ -1345,6 +1412,7 @@ const CreateCustomer = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {loader && <LoadingAnimation title="while we are fetching country" />}
       {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
