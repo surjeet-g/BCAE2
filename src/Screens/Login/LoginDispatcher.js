@@ -4,7 +4,7 @@ import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
   DEFAULT_PROFILE_IMAGE,
-  storageKeys
+  storageKeys,
 } from "../../Utilities/Constants/Constant";
 import { setProfileData } from "./../../Redux/ProfileAction";
 import {
@@ -13,7 +13,7 @@ import {
   resetLoginData,
   resetShowSecondLoginAlertData,
   setLoginData,
-  setShowSecondLoginAlert
+  setShowSecondLoginAlert,
 } from "./LoginAction";
 
 export function verifyLoginData(navigation, params) {
@@ -97,7 +97,6 @@ export function verifyLoginData(navigation, params) {
                 }
               });
 
-
               if (
                 userTypeInResponse.length !== 0 &&
                 businessGroup.includes(userTypeInResponse)
@@ -116,7 +115,7 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                  result?.data?.data?.user?.customerUuid,
+                    result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation

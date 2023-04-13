@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -30,7 +30,7 @@ import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPasswo
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
-import { Playground } from "../Screens/Playground";
+// import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import { Modal, useTheme } from "react-native-paper";
@@ -92,7 +92,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_CREATE_CUSTOMER}
+        initialRouteName={STACK_SPLASH}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -226,11 +226,11 @@ function MyStack() {
             },
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
           component={Playground}
-        />
+        /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"
@@ -369,7 +369,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_VIEW_ORDER}
@@ -385,7 +385,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_APPOINTMENT_DETAILS}
@@ -416,7 +416,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_FOLLOWUP}
@@ -432,7 +432,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
@@ -448,7 +448,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => { },
+              headerRight: () => {},
             },
           })}
           name={STACK_CREATE_CUSTOMER}

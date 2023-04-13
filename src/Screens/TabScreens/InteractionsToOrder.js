@@ -41,7 +41,6 @@ import {
   setInteractionFormField,
   setInteractionReset
 } from "../../Redux/InteractionAction";
-
 import {
   addInteractionAction,
   fetchInteractionAction,
