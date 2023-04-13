@@ -53,7 +53,7 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails: {},
     serviceDetails: { details: [], address: {} },
   });
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(7);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -100,18 +100,23 @@ const CreateCustomer = ({ navigation }) => {
       ACCOUNT_CATEGORY,
       ACCOUNT_LEVEL,
       ACCOUNT_TYPE,
-      ACCOUNT_CLASS,
     } = MASTER_DATA_CONSTANT;
 
     dispatch(
       getMasterData(
-        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
+        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE}`
       )
     );
   }, []);
   const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
   const GENDER_LIST = masterReducer.masterdataData.GENDER;
   const CONTACT_TYPE_LIST = masterReducer.masterdataData.CONTACT_TYPE;
+  const ACCOUNT_CATEGORY_LIST = masterReducer.masterdataData.ACCOUNT_CATEGORY;
+  const ACCOUNT_TYPE_LIST = masterReducer.masterdataData.ACCOUNT_TYPE;
+  const ACCOUNT_LEVEL_LIST = masterReducer.masterdataData.ACCOUNT_LEVEL;
+  const NOTIFICATION_TYPE_LIST = masterReducer.masterdataData.NOTIFICATION_TYPE;
+  const BILL_LANGUAGE_LIST = masterReducer.masterdataData.BILL_LANGUAGE;
+  const CURRENCY_LIST = masterReducer.masterdataData.CURRENCY;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -639,21 +644,9 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const handleAccountDetails = (key, data) => {
-    console.log("$$$-handleAccountDetails-key", key);
-    console.log("$$$-handleAccountDetails-data", data);
+  const handleAccountDetails = (key, value) => {
     let { accountDetails } = formData;
-    console.log("$$$-handleAccountDetails-accountDetails", accountDetails);
-
-    let obj = accountDetails[key];
-    console.log("$$$-handleAccountDetails-obj", obj);
-
-    obj = { ...obj, ...data };
-    console.log("$$$-handleAccountDetails-new-obj", obj);
-
-    accountDetails = { ...accountDetails, ...obj };
-    console.log("$$$-handleAccountDetails-accountDetails", accountDetails);
-
+    accountDetails[key] = value;
     setFormData({ ...formData, accountDetails });
   };
   // Step = 6
@@ -685,61 +678,70 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.title
-                : formData?.accountDetails?.details?.title
+                : formData?.accountDetails?.title
             }
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => (accountDetails.details.title = text)}
+            onChangeText={(text) => handleAccountDetails("title", text)}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.firstName
-                : formData?.accountDetails?.details?.firstName
+                : formData?.accountDetails?.firstName
             }
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => (accountDetails.details.firstName = text)}
+            onChangeText={(text) => handleAccountDetails("firstName", text)}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.lastName
-                : formData?.accountDetails?.details?.lastName
+                : formData?.accountDetails?.lastName
             }
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => (accountDetails.details.lastName = text)}
+            onChangeText={(text) => handleAccountDetails("lastName", text)}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.birthDate
-                : formData?.accountDetails?.details?.birthDate
+                : formData?.accountDetails?.birthDate
             }
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => (accountDetails.details.birthDate = text)}
-          />
-          <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.gender
-                : formData?.accountDetails?.details?.gender
-            }
-            caption={strings.gender}
-            placeHolder={strings.gender}
-            onChangeText={(text) => (accountDetails.details.gender = text)}
+            onChangeText={(text) => handleAccountDetails("birthDate", text)}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (accountDetails.details.idType = text)}
+            selectedValue={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.gender?.description
+                : formData?.accountDetails?.gender?.description
+            }
+            data={GENDER_LIST}
+            onChangeText={(item) => handleAccountDetails("gender", item)}
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.idType
-                : formData?.accountDetails?.details?.idType
+                ? formData?.customerDetails?.gender?.code
+                : formData?.accountDetails?.gender?.code
+            }
+            caption={strings.gender}
+            placeHolder={"Select " + strings.gender}
+          />
+          <CustomDropDownFullWidth
+            selectedValue={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.idType?.description
+                : formData?.accountDetails?.idType?.description
+            }
+            data={ID_TYPE_LIST}
+            onChangeText={(item) => handleAccountDetails("idType", item)}
+            value={
+              isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.idType?.code
+                : formData?.accountDetails?.idType?.code
             }
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
@@ -748,33 +750,33 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.idValue
-                : formData?.accountDetails?.details?.idValue
+                : formData?.accountDetails?.idValue
             }
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => (accountDetails.details.idValue = text)}
+            onChangeText={(text) => handleAccountDetails("idValue", text)}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.idPlace
-                : formData?.accountDetails?.details?.idPlace
+                : formData?.accountDetails?.idPlace
             }
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => (accountDetails.details.idPlace = text)}
+            onChangeText={(text) => handleAccountDetails("idPlace", text)}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
                   ? formData?.customerDetails?.registeredNo
-                  : formData?.accountDetails?.details?.registeredNo
+                  : formData?.accountDetails?.registeredNo
               }
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
               onChangeText={(text) =>
-                (accountDetails.details.registeredNo = text)
+                handleAccountDetails("registeredNo", text)
               }
             />
           )}
@@ -783,12 +785,12 @@ const CreateCustomer = ({ navigation }) => {
               value={
                 isSameCustomerDetailsChecked
                   ? formData?.customerDetails?.registeredDate
-                  : formData?.accountDetails?.details?.registeredDate
+                  : formData?.accountDetails?.registeredDate
               }
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
               onChangeText={(text) =>
-                (accountDetails.details.registeredDate = text)
+                handleAccountDetails("registeredDate", text)
               }
             />
           )}
@@ -797,6 +799,7 @@ const CreateCustomer = ({ navigation }) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
+              handleAccountDetails("mobilePrefix", item.dial_code);
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -813,7 +816,7 @@ const CreateCustomer = ({ navigation }) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => {
-              accountDetails.address.mobileNo = text;
+              handleAccountDetails("mobileNo", text);
               setNumberError("");
             }}
             value={
@@ -833,7 +836,7 @@ const CreateCustomer = ({ navigation }) => {
             }
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => (accountDetails.address.emailId = text)}
+            onChangeText={(text) => handleAccountDetails("emailId", text)}
           />
         </View>
       </View>
@@ -847,60 +850,54 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Account Creation"} />
         <View style={styles.backgroundView}>
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) =>
-              (accountDetails.details.accountCategory = text)
+            selectedValue={
+              formData?.accountDetails?.accountCategory?.description
             }
-            value={formData?.accountDetails?.details?.accountCategory}
+            data={ACCOUNT_CATEGORY_LIST}
+            onChangeText={(item) =>
+              handleAccountDetails("accountCategory", item)
+            }
+            value={formData?.accountDetails?.accountCategory?.code}
             caption={strings.account_category}
             placeHolder={"Select " + strings.account_category}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) =>
-              (accountDetails.details.accountLevel = text)
-            }
-            value={formData?.accountDetails?.details?.accountLevel}
+            selectedValue={formData?.accountDetails?.accountLevel?.description}
+            data={ACCOUNT_LEVEL_LIST}
+            onChangeText={(item) => handleAccountDetails("accountLevel", item)}
+            value={formData?.accountDetails?.accountLevel?.code}
             caption={strings.account_level}
             placeHolder={"Select " + strings.account_level}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (accountDetails.details.billLang = text)}
-            value={formData?.accountDetails?.details?.billLang}
+            selectedValue={formData?.accountDetails?.billLang?.description}
+            data={BILL_LANGUAGE_LIST}
+            onChangeText={(item) => handleAccountDetails("billLang", item)}
+            value={formData?.accountDetails?.billLang?.code}
             caption={strings.bill_lang}
             placeHolder={"Select " + strings.bill_lang}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (accountDetails.details.accountType = text)}
-            value={formData?.accountDetails?.details?.accountType}
+            selectedValue={formData?.accountDetails?.accountType?.description}
+            data={ACCOUNT_TYPE_LIST}
+            onChangeText={(item) => handleAccountDetails("accountType", item)}
+            value={formData?.accountDetails?.accountType?.code}
             caption={strings.account_type}
             placeHolder={"Select " + strings.account_type}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (accountDetails.details.notifPref = text)}
-            value={formData?.accountDetails?.details?.notifPref}
+            selectedValue={formData?.accountDetails?.notifPref?.description}
+            data={NOTIFICATION_TYPE_LIST}
+            onChangeText={(item) => handleAccountDetails("notifPref", item)}
+            value={formData?.accountDetails?.notifPref?.code}
             caption={strings.notification_pref}
             placeHolder={"Select " + strings.notification_pref}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (accountDetails.details.currency = text)}
-            value={formData?.accountDetails?.details?.currency}
+            selectedValue={formData?.accountDetails?.currency?.description}
+            data={CURRENCY_LIST}
+            onChangeText={(item) => handleAccountDetails("currency", item)}
+            value={formData?.accountDetails?.currency?.code}
             caption={strings.currency}
             placeHolder={"Select " + strings.currency}
           />
@@ -1047,12 +1044,6 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleContinue = () => {
     switch (currentStep) {
-      case 1:
-        setCurrentStep(currentStep + 1);
-        break;
-      case 2:
-        setCurrentStep(currentStep + 1);
-        break;
       case 3:
         {
           let item = products.find((product) => product.quantity > 0);
@@ -1077,14 +1068,6 @@ const CreateCustomer = ({ navigation }) => {
         break;
       case 5:
         setShowAccountCreationModal(true);
-        break;
-      case 6:
-        handleAccountDetails("details", accountDetails.details);
-        setCurrentStep(currentStep + 1);
-        break;
-      case 7:
-        handleAccountDetails("details", accountDetails.details);
-        setCurrentStep(currentStep + 1);
         break;
       case 9:
         setFormData({ ...formData, signature });
@@ -1125,12 +1108,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleAccountTypeSelection = (item) => {
-    let { accountDetails } = formData;
-    accountDetails = { ...accountDetails, accountType: item };
-    setFormData({
-      ...formData,
-      accountDetails,
-    });
+    handleAccountDetails("accountType", item);
     setShowCustomerTypeModal(false);
     setCurrentStep(currentStep + 1);
   };
