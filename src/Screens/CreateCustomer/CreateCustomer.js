@@ -81,7 +81,7 @@ const CreateCustomer = ({ navigation }) => {
   const customerDetails = {};
   const serviceDetails = { details: [], address: {} };
   const accountDetails = {};
-  const accountTypeCode = formData?.accountDetails?.details?.accountType?.code;
+  const accountTypeCode = formData?.accountDetails?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
 
@@ -239,7 +239,7 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => (customerDetails.idPlace = text)}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={formData?.customerDetails?.registeredNo}
               caption={strings.registereredNo}
@@ -247,7 +247,7 @@ const CreateCustomer = ({ navigation }) => {
               onChangeText={(text) => (customerDetails.registeredNo = text)}
             />
           )}
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={formData?.customerDetails?.registeredDate}
               caption={strings.registereredDate}
@@ -770,7 +770,7 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => (accountDetails.details.idPlace = text)}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
@@ -784,7 +784,7 @@ const CreateCustomer = ({ navigation }) => {
               }
             />
           )}
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOVN") && (
+          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
@@ -1133,15 +1133,6 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleAccountTypeSelection = (item) => {
-    // const details = { ...accountDetails?.details };
-    // details.accountType = item;
-    // setFormData({
-    //   ...formData,
-    //   accountDetails: { ...accountDetails, details },
-    // });
-    // setShowCustomerTypeModal(false);
-    // setCurrentStep(currentStep + 1);
-
     let { accountDetails } = formData;
     accountDetails = { ...accountDetails, accountType: item };
     setFormData({
@@ -1242,6 +1233,18 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
+  const handleCustomerTypeIcon = (item) => {
+    // const Category = masterReducer.masterdataData.CUSTOMER_CATEGORY;
+    let icon = "";
+    if (item.code === "BUS")
+      icon = require("../../Assets/icons/ic_business.png");
+    else if (item.code === "GOV")
+      icon = require("../../Assets/icons/ic_government.png");
+    else if (item.code === "REG")
+      icon = require("../../Assets/icons/ic_regular.png");
+    return icon;
+  };
+
   return (
     <View style={styles.container}>
       {renderStepsIndicatorView()}
@@ -1273,12 +1276,12 @@ const CreateCustomer = ({ navigation }) => {
         >
           <View style={styles.modalContainer}>
             <FlatList
-              data={createCustomerReducerData.customerTypes}
+              data={masterReducer.masterdataData.CUSTOMER_CATEGORY}
               numColumns={4}
               renderItem={({ item, index }) => (
                 <CustomerType
-                  name={item.name}
-                  icon={item.icon}
+                  name={item.description}
+                  icon={handleCustomerTypeIcon(item)}
                   onPress={() => handleAccountTypeSelection(item)}
                 />
               )}
