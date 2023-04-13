@@ -33,9 +33,9 @@ const SavedLocation = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
 
   let savedLocation = useSelector((state) => state.savedLocations);
-
+  const { params = {} } = route
   //const { customerId } = route.params;
-  const { onPlaceChosen = () => { }, fromPage = "", onPlaceChosen_2 = () => { } } = route.params;
+  const { fromPage = "", onPlaceChosen = () => { }, onPlaceChosen_2 = () => { } } = params
   // const { onPlaceChosen, fromPage } = {
   //   onPlaceChosen: () => {},
   //   fromPage: true,
@@ -137,7 +137,7 @@ const SavedLocation = ({ route, navigation }) => {
     postCode
   ) => {
     if (fromPage === "CreateEnquiry" || fromPage === "EditProfile") {
-      route.params.onPlaceChosen({
+      onPlaceChosen({
         geoAddress: address,
         latitude: latitude,
         longitude: longitude,
@@ -200,9 +200,9 @@ const SavedLocation = ({ route, navigation }) => {
   const address = get(profile, "savedProfileData.customerAddress", []);
   const onSetPrimary = async (selectedAddressObj) => {
 
-    if (route.params.fromPage === "CreateCustomer_2") {
+    if (fromPage === "CreateCustomer_2") {
 
-      route.params.onPlaceChosen_2(
+      onPlaceChosen_2(
         selectedAddressObj
       );
       navigation.goBack();
@@ -258,7 +258,7 @@ const SavedLocation = ({ route, navigation }) => {
               onDeleteClicked={onClickedDeleteButton}
               onEditClicked={onClickedEditButton}
               onItemClicked={onItemClicked}
-              isFromCreateCustomer={route.params.fromPage}
+              isFromCreateCustomer={fromPage}
             />
           </View>
         ) : (

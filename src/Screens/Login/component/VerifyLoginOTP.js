@@ -1,20 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  ImageBackground, StyleSheet, Text, View
-} from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
-import OtpInputs from "react-native-otp-inputs";
 import { Modal } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../../Components/CustomButton";
 import {
-  color, fontSizes, spacing
+  color,
+  fontSizes,
+  spacing,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import { HEADER_MARGIN } from "../../../Utilities/themeConfig";
 import {
-  callLogoutAndLogin, resetShowSecondLoginAlert, sendLoginOTPData, verifyLoginData
+  callLogoutAndLogin,
+  resetShowSecondLoginAlert,
+  sendLoginOTPData,
+  verifyLoginData,
 } from ".././LoginDispatcher";
+import OtpInputs, { OtpInputsRef } from "react-native-otp-inputs";
 
 const VerifyLoginOTP = (props) => {
   const { navigation, route } = props;
