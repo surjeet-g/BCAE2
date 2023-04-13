@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
 import { UserHomeScreen } from "../Screens/TabScreens/UserHomeScreen";
 import { navBar } from "../Utilities/Style/navBar";
@@ -19,6 +19,7 @@ import get from 'lodash.get';
 import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingAnimation from '../Components/LoadingAnimation';
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
 import { USERTYPE } from '../Utilities/UserManagement/userInfo';
@@ -35,13 +36,13 @@ const Drawer = createDrawerNavigator();
 const BottomBarNavigation = () => {
   // const [profile, setProfile] = useState(null);
   const dispatch2 = useDispatch([fetchMyProfileData]);
-
+  const [loader, setLoader] = useState(true)
   const profileRed = useSelector((state) => state.profile);
 
   useEffect(() => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData());
-
+      setLoader(false)
       // if (res.status) {
       //   console.log('data', res)
       //   setProfile(res.data.profilePicture);
@@ -109,130 +110,135 @@ const BottomBarNavigation = () => {
   });
 
   return (
-    <BottomTab.Navigator
-      tabBar={(props) => <CustomBottomBar {...props} />}
-      initialRouteName="HomeScreen"
-      backBehavior="history"
-    >
-      <BottomTab.Screen
-        // options={{ headerShown: false }}
-        options={({ navigation }) => ({
-          ...options(navigation),
-        })}
-        name="HomeScreen"
-        component={isConsumer ? UserHomeScreen : HomeScreen}
-      />
+    <>
+      {loader && (
+        <LoadingAnimation title="Fetch data...Please wait" />
+      )}
+      <BottomTab.Navigator
+        tabBar={(props) => <CustomBottomBar {...props} />}
+        initialRouteName="HomeScreen"
+        backBehavior="history"
+      >
+        <BottomTab.Screen
+          // options={{ headerShown: false }}
+          options={({ navigation }) => ({
+            ...options(navigation),
+          })}
+          name="HomeScreen"
+          component={isConsumer ? UserHomeScreen : HomeScreen}
+        />
 
-      <BottomTab.Screen
-        // options={{ headerShown: false }}
-        name="Search"
-        component={Search}
-        options={({ navigation }) => ({
-          ...options,
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Image
-                    source={require("../Assets/icons/home_bell.png")}
-                    style={{ width: 35, height: 35 }}
-                  />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
+        <BottomTab.Screen
+          // options={{ headerShown: false }}
+          name="Search"
+          component={Search}
+          options={({ navigation }) => ({
+            ...options,
+            headerRight: () => {
+              return (
+                <View style={navBar.navRightCon}>
+                  <Pressable
+                    onPress={() =>
+                      alert("ToDo - Navigate to Notifications Screen")
+                    }
                     style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
-        })}
-      />
-      <BottomTab.Screen
-        // options={{ headerShown: false }}
-        name="Offers"
-        component={Offers}
-        options={({ navigation }) => ({
-          ...options,
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Image
-                    source={require("../Assets/icons/home_bell.png")}
-                    style={{ width: 35, height: 35 }}
-                  />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
+                  >
+                    <Image
+                      source={require("../Assets/icons/home_bell.png")}
+                      style={{ width: 35, height: 35 }}
+                    />
+                  </Pressable>
+                  <View style={navBar.divider} />
+                  <Pressable onPress={() => navigation.navigate("Profile")}>
+                    <Image
+                      source={{
+                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                          }`,
+                      }}
+                      // imageStyle={{ borderRadius: 80 }}
+                      style={navBar.roundIcon}
+                    />
+                  </Pressable>
+                </View>
+              );
+            },
+          })}
+        />
+        <BottomTab.Screen
+          // options={{ headerShown: false }}
+          name="Offers"
+          component={Offers}
+          options={({ navigation }) => ({
+            ...options,
+            headerRight: () => {
+              return (
+                <View style={navBar.navRightCon}>
+                  <Pressable
+                    onPress={() =>
+                      alert("ToDo - Navigate to Notifications Screen")
+                    }
                     style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
-        })}
-      />
+                  >
+                    <Image
+                      source={require("../Assets/icons/home_bell.png")}
+                      style={{ width: 35, height: 35 }}
+                    />
+                  </Pressable>
+                  <View style={navBar.divider} />
+                  <Pressable onPress={() => navigation.navigate("Profile")}>
+                    <Image
+                      source={{
+                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                          }`,
+                      }}
+                      // imageStyle={{ borderRadius: 80 }}
+                      style={navBar.roundIcon}
+                    />
+                  </Pressable>
+                </View>
+              );
+            },
+          })}
+        />
 
-      <BottomTab.Screen
-        // options={{ headerShown: false }}
-        name="Help"
-        component={Help}
-        options={({ navigation }) => ({
-          ...options,
-          headerRight: () => {
-            return (
-              <View style={navBar.navRightCon}>
-                <Pressable
-                  onPress={() =>
-                    alert("ToDo - Navigate to Notifications Screen")
-                  }
-                  style={navBar.roundIcon}
-                >
-                  <Image
-                    source={require("../Assets/icons/home_bell.png")}
-                    style={{ width: 35, height: 35 }}
-                  />
-                </Pressable>
-                <View style={navBar.divider} />
-                <Pressable onPress={() => navigation.navigate("Profile")}>
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                        }`,
-                    }}
-                    // imageStyle={{ borderRadius: 80 }}
+        <BottomTab.Screen
+          // options={{ headerShown: false }}
+          name="Help"
+          component={Help}
+          options={({ navigation }) => ({
+            ...options,
+            headerRight: () => {
+              return (
+                <View style={navBar.navRightCon}>
+                  <Pressable
+                    onPress={() =>
+                      alert("ToDo - Navigate to Notifications Screen")
+                    }
                     style={navBar.roundIcon}
-                  />
-                </Pressable>
-              </View>
-            );
-          },
-        })}
-      />
-    </BottomTab.Navigator>
+                  >
+                    <Image
+                      source={require("../Assets/icons/home_bell.png")}
+                      style={{ width: 35, height: 35 }}
+                    />
+                  </Pressable>
+                  <View style={navBar.divider} />
+                  <Pressable onPress={() => navigation.navigate("Profile")}>
+                    <Image
+                      source={{
+                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
+                          }`,
+                      }}
+                      // imageStyle={{ borderRadius: 80 }}
+                      style={navBar.roundIcon}
+                    />
+                  </Pressable>
+                </View>
+              );
+            },
+          })}
+        />
+      </BottomTab.Navigator>
+    </>
   );
 };
 
