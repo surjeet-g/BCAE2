@@ -182,7 +182,7 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const handleCustomerDetails1 = (key, value) => {
+  const handleCustomerDetails = (key, value) => {
     let { customerDetails } = formData;
     customerDetails[key] = value;
     setFormData({ ...formData, customerDetails });
@@ -198,37 +198,37 @@ const CreateCustomer = ({ navigation }) => {
             value={formData?.customerDetails?.title}
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => handleCustomerDetails1("title", text)}
+            onChangeText={(text) => handleCustomerDetails("title", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => handleCustomerDetails1("firstName", text)}
+            onChangeText={(text) => handleCustomerDetails("firstName", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => handleCustomerDetails1("lastName", text)}
+            onChangeText={(text) => handleCustomerDetails("lastName", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.birthDate}
             caption={strings.dob}
             placeHolder={strings.dob}
-            onChangeText={(text) => (customerDetails.birthDate = text)}
+            onChangeText={(text) => handleCustomerDetails("birthDate", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.gender}
             caption={strings.gender}
             placeHolder={strings.gender}
-            onChangeText={(text) => (customerDetails.gender = text)}
+            onChangeText={(text) => handleCustomerDetails("gender", text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => (customerDetails.idType = text)}
+            onChangeText={(text) => handleCustomerDetails("idType", text)}
             value={""}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
@@ -237,20 +237,22 @@ const CreateCustomer = ({ navigation }) => {
             value={formData?.customerDetails?.idValue}
             caption={strings.id_number}
             placeHolder={strings.id_number}
-            onChangeText={(text) => (customerDetails.idValue = text)}
+            onChangeText={(text) => handleCustomerDetails("idValue", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
-            onChangeText={(text) => (customerDetails.idPlace = text)}
+            onChangeText={(text) => handleCustomerDetails("idPlace", text)}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={formData?.customerDetails?.registeredNo}
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
-              onChangeText={(text) => (customerDetails.registeredNo = text)}
+              onChangeText={(text) =>
+                handleCustomerDetails("registeredNo", text)
+              }
             />
           )}
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
@@ -258,29 +260,14 @@ const CreateCustomer = ({ navigation }) => {
               value={formData?.customerDetails?.registeredDate}
               caption={strings.registereredDate}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) => (customerDetails.registeredDate = text)}
+              onChangeText={(text) =>
+                handleCustomerDetails("registeredDate", text)
+              }
             />
           )}
         </View>
       </View>
     );
-  };
-
-  const handleCustomerDetails = (data) => {
-    console.log("$$$-handleCustomerDetails-data", data);
-    let { customerDetails } = formData;
-    console.log(
-      "$$$-handleCustomerDetails-customerDetails-old",
-      customerDetails
-    );
-
-    customerDetails = { ...customerDetails, ...data };
-    console.log(
-      "$$$-handleCustomerDetails-customerDetails-new",
-      customerDetails
-    );
-
-    setFormData({ ...formData, customerDetails });
   };
 
   const locationIconClick = () => {
@@ -306,17 +293,13 @@ const CreateCustomer = ({ navigation }) => {
             value={formData?.customerDetails?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
-            onChangeText={(text) => {
-              customerDetails.emailId = text;
-            }}
+            onChangeText={(text) => handleCustomerDetails("emailId", text)}
           />
           <CustomDropDownFullWidth
             selectedValue={""}
             setValue={""}
             data={[]}
-            onChangeText={(text) => {
-              customerDetails.contactType = text;
-            }}
+            onChangeText={(text) => handleCustomerDetails("contactType", text)}
             value={formData?.customerDetails?.contactType}
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
@@ -325,7 +308,7 @@ const CreateCustomer = ({ navigation }) => {
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
-              customerDetails.mobilePrefix = item.dial_code;
+              handleCustomerDetails("mobilePrefix", item.dial_code);
               setCountryCode(item.dial_code);
               setCountryPickModel(false);
               setNumberMaxLength(getPhoneNumberLength(item.code));
@@ -342,7 +325,7 @@ const CreateCustomer = ({ navigation }) => {
             countryCode={countryCode}
             caption={strings.mobile_no}
             onChangeText={(text) => {
-              customerDetails.mobileNo = text;
+              handleCustomerDetails("mobileNo", text);
               setNumberError("");
             }}
             value={formData?.customerDetails?.mobileNo}
@@ -1060,11 +1043,9 @@ const CreateCustomer = ({ navigation }) => {
   const handleContinue = () => {
     switch (currentStep) {
       case 1:
-        handleCustomerDetails(customerDetails);
         setCurrentStep(currentStep + 1);
         break;
       case 2:
-        handleCustomerDetails(customerDetails);
         setCurrentStep(currentStep + 1);
         break;
       case 3:
