@@ -108,6 +108,8 @@ const CreateCustomer = ({ navigation }) => {
       )
     );
   }, []);
+  const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
+  const GENDER_LIST = masterReducer.masterdataData.GENDER;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -191,7 +193,6 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 1
   const renderCustomerDetailsUI = () => {
-    const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
     return (
       <View>
         <CustomTitleText title={"Customer Information"} />
@@ -220,11 +221,13 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.dob}
             onChangeText={(text) => handleCustomerDetails("birthDate", text)}
           />
-          <CustomInput
-            value={formData?.customerDetails?.gender}
+          <CustomDropDownFullWidth
+            selectedValue={formData?.customerDetails?.gender?.description}
+            data={GENDER_LIST}
+            onChangeText={(item) => handleCustomerDetails("gender", item)}
+            value={formData?.customerDetails?.gender?.code}
             caption={strings.gender}
-            placeHolder={strings.gender}
-            onChangeText={(text) => handleCustomerDetails("gender", text)}
+            placeHolder={"Select " + strings.gender}
           />
           <CustomDropDownFullWidth
             selectedValue={formData?.customerDetails?.idType?.description}
