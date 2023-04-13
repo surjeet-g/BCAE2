@@ -9,6 +9,7 @@ import {
   View,
   Image,
 } from "react-native";
+import get from "lodash.get";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { Checkbox, Modal } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
@@ -190,6 +191,7 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 1
   const renderCustomerDetailsUI = () => {
+    const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
     return (
       <View>
         <CustomTitleText title={"Customer Information"} />
@@ -225,11 +227,10 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => handleCustomerDetails("gender", text)}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => handleCustomerDetails("idType", text)}
-            value={""}
+            selectedValue={formData?.customerDetails?.idType?.description}
+            data={ID_TYPE_LIST}
+            onChangeText={(item) => handleCustomerDetails("idType", item)}
+            value={formData?.customerDetails?.idType?.code}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
           />
