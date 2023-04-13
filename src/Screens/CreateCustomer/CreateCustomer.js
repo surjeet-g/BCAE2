@@ -682,6 +682,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.title}
             placeHolder={strings.title}
             onChangeText={(text) => handleAccountDetails("title", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -692,6 +693,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.firstname}
             placeHolder={strings.firstname}
             onChangeText={(text) => handleAccountDetails("firstName", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -702,6 +704,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.lastname}
             placeHolder={strings.lastname}
             onChangeText={(text) => handleAccountDetails("lastName", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -712,6 +715,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.dob}
             placeHolder={strings.dob}
             onChangeText={(text) => handleAccountDetails("birthDate", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
             selectedValue={
@@ -728,6 +732,7 @@ const CreateCustomer = ({ navigation }) => {
             }
             caption={strings.gender}
             placeHolder={"Select " + strings.gender}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
             selectedValue={
@@ -744,6 +749,7 @@ const CreateCustomer = ({ navigation }) => {
             }
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -754,6 +760,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.id_number}
             placeHolder={strings.id_number}
             onChangeText={(text) => handleAccountDetails("idValue", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -764,6 +771,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => handleAccountDetails("idPlace", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
@@ -777,6 +785,7 @@ const CreateCustomer = ({ navigation }) => {
               onChangeText={(text) =>
                 handleAccountDetails("registeredNo", text)
               }
+              disabled={isSameCustomerDetailsChecked}
             />
           )}
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
@@ -791,6 +800,7 @@ const CreateCustomer = ({ navigation }) => {
               onChangeText={(text) =>
                 handleAccountDetails("registeredDate", text)
               }
+              disabled={isSameCustomerDetailsChecked}
             />
           )}
 
@@ -826,6 +836,7 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -836,6 +847,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => handleAccountDetails("emailId", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
         </View>
       </View>

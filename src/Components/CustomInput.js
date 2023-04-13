@@ -8,7 +8,7 @@ export const CustomInput = (props) => {
     placeHolder = "",
     multiline = false,
     hideCaption = false,
-    disabled = false
+    disabled = false,
   } = props;
   const MULT_LINE = multiline ? {} : { height: 45 };
   const { roundness, colors } = useTheme();
@@ -41,7 +41,6 @@ export const CustomInput = (props) => {
       >
         <TextInput
           {...props}
-
           underlineColor="transparent"
           activeUnderlineColor="transparent"
           style={{
