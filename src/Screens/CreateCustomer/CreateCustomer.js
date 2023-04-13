@@ -53,7 +53,7 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails: {},
     serviceDetails: { details: [], address: {} },
   });
-  const [currentStep, setCurrentStep] = useState(7);
+  const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -81,7 +81,6 @@ const CreateCustomer = ({ navigation }) => {
 
   const customerDetails = {};
   const serviceDetails = { details: [], address: {} };
-  const accountDetails = {};
   const accountTypeCode = formData?.accountDetails?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
