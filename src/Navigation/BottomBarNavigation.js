@@ -15,18 +15,18 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomBottomBar from "./CustomBottomBar";
 // import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
 // import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
-import get from 'lodash.get';
+import get from "lodash.get";
 import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingAnimation from '../Components/LoadingAnimation';
+import LoadingAnimation from "../Components/LoadingAnimation";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
-import { USERTYPE } from '../Utilities/UserManagement/userInfo';
+import { USERTYPE } from "../Utilities/UserManagement/userInfo";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import Search from "./../Screens/Search";
-import { Appointment } from "../Screens/Appointments/Appointment";
+import { Appointment } from "./../Screens/Appointments/Appointment";
 
 const BottomTab = createBottomTabNavigator();
 const initialRoutByPlat =
@@ -37,13 +37,13 @@ const Drawer = createDrawerNavigator();
 const BottomBarNavigation = () => {
   // const [profile, setProfile] = useState(null);
   const dispatch2 = useDispatch([fetchMyProfileData]);
-  const [loader, setLoader] = useState(true)
+  const [loader, setLoader] = useState(true);
   const profileRed = useSelector((state) => state.profile);
 
   useEffect(() => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData());
-      setLoader(false)
+      setLoader(false);
       // if (res.status) {
       //   console.log('data', res)
       //   setProfile(res.data.profilePicture);
@@ -55,11 +55,12 @@ const BottomBarNavigation = () => {
     fetchMyAPI();
   }, []);
 
-
-  const userType = get(profileRed, 'savedProfileData.typeOfUser', '');
-  const isConsumer = (userType == USERTYPE.CUSTOMER)
-  const profilePath = isConsumer ? 'savedProfileData.customerPhoto' : 'savedProfileData.profilePicture'
-  const profile = get(profileRed, profilePath, null)
+  const userType = get(profileRed, "savedProfileData.typeOfUser", "");
+  const isConsumer = userType == USERTYPE.CUSTOMER;
+  const profilePath = isConsumer
+    ? "savedProfileData.customerPhoto"
+    : "savedProfileData.profilePicture";
+  const profile = get(profileRed, profilePath, null);
 
   const { colors, fonts } = useTheme();
   const options = (navigation) => ({
@@ -88,8 +89,9 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: `data:image/jpeg;base64,${
+                  profile || DEFAULT_PROFILE_IMAGE
+                }`,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -112,9 +114,7 @@ const BottomBarNavigation = () => {
 
   return (
     <>
-      {loader && (
-        <LoadingAnimation title="Fetch data...Please wait" />
-      )}
+      {loader && <LoadingAnimation title="Fetch data...Please wait" />}
       <BottomTab.Navigator
         tabBar={(props) => <CustomBottomBar {...props} />}
         initialRouteName="HomeScreen"
@@ -126,13 +126,13 @@ const BottomBarNavigation = () => {
             ...options(navigation),
           })}
           name="HomeScreen"
-        component={isConsumer ? HomeScreen : UserHomeScreen}
+          component={isConsumer ? HomeScreen : UserHomeScreen}
         />
 
         <BottomTab.Screen
           // options={{ headerShown: false }}
           name="Search"
-        component={Appointment}
+          component={Appointment}
           options={({ navigation }) => ({
             ...options,
             headerRight: () => {
@@ -153,8 +153,9 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                          }`,
+                        uri: `data:image/jpeg;base64,${
+                          profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}
@@ -189,8 +190,9 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                          }`,
+                        uri: `data:image/jpeg;base64,${
+                          profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}
@@ -226,8 +228,9 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${profile || DEFAULT_PROFILE_IMAGE
-                          }`,
+                        uri: `data:image/jpeg;base64,${
+                          profile || DEFAULT_PROFILE_IMAGE
+                        }`,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}

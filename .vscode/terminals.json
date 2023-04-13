@@ -1,0 +1,14 @@
+{
+  "autorun": false,
+  "terminals": [
+    {
+      "name": "Merge kamal",
+      "commands": [
+        "git stash",
+        "git checkout mks_develop",
+        "git pull",
+        "git checkout vv_develop"
+      ]
+    }
+  ]
+}
