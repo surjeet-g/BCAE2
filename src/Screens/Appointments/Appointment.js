@@ -71,7 +71,7 @@ export const Appointment = ({ navigation }) => {
 
   const [isFilterModal, setIsFilterModal] = useState(false);
   const [selected, setSelected] = useState(new Date().toString());
-  const marked = ["2023-03-08", "20<C23-03-18", "2023-03-23", "2023-03-28"];
+  const marked = ["2023-04-08", "2023-04-18", "2023-04-23", "2023-04-28"];
 
   const hideCalendarModal = () => setIsCalendarModalVisible(false);
   const SLOTS = [
@@ -405,26 +405,26 @@ export const Appointment = ({ navigation }) => {
     {
       title: "Payment not working",
       isAudio: true,
-      startDate: moment("2023-04-12 0:45:00"),
-      endDate: moment("2023-04-12 1:45:00"),
+      startDate: moment("2023-04-13 0:45:00"),
+      endDate: moment("2023-04-13 1:45:00"),
     },
     {
       title: "New connection",
       isAudio: false,
-      startDate: moment("2023-04-12 2:00:00"),
-      endDate: moment("2023-04-12 2:30:00"),
+      startDate: moment("2023-04-13 2:00:00"),
+      endDate: moment("2023-04-13 2:30:00"),
     },
     {
       title: "Billing Problems",
       isAudio: true,
-      startDate: moment("2023-04-12 3:45:00"),
-      endDate: moment("2023-04-12 4:45:00"),
+      startDate: moment("2023-04-13 3:45:00"),
+      endDate: moment("2023-04-13 4:45:00"),
     },
     {
       title: "Postpaid connection address change",
       isAudio: false,
-      startDate: moment("2023-04-12 12:45:00"),
-      endDate: moment("2023-04-12 15:45:00"),
+      startDate: moment("2023-04-13 12:45:00"),
+      endDate: moment("2023-04-13 15:45:00"),
     },
   ]);
   const AppointListItem = ({ data }) => {
