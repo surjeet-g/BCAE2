@@ -92,6 +92,7 @@ const CreateCustomer = ({ navigation }) => {
       CUSTOMER_ID_TYPE,
       CUSTOMER_CATEGORY,
       CONTACT_PREFERENCE,
+      CONTACT_TYPE,
       GENDER,
       NOTIFICATION_TYPE,
       BILL_LANGUAGE,
@@ -104,12 +105,13 @@ const CreateCustomer = ({ navigation }) => {
 
     dispatch(
       getMasterData(
-        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
+        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
       )
     );
   }, []);
   const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
   const GENDER_LIST = masterReducer.masterdataData.GENDER;
+  const CONTACT_TYPE_LIST = masterReducer.masterdataData.CONTACT_TYPE;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -300,11 +302,10 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => handleCustomerDetails("emailId", text)}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => handleCustomerDetails("contactType", text)}
-            value={formData?.customerDetails?.contactType}
+            selectedValue={formData?.customerDetails?.contactType?.description}
+            data={CONTACT_TYPE_LIST}
+            onChangeText={(item) => handleCustomerDetails("contactType", item)}
+            value={formData?.customerDetails?.contactType?.code}
             caption={strings.contact_type}
             placeHolder={"Select " + strings.contact_type}
           />
