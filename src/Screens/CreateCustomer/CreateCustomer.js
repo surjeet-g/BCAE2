@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
 import {
   FlatList,
   Pressable,
@@ -182,6 +182,12 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
+  const handleCustomerDetails1 = (key, value) => {
+    let { customerDetails } = formData;
+    customerDetails[key] = value;
+    setFormData({ ...formData, customerDetails });
+  };
+
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -192,19 +198,19 @@ const CreateCustomer = ({ navigation }) => {
             value={formData?.customerDetails?.title}
             caption={strings.title}
             placeHolder={strings.title}
-            onChangeText={(text) => (customerDetails.title = text)}
+            onChangeText={(text) => handleCustomerDetails1("title", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
-            onChangeText={(text) => (customerDetails.firstName = text)}
+            onChangeText={(text) => handleCustomerDetails1("firstName", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
-            onChangeText={(text) => (customerDetails.lastName = text)}
+            onChangeText={(text) => handleCustomerDetails1("lastName", text)}
           />
           <CustomInput
             value={formData?.customerDetails?.birthDate}
