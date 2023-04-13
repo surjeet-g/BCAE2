@@ -15,6 +15,10 @@ import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT,
+} from "../../Redux/masterDataDispatcher";
 import { CustomButton } from "./../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
@@ -35,10 +39,6 @@ import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
-import {
-  getMasterData,
-  MASTER_DATA_CONSTANT,
-} from "../../Redux/masterDataDispatcher";
 
 const CreateCustomer = ({ navigation }) => {
   const dispatch = useDispatch([

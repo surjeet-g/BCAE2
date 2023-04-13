@@ -587,6 +587,19 @@ export let strings = new LocalizedStrings({
     statement: "Statement",
 
     workflow: "WorkFlow",
+
+    topsale: "Top sales channel",
+    tgtvs: "TGTVS achievment",
+    saleagent: "Sales agent wise",
+    task: "Tasks",
+    total_sale: "Total statistics of Sales",
+    details: "Details",
+    retails_outlet: "Retail outlet Website",
+    mom_growth: "MOM Growth",
+    top_per: "Top & poor performer",
+    view_all: "View All",
+         tasks: "Tasks",
+         //add en-US
   },
   en: {
     building_name: "Building Name/Others*",
@@ -875,6 +888,17 @@ export let strings = new LocalizedStrings({
     statement: "Statement",
 
     workflow: "WorkFlow",
+    topsale: "Top sales channel",
+    tgtvs: "TGTVS achievment",
+    saleagent: "Sales agent wise",
+    task: "Tasks",
+    total_sale: "Total statistics of Sales",
+    details: "Details",
+    retails_outlet: "Retail outlet Website",
+    mom_growth: "MOM Growth",
+    top_per: "Top & poor performer",
+    view_all: "View All",
+         tasks: "Tasks",
   },
 
   ml: {
