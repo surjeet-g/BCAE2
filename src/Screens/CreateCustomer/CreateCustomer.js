@@ -9,9 +9,12 @@ import {
   View,
   Image,
 } from "react-native";
+import DatePicker from "react-native-date-picker";
+import moment from "moment";
+
 import get from "lodash.get";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { Checkbox, Modal } from "react-native-paper";
+import { Checkbox, Modal, TextInput, useTheme } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -42,6 +45,8 @@ import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
 
 const CreateCustomer = ({ navigation }) => {
+  const { colors } = useTheme();
+
   const dispatch = useDispatch([
     fetchServiceProducts,
     removeCategoryProducts,
@@ -53,7 +58,7 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails: {},
     serviceDetails: { details: [], address: {} },
   });
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -73,6 +78,7 @@ const CreateCustomer = ({ navigation }) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [signature, setSignature] = useState(null);
+  const [openDatePicker, setOpenDatePicker] = useState(false);
 
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
@@ -224,12 +230,37 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.lastname}
             onChangeText={(text) => handleCustomerDetails("lastName", text)}
           />
-          <CustomInput
-            value={formData?.customerDetails?.birthDate}
-            caption={strings.dob}
-            placeHolder={strings.dob}
-            onChangeText={(text) => handleCustomerDetails("birthDate", text)}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={formData?.customerDetails?.birthDate || new Date()}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleCustomerDetails("birthDate", params);
+              setOpenDatePicker(false);
+            }}
           />
+          <CustomInput
+            value={moment(formData?.customerDetails?.birthDate).format(
+              "YYYY-MM-DD"
+            )}
+            caption={strings.dob}
+            onFocus={() => setOpenDatePicker(true)}
+            placeHolder={strings.dob}
+            right={
+              <TextInput.Icon
+                onPress={() => setOpenDatePicker(true)}
+                style={{ width: 23, height: 23 }}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon={"calendar"}
+              />
+            }
+          />
+
           <CustomDropDownFullWidth
             selectedValue={formData?.customerDetails?.gender?.description}
             data={GENDER_LIST}
@@ -268,13 +299,35 @@ const CreateCustomer = ({ navigation }) => {
               }
             />
           )}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={formData?.customerDetails?.registeredDate || new Date()}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleCustomerDetails("registeredDate", params);
+              setOpenDatePicker(false);
+            }}
+          />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
-              value={formData?.customerDetails?.registeredDate}
+              value={moment(formData?.customerDetails?.registeredDate).format(
+                "YYYY-MM-DD"
+              )}
               caption={strings.registereredDate}
+              onFocus={() => setOpenDatePicker(true)}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) =>
-                handleCustomerDetails("registeredDate", text)
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon={"calendar"}
+                />
               }
             />
           )}
@@ -709,15 +762,47 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => handleAccountDetails("lastName", text)}
             disabled={isSameCustomerDetailsChecked}
           />
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={
+              (isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.birthDate
+                : formData?.accountDetails?.birthDate) || new Date()
+            }
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleAccountDetails("birthDate", params);
+              setOpenDatePicker(false);
+            }}
+          />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.birthDate
-                : formData?.accountDetails?.birthDate
+                ? moment(formData?.customerDetails?.birthDate).format(
+                    "YYYY-MM-DD"
+                  )
+                : moment(formData?.accountDetails?.birthDate).format(
+                    "YYYY-MM-DD"
+                  )
             }
             caption={strings.dob}
+            onFocus={() => setOpenDatePicker(true)}
             placeHolder={strings.dob}
-            onChangeText={(text) => handleAccountDetails("birthDate", text)}
+            right={
+              <TextInput.Icon
+                onPress={() =>
+                  isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                }
+                style={{ width: 23, height: 23 }}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon={"calendar"}
+              />
+            }
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
@@ -791,17 +876,47 @@ const CreateCustomer = ({ navigation }) => {
               disabled={isSameCustomerDetailsChecked}
             />
           )}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={
+              (isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.registeredDate
+                : formData?.accountDetails?.registeredDate) || new Date()
+            }
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleAccountDetails("registeredDate", params);
+              setOpenDatePicker(false);
+            }}
+          />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
-                  ? formData?.customerDetails?.registeredDate
-                  : formData?.accountDetails?.registeredDate
+                  ? moment(formData?.customerDetails?.registeredDate).format(
+                      "YYYY-MM-DD"
+                    )
+                  : moment(formData?.accountDetails?.registeredDate).format(
+                      "YYYY-MM-DD"
+                    )
               }
-              caption={strings.registereredDate}
-              placeHolder={strings.registereredDate}
-              onChangeText={(text) =>
-                handleAccountDetails("registeredDate", text)
+              caption={strings.dob}
+              onFocus={() => setOpenDatePicker(true)}
+              placeHolder={strings.dob}
+              right={
+                <TextInput.Icon
+                  onPress={() =>
+                    isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                  }
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon={"calendar"}
+                />
               }
               disabled={isSameCustomerDetailsChecked}
             />
