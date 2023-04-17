@@ -2,6 +2,7 @@ import {
   FETCH_SERVICE_PRODUCTS_FAILURE,
   FETCH_SERVICE_PRODUCTS_SUCCESS,
   REMOVE_SERVICE_PRODUCTS,
+  SET_SERVICE_CATEGORIES,
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -11,21 +12,21 @@ const initialState = {
   serviceCategories: [
     {
       id: 1,
-      name: "Postpaid",
+      description: "Postpaid",
       code: "PT_POSTPAID",
       icon: require("../../Assets/icons/ic_postpaid.png"),
       selected: false,
     },
     {
       id: 2,
-      name: "Prepaid",
+      description: "Prepaid",
       code: "PT_PREPAID",
       icon: require("../../Assets/icons/ic_prepaid.png"),
       selected: false,
     },
     {
       id: 3,
-      name: "Hybrid",
+      description: "Hybrid",
       code: "PT_HYBRID",
       icon: require("../../Assets/icons/ic_word.png"),
       selected: false,
@@ -80,6 +81,31 @@ const CreateCustomerReducer = (state = initialState, action) => {
         ...state,
         products: newProducts,
         serviceCategories: newServiceCategories,
+      };
+    }
+    case SET_SERVICE_CATEGORIES: {
+      console.log("$$$-action", action);
+      const { data } = action;
+      let newServiceCategories =
+        data !== undefined &&
+        data?.map((item) => {
+          item.selected = false;
+          if (item.code === "PT_PREPAID") {
+            item.icon = require("../../Assets/icons/ic_prepaid.png");
+          } else if (item.code === "PT_POSTPAID") {
+            item.icon = require("../../Assets/icons/ic_postpaid.png");
+          } else {
+            item.icon = require("../../Assets/icons/ic_pdf.png");
+          }
+          return item;
+        });
+      console.log("$$$-newServiceCategories", newServiceCategories);
+      return {
+        ...state,
+        serviceCategories: [
+          ...state.serviceCategories,
+          ...newServiceCategories,
+        ],
       };
     }
     default:

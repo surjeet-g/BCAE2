@@ -25,7 +25,7 @@ const ServiceCategory = (props) => {
           fontWeight: item.selected ? 700 : 400,
         }}
       >
-        {item?.name}
+        {item?.description}
       </Text>
     </Pressable>
   );

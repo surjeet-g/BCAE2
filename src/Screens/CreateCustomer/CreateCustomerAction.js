@@ -5,6 +5,7 @@ export const FETCH_SERVICE_PRODUCTS_FAILURE = "FETCH_SERVICE_PRODUCTS_FAILURE";
 export const REMOVE_SERVICE_PRODUCTS = "REMOVE_SERVICE_PRODUCTS";
 export const CREATE_CUSTOMER_SUCCESS = "CREATE_CUSTOMER_SUCCESS";
 export const CREATE_CUSTOMER_FAILURE = "CREATE_CUSTOMER_FAILURE";
+export const SET_SERVICE_CATEGORIES = "SET_SERVICE_CATEGORIES";
 
 export function initData() {
   return { type: INIT_CREATE_CUSTOMER };
@@ -28,4 +29,8 @@ export function setCreateCustomerDataInStore(data) {
 
 export function setCreateCustomerErrorDataInStore(data) {
   return { type: CREATE_CUSTOMER_FAILURE, data };
+}
+
+export function setServiceCategoriesDataInStore(data) {
+  return { type: SET_SERVICE_CATEGORIES, data };
 }
