@@ -55,7 +55,6 @@ export const endPoints = {
   ORGANIZATION: "api/organization",
   ADDRESS_LOOKUP: "api/lookup/address-lookup",
   ADDRESS_LOOKUP_REGISTRATION: "api/master/address-lookup",
-
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
   KNOWLEDGE_SEARCH: "api/knowledge-Base/search",
@@ -66,7 +65,7 @@ export const endPoints = {
   DELETE_WORKFLOW: "api/workflow/delete/",
   CUSTOMER_ACCOUNT: "api/accounts/get-account-list",
   ORDER_LIST_API: "api/order/search",
-
+  GET_APPOINTMENT_DASHBOARD: "api/appointment",
   FETCH_SERVICE_PRODUCTS_API: "api/product",
 };
 

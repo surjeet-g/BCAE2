@@ -1,25 +1,27 @@
-import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
+import get from 'lodash.get';
+import moment from "moment";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
-  FlatList,
-  Pressable,
+  FlatList, Image, Pressable,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
-  View,
-  Image,
+  View
 } from "react-native";
-import get from "lodash.get";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { Checkbox, Modal } from "react-native-paper";
+import DatePicker from "react-native-date-picker";
+import { Checkbox, Modal, TextInput, useTheme } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { CustomButton } from "./../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
@@ -29,7 +31,7 @@ import { FooterModel } from "./../../Components/FooterModel";
 import { strings } from "./../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "./../../Utilities/utils";
 import BillDetails from "./BillDetails";
 import { removeCategoryProducts } from "./CreateCustomerAction";
@@ -40,20 +42,39 @@ import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
+import { getCityByDistrict, getPostCodeByCity, getUniqueDistricts, getUniqueState } from './utilities';
 
 const CreateCustomer = ({ navigation }) => {
+  const { colors } = useTheme();
+
   const dispatch = useDispatch([
     fetchServiceProducts,
     removeCategoryProducts,
     getMasterData,
+    fetchRegisterFormData,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
-    customerDetails: {},
+    customerDetails: {
+      address1: "",
+      address2: "",
+      address3: "",
+      city: "",
+      district: "",
+      state: "",
+      postCode: "",
+      email: "",
+      contactType: "",
+      mobile: "",
+    },
     accountDetails: {},
     serviceDetails: { details: [], address: {} },
   });
-  const [currentStep, setCurrentStep] = useState(7);
+  const [loader, setLoader] = useState(false);
+  const [activeDropDown, setActiveDropDown] = useState("district");
+  const [addressTakenType, setAddressTakenType] = useState("Manual")
+
+  const [currentStep, setCurrentStep] = useState(1);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -73,15 +94,16 @@ const CreateCustomer = ({ navigation }) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [signature, setSignature] = useState(null);
+  const [openDatePicker, setOpenDatePicker] = useState(false);
 
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
   );
   let masterReducer = useSelector((state) => state.masterdata);
+  const savedLocation = useSelector((state) => state.savedLocations);
 
   const customerDetails = {};
   const serviceDetails = { details: [], address: {} };
-  const accountDetails = {};
   const accountTypeCode = formData?.accountDetails?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
@@ -100,23 +122,28 @@ const CreateCustomer = ({ navigation }) => {
       ACCOUNT_CATEGORY,
       ACCOUNT_LEVEL,
       ACCOUNT_TYPE,
+      ACCOUNT_CLASS,
+      COUNTRY,
     } = MASTER_DATA_CONSTANT;
 
     dispatch(
       getMasterData(
-        `${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE}`
+        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
       )
     );
   }, []);
-  const ID_TYPE_LIST = masterReducer.masterdataData.CUSTOMER_ID_TYPE;
-  const GENDER_LIST = masterReducer.masterdataData.GENDER;
-  const CONTACT_TYPE_LIST = masterReducer.masterdataData.CONTACT_TYPE;
-  const ACCOUNT_CATEGORY_LIST = masterReducer.masterdataData.ACCOUNT_CATEGORY;
-  const ACCOUNT_TYPE_LIST = masterReducer.masterdataData.ACCOUNT_TYPE;
-  const ACCOUNT_LEVEL_LIST = masterReducer.masterdataData.ACCOUNT_LEVEL;
-  const NOTIFICATION_TYPE_LIST = masterReducer.masterdataData.NOTIFICATION_TYPE;
-  const BILL_LANGUAGE_LIST = masterReducer.masterdataData.BILL_LANGUAGE;
-  const CURRENCY_LIST = masterReducer.masterdataData.CURRENCY;
+  const ID_TYPE_LIST = masterReducer?.masterdataData?.CUSTOMER_ID_TYPE;
+  const CUSTOMER_CATEGORY_LIST =
+    masterReducer?.masterdataData?.CUSTOMER_CATEGORY;
+  const GENDER_LIST = masterReducer?.masterdataData?.GENDER;
+  const CONTACT_TYPE_LIST = masterReducer?.masterdataData?.CONTACT_TYPE;
+  const ACCOUNT_CATEGORY_LIST = masterReducer?.masterdataData?.ACCOUNT_CATEGORY;
+  const ACCOUNT_TYPE_LIST = masterReducer?.masterdataData?.ACCOUNT_TYPE;
+  const ACCOUNT_LEVEL_LIST = masterReducer?.masterdataData?.ACCOUNT_LEVEL;
+  const NOTIFICATION_TYPE_LIST =
+    masterReducer?.masterdataData?.NOTIFICATION_TYPE;
+  const BILL_LANGUAGE_LIST = masterReducer?.masterdataData?.BILL_LANGUAGE;
+  const CURRENCY_LIST = masterReducer?.masterdataData?.CURRENCY;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -199,6 +226,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   // Step = 1
+
   const renderCustomerDetailsUI = () => {
     return (
       <View>
@@ -222,12 +250,37 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.lastname}
             onChangeText={(text) => handleCustomerDetails("lastName", text)}
           />
-          <CustomInput
-            value={formData?.customerDetails?.birthDate}
-            caption={strings.dob}
-            placeHolder={strings.dob}
-            onChangeText={(text) => handleCustomerDetails("birthDate", text)}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={formData?.customerDetails?.birthDate || new Date()}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleCustomerDetails("birthDate", params);
+              setOpenDatePicker(false);
+            }}
           />
+          <CustomInput
+            value={moment(formData?.customerDetails?.birthDate).format(
+              "YYYY-MM-DD"
+            )}
+            caption={strings.dob}
+            onFocus={() => setOpenDatePicker(true)}
+            placeHolder={strings.dob}
+            right={
+              <TextInput.Icon
+                onPress={() => setOpenDatePicker(true)}
+                style={{ width: 23, height: 23 }}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon={"calendar"}
+              />
+            }
+          />
+
           <CustomDropDownFullWidth
             selectedValue={formData?.customerDetails?.gender?.description}
             data={GENDER_LIST}
@@ -266,13 +319,35 @@ const CreateCustomer = ({ navigation }) => {
               }
             />
           )}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={formData?.customerDetails?.registeredDate || new Date()}
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleCustomerDetails("registeredDate", params);
+              setOpenDatePicker(false);
+            }}
+          />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
-              value={formData?.customerDetails?.registeredDate}
+              value={moment(formData?.customerDetails?.registeredDate).format(
+                "YYYY-MM-DD"
+              )}
               caption={strings.registereredDate}
+              onFocus={() => setOpenDatePicker(true)}
               placeHolder={strings.registereredDate}
-              onChangeText={(text) =>
-                handleCustomerDetails("registeredDate", text)
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon={"calendar"}
+                />
               }
             />
           )}
@@ -291,11 +366,33 @@ const CreateCustomer = ({ navigation }) => {
   const onPlaceChosen_2 = (params) => {
     // here is your callback function
     console.log("onPlaceChosen_2", JSON.stringify(params));
-    // {"addressNo":"ADD00001016","addressType":"ADDBUSINESS","isPrimary":false,"address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351","addrZone":"India","city":"Karwar","district":"Uttara kannada","state":"Karnataka","postcode":"581351","country":"India","latitude":"0","longitude":"0"}
+    // {
+    // "address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351",
+
+    const addressSplit = params.address1.split(",");
+    const address2Split = params.address2.split(",");
+    handleCustomerDetails("address1", get(addressSplit, '[0]', ''));
+    handleCustomerDetails("address2", get(addressSplit, '[1]', ''));
+    handleCustomerDetails("address3", get(address2Split, '[1]', ''));
+
+    handleCustomerDetails("country", params.country);
+    handleCustomerDetails("district", params.district);
+    handleCustomerDetails("postCode", params.postcode);
+    handleCustomerDetails("state", params.state);
+    handleCustomerDetails("city", params.city);
+    setAddressTakenType("AUTO")
   };
 
   // Step = 2
   const renderCustomerAddressFormUI = () => {
+    const getCountryList = () => {
+      const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
+      if (countryGetList.length == 0) return []
+      return countryGetList.map(item => (
+        { code: item?.code, description: item.description }
+      ))
+    }
+    const isAutoAddress = (addressTakenType == "AUTO")
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -354,66 +451,137 @@ const CreateCustomer = ({ navigation }) => {
           />
         </View>
         <View style={styles.backgroundView}>
+          <CustomDropDownFullWidth
+            searchEnable={true}
+            setDropDownEnable={() => setActiveDropDown("country")}
+            isDisable={isAutoAddress}
+            selectedValue={get(formData, 'customerDetails.country', '')}
+
+            setValue={() => { }}
+            data={
+              getCountryList() ?? []
+            }
+            onChangeText={(text) => {
+              console.log(">>", text);
+              // onCountyClick(text)
+              handleCustomerDetails("country", text?.code)
+              handleCustomerDetails("state", "")
+              handleCustomerDetails("district", "")
+              handleCustomerDetails("city", "")
+              handleCustomerDetails("postCode", "")
+
+              if (addressTakenType != "AUTO") {
+                setLoader(true)
+                dispatch(fetchRegisterFormData({
+                  type: "COUNTRY",
+                  search: text?.code
+                }, () => setLoader(false)));
+              }
+
+            }}
+            value={get(formData, 'customerDetails.country', '')}
+
+            isDisableDropDown={activeDropDown != "country"}
+            placeHolder={strings.country + "*"}
+            caption={strings.country + "*"}
+          />
+
           <CustomInput
-            value={formData?.customerDetails?.address1}
+            disabled={isAutoAddress}
+            value={get(formData, 'customerDetails.address1', '')}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => (customerDetails.address1 = text)}
+            onChangeText={(text) => {
+              handleCustomerDetails("address1", text)
+            }}
           />
           <CustomInput
-            value={formData?.customerDetails?.address2}
+            disabled={isAutoAddress}
+            value={get(formData, 'customerDetails.address2', '')}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => (customerDetails.address2 = text)}
+            onChangeText={(text) => handleCustomerDetails("address2", text)}
           />
           <CustomInput
-            value={formData?.customerDetails?.address3}
+            disabled={isAutoAddress}
+            value={get(formData, 'customerDetails.address3', '')}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => (customerDetails.address3 = text)}
+            onChangeText={(text) => handleCustomerDetails("address3", text)}
+
           />
-          <CustomInput
-            value={formData?.customerDetails?.city}
-            caption={"City/Town"}
-            placeHolder={"City/Town"}
-            onChangeText={(text) => (customerDetails.city = text)}
-          />
+
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.district = text)}
-            value={formData?.customerDetails?.district}
-            caption={"District/Province"}
-            placeHolder={"Select " + "District/Province"}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.state = text)}
-            value={formData?.customerDetails?.state}
+            setDropDownEnable={() => setActiveDropDown("state")}
+            isDisableDropDown={activeDropDown != "state"}
+            editable={!isAutoAddress}
+            selectedValue={get(formData, 'customerDetails.state', '')}
+            setValue={() => { }}
+            data={getUniqueState(savedLocation.addressLoopupData) ?? []}
+            onChangeText={(text) => {
+
+              handleCustomerDetails("state", text?.id)
+              handleCustomerDetails("district", "")
+              handleCustomerDetails("city", "")
+              handleCustomerDetails("postCode", "")
+            }}
+            value={get(formData, "customerDetails.state", "")}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.postcode = text)}
-            value={formData?.customerDetails?.postcode}
-            caption={"Post/Zip Code"}
-            placeHolder={"Select " + "Post/Zip Code"}
+            setDropDownEnable={() => setActiveDropDown("district")}
+            isDisableDropDown={activeDropDown != "district"}
+            editable={!isAutoAddress}
+            selectedValue={get(formData, 'customerDetails.district', '')}
+            setValue={() => { }}
+            data={getUniqueDistricts(savedLocation.addressLoopupData, get(formData, 'customerDetails.state', '')) ?? []}
+            onChangeText={(text) => {
+              handleCustomerDetails("district", text?.id)
+              handleCustomerDetails("city", "")
+              handleCustomerDetails("postCode", "")
+            }}
+            value={get(formData, 'customerDetails.district', '')}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
+
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (customerDetails.country = text)}
-            value={formData?.customerDetails?.country}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
+            setDropDownEnable={() => setActiveDropDown("city")}
+            isDisableDropDown={activeDropDown != "city"}
+            editable={!isAutoAddress}
+            selectedValue={get(formData, 'customerDetails.city', '')}
+            setValue={() => { }}
+            data={getCityByDistrict(savedLocation.addressLoopupData, get(formData, 'customerDetails.district', '')) ?? []}
+            onChangeText={(text) => {
+              handleCustomerDetails("city", text?.id)
+              handleCustomerDetails("postCode", "")
+            }}
+            value={get(formData, 'customerDetails.city', '')}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+
           />
+
+          <CustomDropDownFullWidth
+            editable={!isAutoAddress}
+            setDropDownEnable={() => setActiveDropDown("postCode")}
+            isDisableDropDown={activeDropDown != "postCode"}
+            selectedValue={get(formData, 'customerDetails.postCode', '')}
+            setValue={() => { }}
+            data={getPostCodeByCity(savedLocation.addressLoopupData, get(formData, 'customerDetails.city', '')) ?? []}
+            onChangeText={(text) => {
+              handleCustomerDetails("postCode", text?.id)
+            }}
+            value={get(formData, 'customerDetails.postCode', '')}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
+
+          />
+
+
+
+
         </View>
       </View>
     );
@@ -649,6 +817,7 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails[key] = value;
     setFormData({ ...formData, accountDetails });
   };
+
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -683,6 +852,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.title}
             placeHolder={strings.title}
             onChangeText={(text) => handleAccountDetails("title", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -693,6 +863,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.firstname}
             placeHolder={strings.firstname}
             onChangeText={(text) => handleAccountDetails("firstName", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -703,16 +874,50 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.lastname}
             placeHolder={strings.lastname}
             onChangeText={(text) => handleAccountDetails("lastName", text)}
+            disabled={isSameCustomerDetailsChecked}
+          />
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={
+              (isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.birthDate
+                : formData?.accountDetails?.birthDate) || new Date()
+            }
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleAccountDetails("birthDate", params);
+              setOpenDatePicker(false);
+            }}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.birthDate
-                : formData?.accountDetails?.birthDate
+                ? moment(formData?.customerDetails?.birthDate).format(
+                  "YYYY-MM-DD"
+                )
+                : moment(formData?.accountDetails?.birthDate).format(
+                  "YYYY-MM-DD"
+                )
             }
             caption={strings.dob}
+            onFocus={() => setOpenDatePicker(true)}
             placeHolder={strings.dob}
-            onChangeText={(text) => handleAccountDetails("birthDate", text)}
+            right={
+              <TextInput.Icon
+                onPress={() =>
+                  isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                }
+                style={{ width: 23, height: 23 }}
+                theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                icon={"calendar"}
+              />
+            }
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
             selectedValue={
@@ -729,6 +934,7 @@ const CreateCustomer = ({ navigation }) => {
             }
             caption={strings.gender}
             placeHolder={"Select " + strings.gender}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
             selectedValue={
@@ -745,6 +951,7 @@ const CreateCustomer = ({ navigation }) => {
             }
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -755,6 +962,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.id_number}
             placeHolder={strings.id_number}
             onChangeText={(text) => handleAccountDetails("idValue", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
@@ -765,6 +973,7 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => handleAccountDetails("idPlace", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
@@ -778,20 +987,52 @@ const CreateCustomer = ({ navigation }) => {
               onChangeText={(text) =>
                 handleAccountDetails("registeredNo", text)
               }
+              disabled={isSameCustomerDetailsChecked}
             />
           )}
+          <DatePicker
+            modal
+            mode="date"
+            validRange={{ endDate: new Date() }}
+            open={openDatePicker}
+            onCancel={() => setOpenDatePicker(false)}
+            date={
+              (isSameCustomerDetailsChecked
+                ? formData?.customerDetails?.registeredDate
+                : formData?.accountDetails?.registeredDate) || new Date()
+            }
+            maximumDate={new Date()}
+            onConfirm={(params) => {
+              console.log("data", params);
+              handleAccountDetails("registeredDate", params);
+              setOpenDatePicker(false);
+            }}
+          />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
               value={
                 isSameCustomerDetailsChecked
-                  ? formData?.customerDetails?.registeredDate
-                  : formData?.accountDetails?.registeredDate
+                  ? moment(formData?.customerDetails?.registeredDate).format(
+                    "YYYY-MM-DD"
+                  )
+                  : moment(formData?.accountDetails?.registeredDate).format(
+                    "YYYY-MM-DD"
+                  )
               }
-              caption={strings.registereredDate}
-              placeHolder={strings.registereredDate}
-              onChangeText={(text) =>
-                handleAccountDetails("registeredDate", text)
+              caption={strings.dob}
+              onFocus={() => setOpenDatePicker(true)}
+              placeHolder={strings.dob}
+              right={
+                <TextInput.Icon
+                  onPress={() =>
+                    isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                  }
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                  icon={"calendar"}
+                />
               }
+              disabled={isSameCustomerDetailsChecked}
             />
           )}
 
@@ -822,21 +1063,23 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.mobileNo
-                : formData?.accountDetails?.address?.mobileNo
+                : formData?.accountDetails?.mobileNo
             }
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
+            disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
             value={
               isSameCustomerDetailsChecked
                 ? formData?.customerDetails?.emailId
-                : formData?.accountDetails?.address?.emailId
+                : formData?.accountDetails?.emailId
             }
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => handleAccountDetails("emailId", text)}
+            disabled={isSameCustomerDetailsChecked}
           />
         </View>
       </View>
@@ -930,6 +1173,7 @@ const CreateCustomer = ({ navigation }) => {
           />
         </View>
         <CustomTitleText title={"Account Address"} />
+
         <View style={styles.backgroundView}>
           <CustomInput
             value={""}
@@ -1204,7 +1448,6 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleCustomerTypeIcon = (item) => {
-    // const Category = masterReducer.masterdataData.CUSTOMER_CATEGORY;
     let icon = "";
     if (item.code === "BUS")
       icon = require("../../Assets/icons/ic_business.png");
@@ -1217,6 +1460,7 @@ const CreateCustomer = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {loader && <LoadingAnimation title="while we are fetching country" />}
       {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
@@ -1246,7 +1490,7 @@ const CreateCustomer = ({ navigation }) => {
         >
           <View style={styles.modalContainer}>
             <FlatList
-              data={masterReducer.masterdataData.CUSTOMER_CATEGORY}
+              data={CUSTOMER_CATEGORY_LIST}
               numColumns={4}
               renderItem={({ item, index }) => (
                 <CustomerType
