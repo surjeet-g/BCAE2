@@ -7,13 +7,13 @@ import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
-    setValue = () => { },
+    setValue = () => {},
     caption = "",
     placeHolder = "",
     data,
     customStyle = {},
     onChangeText,
-    editable = true
+    disabled = false,
   } = props;
 
   const [hideShow, setHideShow] = useState(false);
@@ -59,12 +59,10 @@ export const CustomDropDownFullWidth = (props) => {
         >
           {caption}
         </Text>
-        <Pressable onPress={() => {
-
-          ondropDownClick()
-        }}>
+        <Pressable onPress={() => (disabled ? {} : ondropDownClick())}>
           <CustomInput
             {...props}
+            disabled={disabled}
             hideCaption={true}
             editable={false}
             caption={placeHolder || caption}
@@ -73,10 +71,7 @@ export const CustomDropDownFullWidth = (props) => {
             value={selectedValue}
             right={
               <TextInput.Icon
-                onPress={() => {
-                  if (!editable) return null
-                  ondropDownClick()
-                }}
+                onPress={() => (disabled ? {} : ondropDownClick())}
                 style={{ width: 23, height: 23 }}
                 icon="chevron-down"
               />
@@ -93,7 +88,7 @@ export const CustomDropDownFullWidth = (props) => {
             contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-          // keyExtractor={item => item.description}
+            // keyExtractor={item => item.description}
           />
         </View>
       )}

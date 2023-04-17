@@ -62,20 +62,9 @@ const CreateCustomer = ({ navigation }) => {
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
-    customerDetails: {
-      address1: "",
-      address2: "",
-      address3: "",
-      city: "",
-      district: "",
-      state: "",
-      postCode: "",
-      email: "",
-      contactType: "",
-      mobile: "",
-    },
+    customerDetails: {},
     accountDetails: {},
-    serviceDetails: { details: [], address: {} },
+    serviceDetails: { details: [] },
   });
   const [loader, setLoader] = useState(false);
   const [activeDropDown, setActiveDropDown] = useState("district");
@@ -109,8 +98,6 @@ const CreateCustomer = ({ navigation }) => {
   let masterReducer = useSelector((state) => state.masterdata);
   const savedLocation = useSelector((state) => state.savedLocations);
 
-  const customerDetails = {};
-  const serviceDetails = { details: [], address: {} };
   const accountTypeCode = formData?.accountDetails?.accountType?.code;
 
   console.log("formData", JSON.stringify(formData));
@@ -135,7 +122,7 @@ const CreateCustomer = ({ navigation }) => {
 
     dispatch(
       getMasterData(
-        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
+        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
       )
     );
   }, []);
@@ -410,7 +397,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   // Step = 2
-  const renderCustomerAddressFormUI = () => {
+  const renderCustomerAddressUI = () => {
     const getCountryList = () => {
       const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
       if (countryGetList.length == 0) return [];
@@ -481,7 +468,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomDropDownFullWidth
             searchEnable={true}
             setDropDownEnable={() => setActiveDropDown("country")}
-            isDisable={isAutoAddress}
+            disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.country", "")}
             setValue={() => {}}
             data={getCountryList() ?? []}
@@ -540,7 +527,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomDropDownFullWidth
             setDropDownEnable={() => setActiveDropDown("state")}
             isDisableDropDown={activeDropDown != "state"}
-            editable={!isAutoAddress}
+            disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.state", "")}
             setValue={() => {}}
             data={getUniqueState(savedLocation.addressLoopupData) ?? []}
@@ -557,7 +544,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomDropDownFullWidth
             setDropDownEnable={() => setActiveDropDown("district")}
             isDisableDropDown={activeDropDown != "district"}
-            editable={!isAutoAddress}
+            disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.district", "")}
             setValue={() => {}}
             data={
@@ -578,7 +565,7 @@ const CreateCustomer = ({ navigation }) => {
           <CustomDropDownFullWidth
             setDropDownEnable={() => setActiveDropDown("city")}
             isDisableDropDown={activeDropDown != "city"}
-            editable={!isAutoAddress}
+            disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.city", "")}
             setValue={() => {}}
             data={
@@ -597,7 +584,7 @@ const CreateCustomer = ({ navigation }) => {
           />
 
           <CustomDropDownFullWidth
-            editable={!isAutoAddress}
+            disabled={isAutoAddress}
             setDropDownEnable={() => setActiveDropDown("postCode")}
             isDisableDropDown={activeDropDown != "postCode"}
             selectedValue={get(formData, "customerDetails.postCode", "")}
@@ -725,6 +712,15 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 5
   const renderServiceAddressUI = () => {
+    const getCountryList = () => {
+      const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
+      if (countryGetList.length == 0) return [];
+      return countryGetList.map((item) => ({
+        code: item?.code,
+        description: item.description,
+      }));
+    };
+    const isAutoAddress = addressTakenType == "AUTO";
     return (
       <View>
         {/* Service address checkbox */}
@@ -737,9 +733,52 @@ const CreateCustomer = ({ navigation }) => {
         >
           <Checkbox
             status={isSameServiceAddressChecked ? "checked" : "unchecked"}
-            onPress={() =>
-              setIsSameServiceAddressChecked(!isSameServiceAddressChecked)
-            }
+            onPress={() => {
+              if (isSameServiceAddressChecked) {
+                handleServiceDetails("address1", "");
+                handleServiceDetails("address2", "");
+                handleServiceDetails("address3", "");
+                handleServiceDetails("country", "");
+                handleServiceDetails("district", "");
+                handleServiceDetails("postCode", "");
+                handleServiceDetails("state", "");
+                handleServiceDetails("city", "");
+              } else {
+                handleServiceDetails(
+                  "address1",
+                  get(formData, "customerDetails.address1", "")
+                );
+                handleServiceDetails(
+                  "address2",
+                  get(formData, "customerDetails.address2", "")
+                );
+                handleServiceDetails(
+                  "address3",
+                  get(formData, "customerDetails.address3", "")
+                );
+                handleServiceDetails(
+                  "country",
+                  get(formData, "customerDetails.country", "")
+                );
+                handleServiceDetails(
+                  "district",
+                  get(formData, "customerDetails.district", "")
+                );
+                handleServiceDetails(
+                  "postCode",
+                  get(formData, "customerDetails.postCode", "")
+                );
+                handleServiceDetails(
+                  "state",
+                  get(formData, "customerDetails.state", "")
+                );
+                handleServiceDetails(
+                  "city",
+                  get(formData, "customerDetails.city", "")
+                );
+              }
+              setIsSameServiceAddressChecked(!isSameServiceAddressChecked);
+            }}
           />
           <CustomTitleText
             title={"Service address same as customer address"}
@@ -748,105 +787,152 @@ const CreateCustomer = ({ navigation }) => {
         </View>
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <CustomTitleText title={"Service address"} />
-          <Icon
-            onPress={() => locationIconClick()}
-            name="map"
-            size={25}
-            color={"#F5AD47"}
-          />
+          {!isSameServiceAddressChecked && (
+            <Icon
+              onPress={() => locationIconClick()}
+              name="map"
+              size={25}
+              color={"#F5AD47"}
+            />
+          )}
         </View>
         <View style={styles.backgroundView}>
+          <CustomDropDownFullWidth
+            searchEnable={true}
+            setDropDownEnable={() => setActiveDropDown("country")}
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "serviceDetails.country", "")}
+            setValue={() => {}}
+            data={getCountryList() ?? []}
+            onChangeText={(text) => {
+              console.log(">>", text);
+              // onCountyClick(text)
+              handleServiceDetails("country", text?.code);
+              handleServiceDetails("state", "");
+              handleServiceDetails("district", "");
+              handleServiceDetails("city", "");
+              handleServiceDetails("postCode", "");
+
+              if (addressTakenType != "AUTO") {
+                setLoader(true);
+                dispatch(
+                  fetchRegisterFormData(
+                    {
+                      type: "COUNTRY",
+                      search: text?.code,
+                    },
+                    () => setLoader(false)
+                  )
+                );
+              }
+            }}
+            value={get(formData, "serviceDetails.country", "")}
+            isDisableDropDown={activeDropDown != "country"}
+            placeHolder={strings.country + "*"}
+            caption={strings.country + "*"}
+          />
+
           <CustomInput
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.address1
-                : formData?.serviceDetails?.address?.address1
-            }
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            value={get(formData, "serviceDetails.address1", "")}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => (serviceDetails.address.address1 = text)}
+            onChangeText={(text) => {
+              handleServiceDetails("address1", text);
+            }}
           />
           <CustomInput
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.address2
-                : formData?.serviceDetails?.address?.address2
-            }
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            value={get(formData, "serviceDetails.address2", "")}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => (serviceDetails.address.address2 = text)}
+            onChangeText={(text) => handleServiceDetails("address2", text)}
           />
           <CustomInput
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.address3
-                : formData?.serviceDetails?.address?.address3
-            }
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            value={get(formData, "serviceDetails.address3", "")}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => (serviceDetails.address.address3 = text)}
+            onChangeText={(text) => handleServiceDetails("address3", text)}
           />
-          <CustomInput
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.city
-                : formData?.serviceDetails?.address?.city
-            }
-            caption={"City/Town"}
-            placeHolder={"City/Town"}
-            onChangeText={(text) => (serviceDetails.address.city = text)}
-          />
+
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (serviceDetails.address.district = text)}
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.district
-                : formData?.serviceDetails?.address?.district
-            }
-            caption={"District/Province"}
-            placeHolder={"Select " + "District/Province"}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (serviceDetails.address.state = text)}
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.state
-                : formData?.serviceDetails?.address?.state
-            }
+            setDropDownEnable={() => setActiveDropDown("state")}
+            isDisableDropDown={activeDropDown != "state"}
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "serviceDetails.state", "")}
+            setValue={() => {}}
+            data={getUniqueState(savedLocation.addressLoopupData) ?? []}
+            onChangeText={(text) => {
+              handleServiceDetails("state", text?.id);
+              handleServiceDetails("district", "");
+              handleServiceDetails("city", "");
+              handleServiceDetails("postCode", "");
+            }}
+            value={get(formData, "serviceDetails.state", "")}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (serviceDetails.address.postcode = text)}
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.postcode
-                : formData?.serviceDetails?.address?.postcode
+            setDropDownEnable={() => setActiveDropDown("district")}
+            isDisableDropDown={activeDropDown != "district"}
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "serviceDetails.district", "")}
+            setValue={() => {}}
+            data={
+              getUniqueDistricts(
+                savedLocation.addressLoopupData,
+                get(formData, "serviceDetails.state", "")
+              ) ?? []
             }
-            caption={"Post/Zip Code"}
-            placeHolder={"Select " + "Post/Zip Code"}
+            onChangeText={(text) => {
+              handleServiceDetails("district", text?.id);
+              handleServiceDetails("city", "");
+              handleServiceDetails("postCode", "");
+            }}
+            value={get(formData, "serviceDetails.district", "")}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => (serviceDetails.address.country = text)}
-            value={
-              isSameServiceAddressChecked
-                ? formData?.customerDetails?.country
-                : formData?.serviceDetails?.address?.country
+            setDropDownEnable={() => setActiveDropDown("city")}
+            isDisableDropDown={activeDropDown != "city"}
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "serviceDetails.city", "")}
+            setValue={() => {}}
+            data={
+              getCityByDistrict(
+                savedLocation.addressLoopupData,
+                get(formData, "serviceDetails.district", "")
+              ) ?? []
             }
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
+            onChangeText={(text) => {
+              handleServiceDetails("city", text?.id);
+              handleServiceDetails("postCode", "");
+            }}
+            value={get(formData, "serviceDetails.city", "")}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+          />
+
+          <CustomDropDownFullWidth
+            disabled={isSameServiceAddressChecked || isAutoAddress}
+            setDropDownEnable={() => setActiveDropDown("postCode")}
+            isDisableDropDown={activeDropDown != "postCode"}
+            selectedValue={get(formData, "serviceDetails.postCode", "")}
+            setValue={() => {}}
+            data={
+              getPostCodeByCity(
+                savedLocation.addressLoopupData,
+                get(formData, "serviceDetails.city", "")
+              ) ?? []
+            }
+            onChangeText={(text) => {
+              handleServiceDetails("postCode", text?.id);
+            }}
+            value={get(formData, "serviceDetails.postCode", "")}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
           />
         </View>
       </View>
@@ -1198,6 +1284,15 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 8
   const renderCreateAccount_AddressUI = () => {
+    const getCountryList = () => {
+      const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
+      if (countryGetList.length == 0) return [];
+      return countryGetList.map((item) => ({
+        code: item?.code,
+        description: item.description,
+      }));
+    };
+    const isAutoAddress = addressTakenType == "AUTO";
     return (
       <View>
         {/* Account address checkbox */}
@@ -1210,9 +1305,52 @@ const CreateCustomer = ({ navigation }) => {
         >
           <Checkbox
             status={isSameAccountAddressChecked ? "checked" : "unchecked"}
-            onPress={() =>
-              setIsSameAccountAddressChecked(!isSameAccountAddressChecked)
-            }
+            onPress={() => {
+              if (isSameAccountAddressChecked) {
+                handleAccountDetails("address1", "");
+                handleAccountDetails("address2", "");
+                handleAccountDetails("address3", "");
+                handleAccountDetails("country", "");
+                handleAccountDetails("district", "");
+                handleAccountDetails("postCode", "");
+                handleAccountDetails("state", "");
+                handleAccountDetails("city", "");
+              } else {
+                handleAccountDetails(
+                  "address1",
+                  get(formData, "serviceDetails.address1", "")
+                );
+                handleAccountDetails(
+                  "address2",
+                  get(formData, "serviceDetails.address2", "")
+                );
+                handleAccountDetails(
+                  "address3",
+                  get(formData, "serviceDetails.address3", "")
+                );
+                handleAccountDetails(
+                  "country",
+                  get(formData, "serviceDetails.country", "")
+                );
+                handleAccountDetails(
+                  "district",
+                  get(formData, "serviceDetails.district", "")
+                );
+                handleAccountDetails(
+                  "postCode",
+                  get(formData, "serviceDetails.postCode", "")
+                );
+                handleAccountDetails(
+                  "state",
+                  get(formData, "serviceDetails.state", "")
+                );
+                handleAccountDetails(
+                  "city",
+                  get(formData, "serviceDetails.city", "")
+                );
+              }
+              setIsSameAccountAddressChecked(!isSameAccountAddressChecked);
+            }}
           />
           <CustomTitleText
             title={"Account address same as customer address"}
@@ -1221,74 +1359,153 @@ const CreateCustomer = ({ navigation }) => {
         </View>
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <CustomTitleText title={"Account address"} />
-          <Icon
-            onPress={() => locationIconClick()}
-            name="map"
-            size={25}
-            color={"#F5AD47"}
-          />
+          {!isSameAccountAddressChecked && (
+            <Icon
+              onPress={() => locationIconClick()}
+              name="map"
+              size={25}
+              color={"#F5AD47"}
+            />
+          )}
         </View>
 
         <View style={styles.backgroundView}>
+          <CustomDropDownFullWidth
+            searchEnable={true}
+            setDropDownEnable={() => setActiveDropDown("country")}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "accountDetails.country", "")}
+            setValue={() => {}}
+            data={getCountryList() ?? []}
+            onChangeText={(text) => {
+              console.log(">>", text);
+              // onCountyClick(text)
+              handleAccountDetails("country", text?.code);
+              handleAccountDetails("state", "");
+              handleAccountDetails("district", "");
+              handleAccountDetails("city", "");
+              handleAccountDetails("postCode", "");
+
+              if (addressTakenType != "AUTO") {
+                setLoader(true);
+                dispatch(
+                  fetchRegisterFormData(
+                    {
+                      type: "COUNTRY",
+                      search: text?.code,
+                    },
+                    () => setLoader(false)
+                  )
+                );
+              }
+            }}
+            value={get(formData, "accountDetails.country", "")}
+            isDisableDropDown={activeDropDown != "country"}
+            placeHolder={strings.country + "*"}
+            caption={strings.country + "*"}
+          />
+
           <CustomInput
-            value={""}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            value={get(formData, "accountDetails.address1", "")}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => {
+              handleAccountDetails("address1", text);
+            }}
           />
           <CustomInput
-            value={""}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            value={get(formData, "accountDetails.address2", "")}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => handleAccountDetails("address2", text)}
           />
           <CustomInput
-            value={""}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            value={get(formData, "accountDetails.address3", "")}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
-            onChangeText={(text) => text}
+            onChangeText={(text) => handleAccountDetails("address3", text)}
           />
-          <CustomInput
-            value={""}
-            caption={"City/Town"}
-            placeHolder={"City/Town"}
-            onChangeText={(text) => text}
-          />
+
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={"District/Province"}
-            placeHolder={"Select " + "District/Province"}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
+            setDropDownEnable={() => setActiveDropDown("state")}
+            isDisableDropDown={activeDropDown != "state"}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "accountDetails.state", "")}
+            setValue={() => {}}
+            data={getUniqueState(savedLocation.addressLoopupData) ?? []}
+            onChangeText={(text) => {
+              handleAccountDetails("state", text?.id);
+              handleAccountDetails("district", "");
+              handleAccountDetails("city", "");
+              handleAccountDetails("postCode", "");
+            }}
+            value={get(formData, "accountDetails.state", "")}
             caption={"State/Region"}
             placeHolder={"Select " + "State/Region"}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={"Post/Zip Code"}
-            placeHolder={"Select " + "Post/Zip Code"}
+            setDropDownEnable={() => setActiveDropDown("district")}
+            isDisableDropDown={activeDropDown != "district"}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "accountDetails.district", "")}
+            setValue={() => {}}
+            data={
+              getUniqueDistricts(
+                savedLocation.addressLoopupData,
+                get(formData, "accountDetails.state", "")
+              ) ?? []
+            }
+            onChangeText={(text) => {
+              handleAccountDetails("district", text?.id);
+              handleAccountDetails("city", "");
+              handleAccountDetails("postCode", "");
+            }}
+            value={get(formData, "accountDetails.district", "")}
+            caption={"District/Province"}
+            placeHolder={"Select " + "District/Province"}
           />
           <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.country}
-            placeHolder={"Select " + strings.country}
+            setDropDownEnable={() => setActiveDropDown("city")}
+            isDisableDropDown={activeDropDown != "city"}
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            selectedValue={get(formData, "accountDetails.city", "")}
+            setValue={() => {}}
+            data={
+              getCityByDistrict(
+                savedLocation.addressLoopupData,
+                get(formData, "accountDetails.district", "")
+              ) ?? []
+            }
+            onChangeText={(text) => {
+              handleAccountDetails("city", text?.id);
+              handleAccountDetails("postCode", "");
+            }}
+            value={get(formData, "accountDetails.city", "")}
+            caption={"City/Town"}
+            placeHolder={"City/Town"}
+          />
+
+          <CustomDropDownFullWidth
+            disabled={isSameAccountAddressChecked || isAutoAddress}
+            setDropDownEnable={() => setActiveDropDown("postCode")}
+            isDisableDropDown={activeDropDown != "postCode"}
+            selectedValue={get(formData, "accountDetails.postCode", "")}
+            setValue={() => {}}
+            data={
+              getPostCodeByCity(
+                savedLocation.addressLoopupData,
+                get(formData, "accountDetails.city", "")
+              ) ?? []
+            }
+            onChangeText={(text) => {
+              handleAccountDetails("postCode", text?.id);
+            }}
+            value={get(formData, "accountDetails.postCode", "")}
+            caption={"Post/Zip Code"}
+            placeHolder={"Select " + "Post/Zip Code"}
           />
         </View>
       </View>
@@ -1352,8 +1569,7 @@ const CreateCustomer = ({ navigation }) => {
             const selectedProducts = products.filter(
               (product) => product.quantity > 0
             );
-            serviceDetails.details = selectedProducts;
-            setFormData({ ...formData, serviceDetails });
+            handleServiceDetails("details", selectedProducts);
             setCurrentStep(currentStep + 1);
           }
         }
@@ -1520,7 +1736,7 @@ const CreateCustomer = ({ navigation }) => {
       <ScrollView nestedScrollEnabled={true}>
         {currentStep == 0 && renderUploadDocsUI()}
         {currentStep == 1 && renderCustomerDetailsUI()}
-        {currentStep == 2 && renderCustomerAddressFormUI()}
+        {currentStep == 2 && renderCustomerAddressUI()}
         {currentStep == 3 && renderServicesUI()}
         {currentStep == 4 && renderSelectedServicesUI()}
         {currentStep == 5 && renderServiceAddressUI()}
