@@ -36,7 +36,10 @@ import {
   getPhoneNumberLength,
 } from "./../../Utilities/utils";
 import BillDetails from "./BillDetails";
-import { removeCategoryProducts } from "./CreateCustomerAction";
+import {
+  removeCategoryProducts,
+  setCurrentStepInStore,
+} from "./CreateCustomerAction";
 import {
   fetchServiceProducts,
   createCustomer,
@@ -63,6 +66,7 @@ const CreateCustomer = ({ navigation }) => {
     getMasterData,
     fetchRegisterFormData,
     createCustomer,
+    setCurrentStepInStore,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -74,7 +78,7 @@ const CreateCustomer = ({ navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
   const [addressTakenType, setAddressTakenType] = useState("Manual");
 
-  const [currentStep, setCurrentStep] = useState(0);
+  // const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -104,6 +108,7 @@ const CreateCustomer = ({ navigation }) => {
   const savedLocation = useSelector((state) => state.savedLocations);
 
   const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
+  const { currentStep } = createCustomerReducerData;
 
   console.log("formData", JSON.stringify(formData));
 
@@ -209,6 +214,7 @@ const CreateCustomer = ({ navigation }) => {
         setStepIndicator(0);
         break;
     }
+    setFormData({ ...formData, currentStep });
   }, [currentStep]);
 
   // Step = 0
@@ -1565,12 +1571,12 @@ const CreateCustomer = ({ navigation }) => {
 
   const handlePrevious = () => {
     if (currentStep === 10 && formData?.getQuote) {
-      setCurrentStep(4);
+      dispatch(setCurrentStepInStore(4));
     } else if (currentStep === 9 && !createAccount) {
-      setCurrentStep(5);
+      dispatch(setCurrentStepInStore(5));
     } else if (currentStep === 7 && useSameCustomerDetails) {
-      setCurrentStep(5);
-    } else setCurrentStep(currentStep - 1);
+      dispatch(setCurrentStepInStore(5));
+    } else dispatch(setCurrentStepInStore(currentStep - 1));
   };
 
   const handleContinue = () => {
@@ -1588,15 +1594,15 @@ const CreateCustomer = ({ navigation }) => {
               (product) => product.quantity > 0
             );
             handleServiceDetails("details", selectedProducts);
-            setCurrentStep(currentStep + 1);
+            dispatch(setCurrentStepInStore(currentStep + 1));
           }
         }
         break;
       case 4:
         {
           formData?.getQuote
-            ? setCurrentStep(10)
-            : setCurrentStep(currentStep + 1);
+            ? dispatch(setCurrentStepInStore(10))
+            : dispatch(setCurrentStepInStore(currentStep + 1));
         }
         break;
       case 5:
@@ -1604,10 +1610,10 @@ const CreateCustomer = ({ navigation }) => {
         break;
       case 9:
         setFormData({ ...formData, signature });
-        setCurrentStep(currentStep + 1);
+        dispatch(setCurrentStepInStore(currentStep + 1));
         break;
       default:
-        setCurrentStep(currentStep + 1);
+        dispatch(setCurrentStepInStore(currentStep + 1));
         break;
     }
   };
@@ -1619,7 +1625,7 @@ const CreateCustomer = ({ navigation }) => {
   const handleAccountCreationNo = () => {
     setShowAccountCreationModal(false);
     setCreateAccount(false);
-    setCurrentStep(9);
+    dispatch(setCurrentStepInStore(9));
   };
 
   const handleAccountCreationYes = () => {
@@ -1644,7 +1650,7 @@ const CreateCustomer = ({ navigation }) => {
     handleAccountDetails("registeredNo", "");
     setShowSameAccountDetailsModal(false);
     setUseSameCustomerDetails(false);
-    setCurrentStep(currentStep + 1);
+    dispatch(setCurrentStepInStore(currentStep + 1));
   };
 
   const handleSameAccountDetailsYes = () => {
@@ -1693,13 +1699,13 @@ const CreateCustomer = ({ navigation }) => {
     );
     setShowSameAccountDetailsModal(false);
     setUseSameCustomerDetails(true);
-    setCurrentStep(7);
+    dispatch(setCurrentStepInStore(7));
   };
 
   const handleAccountTypeSelection = (item) => {
     handleCustomerDetails("categoryType", item);
     setShowCustomerTypeModal(false);
-    setCurrentStep(currentStep + 1);
+    dispatch(setCurrentStepInStore(currentStep + 1));
   };
 
   // For selected product swipe
