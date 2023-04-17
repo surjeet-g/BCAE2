@@ -13,6 +13,7 @@ export const CustomDropDownFullWidth = (props) => {
     data,
     customStyle = {},
     onChangeText,
+    editable = true
   } = props;
 
   const [hideShow, setHideShow] = useState(false);
@@ -58,7 +59,10 @@ export const CustomDropDownFullWidth = (props) => {
         >
           {caption}
         </Text>
-        <Pressable onPress={() => ondropDownClick()}>
+        <Pressable onPress={() => {
+
+          ondropDownClick()
+        }}>
           <CustomInput
             hideCaption={true}
             editable={false}
@@ -68,7 +72,10 @@ export const CustomDropDownFullWidth = (props) => {
             value={selectedValue}
             right={
               <TextInput.Icon
-                onPress={() => ondropDownClick()}
+                onPress={() => {
+                  if (!editable) return null
+                  ondropDownClick()
+                }}
                 style={{ width: 23, height: 23 }}
                 icon="chevron-down"
               />

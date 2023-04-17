@@ -5,7 +5,7 @@ import { ToastTemplete } from "./src/Components/ToastTemplete";
 import MyStack from "./src/Navigation/MyStack";
 import { store } from "./src/Redux/Store";
 
-import { SafeAreaView, StatusBar } from "react-native";
+import { LogBox, SafeAreaView, StatusBar } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 // import { storageKeys } from "./src/Utilities/Constants/Constant";
 // import { getData, saveData } from "./src/Storage/DB";
@@ -82,8 +82,9 @@ const App = () => {
   // }, []);
 
   useEffect(() => {
-    // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
-    // LogBox.ignoreAllLogs(); //Ignore all log notifications
+    LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+    LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
