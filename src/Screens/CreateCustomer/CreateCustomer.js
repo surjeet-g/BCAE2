@@ -37,7 +37,10 @@ import {
 } from "./../../Utilities/utils";
 import BillDetails from "./BillDetails";
 import { removeCategoryProducts } from "./CreateCustomerAction";
-import { fetchServiceProducts } from "./CreateCustomerDispatcher";
+import {
+  fetchServiceProducts,
+  createCustomer,
+} from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
 import Product from "./Product";
@@ -59,6 +62,7 @@ const CreateCustomer = ({ navigation }) => {
     removeCategoryProducts,
     getMasterData,
     fetchRegisterFormData,
+    createCustomer,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -1571,6 +1575,9 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleContinue = () => {
     switch (currentStep) {
+      case 1:
+        dispatch(createCustomer(formData, navigation));
+        break;
       case 3:
         {
           let item = products.find((product) => product.quantity > 0);

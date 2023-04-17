@@ -3,10 +3,16 @@ import {
   FETCH_SERVICE_PRODUCTS_SUCCESS,
   REMOVE_SERVICE_PRODUCTS,
   SET_SERVICE_CATEGORIES,
+  CREATE_CUSTOMER_FAILURE,
+  CREATE_CUSTOMER_SUCCESS,
+  SET_CURRENT_STEP,
 } from "./CreateCustomerAction";
 
 const initialState = {
   initCreateCustomer: false,
+  currentStep: 0,
+  customerData: {},
+  customerDataError: {},
   products: [],
   productsError: {},
   serviceCategories: [
@@ -108,6 +114,22 @@ const CreateCustomerReducer = (state = initialState, action) => {
         ],
       };
     }
+    case CREATE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        customerData: { ...state.customerData, ...action.data },
+      };
+
+    case CREATE_CUSTOMER_FAILURE:
+      return {
+        ...state,
+        customerDataError: action.data,
+      };
+    case SET_CURRENT_STEP:
+      return {
+        ...state,
+        currentStep: action.data,
+      };
     default:
       return state;
   }
