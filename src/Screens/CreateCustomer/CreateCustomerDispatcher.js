@@ -11,9 +11,9 @@ import {
   setCurrentStepInStore,
 } from "./CreateCustomerAction";
 
-const createCustomerReducerData = useSelector(
-  (state) => state.createCustomerReducerData
-);
+// const createCustomerReducerData = useSelector(
+//   (state) => state.createCustomerReducerData
+// );
 export function fetchServiceProducts(serviceType, navigation = null) {
   return async (dispatch) => {
     let url =
@@ -46,7 +46,9 @@ export function createCustomer(formData, navigation = null) {
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     if (result.success) {
-      dispatch(setCreateCustomerDataInStore(result.data.data));
+      dispatch(
+        setCreateCustomerDataInStore({ ...formData, ...result.data.data })
+      );
       dispatch(setCurrentStepInStore(2));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
@@ -61,12 +63,10 @@ export function createCustomer(formData, navigation = null) {
 
 export function updateCustomerData(formData, navigation = null) {
   return async (dispatch) => {
-    let url =
-      endPoints.UPDATE_CUSTOMER_API +
-      createCustomerReducerData.customerData.customerUuid;
+    let url = endPoints.UPDATE_CUSTOMER_API + formData.customerUuid;
     let params = {
       details: {
-        customerNo: createCustomerReducerData.customerData.customerNo,
+        customerNo: formData.customerNo,
         firstName: formData.customerDetails.firstName,
         lastName: formData.customerDetails.lastName,
         gender: formData.customerDetails.gender.code,
