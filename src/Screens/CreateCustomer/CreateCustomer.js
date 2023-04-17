@@ -1,13 +1,15 @@
-import get from 'lodash.get';
+import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
-  FlatList, Image, Pressable,
+  FlatList,
+  Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
-  View
+  View,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import DatePicker from "react-native-date-picker";
@@ -19,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT
+  MASTER_DATA_CONSTANT,
 } from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { CustomButton } from "./../../Components/CustomButton";
@@ -31,7 +33,7 @@ import { FooterModel } from "./../../Components/FooterModel";
 import { strings } from "./../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "./../../Utilities/utils";
 import BillDetails from "./BillDetails";
 import { removeCategoryProducts } from "./CreateCustomerAction";
@@ -42,7 +44,12 @@ import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
 import UploadDocument from "./UploadDocument";
-import { getCityByDistrict, getPostCodeByCity, getUniqueDistricts, getUniqueState } from './utilities';
+import {
+  getCityByDistrict,
+  getPostCodeByCity,
+  getUniqueDistricts,
+  getUniqueState,
+} from "./utilities";
 
 const CreateCustomer = ({ navigation }) => {
   const { colors } = useTheme();
@@ -72,7 +79,7 @@ const CreateCustomer = ({ navigation }) => {
   });
   const [loader, setLoader] = useState(false);
   const [activeDropDown, setActiveDropDown] = useState("district");
-  const [addressTakenType, setAddressTakenType] = useState("Manual")
+  const [addressTakenType, setAddressTakenType] = useState("Manual");
 
   const [currentStep, setCurrentStep] = useState(1);
   const [stepIndicator, setStepIndicator] = useState(0);
@@ -371,28 +378,28 @@ const CreateCustomer = ({ navigation }) => {
 
     const addressSplit = params.address1.split(",");
     const address2Split = params.address2.split(",");
-    handleCustomerDetails("address1", get(addressSplit, '[0]', ''));
-    handleCustomerDetails("address2", get(addressSplit, '[1]', ''));
-    handleCustomerDetails("address3", get(address2Split, '[1]', ''));
-
+    handleCustomerDetails("address1", get(addressSplit, "[0]", ""));
+    handleCustomerDetails("address2", get(addressSplit, "[1]", ""));
+    handleCustomerDetails("address3", get(address2Split, "[1]", ""));
     handleCustomerDetails("country", params.country);
     handleCustomerDetails("district", params.district);
     handleCustomerDetails("postCode", params.postcode);
     handleCustomerDetails("state", params.state);
     handleCustomerDetails("city", params.city);
-    setAddressTakenType("AUTO")
+    setAddressTakenType("AUTO");
   };
 
   // Step = 2
   const renderCustomerAddressFormUI = () => {
     const getCountryList = () => {
       const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
-      if (countryGetList.length == 0) return []
-      return countryGetList.map(item => (
-        { code: item?.code, description: item.description }
-      ))
-    }
-    const isAutoAddress = (addressTakenType == "AUTO")
+      if (countryGetList.length == 0) return [];
+      return countryGetList.map((item) => ({
+        code: item?.code,
+        description: item.description,
+      }));
+    };
+    const isAutoAddress = addressTakenType == "AUTO";
     return (
       <View>
         <CustomTitleText title={"Customer Details"} />
@@ -455,32 +462,32 @@ const CreateCustomer = ({ navigation }) => {
             searchEnable={true}
             setDropDownEnable={() => setActiveDropDown("country")}
             isDisable={isAutoAddress}
-            selectedValue={get(formData, 'customerDetails.country', '')}
-
-            setValue={() => { }}
-            data={
-              getCountryList() ?? []
-            }
+            selectedValue={get(formData, "customerDetails.country", "")}
+            setValue={() => {}}
+            data={getCountryList() ?? []}
             onChangeText={(text) => {
               console.log(">>", text);
               // onCountyClick(text)
-              handleCustomerDetails("country", text?.code)
-              handleCustomerDetails("state", "")
-              handleCustomerDetails("district", "")
-              handleCustomerDetails("city", "")
-              handleCustomerDetails("postCode", "")
+              handleCustomerDetails("country", text?.code);
+              handleCustomerDetails("state", "");
+              handleCustomerDetails("district", "");
+              handleCustomerDetails("city", "");
+              handleCustomerDetails("postCode", "");
 
               if (addressTakenType != "AUTO") {
-                setLoader(true)
-                dispatch(fetchRegisterFormData({
-                  type: "COUNTRY",
-                  search: text?.code
-                }, () => setLoader(false)));
+                setLoader(true);
+                dispatch(
+                  fetchRegisterFormData(
+                    {
+                      type: "COUNTRY",
+                      search: text?.code,
+                    },
+                    () => setLoader(false)
+                  )
+                );
               }
-
             }}
-            value={get(formData, 'customerDetails.country', '')}
-
+            value={get(formData, "customerDetails.country", "")}
             isDisableDropDown={activeDropDown != "country"}
             placeHolder={strings.country + "*"}
             caption={strings.country + "*"}
@@ -488,42 +495,40 @@ const CreateCustomer = ({ navigation }) => {
 
           <CustomInput
             disabled={isAutoAddress}
-            value={get(formData, 'customerDetails.address1', '')}
+            value={get(formData, "customerDetails.address1", "")}
             caption={"Flat/House/Unit No/ Block"}
             placeHolder={"Flat/House/Unit No/ Block"}
             onChangeText={(text) => {
-              handleCustomerDetails("address1", text)
+              handleCustomerDetails("address1", text);
             }}
           />
           <CustomInput
             disabled={isAutoAddress}
-            value={get(formData, 'customerDetails.address2', '')}
+            value={get(formData, "customerDetails.address2", "")}
             caption={"Building Name/Others"}
             placeHolder={"Building Name/Others"}
             onChangeText={(text) => handleCustomerDetails("address2", text)}
           />
           <CustomInput
             disabled={isAutoAddress}
-            value={get(formData, 'customerDetails.address3', '')}
+            value={get(formData, "customerDetails.address3", "")}
             caption={"Street/Area"}
             placeHolder={"Street/Area"}
             onChangeText={(text) => handleCustomerDetails("address3", text)}
-
           />
 
           <CustomDropDownFullWidth
             setDropDownEnable={() => setActiveDropDown("state")}
             isDisableDropDown={activeDropDown != "state"}
             editable={!isAutoAddress}
-            selectedValue={get(formData, 'customerDetails.state', '')}
-            setValue={() => { }}
+            selectedValue={get(formData, "customerDetails.state", "")}
+            setValue={() => {}}
             data={getUniqueState(savedLocation.addressLoopupData) ?? []}
             onChangeText={(text) => {
-
-              handleCustomerDetails("state", text?.id)
-              handleCustomerDetails("district", "")
-              handleCustomerDetails("city", "")
-              handleCustomerDetails("postCode", "")
+              handleCustomerDetails("state", text?.id);
+              handleCustomerDetails("district", "");
+              handleCustomerDetails("city", "");
+              handleCustomerDetails("postCode", "");
             }}
             value={get(formData, "customerDetails.state", "")}
             caption={"State/Region"}
@@ -533,55 +538,63 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("district")}
             isDisableDropDown={activeDropDown != "district"}
             editable={!isAutoAddress}
-            selectedValue={get(formData, 'customerDetails.district', '')}
-            setValue={() => { }}
-            data={getUniqueDistricts(savedLocation.addressLoopupData, get(formData, 'customerDetails.state', '')) ?? []}
+            selectedValue={get(formData, "customerDetails.district", "")}
+            setValue={() => {}}
+            data={
+              getUniqueDistricts(
+                savedLocation.addressLoopupData,
+                get(formData, "customerDetails.state", "")
+              ) ?? []
+            }
             onChangeText={(text) => {
-              handleCustomerDetails("district", text?.id)
-              handleCustomerDetails("city", "")
-              handleCustomerDetails("postCode", "")
+              handleCustomerDetails("district", text?.id);
+              handleCustomerDetails("city", "");
+              handleCustomerDetails("postCode", "");
             }}
-            value={get(formData, 'customerDetails.district', '')}
+            value={get(formData, "customerDetails.district", "")}
             caption={"District/Province"}
             placeHolder={"Select " + "District/Province"}
-
           />
           <CustomDropDownFullWidth
             setDropDownEnable={() => setActiveDropDown("city")}
             isDisableDropDown={activeDropDown != "city"}
             editable={!isAutoAddress}
-            selectedValue={get(formData, 'customerDetails.city', '')}
-            setValue={() => { }}
-            data={getCityByDistrict(savedLocation.addressLoopupData, get(formData, 'customerDetails.district', '')) ?? []}
+            selectedValue={get(formData, "customerDetails.city", "")}
+            setValue={() => {}}
+            data={
+              getCityByDistrict(
+                savedLocation.addressLoopupData,
+                get(formData, "customerDetails.district", "")
+              ) ?? []
+            }
             onChangeText={(text) => {
-              handleCustomerDetails("city", text?.id)
-              handleCustomerDetails("postCode", "")
+              handleCustomerDetails("city", text?.id);
+              handleCustomerDetails("postCode", "");
             }}
-            value={get(formData, 'customerDetails.city', '')}
+            value={get(formData, "customerDetails.city", "")}
             caption={"City/Town"}
             placeHolder={"City/Town"}
-
           />
 
           <CustomDropDownFullWidth
             editable={!isAutoAddress}
             setDropDownEnable={() => setActiveDropDown("postCode")}
             isDisableDropDown={activeDropDown != "postCode"}
-            selectedValue={get(formData, 'customerDetails.postCode', '')}
-            setValue={() => { }}
-            data={getPostCodeByCity(savedLocation.addressLoopupData, get(formData, 'customerDetails.city', '')) ?? []}
+            selectedValue={get(formData, "customerDetails.postCode", "")}
+            setValue={() => {}}
+            data={
+              getPostCodeByCity(
+                savedLocation.addressLoopupData,
+                get(formData, "customerDetails.city", "")
+              ) ?? []
+            }
             onChangeText={(text) => {
-              handleCustomerDetails("postCode", text?.id)
+              handleCustomerDetails("postCode", text?.id);
             }}
-            value={get(formData, 'customerDetails.postCode', '')}
+            value={get(formData, "customerDetails.postCode", "")}
             caption={"Post/Zip Code"}
             placeHolder={"Select " + "Post/Zip Code"}
-
           />
-
-
-
-
         </View>
       </View>
     );
@@ -713,7 +726,15 @@ const CreateCustomer = ({ navigation }) => {
             textStyle={{ marginTop: 0 }}
           />
         </View>
-        <CustomTitleText title={"Service Address"} />
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <CustomTitleText title={"Service address"} />
+          <Icon
+            onPress={() => locationIconClick()}
+            name="map"
+            size={25}
+            color={"#F5AD47"}
+          />
+        </View>
         <View style={styles.backgroundView}>
           <CustomInput
             value={
@@ -898,11 +919,11 @@ const CreateCustomer = ({ navigation }) => {
             value={
               isSameCustomerDetailsChecked
                 ? moment(formData?.customerDetails?.birthDate).format(
-                  "YYYY-MM-DD"
-                )
+                    "YYYY-MM-DD"
+                  )
                 : moment(formData?.accountDetails?.birthDate).format(
-                  "YYYY-MM-DD"
-                )
+                    "YYYY-MM-DD"
+                  )
             }
             caption={strings.dob}
             onFocus={() => setOpenDatePicker(true)}
@@ -1013,11 +1034,11 @@ const CreateCustomer = ({ navigation }) => {
               value={
                 isSameCustomerDetailsChecked
                   ? moment(formData?.customerDetails?.registeredDate).format(
-                    "YYYY-MM-DD"
-                  )
+                      "YYYY-MM-DD"
+                    )
                   : moment(formData?.accountDetails?.registeredDate).format(
-                    "YYYY-MM-DD"
-                  )
+                      "YYYY-MM-DD"
+                    )
               }
               caption={strings.dob}
               onFocus={() => setOpenDatePicker(true)}
@@ -1172,7 +1193,15 @@ const CreateCustomer = ({ navigation }) => {
             textStyle={{ marginTop: 0 }}
           />
         </View>
-        <CustomTitleText title={"Account Address"} />
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <CustomTitleText title={"Account address"} />
+          <Icon
+            onPress={() => locationIconClick()}
+            name="map"
+            size={25}
+            color={"#F5AD47"}
+          />
+        </View>
 
         <View style={styles.backgroundView}>
           <CustomInput
