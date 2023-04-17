@@ -90,7 +90,8 @@ const CreateCustomer = ({ navigation }) => {
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [signature, setSignature] = useState(null);
-  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [openBirthDatePicker, setOpenBirthDatePicker] = useState(false);
+  const [openRegDatePicker, setOpenRegDatePicker] = useState(false);
 
   let createCustomerReducerData = useSelector(
     (state) => state.createCustomerReducerData
@@ -223,7 +224,6 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   // Step = 1
-
   const renderCustomerDetailsUI = () => {
     return (
       <View>
@@ -251,14 +251,14 @@ const CreateCustomer = ({ navigation }) => {
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
-            open={openDatePicker}
-            onCancel={() => setOpenDatePicker(false)}
+            open={openBirthDatePicker}
+            onCancel={() => setOpenBirthDatePicker(false)}
             date={formData?.customerDetails?.birthDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
               handleCustomerDetails("birthDate", params);
-              setOpenDatePicker(false);
+              setOpenBirthDatePicker(false);
             }}
           />
           <CustomInput
@@ -266,11 +266,11 @@ const CreateCustomer = ({ navigation }) => {
               "YYYY-MM-DD"
             )}
             caption={strings.dob}
-            onFocus={() => setOpenDatePicker(true)}
+            onFocus={() => setOpenBirthDatePicker(true)}
             placeHolder={strings.dob}
             right={
               <TextInput.Icon
-                onPress={() => setOpenDatePicker(true)}
+                onPress={() => setOpenBirthDatePicker(true)}
                 style={{ width: 23, height: 23 }}
                 theme={{ colors: { onSurfaceVariant: colors.gray } }}
                 icon={"calendar"}
@@ -321,14 +321,14 @@ const CreateCustomer = ({ navigation }) => {
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
-            open={openDatePicker}
-            onCancel={() => setOpenDatePicker(false)}
+            open={openRegDatePicker}
+            onCancel={() => setOpenRegDatePicker(false)}
             date={formData?.customerDetails?.registeredDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
               handleCustomerDetails("registeredDate", params);
-              setOpenDatePicker(false);
+              setOpenRegDatePicker(false);
             }}
           />
           {(customerCategoryCode === "BUS" ||
@@ -338,11 +338,11 @@ const CreateCustomer = ({ navigation }) => {
                 "YYYY-MM-DD"
               )}
               caption={strings.registereredDate}
-              onFocus={() => setOpenDatePicker(true)}
+              onFocus={() => setOpenRegDatePicker(true)}
               placeHolder={strings.registereredDate}
               right={
                 <TextInput.Icon
-                  onPress={() => setOpenDatePicker(true)}
+                  onPress={() => setOpenRegDatePicker(true)}
                   style={{ width: 23, height: 23 }}
                   theme={{ colors: { onSurfaceVariant: colors.gray } }}
                   icon={"calendar"}
@@ -1074,14 +1074,14 @@ const CreateCustomer = ({ navigation }) => {
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
-            open={openDatePicker}
-            onCancel={() => setOpenDatePicker(false)}
+            open={openBirthDatePicker}
+            onCancel={() => setOpenBirthDatePicker(false)}
             date={formData?.accountDetails?.birthDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
               handleAccountDetails("birthDate", params);
-              setOpenDatePicker(false);
+              setOpenBirthDatePicker(false);
             }}
           />
           <CustomInput
@@ -1089,12 +1089,14 @@ const CreateCustomer = ({ navigation }) => {
               "YYYY-MM-DD"
             )}
             caption={strings.dob}
-            onFocus={() => setOpenDatePicker(true)}
+            onFocus={() => setOpenBirthDatePicker(true)}
             placeHolder={strings.dob}
             right={
               <TextInput.Icon
                 onPress={() =>
-                  isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                  isSameCustomerDetailsChecked
+                    ? {}
+                    : setOpenBirthDatePicker(true)
                 }
                 style={{ width: 23, height: 23 }}
                 theme={{ colors: { onSurfaceVariant: colors.gray } }}
@@ -1151,14 +1153,14 @@ const CreateCustomer = ({ navigation }) => {
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
-            open={openDatePicker}
-            onCancel={() => setOpenDatePicker(false)}
+            open={openRegDatePicker}
+            onCancel={() => setOpenRegDatePicker(false)}
             date={formData?.accountDetails?.registeredDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
               handleAccountDetails("registeredDate", params);
-              setOpenDatePicker(false);
+              setOpenRegDatePicker(false);
             }}
           />
           {(customerCategoryCode === "BUS" ||
@@ -1168,12 +1170,14 @@ const CreateCustomer = ({ navigation }) => {
                 "YYYY-MM-DD"
               )}
               caption={strings.dob}
-              onFocus={() => setOpenDatePicker(true)}
+              onFocus={() => setOpenRegDatePicker(true)}
               placeHolder={strings.dob}
               right={
                 <TextInput.Icon
                   onPress={() =>
-                    isSameCustomerDetailsChecked ? {} : setOpenDatePicker(true)
+                    isSameCustomerDetailsChecked
+                      ? {}
+                      : setOpenRegDatePicker(true)
                   }
                   style={{ width: 23, height: 23 }}
                   theme={{ colors: { onSurfaceVariant: colors.gray } }}
