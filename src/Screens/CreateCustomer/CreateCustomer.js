@@ -378,14 +378,34 @@ const CreateCustomer = ({ navigation }) => {
 
     const addressSplit = params.address1.split(",");
     const address2Split = params.address2.split(",");
-    handleCustomerDetails("address1", get(addressSplit, "[0]", ""));
-    handleCustomerDetails("address2", get(addressSplit, "[1]", ""));
-    handleCustomerDetails("address3", get(address2Split, "[1]", ""));
-    handleCustomerDetails("country", params.country);
-    handleCustomerDetails("district", params.district);
-    handleCustomerDetails("postCode", params.postcode);
-    handleCustomerDetails("state", params.state);
-    handleCustomerDetails("city", params.city);
+    if (currentStep === 2) {
+      handleCustomerDetails("address1", get(addressSplit, "[0]", ""));
+      handleCustomerDetails("address2", get(addressSplit, "[1]", ""));
+      handleCustomerDetails("address3", get(address2Split, "[1]", ""));
+      handleCustomerDetails("country", params.country);
+      handleCustomerDetails("district", params.district);
+      handleCustomerDetails("postCode", params.postcode);
+      handleCustomerDetails("state", params.state);
+      handleCustomerDetails("city", params.city);
+    } else if (currentStep === 5) {
+      handleServiceDetails("address1", get(addressSplit, "[0]", ""));
+      handleServiceDetails("address2", get(addressSplit, "[1]", ""));
+      handleServiceDetails("address3", get(address2Split, "[1]", ""));
+      handleServiceDetails("country", params.country);
+      handleServiceDetails("district", params.district);
+      handleServiceDetails("postCode", params.postcode);
+      handleServiceDetails("state", params.state);
+      handleServiceDetails("city", params.city);
+    } else if (currentStep === 8) {
+      handleAccountDetails("address1", get(addressSplit, "[0]", ""));
+      handleAccountDetails("address2", get(addressSplit, "[1]", ""));
+      handleAccountDetails("address3", get(address2Split, "[1]", ""));
+      handleAccountDetails("country", params.country);
+      handleAccountDetails("district", params.district);
+      handleAccountDetails("postCode", params.postcode);
+      handleAccountDetails("state", params.state);
+      handleAccountDetails("city", params.city);
+    }
     setAddressTakenType("AUTO");
   };
 
@@ -837,6 +857,12 @@ const CreateCustomer = ({ navigation }) => {
     let { accountDetails } = formData;
     accountDetails[key] = value;
     setFormData({ ...formData, accountDetails });
+  };
+
+  const handleServiceDetails = (key, value) => {
+    let { serviceDetails } = formData;
+    serviceDetails[key] = value;
+    setFormData({ ...formData, serviceDetails });
   };
 
   // Step = 6
