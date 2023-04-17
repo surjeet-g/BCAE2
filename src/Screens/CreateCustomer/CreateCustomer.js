@@ -70,7 +70,7 @@ const CreateCustomer = ({ navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
   const [addressTakenType, setAddressTakenType] = useState("Manual");
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
   const [showAccountCreationModal, setShowAccountCreationModal] =
@@ -965,9 +965,77 @@ const CreateCustomer = ({ navigation }) => {
         >
           <Checkbox
             status={isSameCustomerDetailsChecked ? "checked" : "unchecked"}
-            onPress={() =>
-              setIsSameCustomerDetailsChecked(!isSameCustomerDetailsChecked)
-            }
+            onPress={() => {
+              if (isSameCustomerDetailsChecked) {
+                handleAccountDetails("title", "");
+                handleAccountDetails("firstName", "");
+                handleAccountDetails("lastName", "");
+                handleAccountDetails("birthDate", new Date());
+                handleAccountDetails("gender", "");
+                handleAccountDetails("idType", "");
+                handleAccountDetails("idValue", "");
+                handleAccountDetails("idPlace", "");
+                handleAccountDetails("mobileNo", "");
+                handleAccountDetails("mobilePrefix", "");
+                handleAccountDetails("emailId", "");
+                handleAccountDetails("registeredDate", new Date());
+                handleAccountDetails("registeredNo", "");
+              } else {
+                handleAccountDetails(
+                  "title",
+                  get(formData, "customerDetails.title", "")
+                );
+                handleAccountDetails(
+                  "firstName",
+                  get(formData, "customerDetails.firstName", "")
+                );
+                handleAccountDetails(
+                  "lastName",
+                  get(formData, "customerDetails.lastName", "")
+                );
+                handleAccountDetails(
+                  "birthDate",
+                  get(formData, "customerDetails.birthDate", "")
+                );
+                handleAccountDetails(
+                  "gender",
+                  get(formData, "customerDetails.gender", "")
+                );
+                handleAccountDetails(
+                  "idType",
+                  get(formData, "customerDetails.idType", "")
+                );
+                handleAccountDetails(
+                  "idValue",
+                  get(formData, "customerDetails.idValue", "")
+                );
+                handleAccountDetails(
+                  "idPlace",
+                  get(formData, "customerDetails.idPlace", "")
+                );
+                handleAccountDetails(
+                  "mobileNo",
+                  get(formData, "customerDetails.mobileNo", "")
+                );
+                handleAccountDetails(
+                  "mobilePrefix",
+                  get(formData, "customerDetails.mobilePrefix", "")
+                );
+                handleAccountDetails(
+                  "emailId",
+                  get(formData, "customerDetails.emailId", "")
+                );
+                handleAccountDetails(
+                  "registeredDate",
+                  get(formData, "customerDetails.registeredDate", "")
+                );
+                handleAccountDetails(
+                  "registeredNo",
+                  get(formData, "customerDetails.registeredNo", "")
+                );
+              }
+              setIsSameCustomerDetailsChecked(!isSameCustomerDetailsChecked);
+            }}
           />
           <CustomTitleText
             title={"Use same customer details"}
@@ -977,33 +1045,21 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Account Creation"} />
         <View style={styles.backgroundView}>
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.title
-                : formData?.accountDetails?.title
-            }
+            value={formData?.accountDetails?.title}
             caption={strings.title}
             placeHolder={strings.title}
             onChangeText={(text) => handleAccountDetails("title", text)}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.firstName
-                : formData?.accountDetails?.firstName
-            }
+            value={formData?.accountDetails?.firstName}
             caption={strings.firstname}
             placeHolder={strings.firstname}
             onChangeText={(text) => handleAccountDetails("firstName", text)}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.lastName
-                : formData?.accountDetails?.lastName
-            }
+            value={formData?.accountDetails?.lastName}
             caption={strings.lastname}
             placeHolder={strings.lastname}
             onChangeText={(text) => handleAccountDetails("lastName", text)}
@@ -1015,11 +1071,7 @@ const CreateCustomer = ({ navigation }) => {
             validRange={{ endDate: new Date() }}
             open={openDatePicker}
             onCancel={() => setOpenDatePicker(false)}
-            date={
-              (isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.birthDate
-                : formData?.accountDetails?.birthDate) || new Date()
-            }
+            date={formData?.accountDetails?.birthDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
@@ -1028,15 +1080,9 @@ const CreateCustomer = ({ navigation }) => {
             }}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? moment(formData?.customerDetails?.birthDate).format(
-                    "YYYY-MM-DD"
-                  )
-                : moment(formData?.accountDetails?.birthDate).format(
-                    "YYYY-MM-DD"
-                  )
-            }
+            value={moment(formData?.accountDetails?.birthDate).format(
+              "YYYY-MM-DD"
+            )}
             caption={strings.dob}
             onFocus={() => setOpenDatePicker(true)}
             placeHolder={strings.dob}
@@ -1053,56 +1099,32 @@ const CreateCustomer = ({ navigation }) => {
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
-            selectedValue={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.gender?.description
-                : formData?.accountDetails?.gender?.description
-            }
+            selectedValue={formData?.accountDetails?.gender?.description}
             data={GENDER_LIST}
             onChangeText={(item) => handleAccountDetails("gender", item)}
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.gender?.code
-                : formData?.accountDetails?.gender?.code
-            }
+            value={formData?.accountDetails?.gender?.code}
             caption={strings.gender}
             placeHolder={"Select " + strings.gender}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomDropDownFullWidth
-            selectedValue={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.idType?.description
-                : formData?.accountDetails?.idType?.description
-            }
+            selectedValue={formData?.accountDetails?.idType?.description}
             data={ID_TYPE_LIST}
             onChangeText={(item) => handleAccountDetails("idType", item)}
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.idType?.code
-                : formData?.accountDetails?.idType?.code
-            }
+            value={formData?.accountDetails?.idType?.code}
             caption={strings.id_type}
             placeHolder={"Select " + strings.id_type}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.idValue
-                : formData?.accountDetails?.idValue
-            }
+            value={formData?.accountDetails?.idValue}
             caption={strings.id_number}
             placeHolder={strings.id_number}
             onChangeText={(text) => handleAccountDetails("idValue", text)}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.idPlace
-                : formData?.accountDetails?.idPlace
-            }
+            value={formData?.accountDetails?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => handleAccountDetails("idPlace", text)}
@@ -1110,11 +1132,7 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
-              value={
-                isSameCustomerDetailsChecked
-                  ? formData?.customerDetails?.registeredNo
-                  : formData?.accountDetails?.registeredNo
-              }
+              value={formData?.accountDetails?.registeredNo}
               caption={strings.registereredNo}
               placeHolder={strings.registereredNo}
               onChangeText={(text) =>
@@ -1129,11 +1147,7 @@ const CreateCustomer = ({ navigation }) => {
             validRange={{ endDate: new Date() }}
             open={openDatePicker}
             onCancel={() => setOpenDatePicker(false)}
-            date={
-              (isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.registeredDate
-                : formData?.accountDetails?.registeredDate) || new Date()
-            }
+            date={formData?.accountDetails?.registeredDate || new Date()}
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
@@ -1143,15 +1157,9 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
             <CustomInput
-              value={
-                isSameCustomerDetailsChecked
-                  ? moment(formData?.customerDetails?.registeredDate).format(
-                      "YYYY-MM-DD"
-                    )
-                  : moment(formData?.accountDetails?.registeredDate).format(
-                      "YYYY-MM-DD"
-                    )
-              }
+              value={moment(formData?.accountDetails?.registeredDate).format(
+                "YYYY-MM-DD"
+              )}
               caption={strings.dob}
               onFocus={() => setOpenDatePicker(true)}
               placeHolder={strings.dob}
@@ -1193,22 +1201,14 @@ const CreateCustomer = ({ navigation }) => {
               handleAccountDetails("mobileNo", text);
               setNumberError("");
             }}
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.mobileNo
-                : formData?.accountDetails?.mobileNo
-            }
+            value={formData?.accountDetails?.mobileNo}
             placeHolder={strings.mobile_no}
             keyboardType="numeric"
             maxLength={numberMaxLength}
             disabled={isSameCustomerDetailsChecked}
           />
           <CustomInput
-            value={
-              isSameCustomerDetailsChecked
-                ? formData?.customerDetails?.emailId
-                : formData?.accountDetails?.emailId
-            }
+            value={formData?.accountDetails?.emailId}
             caption={strings.email}
             placeHolder={strings.email}
             onChangeText={(text) => handleAccountDetails("emailId", text)}
@@ -1611,12 +1611,68 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleSameAccountDetailsNo = () => {
+    handleAccountDetails("title", "");
+    handleAccountDetails("firstName", "");
+    handleAccountDetails("lastName", "");
+    handleAccountDetails("birthDate", new Date());
+    handleAccountDetails("gender", "");
+    handleAccountDetails("idType", "");
+    handleAccountDetails("idValue", "");
+    handleAccountDetails("idPlace", "");
+    handleAccountDetails("mobileNo", "");
+    handleAccountDetails("mobilePrefix", "");
+    handleAccountDetails("emailId", "");
+    handleAccountDetails("registeredDate", new Date());
+    handleAccountDetails("registeredNo", "");
     setShowSameAccountDetailsModal(false);
     setUseSameCustomerDetails(false);
     setCurrentStep(currentStep + 1);
   };
 
   const handleSameAccountDetailsYes = () => {
+    handleAccountDetails("title", get(formData, "customerDetails.title", ""));
+    handleAccountDetails(
+      "firstName",
+      get(formData, "customerDetails.firstName", "")
+    );
+    handleAccountDetails(
+      "lastName",
+      get(formData, "customerDetails.lastName", "")
+    );
+    handleAccountDetails(
+      "birthDate",
+      get(formData, "customerDetails.birthDate", "")
+    );
+    handleAccountDetails("gender", get(formData, "customerDetails.gender", ""));
+    handleAccountDetails("idType", get(formData, "customerDetails.idType", ""));
+    handleAccountDetails(
+      "idValue",
+      get(formData, "customerDetails.idValue", "")
+    );
+    handleAccountDetails(
+      "idPlace",
+      get(formData, "customerDetails.idPlace", "")
+    );
+    handleAccountDetails(
+      "mobileNo",
+      get(formData, "customerDetails.mobileNo", "")
+    );
+    handleAccountDetails(
+      "mobilePrefix",
+      get(formData, "customerDetails.mobilePrefix", "")
+    );
+    handleAccountDetails(
+      "emailId",
+      get(formData, "customerDetails.emailId", "")
+    );
+    handleAccountDetails(
+      "registeredDate",
+      get(formData, "customerDetails.registeredDate", "")
+    );
+    handleAccountDetails(
+      "registeredNo",
+      get(formData, "customerDetails.registeredNo", "")
+    );
     setShowSameAccountDetailsModal(false);
     setUseSameCustomerDetails(true);
     setCurrentStep(7);
