@@ -98,7 +98,7 @@ const CreateCustomer = ({ navigation }) => {
   let masterReducer = useSelector((state) => state.masterdata);
   const savedLocation = useSelector((state) => state.savedLocations);
 
-  const accountTypeCode = formData?.accountDetails?.accountType?.code;
+  const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
 
   console.log("formData", JSON.stringify(formData));
 
@@ -110,26 +110,28 @@ const CreateCustomer = ({ navigation }) => {
       CONTACT_PREFERENCE,
       CONTACT_TYPE,
       GENDER,
+      PRIORITY,
       NOTIFICATION_TYPE,
       BILL_LANGUAGE,
       CURRENCY,
       ACCOUNT_CATEGORY,
       ACCOUNT_LEVEL,
       ACCOUNT_TYPE,
-      ACCOUNT_CLASS,
       COUNTRY,
+      PRODUCT_TYPE,
     } = MASTER_DATA_CONSTANT;
 
     dispatch(
       getMasterData(
-        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${ACCOUNT_CLASS}`
+        `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},,${PRIORITY},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${PRODUCT_TYPE}`
       )
     );
   }, []);
-  const ID_TYPE_LIST = masterReducer?.masterdataData?.CUSTOMER_ID_TYPE;
+  const CUSTOMER_ID_TYPE_LIST = masterReducer?.masterdataData?.CUSTOMER_ID_TYPE;
   const CUSTOMER_CATEGORY_LIST =
     masterReducer?.masterdataData?.CUSTOMER_CATEGORY;
   const GENDER_LIST = masterReducer?.masterdataData?.GENDER;
+  const PRIORITY_LIST = masterReducer?.masterdataData?.PRIORITY;
   const CONTACT_TYPE_LIST = masterReducer?.masterdataData?.CONTACT_TYPE;
   const ACCOUNT_CATEGORY_LIST = masterReducer?.masterdataData?.ACCOUNT_CATEGORY;
   const ACCOUNT_TYPE_LIST = masterReducer?.masterdataData?.ACCOUNT_TYPE;
@@ -138,6 +140,7 @@ const CreateCustomer = ({ navigation }) => {
     masterReducer?.masterdataData?.NOTIFICATION_TYPE;
   const BILL_LANGUAGE_LIST = masterReducer?.masterdataData?.BILL_LANGUAGE;
   const CURRENCY_LIST = masterReducer?.masterdataData?.CURRENCY;
+  const PRODUCT_TYPE_LIST = masterReducer?.masterdataData?.PRODUCT_TYPE;
 
   // Used for step 3 & 4 to display list of available & selected products
   const [products, setProducts] = useState([]);
@@ -285,7 +288,7 @@ const CreateCustomer = ({ navigation }) => {
           />
           <CustomDropDownFullWidth
             selectedValue={formData?.customerDetails?.idType?.description}
-            data={ID_TYPE_LIST}
+            data={CUSTOMER_ID_TYPE_LIST}
             onChangeText={(item) => handleCustomerDetails("idType", item)}
             value={formData?.customerDetails?.idType?.code}
             caption={strings.id_type}
@@ -303,7 +306,8 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => handleCustomerDetails("idPlace", text)}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
+          {(customerCategoryCode === "BUS" ||
+            customerCategoryCode === "GOV") && (
             <CustomInput
               value={formData?.customerDetails?.registeredNo}
               caption={strings.registereredNo}
@@ -327,7 +331,8 @@ const CreateCustomer = ({ navigation }) => {
               setOpenDatePicker(false);
             }}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
+          {(customerCategoryCode === "BUS" ||
+            customerCategoryCode === "GOV") && (
             <CustomInput
               value={moment(formData?.customerDetails?.registeredDate).format(
                 "YYYY-MM-DD"
@@ -1109,7 +1114,7 @@ const CreateCustomer = ({ navigation }) => {
           />
           <CustomDropDownFullWidth
             selectedValue={formData?.accountDetails?.idType?.description}
-            data={ID_TYPE_LIST}
+            data={CUSTOMER_ID_TYPE_LIST}
             onChangeText={(item) => handleAccountDetails("idType", item)}
             value={formData?.accountDetails?.idType?.code}
             caption={strings.id_type}
@@ -1130,7 +1135,8 @@ const CreateCustomer = ({ navigation }) => {
             onChangeText={(text) => handleAccountDetails("idPlace", text)}
             disabled={isSameCustomerDetailsChecked}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
+          {(customerCategoryCode === "BUS" ||
+            customerCategoryCode === "GOV") && (
             <CustomInput
               value={formData?.accountDetails?.registeredNo}
               caption={strings.registereredNo}
@@ -1155,7 +1161,8 @@ const CreateCustomer = ({ navigation }) => {
               setOpenDatePicker(false);
             }}
           />
-          {(accountTypeCode === "BUS" || accountTypeCode === "GOV") && (
+          {(customerCategoryCode === "BUS" ||
+            customerCategoryCode === "GOV") && (
             <CustomInput
               value={moment(formData?.accountDetails?.registeredDate).format(
                 "YYYY-MM-DD"
@@ -1679,7 +1686,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleAccountTypeSelection = (item) => {
-    handleAccountDetails("accountType", item);
+    handleCustomerDetails("categoryType", item);
     setShowCustomerTypeModal(false);
     setCurrentStep(currentStep + 1);
   };

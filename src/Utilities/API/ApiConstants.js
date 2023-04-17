@@ -68,6 +68,7 @@ export const endPoints = {
   ORDER_LIST_API: "api/order/search",
 
   FETCH_SERVICE_PRODUCTS_API: "api/product",
+  CREATE_CUSTOMER_API: "api/customer/create",
 };
 
 export const requestMethod = {
