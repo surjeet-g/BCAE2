@@ -64,6 +64,7 @@ export const CustomDropDownFullWidth = (props) => {
           ondropDownClick()
         }}>
           <CustomInput
+            {...props}
             hideCaption={true}
             editable={false}
             caption={placeHolder || caption}

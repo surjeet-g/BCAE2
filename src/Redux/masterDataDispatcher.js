@@ -42,11 +42,9 @@ export const MASTER_DATA_CONSTANT = {
   ACCOUNT_CLASS: "ACCOUNT_CLASS",
 };
 export const getMasterData = (valueParam = "") => {
-  console.log("hititnf");
   if (typeof valueParam != "string") {
     console.log("params should be string");
   }
-  console.log("masterdate para", valueParam);
   return async (dispatch) => {
     // dispatch(initmasterDataData());
     let params = {};
@@ -55,7 +53,6 @@ export const getMasterData = (valueParam = "") => {
       requestMethod.GET,
       params
     );
-    console.log(">>master date", result);
     if (result.success) {
       dispatch(setmasterDataData(result?.data?.data));
     } else {

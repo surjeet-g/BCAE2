@@ -47,7 +47,9 @@ export const CustomInputWithCC = (props) => {
             alignSelf: "center",
           }}
           onPress={() => {
-            props?.onPressOnCountyCode && props.onPressOnCountyCode();
+            !props?.disabled &&
+              props?.onPressOnCountyCode &&
+              props.onPressOnCountyCode();
           }}
         >
           <Text

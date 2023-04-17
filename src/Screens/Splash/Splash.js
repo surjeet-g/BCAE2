@@ -42,18 +42,10 @@ const Splash = ({ route, navigation }) => {
 
   const checkLanguage = async () => {
     let language = await getLanguage();
-
     if (language != null && language != undefined) {
-      console.log('langua true',)
       changeLanguage(language);
-      strings.setLanguage(language.langCode);
-
     } else {
-      console.log('langua true',)
-
-      strings.setLanguage("en");
       changeLanguage({ name: "English", langCode: "en" });
-
     }
     setCounter(counter + 1)
   };

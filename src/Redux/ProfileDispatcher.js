@@ -4,7 +4,7 @@ import {
   setProfileError,
   setSearchEmpty,
   setSearchProfileData,
-  setSearchProfileDataError
+  setSearchProfileDataError,
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
@@ -14,7 +14,7 @@ import {
   getCustomerUUID,
   getUserId,
   getUserType,
-  USERTYPE
+  USERTYPE,
 } from "../Utilities/UserManagement/userInfo";
 
 export function fetchMyProfileData(navigation = null) {
@@ -24,7 +24,6 @@ export function fetchMyProfileData(navigation = null) {
     const userType = await getUserType();
     let typeOfUser =
       userType == USERTYPE.CUSTOMER ? USERTYPE.CUSTOMER : USERTYPE.USER;
-    console.log('usertyoe', typeOfUser)
     if (userType == USERTYPE.CUSTOMER) {
       const customerUUDI = await getCustomerUUID();
 
@@ -45,7 +44,6 @@ export function fetchMyProfileData(navigation = null) {
         navigation
       );
     }
-    console.log('usertyoe', profileResult)
 
     console.log("hiting", profileResult);
     if (profileResult?.success) {
