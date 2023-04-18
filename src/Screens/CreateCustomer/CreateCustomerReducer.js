@@ -13,7 +13,7 @@ import {
 const initialState = {
   initCreateCustomer: false,
   currentStep: 0,
-  customerData: { showAccountCreationModal: false, getQuote: false },
+  formData: { showAccountCreationModal: false, getQuote: false },
   customerDataError: {},
   products: [],
   productsError: {},
@@ -119,7 +119,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
     case CREATE_CUSTOMER_SUCCESS:
       return {
         ...state,
-        customerData: { ...state.customerData, ...action.data },
+        formData: { ...state.formData, ...action.data },
       };
 
     case CREATE_CUSTOMER_FAILURE:
@@ -135,7 +135,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
     case CREATE_CUSTOMER_SERVICE_SUCCESS:
       console.log("$$$-------->>>>>>>>>in reducer");
       {
-        let newformData = { ...state.customerData };
+        let newformData = { ...state.formData };
         let { data } = action;
         newformData = { ...newformData, ...data[0].account };
         let { serviceDetails } = newformData;
@@ -153,14 +153,14 @@ const CreateCustomerReducer = (state = initialState, action) => {
         newformData = { ...newformData, serviceDetails };
         return {
           ...state,
-          customerData: newformData,
+          formData: newformData,
         };
       }
     case SET_SHOW_ACCOUNT_CREATION_MODAL:
       return {
         ...state,
-        customerData: {
-          ...state.customerData,
+        formData: {
+          ...state.formData,
           showAccountCreationModal: action.data,
         },
       };

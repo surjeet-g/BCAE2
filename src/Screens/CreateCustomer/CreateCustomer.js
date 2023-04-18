@@ -120,8 +120,8 @@ const CreateCustomer = ({ navigation }) => {
   const { currentStep } = createCustomerReducerData;
 
   useEffect(() => {
-    setFormData(createCustomerReducerData.customerData);
-  }, [createCustomerReducerData.customerData]);
+    setFormData(createCustomerReducerData.formData);
+  }, [createCustomerReducerData.formData]);
   console.log("formData", JSON.stringify(formData));
 
   // Used to fetch master data
