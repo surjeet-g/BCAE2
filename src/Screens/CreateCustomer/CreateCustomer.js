@@ -270,7 +270,10 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleCustomerDetails("birthDate", params);
+              handleCustomerDetails(
+                "birthDate",
+                moment(params).format("YYYY-MM-DD")
+              );
               setOpenBirthDatePicker(false);
             }}
           />
@@ -340,7 +343,10 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleCustomerDetails("registeredDate", params);
+              handleCustomerDetails(
+                "registeredDate",
+                moment(params).format("YYYY-MM-DD")
+              );
               setOpenRegDatePicker(false);
             }}
           />
@@ -1093,7 +1099,10 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleAccountDetails("birthDate", params);
+              handleAccountDetails(
+                "birthDate",
+                moment(params).format("YYYY-MM-DD")
+              );
               setOpenBirthDatePicker(false);
             }}
           />
@@ -1172,7 +1181,10 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleAccountDetails("registeredDate", params);
+              handleAccountDetails(
+                "registeredDate",
+                moment(params).format("YYYY-MM-DD")
+              );
               setOpenRegDatePicker(false);
             }}
           />
