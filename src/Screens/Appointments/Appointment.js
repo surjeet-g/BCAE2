@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 // import Timeline from 'react-native-timeline-listview';
-
+import { useDispatch, useSelector } from "react-redux";
 import CalendarStrip from "react-native-calendar-strip";
 import Timetable from "react-native-calendar-timetable";
 import { Calendar } from "react-native-calendars";
@@ -41,11 +41,21 @@ import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import { SHADOW_STYLE } from "../../Utilities/themeConfig";
 import { subString } from "../../Utilities/utils";
+import { getAppointmentDashboardData } from "../../Redux/AppointmentDashboardDispatcher";
 
 const TAB_INTERACTIVE = true;
 const TAB_INFORMATIVE = false;
 
 export const Appointment = ({ navigation }) => {
+  let dashboardAppointments = useSelector(
+    (state) => state.dashboardAppointments
+  );
+
+  const dispatchDashboardAppointment = useDispatch([
+    getAppointmentDashboardData,
+  ]);
+  const fetchAppointmentDashboardData = () =>
+    dispatchDashboardAppointment(getAppointmentDashboardData(navigation));
   const [createModal, setCreateModal] = useState(false);
   const [editModel, showEditModel] = useState(false);
   const [showviewEventModel, setviewEventModel] = useState(true);
@@ -111,13 +121,6 @@ export const Appointment = ({ navigation }) => {
       name: "04.00 - 05.00 ",
     },
   ];
-  const viewWorkflow = [
-    { time: "09:00", title: "Event 1", description: "Event 1 Description" },
-    { time: "10:45", title: "Event 2", description: "Event 2 Description" },
-    { time: "12:00", title: "Event 3", description: "Event 3 Description" },
-    { time: "14:00", title: "Event 4", description: "Event 4 Description" },
-    { time: "16:30", title: "Event 5", description: "Event 5 Description" },
-  ];
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -146,7 +149,9 @@ export const Appointment = ({ navigation }) => {
       ),
     });
   }, [navigation]);
-
+  useEffect(() => {
+    fetchAppointmentDashboardData();
+  }, []);
   const RenderInformative = () => {
     return (
       <>
@@ -243,13 +248,21 @@ export const Appointment = ({ navigation }) => {
   let startDate = moment(); //today
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState("");
-
+  let scleduledAppointment = [];
   useEffect(() => {
     async function getSelectedDate() {
-      // setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      scleduledAppointment = dashboardAppointments.appointmentDashboardData.map(
+        (v) => ({
+          ...v,
+          startDate: moment(v.appointDate + " " + v.appointStartTime),
+          endDate: moment(v.appointDate + " " + v.appointEndTime),
+        })
+      );
     }
     getSelectedDate();
   }, []);
+
   const onDateSelected = (date) => {
     setSelectedDate(moment(date).format("YYYY-MM-DD"));
   };
@@ -405,26 +418,30 @@ export const Appointment = ({ navigation }) => {
     {
       title: "Payment not working",
       isAudio: true,
-      startDate: moment("2023-04-13 0:45:00"),
-      endDate: moment("2023-04-13 1:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 0:45:00"),
+      endDate: moment("2023-04-18 1:45:00"),
     },
     {
       title: "New connection",
       isAudio: false,
-      startDate: moment("2023-04-13 2:00:00"),
-      endDate: moment("2023-04-13 2:30:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 2:00:00"),
+      endDate: moment("2023-04-18 2:30:00"),
     },
     {
       title: "Billing Problems",
       isAudio: true,
-      startDate: moment("2023-04-13 3:45:00"),
-      endDate: moment("2023-04-13 4:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 3:45:00"),
+      endDate: moment("2023-04-18 4:45:00"),
     },
     {
       title: "Postpaid connection address change",
       isAudio: false,
-      startDate: moment("2023-04-13 12:45:00"),
-      endDate: moment("2023-04-13 15:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 12:45:00"),
+      endDate: moment("2023-04-18 15:45:00"),
     },
   ]);
   const AppointListItem = ({ data }) => {
@@ -433,7 +450,9 @@ export const Appointment = ({ navigation }) => {
         <>
           <Card style={styles.app_container}>
             <View style={styles.small_strip}>
-              <Text style={styles.small_strip_txt}>Appointment ID: 123213</Text>
+              <Text style={styles.small_strip_txt}>
+                Appointment ID:{item.appointId}
+              </Text>
             </View>
             <View
               style={{
@@ -445,15 +464,20 @@ export const Appointment = ({ navigation }) => {
               <View style={{ width: "60%" }}>
                 <Text style={styles.appoint_label}>Customer Name</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>Daina David</Text>
+                <Text style={styles.appoint_value}>
+                  {item.appointmentCustomer.firstName + " "}
+                  {item.appointmentCustomer.lastName}
+                </Text>
                 <ClearSpace size={2} />
                 <Text style={styles.appoint_label}>Time</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>11:00AM - 12:00 PM</Text>
+                <Text style={styles.appoint_value}>
+                  {item.appointStartTime + "-" + item.appointEndTime}
+                </Text>
                 <ClearSpace size={2} />
-                <Text style={styles.appoint_label}>Location</Text>
+                <Text style={styles.appoint_label}>Date</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>Chennai</Text>
+                <Text style={styles.appoint_value}>{item.appointDate}</Text>
               </View>
               <View style={{ width: "40%" }}>
                 <Text style={styles.appoint_value}></Text>
@@ -464,15 +488,22 @@ export const Appointment = ({ navigation }) => {
                 <Text style={styles.appoint_value}>Appt. type</Text>
                 <ClearSpace />
                 <View>
-                  <Image
-                    source={require("../../Assets/icons/video_join.png")}
-                  />
+                  {item.appointMode.includes("_VIDEO") && (
+                    <Image
+                      source={require("../../Assets/icons/video_join.png")}
+                    />
+                  )}
+                  {item.appointMode.includes("_AUDIO") && (
+                    <Image
+                      source={require("../../Assets/icons/audio_join.png")}
+                    />
+                  )}
                 </View>
                 <ClearSpace size={2} />
                 <Text style={styles.appoint_label}>Status</Text>
                 <ClearSpace />
                 <Text style={{ ...styles.appoint_value, color: "#3FB94D" }}>
-                  Booked
+                  {item.statusDesc.description}
                 </Text>
                 <ClearSpace size={2} />
               </View>
@@ -1013,7 +1044,7 @@ export const Appointment = ({ navigation }) => {
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
-                    items={items}
+                    items={scleduledAppointment}
                     renderItem={(props) => <AppointItems {...props} />}
                     // provide only one of these
                     date={date}
@@ -1026,7 +1057,9 @@ export const Appointment = ({ navigation }) => {
                   />
                 </View>
               </View>
-              <AppointListItem data={["one", "tow"]} />
+              <AppointListItem
+                data={dashboardAppointments.appointmentDashboardData}
+              />
             </>
           ) : (
             <RenderInformative />
