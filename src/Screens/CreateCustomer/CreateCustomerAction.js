@@ -7,6 +7,8 @@ export const CREATE_CUSTOMER_SUCCESS = "CREATE_CUSTOMER_SUCCESS";
 export const CREATE_CUSTOMER_FAILURE = "CREATE_CUSTOMER_FAILURE";
 export const SET_SERVICE_CATEGORIES = "SET_SERVICE_CATEGORIES";
 export const SET_CURRENT_STEP = "SET_CURRENT_STEP";
+export const CREATE_CUSTOMER_SERVICE_SUCCESS =
+  "CREATE_CUSTOMER_SERVICE_SUCCESS";
 
 export function initData() {
   return { type: INIT_CREATE_CUSTOMER };
@@ -38,4 +40,8 @@ export function setServiceCategoriesDataInStore(data) {
 
 export function setCurrentStepInStore(data) {
   return { type: SET_CURRENT_STEP, data };
+}
+export function setCreateCustomerServiceInStore(data) {
+  console.log("$$$-setCreateCustomerServiceInStore-Action");
+  return { type: CREATE_CUSTOMER_SERVICE_SUCCESS, data };
 }

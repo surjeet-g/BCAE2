@@ -6,6 +6,7 @@ import {
   CREATE_CUSTOMER_FAILURE,
   CREATE_CUSTOMER_SUCCESS,
   SET_CURRENT_STEP,
+  CREATE_CUSTOMER_SERVICE_SUCCESS,
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -130,6 +131,31 @@ const CreateCustomerReducer = (state = initialState, action) => {
         ...state,
         currentStep: action.data,
       };
+    case CREATE_CUSTOMER_SERVICE_SUCCESS:
+      console.log("$$$-------->>>>>>>>>");
+      {
+        let newformData = { ...state.customerData };
+        let { data } = action;
+        newformData = { ...newformData, ...data[0].account };
+        let { serviceDetails } = newformData;
+        let { details } = serviceDetails;
+        details = details.map((item) => {
+          const prtUuid = item.productUuid;
+          const service = data.find((currentItem) => {
+            if (currentItem.service.productUuid === prtUuid)
+              return currentItem.service;
+          });
+          console.log("$$$-service", service);
+          let newItem = { ...item, ...service };
+          return newItem;
+        });
+        serviceDetails.details = details;
+        newformData = { ...newformData, serviceDetails };
+        return {
+          ...state,
+          customerData: newformData,
+        };
+      }
     default:
       return state;
   }

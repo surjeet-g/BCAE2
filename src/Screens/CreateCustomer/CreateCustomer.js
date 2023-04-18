@@ -43,6 +43,8 @@ import {
 import {
   fetchServiceProducts,
   createCustomer,
+  updateCustomerData,
+  createCustomerService,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -66,6 +68,8 @@ const CreateCustomer = ({ navigation }) => {
     getMasterData,
     fetchRegisterFormData,
     createCustomer,
+    updateCustomerData,
+    createCustomerService,
     setCurrentStepInStore,
   ]);
   const [formData, setFormData] = useState({
@@ -270,10 +274,7 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleCustomerDetails(
-                "birthDate",
-                moment(params).format("YYYY-MM-DD")
-              );
+              handleCustomerDetails("birthDate", params);
               setOpenBirthDatePicker(false);
             }}
           />
@@ -343,10 +344,7 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleCustomerDetails(
-                "registeredDate",
-                moment(params).format("YYYY-MM-DD")
-              );
+              handleCustomerDetails("registeredDate", params);
               setOpenRegDatePicker(false);
             }}
           />
@@ -1099,10 +1097,7 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleAccountDetails(
-                "birthDate",
-                moment(params).format("YYYY-MM-DD")
-              );
+              handleAccountDetails("birthDate", params);
               setOpenBirthDatePicker(false);
             }}
           />
@@ -1181,10 +1176,7 @@ const CreateCustomer = ({ navigation }) => {
             maximumDate={new Date()}
             onConfirm={(params) => {
               console.log("data", params);
-              handleAccountDetails(
-                "registeredDate",
-                moment(params).format("YYYY-MM-DD")
-              );
+              handleAccountDetails("registeredDate", params);
               setOpenRegDatePicker(false);
             }}
           />
@@ -1599,6 +1591,9 @@ const CreateCustomer = ({ navigation }) => {
       case 1:
         dispatch(createCustomer(formData, navigation));
         break;
+      case 2:
+        dispatch(updateCustomerData(formData, navigation));
+        break;
       case 3:
         {
           let item = products.find((product) => product.quantity > 0);
@@ -1614,11 +1609,7 @@ const CreateCustomer = ({ navigation }) => {
         }
         break;
       case 4:
-        {
-          formData?.getQuote
-            ? dispatch(setCurrentStepInStore(10))
-            : dispatch(setCurrentStepInStore(currentStep + 1));
-        }
+        dispatch(createCustomerService(formData, navigation));
         break;
       case 5:
         setShowAccountCreationModal(true);

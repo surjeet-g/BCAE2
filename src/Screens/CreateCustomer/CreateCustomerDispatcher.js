@@ -1,12 +1,14 @@
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import Toast from "react-native-toast-message";
+import moment from "moment";
 import {
   setServiceProductsDataInStore,
   setServiceProductsErrorDataInStore,
   setCreateCustomerDataInStore,
   setCreateCustomerErrorDataInStore,
   setCurrentStepInStore,
+  setCreateCustomerServiceInStore,
 } from "./CreateCustomerAction";
 
 export function fetchServiceProducts(serviceType, navigation = null) {
@@ -23,6 +25,9 @@ export function fetchServiceProducts(serviceType, navigation = null) {
 }
 
 export function createCustomer(formData, navigation = null) {
+  console.log("$$$-createCustomer");
+  console.log("$$$-createCustomer-formData", formData);
+
   return async (dispatch) => {
     let url = endPoints.CREATE_CUSTOMER_API;
     let params = {
@@ -31,15 +36,20 @@ export function createCustomer(formData, navigation = null) {
         firstName: formData.customerDetails.firstName,
         lastName: formData.customerDetails.lastName,
         gender: formData.customerDetails.gender.code,
-        birthDate: formData.customerDetails.birthDate,
+        birthDate: moment(formData.customerDetails.birthDate).format(
+          "YYYY-MM-DD"
+        ),
         idType: formData.customerDetails.idType.code,
         idValue: formData.customerDetails.idValue,
         customerCategory: formData.customerDetails.categoryType.code,
         registeredNo: formData.customerDetails.registeredNo,
-        registeredDate: formData.customerDetails.registeredDate,
+        registeredDate: moment(formData.customerDetails.registeredDate).format(
+          "YYYY-MM-DD"
+        ),
       },
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-createCustomer-result", result);
     if (result.success) {
       dispatch(
         setCreateCustomerDataInStore({ ...formData, ...result.data.data })
@@ -65,12 +75,16 @@ export function updateCustomerData(formData, navigation = null) {
         firstName: formData.customerDetails.firstName,
         lastName: formData.customerDetails.lastName,
         gender: formData.customerDetails.gender.code,
-        birthDate: formData.customerDetails.birthDate,
+        birthDate: moment(formData.customerDetails.birthDate).format(
+          "YYYY-MM-DD"
+        ),
         idType: formData.customerDetails.idType.code,
         idValue: formData.customerDetails.idValue,
         customerCategory: formData.customerDetails.categoryType.code,
         registeredNo: formData.customerDetails.registeredNo,
-        registeredDate: formData.customerDetails.registeredDate,
+        registeredDate: moment(formData.customerDetails.registeredDate).format(
+          "YYYY-MM-DD"
+        ),
       },
       address: {
         isPrimary: true,
@@ -108,13 +122,20 @@ export function updateCustomerData(formData, navigation = null) {
 }
 
 export function createCustomerService(formData, navigation = null) {
+  console.log("$$$-createCustomerService");
   return async (dispatch) => {
     let url = endPoints.CREATE_CUSTOMER_SERVICE_API;
-    let params = contructServicePayload();
+    let params = {
+      service: contructServicePayload(formData),
+    };
+    console.log("$$$-createCustomerService-params", JSON.stringify(params));
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-createCustomerService-result", JSON.stringify(result));
     if (result.success) {
-      dispatch(setCreateCustomerDataInStore(result.data.data));
-      dispatch(setCurrentStepInStore(5));
+      dispatch(setCreateCustomerServiceInStore(result.data.data));
+      formData?.getQuote
+        ? dispatch(setCurrentStepInStore(10))
+        : dispatch(setCurrentStepInStore(5));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
       if (result.errorCode === 401)
