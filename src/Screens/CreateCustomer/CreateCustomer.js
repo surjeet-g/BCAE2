@@ -92,6 +92,7 @@ const CreateCustomer = ({ navigation }) => {
 
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
+  const [showCreateOrderModal, setShowCreateOrderModal] = useState(false);
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
@@ -106,7 +107,6 @@ const CreateCustomer = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
-  const [signature, setSignature] = useState(null);
   const [openBirthDatePicker, setOpenBirthDatePicker] = useState(false);
   const [openRegDatePicker, setOpenRegDatePicker] = useState(false);
 
@@ -1533,7 +1533,10 @@ const CreateCustomer = ({ navigation }) => {
     return (
       <View>
         <CustomTitleText title={"Customer Agreement"} />
-        <CustomerAgreement signature={signature} setSignature={setSignature} />
+        <CustomerAgreement
+          signature={formData?.signature || null}
+          setSignature={dispatchSetSignatureInFormData}
+        />
       </View>
     );
   };
@@ -1545,11 +1548,11 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Show Preview"} />
         <Text>{formData?.customerUuid}</Text>
         {/* Show Preview View */}
-        {signature !== null && (
+        {formData?.signature !== null && (
           <Image
             resizeMode={"cover"}
             style={styles.previewImgStyle}
-            source={{ uri: signature }}
+            source={{ uri: formData?.signature }}
           />
         )}
       </View>
@@ -1623,7 +1626,7 @@ const CreateCustomer = ({ navigation }) => {
         // setShowAccountCreationModal(true);
         break;
       case 9:
-        dispatch(setSignatureInFormData(signature));
+        dispatch(setSignatureInFormData(formData?.signature));
         dispatch(setCurrentStepInStore(currentStep + 1));
         break;
       default:
@@ -1827,6 +1830,10 @@ const CreateCustomer = ({ navigation }) => {
 
   const dispatchSetShowAccountCreationModal = (data) => {
     dispatch(setShowAccountCreationModal(data));
+  };
+
+  const dispatchSetSignatureInFormData = (data) => {
+    dispatch(setSignatureInFormData(data));
   };
 
   return (
