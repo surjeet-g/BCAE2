@@ -68,6 +68,12 @@ export const endPoints = {
   ORDER_LIST_API: "api/order/search",
   GET_APPOINTMENT_DASHBOARD: "api/appointment",
   FETCH_SERVICE_PRODUCTS_API: "api/product",
+  CREATE_CUSTOMER_API: "api/customer/create",
+  UPDATE_CUSTOMER_API: "api/customer/",
+  CREATE_CUSTOMER_SERVICE_API: "api/accounts/service/create",
+  UPDATE_CUSTOMER_SERVICE_API: "api/accounts/service/update",
+  UPDATE_ACCOUNT_API: "api/accounts/update/",
+  UPDATE_CUSTOMER_STATUS_API: "api/customer/update-status",
 };
 
 export const requestMethod = {

@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
-  Platform, Pressable, SafeAreaView,
+  Platform,
+  Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { TextInput, useTheme } from "react-native-paper";
@@ -15,7 +17,7 @@ import MapView, {
   Callout,
   Circle,
   Marker,
-  PROVIDER_GOOGLE
+  PROVIDER_GOOGLE,
 } from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
@@ -34,12 +36,14 @@ import { FooterModel } from "../../Components/FooterModel";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { countryCodes } from "../../Components/react-native-country-codes-picker/constants/countryCodes";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
-import { fetchRegisterFormData } from '../../Redux/RegisterDispatcher';
+import {
+  getMasterData,
+  MASTER_DATA_CONSTANT,
+} from "../../Redux/masterDataDispatcher";
+import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 const { height } = Dimensions.get("screen");
 
 const AddLocation = ({ route, navigation }) => {
-
   const { colors, fonts, roundness } = useTheme();
   const [activeDropDown, setActiveDropDown] = useState("district");
 
@@ -63,12 +67,12 @@ const AddLocation = ({ route, navigation }) => {
   const [dialPick, setDialPick] = useState("+673");
   const [locationGet, setCurrentLocationget] = useState(false);
   const [country, setCountry] = useState("");
-  const [searchPostalCode, setSerachPostalCode] = useState("")
-  const [loader, setLoader] = useState(false)
-  const [suggestPostCode, setSuggestPostalCode] = useState("")
-  const [isPostalCodeModal, setPostalModalCode] = useState(false)
+  const [searchPostalCode, setSerachPostalCode] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [suggestPostCode, setSuggestPostalCode] = useState("");
+  const [isPostalCodeModal, setPostalModalCode] = useState(false);
   const [searchPostal, setSearchPostal] = useState("");
-  const [locModalNaviFrom, setAddNaviFrom] = useState("manual")
+  const [locModalNaviFrom, setAddNaviFrom] = useState("manual");
   const mapRef = useRef(null);
   const latitudeDelta = 0.0922;
   const longitudeDelta = latitudeDelta * ASPECT_RATIO;
@@ -87,8 +91,6 @@ const AddLocation = ({ route, navigation }) => {
     includingSavedAddress = [],
     isEditAddress = false,
   } = route.params;
-
-
 
   if (fromPage === "Register") {
     savedLocation = savedLocationWithoutAuth;
@@ -121,14 +123,14 @@ const AddLocation = ({ route, navigation }) => {
     // isAddLocationModalVisible
     setPostalModalCode(!isPostalCodeModal);
     if (geoAddress != "") {
-      setValueCounty("")
-      setValueState("")
+      setValueCounty("");
+      setValueState("");
       // showAddLocationModal();
       setValueDist("");
       setDistName("");
-      setStateName("")
-      setCountryName("")
-      setbuildNameText("")
+      setStateName("");
+      setCountryName("");
+      setbuildNameText("");
       setAddrType("");
       setValueSelAddr("");
       setValueKampong("");
@@ -256,7 +258,7 @@ const AddLocation = ({ route, navigation }) => {
 
         const myAddress = res["0"]?.formattedAddress;
         const countryCode = res["0"]?.countryCode;
-        setSuggestPostalCode(res["0"]?.postalCode)
+        setSuggestPostalCode(res["0"]?.postalCode);
         // setCountry(res["0"]?.country);
 
         if (countryCode != "") {
@@ -338,19 +340,19 @@ const AddLocation = ({ route, navigation }) => {
     } catch (error) {
       console.log(
         "There has been a problem with RNLocation fetch operation: " +
-        error.message
+          error.message
       );
     }
   };
   const getAddressForCustomDropDown = (adrs) => {
-    const data = adrs.map(item => {
-      return ({
+    const data = adrs.map((item) => {
+      return {
         code: JSON.stringify(item),
-        description: `${item.state},${item.region},${item.country},${item.district}`
-      })
-    })
-    return data
-  }
+        description: `${item.state},${item.region},${item.country},${item.district}`,
+      };
+    });
+    return data;
+  };
   const getUniqueDistricts = () => {
     let uniqueDistrictKey = [];
 
@@ -391,7 +393,11 @@ const AddLocation = ({ route, navigation }) => {
     return uniqueDistrictData;
   };
   const getAddresType = () => {
-    const addressTypeList = get(masterReducer, "masterdataData.ADDRESS_TYPE", []);
+    const addressTypeList = get(
+      masterReducer,
+      "masterdataData.ADDRESS_TYPE",
+      []
+    );
 
     let excludeAddressType = [];
     let includeAddressTypes = [];
@@ -474,11 +480,11 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   const onCountyClick = (text) => {
-    setCountryName(text.code)
-    setStateName("")
-    setValueState("")
+    setCountryName(text.code);
+    setStateName("");
+    setValueState("");
     setDistName("");
-    setValueDist("")
+    setValueDist("");
     setValueKampong("");
     setKampongName("");
     setValuePostcode("");
@@ -486,9 +492,9 @@ const AddLocation = ({ route, navigation }) => {
   };
 
   const onStateClick = (text) => {
-    setStateName(text.description)
+    setStateName(text.description);
     setDistName("");
-    setValueDist("")
+    setValueDist("");
     setValueKampong("");
     setKampongName("");
     setValuePostcode("");
@@ -545,18 +551,18 @@ const AddLocation = ({ route, navigation }) => {
       );
       //console.warn("point", addrByDistrict);
       if (addrByDistrict.length != 0) {
-        console.log("point 1", addrByDistrict);
+        // console.log("point 1", addrByDistrict);
         addrByDistrict.map((item) => {
           if (!(uniqueDistrictKey.indexOf(item.city) > -1)) {
             uniqueDistrictKey.push(item.city);
           }
         });
 
-        console.log("point 2", uniqueDistrictKey);
+        // console.log("point 2", uniqueDistrictKey);
         finalKampongData = uniqueDistrictKey.map((item) => {
           return { description: item, id: item };
         });
-        console.log("point 3", finalKampongData);
+        // console.log("point 3", finalKampongData);
       }
     }
     // console.warn("", savedLocation?.addressLoopupData);
@@ -581,18 +587,16 @@ const AddLocation = ({ route, navigation }) => {
     return finalPostcodeData;
   };
   const getCountryList = () => {
-
     const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);
-    if (countryGetList.length == 0) return []
-    return countryGetList.map(item => (
-      { code: item?.code, description: item.description }
-    ))
-  }
+    if (countryGetList.length == 0) return [];
+    return countryGetList.map((item) => ({
+      code: item?.code,
+      description: item.description,
+    }));
+  };
   return (
     <SafeAreaView style={styles.container}>
-      {loader && (
-        <LoadingAnimation title="while we are fetching country" />
-      )}
+      {loader && <LoadingAnimation title="while we are fetching country" />}
       <MapView
         showsUserLocation={true}
         provider={PROVIDER_GOOGLE}
@@ -786,16 +790,17 @@ const AddLocation = ({ route, navigation }) => {
         {/* </View> */}
       </StickyFooter>
 
-
       <FooterModel
         open={isPostalCodeModal}
         setOpen={setPostalModalCode}
         title={`Enter address details`}
       >
-        <View style={{ paddingHorizontal: '4%' }}>
-          {suggestPostCode &&
-            <Text style={{ marginLeft: 5 }}>Is this is your postal code : {suggestPostCode}?</Text>
-          }
+        <View style={{ paddingHorizontal: "4%" }}>
+          {suggestPostCode && (
+            <Text style={{ marginLeft: 5 }}>
+              Is this is your postal code : {suggestPostCode}?
+            </Text>
+          )}
           <CustomInput
             value={searchPostal}
             caption={strings.postCode}
@@ -803,52 +808,56 @@ const AddLocation = ({ route, navigation }) => {
             onChangeText={setSearchPostal}
           />
           <ClearSpace size={2} />
-          <Pressable style={{ paddingVertical: 5 }}
+          <Pressable
+            style={{ paddingVertical: 5 }}
             onPress={() => {
-              setAddNaviFrom("manual")
-              setAddLocationModalVisible(true)
-
+              setAddNaviFrom("manual");
+              setAddLocationModalVisible(true);
             }}
           >
-            <Text style={{ color: "#0061ff", marginLeft: 5 }}>Don't you know postal code ?</Text>
+            <Text style={{ color: "#0061ff", marginLeft: 5 }}>
+              {"Don't you know postal code ?"}
+            </Text>
           </Pressable>
           <CustomButton
             loading={false}
             label={strings.search}
-            isDisabled={(searchPostal == "")}
+            isDisabled={searchPostal == ""}
             onPress={() => {
-              setLoader(true)
-              dispatch1(fetchRegisterFormData({
-                type: "POSTAL_CODE",
-                search: searchPostal
-              }, (addressRes = []) => {
-                setLoader(false)
-                setPostalModalCode(false)
-                setAddLocationModalVisible(true)
+              setLoader(true);
+              dispatch1(
+                fetchRegisterFormData(
+                  {
+                    type: "POSTAL_CODE",
+                    search: searchPostal,
+                  },
+                  (addressRes = []) => {
+                    setLoader(false);
+                    setPostalModalCode(false);
+                    setAddLocationModalVisible(true);
 
+                    if (addressRes.length == 0) return null;
+                    setAddNaviFrom("auto");
+                    if (addressRes.length == 1) {
+                      console.log("address response data", addressRes[0]);
+                      setValueState(addressRes[0]?.state);
+                      setStateName(addressRes[0]?.state);
+                      setCountryName(addressRes[0]?.country);
+                      setValueState(addressRes[0]?.state);
+                      setStateName(addressRes[0]?.state);
 
+                      setValueDist(addressRes[0]?.district);
+                      setDistName(addressRes[0]?.district);
 
+                      setKampongName(addressRes[0]?.city);
+                      setValueKampong(addressRes[0]?.city);
 
-                if (addressRes.length == 0) return null
-                setAddNaviFrom("auto")
-                if (addressRes.length == 1) {
-                  setValueState(addressRes[0]?.state)
-                  setStateName(addressRes[0]?.state)
-                  setCountryName(addressRes[0]?.country)
-                  setValueState(addressRes[0]?.state)
-                  setStateName(addressRes[0]?.state)
-
-                  setValueDist(addressRes[0]?.district)
-                  setDistName(addressRes[0]?.district)
-
-                  setKampongName(addressRes[0]?.city)
-                  setValueKampong(addressRes[0]?.city)
-
-                  setPostcodeName(addressRes[0]?.postCode)
-                  setValuePostcode(addressRes[0]?.postCode)
-
-                }
-              }));
+                      setPostcodeName(addressRes[0]?.postCode);
+                      setValuePostcode(addressRes[0]?.postCode);
+                    }
+                  }
+                )
+              );
             }}
           />
         </View>
@@ -858,7 +867,6 @@ const AddLocation = ({ route, navigation }) => {
         setOpen={setAddLocationModalVisible}
         title={`Enter address details`}
       >
-
         <View style={{ marginBottom: 30 }}>
           <View
             style={{
@@ -907,7 +915,6 @@ const AddLocation = ({ route, navigation }) => {
                   console.log(">>", text);
                   setAddrType(text);
                 }}
-
                 value={addreType}
                 isDisableDropDown={activeDropDown != "setAddrType"}
                 placeHolder={strings.address_type + "*"}
@@ -996,7 +1003,7 @@ const AddLocation = ({ route, navigation }) => {
                   placeHolder={strings.street}
                 />
               </View>
-              {locModalNaviFrom == "manual" &&
+              {locModalNaviFrom == "manual" && (
                 <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                   <CustomDropDownFullWidth
                     searchEnable={true}
@@ -1009,15 +1016,18 @@ const AddLocation = ({ route, navigation }) => {
                       // enquilryDetailsData?.DetailsDataData?.data?.PROD_TYPE ?? []
                     }
                     onChangeText={(text) => {
-                      console.log('>>', text)
-                      onCountyClick(text)
-                      setLoader(true)
-                      dispatch1(fetchRegisterFormData({
-                        type: "COUNTRY",
-                        search: text?.code
-                      }, () => setLoader(false)));
-
-
+                      console.log(">>", text);
+                      onCountyClick(text);
+                      setLoader(true);
+                      dispatch1(
+                        fetchRegisterFormData(
+                          {
+                            type: "COUNTRY",
+                            search: text?.code,
+                          },
+                          () => setLoader(false)
+                        )
+                      );
                     }}
                     value={countyName}
                     isDisableDropDown={activeDropDown != "country"}
@@ -1025,7 +1035,7 @@ const AddLocation = ({ route, navigation }) => {
                     caption={strings.country + "*"}
                   />
                 </View>
-              }
+              )}
               <View style={{ marginTop: 12, zIndex: 4, elevation: 12 }}>
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("state")}
@@ -1058,7 +1068,6 @@ const AddLocation = ({ route, navigation }) => {
                   isDisableDropDown={activeDropDown != "district"}
                   placeHolder={strings.district + "*"}
                   caption={strings.district + "*"}
-
                 />
               </View>
 
@@ -1086,7 +1095,6 @@ const AddLocation = ({ route, navigation }) => {
                   elevation: 2,
                 }}
               >
-
                 <CustomDropDownFullWidth
                   setDropDownEnable={() => setActiveDropDown("postCode")}
                   isDisable={false}
@@ -1126,7 +1134,6 @@ const AddLocation = ({ route, navigation }) => {
                 />
               </View>
             </View>
-
           </View>
         </View>
       </FooterModel>

@@ -2,30 +2,37 @@ import {
   FETCH_SERVICE_PRODUCTS_FAILURE,
   FETCH_SERVICE_PRODUCTS_SUCCESS,
   REMOVE_SERVICE_PRODUCTS,
+  SET_SERVICE_CATEGORIES,
+  CREATE_CUSTOMER_FAILURE,
+  CREATE_CUSTOMER_SUCCESS,
+  SET_CURRENT_STEP,
 } from "./CreateCustomerAction";
 
 const initialState = {
   initCreateCustomer: false,
+  currentStep: 0,
+  customerData: {},
+  customerDataError: {},
   products: [],
   productsError: {},
   serviceCategories: [
     {
       id: 1,
-      name: "Postpaid",
+      description: "Postpaid",
       code: "PT_POSTPAID",
       icon: require("../../Assets/icons/ic_postpaid.png"),
       selected: false,
     },
     {
       id: 2,
-      name: "Prepaid",
+      description: "Prepaid",
       code: "PT_PREPAID",
       icon: require("../../Assets/icons/ic_prepaid.png"),
       selected: false,
     },
     {
       id: 3,
-      name: "Hybrid",
+      description: "Hybrid",
       code: "PT_HYBRID",
       icon: require("../../Assets/icons/ic_word.png"),
       selected: false,
@@ -82,6 +89,47 @@ const CreateCustomerReducer = (state = initialState, action) => {
         serviceCategories: newServiceCategories,
       };
     }
+    case SET_SERVICE_CATEGORIES: {
+      console.log("$$$-action", action);
+      const { data } = action;
+      let newServiceCategories =
+        data !== undefined &&
+        data?.map((item) => {
+          item.selected = false;
+          if (item.code === "PT_PREPAID") {
+            item.icon = require("../../Assets/icons/ic_prepaid.png");
+          } else if (item.code === "PT_POSTPAID") {
+            item.icon = require("../../Assets/icons/ic_postpaid.png");
+          } else {
+            item.icon = require("../../Assets/icons/ic_pdf.png");
+          }
+          return item;
+        });
+      console.log("$$$-newServiceCategories", newServiceCategories);
+      return {
+        ...state,
+        serviceCategories: [
+          ...state.serviceCategories,
+          ...newServiceCategories,
+        ],
+      };
+    }
+    case CREATE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        customerData: { ...state.customerData, ...action.data },
+      };
+
+    case CREATE_CUSTOMER_FAILURE:
+      return {
+        ...state,
+        customerDataError: action.data,
+      };
+    case SET_CURRENT_STEP:
+      return {
+        ...state,
+        currentStep: action.data,
+      };
     default:
       return state;
   }
