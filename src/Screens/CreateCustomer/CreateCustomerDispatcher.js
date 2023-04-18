@@ -1,8 +1,6 @@
 import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import Toast from "react-native-toast-message";
-
-import { useSelector } from "react-redux";
 import {
   setServiceProductsDataInStore,
   setServiceProductsErrorDataInStore,
@@ -11,9 +9,6 @@ import {
   setCurrentStepInStore,
 } from "./CreateCustomerAction";
 
-// const createCustomerReducerData = useSelector(
-//   (state) => state.createCustomerReducerData
-// );
 export function fetchServiceProducts(serviceType, navigation = null) {
   return async (dispatch) => {
     let url =
@@ -111,3 +106,150 @@ export function updateCustomerData(formData, navigation = null) {
     }
   };
 }
+
+export function createCustomerService(formData, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.CREATE_CUSTOMER_SERVICE_API;
+    let params = contructServicePayload();
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    if (result.success) {
+      dispatch(setCreateCustomerDataInStore(result.data.data));
+      dispatch(setCurrentStepInStore(5));
+    } else {
+      dispatch(setCreateCustomerErrorDataInStore(result));
+      if (result.errorCode === 401)
+        Toast.show({
+          type: "bctError",
+          text1: result.message,
+        });
+    }
+  };
+}
+
+const contructServicePayload = (formData) => {
+  let params = formData.serviceDetails.details.map((item) => {
+    let newitem = {
+      details: {
+        action: "ADD",
+        serviceName: item.productName,
+        serviceCategory: item.productCategory,
+        serviceType: item.serviceType,
+        planPayload: {
+          productId: item.productId,
+          productUuid: item.productUuid,
+        },
+        quantity: "" + item.quantity,
+        customerUuid: formData.customerUuid,
+        currency: item.productChargesList[0].chargeDetails.currency,
+        billLanguage: "BLENG",
+      },
+    };
+    return newitem;
+  });
+  return params;
+};
+
+export function updateCustomerServiceData(formData, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.UPDATE_CUSTOMER_SERVICE_API;
+    let params = contructUpdateServicePayload();
+    let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    if (result.success) {
+      dispatch(setCreateCustomerDataInStore(result.data.data));
+      // dispatch(setCurrentStepInStore(5));
+    } else {
+      dispatch(setCreateCustomerErrorDataInStore(result));
+      if (result.errorCode === 401)
+        Toast.show({
+          type: "bctError",
+          text1: result.message,
+        });
+    }
+  };
+}
+
+const contructUpdateServicePayload = (formData) => {
+  let params = formData.serviceDetails.details.map((item) => {
+    let newitem = {
+      details: {
+        action: "UPDATE",
+        serviceName: item.productName,
+        serviceCategory: item.productCategory,
+        serviceType: item.serviceType,
+        planPayload: {
+          productId: item.productId,
+          productUuid: item.productUuid,
+        },
+        quantity: "" + item.quantity,
+        customerUuid: formData.customerUuid,
+        currency: item.productChargesList[0].chargeDetails.currency,
+        billLanguage: "BLENG",
+        accountUuid: formData.accountUuid,
+        serviceUuid: item.serviceUuid,
+      },
+      address: {
+        isPrimary: false,
+        address1: formData.serviceDetails.address1,
+        address2: formData.serviceDetails.address2,
+        address3: formData.serviceDetails.address3,
+        city: formData.serviceDetails.city,
+        state: formData.serviceDetails.state,
+        district: formData.serviceDetails.district,
+        country: formData.serviceDetails.country,
+        postcode: formData.serviceDetails.postCode,
+      },
+    };
+    return newitem;
+  });
+  return params;
+};
+
+export function updateAccountData(formData, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.UPDATE_ACCOUNT_API + formData.customerUuid;
+    let params = contructUpdateAccountPayload();
+    let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    if (result.success) {
+      dispatch(setCreateCustomerDataInStore(result.data.data));
+      // dispatch(setCurrentStepInStore(5));
+    } else {
+      dispatch(setCreateCustomerErrorDataInStore(result));
+      if (result.errorCode === 401)
+        Toast.show({
+          type: "bctError",
+          text1: result.message,
+        });
+    }
+  };
+}
+
+const contructUpdateAccountPayload = (formData) => {
+  let params = {
+    details: {
+      action: "UPDATE",
+      firstName: formData.accountDetails.firstName,
+      lastName: formData.accountDetails.lastName,
+      gender: formData.accountDetails.gender.code,
+      idType: formData.accountDetails.idType.code,
+      idValue: formData.accountDetails.idValue,
+      registeredNo: formData.accountDetails.registeredNo,
+      registeredDate: formData.accountDetails.registeredDate,
+      accountCategory: formData.accountDetails.accountCategory.code,
+      accountLevel: formData.accountDetails.accountLevel.code,
+      billLanguage: formData.accountDetails.billLang.code,
+      accountType: formData.accountDetails.accountType.code,
+      notificationPreference: formData.accountDetails.notifPref.code,
+      currency: formData.accountDetails.currency.code,
+    },
+    contact: {
+      contactNo: formData.contactNo,
+      isPrimary: true,
+      firstName: formData.accountDetails.firstName,
+      lastName: formData.accountDetails.lastName,
+      emailId: formData.accountDetails.emailId,
+      mobilePrefix: formData.accountDetails.mobilePrefix,
+      mobileNo: formData.accountDetails.mobileNo,
+    },
+  };
+  return params;
+};
