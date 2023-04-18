@@ -248,13 +248,21 @@ export const Appointment = ({ navigation }) => {
   let startDate = moment(); //today
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState("");
-
+  let scleduledAppointment = [];
   useEffect(() => {
     async function getSelectedDate() {
-      // setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      scleduledAppointment = dashboardAppointments.appointmentDashboardData.map(
+        (v) => ({
+          ...v,
+          startDate: moment(v.appointDate + " " + v.appointStartTime),
+          endDate: moment(v.appointDate + " " + v.appointEndTime),
+        })
+      );
     }
     getSelectedDate();
   }, []);
+
   const onDateSelected = (date) => {
     setSelectedDate(moment(date).format("YYYY-MM-DD"));
   };
@@ -410,26 +418,30 @@ export const Appointment = ({ navigation }) => {
     {
       title: "Payment not working",
       isAudio: true,
+      appointDate: "2023-04-18",
       startDate: moment("2023-04-18 0:45:00"),
       endDate: moment("2023-04-18 1:45:00"),
     },
     {
       title: "New connection",
       isAudio: false,
+      appointDate: "2023-04-18",
       startDate: moment("2023-04-18 2:00:00"),
       endDate: moment("2023-04-18 2:30:00"),
     },
     {
       title: "Billing Problems",
       isAudio: true,
+      appointDate: "2023-04-18",
       startDate: moment("2023-04-18 3:45:00"),
       endDate: moment("2023-04-18 4:45:00"),
     },
     {
       title: "Postpaid connection address change",
       isAudio: false,
-      startDate: moment("2023-04-13 12:45:00"),
-      endDate: moment("2023-04-13 15:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 12:45:00"),
+      endDate: moment("2023-04-18 15:45:00"),
     },
   ]);
   const AppointListItem = ({ data }) => {
@@ -1032,7 +1044,7 @@ export const Appointment = ({ navigation }) => {
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
-                    items={items}
+                    items={scleduledAppointment}
                     renderItem={(props) => <AppointItems {...props} />}
                     // provide only one of these
                     date={date}
