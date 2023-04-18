@@ -30,7 +30,7 @@ import ConfirmForgotPassword from "../Screens/ForgotPassword/ConfirmForgotPasswo
 import ResetPassword from "../Screens/ForgotPassword/ResetPassword";
 import ForgotUserinfo from "../Screens/ForgotUserInfo/ForgotUserinfo";
 import VerifyForgotUserInfo from "../Screens/ForgotUserInfo/VerifyForgotUserInfo";
-// import { Playground } from "../Screens/Playground";
+import { Playground } from "../Screens/Playground";
 // import About from "../Screens/TabScreens/About";
 // import InquiryNotification from "../Screens/TabScreens/InquiryNotification";
 import { Modal, useTheme } from "react-native-paper";
@@ -92,7 +92,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_REGISTER}
+        initialRouteName={STACK_INTERACTION}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -226,11 +226,11 @@ function MyStack() {
             },
           }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name="Playground"
           component={Playground}
-        /> */}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="BottomBar"

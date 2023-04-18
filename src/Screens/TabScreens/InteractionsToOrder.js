@@ -72,6 +72,7 @@ import {
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
+import { HandleResolution } from "./Component/Interaction/Resolution";
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Catgory" },
   frequently: { value: "frequently", title: "Most frequently interaction" },
@@ -79,6 +80,8 @@ export const typeOfAccrodin = {
   searchbox: { value: "searchbox", title: "Seach input" },
   productChoose: { value: "productChoose", title: "Select Product" },
   knowlegde: { value: "knowlegde", title: "Select Service" },
+  resolved: { value: "Resolved", title: "Resolution Corner" },
+
 };
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
@@ -88,9 +91,13 @@ const INTELIGENCE_STATUS = {
   RESOVLED: "RESOLVED"
 }
 const InteractionsToOrder = ({ route, navigation }) => {
-  const [createInteractionType, setCreateInteractionType] = useState("")
+  //to do empty
+  // const [createInteractionType, setCreateInteractionType] = useState("")
+  const [createInteractionType, setCreateInteractionType] = useState(INTELIGENCE_STATUS.RESOVLED)
+  // const [activeChatBotSec, setactiveChatBot] = useState("");
+  const [activeChatBotSec, setactiveChatBot] = useState(typeOfAccrodin.resolved.title);
   const [activeService, setService] = useState("");
-  const [activeChatBotSec, setactiveChatBot] = useState("");
+
   //need enable screen loader
   const [loader, setLoader] = useState(true);
   //attachment
@@ -106,7 +113,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
   const [openBottomModal, setOpenBottomModal] = useState(false);
-  const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(false);
+  const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(true);
 
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
@@ -350,7 +357,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       //interaction creation part  
       if (actionType == "auto_resolution") {
         await setCreateInteractionType(INTELIGENCE_STATUS.RESOVLED)
-        setactiveChatBot(typeOfAccrodin.productChoose)
+        setactiveChatBot(typeOfAccrodin.resolved)
         setOpenBottomModalChatBot(true)
         return null
       }
@@ -1021,34 +1028,66 @@ const InteractionsToOrder = ({ route, navigation }) => {
    *
    */
   const RenderBottomChatBoard = () => {
-    const suggestionList = get(interactionReducer, "InteractionData.resolutionAction.data", []);
-
+    const suggestionList = get(interactionReducer, "knowledgeHistory.d", [
+      {
+        "actionType": "SENDMESSAGE",
+        "description": "Send for query Resolved",
+        "type": "string",
+        "message": "Is your query resolved ?"
+      },
+      {
+        "actionType": "COLLECTINPUT",
+        "description": "Get Customer Choice",
+        "type": "object",
+        "message": {
+          "element": "YES_NO_BUTTON",
+          "attributes": [
+            {
+              "url": "",
+              "name": "YES",
+              "type": "BUTTON",
+              "popup": "Are you sure to Purchase Addon Plan?",
+              "value": "Yes, please proceed"
+            },
+            {
+              "url": "",
+              "name": "NO",
+              "type": "BUTTON",
+              "popup": "Are you sure Not To Purchase Addon?",
+              "value": "No"
+            }
+          ]
+        }
+      },
+      {
+        "actionType": "SENDMESSAGE",
+        "description": "final Message",
+        "type": "string",
+        "message": "Thanks for Contacting us"
+      },
+      {
+        "actionType": "WORKFLOWEND",
+        "description": "",
+        "type": "",
+        "message": ""
+      }
+    ]);
+    console.log('>> ff', suggestionList)
+    //todo
     if (activeChatBotSec == "") {
       console.log("setactiveChatBot not set for title for chat bot");
       return null;
     }
-    if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+    //todo 
+    // if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+    if (true) {
+      // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
       return (
-        <View style={styles.bottomContainer}>
-          <ClearSpace size={4} />
-          <View
-            style={{
-              padding: 8,
-              paddingLeft: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-
-              borderRadius: 10,
-              marginTop: 20,
-            }}
-          >
-
-          </View>
-
-        </View>
+        <HandleResolution suggestionList={suggestionList} />
       );
+
     }
+
 
     return (
       <HandleMultipleCaseInChatBoard suggestionList={suggestionList} />

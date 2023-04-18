@@ -91,7 +91,11 @@ export function fetchInteractionAction(type = "", params = {}) {
         let converstionHistory = []
         if (flowId != "") {
           const conversationID = get(interactionResult, 'data.data.conversationUid', '')
-          const workflowSetInterval = setInterval(async () => {
+          const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+          // console.log('mockArray', mockArray)
+          // (async function () {
+          for await (const num of mockArray) {
+            console.log('hititng inside',)
             const workflowResult = await serverCall(
               `${endPoints.INTERACTION_WORKFLOW}`,
               requestMethod.POST,
@@ -112,9 +116,13 @@ export function fetchInteractionAction(type = "", params = {}) {
             const callAgain = get(workflowResult, 'data.data.callAgain', false)
             console.log('callagain', callAgain)
             if (!callAgain) {
-              clearInterval(workflowSetInterval)
+              break;
             }
-          }, 1000);
+          }
+          // })();
+
+
+
           console.log('converstionHistory', converstionHistory)
 
           dispatch(setknowledgeHistory(converstionHistory))
