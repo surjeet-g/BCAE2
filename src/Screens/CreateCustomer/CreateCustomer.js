@@ -40,7 +40,7 @@ import {
   removeCategoryProducts,
   setCurrentStepInStore,
   setShowAccountCreationModal,
-  setGetQuoteOnly,
+  setSignatureInFormData,
 } from "./CreateCustomerAction";
 import {
   fetchServiceProducts,
@@ -76,7 +76,7 @@ const CreateCustomer = ({ navigation }) => {
     createCustomerService,
     updateCustomerServiceData,
     setCurrentStepInStore,
-    setGetQuoteOnly,
+    setSignatureInFormData,
     updateCustomerStatus,
   ]);
   const [formData, setFormData] = useState({
@@ -1623,7 +1623,7 @@ const CreateCustomer = ({ navigation }) => {
         // setShowAccountCreationModal(true);
         break;
       case 9:
-        setFormData({ ...formData, signature });
+        dispatch(setSignatureInFormData(signature));
         dispatch(setCurrentStepInStore(currentStep + 1));
         break;
       default:
