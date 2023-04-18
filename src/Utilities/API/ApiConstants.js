@@ -14,6 +14,7 @@ export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const endPoints = {
   SEACH_CUSTOMERS: "api/users/search",
   INTERACTION_ADD: "api/interaction/create",
+  INTERACTION_WORKFLOW: "api/workflow/resolution",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
   INTELIGENCE: "api/intelligence-corner/based-on-interaction",
   FREQUENTLY_ASKED: "api/interaction/frequent",

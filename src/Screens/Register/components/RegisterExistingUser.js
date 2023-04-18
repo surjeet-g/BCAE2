@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, View } from "react-native";
+import { Alert, Image, ScrollView, View } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,16 +15,16 @@ import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister,
+  userRegister
 } from "../../../Redux/RegisterDispatcher";
-var { height, width } = Dimensions.get("screen");
 
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../../Utilities/utils";
 
+import get from "lodash.get";
 import DatePicker from "react-native-date-picker";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
 import { ClearSpace } from "../../../Components/ClearSpace";
@@ -34,7 +34,7 @@ import {
   isValidNumber,
   spacing,
   validateEmail,
-  validatePassword,
+  validatePassword
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -489,6 +489,13 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     setPasswordError("");
     buttonEnableDiable();
   };
+  const masterReducer = useSelector((state) => state.masterdata);
+
+  const customerIdList = get(
+    masterReducer,
+    "masterdataData.CUSTOMER_ID_TYPE",
+    []
+  );
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
@@ -573,7 +580,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
               <CustomDropDown
                 selectedValue={selectedValueIdType}
                 setValue={setValueIdType}
-                data={registerForm?.registerFormData?.CUSTOMER_ID_TYPE ?? []}
+                data={customerIdList}
                 onChangeText={(text) => onIdTypeClick(text)}
                 value={idType?.description}
                 placeHolder={strings.id_type}
@@ -677,7 +684,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobile"
+                    registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -720,7 +727,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "mobileOtp"
+                    registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -772,7 +779,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "email"
+                    registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -815,7 +822,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                  registerForm?.otpUsageType === "emailOtp"
+                    registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }

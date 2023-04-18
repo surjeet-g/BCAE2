@@ -68,9 +68,7 @@ import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import {
-  getCustomerID,
-  getUserType,
-  USERTYPE
+  getCustomerID, USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -80,13 +78,14 @@ export const typeOfAccrodin = {
   rencently: { value: "rencently", title: "Recently inteaction" },
   searchbox: { value: "searchbox", title: "Seach input" },
   productChoose: { value: "productChoose", title: "Select Product" },
-
+  knowlegde: { value: "knowlegde", title: "Select Service" },
 };
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
   CREATE_INTERACTION_AUTO: "CREATE_INTERACTION_AUTO",
   PRODUCT_WITH_MULTIPLE_ITEM: "PRODUCT_WITH_MULTIPLE_ITEM",
-  PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM"
+  PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM",
+  RESOVLED: "RESOLVED"
 }
 const InteractionsToOrder = ({ route, navigation }) => {
   const [createInteractionType, setCreateInteractionType] = useState("")
@@ -230,6 +229,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   useEffect(() => {
     async function fetchMyAPI() {
+      // const userType = await getUserType();
+
+      // setUserType(userType);
+    }
+
+    fetchMyAPI();
+  }, []);
+  useEffect(() => {
+    async function fetchMyAPI() {
+      setService({
+        code: "SC_INSURANCE",
+        description: "Insurance",
+      });
+    }
+
+    fetchMyAPI();
+
+  }, []);
+
+
+  useEffect(() => {
+    async function fetchMyAPI() {
       const {
         SERVICE_TYPE,
         INTXN_TYPE,
@@ -243,12 +264,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
       } = MASTER_DATA_CONSTANT;
       //set service
       //to get data from api
-      setService({
-        code: "SC_INSURANCE",
-        description: "Insurance",
-      });
-      // await dispatchInteraction(fetchInteractionAction(true));
-      await profileDispatch(fetchMyProfileData(navigation));
+
+      //  await dispatchInteraction(fetchInteractionAction(true));
+      profileDispatch(fetchMyProfileData(navigation));
       setLoader(false);
       // master only invoke load
       masterDispatch(
@@ -256,10 +274,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
           `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
         )
       );
-      const userType = await getUserType();
-      console.log(">>rrr", userType);
-      setUserType(userType);
-      // if (userType == USERTYPE.CUSTOMER) {
+
+
     }
 
     fetchMyAPI();
@@ -319,16 +335,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
   * handleInteligenceResponse 
   *
   * @param {number} params The number to raise.
+  * @param {number} actionType actionType enum "auto_resolution","choose_item" choose_item: having multple items,auto_resolution : already resovled
   * @param {Object} item whilte onclick the data .
   * @return {number} x raised to the n-th power.
   */
-  const handleInteligenceResponse = async (resp, item = {}) => {
+  const handleInteligenceResponse = async (resp, item = {}, actionType = "auto_resolution") => {
     try {
       const debugg = true
       if (debugg) console.log('handleInteligenceResponse: parms resp', resp, "item", item)
       const isCreateInteraction = get(resp, 'outcome.interactionCreation', false)
       if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
+      if (debugg) console.log('handleInteligenceResponse : actionType', actionType)
+
       //interaction creation part  
+      if (actionType == "auto_resolution") {
+        await setCreateInteractionType(INTELIGENCE_STATUS.RESOVLED)
+        setactiveChatBot(typeOfAccrodin.productChoose)
+        setOpenBottomModalChatBot(true)
+        return null
+      }
       if (isCreateInteraction) {
         //todo popup
         if (debugg) console.log('handleInteligenceResponse : crate interaction if condition')
@@ -354,8 +379,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       else {
         if (debugg) console.log('handleInteligenceResponse : not create interaction else condition')
 
-        const solutionList = get(resp, 'data', [])
-        const solutionCount = solutionList.length
+        const resolutionList = get(resp, 'resolutionAction.data', [])
+        const solutionCount = resolutionList.length
         if (solutionCount == 0) {
           //to do throw error
           alert("//TO DO ")
@@ -429,88 +454,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
                 onPress={async () => {
                   //store selected result in cache
-                  await setBottombartitle(typeOfAccrodin.searchbox.title);
-                  const response = await dispatchInteraction(
-                    fetchInteractionAction(typeOfAccrodin.searchbox.value, {
+                  await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                  const { response, actionType } = await dispatchInteraction(
+                    fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                       requestId: item.requestId,
                     })
                   );
-                  const mockresponse = {
-                    "outcome": {
-                      "appointmentRequired": false,
-                      "orderCreation": false,
-                      "interactionCreation": true
-                    },
-                    "data": [
-                      {
-                        "confirmMessage": "Would you like to proceed to order screen?",
-                        "message": "We have found excellent offers for you.",
-                        "displayType": "SELECTABLE",
-                        "result": [
-                          {
-                            "name": "Product name",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Debit Cards"
-                          },
-                          {
-                            "name": "Product category",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Service"
-                          },
-                          {
-                            "name": "Service type",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Bank Account"
-                          },
-                          {
-                            "name": "Warranty period",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "3 Years"
-                          }
-                        ]
-                      },
-                      {
-                        "confirmMessage": "Would you like to proceed to order screen?",
-                        "message": "We have found excellent offers for you.",
-                        "displayType": "SELECTABLE",
-                        "result": [
-                          {
-                            "name": "Product name",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Savings Accounts"
-                          },
-                          {
-                            "name": "Product category",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Service"
-                          },
-                          {
-                            "name": "Service type",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "Bank Account"
-                          },
-                          {
-                            "name": "Warranty period",
-                            "type": "text",
-                            "entity": "PRODUCT",
-                            "value": "3 Years"
-                          }
-                        ]
-                      }
-                    ]
-                  }
 
-                  const status = await handleInteligenceResponse(mockresponse, item)
+
+
+
+                  const status = await handleInteligenceResponse(response, item, actionType)
                   console.log('response', status)
                   return null
-                  console.log('>>', response)
+
                   setActiveInteraction(item);
                   //open form model
                   setOpenBottomModalChatBot(true);
@@ -991,22 +948,34 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //handling loader
   const HandleMultipleCaseInChatBoard = ({ suggestionList }) => {
     //product list
+    console.log('HandleMultipleCaseInChatBoard suggestion list ', suggestionList)
+    console.log('HandleMultipleCaseInChatBoard :createInteractionType', createInteractionType)
     if (createInteractionType == INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM) {
-      console.log('suggestion list', suggestionList)
+      console.log('HandleMultipleCaseInChatBoard :suggestion list', suggestionList)
       return (
         <View style={styles.bottomContainer}>
           <ClearSpace size={2} />
-          <Text variant="labelMedium">Next Action - Resoltion</Text>
-          <ClearSpace size={2} />
+
+
 
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {suggestionList.data.length > 0 ? (
-              suggestionList.data.map((ite) => (
+            {get(suggestionList, 'length', 0) > 0 ? (
+              suggestionList.map((ite) => (
                 // eslint-disable-next-line react/jsx-key
                 <Chip
                   mode="outlined"
                   onPress={async () => {
-                    alert("navigate to product scrren with payload", JSON.stringify(ite))
+                    const { response, actionType } = await dispatchInteraction(
+                      fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
+                        serviceUuid: ite.serviceUuid,
+                        accountUuid: ite.accountUuid,
+                        actionCount: 1,
+                        requestId: get(interactionReducer, "InteractionData.requestId", "")
+
+                      })
+                    );
+                    console.log('view->HandleMultipleCaseInChatBoard->api response ', response, actionType)
+                    // const status = await handleInteligenceResponse(mockresponse, item)
                   }}
                   textStyle={{
                     fontSize: 14,
@@ -1020,7 +989,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     borderColor: "transparent",
                   }}
                 >
-                  {ite.message}
+                  {ite.serviceName}
                 </Chip>
               ))
             ) : (
@@ -1033,13 +1002,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
           </View>
           <ClearSpace size={3} />
 
-          <Text variant="labelMedium" style={{ textAlign: "center" }}>
+          {/* <Text variant="labelMedium" style={{ textAlign: "center" }}>
             Couldn't Find a resolution?
             <Text onPress={() => { }} style={{ color: "red" }}>
               {" "}
               Create Interaction
             </Text>{" "}
-          </Text>
+          </Text> */}
         </View>
       )
     }
@@ -1052,13 +1021,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
    *
    */
   const RenderBottomChatBoard = () => {
-    const suggestionList = get(interactionReducer, "InteractionData", []);
+    const suggestionList = get(interactionReducer, "InteractionData.resolutionAction.data", []);
 
     if (activeChatBotSec == "") {
       console.log("setactiveChatBot not set for title for chat bot");
       return null;
     }
-    if (isSolutionFound) {
+    if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
       return (
         <View style={styles.bottomContainer}>
           <ClearSpace size={4} />
@@ -1074,53 +1043,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
               marginTop: 20,
             }}
           >
-            <Text
-              variant="bodyLarge"
-              style={{ textAlign: "center", color: "#3FB94D" }}
-            >
-              {`${strings.soultion_found}`}
-            </Text>
+
           </View>
-          <ClearSpace size={2} />
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {requestStatementHistory.length &&
-              requestStatementHistory.map((item, idx) => (
-                <View
-                  key={item}
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                >
-                  <Chip
-                    mode="outlined"
-                    onPress={() => {
-                      alert("sdfsf");
-                    }}
-                    textStyle={{
-                      fontSize: 14,
-                      fontWeight: "400",
-                    }}
-                    style={{
-                      backgroundColor: "#d9e7ff",
-                      borderRadius: 15,
-                      padding: 0,
-                      marginRight: 5,
-                      borderColor: "transparent",
-                      marginBottom: 5,
-                    }}
-                  >
-                    {item}{" "}
-                  </Chip>
-                  {requestStatementHistory.length != idx + 1 && (
-                    <Icon
-                      name="arrow-right"
-                      size={20}
-                      color={"#4C5A81"}
-                      style={{ marginRight: 5 }}
-                    />
-                  )}
-                </View>
-              ))}
-          </View>
-          <ClearSpace size={3} />
+
         </View>
       );
     }
@@ -1197,7 +1122,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
-  console.log('data', profileReducer.IsSearchEmpty)
+  console.log('knowlegebased result', interactionRedux.knowledgeHistory)
   return (
     <>
       {profileReducer.IsSearchEmpty &&
@@ -1325,6 +1250,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       >
         <RenderBottomChatBoard />
       </FooterModel>
+
 
       <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}
         title={bottomBarTitle}>

@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
@@ -22,16 +22,16 @@ import {
   color,
   fontSizes,
   isValidNumber,
-  spacing,
+  spacing
 } from "../../Utilities/Constants/Constant";
 import {
   notificationListener,
-  requestUserPermission,
+  requestUserPermission
 } from "../../Utilities/FCM/NotificationService";
 import { strings } from "../../Utilities/Language";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "../../Utilities/utils";
 import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
@@ -40,7 +40,7 @@ import {
   resetLogin,
   resetShowSecondLoginAlert,
   sendLoginOTPData,
-  verifyLoginData,
+  verifyLoginData
 } from "./LoginDispatcher";
 
 export const BUSINESS = "Business";
@@ -63,8 +63,8 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
+  const [password, setPassword] = useState("Test@123");
   //bussiness
   // const [username, setUsername] = useState("mobappbcae@yopmail.com");
   // const [password, setPassword] = useState("Test@123");
@@ -579,8 +579,8 @@ export const Login = ({ navigation }) => {
                     ? true
                     : false
                   : number == "" || password == ""
-                  ? true
-                  : false
+                    ? true
+                    : false
               }
               onPress={() => {
                 loginMode === EMAIL

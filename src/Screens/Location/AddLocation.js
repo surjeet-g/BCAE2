@@ -832,9 +832,10 @@ const AddLocation = ({ route, navigation }) => {
                 if (addressRes.length == 0) return null
                 setAddNaviFrom("auto")
                 if (addressRes.length == 1) {
+                  console.log('address response data', addressRes[0])
                   setValueState(addressRes[0]?.state)
                   setStateName(addressRes[0]?.state)
-
+                  setCountryName(addressRes[0]?.country)
                   setValueState(addressRes[0]?.state)
                   setStateName(addressRes[0]?.state)
 
