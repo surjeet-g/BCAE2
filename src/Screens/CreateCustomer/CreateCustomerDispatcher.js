@@ -287,6 +287,7 @@ export function updateCustomerStatus(formData, navigation = null) {
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     console.log("$$$-updateCustomerStatus-result", JSON.stringify(result));
     if (result.success) {
+      // TODO: Check what to next step - like where to navigate
       Toast.show({
         type: "bctSuccess",
         text1: result.data.message,
@@ -300,3 +301,64 @@ export function updateCustomerStatus(formData, navigation = null) {
     }
   };
 }
+
+export function createOrderForCustomer(formData, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.CREATE_ORDER_API;
+    let params = constructCreateOrderPayload(formData);
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-createOrderForCustomer-result", JSON.stringify(result));
+    if (result.success) {
+      // TODO: Check what to next step - like where to navigate
+      Toast.show({
+        type: "bctSuccess",
+        text1: result.data.message,
+      });
+    } else {
+      dispatch(setCreateCustomerErrorDataInStore(result));
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
+    }
+  };
+}
+
+const constructCreateOrderPayload = (formData) => {
+  // TODO: Need clarification on payload
+  let params = {
+    customerUuid: formData.customerUuid,
+    orderCategory: "OC_N",
+    orderSource: "CC",
+    orderType: "OT_SU",
+    orderChannel: "CHNL004",
+    orderCause: "CHNL024",
+    orderPriority: "PRTYHGH",
+    billAmount: 1000,
+    orderDescription: "Customer Order",
+    order: formData.serviceDetails.details.map((item) => {
+      let modifiedItem = {
+        orderFamily: "OF_PHYCL",
+        orderMode: "ONLINE",
+        billAmount: "" + item.price,
+        orderDescription: "Postpaid",
+        serviceType: item.serviceTypeDescription.code,
+        accountUuid: formData.accountUuid,
+        serviceUuid: item.service.serviceUuid,
+        contactPreference: ["CHNL004"],
+        product: [
+          {
+            productId: item.productId,
+            productQuantity: item.quantity,
+            productAddedDate: "2023-04-19 03:31:29",
+            billAmount: 1000,
+            edof: "2023-04-19",
+            productSerialNo: "PROD-10",
+          },
+        ],
+      };
+      return modifiedItem;
+    }),
+  };
+  return params;
+};

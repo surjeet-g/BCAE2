@@ -1653,6 +1653,12 @@ const CreateCustomer = ({ navigation }) => {
     setTimeout(() => setShowSameAccountDetailsModal(true), 100);
   };
 
+  const handleCreateOrderYes = () => {
+    setShowCreateOrderModal(false);
+    // TODO: Implement/Dispatch Create Order Endpoint Action
+    dispatch(updateCustomerStatus(formData, navigation));
+  };
+
   const handleSameAccountDetailsNo = () => {
     handleAccountDetails("title", "");
     handleAccountDetails("firstName", "");
@@ -1955,6 +1961,51 @@ const CreateCustomer = ({ navigation }) => {
               </Text>
             </Pressable>
             <Pressable onPress={handleSameAccountDetailsNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Create Order Modal */}
+      <Modal
+        visible={showCreateOrderModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showCreateOrderModal}
+          setOpen={setShowCreateOrderModal}
+          title={"Are you sure, you want to generate the order?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleCreateOrderYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => setShowCreateOrderModal(false)}>
               <Text
                 style={{
                   paddingVertical: 10,

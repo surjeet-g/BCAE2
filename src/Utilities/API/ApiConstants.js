@@ -75,6 +75,7 @@ export const endPoints = {
   UPDATE_CUSTOMER_SERVICE_API: "api/accounts/service/update",
   UPDATE_ACCOUNT_API: "api/accounts/update/",
   UPDATE_CUSTOMER_STATUS_API: "api/customer/update-status",
+  CREATE_ORDER_API: "api/order/create",
 };
 
 export const requestMethod = {
