@@ -253,3 +253,29 @@ const contructUpdateAccountPayload = (formData) => {
   };
   return params;
 };
+
+export function updateCustomerStatus(formData, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.UPDATE_CUSTOMER_STATUS_API;
+    let params = {
+      customerUuid: formData.customerUuid,
+      accountUuid: formData.accountUuid,
+      service: formData.serviceDetails.details.map((item) => {
+        return item.serviceUuid;
+      }),
+      getQuote: false,
+    };
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    if (result.success) {
+      dispatch(setCreateCustomerDataInStore(result.data.data));
+      // dispatch(setCurrentStepInStore(5));
+    } else {
+      dispatch(setCreateCustomerErrorDataInStore(result));
+      if (result.errorCode === 401)
+        Toast.show({
+          type: "bctError",
+          text1: result.message,
+        });
+    }
+  };
+}
