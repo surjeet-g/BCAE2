@@ -58,11 +58,10 @@ export function createCustomer(formData, navigation = null) {
       dispatch(setCurrentStepInStore(2));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }
@@ -138,11 +137,10 @@ export function createCustomerService(formData, navigation = null) {
         : dispatch(setCurrentStepInStore(5));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }
