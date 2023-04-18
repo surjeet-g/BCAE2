@@ -86,12 +86,8 @@ const CreateCustomer = ({ navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
   const [addressTakenType, setAddressTakenType] = useState("Manual");
 
-  // const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
-  // const [showAccountCreationModal, setShowAccountCreationModal] = useState(
-  //   formData?.showAccountCreationModal
-  // );
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
@@ -226,7 +222,7 @@ const CreateCustomer = ({ navigation }) => {
         setStepIndicator(0);
         break;
     }
-    setFormData({ ...formData, currentStep });
+    // setFormData({ ...formData, currentStep });
   }, [currentStep]);
 
   // Step = 0

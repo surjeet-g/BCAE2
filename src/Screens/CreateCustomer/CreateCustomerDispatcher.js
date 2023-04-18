@@ -181,11 +181,10 @@ export function updateCustomerServiceData(formData, navigation = null) {
       dispatch(setShowAccountCreationModal(true));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }

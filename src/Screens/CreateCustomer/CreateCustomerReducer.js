@@ -13,7 +13,13 @@ import {
 const initialState = {
   initCreateCustomer: false,
   currentStep: 0,
-  formData: { showAccountCreationModal: false, getQuote: false },
+  formData: {
+    getQuote: false,
+    showAccountCreationModal: false,
+    customerDetails: {},
+    accountDetails: {},
+    serviceDetails: { details: [] },
+  },
   customerDataError: {},
   products: [],
   productsError: {},
@@ -43,6 +49,8 @@ const initialState = {
 };
 
 const CreateCustomerReducer = (state = initialState, action) => {
+  console.log("$$$-------->>>>>>>>>in reducer");
+  console.log("$$$-state", JSON.stringify(state));
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
       const newProducts = action.data.map((product) => {
@@ -132,30 +140,29 @@ const CreateCustomerReducer = (state = initialState, action) => {
         ...state,
         currentStep: action.data,
       };
-    case CREATE_CUSTOMER_SERVICE_SUCCESS:
-      console.log("$$$-------->>>>>>>>>in reducer");
-      {
-        let newformData = { ...state.formData };
-        let { data } = action;
-        newformData = { ...newformData, ...data[0].account };
-        let { serviceDetails } = newformData;
-        let { details } = serviceDetails;
-        details = details.map((item) => {
-          const prtUuid = item.productUuid;
-          const obj = data.find((currentItem) => {
-            if (currentItem.service.productUuid === prtUuid) return currentItem;
-          });
-          console.log("$$$-obj", obj);
-          let newItem = { ...item, ...obj };
-          return newItem;
+    case CREATE_CUSTOMER_SERVICE_SUCCESS: {
+      let newformData = { ...state.formData };
+      let { data } = action;
+      newformData = { ...newformData, ...data[0].account };
+
+      let { serviceDetails } = newformData;
+      let { details } = serviceDetails;
+      details = details.map((item) => {
+        const prtUuid = item.productUuid;
+        const obj = data.find((currentItem) => {
+          if (currentItem.service.productUuid === prtUuid) return currentItem;
         });
-        serviceDetails.details = details;
-        newformData = { ...newformData, serviceDetails };
-        return {
-          ...state,
-          formData: newformData,
-        };
-      }
+        let newItem = { ...item, ...obj };
+        return newItem;
+      });
+      serviceDetails.details = details;
+      newformData = { ...newformData, serviceDetails };
+      console.log("$$$-newformData-fullydone", JSON.stringify(newformData));
+      return {
+        ...state,
+        formData: newformData,
+      };
+    }
     case SET_SHOW_ACCOUNT_CREATION_MODAL:
       return {
         ...state,
