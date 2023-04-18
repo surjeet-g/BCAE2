@@ -122,15 +122,12 @@ export function updateCustomerData(formData, navigation = null) {
 }
 
 export function createCustomerService(formData, navigation = null) {
-  console.log("$$$-createCustomerService");
   return async (dispatch) => {
     let url = endPoints.CREATE_CUSTOMER_SERVICE_API;
     let params = {
       service: contructServicePayload(formData),
     };
-    console.log("$$$-createCustomerService-params", JSON.stringify(params));
     let result = await serverCall(url, requestMethod.POST, params, navigation);
-    console.log("$$$-createCustomerService-result", JSON.stringify(result));
     if (result.success) {
       dispatch(setCreateCustomerServiceInStore(result.data.data));
       formData?.getQuote
@@ -175,6 +172,7 @@ export function updateCustomerServiceData(formData, navigation = null) {
     let url = endPoints.UPDATE_CUSTOMER_SERVICE_API;
     let params = contructUpdateServicePayload();
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    console.log("$$$-createCustomerService-result", JSON.stringify(result));
     if (result.success) {
       dispatch(setCreateCustomerDataInStore(result.data.data));
       // dispatch(setCurrentStepInStore(5));

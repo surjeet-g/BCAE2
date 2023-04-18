@@ -42,6 +42,5 @@ export function setCurrentStepInStore(data) {
   return { type: SET_CURRENT_STEP, data };
 }
 export function setCreateCustomerServiceInStore(data) {
-  console.log("$$$-setCreateCustomerServiceInStore-Action");
   return { type: CREATE_CUSTOMER_SERVICE_SUCCESS, data };
 }

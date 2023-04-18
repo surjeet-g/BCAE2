@@ -132,7 +132,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
         currentStep: action.data,
       };
     case CREATE_CUSTOMER_SERVICE_SUCCESS:
-      console.log("$$$-------->>>>>>>>>");
+      console.log("$$$-------->>>>>>>>>in reducer");
       {
         let newformData = { ...state.customerData };
         let { data } = action;

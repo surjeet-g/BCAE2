@@ -8,13 +8,12 @@ Icon;
 var { height, width } = Dimensions.get("screen");
 
 export const FooterModel = ({
-  setOpen = () => { },
+  setOpen = () => {},
   open = false,
   children,
   title = "",
   subtitle = "",
 }) => {
-
   if (!open) return null;
   return (
     <View
@@ -111,7 +110,10 @@ export const FooterModel = ({
           </Text>
         </View>
 
-        <ScrollView contentContainerStyle={{ marginBottom: 20 }}>
+        <ScrollView
+          nestedScrollEnabled={true}
+          contentContainerStyle={{ marginBottom: 20 }}
+        >
           {children}
         </ScrollView>
       </View>
