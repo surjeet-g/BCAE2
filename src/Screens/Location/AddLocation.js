@@ -816,7 +816,7 @@ const AddLocation = ({ route, navigation }) => {
             }}
           >
             <Text style={{ color: "#0061ff", marginLeft: 5 }}>
-              Don't you know postal code ?
+              {"Don't you know postal code ?"}
             </Text>
           </Pressable>
           <CustomButton
@@ -839,36 +839,25 @@ const AddLocation = ({ route, navigation }) => {
                     if (addressRes.length == 0) return null;
                     setAddNaviFrom("auto");
                     if (addressRes.length == 1) {
+                      console.log("address response data", addressRes[0]);
                       setValueState(addressRes[0]?.state);
                       setStateName(addressRes[0]?.state);
-
+                      setCountryName(addressRes[0]?.country);
                       setValueState(addressRes[0]?.state);
                       setStateName(addressRes[0]?.state);
 
                       setValueDist(addressRes[0]?.district);
                       setDistName(addressRes[0]?.district);
 
-                if (addressRes.length == 0) return null
-                setAddNaviFrom("auto")
-                if (addressRes.length == 1) {
-                  console.log('address response data', addressRes[0])
-                  setValueState(addressRes[0]?.state)
-                  setStateName(addressRes[0]?.state)
-                  setCountryName(addressRes[0]?.country)
-                  setValueState(addressRes[0]?.state)
-                  setStateName(addressRes[0]?.state)
+                      setKampongName(addressRes[0]?.city);
+                      setValueKampong(addressRes[0]?.city);
 
-                  setValueDist(addressRes[0]?.district)
-                  setDistName(addressRes[0]?.district)
-
-                  setKampongName(addressRes[0]?.city)
-                  setValueKampong(addressRes[0]?.city)
-
-                  setPostcodeName(addressRes[0]?.postCode)
-                  setValuePostcode(addressRes[0]?.postCode)
-
-                }
-              }));
+                      setPostcodeName(addressRes[0]?.postCode);
+                      setValuePostcode(addressRes[0]?.postCode);
+                    }
+                  }
+                )
+              );
             }}
           />
         </View>
