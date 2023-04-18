@@ -7,12 +7,13 @@ import {
   CREATE_CUSTOMER_SUCCESS,
   SET_CURRENT_STEP,
   CREATE_CUSTOMER_SERVICE_SUCCESS,
+  SET_SHOW_ACCOUNT_CREATION_MODAL,
 } from "./CreateCustomerAction";
 
 const initialState = {
   initCreateCustomer: false,
   currentStep: 0,
-  customerData: {},
+  customerData: { showAccountCreationModal: false, getQuote: false },
   customerDataError: {},
   products: [],
   productsError: {},
@@ -141,12 +142,11 @@ const CreateCustomerReducer = (state = initialState, action) => {
         let { details } = serviceDetails;
         details = details.map((item) => {
           const prtUuid = item.productUuid;
-          const service = data.find((currentItem) => {
-            if (currentItem.service.productUuid === prtUuid)
-              return currentItem.service;
+          const obj = data.find((currentItem) => {
+            if (currentItem.service.productUuid === prtUuid) return currentItem;
           });
-          console.log("$$$-service", service);
-          let newItem = { ...item, ...service };
+          console.log("$$$-obj", obj);
+          let newItem = { ...item, ...obj };
           return newItem;
         });
         serviceDetails.details = details;
@@ -156,6 +156,14 @@ const CreateCustomerReducer = (state = initialState, action) => {
           customerData: newformData,
         };
       }
+    case SET_SHOW_ACCOUNT_CREATION_MODAL:
+      return {
+        ...state,
+        customerData: {
+          ...state.customerData,
+          showAccountCreationModal: action.data,
+        },
+      };
     default:
       return state;
   }

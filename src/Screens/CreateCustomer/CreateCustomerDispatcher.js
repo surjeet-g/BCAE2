@@ -9,6 +9,7 @@ import {
   setCreateCustomerErrorDataInStore,
   setCurrentStepInStore,
   setCreateCustomerServiceInStore,
+  setShowAccountCreationModal,
 } from "./CreateCustomerAction";
 
 export function fetchServiceProducts(serviceType, navigation = null) {
@@ -128,6 +129,8 @@ export function createCustomerService(formData, navigation = null) {
       service: contructServicePayload(formData),
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-createCustomerService-result", JSON.stringify(result));
+
     if (result.success) {
       dispatch(setCreateCustomerServiceInStore(result.data.data));
       formData?.getQuote
@@ -175,7 +178,7 @@ export function updateCustomerServiceData(formData, navigation = null) {
     console.log("$$$-updateCustomerServiceData-result", JSON.stringify(result));
     if (result.success) {
       dispatch(setCreateCustomerServiceInStore(result.data.data));
-      // dispatch(setCurrentStepInStore(5));
+      dispatch(setShowAccountCreationModal(true));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
       if (result.errorCode === 401)
@@ -204,7 +207,7 @@ const contructUpdateServicePayload = (formData) => {
         currency: item.productChargesList[0].chargeDetails.currency,
         billLanguage: "BLENG",
         accountUuid: formData.accountUuid,
-        serviceUuid: item.serviceUuid,
+        serviceUuid: item.service.serviceUuid,
       },
       address: {
         isPrimary: false,

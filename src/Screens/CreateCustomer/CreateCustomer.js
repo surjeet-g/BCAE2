@@ -39,6 +39,7 @@ import BillDetails from "./BillDetails";
 import {
   removeCategoryProducts,
   setCurrentStepInStore,
+  setShowAccountCreationModal,
 } from "./CreateCustomerAction";
 import {
   fetchServiceProducts,
@@ -76,6 +77,7 @@ const CreateCustomer = ({ navigation }) => {
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
+    showAccountCreationModal: false,
     customerDetails: {},
     accountDetails: {},
     serviceDetails: { details: [] },
@@ -87,8 +89,9 @@ const CreateCustomer = ({ navigation }) => {
   // const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
-  const [showAccountCreationModal, setShowAccountCreationModal] =
-    useState(false);
+  // const [showAccountCreationModal, setShowAccountCreationModal] = useState(
+  //   formData?.showAccountCreationModal
+  // );
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
@@ -1615,7 +1618,7 @@ const CreateCustomer = ({ navigation }) => {
         break;
       case 5: // Service Address UI Step
         dispatch(updateCustomerServiceData(formData, navigation));
-        setShowAccountCreationModal(true);
+        // setShowAccountCreationModal(true);
         break;
       case 9:
         setFormData({ ...formData, signature });
@@ -1632,13 +1635,13 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleAccountCreationNo = () => {
-    setShowAccountCreationModal(false);
+    dispatch(setShowAccountCreationModal(false));
     setCreateAccount(false);
     dispatch(setCurrentStepInStore(9));
   };
 
   const handleAccountCreationYes = () => {
-    setShowAccountCreationModal(false);
+    dispatch(setShowAccountCreationModal(false));
     setCreateAccount(true);
     setTimeout(() => setShowSameAccountDetailsModal(true), 100);
   };
@@ -1818,6 +1821,10 @@ const CreateCustomer = ({ navigation }) => {
     return icon;
   };
 
+  const dispatchSetShowAccountCreationModal = (data) => {
+    dispatch(setShowAccountCreationModal(data));
+  };
+
   return (
     <View style={styles.container}>
       {loader && <LoadingAnimation title="while we are fetching country" />}
@@ -1866,13 +1873,13 @@ const CreateCustomer = ({ navigation }) => {
       </Modal>
       {/* Account Creation Modal */}
       <Modal
-        visible={showAccountCreationModal}
+        visible={formData?.showAccountCreationModal}
         dismissable={false}
         contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
       >
         <FooterModel
-          open={showAccountCreationModal}
-          setOpen={setShowAccountCreationModal}
+          open={formData?.showAccountCreationModal}
+          setOpen={dispatchSetShowAccountCreationModal}
           title={"Do you want to create an account?"}
         >
           <View style={styles.modalContainer}>
