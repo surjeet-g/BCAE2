@@ -107,16 +107,16 @@ export function updateCustomerData(formData, navigation = null) {
       },
     };
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    console.log("$$$-updateCustomerData-result", result);
     if (result.success) {
       dispatch(setCreateCustomerDataInStore(result.data.data));
       dispatch(setCurrentStepInStore(3));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }
@@ -170,11 +170,11 @@ const contructServicePayload = (formData) => {
 export function updateCustomerServiceData(formData, navigation = null) {
   return async (dispatch) => {
     let url = endPoints.UPDATE_CUSTOMER_SERVICE_API;
-    let params = contructUpdateServicePayload();
+    let params = { service: contructUpdateServicePayload(formData) };
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
-    console.log("$$$-createCustomerService-result", JSON.stringify(result));
+    console.log("$$$-updateCustomerServiceData-result", JSON.stringify(result));
     if (result.success) {
-      dispatch(setCreateCustomerDataInStore(result.data.data));
+      dispatch(setCreateCustomerServiceInStore(result.data.data));
       // dispatch(setCurrentStepInStore(5));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));

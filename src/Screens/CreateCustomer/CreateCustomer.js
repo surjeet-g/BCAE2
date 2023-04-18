@@ -45,6 +45,7 @@ import {
   createCustomer,
   updateCustomerData,
   createCustomerService,
+  updateCustomerServiceData,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -70,6 +71,7 @@ const CreateCustomer = ({ navigation }) => {
     createCustomer,
     updateCustomerData,
     createCustomerService,
+    updateCustomerServiceData,
     setCurrentStepInStore,
   ]);
   const [formData, setFormData] = useState({
@@ -232,12 +234,6 @@ const CreateCustomer = ({ navigation }) => {
         <UploadDocument />
       </View>
     );
-  };
-
-  const handleCustomerDetails = (key, value) => {
-    let { customerDetails } = formData;
-    customerDetails[key] = value;
-    setFormData({ ...formData, customerDetails });
   };
 
   // Step = 1
@@ -961,18 +957,6 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const handleAccountDetails = (key, value) => {
-    let { accountDetails } = formData;
-    accountDetails[key] = value;
-    setFormData({ ...formData, accountDetails });
-  };
-
-  const handleServiceDetails = (key, value) => {
-    let { serviceDetails } = formData;
-    serviceDetails[key] = value;
-    setFormData({ ...formData, serviceDetails });
-  };
-
   // Step = 6
   const renderCreateAccount_DetailsUI = () => {
     return (
@@ -1576,6 +1560,24 @@ const CreateCustomer = ({ navigation }) => {
     return gTotal;
   };
 
+  const handleCustomerDetails = (key, value) => {
+    let { customerDetails } = formData;
+    customerDetails[key] = value;
+    setFormData({ ...formData, customerDetails });
+  };
+
+  const handleAccountDetails = (key, value) => {
+    let { accountDetails } = formData;
+    accountDetails[key] = value;
+    setFormData({ ...formData, accountDetails });
+  };
+
+  const handleServiceDetails = (key, value) => {
+    let { serviceDetails } = formData;
+    serviceDetails[key] = value;
+    setFormData({ ...formData, serviceDetails });
+  };
+
   const handlePrevious = () => {
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(setCurrentStepInStore(4));
@@ -1611,7 +1613,8 @@ const CreateCustomer = ({ navigation }) => {
       case 4:
         dispatch(createCustomerService(formData, navigation));
         break;
-      case 5:
+      case 5: // Service Address UI Step
+        dispatch(updateCustomerServiceData(formData, navigation));
         setShowAccountCreationModal(true);
         break;
       case 9:
