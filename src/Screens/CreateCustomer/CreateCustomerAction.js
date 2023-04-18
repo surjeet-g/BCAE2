@@ -11,6 +11,7 @@ export const CREATE_CUSTOMER_SERVICE_SUCCESS =
   "CREATE_CUSTOMER_SERVICE_SUCCESS";
 export const SET_SHOW_ACCOUNT_CREATION_MODAL =
   "SET_SHOW_ACCOUNT_CREATION_MODAL";
+export const SET_GET_QUOTE_ONLY = "SET_GET_QUOTE_ONLY";
 
 export function initData() {
   return { type: INIT_CREATE_CUSTOMER };
@@ -44,10 +45,14 @@ export function setCurrentStepInStore(data) {
   return { type: SET_CURRENT_STEP, data };
 }
 
-export function setCreateCustomerServiceInStore(data) {
-  return { type: CREATE_CUSTOMER_SERVICE_SUCCESS, data };
+export function setCreateCustomerServiceInStore(formData, data) {
+  return { type: CREATE_CUSTOMER_SERVICE_SUCCESS, formData, data };
 }
 
 export function setShowAccountCreationModal(data) {
   return { type: SET_SHOW_ACCOUNT_CREATION_MODAL, data };
+}
+
+export function setGetQuoteOnly(data) {
+  return { type: SET_GET_QUOTE_ONLY, data };
 }

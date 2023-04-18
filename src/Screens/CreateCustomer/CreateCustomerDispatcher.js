@@ -132,7 +132,7 @@ export function createCustomerService(formData, navigation = null) {
     console.log("$$$-createCustomerService-result", JSON.stringify(result));
 
     if (result.success) {
-      dispatch(setCreateCustomerServiceInStore(result.data.data));
+      dispatch(setCreateCustomerServiceInStore(formData, result.data.data));
       formData?.getQuote
         ? dispatch(setCurrentStepInStore(10))
         : dispatch(setCurrentStepInStore(5));
@@ -177,7 +177,7 @@ export function updateCustomerServiceData(formData, navigation = null) {
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
     console.log("$$$-updateCustomerServiceData-result", JSON.stringify(result));
     if (result.success) {
-      dispatch(setCreateCustomerServiceInStore(result.data.data));
+      dispatch(setCreateCustomerServiceInStore(formData, result.data.data));
       dispatch(setShowAccountCreationModal(true));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
@@ -282,21 +282,23 @@ export function updateCustomerStatus(formData, navigation = null) {
       customerUuid: formData.customerUuid,
       accountUuid: formData.accountUuid,
       service: formData.serviceDetails.details.map((item) => {
-        return item.serviceUuid;
+        return item.service.serviceUuid;
       }),
-      getQuote: false,
+      getQuote: formData.getQuote,
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("$$$-updateCustomerStatus-result", JSON.stringify(result));
     if (result.success) {
-      dispatch(setCreateCustomerDataInStore(result.data.data));
-      // dispatch(setCurrentStepInStore(5));
+      Toast.show({
+        type: "bctSuccess",
+        text1: result.data.message,
+      });
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }

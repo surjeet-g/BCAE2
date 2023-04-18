@@ -8,6 +8,7 @@ import {
   SET_CURRENT_STEP,
   CREATE_CUSTOMER_SERVICE_SUCCESS,
   SET_SHOW_ACCOUNT_CREATION_MODAL,
+  SET_GET_QUOTE_ONLY,
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -50,7 +51,8 @@ const initialState = {
 
 const CreateCustomerReducer = (state = initialState, action) => {
   console.log("$$$-------->>>>>>>>>in reducer");
-  console.log("$$$-state", JSON.stringify(state));
+  // console.log("$$$-state", JSON.stringify(state));
+  console.log("$$$-action", JSON.stringify(action));
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
       const newProducts = action.data.map((product) => {
@@ -142,8 +144,8 @@ const CreateCustomerReducer = (state = initialState, action) => {
       };
     case CREATE_CUSTOMER_SERVICE_SUCCESS: {
       let newformData = { ...state.formData };
-      let { data } = action;
-      newformData = { ...newformData, ...data[0].account };
+      let { data, formData } = action;
+      newformData = { ...newformData, ...formData, ...data[0].account };
 
       let { serviceDetails } = newformData;
       let { details } = serviceDetails;
@@ -169,6 +171,14 @@ const CreateCustomerReducer = (state = initialState, action) => {
         formData: {
           ...state.formData,
           showAccountCreationModal: action.data,
+        },
+      };
+    case SET_GET_QUOTE_ONLY:
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          getQuote: action.data,
         },
       };
     default:

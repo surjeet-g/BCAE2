@@ -40,6 +40,7 @@ import {
   removeCategoryProducts,
   setCurrentStepInStore,
   setShowAccountCreationModal,
+  setGetQuoteOnly,
 } from "./CreateCustomerAction";
 import {
   fetchServiceProducts,
@@ -47,6 +48,7 @@ import {
   updateCustomerData,
   createCustomerService,
   updateCustomerServiceData,
+  updateCustomerStatus,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -74,6 +76,8 @@ const CreateCustomer = ({ navigation }) => {
     createCustomerService,
     updateCustomerServiceData,
     setCurrentStepInStore,
+    setGetQuoteOnly,
+    updateCustomerStatus,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -696,9 +700,10 @@ const CreateCustomer = ({ navigation }) => {
             }}
             thumbColor={"#fff"}
             // ios_backgroundColor="#3e3e3e"
-            onValueChange={() =>
-              setFormData({ ...formData, getQuote: !formData?.getQuote })
-            }
+            onValueChange={() => {
+              setFormData({ ...formData, getQuote: !formData?.getQuote });
+              // dispatch(setGetQuoteOnly(!formData?.getQuote));
+            }}
             value={formData?.getQuote}
           />
         </View>
@@ -1538,6 +1543,7 @@ const CreateCustomer = ({ navigation }) => {
     return (
       <View>
         <CustomTitleText title={"Show Preview"} />
+        <Text>{formData?.customerUuid}</Text>
         {/* Show Preview View */}
         {signature !== null && (
           <Image
@@ -1627,7 +1633,9 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    alert("Submit with create customer API");
+    if (currentStep === 10 && formData?.getQuote) {
+      dispatch(updateCustomerStatus(formData, navigation));
+    }
   };
 
   const handleAccountCreationNo = () => {
