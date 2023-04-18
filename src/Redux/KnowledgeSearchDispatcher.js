@@ -12,7 +12,7 @@ export const getKnowledgeSearchData = (searchQuery, service) => {
     let params = {};
 
     let result = await serverCall(
-      endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery + "&st=" + service,
+      endPoints.KNOWLEDGE_SEARCH + "?q=" + encodeURI(searchQuery) + "&st=" + "undefined",
       requestMethod.GET,
       params
     );

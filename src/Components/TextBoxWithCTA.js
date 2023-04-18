@@ -3,16 +3,16 @@ import {
   Image,
   StyleSheet,
   Text,
-  TextInput,
+
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { useTheme } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import {
   buttonSize,
   color,
   fontSizes,
-  spacing,
+  spacing
 } from "../Utilities/Constants/Constant";
 
 import theme from "../Utilities/themeConfig";
@@ -118,6 +118,10 @@ export const TextBoxWithCTA = (props) => {
               setActive(false);
             }}
             autoCapitalize="none"
+            placeholderTextColor="#C7CAD1"
+            activeUnderlineColor="transparent"
+            underlineColor="transparent"
+
             autoCorrect={false}
             editable={
               props?.isResendOTP && props?.countryCode == "" ? false : true

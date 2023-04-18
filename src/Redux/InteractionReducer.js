@@ -9,8 +9,7 @@ import {
   INTERACTION_FORM_ERROR, INTERACTION_GET_DETAILS_FAILURE,
   INTERACTION_GET_DETAILS_SUCCESS, INTERACTION_GET_FOLLOWUP_FAILURE,
   INTERACTION_GET_FOLLOWUP_SUCCESS, INTERACTION_GET_WORKFLOW_FAILURE,
-  INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT,
-  INTERACTION_RESET,
+  INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT, INTERACTION_KNEWLEGE_HISTORY, INTERACTION_RESET,
   INTERACTION_SET_FORM
 } from "./InteractionAction";
 
@@ -24,6 +23,7 @@ const InteractionInitialState = {
   interactionWorkFlowErrorData: {},
   InteractionFollowupData: [],
   interactionFollowupErrorData: {},
+  knowledgeHistory: [],
   formData: {
     statement: {
       field: "statement",
@@ -173,6 +173,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
           },
         };
       } else {
+        console.log('interact->reducer->set inteaction data', action.data)
         return {
           ...state,
           initInteraction: false,
@@ -289,6 +290,13 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         // todo here logic
       };
+    case INTERACTION_KNEWLEGE_HISTORY:
+      return {
+        ...state,
+        knowledgeHistory: action.data
+        // todo here logic
+      };
+
     case INTERACTION_ASSIGN_SELF:
       return {
         ...state,

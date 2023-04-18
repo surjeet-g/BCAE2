@@ -834,7 +834,7 @@ const AddLocation = ({ route, navigation }) => {
                 if (addressRes.length == 1) {
                   setValueState(addressRes[0]?.state)
                   setStateName(addressRes[0]?.state)
-
+                  setCountryName(addressRes[0]?.country)
                   setValueState(addressRes[0]?.state)
                   setStateName(addressRes[0]?.state)
 
