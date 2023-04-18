@@ -66,7 +66,7 @@ export const getCityByDistrict = (locations = [], district = "") => {
     );
     //console.warn("point", addrByDistrict);
     if (addrByDistrict.length != 0) {
-      // console.log("point 1", addrByDistrict);
+      console.log("point 1", addrByDistrict);
       addrByDistrict.map((item) => {
         if (!(uniqueDistrictKey.indexOf(item.city) > -1)) {
           uniqueDistrictKey.push(item.city);
@@ -76,7 +76,7 @@ export const getCityByDistrict = (locations = [], district = "") => {
       finalKampongData = uniqueDistrictKey.map((item) => {
         return { description: item, id: item };
       });
-      // console.log("point 3", finalKampongData);
+      console.log("point 3", finalKampongData);
     }
   }
   // console.warn("", savedLocation?.addressLoopupData);

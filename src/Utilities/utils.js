@@ -39,10 +39,15 @@ export const handleMultipleContact = (addr) => {
 };
 
 export const subString = (str, length = 10) => {
-  if (str == "") return ""
-  let resul = ""
-  if (str.length < length) return str;
-  return str.substring(0, length) + "..."
+
+  try {
+    if (str == "") return ""
+    let resul = ""
+    if (str.length < length) return str;
+    return str.substring(0, length) + "..."
+  } catch (error) {
+
+  }
 }
 export const handleUserStatus = (status) => {
   if (status == "") return ""

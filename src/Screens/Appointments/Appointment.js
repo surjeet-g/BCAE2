@@ -1,3 +1,4 @@
+import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
@@ -8,16 +9,16 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 // import Timeline from 'react-native-timeline-listview';
-
 import CalendarStrip from "react-native-calendar-strip";
 import Timetable from "react-native-calendar-timetable";
 import { Calendar } from "react-native-calendars";
 import DatePicker from "react-native-date-picker";
 import { Card, Divider, Text, TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
 import { BarChartItems } from "../../Components/charts/BarChartItems";
 import { LineCharts } from "../../Components/charts/LineCharts";
 import { PieCharts } from "../../Components/charts/PieCharts";
@@ -30,11 +31,12 @@ import { CustomInput } from "../../Components/CustomInput";
 import { FooterModel } from "../../Components/FooterModel";
 import { Timeline } from "../../Components/TimeLine";
 import { ToggleButton } from "../../Components/ToggleButton";
+import { getAppointmentDashboardData } from "../../Redux/AppointmentDashboardDispatcher";
 import {
   color,
   DEFAULT_PROFILE_IMAGE,
   fontSizes,
-  spacing,
+  spacing
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
@@ -46,6 +48,15 @@ const TAB_INTERACTIVE = true;
 const TAB_INFORMATIVE = false;
 
 export const Appointment = ({ navigation }) => {
+  let dashboardAppointments = useSelector(
+    (state) => state.dashboardAppointments
+  );
+
+  const dispatchDashboardAppointment = useDispatch([
+    getAppointmentDashboardData,
+  ]);
+  const fetchAppointmentDashboardData = () =>
+    dispatchDashboardAppointment(getAppointmentDashboardData(navigation));
   const [createModal, setCreateModal] = useState(false);
   const [editModel, showEditModel] = useState(false);
   const [showviewEventModel, setviewEventModel] = useState(true);
@@ -111,13 +122,6 @@ export const Appointment = ({ navigation }) => {
       name: "04.00 - 05.00 ",
     },
   ];
-  const viewWorkflow = [
-    { time: "09:00", title: "Event 1", description: "Event 1 Description" },
-    { time: "10:45", title: "Event 2", description: "Event 2 Description" },
-    { time: "12:00", title: "Event 3", description: "Event 3 Description" },
-    { time: "14:00", title: "Event 4", description: "Event 4 Description" },
-    { time: "16:30", title: "Event 5", description: "Event 5 Description" },
-  ];
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -146,7 +150,9 @@ export const Appointment = ({ navigation }) => {
       ),
     });
   }, [navigation]);
-
+  useEffect(() => {
+    fetchAppointmentDashboardData();
+  }, []);
   const RenderInformative = () => {
     return (
       <>
@@ -216,7 +222,7 @@ export const Appointment = ({ navigation }) => {
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
-                // onPress={() => setShowIndex(index)}
+              // onPress={() => setShowIndex(index)}
               >
                 <Text
                   variant="bodySmall"
@@ -244,12 +250,26 @@ export const Appointment = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState("");
 
+  const [scleduledAppointment, setScleduledAppointment] = useState([])
   useEffect(() => {
     async function getSelectedDate() {
-      // setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
+      const appointmentTemp = get(dashboardAppointments, 'appointmentDashboardData', [])
+
+      console.log('a', appointmentTemp, dashboardAppointments)
+      setScleduledAppointment(appointmentTemp.length && appointmentTemp.map(
+        (v) => ({
+          ...v,
+          startDate: moment(v.appointDate + " " + v.appointStartTime),
+          endDate: moment(v.appointDate + " " + v.appointEndTime),
+        })
+      ))
+      console.log('formated appointment', scleduledAppointment)
     }
     getSelectedDate();
-  }, []);
+  }, [dashboardAppointments?.appointmentDashboardData]);
+
+
   const onDateSelected = (date) => {
     setSelectedDate(moment(date).format("YYYY-MM-DD"));
   };
@@ -405,26 +425,30 @@ export const Appointment = ({ navigation }) => {
     {
       title: "Payment not working",
       isAudio: true,
-      startDate: moment("2023-04-13 0:45:00"),
-      endDate: moment("2023-04-13 1:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 0:45:00"),
+      endDate: moment("2023-04-18 1:45:00"),
     },
     {
       title: "New connection",
       isAudio: false,
-      startDate: moment("2023-04-13 2:00:00"),
-      endDate: moment("2023-04-13 2:30:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 2:00:00"),
+      endDate: moment("2023-04-18 2:30:00"),
     },
     {
       title: "Billing Problems",
       isAudio: true,
-      startDate: moment("2023-04-13 3:45:00"),
-      endDate: moment("2023-04-13 4:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 3:45:00"),
+      endDate: moment("2023-04-18 4:45:00"),
     },
     {
       title: "Postpaid connection address change",
       isAudio: false,
-      startDate: moment("2023-04-13 12:45:00"),
-      endDate: moment("2023-04-13 15:45:00"),
+      appointDate: "2023-04-18",
+      startDate: moment("2023-04-18 12:45:00"),
+      endDate: moment("2023-04-18 15:45:00"),
     },
   ]);
   const AppointListItem = ({ data }) => {
@@ -433,7 +457,9 @@ export const Appointment = ({ navigation }) => {
         <>
           <Card style={styles.app_container}>
             <View style={styles.small_strip}>
-              <Text style={styles.small_strip_txt}>Appointment ID: 123213</Text>
+              <Text style={styles.small_strip_txt}>
+                Appointment ID:{item.appointId}
+              </Text>
             </View>
             <View
               style={{
@@ -445,15 +471,20 @@ export const Appointment = ({ navigation }) => {
               <View style={{ width: "60%" }}>
                 <Text style={styles.appoint_label}>Customer Name</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>Daina David</Text>
+                <Text style={styles.appoint_value}>
+                  {item.appointmentCustomer.firstName + " "}
+                  {item.appointmentCustomer.lastName}
+                </Text>
                 <ClearSpace size={2} />
                 <Text style={styles.appoint_label}>Time</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>11:00AM - 12:00 PM</Text>
+                <Text style={styles.appoint_value}>
+                  {item.appointStartTime + "-" + item.appointEndTime}
+                </Text>
                 <ClearSpace size={2} />
-                <Text style={styles.appoint_label}>Location</Text>
+                <Text style={styles.appoint_label}>Date</Text>
                 <ClearSpace />
-                <Text style={styles.appoint_value}>Chennai</Text>
+                <Text style={styles.appoint_value}>{item.appointDate}</Text>
               </View>
               <View style={{ width: "40%" }}>
                 <Text style={styles.appoint_value}></Text>
@@ -464,15 +495,22 @@ export const Appointment = ({ navigation }) => {
                 <Text style={styles.appoint_value}>Appt. type</Text>
                 <ClearSpace />
                 <View>
-                  <Image
-                    source={require("../../Assets/icons/video_join.png")}
-                  />
+                  {item.appointMode.includes("_VIDEO") && (
+                    <Image
+                      source={require("../../Assets/icons/video_join.png")}
+                    />
+                  )}
+                  {item.appointMode.includes("_AUDIO") && (
+                    <Image
+                      source={require("../../Assets/icons/audio_join.png")}
+                    />
+                  )}
                 </View>
                 <ClearSpace size={2} />
                 <Text style={styles.appoint_label}>Status</Text>
                 <ClearSpace />
                 <Text style={{ ...styles.appoint_value, color: "#3FB94D" }}>
-                  Booked
+                  {item.statusDesc.description}
                 </Text>
                 <ClearSpace size={2} />
               </View>
@@ -602,27 +640,27 @@ export const Appointment = ({ navigation }) => {
                     backgroundColor:
                       marked.indexOf(
                         "" +
-                          moment(
-                            date?.year + "-" + date?.month + "-" + date?.day
-                          ).format("YYYY-MM-DD")
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
                       ) > -1 &&
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD") <
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD") <
                         moment(new Date()).format("YYYY-MM-DD")
                         ? "green"
                         : marked.indexOf(
-                            "" +
-                              moment(
-                                date?.year + "-" + date?.month + "-" + date?.day
-                              ).format("YYYY-MM-DD")
-                          ) > -1 &&
+                          "" +
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
+                        ) > -1 &&
                           moment(
                             date?.year + "-" + date?.month + "-" + date?.day
                           ).format("YYYY-MM-DD") >
-                            moment(new Date()).format("YYYY-MM-DD")
-                        ? "#F5AD47"
-                        : "#E1E4EB",
+                          moment(new Date()).format("YYYY-MM-DD")
+                          ? "#F5AD47"
+                          : "#E1E4EB",
                   }}
                 >
                   <Text
@@ -637,36 +675,36 @@ export const Appointment = ({ navigation }) => {
                         color:
                           marked.indexOf(
                             "" +
-                              moment(
-                                date?.year + "-" + date?.month + "-" + date?.day
-                              ).format("YYYY-MM-DD")
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
                           ) > -1
                             ? "white"
                             : "black",
                         textAlign:
                           marked.indexOf(
                             "" +
-                              moment(
-                                date?.year + "-" + date?.month + "-" + date?.day
-                              ).format("YYYY-MM-DD")
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
                           ) > -1
                             ? "right"
                             : "center",
                         fontSize:
                           marked.indexOf(
                             "" +
-                              moment(
-                                date?.year + "-" + date?.month + "-" + date?.day
-                              ).format("YYYY-MM-DD")
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
                           ) > -1
                             ? 5
                             : 10,
                         paddingRight:
                           marked.indexOf(
                             "" +
-                              moment(
-                                date?.year + "-" + date?.month + "-" + date?.day
-                              ).format("YYYY-MM-DD")
+                            moment(
+                              date?.year + "-" + date?.month + "-" + date?.day
+                            ).format("YYYY-MM-DD")
                           ) > -1
                             ? 5
                             : 0,
@@ -701,56 +739,56 @@ export const Appointment = ({ navigation }) => {
                       color:
                         marked.indexOf(
                           "" +
-                            moment(
-                              date?.year + "-" + date?.month + "-" + date?.day
-                            ).format("YYYY-MM-DD")
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD")
                         ) > -1 &&
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD") <
+                          moment(
+                            date?.year + "-" + date?.month + "-" + date?.day
+                          ).format("YYYY-MM-DD") <
                           moment(new Date()).format("YYYY-MM-DD")
                           ? "white"
                           : marked.indexOf(
-                              "" +
-                                moment(
-                                  date?.year +
-                                    "-" +
-                                    date?.month +
-                                    "-" +
-                                    date?.day
-                                ).format("YYYY-MM-DD")
-                            ) > -1 &&
+                            "" +
+                            moment(
+                              date?.year +
+                              "-" +
+                              date?.month +
+                              "-" +
+                              date?.day
+                            ).format("YYYY-MM-DD")
+                          ) > -1 &&
                             moment(
                               date?.year + "-" + date?.month + "-" + date?.day
                             ).format("YYYY-MM-DD") >
-                              moment(new Date()).format("YYYY-MM-DD")
-                          ? "black"
-                          : "black",
+                            moment(new Date()).format("YYYY-MM-DD")
+                            ? "black"
+                            : "black",
                     }}
                   >
                     {marked.indexOf(
                       "" +
-                        moment(
-                          date?.year + "-" + date?.month + "-" + date?.day
-                        ).format("YYYY-MM-DD")
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD")
                     ) > -1 &&
-                    moment(
-                      date?.year + "-" + date?.month + "-" + date?.day
-                    ).format("YYYY-MM-DD") <
+                      moment(
+                        date?.year + "-" + date?.month + "-" + date?.day
+                      ).format("YYYY-MM-DD") <
                       moment(new Date()).format("YYYY-MM-DD")
                       ? strings.completed_appointment
                       : marked.indexOf(
-                          "" +
-                            moment(
-                              date?.year + "-" + date?.month + "-" + date?.day
-                            ).format("YYYY-MM-DD")
-                        ) > -1 &&
+                        "" +
+                        moment(
+                          date?.year + "-" + date?.month + "-" + date?.day
+                        ).format("YYYY-MM-DD")
+                      ) > -1 &&
                         moment(
                           date?.year + "-" + date?.month + "-" + date?.day
                         ).format("YYYY-MM-DD") >
-                          moment(new Date()).format("YYYY-MM-DD")
-                      ? strings.upcoming_appointment
-                      : ""}
+                        moment(new Date()).format("YYYY-MM-DD")
+                        ? strings.upcoming_appointment
+                        : ""}
                   </Text>
                 </View>
               );
@@ -927,7 +965,7 @@ export const Appointment = ({ navigation }) => {
                   iconContainer={{ flex: 0.1 }}
                   selectedDate={selectedDate ? selectedDate : moment()}
                   onDateSelected={onDateSelected}
-                  //markedDates={markedDates}
+                //markedDates={markedDates}
                 />
                 {selectedDate ? (
                   <Text style={{ fontSize: 16 }}>
@@ -1013,7 +1051,7 @@ export const Appointment = ({ navigation }) => {
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
-                    items={items}
+                    items={scleduledAppointment}
                     renderItem={(props) => <AppointItems {...props} />}
                     // provide only one of these
                     date={date}
@@ -1026,7 +1064,9 @@ export const Appointment = ({ navigation }) => {
                   />
                 </View>
               </View>
-              <AppointListItem data={["one", "tow"]} />
+              <AppointListItem
+                data={dashboardAppointments.appointmentDashboardData}
+              />
             </>
           ) : (
             <RenderInformative />
@@ -1073,9 +1113,8 @@ export const Appointment = ({ navigation }) => {
             <View>
               <Image
                 source={{
-                  uri: `data:image/jpeg;base64,${
-                    null || DEFAULT_PROFILE_IMAGE
-                  }`,
+                  uri: `data:image/jpeg;base64,${null || DEFAULT_PROFILE_IMAGE
+                    }`,
                 }}
                 // imageStyle={{ borderRadius: 80 }}
                 style={{
@@ -1231,20 +1270,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.title}
               placeHolder={strings.title}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <View style={{ marginTop: 10 }}>
@@ -1252,20 +1291,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.location}
               placeHolder={strings.city}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <DatePicker
@@ -1351,20 +1390,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.remarks}
               placeHolder={strings.remarks}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <View style={{ marginTop: 10 }}>
@@ -1372,20 +1411,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.description}
               placeHolder={strings.description}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <ClearSpace size={4} />
@@ -1457,20 +1496,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.contact_number}
               placeHolder={strings.contact_number}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <View style={{ marginTop: 10 }}>
@@ -1478,20 +1517,20 @@ export const Appointment = ({ navigation }) => {
               style={{
                 backgroundColor: "transparent",
               }}
-              onChangeText={(text) => () => {}}
+              onChangeText={(text) => () => { }}
               value={""}
               caption={strings.contact_name}
               placeHolder={strings.contact_name}
-              // right={
-              //   firstName && (
-              //     <TextInput.Icon
-              //       onPress={clearFirstName}
-              //       // style={{ width: 15, height: 15 }}
-              //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
-              //       icon="close"
-              //     />
-              //   )
-              // }
+            // right={
+            //   firstName && (
+            //     <TextInput.Icon
+            //       onPress={clearFirstName}
+            //       // style={{ width: 15, height: 15 }}
+            //       theme={{ colors: { onSurfaceVariant: colors.gray } }}
+            //       icon="close"
+            //     />
+            //   )
+            // }
             />
           </View>
           <View style={{ marginTop: 10 }}>

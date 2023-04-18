@@ -21,7 +21,7 @@ import SavedLocationReducer from "./SavedLocationReducer";
 import VersionCheckReducer from "./VersionCheckReducer";
 import CustomerAccountReducer from "./CustomerAccountReducer";
 import CreateCustomerReducer from "./../Screens/CreateCustomer/CreateCustomerReducer";
-
+import AppointmentDashboardReducer from "./AppointmentDashboardReducer";
 import { LOGOUT_DATA } from "./LogoutAction";
 
 const appReducer = combineReducers({
@@ -46,6 +46,7 @@ const appReducer = combineReducers({
   customerAccount: CustomerAccountReducer,
   orderList: OrderListReducer,
   createCustomerReducerData: CreateCustomerReducer,
+  dashboardAppointments: AppointmentDashboardReducer,
 });
 
 const RootReducer = (state, action) => {
