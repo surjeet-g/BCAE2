@@ -831,48 +831,8 @@ const AddLocation = ({ route, navigation }) => {
                     type: "POSTAL_CODE",
                     search: searchPostal,
                   },
-                  (addressRes = []) => {
-                    setLoader(false);
-                    setPostalModalCode(false);
-                    setAddLocationModalVisible(true);
-
-                    if (addressRes.length == 0) return null;
-                    setAddNaviFrom("auto");
-                    if (addressRes.length == 1) {
-                      console.log("address response data", addressRes[0]);
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
-                      setCountryName(addressRes[0]?.country);
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
-
-                      setValueDist(addressRes[0]?.district);
-                      setDistName(addressRes[0]?.district);
-
-                      setKampongName(addressRes[0]?.city);
-                      setValueKampong(addressRes[0]?.city);
-
-                      if (addressRes.length == 0) return null
-                      setAddNaviFrom("auto")
-                      if (addressRes.length == 1) {
-                        console.log('address response data', addressRes[0])
-                        setValueState(addressRes[0]?.state)
-                        setStateName(addressRes[0]?.state)
-                        setCountryName(addressRes[0]?.country)
-                        setValueState(addressRes[0]?.state)
-                        setStateName(addressRes[0]?.state)
-
-                        setValueDist(addressRes[0]?.district)
-                        setDistName(addressRes[0]?.district)
-
-                        setKampongName(addressRes[0]?.city)
-                        setValueKampong(addressRes[0]?.city)
-
-                        setPostcodeName(addressRes[0]?.postCode)
-                        setValuePostcode(addressRes[0]?.postCode)
-
-                      }
-                    }));
+                )
+              )
             }}
           />
         </View>
