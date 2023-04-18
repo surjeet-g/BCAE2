@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import {
   Image,
   StyleSheet,
-  TextInput,
+
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import {
   buttonSize,
   color,
   fontSizes,
-  spacing,
+  spacing
 } from "../Utilities/Constants/Constant";
 
-import { Text, useTheme } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import theme from "../Utilities/themeConfig";
 import { CustomActivityIndicator } from "./CustomActivityIndicator";
 
@@ -33,8 +33,8 @@ export const TextBoxWithCTAEmail = (props) => {
           {props.value != ""
             ? props.placeHolder
             : props?.isResendOTP && props?.countryCode != ""
-            ? props.placeHolder
-            : " "}
+              ? props.placeHolder
+              : " "}
         </Text>
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -123,8 +123,10 @@ export const TextBoxWithCTAEmail = (props) => {
                 ? ""
                 : props.placeHolder
             }
+            placeholderTextColor="#C7CAD1"
             onChangeText={(text) => props.onChangeText(text)}
             style={{
+              borderColor: "red",
               paddingRight: "40%",
               color: color.secondary,
               ...styles.textInput,
@@ -134,6 +136,8 @@ export const TextBoxWithCTAEmail = (props) => {
                   ? spacing.WIDTH_37 * 2
                   : 0,
             }}
+            underlineColor="transparent"
+            activeUnderlineColor="transparent"
             keyboardType={props.keyboardType ? props.keyboardType : "default"}
             value={props.value}
             onSubmitEditing={() =>

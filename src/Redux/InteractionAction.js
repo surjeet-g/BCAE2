@@ -25,6 +25,9 @@ export const CREATE_FOLLOWUP_FAILURE = "CREATE_FOLLOWUP_FAILURE";
 export const INTERACTION_ASSIGN_SELF = "INTERACTION_ASSIGN_SELF";
 export const INTERACTION_ASSIGN_SELF_FAILURE =
   "INTERACTION_ASSIGN_SELF_FAILURE";
+export const INTERACTION_KNEWLEGE_HISTORY =
+  "INTERACTION_KNEWLEGE_HISTORY";
+
 
 export function initInteraction() {
   return { type: INTERACTION_INIT };
@@ -85,6 +88,9 @@ export function setInteractionsFollowupDataInStore(data) {
   return { type: INTERACTION_GET_FOLLOWUP_SUCCESS, data };
 }
 
+export function setknowledgeHistory(data) {
+  return { type: INTERACTION_KNEWLEGE_HISTORY, data };
+}
 export function setInteractionsFollowupErrorDataInStore(data) {
   return { type: INTERACTION_GET_FOLLOWUP_FAILURE, data };
 }

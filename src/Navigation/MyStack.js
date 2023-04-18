@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import AnnouIcon from "../Assets/svg/anno.svg";
 import TermIcon from "../Assets/svg/terms.svg";
@@ -92,7 +92,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={STACK_SPLASH}
+        initialRouteName={STACK_REGISTER}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -369,7 +369,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_VIEW_ORDER}
@@ -385,7 +385,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_APPOINTMENT_DETAILS}
@@ -416,7 +416,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_FOLLOWUP}
@@ -432,7 +432,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_WORKFLOW_HISTORY}
@@ -448,7 +448,7 @@ function MyStack() {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
               },
-              headerRight: () => {},
+              headerRight: () => { },
             },
           })}
           name={STACK_CREATE_CUSTOMER}
