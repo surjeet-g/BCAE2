@@ -12,14 +12,14 @@ import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../../Utilities/utils";
 
 import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister
+  userRegister,
 } from "../../../Redux/RegisterDispatcher";
 
 import get from "lodash.get";
@@ -35,7 +35,7 @@ import {
   isValidNumber,
   spacing,
   validateEmail,
-  validatePassword
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -221,7 +221,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   //   buttonEnableDiable();
   // };
   const submit = async () => {
-
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",
@@ -277,6 +276,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         lastName: lastName,
         gender: gender?.code, //gender.code
         //customerNo: "",  not required for personal customer
+        extNo: countryCode,
         mobileNo: mobileNo,
         emailId: email,
         birthDate: moment(dob).format("YYYY-MM-DD"),
@@ -403,11 +403,15 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           setFirstNameError(strings.firstNameError);
         } else {
           //alert("submitResndOTP");
-          const mobileNumberWIthCounty = (countryCode + mobileNo).replace("+", "");
-          console.log('count', mobileNumberWIthCounty)
+          // const mobileNumberWIthCounty = (countryCode + mobileNo).replace(
+          //   "+",
+          //   ""
+          // );
+          //console.log("count", mobileNumberWIthCounty);
           dispatch(
             sendOtp(
-              mobileNumberWIthCounty,
+              countryCode,
+              mobileNo,
               firstName,
               "mobile",
               showOtpSentMessage
@@ -479,11 +483,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (otp === "") {
       setOtpNumberError(strings.numberOtpError);
     } else {
-
-      const mobileNumberWIthCounty = (countryCode + mobileNo).replace("+", "");
+      //const mobileNumberWIthCounty = (countryCode + mobileNo).replace("+", "");
 
       const resp = await dispatch(
-        getOtpForCheck({ reference: mobileNumberWIthCounty, otp }, "mobileOtp")
+        getOtpForCheck({ reference: mobileNo, otp }, "mobileOtp")
       ); // country code to be added to verify OTP
       if (resp.status) {
         setMobileOTPVerifcation(true);
@@ -520,7 +523,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     } else if (!validateEmail(email)) {
       setEmailError(strings.emailValidError);
     } else {
-      dispatch(sendOtp(email, firstName, "email", showOtpEmailSentMessage));
+      dispatch(sendOtp("", email, firstName, "email", showOtpEmailSentMessage));
       buttonEnableDiable();
     }
   };
@@ -831,7 +834,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobile"
+                  registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -874,7 +877,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobileOtp"
+                  registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -926,7 +929,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "email"
+                  registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -968,7 +971,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "emailOtp"
+                  registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }

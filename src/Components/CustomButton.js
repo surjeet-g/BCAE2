@@ -13,6 +13,7 @@ export const CustomButton = (props) => {
     loading = false,
     mode = "contained",
     buttonStyle,
+
   } = props;
 
   return (

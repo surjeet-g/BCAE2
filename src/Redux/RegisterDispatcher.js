@@ -1,6 +1,12 @@
 import {
-  failureOtpFormData, initOtpForm, initRegisterForm, setAddressLoopUpData, setLoaderPreVerify, setOtpFormData, setPreVerifyUserData,
-  setPreVerifyUserData_ERROR
+  failureOtpFormData,
+  initOtpForm,
+  initRegisterForm,
+  setAddressLoopUpData,
+  setLoaderPreVerify,
+  setOtpFormData,
+  setPreVerifyUserData,
+  setPreVerifyUserData_ERROR,
 } from "./RegisterAction";
 
 import Toast from "react-native-toast-message";
@@ -8,18 +14,19 @@ import Toast from "react-native-toast-message";
 import { serverCall } from "../Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
-export function fetchRegisterFormData({ type = "", search = "" }, callback = () => { }) {
+export function fetchRegisterFormData(
+  { type = "", search = "" },
+  callback = () => {}
+) {
   return async (dispatch) => {
-
     if (type != "COUNTRY" && type != "POSTAL_CODE") {
       dispatch(initRegisterForm());
     }
     let url;
     if (type == "COUNTRY") {
-      url = `?country=${search}`
-    }
-    else {
-      url = `?postCode=${search}`
+      url = `?country=${search}`;
+    } else {
+      url = `?postCode=${search}`;
     }
     let params = {};
     let addressLookUpResult = await serverCall(
@@ -28,13 +35,11 @@ export function fetchRegisterFormData({ type = "", search = "" }, callback = () 
       params
     );
 
-
-
     if (addressLookUpResult) {
       //result.data.data.
 
       dispatch(setAddressLoopUpData(addressLookUpResult?.data?.data));
-      callback(addressLookUpResult?.data?.data)
+      callback(addressLookUpResult?.data?.data);
       // let bussineEntities = "GENDER,ADDRESS_TYPE,CUSTOMER_ID_TYPE";
       // let result = await serverCall(
       //   `${endPoints.GET_REGISTER_FORM_DATA}?searchParam=code&valueParam=${bussineEntities}`,
@@ -60,17 +65,18 @@ export function fetchRegisterFormData({ type = "", search = "" }, callback = () 
       //   dispatch(failureRegisterFormData(result));
       // }
     } else {
-      callback([])
+      callback([]);
       dispatch(setAddressLoopUpData(addressLookUpResult.data));
     }
   };
 }
 
 export function sendOtp(
+  countryCode,
   mobileno,
   firstname,
   type,
-  showOtpSentMessage = () => { }
+  showOtpSentMessage = () => {}
 ) {
   return async (dispatch) => {
     dispatch(initOtpForm(type));
@@ -86,8 +92,7 @@ export function sendOtp(
       servicePoint = endPoints.GET_OTP_FOR_MOBILE;
       params = {
         reference: mobileno,
-
-        extn: 0,
+        extn: countryCode.replace("+", ""),
       };
     }
 
@@ -136,8 +141,8 @@ export function getOtpForCheck({ otp, reference }, type) {
 export function userRegister(
   params,
   type,
-  cbSuccess = (_) => { },
-  cbFailed = (_) => { }
+  cbSuccess = (_) => {},
+  cbFailed = (_) => {}
 ) {
   return async (dispatch) => {
     dispatch(initOtpForm(type));

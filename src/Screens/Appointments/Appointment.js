@@ -250,28 +250,71 @@ export const Appointment = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState("");
 
-  const [scleduledAppointment, setScleduledAppointment] = useState([])
+  const [scheduledAppointment, setScheduledAppointment] = useState([]);
+  const [scheduledAppointmentForDay, setScheduledAppointmentForDay] = useState(
+    []
+  );
   useEffect(() => {
     async function getSelectedDate() {
-      setSelectedDate(moment(moment()).format("YYYY-MM-DD"));
-      const appointmentTemp = get(dashboardAppointments, 'appointmentDashboardData', [])
+      setSelectedDate("" + moment(moment()).format("YYYY-MM-DD"));
+      console.log("selected date ", selectedDate);
 
-      console.log('a', appointmentTemp, dashboardAppointments)
-      setScleduledAppointment(appointmentTemp.length && appointmentTemp.map(
-        (v) => ({
+      const appointmentTemp = get(
+        dashboardAppointments,
+        "appointmentDashboardData",
+        []
+      );
+      console.log("unformated appointment", appointmentTemp);
+      console.log("unformated appointment length", appointmentTemp.length);
+      //console.log("items", items);
+
+      setScheduledAppointment(
+        appointmentTemp.map((v) => ({
           ...v,
           startDate: moment(v.appointDate + " " + v.appointStartTime),
           endDate: moment(v.appointDate + " " + v.appointEndTime),
+        }))
+      );
+      console.log("formated appointment", scheduledAppointment);
+
+      console.log("date : ", moment(moment()).format("YYYY-MM-DD"));
+      setScheduledAppointmentForDay(
+        appointmentTemp.length &&
+        appointmentTemp.filter((item) => {
+          if (
+            item.appointDate ==
+            "" + moment(moment()).format("YYYY-MM-DD")
+          ) {
+            return item;
+          }
         })
-      ))
-      console.log('formated appointment', scleduledAppointment)
+      );
+
+      console.log(
+        "formated appointment for day : ",
+        moment(moment()).format("YYYY-MM-DD") +
+        "  ==>  " +
+        scheduledAppointmentForDay
+      );
     }
     getSelectedDate();
   }, [dashboardAppointments?.appointmentDashboardData]);
 
-
   const onDateSelected = (date) => {
-    setSelectedDate(moment(date).format("YYYY-MM-DD"));
+    console.log("date : ", moment(date).format("YYYY-MM-DD"));
+    setSelectedDate("" + moment(date).format("YYYY-MM-DD"));
+    setScheduledAppointmentForDay(
+      scheduledAppointment.filter((item) => {
+        console.log(item.appointDate == "" + moment(date).format("YYYY-MM-DD"));
+        if (item.appointDate == "" + moment(date).format("YYYY-MM-DD")) {
+          return item;
+        }
+      })
+    );
+    console.log(
+      "formated appointment for day : ",
+      moment(date).format("YYYY-MM-DD") + "  ==>  " + scheduledAppointmentForDay
+    );
   };
   let datesWhitelist = [
     {
@@ -310,7 +353,7 @@ export const Appointment = ({ navigation }) => {
               }}
             >
               <Text style={{ color: item.isAudio ? "#0C6B90" : "#652087" }}>
-                {subString(item.title, isSmallStrip ? 10 : 90)}
+                {subString(item.appointUserCategory, isSmallStrip ? 10 : 90)}
               </Text>
             </View>
             <View style={{ flex: 0.3, flexDirection: "row" }}>
@@ -426,6 +469,9 @@ export const Appointment = ({ navigation }) => {
       title: "Payment not working",
       isAudio: true,
       appointDate: "2023-04-18",
+      appointMode: "TEAMS_VIDEO",
+      appointUserCategory: "CUSTOMER",
+      appointModeValue: "http://teams.com/id=1001?",
       startDate: moment("2023-04-18 0:45:00"),
       endDate: moment("2023-04-18 1:45:00"),
     },
@@ -433,6 +479,9 @@ export const Appointment = ({ navigation }) => {
       title: "New connection",
       isAudio: false,
       appointDate: "2023-04-18",
+      appointMode: "TEAMS_VIDEO",
+      appointUserCategory: "CUSTOMER",
+      appointModeValue: "http://teams.com/id=1001?",
       startDate: moment("2023-04-18 2:00:00"),
       endDate: moment("2023-04-18 2:30:00"),
     },
@@ -440,13 +489,29 @@ export const Appointment = ({ navigation }) => {
       title: "Billing Problems",
       isAudio: true,
       appointDate: "2023-04-18",
+      appointMode: "TEAMS_VIDEO",
+      appointUserCategory: "CUSTOMER",
+      appointModeValue: "http://teams.com/id=1001?",
       startDate: moment("2023-04-18 3:45:00"),
       endDate: moment("2023-04-18 4:45:00"),
+    },
+    {
+      title: "sim not working",
+      isAudio: false,
+      appointDate: "2023-04-18",
+      appointMode: "TEAMS_VIDEO",
+      appointUserCategory: "CUSTOMER",
+      appointModeValue: "http://teams.com/id=1001?",
+      startDate: moment("2023-04-18 18:45:00"),
+      endDate: moment("2023-04-18 20:45:00"),
     },
     {
       title: "Postpaid connection address change",
       isAudio: false,
       appointDate: "2023-04-18",
+      appointMode: "TEAMS_VIDEO",
+      appointUserCategory: "CUSTOMER",
+      appointModeValue: "http://teams.com/id=1001?",
       startDate: moment("2023-04-18 12:45:00"),
       endDate: moment("2023-04-18 15:45:00"),
     },
@@ -1051,7 +1116,7 @@ export const Appointment = ({ navigation }) => {
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
-                    items={scleduledAppointment}
+                    items={items}
                     renderItem={(props) => <AppointItems {...props} />}
                     // provide only one of these
                     date={date}
