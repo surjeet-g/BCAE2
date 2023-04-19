@@ -15,13 +15,13 @@ import {
   fetchRegisterFormData,
   getOtpForCheck,
   sendOtp,
-  userRegister
+  userRegister,
 } from "../../../Redux/RegisterDispatcher";
 
 import { strings } from "../../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength
+  getPhoneNumberLength,
 } from "../../../Utilities/utils";
 
 import get from "lodash.get";
@@ -34,7 +34,7 @@ import {
   isValidNumber,
   spacing,
   validateEmail,
-  validatePassword
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
@@ -316,9 +316,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         );
       } else {
         //alert("submitResndOTP");
-        dispatch(
-          sendOtp(dialpick + mobileNo, "", "mobile", showOtpSentMessage)
-        );
+        dispatch(sendOtp(dialpick, mobileNo, "", "mobile", showOtpSentMessage));
         buttonEnableDiable();
         //setIsDisableSendOtp(true);
         //runOtpTimer(otpTimer);
@@ -380,7 +378,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     } else {
       //alert(countryCode + mobileNo);
       const resp = await dispatch(
-        getOtpForCheck({ reference: countryCode + mobileNo, otp }, "mobileOtp")
+        getOtpForCheck({ reference: mobileNo, otp }, "mobileOtp")
       ); // country code to be added to verify OTP
       if (resp.status) {
         setMobileOTPVerifcation(true);
@@ -684,7 +682,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isResendOTP={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobile"
+                  registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
                 }
@@ -727,7 +725,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={strings.confirm_otp}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "mobileOtp"
+                  registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
                 }
@@ -779,7 +777,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 isEmail={true}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "email"
+                  registerForm?.otpUsageType === "email"
                     ? true
                     : false
                 }
@@ -822,7 +820,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 label={"CONFIRM OTP"}
                 loader={
                   registerForm?.initOtpForm &&
-                    registerForm?.otpUsageType === "emailOtp"
+                  registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
                 }
