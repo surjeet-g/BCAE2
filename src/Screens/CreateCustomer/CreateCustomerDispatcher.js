@@ -168,15 +168,25 @@ const contructServicePayload = (formData) => {
   return params;
 };
 
-export function updateCustomerServiceData(formData, navigation = null) {
+export function updateCustomerServiceData(
+  formData,
+  currentStep,
+  navigation = null
+) {
   return async (dispatch) => {
     let url = endPoints.UPDATE_CUSTOMER_SERVICE_API;
-    let params = { service: contructUpdateServicePayload(formData) };
+    let params = {
+      service: contructUpdateServicePayload(formData, currentStep),
+    };
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
     console.log("$$$-updateCustomerServiceData-result", JSON.stringify(result));
     if (result.success) {
       dispatch(setCreateCustomerServiceInStore(formData, result.data.data));
-      dispatch(setShowAccountCreationModal(true));
+      if (currentStep === 5) {
+        dispatch(setShowAccountCreationModal(true));
+      } else if (currentStep === 8) {
+        dispatch(setCurrentStepInStore(currentStep + 1));
+      }
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
       Toast.show({
@@ -187,7 +197,7 @@ export function updateCustomerServiceData(formData, navigation = null) {
   };
 }
 
-const contructUpdateServicePayload = (formData) => {
+const contructUpdateServicePayload = (formData, currentStep) => {
   let params = formData.serviceDetails.details.map((item) => {
     let newitem = {
       details: {
@@ -208,14 +218,38 @@ const contructUpdateServicePayload = (formData) => {
       },
       address: {
         isPrimary: false,
-        address1: formData.serviceDetails.address1,
-        address2: formData.serviceDetails.address2,
-        address3: formData.serviceDetails.address3,
-        city: formData.serviceDetails.city,
-        state: formData.serviceDetails.state,
-        district: formData.serviceDetails.district,
-        country: formData.serviceDetails.country,
-        postcode: formData.serviceDetails.postCode,
+        address1:
+          currentStep === 5
+            ? formData.serviceDetails.address1
+            : formData.accountDetails.address1,
+        address2:
+          currentStep === 5
+            ? formData.serviceDetails.address2
+            : formData.accountDetails.address2,
+        address3:
+          currentStep === 5
+            ? formData.serviceDetails.address3
+            : formData.accountDetails.address3,
+        city:
+          currentStep === 5
+            ? formData.serviceDetails.city
+            : formData.accountDetails.city,
+        state:
+          currentStep === 5
+            ? formData.serviceDetails.state
+            : formData.accountDetails.state,
+        district:
+          currentStep === 5
+            ? formData.serviceDetails.district
+            : formData.accountDetails.district,
+        country:
+          currentStep === 5
+            ? formData.serviceDetails.country
+            : formData.accountDetails.country,
+        postcode:
+          currentStep === 5
+            ? formData.serviceDetails.postCode
+            : formData.accountDetails.postCode,
       },
     };
     return newitem;
@@ -223,53 +257,94 @@ const contructUpdateServicePayload = (formData) => {
   return params;
 };
 
-export function updateAccountData(formData, navigation = null) {
+export function updateAccountData(formData, currentStep, navigation = null) {
   return async (dispatch) => {
-    let url = endPoints.UPDATE_ACCOUNT_API + formData.customerUuid;
-    let params = contructUpdateAccountPayload();
+    let url = endPoints.UPDATE_ACCOUNT_API + formData.accountUuid;
+    let params = contructUpdateAccountPayload(formData, currentStep);
     let result = await serverCall(url, requestMethod.PUT, params, navigation);
+    console.log("$$$-updateAccountData-result", JSON.stringify(result));
     if (result.success) {
       dispatch(setCreateCustomerDataInStore(result.data.data));
-      // dispatch(setCurrentStepInStore(5));
+      dispatch(setCurrentStepInStore(currentStep + 1));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
-      if (result.errorCode === 401)
-        Toast.show({
-          type: "bctError",
-          text1: result.message,
-        });
+      Toast.show({
+        type: "bctError",
+        text1: result.message,
+      });
     }
   };
 }
 
-const contructUpdateAccountPayload = (formData) => {
-  let params = {
-    details: {
-      action: "UPDATE",
-      firstName: formData.accountDetails.firstName,
-      lastName: formData.accountDetails.lastName,
-      gender: formData.accountDetails.gender.code,
-      idType: formData.accountDetails.idType.code,
-      idValue: formData.accountDetails.idValue,
-      registeredNo: formData.accountDetails.registeredNo,
-      registeredDate: formData.accountDetails.registeredDate,
-      accountCategory: formData.accountDetails.accountCategory.code,
-      accountLevel: formData.accountDetails.accountLevel.code,
-      billLanguage: formData.accountDetails.billLang.code,
-      accountType: formData.accountDetails.accountType.code,
-      notificationPreference: formData.accountDetails.notifPref.code,
-      currency: formData.accountDetails.currency.code,
-    },
-    contact: {
-      contactNo: formData.contactNo,
-      isPrimary: true,
-      firstName: formData.accountDetails.firstName,
-      lastName: formData.accountDetails.lastName,
-      emailId: formData.accountDetails.emailId,
-      mobilePrefix: formData.accountDetails.mobilePrefix,
-      mobileNo: formData.accountDetails.mobileNo,
-    },
-  };
+const contructUpdateAccountPayload = (formData, currentStep) => {
+  let params =
+    currentStep === 8
+      ? {
+          details: {
+            action: "UPDATE",
+            firstName: formData.accountDetails.firstName,
+            lastName: formData.accountDetails.lastName,
+            gender: formData.accountDetails.gender.code,
+            idType: formData.accountDetails.idType.code,
+            idValue: formData.accountDetails.idValue,
+            registeredNo: formData.accountDetails.registeredNo,
+            registeredDate: formData.accountDetails.registeredDate,
+            accountCategory: formData.accountDetails.accountCategory.code,
+            accountLevel: formData.accountDetails.accountLevel.code,
+            billLanguage: formData.accountDetails.billLang.code,
+            accountType: formData.accountDetails.accountType.code,
+            notificationPreference: [[formData.accountDetails.notifPref.code]],
+            currency: formData.accountDetails.currency.code,
+          },
+          contact: {
+            contactNo: formData.contactNo,
+            isPrimary: true,
+            firstName: formData.accountDetails.firstName,
+            lastName: formData.accountDetails.lastName,
+            emailId: formData.accountDetails.emailId,
+            mobilePrefix: formData.accountDetails.mobilePrefix,
+            mobileNo: formData.accountDetails.mobileNo,
+          },
+
+          address: {
+            isPrimary: true,
+            address1: formData.accountDetails.address1,
+            address2: formData.accountDetails.address2,
+            address3: formData.accountDetails.address3,
+            city: formData.accountDetails.city,
+            state: formData.accountDetails.state,
+            district: formData.accountDetails.district,
+            country: formData.accountDetails.country,
+            postcode: formData.accountDetails.postCode,
+          },
+        }
+      : {
+          details: {
+            action: "UPDATE",
+            firstName: formData.accountDetails.firstName,
+            lastName: formData.accountDetails.lastName,
+            gender: formData.accountDetails.gender.code,
+            idType: formData.accountDetails.idType.code,
+            idValue: formData.accountDetails.idValue,
+            registeredNo: formData.accountDetails.registeredNo,
+            registeredDate: formData.accountDetails.registeredDate,
+            accountCategory: formData.accountDetails.accountCategory.code,
+            accountLevel: formData.accountDetails.accountLevel.code,
+            billLanguage: formData.accountDetails.billLang.code,
+            accountType: formData.accountDetails.accountType.code,
+            notificationPreference: [[formData.accountDetails.notifPref.code]],
+            currency: formData.accountDetails.currency.code,
+          },
+          contact: {
+            contactNo: formData.contactNo,
+            isPrimary: true,
+            firstName: formData.accountDetails.firstName,
+            lastName: formData.accountDetails.lastName,
+            emailId: formData.accountDetails.emailId,
+            mobilePrefix: formData.accountDetails.mobilePrefix,
+            mobileNo: formData.accountDetails.mobileNo,
+          },
+        };
   return params;
 };
 

@@ -49,6 +49,7 @@ import {
   createCustomerService,
   updateCustomerServiceData,
   updateCustomerStatus,
+  updateAccountData,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -78,6 +79,7 @@ const CreateCustomer = ({ navigation }) => {
     setCurrentStepInStore,
     setSignatureInFormData,
     updateCustomerStatus,
+    updateAccountData,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -1334,35 +1336,35 @@ const CreateCustomer = ({ navigation }) => {
               } else {
                 handleAccountDetails(
                   "address1",
-                  get(formData, "serviceDetails.address1", "")
+                  get(formData, "customerDetails.address1", "")
                 );
                 handleAccountDetails(
                   "address2",
-                  get(formData, "serviceDetails.address2", "")
+                  get(formData, "customerDetails.address2", "")
                 );
                 handleAccountDetails(
                   "address3",
-                  get(formData, "serviceDetails.address3", "")
+                  get(formData, "customerDetails.address3", "")
                 );
                 handleAccountDetails(
                   "country",
-                  get(formData, "serviceDetails.country", "")
+                  get(formData, "customerDetails.country", "")
                 );
                 handleAccountDetails(
                   "district",
-                  get(formData, "serviceDetails.district", "")
+                  get(formData, "customerDetails.district", "")
                 );
                 handleAccountDetails(
                   "postCode",
-                  get(formData, "serviceDetails.postCode", "")
+                  get(formData, "customerDetails.postCode", "")
                 );
                 handleAccountDetails(
                   "state",
-                  get(formData, "serviceDetails.state", "")
+                  get(formData, "customerDetails.state", "")
                 );
                 handleAccountDetails(
                   "city",
-                  get(formData, "serviceDetails.city", "")
+                  get(formData, "customerDetails.city", "")
                 );
               }
               setIsSameAccountAddressChecked(!isSameAccountAddressChecked);
@@ -1622,8 +1624,20 @@ const CreateCustomer = ({ navigation }) => {
         dispatch(createCustomerService(formData, navigation));
         break;
       case 5: // Service Address UI Step
-        dispatch(updateCustomerServiceData(formData, navigation));
-        // setShowAccountCreationModal(true);
+        dispatch(updateCustomerServiceData(formData, currentStep, navigation));
+        break;
+      case 6:
+        dispatch(updateAccountData(formData, currentStep, navigation));
+        break;
+      case 7:
+        dispatch(updateAccountData(formData, currentStep, navigation));
+        break;
+      case 8:
+        isSameAccountAddressChecked
+          ? dispatch(
+              updateCustomerServiceData(formData, currentStep, navigation)
+            )
+          : dispatch(updateAccountData(formData, currentStep, navigation));
         break;
       case 9:
         dispatch(setSignatureInFormData(formData?.signature));
@@ -1638,7 +1652,7 @@ const CreateCustomer = ({ navigation }) => {
   const handleSubmit = () => {
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(updateCustomerStatus(formData, navigation));
-    } else if (currentStep === 10 && !createAccount) {
+    } else {
       setShowCreateOrderModal(true);
     }
   };
