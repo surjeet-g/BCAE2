@@ -92,7 +92,7 @@ export function sendOtp(
       servicePoint = endPoints.GET_OTP_FOR_MOBILE;
       params = {
         reference: mobileno,
-        extn: countryCode,
+        extn: countryCode.replace("+", ""),
       };
     }
 
