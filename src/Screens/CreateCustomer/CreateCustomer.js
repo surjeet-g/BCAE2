@@ -50,6 +50,7 @@ import {
   updateCustomerServiceData,
   updateCustomerStatus,
   updateAccountData,
+  createOrderForCustomer,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -80,6 +81,7 @@ const CreateCustomer = ({ navigation }) => {
     setSignatureInFormData,
     updateCustomerStatus,
     updateAccountData,
+    createOrderForCustomer,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -704,7 +706,6 @@ const CreateCustomer = ({ navigation }) => {
             // ios_backgroundColor="#3e3e3e"
             onValueChange={() => {
               setFormData({ ...formData, getQuote: !formData?.getQuote });
-              // dispatch(setGetQuoteOnly(!formData?.getQuote));
             }}
             value={formData?.getQuote}
           />
@@ -724,10 +725,10 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Bill Details"} />
         <BillDetails
           details={{
-            gTotal: calculateGTotal(),
-            total: calculateGTotal() + 50 - 100,
-            gst: 50.0,
-            discount: 100.0,
+            gTotal: calculateTotalBillAmount(),
+            total: calculateTotalBillAmount(),
+            gst: 0.0,
+            discount: 0.0,
           }}
         />
       </View>
@@ -1824,7 +1825,7 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const calculateGTotal = () => {
+  const calculateTotalBillAmount = () => {
     let gTotal = 0;
     products.forEach((product) => {
       if (product.quantity > 0)
@@ -1934,7 +1935,7 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleCreateOrderYes = () => {
     setShowCreateOrderModal(false);
-    // TODO: Implement/Dispatch Create Order Endpoint Action
+    dispatch(createOrderForCustomer(formData, navigation));
     dispatch(updateCustomerStatus(formData, navigation));
   };
 
