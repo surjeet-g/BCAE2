@@ -1,3 +1,4 @@
+import { Dimensions } from 'react-native';
 import { countryCodes as ccc } from "react-native-country-codes-picker/constants/countryCodes";
 import { supportedCountriesList } from "../Utilities/Constants/Constant";
 
@@ -11,7 +12,9 @@ export const getPhoneNumberLength = (code) => {
   );
   return country?.numberLength || 10;
 };
-
+export const getDim = () => {
+  return Dimensions.get('screen');
+}
 export const excludedCountriesList = () => {
   let supportedCountriesShortCodeList = supportedCountriesList?.map(
     (country) => country?.countryShortCode

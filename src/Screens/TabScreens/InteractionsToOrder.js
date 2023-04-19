@@ -72,7 +72,9 @@ import {
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
+
 import { HandleResolution } from "./Component/Interaction/Resolution";
+
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Catgory" },
   frequently: { value: "frequently", title: "Most frequently interaction" },
@@ -81,7 +83,7 @@ export const typeOfAccrodin = {
   productChoose: { value: "productChoose", title: "Select Product" },
   knowlegde: { value: "knowlegde", title: "Select Service" },
   resolved: { value: "Resolved", title: "Resolution Corner" },
-
+  workflow: { value: "workflow", title: "workflow Corner" },
 };
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
@@ -1029,31 +1031,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
    */
   const RenderBottomChatBoard = () => {
     const suggestionList = get(interactionReducer, "knowledgeHistory.d", [
-      {
-        "actionType": "SENDMESSAGE",
-        "description": "Send for query Resolved",
-        "type": "string",
-        "message": "Is your query resolved ?"
-      },
+
       {
         "actionType": "COLLECTINPUT",
-        "description": "Get Customer Choice",
+        "description": "BILL_REDIRECT",
         "type": "object",
         "message": {
           "element": "YES_NO_BUTTON",
           "attributes": [
             {
-              "url": "",
+              "url": "/",
               "name": "YES",
               "type": "BUTTON",
-              "popup": "Are you sure to Purchase Addon Plan?",
-              "value": "Yes, please proceed"
+              "popup": "We are redirecting on payment page please wait...",
+              "value": "Yes, Procced to pay"
             },
             {
               "url": "",
               "name": "NO",
               "type": "BUTTON",
-              "popup": "Are you sure Not To Purchase Addon?",
+              "popup": "Are you sure you don't want to pay?",
               "value": "No"
             }
           ]
@@ -1061,19 +1058,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
       },
       {
         "actionType": "SENDMESSAGE",
-        "description": "final Message",
+        "description": "Start",
         "type": "string",
-        "message": "Thanks for Contacting us"
+        "message": "Please wait, we are analyzing your information"
       },
-      {
-        "actionType": "WORKFLOWEND",
-        "description": "",
-        "type": "",
-        "message": ""
-      }
     ]);
     console.log('>> ff', suggestionList)
     //todo
+
     if (activeChatBotSec == "") {
       console.log("setactiveChatBot not set for title for chat bot");
       return null;
@@ -1083,7 +1075,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
     if (true) {
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
       return (
-        <HandleResolution suggestionList={suggestionList} />
+        <HandleResolution suggestionList={suggestionList}
+          resolutionDetails={get(interactionReducer, "InteractionData", [])}
+        />
       );
 
     }
