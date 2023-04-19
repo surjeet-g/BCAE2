@@ -291,6 +291,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         // todo here logic
       };
     case INTERACTION_KNEWLEGE_HISTORY:
+      console.log('reducers INTERACTION_KNEWLEGE_HISTORY', action.data)
       return {
         ...state,
         knowledgeHistory: action.data

@@ -52,6 +52,35 @@ export function fetchInteractionAction(type = "", params = {}) {
         requestMethod.GET,
         {}
       );
+    }
+    else if (type == typeOfAccrodin.workflow.value) {
+      let converstionHistory = []
+      const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+      for await (const num of mockArray) {
+        const workflowResult = await serverCall(
+          `${endPoints.INTERACTION_WORKFLOW}`,
+          requestMethod.POST,
+          params
+        );
+
+        console.log('workflow response', workflowResult.data)
+        const tempConv = get(workflowResult, 'data.data.conversation', [])
+        console.log('conversation', tempConv)
+        if (tempConv.length != 0) {
+          converstionHistory.push(tempConv)
+        }
+
+        const callAgain = get(workflowResult, 'data.data.callAgain', false)
+        const actionType = get(workflowResult, 'data.data.actionType', false)
+
+        console.log('callagain', callAgain)
+        if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+          break;
+        }
+      }
+      dispatch(setknowledgeHistory(converstionHistory))
+      return null
+
     } else if (type == typeOfAccrodin.knowlegde.value) {
 
       interactionResult = await serverCall(
@@ -91,7 +120,11 @@ export function fetchInteractionAction(type = "", params = {}) {
         let converstionHistory = []
         if (flowId != "") {
           const conversationID = get(interactionResult, 'data.data.conversationUid', '')
-          const workflowSetInterval = setInterval(async () => {
+          const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+          // console.log('mockArray', mockArray)
+          // (async function () {
+          for await (const num of mockArray) {
+            console.log('hititng inside',)
             const workflowResult = await serverCall(
               `${endPoints.INTERACTION_WORKFLOW}`,
               requestMethod.POST,
@@ -110,11 +143,17 @@ export function fetchInteractionAction(type = "", params = {}) {
               converstionHistory.push(tempConv)
             }
             const callAgain = get(workflowResult, 'data.data.callAgain', false)
+            const actionType = get(workflowResult, 'data.data.actionType', false)
+
             console.log('callagain', callAgain)
-            if (!callAgain) {
-              clearInterval(workflowSetInterval)
+            if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+              break;
             }
-          }, 1000);
+          }
+          // })();
+
+
+
           console.log('converstionHistory', converstionHistory)
 
           dispatch(setknowledgeHistory(converstionHistory))

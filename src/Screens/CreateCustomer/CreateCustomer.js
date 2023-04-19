@@ -39,10 +39,17 @@ import BillDetails from "./BillDetails";
 import {
   removeCategoryProducts,
   setCurrentStepInStore,
+  setShowAccountCreationModal,
+  setSignatureInFormData,
 } from "./CreateCustomerAction";
 import {
   fetchServiceProducts,
   createCustomer,
+  updateCustomerData,
+  createCustomerService,
+  updateCustomerServiceData,
+  updateCustomerStatus,
+  updateAccountData,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -66,10 +73,17 @@ const CreateCustomer = ({ navigation }) => {
     getMasterData,
     fetchRegisterFormData,
     createCustomer,
+    updateCustomerData,
+    createCustomerService,
+    updateCustomerServiceData,
     setCurrentStepInStore,
+    setSignatureInFormData,
+    updateCustomerStatus,
+    updateAccountData,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
+    showAccountCreationModal: false,
     customerDetails: {},
     accountDetails: {},
     serviceDetails: { details: [] },
@@ -78,11 +92,9 @@ const CreateCustomer = ({ navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
   const [addressTakenType, setAddressTakenType] = useState("Manual");
 
-  // const [currentStep, setCurrentStep] = useState(0);
   const [stepIndicator, setStepIndicator] = useState(0);
   const [showCustomerTypeModal, setShowCustomerTypeModal] = useState(false);
-  const [showAccountCreationModal, setShowAccountCreationModal] =
-    useState(false);
+  const [showCreateOrderModal, setShowCreateOrderModal] = useState(false);
   const [showSameAccountDetailsModal, setShowSameAccountDetailsModal] =
     useState(false);
   const [createAccount, setCreateAccount] = useState(true);
@@ -97,7 +109,6 @@ const CreateCustomer = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("+673");
   const [numberMaxLength, setNumberMaxLength] = useState(7);
   const [countryPickModel, setCountryPickModel] = useState(false);
-  const [signature, setSignature] = useState(null);
   const [openBirthDatePicker, setOpenBirthDatePicker] = useState(false);
   const [openRegDatePicker, setOpenRegDatePicker] = useState(false);
 
@@ -111,8 +122,8 @@ const CreateCustomer = ({ navigation }) => {
   const { currentStep } = createCustomerReducerData;
 
   useEffect(() => {
-    setFormData(createCustomerReducerData.customerData);
-  }, [createCustomerReducerData.customerData]);
+    setFormData(createCustomerReducerData.formData);
+  }, [createCustomerReducerData.formData]);
   console.log("formData", JSON.stringify(formData));
 
   // Used to fetch master data
@@ -217,7 +228,7 @@ const CreateCustomer = ({ navigation }) => {
         setStepIndicator(0);
         break;
     }
-    setFormData({ ...formData, currentStep });
+    // setFormData({ ...formData, currentStep });
   }, [currentStep]);
 
   // Step = 0
@@ -228,12 +239,6 @@ const CreateCustomer = ({ navigation }) => {
         <UploadDocument />
       </View>
     );
-  };
-
-  const handleCustomerDetails = (key, value) => {
-    let { customerDetails } = formData;
-    customerDetails[key] = value;
-    setFormData({ ...formData, customerDetails });
   };
 
   // Step = 1
@@ -697,9 +702,10 @@ const CreateCustomer = ({ navigation }) => {
             }}
             thumbColor={"#fff"}
             // ios_backgroundColor="#3e3e3e"
-            onValueChange={() =>
-              setFormData({ ...formData, getQuote: !formData?.getQuote })
-            }
+            onValueChange={() => {
+              setFormData({ ...formData, getQuote: !formData?.getQuote });
+              // dispatch(setGetQuoteOnly(!formData?.getQuote));
+            }}
             value={formData?.getQuote}
           />
         </View>
@@ -955,18 +961,6 @@ const CreateCustomer = ({ navigation }) => {
         </View>
       </View>
     );
-  };
-
-  const handleAccountDetails = (key, value) => {
-    let { accountDetails } = formData;
-    accountDetails[key] = value;
-    setFormData({ ...formData, accountDetails });
-  };
-
-  const handleServiceDetails = (key, value) => {
-    let { serviceDetails } = formData;
-    serviceDetails[key] = value;
-    setFormData({ ...formData, serviceDetails });
   };
 
   // Step = 6
@@ -1342,35 +1336,35 @@ const CreateCustomer = ({ navigation }) => {
               } else {
                 handleAccountDetails(
                   "address1",
-                  get(formData, "serviceDetails.address1", "")
+                  get(formData, "customerDetails.address1", "")
                 );
                 handleAccountDetails(
                   "address2",
-                  get(formData, "serviceDetails.address2", "")
+                  get(formData, "customerDetails.address2", "")
                 );
                 handleAccountDetails(
                   "address3",
-                  get(formData, "serviceDetails.address3", "")
+                  get(formData, "customerDetails.address3", "")
                 );
                 handleAccountDetails(
                   "country",
-                  get(formData, "serviceDetails.country", "")
+                  get(formData, "customerDetails.country", "")
                 );
                 handleAccountDetails(
                   "district",
-                  get(formData, "serviceDetails.district", "")
+                  get(formData, "customerDetails.district", "")
                 );
                 handleAccountDetails(
                   "postCode",
-                  get(formData, "serviceDetails.postCode", "")
+                  get(formData, "customerDetails.postCode", "")
                 );
                 handleAccountDetails(
                   "state",
-                  get(formData, "serviceDetails.state", "")
+                  get(formData, "customerDetails.state", "")
                 );
                 handleAccountDetails(
                   "city",
-                  get(formData, "serviceDetails.city", "")
+                  get(formData, "customerDetails.city", "")
                 );
               }
               setIsSameAccountAddressChecked(!isSameAccountAddressChecked);
@@ -1541,7 +1535,10 @@ const CreateCustomer = ({ navigation }) => {
     return (
       <View>
         <CustomTitleText title={"Customer Agreement"} />
-        <CustomerAgreement signature={signature} setSignature={setSignature} />
+        <CustomerAgreement
+          signature={formData?.signature || null}
+          setSignature={dispatchSetSignatureInFormData}
+        />
       </View>
     );
   };
@@ -1551,12 +1548,13 @@ const CreateCustomer = ({ navigation }) => {
     return (
       <View>
         <CustomTitleText title={"Show Preview"} />
+        <Text>{formData?.customerUuid}</Text>
         {/* Show Preview View */}
-        {signature !== null && (
+        {formData?.signature !== null && (
           <Image
             resizeMode={"cover"}
             style={styles.previewImgStyle}
-            source={{ uri: signature }}
+            source={{ uri: formData?.signature }}
           />
         )}
       </View>
@@ -1570,6 +1568,24 @@ const CreateCustomer = ({ navigation }) => {
         gTotal = gTotal + product.quantity * product.price;
     });
     return gTotal;
+  };
+
+  const handleCustomerDetails = (key, value) => {
+    let { customerDetails } = formData;
+    customerDetails[key] = value;
+    setFormData({ ...formData, customerDetails });
+  };
+
+  const handleAccountDetails = (key, value) => {
+    let { accountDetails } = formData;
+    accountDetails[key] = value;
+    setFormData({ ...formData, accountDetails });
+  };
+
+  const handleServiceDetails = (key, value) => {
+    let { serviceDetails } = formData;
+    serviceDetails[key] = value;
+    setFormData({ ...formData, serviceDetails });
   };
 
   const handlePrevious = () => {
@@ -1587,6 +1603,9 @@ const CreateCustomer = ({ navigation }) => {
       case 1:
         dispatch(createCustomer(formData, navigation));
         break;
+      case 2:
+        dispatch(updateCustomerData(formData, navigation));
+        break;
       case 3:
         {
           let item = products.find((product) => product.quantity > 0);
@@ -1602,17 +1621,26 @@ const CreateCustomer = ({ navigation }) => {
         }
         break;
       case 4:
-        {
-          formData?.getQuote
-            ? dispatch(setCurrentStepInStore(10))
-            : dispatch(setCurrentStepInStore(currentStep + 1));
-        }
+        dispatch(createCustomerService(formData, navigation));
         break;
-      case 5:
-        setShowAccountCreationModal(true);
+      case 5: // Service Address UI Step
+        dispatch(updateCustomerServiceData(formData, currentStep, navigation));
+        break;
+      case 6:
+        dispatch(updateAccountData(formData, currentStep, navigation));
+        break;
+      case 7:
+        dispatch(updateAccountData(formData, currentStep, navigation));
+        break;
+      case 8:
+        isSameAccountAddressChecked
+          ? dispatch(
+              updateCustomerServiceData(formData, currentStep, navigation)
+            )
+          : dispatch(updateAccountData(formData, currentStep, navigation));
         break;
       case 9:
-        setFormData({ ...formData, signature });
+        dispatch(setSignatureInFormData(formData?.signature));
         dispatch(setCurrentStepInStore(currentStep + 1));
         break;
       default:
@@ -1622,19 +1650,29 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    alert("Submit with create customer API");
+    if (currentStep === 10 && formData?.getQuote) {
+      dispatch(updateCustomerStatus(formData, navigation));
+    } else {
+      setShowCreateOrderModal(true);
+    }
   };
 
   const handleAccountCreationNo = () => {
-    setShowAccountCreationModal(false);
+    dispatch(setShowAccountCreationModal(false));
     setCreateAccount(false);
     dispatch(setCurrentStepInStore(9));
   };
 
   const handleAccountCreationYes = () => {
-    setShowAccountCreationModal(false);
+    dispatch(setShowAccountCreationModal(false));
     setCreateAccount(true);
     setTimeout(() => setShowSameAccountDetailsModal(true), 100);
+  };
+
+  const handleCreateOrderYes = () => {
+    setShowCreateOrderModal(false);
+    // TODO: Implement/Dispatch Create Order Endpoint Action
+    dispatch(updateCustomerStatus(formData, navigation));
   };
 
   const handleSameAccountDetailsNo = () => {
@@ -1812,6 +1850,14 @@ const CreateCustomer = ({ navigation }) => {
     return icon;
   };
 
+  const dispatchSetShowAccountCreationModal = (data) => {
+    dispatch(setShowAccountCreationModal(data));
+  };
+
+  const dispatchSetSignatureInFormData = (data) => {
+    dispatch(setSignatureInFormData(data));
+  };
+
   return (
     <View style={styles.container}>
       {loader && <LoadingAnimation title="while we are fetching country" />}
@@ -1860,13 +1906,13 @@ const CreateCustomer = ({ navigation }) => {
       </Modal>
       {/* Account Creation Modal */}
       <Modal
-        visible={showAccountCreationModal}
+        visible={formData?.showAccountCreationModal}
         dismissable={false}
         contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
       >
         <FooterModel
-          open={showAccountCreationModal}
-          setOpen={setShowAccountCreationModal}
+          open={formData?.showAccountCreationModal}
+          setOpen={dispatchSetShowAccountCreationModal}
           title={"Do you want to create an account?"}
         >
           <View style={styles.modalContainer}>
@@ -1931,6 +1977,51 @@ const CreateCustomer = ({ navigation }) => {
               </Text>
             </Pressable>
             <Pressable onPress={handleSameAccountDetailsNo}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                No
+              </Text>
+            </Pressable>
+          </View>
+        </FooterModel>
+      </Modal>
+      {/* Create Order Modal */}
+      <Modal
+        visible={showCreateOrderModal}
+        dismissable={false}
+        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
+      >
+        <FooterModel
+          open={showCreateOrderModal}
+          setOpen={setShowCreateOrderModal}
+          title={"Are you sure, you want to generate the order?"}
+        >
+          <View style={styles.modalContainer}>
+            <Pressable onPress={handleCreateOrderYes}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  fontWeight: 600,
+                  backgroundColor: "#4C5A81",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                Yes
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => setShowCreateOrderModal(false)}>
               <Text
                 style={{
                   paddingVertical: 10,
