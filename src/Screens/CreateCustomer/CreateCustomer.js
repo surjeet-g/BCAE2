@@ -1638,6 +1638,8 @@ const CreateCustomer = ({ navigation }) => {
   const handleSubmit = () => {
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(updateCustomerStatus(formData, navigation));
+    } else if (currentStep === 10 && !createAccount) {
+      setShowCreateOrderModal(true);
     }
   };
 
