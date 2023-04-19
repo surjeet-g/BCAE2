@@ -408,7 +408,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     if (!validateEmail(email)) {
       setEmailError(strings.emailValidError);
     } else {
-      dispatch(sendOtp(email, "", "email", showOtpEmailSentMessage));
+      dispatch(sendOtp("", email, "", "email", showOtpEmailSentMessage));
       buttonEnableDiable();
     }
   };

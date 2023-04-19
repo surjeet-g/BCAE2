@@ -523,7 +523,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     } else if (!validateEmail(email)) {
       setEmailError(strings.emailValidError);
     } else {
-      dispatch(sendOtp(email, firstName, "email", showOtpEmailSentMessage));
+      dispatch(sendOtp("", email, firstName, "email", showOtpEmailSentMessage));
       buttonEnableDiable();
     }
   };
