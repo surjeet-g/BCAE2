@@ -6,6 +6,11 @@ export const INTERACTION_SET_FORM = "INTERACTION_SET_FORM";
 export const INTERACTION_ADD_LOADER_ENABLE = "INTERACTION_ADD_LOADER_ENABLE";
 export const INTERACTION_EDIT_LOADER_ENABLE = "INTERACTION_EDIT_LOADER_ENABLE";
 export const INTERACTION_FORM_ERROR = "INTERACTION_FORM_ERROR";
+export const INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS = "INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS";
+
+
+export const INTERACTION_KNEWLEGE_HISTORY_RESET = "INTERACTION_KNEWLEGE_HISTORY_RESET";
+
 export const INTERACTION_GET_WORKFLOW_SUCCESS =
   "INTERACTION_GET_WORKFLOW_SUCCESS";
 export const INTERACTION_GET_WORKFLOW_FAILURE =
@@ -117,4 +122,12 @@ export function setAssignInteractionToSelfDataInStore(data) {
 
 export function setAssignInteractionToSelfErrorDataInStore(data) {
   return { type: INTERACTION_ASSIGN_SELF_FAILURE, data };
+}
+
+export function intractionKnowlegeHistoryReset() {
+  return { type: INTERACTION_KNEWLEGE_HISTORY_RESET };
+}
+
+export function intractionKnowlegeHistoryRemoveUserInputTypes() {
+  return { type: INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS };
 }

@@ -4,7 +4,7 @@ import {
   setProfileError,
   setSearchEmpty,
   setSearchProfileData,
-  setSearchProfileDataError,
+  setSearchProfileDataError
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
@@ -14,7 +14,7 @@ import {
   getCustomerUUID,
   getUserId,
   getUserType,
-  USERTYPE,
+  USERTYPE
 } from "../Utilities/UserManagement/userInfo";
 
 export function fetchMyProfileData(navigation = null) {
@@ -79,6 +79,7 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
 }
 
 export function seachCustomers(search = "", limit = 5, page = 0) {
+  console.log('search api',)
   return async (dispatch) => {
     // dispatch(initProfileSearch());
     //todo search params
@@ -86,10 +87,7 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
       `${endPoints.SEACH_CUSTOMERS}?limit=${limit}&page=${page}`,
       requestMethod.POST,
       {
-        source: "string",
-        filters: {
-          email: "adsfsdfsd@gmail.comsdas",
-        },
+        "customerName": search
       }
     );
     console.log("task - pro result", profileResult);

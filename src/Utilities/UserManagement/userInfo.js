@@ -52,7 +52,7 @@ export const getCustomerID = async () => {
 
   return parseInt(userId);
 };
-export const getUserType = async () => {
+export const getUserType = async (cb = () => { }) => {
   let userType;
   try {
 
@@ -70,7 +70,7 @@ export const getUserType = async () => {
   } catch (error) {
     console.log("user Type is ", error);
   }
-
+  cb(userType)
   return userType;
 };
 export const getUserTypeForProfile = async () => {
