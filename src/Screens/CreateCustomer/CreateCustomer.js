@@ -1600,13 +1600,13 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleContinue = () => {
     switch (currentStep) {
-      case 1:
+      case 1: // Customer Details
         dispatch(createCustomer(formData, navigation));
         break;
-      case 2:
+      case 2: // Customer Address
         dispatch(updateCustomerData(formData, navigation));
         break;
-      case 3:
+      case 3: // Available Products
         {
           let item = products.find((product) => product.quantity > 0);
           if (item === undefined)
@@ -1620,26 +1620,26 @@ const CreateCustomer = ({ navigation }) => {
           }
         }
         break;
-      case 4:
+      case 4: // Selected Products screen & Need quote only
         dispatch(createCustomerService(formData, navigation));
         break;
       case 5: // Service Address UI Step
         dispatch(updateCustomerServiceData(formData, currentStep, navigation));
         break;
-      case 6:
+      case 6: // Account Details
         dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 7:
+      case 7: // Account Preferences
         dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 8:
+      case 8: // Account Address
         isSameAccountAddressChecked
           ? dispatch(
               updateCustomerServiceData(formData, currentStep, navigation)
             )
           : dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 9:
+      case 9: // Create Agreement & Signature
         dispatch(setSignatureInFormData(formData?.signature));
         dispatch(setCurrentStepInStore(currentStep + 1));
         break;
