@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   productTxtView: {
     flexDirection: "column",
     marginLeft: 10,
+    flex: 1,
   },
   productNameTxt: {
     color: "#202223",
