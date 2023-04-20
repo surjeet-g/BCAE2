@@ -1,7 +1,7 @@
 import {
   enableLoaderAddInteractionAdd,
   enableLoaderEditInteraction,
-  initInteraction, setAssignInteractionToSelfDataInStore,
+  initInteraction, intractionKnowlegeHistoryRemoveUserInputTypes, setAssignInteractionToSelfDataInStore,
   setAssignInteractionToSelfErrorDataInStore, setFollowupDataInStore,
   setFollowupErrorDataInStore, setInteractionData,
   setInteractionError, setInteractionsDetailsDataInStore,
@@ -18,140 +18,70 @@ import get from "lodash.get";
 import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
 import {
-  getCustomerID,
-  getCustomerUUID
+  getCustomerID
 } from "../Utilities/UserManagement/userInfo";
 
-export function fetchInteractionAction(type = "", params = {}, isRemovedHistory = false) {
+export function fetchInteractionAction(type = "", params = {},
+  isRemovedHistory = false) {
   return async (dispatch) => {
-    if (type != typeOfAccrodin.knowlegde.value) {
-      dispatch(initInteraction());
-    }
-    const customerUUID = await getCustomerUUID();
-    const customerID = await getCustomerID();
-    let flowId;
-    console.log("hititng", customerID, type);
-    let interactionResult;
-    if (type == typeOfAccrodin.rencently.value) {
-      interactionResult = await serverCall(
-        `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
-        requestMethod.POST,
-        {
-          searchParams: {
-            customerId: customerID,
-          },
-        }
-      );
-    } else if (type == typeOfAccrodin.frequently.value) {
-      interactionResult = await serverCall(
-        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
-        requestMethod.GET,
-        {}
-      );
-    } else if (type == typeOfAccrodin.category.value) {
-      interactionResult = await serverCall(
-        `${endPoints.FREQUENTLY_ASKED}?limit=4`,
-        requestMethod.GET,
-        {}
-      );
-    }
-    else if (type == typeOfAccrodin.workflow.value) {
-      //remove all userinput knowlege data
-      if (isRemovedHistory) {
-        dispatch(intractionKnowlegeHistoryRemoveUserInputTypes())
+    const debg = true;
+    try {
+      if (type != typeOfAccrodin.knowlegde.value) {
+        dispatch(initInteraction());
       }
-      let converstionHistory = []
-      const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
-      for await (const num of mockArray) {
-        const workflowResult = await serverCall(
-          `${endPoints.INTERACTION_WORKFLOW}`,
-          requestMethod.POST,
-          params
-        );
-        if (workflowResult.success) {
-          console.log('workflow response', workflowResult.data)
-          const tempConv = get(workflowResult, 'data.data.conversation', [])
-          console.log('conversation', tempConv)
-          if (tempConv.length != 0) {
-            converstionHistory.push(tempConv)
-          }
-
-          const callAgain = get(workflowResult, 'data.data.callAgain', false)
-          const actionType = get(workflowResult, 'data.data.actionType', false)
-
-          console.log('callagain', callAgain)
-          if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
-            break;
-          }
-        }
-        else {
-          break;
-        }
-      }
-      dispatch(setknowledgeHistory(converstionHistory))
-      return null
-
-    } else if (type == typeOfAccrodin.knowlegde.value) {
-
-      interactionResult = await serverCall(
-        `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}`,
-        requestMethod.POST,
-        {
-          ...params,
-          customerUuid: customerUUID,
-        }
-      );
-      console.log('dispatcher result', interactionResult)
-
-    } else {
-      dispatch(setInteractionError([]));
-      return false;
-    }
-
-    if (interactionResult?.success) {
-      let data = [];
-
+      // const customerUUID = await getCustomerUUID();
+      const customerID = await getCustomerID();
+      let flowId;
+      console.log("hititng", customerID, type);
+      let interactionResult;
       if (type == typeOfAccrodin.rencently.value) {
-        data = interactionResult?.data?.data?.rows;
+        interactionResult = await serverCall(
+          `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
+          requestMethod.POST,
+          {
+            searchParams: {
+              customerId: customerID,
+            },
+          }
+        );
+
+
       } else if (type == typeOfAccrodin.frequently.value) {
-        data = interactionResult?.data?.data;
+        interactionResult = await serverCall(
+          `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+          requestMethod.GET,
+          {}
+        );
       } else if (type == typeOfAccrodin.category.value) {
-        data = interactionResult?.data?.data;
-      } else if (type == typeOfAccrodin.searchbox.value) {
-        data = interactionResult?.data?.data;
+        interactionResult = await serverCall(
+          `${endPoints.FREQUENTLY_ASKED}?limit=4`,
+          requestMethod.GET,
+          {}
+        );
       }
-      else if (type == typeOfAccrodin.knowlegde.value) {
-        //knowledge value
-        //array of data for showing history of resol
-        flowId = get(interactionResult, 'data.data.flwId', '')
-        console.log('interact->dispater->knwolege:flowId', flowId)
-        console.log('interact->dispater->knwolege result', interactionResult)
-        //for showing history in pop 
+      else if (type == typeOfAccrodin.workflow.value) {
+        //remove all userinput knowlege data
+        if (isRemovedHistory) {
+          dispatch(intractionKnowlegeHistoryRemoveUserInputTypes())
+        }
         let converstionHistory = []
-        if (flowId != "") {
-          const conversationID = get(interactionResult, 'data.data.conversationUid', '')
-          const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
-          // console.log('mockArray', mockArray)
-          // (async function () {
-          for await (const num of mockArray) {
-            console.log('hititng inside',)
-            const workflowResult = await serverCall(
-              `${endPoints.INTERACTION_WORKFLOW}`,
-              requestMethod.POST,
-              {
-                flowId: flowId,
-                conversationUid: conversationID,
-                data: {
-                  source: "knowledgeBase"
-                },
-              }
-            );
+        const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+        console.log('payload for workflow', params)
+        for await (const num of mockArray) {
+          const workflowResult = await serverCall(
+            `${endPoints.INTERACTION_WORKFLOW}`,
+            requestMethod.POST,
+            params
+          );
+
+          if (workflowResult.success) {
             console.log('workflow response', workflowResult.data)
             const tempConv = get(workflowResult, 'data.data.conversation', [])
             console.log('conversation', tempConv)
             if (tempConv.length != 0) {
               converstionHistory.push(tempConv)
             }
+
             const callAgain = get(workflowResult, 'data.data.callAgain', false)
             const actionType = get(workflowResult, 'data.data.actionType', false)
 
@@ -160,40 +90,125 @@ export function fetchInteractionAction(type = "", params = {}, isRemovedHistory 
               break;
             }
           }
-          // })();
+          else {
+            break;
+          }
+        }
+        dispatch(setknowledgeHistory(converstionHistory))
+        return null
+
+      } else if (type == typeOfAccrodin.knowlegde.value) {
+        console.log('param knowledge', params)
+        interactionResult = await serverCall(
+          `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}`,
+          requestMethod.POST,
+          params
+        );
+        console.log('dispatcher result', interactionResult)
+
+      } else {
+        dispatch(setInteractionError([]));
+        return false;
+      }
+      if (debg) {
+        console.log('API Requrest', interactionResult, "API STATUS", interactionResult?.success, "API DATA", interactionResult?.data)
+      }
+      if (interactionResult?.success) {
+        let data = [];
+
+        if (type == typeOfAccrodin.rencently.value) {
+          data = interactionResult?.data?.data?.rows;
+        } else if (type == typeOfAccrodin.frequently.value) {
+          data = interactionResult?.data?.data;
+        } else if (type == typeOfAccrodin.category.value) {
+          data = interactionResult?.data?.data;
+        } else if (type == typeOfAccrodin.searchbox.value) {
+          data = interactionResult?.data?.data;
+        }
+        else if (type == typeOfAccrodin.knowlegde.value) {
+          //knowledge value
+          //array of data for showing history of resol
+          console.log('workflow success search result', interactionResult)
+          flowId = get(interactionResult, 'data.data.flwId', '')
+          console.log('interact->dispater->knwolege:flowId', flowId)
+          console.log('interact->dispater->knwolege result', interactionResult)
+          //for showing history in pop 
+          let converstionHistory = []
+          if (flowId != "") {
+            const conversationID = get(interactionResult, 'data.data.conversationUid', '')
+            const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+            // console.log('mockArray', mockArray)
+            // (async function () {
+            const bodyworkflow = {
+              flowId: flowId,
+              conversationUid: conversationID,
+              data: {
+                source: "knowledgeBase"
+              },
+            }
+            for await (const num of mockArray) {
+              console.log('hititng inside',)
+              const workflowResult = await serverCall(
+                `${endPoints.INTERACTION_WORKFLOW}`,
+                requestMethod.POST,
+                bodyworkflow
+              );
+              if (debg) {
+                console.log('WORFLOW', "Body", bodyworkflow, "API Resp", workflowResult.data, "API ", workflowResult)
+              }
+              const tempConv = get(workflowResult, 'data.data.conversation', [])
+              console.log('conversation', tempConv)
+              if (tempConv.length != 0) {
+                converstionHistory.push(tempConv)
+              }
+              const callAgain = get(workflowResult, 'data.data.callAgain', false)
+              const actionType = get(workflowResult, 'data.data.actionType', false)
+
+              console.log('callagain', callAgain)
+              if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+                break;
+              }
+            }
+            // })();
 
 
 
-          console.log('converstionHistory', converstionHistory)
+            console.log('converstionHistory', converstionHistory)
 
-          dispatch(setknowledgeHistory(converstionHistory))
+            dispatch(setknowledgeHistory(converstionHistory))
+          }
+
+          data = get(interactionResult, 'data.data', []);
+        }
+        else {
+          data = [];
+        }
+        // if (type == typeOfAccrodin.knowlegde.value) {
+
+        // }
+
+        dispatch(setInteractionData(data, false));
+        console.log('data after', data)
+        if (type == typeOfAccrodin.knowlegde.value) {
+          console.log('flow Id ', flowId)
+          const actionTypea = (flowId != "") ? "auto_resolution" : "choose_item"
+          return { response: data, actionType: actionTypea };
+        }
+        else {
+          return { response: data, actionType: "auto_resolution" }
         }
 
-        data = get(interactionResult, 'data.data', []);
+      } else {
+        console.log("error response", interactionResult);
+        dispatch(setInteractionError([]));
+        return false;
       }
-      else {
-        data = [];
-      }
-      // if (type == typeOfAccrodin.knowlegde.value) {
+      return { response: [], actionType: "auto_resolution" }
+    } catch (error) {
 
-      // }
-
-      dispatch(setInteractionData(data, false));
-      console.log('data after', data)
-      if (type == typeOfAccrodin.knowlegde.value) {
-        const actionTypea = (flowId != "") ? "auto_resolution" : "choose_item"
-        return { response: data, actionType: actionTypea };
-      }
-      else {
-        return { response: data, actionType: "auto_resolution" }
-      }
-
-    } else {
-      console.log("error response", interactionResult);
-      dispatch(setInteractionError([]));
-      return false;
+      console.log('error', error)
+      return null
     }
-    return { response: [], actionType: "auto_resolution" }
   };
 }
 

@@ -9,13 +9,19 @@ import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
 
 
-export const HandleResolution = ({ suggestionList = [], resolutionDetails = [], fetchInteractionAction = () => { } }) => {
+export const HandleResolution = ({
+    suggestionList = [],
+    resolutionDetails = [],
+    fetchInteractionAction = () => { },
+    customerUuid = ""
+}) => {
+    console.log('HandleResolution : customerUuid', customerUuid)
     const RenderSend = ({ title = "", type = "", description = "" }) => {
         console.log('enter rendersend', type, description)
         if (type == "string") {
             return (
                 <View style={{}}>
-                    <Text >{title}</Text>
+                    <Text>{title}</Text>
                     <ClearSpace size={2} />
                 </View>
             )
@@ -31,7 +37,6 @@ export const HandleResolution = ({ suggestionList = [], resolutionDetails = [], 
                 ['Bill Amount', get(title, 'billAmount', '')],
                 ['Customer Name', `${get(title, 'customerDetails.firstName', '')} ${get(title, 'customerDetails.lastName', '')}`],
                 ['Customer Contact No', get(title, 'customerDetails.customerContact[0].contactNo', '')]
-
             ]
             const productDetails = get(title, 'childOrder[0].orderProductDtls', [])
 
@@ -100,7 +105,7 @@ export const HandleResolution = ({ suggestionList = [], resolutionDetails = [], 
         const attribute = get(message, 'attributes', []);
         const flowId = get(resolutionDetails, 'flwId', '')
         const conversationID = get(resolutionDetails, 'conversationUid', '')
-
+        const requestId = get(resolutionDetails, 'requestId', '')
         console.log('>>resolutionDetails', resolutionDetails)
 
         switch (element) {
@@ -140,9 +145,12 @@ export const HandleResolution = ({ suggestionList = [], resolutionDetails = [], 
                                                                         source: "knowledgeBase",
                                                                         inputType: "MESSAGE",
                                                                         inputValue: "NO"
-                                                                    }
+                                                                    },
+                                                                    requestId: requestId,
+                                                                    customerUuid: customerUuid
 
                                                                 }
+
                                                                 fetchInteractionAction(params)
 
                                                             }

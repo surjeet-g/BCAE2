@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { List, Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { setProfileReset, setSearchProfileReset } from "../Redux/ProfileAction";
+import { setSearchProfileReset } from "../Redux/ProfileAction";
 import {
   fetchSavedProfileDataByUser,
   seachCustomers
@@ -36,14 +36,14 @@ export const userNavigationIcon = (props) => {
                       }}
                     >
                       <Searchbar
-                        style={{ width: width * 0.7, height: 50 }}
+                        style={{ width: width * 0.7, height: 40 }}
                         placeholder={"Search customer"}
                         onChangeText={async (text) => {
                           searchString = text;
                           props.setLoader(true);
 
                           await props.profileDispatch(
-                            seachCustomers()
+                            seachCustomers(text)
                           );
 
                           props.setLoader(false);
@@ -84,6 +84,8 @@ export const userNavigationIcon = (props) => {
  *
  */
 export const RenderUserSelectResult = (props) => {
+
+  const [isOpen, setOpen] = useState(true)
   return (
     <View
       style={{
@@ -93,19 +95,23 @@ export const RenderUserSelectResult = (props) => {
         width: width * 0.9,
         zIndex: 99999999,
         elevation: 999,
+
       }}
     >
-      {props.profileSearchData.length == 0 ? (
+      {(props.profileSearchData.length == 0 || isOpen == false) ? (
         <Text></Text>
       ) : (
         <FlatList
           contentContainerStyle={{
-            height: 500,
+            maxHeight: 500,
           }}
           data={props.profileSearchData}
           renderItem={({ item }) => {
             return (
               <List.Item
+                description={
+                  `customer No : ${item.customerNo}`
+                }
                 title={`${item.firstName} ${item.lastName}`}
                 titleStyle={{
                   fontSize: 10,
@@ -123,10 +129,12 @@ export const RenderUserSelectResult = (props) => {
                   // borderRadius: 3,
                 }}
                 onPress={async () => {
+
+
                   props.setLoader(true);
                   const status = await props.profileDispatch(
                     fetchSavedProfileDataByUser(
-                      "ce2b267e-4fb3-4c6d-b3b1-9ea52280ab9d"
+                      item.customerUuid
                     )
                   );
                   if (status) {
@@ -134,10 +142,11 @@ export const RenderUserSelectResult = (props) => {
                       headerRight: props.headerRightForNav,
                       headerTitle: props.headerTitle,
                     });
-                    props.profileDispatch(setProfileReset());
+                    // props.profileDispatch(setProfileReset());
                   }
+                  setOpen(false)
                   props.setLoader(false);
-                  // setUserSeachEnable(false)
+
                 }}
               />
             );

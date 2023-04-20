@@ -20,7 +20,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import { styles as modalStyle } from "../../Components/InteractionSuccess";
-
 import {
   color,
   DEFAULT_PROFILE_IMAGE,
@@ -354,6 +353,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       //interaction creation part  
       if (actionType == "auto_resolution") {
+        await setBottombartitle(typeOfAccrodin.resolved.title);
         await setCreateInteractionType(INTELIGENCE_STATUS.RESOVLED)
         setactiveChatBot(typeOfAccrodin.resolved)
         setOpenBottomModalChatBot(true)
@@ -387,8 +387,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
         const resolutionList = get(resp, 'resolutionAction.data', [])
         const solutionCount = resolutionList.length
         if (solutionCount == 0) {
-          //to do throw error
-          alert("//TO DO ")
+
+          Toast.show({
+            type: "bctError",
+            text1: "//TODO chck message No Resolution",
+          });
+          setOpenBottomModalChatBot(false)
 
         }
         if (solutionCount == 1) {
@@ -400,6 +404,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           if (debugg) console.log('handleInteligenceResponse : multiple solution  solution')
           await setCreateInteractionType(INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM)
           setactiveChatBot(typeOfAccrodin.productChoose)
+          await setBottombartitle(typeOfAccrodin.productChoose.title);
           setOpenBottomModalChatBot(true)
           //to do bottom list item 
         }
@@ -458,13 +463,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   // borderRadius: 3,
                 }}
                 onPress={async () => {
+                  const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+                  console.log('active customuui', activeData, get(profileReducer, `${activeData}.customerUuid`, ''))
                   //store selected result in cache
                   await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                  console.log('one',)
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
+                      customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
                       requestId: item.requestId,
                     })
                   );
+                  console.log('two', response, actionType)
 
 
 
@@ -640,6 +650,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const handleAccodin = async ({ value, title }) => {
     await setactiveChatBot(value);
     await setBottombartitle(title);
+    await setCreateInteractionType("")
     await dispatchInteraction(fetchInteractionAction(value));
     setOpenBottomModalChatBot(true);
   };
@@ -697,7 +708,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
         code: "SC_INSURANCE",
         description: "Insurance",
       },
+
     ];
+
+
+    const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+
+    const addr = get(profileReducer, `${activeData}.customerAddress`, []);
 
     return (
       <ImageBackground
@@ -776,8 +793,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   color: colors.textColor,
                 }}
               >
-                {get(profileReducer, "savedProfileData.firstName", "")}{" "}
-                {get(profileReducer, "savedProfileData.lastName", "")}
+                {get(profileReducer, `${activeData}.firstName`, "")}{" "}
+                {get(profileReducer, `${activeData}.lastName`, "")}
               </Text>
               <Text
                 variant="bodySmall"
@@ -786,7 +803,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   color: colors.textColor,
                 }}
               >
-                {get(profileReducer, "savedProfileData.customerNo", "")}
+                {get(profileReducer, `${activeData}.customerNo`, "")}
               </Text>
               <Text
                 variant="bodySmall"
@@ -797,7 +814,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               >
                 {get(
                   profileReducer,
-                  "savedProfileData.customerContact[0].emailId",
+                  `${activeData}.customerContact[0].emailId`,
                   ""
                 )}
               </Text>
@@ -823,7 +840,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           >
             {get(
               profileReducer,
-              "savedProfileData.customerContact[0].mobileNo",
+              `${activeData}.customerContact[0].mobileNo`,
               ""
             )}
           </Text>
@@ -841,7 +858,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               color: colors.textColor,
             }}
           >
-            {handleMultipleContact(addresss)}
+            {handleMultipleContact(addr)}
           </Text>
         </View>
 
@@ -931,7 +948,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setService,
     activeService,
   ]);
-
+  console.log('new profile ', profileReducer.userSelectedProfileDetails)
   const {
     statement,
     interactionType,
@@ -951,7 +968,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   let isButtonEnable = true;
 
   //handling loader
-  const HandleMultipleCaseInChatBoard = ({ suggestionList }) => {
+  const HandleMultipleCaseInChatBoard = ({ suggestionList, resolutionHistory = [] }) => {
     //product list
     console.log('HandleMultipleCaseInChatBoard suggestion list ', suggestionList)
     console.log('HandleMultipleCaseInChatBoard :createInteractionType', createInteractionType)
@@ -964,8 +981,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {get(suggestionList, 'length', 0) > 0 ? (
-              suggestionList.map((ite) => (
+            {get(resolutionHistory, 'length', 0) > 0 ? (
+              resolutionHistory.map((ite) => (
                 // eslint-disable-next-line react/jsx-key
                 <Chip
                   mode="outlined"
@@ -1018,7 +1035,70 @@ const InteractionsToOrder = ({ route, navigation }) => {
       )
     }
     else {
-      <Text>Not Product</Text>
+      return (
+        <View style={styles.bottomContainer}>
+          <ClearSpace size={2} />
+
+
+
+          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            {get(suggestionList, 'length', 0) > 0 ? (
+              suggestionList.map((ite) => (
+                // eslint-disable-next-line react/jsx-key
+                <Chip
+                  mode="outlined"
+                  onPress={async () => {
+                    setLoader(true)
+
+                    const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+                    const { response, actionType } = await dispatchInteraction(
+                      fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
+                        customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
+                        requestId: get(ite, "requestId", "")
+                      })
+                    );
+                    setLoader(false)
+                    const status = await handleInteligenceResponse(response, ite, actionType)
+
+                    console.log('response', status)
+                    return null
+                    console.log('view->HandleMultipleCaseInChatBoard->api response ', response, actionType)
+                    // const status = await handleInteligenceResponse(mockresponse, item)
+                  }}
+                  textStyle={{
+                    fontSize: 14,
+                    fontWeight: "400",
+                  }}
+                  style={{
+                    backgroundColor: "#edf1f7",
+                    borderRadius: 15,
+                    marginRight: 5,
+                    marginBottom: 5,
+                    borderColor: "transparent",
+                  }}
+                >
+                  {ite.requestStatement}
+                </Chip>
+              ))
+            ) : (
+              <View style={{ flex: 1 }}>
+                <Text style={{ textAlign: "center" }} variant="labelMedium">
+                  No data available!
+                </Text>
+              </View>
+            )}
+          </View>
+          <ClearSpace size={3} />
+
+          {/* <Text variant="labelMedium" style={{ textAlign: "center" }}>
+            Couldn't Find a resolution?
+            <Text onPress={() => { }} style={{ color: "red" }}>
+              {" "}
+              Create Interaction
+            </Text>{" "}
+          </Text> */}
+        </View>
+      )
     }
   }
   /**
@@ -1027,7 +1107,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
    */
   const RenderBottomChatBoard = () => {
     const suggestionList = get(interactionReducer, "knowledgeHistory", []);
-    console.log('>> ff', suggestionList)
+
+    console.log('RenderBottomChatBoard,', interactionReducer)
     //todo
 
     if (activeChatBotSec == "") {
@@ -1035,17 +1116,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return null;
     }
     //todo 
-    // if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
-    if (true) {
+    if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+      // if (true) {
+      const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
       return (
         <HandleResolution
+          customerUuid={get(profileReducer, `${activeData}.customerUuid`, '')}
           fetchInteractionAction={async (params) => {
-            setLoader(true)
+            // setLoader(true)
             await dispatchInteraction(
-              fetchInteractionAction(typeOfAccrodin.knowlegde.value, params, true)
+              fetchInteractionAction(typeOfAccrodin.workflow.value, params, true)
             );
-            setLoader(false);
+            // setLoader(false);
           }}
           suggestionList={suggestionList}
           resolutionDetails={get(interactionReducer, "InteractionData", [])}
@@ -1054,10 +1138,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
       );
 
     }
-
+    const interactionList = get(interactionReducer, 'InteractionData', [])
 
     return (
-      <HandleMultipleCaseInChatBoard suggestionList={suggestionList} />
+      <HandleMultipleCaseInChatBoard
+        suggestionList={interactionList}
+        resolutionHistory={suggestionList}
+      />
     );
   };
 
@@ -1128,7 +1215,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }
-  console.log('knowlegebased result', interactionRedux.knowledgeHistory)
+  console.log('profile result', profileReducer)
   return (
     <>
       {profileReducer.IsSearchEmpty &&

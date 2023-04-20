@@ -4,7 +4,8 @@ import {
   setProfileError,
   setSearchEmpty,
   setSearchProfileData,
-  setSearchProfileDataError
+  setSearchProfileDataError,
+  setUserSelectedProfile
 } from "./ProfileAction";
 
 import Toast from "react-native-toast-message";
@@ -62,17 +63,20 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
     // dispatch(initProfile());
 
     console.log("task fetch");
+    const userType = await getUserType();
+    let typeOfUser =
+      userType == USERTYPE.CUSTOMER ? USERTYPE.CUSTOMER : USERTYPE.USER;
     let profileResult = await serverCall(
       endPoints.PROFILE_DETAILS + customerUUDI,
       requestMethod.GET,
       {}
     );
-    console.log("task fetch", profileResult);
+
     if (profileResult?.success) {
-      dispatch(setProfileData(profileResult?.data?.data));
+      dispatch(setUserSelectedProfile({ ...profileResult?.data?.data, typeOfUser }));
       return true;
     } else {
-      dispatch(setProfileError([]));
+      // dispatch(setProfileError([]));
       return false;
     }
   };

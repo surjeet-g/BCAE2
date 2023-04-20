@@ -16,6 +16,7 @@ import {
 const InteractionInitialState = {
   initInteraction: false,
   loaderAdd: false,
+  userSelectedProfileDetails: {},
   loaderEdit: false,
   interactionError: false,
   InteractionData: {},
@@ -192,7 +193,10 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       return {
         ...state,
         formData: InteractionInitialState.formData,
+        userSelectedProfileDetails: {},
+        knowledgeHistory: []
       };
+
 
     case INTERACTION_SET_FORM:
       const {
@@ -305,11 +309,14 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         // todo here logic
       };
     case INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS:
+
       let tempknowledgeHistory = state.knowledgeHistory
       let newHistory = []
+      console.log('INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS', tempknowledgeHistory)
       if (tempknowledgeHistory.length != 0) {
         newHistory = tempknowledgeHistory.filter(item => !item?.actionType.includes("COLLECTINPUT"))
       }
+      console.log('interaction reducer INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS', "existing", tempknowledgeHistory, "newHistory", newHistory)
       return {
         ...state,
         knowledgeHistory: newHistory

@@ -9,10 +9,13 @@ import {
   PROFILE_SEARCH_DATA_RESET,
   PROFILE_SEARCH_ERROR,
   PROFILE_SEARCH_INIT, PROFILE_SET_EMPTY, PROFILE_SET_FORM,
+  PROFILE_SET_USER_SELECTED_PROFILE,
+  PROFILE_SET_USER_SELECTED_RESET,
   SET_USER_SEARCH
 } from "./ProfileAction";
 
 const mySavedProfileInitialState = {
+  userSelectedProfileDetails: {},
   initProfile: false,
   userSearchString: "",
   initSeachProfile: false,
@@ -130,7 +133,17 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
         ...state,
         formData: tempFormData,
       };
+    case PROFILE_SET_USER_SELECTED_PROFILE:
 
+      return {
+        ...state,
+        userSelectedProfileDetails: action.data,
+      };
+    case PROFILE_SET_USER_SELECTED_RESET:
+      return {
+        ...state,
+        userSelectedProfileDetails: {},
+      };
     default:
       return state;
   }
