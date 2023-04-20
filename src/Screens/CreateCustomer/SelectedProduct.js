@@ -78,6 +78,11 @@ const styles = StyleSheet.create({
   },
   priceTxt: { color: "#EFA848", fontWeight: 700, fontSize: 18 },
   quantityView: { flexDirection: "row", alignItems: "center" },
-  quantityIcon: { backgrounColor: "#E4EDFF", borderRadius: 10, padding: 5 },
-  quantityTxt: { color: "#000000", fontWeight: 600, fontSize: 14 },
+  quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
+  quantityTxt: {
+    color: "#000000",
+    fontWeight: 600,
+    fontSize: 14,
+    marginHorizontal: 10,
+  },
 });

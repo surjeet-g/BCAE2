@@ -10,7 +10,7 @@ const Product = (props) => {
   const { item, products, setProducts } = props;
 
   const handleQuantity = (step) => {
-    let currentQuantity = item.quantity;
+    let currentQuantity = item?.quantity;
     if (step === 1) {
       currentQuantity = currentQuantity + step;
     } else if (step === -1) {
@@ -18,7 +18,7 @@ const Product = (props) => {
     }
 
     let newProducts = products.map((product) => {
-      if (product.productId === item.productId) {
+      if (product.productId === item?.productId) {
         product.quantity = currentQuantity;
       }
       return product;
@@ -28,19 +28,19 @@ const Product = (props) => {
 
   return (
     <View
-      style={item.quantity > 0 ? styles.selectedContainer : styles.container}
+      style={item?.quantity > 0 ? styles.selectedContainer : styles.container}
     >
       <Text style={styles.bestvalue} numberOfLines={1}>
         {"Best Value"}
       </Text>
       {/* Product */}
       <View style={styles.productTxtView}>
-        <Text style={styles.productNameTxt}>{item.productName}</Text>
+        <Text style={styles.productNameTxt}>{item?.productName}</Text>
         <Text style={styles.productTypeTxt}>
-          {"\u2B24 Service Type: " + item.serviceTypeDescription?.description}
+          {"\u2B24 Service Type: " + item?.serviceTypeDescription?.description}
         </Text>
         <Text style={styles.productTypeTxt}>
-          {"\u2B24 Product Type: " + item.productTypeDescription?.description}
+          {"\u2B24 Product Type: " + item?.productTypeDescription?.description}
         </Text>
       </View>
       <DashedDivider />
@@ -131,6 +131,11 @@ const styles = StyleSheet.create({
     textDecorationStyle: "solid",
   },
   quantityView: { flexDirection: "row", alignItems: "center" },
-  quantityIcon: { backgrounColor: "#E4EDFF", borderRadius: 10, padding: 5 },
-  quantityTxt: { color: "#000000", fontWeight: 600, fontSize: 14 },
+  quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
+  quantityTxt: {
+    color: "#000000",
+    fontWeight: 600,
+    fontSize: 14,
+    marginHorizontal: 10,
+  },
 });
