@@ -68,7 +68,7 @@ import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
 import {
-  getCustomerID, USERTYPE
+  getCustomerID, getUserType, USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -137,7 +137,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [del, setDel] = useState([]);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState(USERTYPE.USER);
+
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
@@ -237,14 +238,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [profileReducer.IsSearchEmpty])
 
   useEffect(() => {
-    async function fetchMyAPI() {
-      // const userType = await getUserType();
-
-      // setUserType(userType);
-    }
-
-    fetchMyAPI();
+    getUserType(setUserType);
   }, []);
+
   useEffect(() => {
     async function fetchMyAPI() {
       setService({
@@ -1030,39 +1026,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
    *
    */
   const RenderBottomChatBoard = () => {
-    const suggestionList = get(interactionReducer, "knowledgeHistory.d", [
-
-      {
-        "actionType": "COLLECTINPUT",
-        "description": "BILL_REDIRECT",
-        "type": "object",
-        "message": {
-          "element": "YES_NO_BUTTON",
-          "attributes": [
-            {
-              "url": "/",
-              "name": "YES",
-              "type": "BUTTON",
-              "popup": "We are redirecting on payment page please wait...",
-              "value": "Yes, Procced to pay"
-            },
-            {
-              "url": "",
-              "name": "NO",
-              "type": "BUTTON",
-              "popup": "Are you sure you don't want to pay?",
-              "value": "No"
-            }
-          ]
-        }
-      },
-      {
-        "actionType": "SENDMESSAGE",
-        "description": "Start",
-        "type": "string",
-        "message": "Please wait, we are analyzing your information"
-      },
-    ]);
+    const suggestionList = get(interactionReducer, "knowledgeHistory", []);
     console.log('>> ff', suggestionList)
     //todo
 
@@ -1075,8 +1039,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
     if (true) {
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
       return (
-        <HandleResolution suggestionList={suggestionList}
+        <HandleResolution
+          fetchInteractionAction={async (params) => {
+            setLoader(true)
+            await dispatchInteraction(
+              fetchInteractionAction(typeOfAccrodin.knowlegde.value, params, true)
+            );
+            setLoader(false);
+          }}
+          suggestionList={suggestionList}
           resolutionDetails={get(interactionReducer, "InteractionData", [])}
+
         />
       );
 
@@ -1194,7 +1167,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
             headerTitle: "headerTitle",
             profileSearchData: get(profileReducer, "profileSearchData", [])
           });
-        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen])}
+        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen])
+
+      }
       {userType == USERTYPE.USER &&
         useMemo(() => {
           return (
@@ -1210,10 +1185,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
         }, [
           profileReducer,
           setLoader,
+          setUserType,
           profileDispatch,
           navigation,
           headerRightForNav,
-        ])}
+        ])
+      }
 
       {loader && (
         <LoadingAnimation title="while we are creating Interaction." />

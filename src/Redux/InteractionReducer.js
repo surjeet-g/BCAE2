@@ -9,7 +9,7 @@ import {
   INTERACTION_FORM_ERROR, INTERACTION_GET_DETAILS_FAILURE,
   INTERACTION_GET_DETAILS_SUCCESS, INTERACTION_GET_FOLLOWUP_FAILURE,
   INTERACTION_GET_FOLLOWUP_SUCCESS, INTERACTION_GET_WORKFLOW_FAILURE,
-  INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT, INTERACTION_KNEWLEGE_HISTORY, INTERACTION_RESET,
+  INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT, INTERACTION_KNEWLEGE_HISTORY, INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS, INTERACTION_KNEWLEGE_HISTORY_RESET, INTERACTION_RESET,
   INTERACTION_SET_FORM
 } from "./InteractionAction";
 
@@ -297,7 +297,23 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         knowledgeHistory: action.data
         // todo here logic
       };
-
+    case INTERACTION_KNEWLEGE_HISTORY_RESET:
+      console.log('reducers INTERACTION_KNEWLEGE_HISTORY_RESET', action.data)
+      return {
+        ...state,
+        knowledgeHistory: []
+        // todo here logic
+      };
+    case INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS:
+      let tempknowledgeHistory = state.knowledgeHistory
+      let newHistory = []
+      if (tempknowledgeHistory.length != 0) {
+        newHistory = tempknowledgeHistory.filter(item => !item?.actionType.includes("COLLECTINPUT"))
+      }
+      return {
+        ...state,
+        knowledgeHistory: newHistory
+      };
     case INTERACTION_ASSIGN_SELF:
       return {
         ...state,

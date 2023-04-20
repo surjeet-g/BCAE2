@@ -9,7 +9,7 @@ import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
 
 
-export const HandleResolution = ({ suggestionList = [], resolutionDetails = [] }) => {
+export const HandleResolution = ({ suggestionList = [], resolutionDetails = [], fetchInteractionAction = () => { } }) => {
     const RenderSend = ({ title = "", type = "", description = "" }) => {
         console.log('enter rendersend', type, description)
         if (type == "string") {
@@ -98,6 +98,11 @@ export const HandleResolution = ({ suggestionList = [], resolutionDetails = [] }
     const RenderCollectInput = ({ message }) => {
         const element = get(message, 'element', '');
         const attribute = get(message, 'attributes', []);
+        const flowId = get(resolutionDetails, 'flwId', '')
+        const conversationID = get(resolutionDetails, 'conversationUid', '')
+
+        console.log('>>resolutionDetails', resolutionDetails)
+
         switch (element) {
             case "YES_NO_BUTTON":
                 if (attribute.length == 0) {
@@ -128,6 +133,17 @@ export const HandleResolution = ({ suggestionList = [], resolutionDetails = [] }
                                                         text: strings.ok,
                                                         onPress: () => {
                                                             if (buttonType == "NO") {
+                                                                const params = {
+                                                                    flowId: flowId,
+                                                                    conversationUid: conversationID,
+                                                                    data: {
+                                                                        source: "knowledgeBase",
+                                                                        inputType: "MESSAGE",
+                                                                        inputValue: "NO"
+                                                                    }
+
+                                                                }
+                                                                fetchInteractionAction(params)
 
                                                             }
 

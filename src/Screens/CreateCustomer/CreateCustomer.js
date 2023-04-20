@@ -50,6 +50,7 @@ import {
   updateCustomerServiceData,
   updateCustomerStatus,
   updateAccountData,
+  createOrderForCustomer,
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -80,6 +81,7 @@ const CreateCustomer = ({ navigation }) => {
     setSignatureInFormData,
     updateCustomerStatus,
     updateAccountData,
+    createOrderForCustomer,
   ]);
   const [formData, setFormData] = useState({
     getQuote: false,
@@ -704,7 +706,6 @@ const CreateCustomer = ({ navigation }) => {
             // ios_backgroundColor="#3e3e3e"
             onValueChange={() => {
               setFormData({ ...formData, getQuote: !formData?.getQuote });
-              // dispatch(setGetQuoteOnly(!formData?.getQuote));
             }}
             value={formData?.getQuote}
           />
@@ -724,10 +725,10 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Bill Details"} />
         <BillDetails
           details={{
-            gTotal: calculateGTotal(),
-            total: calculateGTotal() + 50 - 100,
-            gst: 50.0,
-            discount: 100.0,
+            gTotal: calculateTotalBillAmount(),
+            total: calculateTotalBillAmount(),
+            gst: 0.0,
+            discount: 0.0,
           }}
         />
       </View>
@@ -1547,21 +1548,284 @@ const CreateCustomer = ({ navigation }) => {
   const renderPreviewUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Show Preview"} />
-        <Text>{formData?.customerUuid}</Text>
-        {/* Show Preview View */}
-        {formData?.signature !== null && (
-          <Image
-            resizeMode={"cover"}
-            style={styles.previewImgStyle}
-            source={{ uri: formData?.signature }}
+        <CustomTitleText title={"Customer Information"} />
+        <View style={styles.backgroundView}>
+          <PreviewInfoItem
+            title={`Title`}
+            value={formData?.customerDetails?.title || "NA"}
           />
+          <PreviewInfoItem
+            title={`First Name`}
+            value={formData?.customerDetails?.firstName || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Last Name`}
+            value={formData?.customerDetails?.lastName || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Gender`}
+            value={formData?.customerDetails?.gender?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`DOB`}
+            value={
+              moment(formData?.customerDetails?.birthDate).format(
+                "YYYY-MM-DD"
+              ) || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`ID Type`}
+            value={formData?.customerDetails?.idType?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`ID Number`}
+            value={formData?.customerDetails?.idValue || "NA"}
+          />
+          <PreviewInfoItem
+            title={`ID Place`}
+            value={formData?.customerDetails?.idPlace || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Registration Date`}
+            value={
+              moment(formData?.customerDetails?.registeredDate).format(
+                "YYYY-MM-DD"
+              ) || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`Registration Number`}
+            value={formData?.customerDetails?.registeredNo || "NA"}
+          />
+          <PreviewInfoItem
+            title={`EMail`}
+            value={formData?.customerDetails?.emailId || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Contact`}
+            value={
+              formData?.customerDetails?.mobilePrefix +
+                "-" +
+                formData?.customerDetails?.mobileNo || "NA"
+            }
+          />
+        </View>
+        <CustomTitleText title={"Customer Address"} />
+        <View style={styles.backgroundView}>
+          <PreviewInfoItem
+            title={`Address Line 1`}
+            value={formData?.customerDetails?.address1 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 2`}
+            value={formData?.customerDetails?.address2 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 3`}
+            value={formData?.customerDetails?.address3 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`City`}
+            value={formData?.customerDetails?.city || "NA"}
+          />
+          <PreviewInfoItem
+            title={`District`}
+            value={formData?.customerDetails?.district || "NA"}
+          />
+          <PreviewInfoItem
+            title={`State`}
+            value={formData?.customerDetails?.state || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Country`}
+            value={formData?.customerDetails?.country || "NA"}
+          />
+          <PreviewInfoItem
+            title={`PostCode`}
+            value={formData?.customerDetails?.postCode || "NA"}
+          />
+        </View>
+        <CustomTitleText title={"Product Details"} />
+        {formData?.serviceDetails?.details.map((item, index) => (
+          <SelectedProduct key={index} item={item} />
+        ))}
+        <CustomTitleText title={"Service Address"} />
+        <View style={styles.backgroundView}>
+          <PreviewInfoItem
+            title={`Address Line 1`}
+            value={formData?.serviceDetails?.address1 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 2`}
+            value={formData?.serviceDetails?.address2 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 3`}
+            value={formData?.serviceDetails?.address3 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`City`}
+            value={formData?.serviceDetails?.city || "NA"}
+          />
+          <PreviewInfoItem
+            title={`District`}
+            value={formData?.serviceDetails?.district || "NA"}
+          />
+          <PreviewInfoItem
+            title={`State`}
+            value={formData?.serviceDetails?.state || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Country`}
+            value={formData?.serviceDetails?.country || "NA"}
+          />
+          <PreviewInfoItem
+            title={`PostCode`}
+            value={formData?.serviceDetails?.postCode || "NA"}
+          />
+        </View>
+        <CustomTitleText title={"Account Information"} />
+        <View style={styles.backgroundView}>
+          <PreviewInfoItem
+            title={`Title`}
+            value={formData?.accountDetails?.title || "NA"}
+          />
+          <PreviewInfoItem
+            title={`First Name`}
+            value={formData?.accountDetails?.firstName || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Last Name`}
+            value={formData?.accountDetails?.lastName || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Gender`}
+            value={formData?.accountDetails?.gender?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`DOB`}
+            value={
+              moment(formData?.accountDetails?.birthDate).format(
+                "YYYY-MM-DD"
+              ) || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`ID Type`}
+            value={formData?.accountDetails?.idType?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`ID Number`}
+            value={formData?.accountDetails?.idValue || "NA"}
+          />
+          <PreviewInfoItem
+            title={`ID Place`}
+            value={formData?.accountDetails?.idPlace || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Registration Date`}
+            value={
+              moment(formData?.accountDetails?.registeredDate).format(
+                "YYYY-MM-DD"
+              ) || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`Registration Number`}
+            value={formData?.accountDetails?.registeredNo || "NA"}
+          />
+          <PreviewInfoItem
+            title={`EMail`}
+            value={formData?.accountDetails?.emailId || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Contact`}
+            value={
+              formData?.accountDetails?.mobilePrefix +
+                "-" +
+                formData?.accountDetails?.mobileNo || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`Account Category`}
+            value={
+              formData?.accountDetails?.accountCategory?.description || "NA"
+            }
+          />
+          <PreviewInfoItem
+            title={`Account Level`}
+            value={formData?.accountDetails?.accountLevel?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Bill Language`}
+            value={formData?.accountDetails?.billLang?.decription || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Account Type`}
+            value={formData?.accountDetails?.accountType?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Notification Preference`}
+            value={formData?.accountDetails?.notifPref?.description || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Currency`}
+            value={formData?.accountDetails?.currency?.description || "NA"}
+          />
+        </View>
+        <CustomTitleText title={"Account Address"} />
+        <View style={styles.backgroundView}>
+          <PreviewInfoItem
+            title={`Address Line 1`}
+            value={formData?.accountDetails?.address1 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 2`}
+            value={formData?.accountDetails?.address2 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Address Line 3`}
+            value={formData?.accountDetails?.address3 || "NA"}
+          />
+          <PreviewInfoItem
+            title={`City`}
+            value={formData?.accountDetails?.city || "NA"}
+          />
+          <PreviewInfoItem
+            title={`District`}
+            value={formData?.accountDetails?.district || "NA"}
+          />
+          <PreviewInfoItem
+            title={`State`}
+            value={formData?.accountDetails?.state || "NA"}
+          />
+          <PreviewInfoItem
+            title={`Country`}
+            value={formData?.accountDetails?.country || "NA"}
+          />
+          <PreviewInfoItem
+            title={`PostCode`}
+            value={formData?.accountDetails?.postCode || "NA"}
+          />
+        </View>
+        {formData?.signature !== null && formData?.signature !== undefined && (
+          <View>
+            <CustomTitleText title={"Customer Agreement"} />
+            <View style={styles.backgroundView}>
+              <Image
+                resizeMode={"cover"}
+                style={styles.previewImgStyle}
+                source={{ uri: formData?.signature }}
+              />
+            </View>
+          </View>
         )}
       </View>
     );
   };
 
-  const calculateGTotal = () => {
+  const calculateTotalBillAmount = () => {
     let gTotal = 0;
     products.forEach((product) => {
       if (product.quantity > 0)
@@ -1600,13 +1864,13 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleContinue = () => {
     switch (currentStep) {
-      case 1:
+      case 1: // Customer Details
         dispatch(createCustomer(formData, navigation));
         break;
-      case 2:
+      case 2: // Customer Address
         dispatch(updateCustomerData(formData, navigation));
         break;
-      case 3:
+      case 3: // Available Products
         {
           let item = products.find((product) => product.quantity > 0);
           if (item === undefined)
@@ -1620,26 +1884,26 @@ const CreateCustomer = ({ navigation }) => {
           }
         }
         break;
-      case 4:
+      case 4: // Selected Products screen & Need quote only
         dispatch(createCustomerService(formData, navigation));
         break;
       case 5: // Service Address UI Step
         dispatch(updateCustomerServiceData(formData, currentStep, navigation));
         break;
-      case 6:
+      case 6: // Account Details
         dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 7:
+      case 7: // Account Preferences
         dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 8:
+      case 8: // Account Address
         isSameAccountAddressChecked
           ? dispatch(
               updateCustomerServiceData(formData, currentStep, navigation)
             )
           : dispatch(updateAccountData(formData, currentStep, navigation));
         break;
-      case 9:
+      case 9: // Create Agreement & Signature
         dispatch(setSignatureInFormData(formData?.signature));
         dispatch(setCurrentStepInStore(currentStep + 1));
         break;
@@ -1671,7 +1935,7 @@ const CreateCustomer = ({ navigation }) => {
 
   const handleCreateOrderYes = () => {
     setShowCreateOrderModal(false);
-    // TODO: Implement/Dispatch Create Order Endpoint Action
+    dispatch(createOrderForCustomer(formData, navigation));
     dispatch(updateCustomerStatus(formData, navigation));
   };
 
@@ -1856,6 +2120,20 @@ const CreateCustomer = ({ navigation }) => {
 
   const dispatchSetSignatureInFormData = (data) => {
     dispatch(setSignatureInFormData(data));
+  };
+
+  const PreviewInfoItem = (props) => {
+    const { title, value } = props;
+    return (
+      <View style={styles.previewInfoItemView}>
+        <Text variant="bodySmall" style={styles.previewInfoItemTitleTxt}>
+          {title}
+        </Text>
+        <Text variant="bodySmall" style={styles.previewInfoItemValueTxt}>
+          {value}
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -2116,8 +2394,21 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "80%",
     height: 180,
-    margin: 20,
-    backgroundColor: "red",
+  },
+  previewInfoItemView: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  previewInfoItemTitleTxt: {
+    fontWeight: 600,
+    fontSize: 14,
+    color: "#000000",
+  },
+  previewInfoItemValueTxt: {
+    fontWeight: 400,
+    fontSize: 12,
+    color: "#000000",
+    marginTop: 5,
   },
 });
 

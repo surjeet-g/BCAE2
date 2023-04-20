@@ -22,9 +22,11 @@ import {
   getCustomerUUID
 } from "../Utilities/UserManagement/userInfo";
 
-export function fetchInteractionAction(type = "", params = {}) {
+export function fetchInteractionAction(type = "", params = {}, isRemovedHistory = false) {
   return async (dispatch) => {
-    dispatch(initInteraction());
+    if (type != typeOfAccrodin.knowlegde.value) {
+      dispatch(initInteraction());
+    }
     const customerUUID = await getCustomerUUID();
     const customerID = await getCustomerID();
     let flowId;
@@ -54,6 +56,10 @@ export function fetchInteractionAction(type = "", params = {}) {
       );
     }
     else if (type == typeOfAccrodin.workflow.value) {
+      //remove all userinput knowlege data
+      if (isRemovedHistory) {
+        dispatch(intractionKnowlegeHistoryRemoveUserInputTypes())
+      }
       let converstionHistory = []
       const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
       for await (const num of mockArray) {
@@ -62,19 +68,23 @@ export function fetchInteractionAction(type = "", params = {}) {
           requestMethod.POST,
           params
         );
+        if (workflowResult.success) {
+          console.log('workflow response', workflowResult.data)
+          const tempConv = get(workflowResult, 'data.data.conversation', [])
+          console.log('conversation', tempConv)
+          if (tempConv.length != 0) {
+            converstionHistory.push(tempConv)
+          }
 
-        console.log('workflow response', workflowResult.data)
-        const tempConv = get(workflowResult, 'data.data.conversation', [])
-        console.log('conversation', tempConv)
-        if (tempConv.length != 0) {
-          converstionHistory.push(tempConv)
+          const callAgain = get(workflowResult, 'data.data.callAgain', false)
+          const actionType = get(workflowResult, 'data.data.actionType', false)
+
+          console.log('callagain', callAgain)
+          if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+            break;
+          }
         }
-
-        const callAgain = get(workflowResult, 'data.data.callAgain', false)
-        const actionType = get(workflowResult, 'data.data.actionType', false)
-
-        console.log('callagain', callAgain)
-        if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+        else {
           break;
         }
       }
@@ -175,13 +185,15 @@ export function fetchInteractionAction(type = "", params = {}) {
         return { response: data, actionType: actionTypea };
       }
       else {
-        return data
+        return { response: data, actionType: "auto_resolution" }
       }
+
     } else {
       console.log("error response", interactionResult);
       dispatch(setInteractionError([]));
       return false;
     }
+    return { response: [], actionType: "auto_resolution" }
   };
 }
 

@@ -400,7 +400,6 @@ export function createOrderForCustomer(formData, navigation = null) {
 }
 
 const constructCreateOrderPayload = (formData) => {
-  // TODO: Need clarification on payload
   let params = {
     customerUuid: formData.customerUuid,
     orderCategory: "OC_N",
@@ -409,26 +408,26 @@ const constructCreateOrderPayload = (formData) => {
     orderChannel: "CHNL004",
     orderCause: "CHNL024",
     orderPriority: "PRTYHGH",
-    billAmount: 1000,
+    billAmount: calculateTotalBillAmount(formData.serviceDetails.details),
     orderDescription: "Customer Order",
     order: formData.serviceDetails.details.map((item) => {
       let modifiedItem = {
         orderFamily: "OF_PHYCL",
         orderMode: "ONLINE",
-        billAmount: "" + item.price,
-        orderDescription: "Postpaid",
+        billAmount: item.price * item.quantity,
+        orderDescription: item.productTypeDescription.description,
         serviceType: item.serviceTypeDescription.code,
-        accountUuid: formData.accountUuid,
+        accountUuid: item.account.accountUuid,
         serviceUuid: item.service.serviceUuid,
         contactPreference: ["CHNL004"],
         product: [
           {
-            productId: item.productId,
+            productId: parseInt(item.productId),
             productQuantity: item.quantity,
-            productAddedDate: "2023-04-19 03:31:29",
-            billAmount: 1000,
-            edof: "2023-04-19",
-            productSerialNo: "PROD-10",
+            productAddedDate: moment().format("YYYY-MM-DD HH:mm:ss"),
+            billAmount: item.price * item.quantity,
+            edof: moment().format("YYYY-MM-DD"),
+            productSerialNo: item.productNo,
           },
         ],
       };
@@ -436,4 +435,13 @@ const constructCreateOrderPayload = (formData) => {
     }),
   };
   return params;
+};
+
+const calculateTotalBillAmount = (products) => {
+  let gTotal = 0;
+  products.forEach((product) => {
+    if (product.quantity > 0)
+      gTotal = gTotal + product.quantity * product.price;
+  });
+  return gTotal;
 };
