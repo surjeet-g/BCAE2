@@ -1548,103 +1548,122 @@ const CreateCustomer = ({ navigation }) => {
   const renderPreviewUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Customer Information"} />
+        <CustomTitleText title={"Customer Application form"} />
+        <CustomTitleText
+          title={`${formData?.customerDetails?.categoryType?.description} Customer Details`}
+        />
         <View style={styles.backgroundView}>
-          <PreviewInfoItem
-            title={`Title`}
-            value={formData?.customerDetails?.title || "NA"}
-          />
-          <PreviewInfoItem
-            title={`First Name`}
-            value={formData?.customerDetails?.firstName || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Last Name`}
-            value={formData?.customerDetails?.lastName || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Gender`}
-            value={formData?.customerDetails?.gender?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`DOB`}
-            value={
-              moment(formData?.customerDetails?.birthDate).format(
-                "YYYY-MM-DD"
-              ) || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`ID Type`}
-            value={formData?.customerDetails?.idType?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`ID Number`}
-            value={formData?.customerDetails?.idValue || "NA"}
-          />
-          <PreviewInfoItem
-            title={`ID Place`}
-            value={formData?.customerDetails?.idPlace || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Registration Date`}
-            value={
-              moment(formData?.customerDetails?.registeredDate).format(
-                "YYYY-MM-DD"
-              ) || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`Registration Number`}
-            value={formData?.customerDetails?.registeredNo || "NA"}
-          />
-          <PreviewInfoItem
-            title={`EMail`}
-            value={formData?.customerDetails?.emailId || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Contact`}
-            value={
-              formData?.customerDetails?.mobilePrefix +
-                "-" +
-                formData?.customerDetails?.mobileNo || "NA"
-            }
-          />
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            {/* <PreviewInfoItem
+              title={`Title`}
+              value={formData?.customerDetails?.title || "NA"}
+            /> */}
+            <PreviewInfoItem
+              title={`First Name`}
+              value={formData?.customerDetails?.firstName || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Last Name`}
+              value={formData?.customerDetails?.lastName || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Gender`}
+              value={formData?.customerDetails?.gender?.description || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`DOB`}
+              value={
+                moment(formData?.customerDetails?.birthDate).format(
+                  "YYYY-MM-DD"
+                ) || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`ID Type`}
+              value={formData?.customerDetails?.idType?.description || "NA"}
+            />
+            <PreviewInfoItem
+              title={`ID Number`}
+              value={formData?.customerDetails?.idValue || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* <PreviewInfoItem
+              title={`ID Place`}
+              value={formData?.customerDetails?.idPlace || "NA"}
+            /> */}
+            <PreviewInfoItem
+              title={`Registration Date`}
+              value={
+                moment(formData?.customerDetails?.registeredDate).format(
+                  "YYYY-MM-DD"
+                ) || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`Registration Number`}
+              value={formData?.customerDetails?.registeredNo || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Email`}
+              value={formData?.customerDetails?.emailId || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Contact`}
+              value={
+                formData?.customerDetails?.mobilePrefix +
+                  "-" +
+                  formData?.customerDetails?.mobileNo || "NA"
+              }
+            />
+          </View>
         </View>
         <CustomTitleText title={"Customer Address"} />
         <View style={styles.backgroundView}>
-          <PreviewInfoItem
-            title={`Address Line 1`}
-            value={formData?.customerDetails?.address1 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 2`}
-            value={formData?.customerDetails?.address2 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 3`}
-            value={formData?.customerDetails?.address3 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`City`}
-            value={formData?.customerDetails?.city || "NA"}
-          />
-          <PreviewInfoItem
-            title={`District`}
-            value={formData?.customerDetails?.district || "NA"}
-          />
-          <PreviewInfoItem
-            title={`State`}
-            value={formData?.customerDetails?.state || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Country`}
-            value={formData?.customerDetails?.country || "NA"}
-          />
-          <PreviewInfoItem
-            title={`PostCode`}
-            value={formData?.customerDetails?.postCode || "NA"}
-          />
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 1`}
+              value={formData?.customerDetails?.address1 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Address Line 2`}
+              value={formData?.customerDetails?.address2 || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 3`}
+              value={formData?.customerDetails?.address3 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`City`}
+              value={formData?.customerDetails?.city || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`District`}
+              value={formData?.customerDetails?.district || "NA"}
+            />
+            <PreviewInfoItem
+              title={`State`}
+              value={formData?.customerDetails?.state || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Country`}
+              value={formData?.customerDetails?.country || "NA"}
+            />
+            <PreviewInfoItem
+              title={`PostCode`}
+              value={formData?.customerDetails?.postCode || "NA"}
+            />
+          </View>
         </View>
         <CustomTitleText title={"Product Details"} />
         {formData?.serviceDetails?.details.map((item, index) => (
@@ -1652,162 +1671,193 @@ const CreateCustomer = ({ navigation }) => {
         ))}
         <CustomTitleText title={"Service Address"} />
         <View style={styles.backgroundView}>
-          <PreviewInfoItem
-            title={`Address Line 1`}
-            value={formData?.serviceDetails?.address1 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 2`}
-            value={formData?.serviceDetails?.address2 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 3`}
-            value={formData?.serviceDetails?.address3 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`City`}
-            value={formData?.serviceDetails?.city || "NA"}
-          />
-          <PreviewInfoItem
-            title={`District`}
-            value={formData?.serviceDetails?.district || "NA"}
-          />
-          <PreviewInfoItem
-            title={`State`}
-            value={formData?.serviceDetails?.state || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Country`}
-            value={formData?.serviceDetails?.country || "NA"}
-          />
-          <PreviewInfoItem
-            title={`PostCode`}
-            value={formData?.serviceDetails?.postCode || "NA"}
-          />
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 1`}
+              value={formData?.serviceDetails?.address1 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Address Line 2`}
+              value={formData?.serviceDetails?.address2 || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 3`}
+              value={formData?.serviceDetails?.address3 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`City`}
+              value={formData?.serviceDetails?.city || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`District`}
+              value={formData?.serviceDetails?.district || "NA"}
+            />
+            <PreviewInfoItem
+              title={`State`}
+              value={formData?.serviceDetails?.state || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Country`}
+              value={formData?.serviceDetails?.country || "NA"}
+            />
+            <PreviewInfoItem
+              title={`PostCode`}
+              value={formData?.serviceDetails?.postCode || "NA"}
+            />
+          </View>
         </View>
-        <CustomTitleText title={"Account Information"} />
+        <CustomTitleText title={"Account Details"} />
         <View style={styles.backgroundView}>
-          <PreviewInfoItem
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* <PreviewInfoItem
             title={`Title`}
             value={formData?.accountDetails?.title || "NA"}
-          />
-          <PreviewInfoItem
-            title={`First Name`}
-            value={formData?.accountDetails?.firstName || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Last Name`}
-            value={formData?.accountDetails?.lastName || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Gender`}
-            value={formData?.accountDetails?.gender?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`DOB`}
-            value={
-              moment(formData?.accountDetails?.birthDate).format(
-                "YYYY-MM-DD"
-              ) || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`ID Type`}
-            value={formData?.accountDetails?.idType?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`ID Number`}
-            value={formData?.accountDetails?.idValue || "NA"}
-          />
-          <PreviewInfoItem
+          /> */}
+            <PreviewInfoItem
+              title={`First Name`}
+              value={formData?.accountDetails?.firstName || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Last Name`}
+              value={formData?.accountDetails?.lastName || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Gender`}
+              value={formData?.accountDetails?.gender?.description || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`DOB`}
+              value={
+                moment(formData?.accountDetails?.birthDate).format(
+                  "YYYY-MM-DD"
+                ) || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`ID Type`}
+              value={formData?.accountDetails?.idType?.description || "NA"}
+            />
+            <PreviewInfoItem
+              title={`ID Number`}
+              value={formData?.accountDetails?.idValue || "NA"}
+            />
+          </View>
+
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Account Category`}
+              value={
+                formData?.accountDetails?.accountCategory?.description || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`Account Level`}
+              value={
+                formData?.accountDetails?.accountLevel?.description || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`Account Type`}
+              value={formData?.accountDetails?.accountType?.description || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Bill Language`}
+              value={formData?.accountDetails?.billLang?.decription || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Notification Preference`}
+              value={formData?.accountDetails?.notifPref?.description || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Currency`}
+              value={formData?.accountDetails?.currency?.description || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {/* <PreviewInfoItem
             title={`ID Place`}
             value={formData?.accountDetails?.idPlace || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Registration Date`}
-            value={
-              moment(formData?.accountDetails?.registeredDate).format(
-                "YYYY-MM-DD"
-              ) || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`Registration Number`}
-            value={formData?.accountDetails?.registeredNo || "NA"}
-          />
-          <PreviewInfoItem
-            title={`EMail`}
-            value={formData?.accountDetails?.emailId || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Contact`}
-            value={
-              formData?.accountDetails?.mobilePrefix +
-                "-" +
-                formData?.accountDetails?.mobileNo || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`Account Category`}
-            value={
-              formData?.accountDetails?.accountCategory?.description || "NA"
-            }
-          />
-          <PreviewInfoItem
-            title={`Account Level`}
-            value={formData?.accountDetails?.accountLevel?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Bill Language`}
-            value={formData?.accountDetails?.billLang?.decription || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Account Type`}
-            value={formData?.accountDetails?.accountType?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Notification Preference`}
-            value={formData?.accountDetails?.notifPref?.description || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Currency`}
-            value={formData?.accountDetails?.currency?.description || "NA"}
-          />
+          /> */}
+            <PreviewInfoItem
+              title={`Registration Date`}
+              value={
+                moment(formData?.accountDetails?.registeredDate).format(
+                  "YYYY-MM-DD"
+                ) || "NA"
+              }
+            />
+            <PreviewInfoItem
+              title={`Registration Number`}
+              value={formData?.accountDetails?.registeredNo || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Email`}
+              value={formData?.accountDetails?.emailId || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Contact`}
+              value={
+                formData?.accountDetails?.mobilePrefix +
+                  "-" +
+                  formData?.accountDetails?.mobileNo || "NA"
+              }
+            />
+          </View>
         </View>
         <CustomTitleText title={"Account Address"} />
         <View style={styles.backgroundView}>
-          <PreviewInfoItem
-            title={`Address Line 1`}
-            value={formData?.accountDetails?.address1 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 2`}
-            value={formData?.accountDetails?.address2 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Address Line 3`}
-            value={formData?.accountDetails?.address3 || "NA"}
-          />
-          <PreviewInfoItem
-            title={`City`}
-            value={formData?.accountDetails?.city || "NA"}
-          />
-          <PreviewInfoItem
-            title={`District`}
-            value={formData?.accountDetails?.district || "NA"}
-          />
-          <PreviewInfoItem
-            title={`State`}
-            value={formData?.accountDetails?.state || "NA"}
-          />
-          <PreviewInfoItem
-            title={`Country`}
-            value={formData?.accountDetails?.country || "NA"}
-          />
-          <PreviewInfoItem
-            title={`PostCode`}
-            value={formData?.accountDetails?.postCode || "NA"}
-          />
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 1`}
+              value={formData?.accountDetails?.address1 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`Address Line 2`}
+              value={formData?.accountDetails?.address2 || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Address Line 3`}
+              value={formData?.accountDetails?.address3 || "NA"}
+            />
+            <PreviewInfoItem
+              title={`City`}
+              value={formData?.accountDetails?.city || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`District`}
+              value={formData?.accountDetails?.district || "NA"}
+            />
+            <PreviewInfoItem
+              title={`State`}
+              value={formData?.accountDetails?.state || "NA"}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <PreviewInfoItem
+              title={`Country`}
+              value={formData?.accountDetails?.country || "NA"}
+            />
+            <PreviewInfoItem
+              title={`PostCode`}
+              value={formData?.accountDetails?.postCode || "NA"}
+            />
+          </View>
         </View>
         {formData?.signature !== null && formData?.signature !== undefined && (
           <View>
