@@ -13,8 +13,8 @@ import {
 
 const initialState = {
   initCreateCustomer: false,
-  currentStep: 0,
   formData: {
+    currentStep: 0,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},
@@ -50,9 +50,6 @@ const initialState = {
 };
 
 const CreateCustomerReducer = (state = initialState, action) => {
-  console.log("$$$-------->>>>>>>>>in reducer");
-  // console.log("$$$-state", JSON.stringify(state));
-  console.log("$$$-action", JSON.stringify(action));
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
       const newProducts = action.data.map((product) => {
@@ -102,7 +99,6 @@ const CreateCustomerReducer = (state = initialState, action) => {
       };
     }
     case SET_SERVICE_CATEGORIES: {
-      console.log("$$$-action", action);
       const { data } = action;
       let newServiceCategories =
         data !== undefined &&
@@ -117,7 +113,6 @@ const CreateCustomerReducer = (state = initialState, action) => {
           }
           return item;
         });
-      console.log("$$$-newServiceCategories", newServiceCategories);
       return {
         ...state,
         serviceCategories: [
@@ -140,7 +135,7 @@ const CreateCustomerReducer = (state = initialState, action) => {
     case SET_CURRENT_STEP:
       return {
         ...state,
-        currentStep: action.data,
+        formData: { ...state.formData, currentStep: action.data },
       };
     case CREATE_CUSTOMER_SERVICE_SUCCESS: {
       let newformData = { ...state.formData };
@@ -159,7 +154,6 @@ const CreateCustomerReducer = (state = initialState, action) => {
       });
       serviceDetails.details = details;
       newformData = { ...newformData, serviceDetails };
-      console.log("$$$-newformData-fullydone", JSON.stringify(newformData));
       return {
         ...state,
         formData: newformData,

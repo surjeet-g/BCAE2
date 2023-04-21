@@ -121,7 +121,7 @@ const CreateCustomer = ({ navigation }) => {
   const savedLocation = useSelector((state) => state.savedLocations);
 
   const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
-  const { currentStep } = createCustomerReducerData;
+  const { currentStep } = createCustomerReducerData.formData;
 
   useEffect(() => {
     setFormData(createCustomerReducerData.formData);
@@ -230,7 +230,6 @@ const CreateCustomer = ({ navigation }) => {
         setStepIndicator(0);
         break;
     }
-    // setFormData({ ...formData, currentStep });
   }, [currentStep]);
 
   // Step = 0
