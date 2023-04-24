@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Switch,
   Text,
-  View,
+  View
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import DatePicker from "react-native-date-picker";
@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { CustomButton } from "./../../Components/CustomButton";
@@ -33,24 +33,18 @@ import { FooterModel } from "./../../Components/FooterModel";
 import { strings } from "./../../Utilities/Language/index";
 import {
   excludedCountriesList,
-  getPhoneNumberLength,
+  getPhoneNumberLength
 } from "./../../Utilities/utils";
 import BillDetails from "./BillDetails";
 import {
   removeCategoryProducts,
   setCurrentStepInStore,
   setShowAccountCreationModal,
-  setSignatureInFormData,
+  setSignatureInFormData
 } from "./CreateCustomerAction";
 import {
-  fetchServiceProducts,
-  createCustomer,
-  updateCustomerData,
-  createCustomerService,
-  updateCustomerServiceData,
-  updateCustomerStatus,
-  updateAccountData,
-  createOrderForCustomer,
+  createCustomer, createCustomerService, createOrderForCustomer, fetchServiceProducts, updateAccountData, updateCustomerData, updateCustomerServiceData,
+  updateCustomerStatus
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
@@ -62,7 +56,7 @@ import {
   getCityByDistrict,
   getPostCodeByCity,
   getUniqueDistricts,
-  getUniqueState,
+  getUniqueState
 } from "./utilities";
 
 const CreateCustomer = ({ navigation }) => {
@@ -327,15 +321,15 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(customerCategoryCode === "BUS" ||
             customerCategoryCode === "GOV") && (
-            <CustomInput
-              value={formData?.customerDetails?.registeredNo}
-              caption={strings.registereredNo}
-              placeHolder={strings.registereredNo}
-              onChangeText={(text) =>
-                handleCustomerDetails("registeredNo", text)
-              }
-            />
-          )}
+              <CustomInput
+                value={formData?.customerDetails?.registeredNo}
+                caption={strings.registereredNo}
+                placeHolder={strings.registereredNo}
+                onChangeText={(text) =>
+                  handleCustomerDetails("registeredNo", text)
+                }
+              />
+            )}
           <DatePicker
             modal
             mode="date"
@@ -352,23 +346,23 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(customerCategoryCode === "BUS" ||
             customerCategoryCode === "GOV") && (
-            <CustomInput
-              value={moment(formData?.customerDetails?.registeredDate).format(
-                "YYYY-MM-DD"
-              )}
-              caption={strings.registereredDate}
-              onFocus={() => setOpenRegDatePicker(true)}
-              placeHolder={strings.registereredDate}
-              right={
-                <TextInput.Icon
-                  onPress={() => setOpenRegDatePicker(true)}
-                  style={{ width: 23, height: 23 }}
-                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                  icon={"calendar"}
-                />
-              }
-            />
-          )}
+              <CustomInput
+                value={moment(formData?.customerDetails?.registeredDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={strings.registereredDate}
+                onFocus={() => setOpenRegDatePicker(true)}
+                placeHolder={strings.registereredDate}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpenRegDatePicker(true)}
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+              />
+            )}
         </View>
       </View>
     );
@@ -494,7 +488,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("country")}
             disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.country", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getCountryList() ?? []}
             onChangeText={(text) => {
               console.log(">>", text);
@@ -553,7 +547,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "state"}
             disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.state", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getUniqueState(savedLocation.addressLoopupData) ?? []}
             onChangeText={(text) => {
               handleCustomerDetails("state", text?.id);
@@ -570,7 +564,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "district"}
             disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.district", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getUniqueDistricts(
                 savedLocation.addressLoopupData,
@@ -591,7 +585,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "city"}
             disabled={isAutoAddress}
             selectedValue={get(formData, "customerDetails.city", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getCityByDistrict(
                 savedLocation.addressLoopupData,
@@ -612,7 +606,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("postCode")}
             isDisableDropDown={activeDropDown != "postCode"}
             selectedValue={get(formData, "customerDetails.postCode", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getPostCodeByCity(
                 savedLocation.addressLoopupData,
@@ -826,7 +820,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("country")}
             disabled={isSameServiceAddressChecked || isAutoAddress}
             selectedValue={get(formData, "serviceDetails.country", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getCountryList() ?? []}
             onChangeText={(text) => {
               console.log(">>", text);
@@ -885,7 +879,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "state"}
             disabled={isSameServiceAddressChecked || isAutoAddress}
             selectedValue={get(formData, "serviceDetails.state", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getUniqueState(savedLocation.addressLoopupData) ?? []}
             onChangeText={(text) => {
               handleServiceDetails("state", text?.id);
@@ -902,7 +896,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "district"}
             disabled={isSameServiceAddressChecked || isAutoAddress}
             selectedValue={get(formData, "serviceDetails.district", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getUniqueDistricts(
                 savedLocation.addressLoopupData,
@@ -923,7 +917,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "city"}
             disabled={isSameServiceAddressChecked || isAutoAddress}
             selectedValue={get(formData, "serviceDetails.city", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getCityByDistrict(
                 savedLocation.addressLoopupData,
@@ -944,7 +938,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("postCode")}
             isDisableDropDown={activeDropDown != "postCode"}
             selectedValue={get(formData, "serviceDetails.postCode", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getPostCodeByCity(
                 savedLocation.addressLoopupData,
@@ -1146,16 +1140,16 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(customerCategoryCode === "BUS" ||
             customerCategoryCode === "GOV") && (
-            <CustomInput
-              value={formData?.accountDetails?.registeredNo}
-              caption={strings.registereredNo}
-              placeHolder={strings.registereredNo}
-              onChangeText={(text) =>
-                handleAccountDetails("registeredNo", text)
-              }
-              disabled={isSameCustomerDetailsChecked}
-            />
-          )}
+              <CustomInput
+                value={formData?.accountDetails?.registeredNo}
+                caption={strings.registereredNo}
+                placeHolder={strings.registereredNo}
+                onChangeText={(text) =>
+                  handleAccountDetails("registeredNo", text)
+                }
+                disabled={isSameCustomerDetailsChecked}
+              />
+            )}
           <DatePicker
             modal
             mode="date"
@@ -1172,28 +1166,28 @@ const CreateCustomer = ({ navigation }) => {
           />
           {(customerCategoryCode === "BUS" ||
             customerCategoryCode === "GOV") && (
-            <CustomInput
-              value={moment(formData?.accountDetails?.registeredDate).format(
-                "YYYY-MM-DD"
-              )}
-              caption={strings.dob}
-              onFocus={() => setOpenRegDatePicker(true)}
-              placeHolder={strings.dob}
-              right={
-                <TextInput.Icon
-                  onPress={() =>
-                    isSameCustomerDetailsChecked
-                      ? {}
-                      : setOpenRegDatePicker(true)
-                  }
-                  style={{ width: 23, height: 23 }}
-                  theme={{ colors: { onSurfaceVariant: colors.gray } }}
-                  icon={"calendar"}
-                />
-              }
-              disabled={isSameCustomerDetailsChecked}
-            />
-          )}
+              <CustomInput
+                value={moment(formData?.accountDetails?.registeredDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={strings.dob}
+                onFocus={() => setOpenRegDatePicker(true)}
+                placeHolder={strings.dob}
+                right={
+                  <TextInput.Icon
+                    onPress={() =>
+                      isSameCustomerDetailsChecked
+                        ? {}
+                        : setOpenRegDatePicker(true)
+                    }
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+                disabled={isSameCustomerDetailsChecked}
+              />
+            )}
 
           <CountryPicker
             show={countryPickModel}
@@ -1393,7 +1387,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("country")}
             disabled={isSameAccountAddressChecked || isAutoAddress}
             selectedValue={get(formData, "accountDetails.country", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getCountryList() ?? []}
             onChangeText={(text) => {
               console.log(">>", text);
@@ -1452,7 +1446,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "state"}
             disabled={isSameAccountAddressChecked || isAutoAddress}
             selectedValue={get(formData, "accountDetails.state", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={getUniqueState(savedLocation.addressLoopupData) ?? []}
             onChangeText={(text) => {
               handleAccountDetails("state", text?.id);
@@ -1469,7 +1463,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "district"}
             disabled={isSameAccountAddressChecked || isAutoAddress}
             selectedValue={get(formData, "accountDetails.district", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getUniqueDistricts(
                 savedLocation.addressLoopupData,
@@ -1490,7 +1484,7 @@ const CreateCustomer = ({ navigation }) => {
             isDisableDropDown={activeDropDown != "city"}
             disabled={isSameAccountAddressChecked || isAutoAddress}
             selectedValue={get(formData, "accountDetails.city", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getCityByDistrict(
                 savedLocation.addressLoopupData,
@@ -1511,7 +1505,7 @@ const CreateCustomer = ({ navigation }) => {
             setDropDownEnable={() => setActiveDropDown("postCode")}
             isDisableDropDown={activeDropDown != "postCode"}
             selectedValue={get(formData, "accountDetails.postCode", "")}
-            setValue={() => {}}
+            setValue={() => { }}
             data={
               getPostCodeByCity(
                 savedLocation.addressLoopupData,
@@ -1615,8 +1609,8 @@ const CreateCustomer = ({ navigation }) => {
               title={`Contact`}
               value={
                 formData?.customerDetails?.mobilePrefix +
-                  "-" +
-                  formData?.customerDetails?.mobileNo || "NA"
+                "-" +
+                formData?.customerDetails?.mobileNo || "NA"
               }
             />
           </View>
@@ -1809,8 +1803,8 @@ const CreateCustomer = ({ navigation }) => {
               title={`Contact`}
               value={
                 formData?.accountDetails?.mobilePrefix +
-                  "-" +
-                  formData?.accountDetails?.mobileNo || "NA"
+                "-" +
+                formData?.accountDetails?.mobileNo || "NA"
               }
             />
           </View>
@@ -1948,8 +1942,8 @@ const CreateCustomer = ({ navigation }) => {
       case 8: // Account Address
         isSameAccountAddressChecked
           ? dispatch(
-              updateCustomerServiceData(formData, currentStep, navigation)
-            )
+            updateCustomerServiceData(formData, currentStep, navigation)
+          )
           : dispatch(updateAccountData(formData, currentStep, navigation));
         break;
       case 9: // Create Agreement & Signature

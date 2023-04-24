@@ -268,16 +268,19 @@ export const Appointment = ({ navigation }) => {
       console.log("unformated appointment length", appointmentTemp.length);
       //console.log("items", items);
 
-      setScheduledAppointment(
-        appointmentTemp.map((v) => ({
-          ...v,
-          startDate: moment(v.appointDate + " " + v.appointStartTime),
-          endDate: moment(v.appointDate + " " + v.appointEndTime),
-        }))
-      );
+      if (appointmentTemp.length > 0) {
+        setScheduledAppointment(
+          appointmentTemp.map((v) => ({
+            ...v,
+            startDate: moment(v.appointDate + " " + v.appointStartTime),
+            endDate: moment(v.appointDate + " " + v.appointEndTime),
+          }))
+        );
+      }
       console.log("formated appointment", scheduledAppointment);
 
       console.log("date : ", moment(moment()).format("YYYY-MM-DD"));
+
       setScheduledAppointmentForDay(
         appointmentTemp.length &&
         appointmentTemp.filter((item) => {
@@ -303,17 +306,21 @@ export const Appointment = ({ navigation }) => {
   const onDateSelected = (date) => {
     console.log("date : ", moment(date).format("YYYY-MM-DD"));
     setSelectedDate("" + moment(date).format("YYYY-MM-DD"));
+    console.log("selected date ", selectedDate);
+    console.log("formated appointment", scheduledAppointment);
     setScheduledAppointmentForDay(
       scheduledAppointment.filter((item) => {
         console.log(item.appointDate == "" + moment(date).format("YYYY-MM-DD"));
-        if (item.appointDate == "" + moment(date).format("YYYY-MM-DD")) {
+        if (item.appointDate === "" + moment(date).format("YYYY-MM-DD")) {
           return item;
         }
       })
     );
     console.log(
       "formated appointment for day : ",
-      moment(date).format("YYYY-MM-DD") + "  ==>  " + scheduledAppointmentForDay
+      moment(date).format("YYYY-MM-DD") +
+      "  ==>  " +
+      JSON.stringify(scheduledAppointmentForDay)
     );
   };
   let datesWhitelist = [
@@ -472,8 +479,8 @@ export const Appointment = ({ navigation }) => {
       appointMode: "TEAMS_VIDEO",
       appointUserCategory: "CUSTOMER",
       appointModeValue: "http://teams.com/id=1001?",
-      startDate: moment("2023-04-18 0:45:00"),
-      endDate: moment("2023-04-18 1:45:00"),
+      startDate: moment("2023-04-19 0:45:00"),
+      endDate: moment("2023-04-19 1:45:00"),
     },
     {
       title: "New connection",
@@ -482,8 +489,8 @@ export const Appointment = ({ navigation }) => {
       appointMode: "TEAMS_VIDEO",
       appointUserCategory: "CUSTOMER",
       appointModeValue: "http://teams.com/id=1001?",
-      startDate: moment("2023-04-18 2:00:00"),
-      endDate: moment("2023-04-18 2:30:00"),
+      startDate: moment("2023-04-19 2:00:00"),
+      endDate: moment("2023-04-19 2:30:00"),
     },
     {
       title: "Billing Problems",
@@ -492,8 +499,8 @@ export const Appointment = ({ navigation }) => {
       appointMode: "TEAMS_VIDEO",
       appointUserCategory: "CUSTOMER",
       appointModeValue: "http://teams.com/id=1001?",
-      startDate: moment("2023-04-18 3:45:00"),
-      endDate: moment("2023-04-18 4:45:00"),
+      startDate: moment("2023-04-19 3:45:00"),
+      endDate: moment("2023-04-19 4:45:00"),
     },
     {
       title: "sim not working",
@@ -502,8 +509,8 @@ export const Appointment = ({ navigation }) => {
       appointMode: "TEAMS_VIDEO",
       appointUserCategory: "CUSTOMER",
       appointModeValue: "http://teams.com/id=1001?",
-      startDate: moment("2023-04-18 18:45:00"),
-      endDate: moment("2023-04-18 20:45:00"),
+      startDate: moment("2023-04-19 18:45:00"),
+      endDate: moment("2023-04-19 20:45:00"),
     },
     {
       title: "Postpaid connection address change",
@@ -512,8 +519,8 @@ export const Appointment = ({ navigation }) => {
       appointMode: "TEAMS_VIDEO",
       appointUserCategory: "CUSTOMER",
       appointModeValue: "http://teams.com/id=1001?",
-      startDate: moment("2023-04-18 12:45:00"),
-      endDate: moment("2023-04-18 15:45:00"),
+      startDate: moment("2023-04-19 12:45:00"),
+      endDate: moment("2023-04-19 15:45:00"),
     },
   ]);
   const AppointListItem = ({ data }) => {
@@ -1116,10 +1123,10 @@ export const Appointment = ({ navigation }) => {
                 <View style={{ alignItems: "center" }}>
                   <Timetable
                     // these two are required
-                    items={items}
+                    items={scheduledAppointmentForDay}
                     renderItem={(props) => <AppointItems {...props} />}
                     // provide only one of these
-                    date={date}
+                    date={selectedDate}
                     range={range}
                     fromHour={0}
                     toHour={24}

@@ -209,6 +209,7 @@ export function fetchInteractionAction(type = "", params = {},
       console.log('error', error)
       return null
     }
+    return { response: [], actionType: "auto_resolution" }
   };
 }
 

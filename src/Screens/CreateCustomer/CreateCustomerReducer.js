@@ -1,14 +1,8 @@
 import {
-  FETCH_SERVICE_PRODUCTS_FAILURE,
+  CREATE_CUSTOMER_FAILURE, CREATE_CUSTOMER_SERVICE_SUCCESS, CREATE_CUSTOMER_SUCCESS, FETCH_SERVICE_PRODUCTS_FAILURE,
   FETCH_SERVICE_PRODUCTS_SUCCESS,
-  REMOVE_SERVICE_PRODUCTS,
-  SET_SERVICE_CATEGORIES,
-  CREATE_CUSTOMER_FAILURE,
-  CREATE_CUSTOMER_SUCCESS,
-  SET_CURRENT_STEP,
-  CREATE_CUSTOMER_SERVICE_SUCCESS,
-  SET_SHOW_ACCOUNT_CREATION_MODAL,
-  SET_SIGNATURE,
+  REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
+  SET_SIGNATURE
 } from "./CreateCustomerAction";
 
 const initialState = {
@@ -50,6 +44,9 @@ const initialState = {
 };
 
 const CreateCustomerReducer = (state = initialState, action) => {
+  console.log("$$$-------->>>>>>>>>in reducer");
+  // console.log("$$$-state", JSON.stringify(state));
+  console.log("$$$-action", JSON.stringify(action));
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
       const newProducts = action.data.map((product) => {
@@ -154,6 +151,45 @@ const CreateCustomerReducer = (state = initialState, action) => {
       });
       serviceDetails.details = details;
       newformData = { ...newformData, serviceDetails };
+      return {
+        ...state,
+        formData: newformData,
+      };
+    }
+    case SET_SHOW_ACCOUNT_CREATION_MODAL:
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          showAccountCreationModal: action.data,
+        },
+      };
+    case SET_SIGNATURE:
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          signature: action.data,
+        },
+      };
+    case CREATE_CUSTOMER_SERVICE_SUCCESS: {
+      let newformData = { ...state.formData };
+      let { data, formData } = action;
+      newformData = { ...newformData, ...formData, ...data[0].account };
+
+      let { serviceDetails } = newformData;
+      let { details } = serviceDetails;
+      details = details.map((item) => {
+        const prtUuid = item.productUuid;
+        const obj = data.find((currentItem) => {
+          if (currentItem.service.productUuid === prtUuid) return currentItem;
+        });
+        let newItem = { ...item, ...obj };
+        return newItem;
+      });
+      serviceDetails.details = details;
+      newformData = { ...newformData, serviceDetails };
+      console.log("$$$-newformData-fullydone", JSON.stringify(newformData));
       return {
         ...state,
         formData: newformData,
