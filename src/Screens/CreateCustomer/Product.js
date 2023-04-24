@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./../../Components/DashedDivider";
 
@@ -10,7 +10,7 @@ const Product = (props) => {
   const { item, products, setProducts } = props;
 
   const handleQuantity = (step) => {
-    let currentQuantity = item.quantity;
+    let currentQuantity = item?.quantity;
     if (step === 1) {
       currentQuantity = currentQuantity + step;
     } else if (step === -1) {
@@ -18,7 +18,7 @@ const Product = (props) => {
     }
 
     let newProducts = products.map((product) => {
-      if (product.productId === item.productId) {
+      if (product.productId === item?.productId) {
         product.quantity = currentQuantity;
       }
       return product;
@@ -28,20 +28,34 @@ const Product = (props) => {
 
   return (
     <View
-      style={item.quantity > 0 ? styles.selectedContainer : styles.container}
+      style={item?.quantity > 0 ? styles.selectedContainer : styles.container}
     >
       <Text style={styles.bestvalue} numberOfLines={1}>
         {"Best Value"}
       </Text>
       {/* Product */}
-      <View style={styles.productTxtView}>
-        <Text style={styles.productNameTxt}>{item.productName}</Text>
-        <Text style={styles.productTypeTxt}>
-          {"\u2B24 Service Type: " + item.serviceTypeDescription?.description}
-        </Text>
-        <Text style={styles.productTypeTxt}>
-          {"\u2B24 Product Type: " + item.productTypeDescription?.description}
-        </Text>
+      <View style={{ flexDirection: "row", marginTop: 10 }}>
+        <View>
+          <Image
+            style={{ height: 80, width: 80, borderRadius: 10 }}
+            source={{ uri: item?.productImage }}
+          />
+          <Text style={styles.serviceTypeTxt}>
+            {item?.productTypeDescription?.description}
+          </Text>
+        </View>
+        <View style={styles.productTxtView}>
+          <Text numberOfLines={2} style={styles.productNameTxt}>
+            {item?.productName}
+          </Text>
+          <Text numberOfLines={1} style={styles.productTypeTxt}>
+            {"\u2B24 Service Type: " +
+              item?.serviceTypeDescription?.description}
+          </Text>
+          <Text numberOfLines={1} style={styles.productTypeTxt}>
+            {"\u2B24 " + item?.productChargesList[0]?.chargeDetails?.chargeName}
+          </Text>
+        </View>
       </View>
       <DashedDivider />
       <View
@@ -52,8 +66,8 @@ const Product = (props) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.priceTxt}>{"$ " + item.price}</Text>
-          <Text style={styles.oldpriceTxt}>{"$ " + (item.price + 200)}</Text>
+          <Text style={styles.priceTxt}>{"$" + item.price}</Text>
+          <Text style={styles.oldpriceTxt}>{"$" + item.price * 2}</Text>
         </View>
         {/* Quantity */}
         <View style={styles.quantityView}>
@@ -108,7 +122,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 600,
   },
-  productTxtView: { flexDirection: "column", padding: 10 },
+  productTxtView: {
+    flexDirection: "column",
+    marginLeft: 10,
+    flex: 1,
+  },
   productNameTxt: {
     color: "#202223",
     fontWeight: 600,
@@ -131,6 +149,22 @@ const styles = StyleSheet.create({
     textDecorationStyle: "solid",
   },
   quantityView: { flexDirection: "row", alignItems: "center" },
-  quantityIcon: { backgrounColor: "#E4EDFF", borderRadius: 10, padding: 5 },
-  quantityTxt: { color: "#000000", fontWeight: 600, fontSize: 14 },
+  quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
+  quantityTxt: {
+    color: "#000000",
+    fontWeight: 600,
+    fontSize: 14,
+    marginHorizontal: 10,
+  },
+  serviceTypeTxt: {
+    textAlign: "center",
+    backgroundColor: "#EFA848",
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    borderRadius: 5,
+    color: "#fff",
+    marginVertical: 5,
+    fontWeight: 600,
+    fontSize: 12,
+  },
 });

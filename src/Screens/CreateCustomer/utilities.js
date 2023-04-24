@@ -1,7 +1,4 @@
-
-
-export const getUniqueDistricts = (locations = [], stateName = '') => {
-
+export const getUniqueDistricts = (locations = [], stateName = "") => {
   let uniqueDistrictKey = [];
 
   let uniqueDistrictData = [];
@@ -20,10 +17,10 @@ export const getUniqueDistricts = (locations = [], stateName = '') => {
   }
 
   return uniqueDistrictData;
-}
+};
 
 export const getUniqueState = (locations = []) => {
-  console.log('location', locations)
+  // console.log("location", locations);
   let uniqueDistrictKey = [];
 
   let uniqueDistrictData = [];
@@ -40,15 +37,12 @@ export const getUniqueState = (locations = []) => {
   }
 
   return uniqueDistrictData;
-}
+};
 export const getPostCodeByCity = (locations = [], city = "") => {
-
   let finalPostcodeData = [];
 
   if (locations?.length > 0 && city != "") {
-    const addrByDistrict = locations.filter(
-      (addr) => addr.city == city
-    );
+    const addrByDistrict = locations.filter((addr) => addr.city == city);
 
     finalPostcodeData = addrByDistrict.map((item) => {
       return { description: item.postCode, id: item.postCode };
@@ -57,7 +51,6 @@ export const getPostCodeByCity = (locations = [], city = "") => {
 
   return finalPostcodeData;
 };
-
 
 export const getCityByDistrict = (locations = [], district = "") => {
   // let finalKampongData = [{ description: "sdfsdf", id: 12 }];
@@ -79,7 +72,6 @@ export const getCityByDistrict = (locations = [], district = "") => {
           uniqueDistrictKey.push(item.city);
         }
       });
-
 
       finalKampongData = uniqueDistrictKey.map((item) => {
         return { description: item, id: item };
