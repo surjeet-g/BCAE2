@@ -26,7 +26,7 @@ export function fetchInteractionAction(type = "", params = {},
   return async (dispatch) => {
     const debg = true;
     try {
-      if (type != typeOfAccrodin.knowlegde.value) {
+      if (type != typeOfAccrodin.knowlegde.value && type != typeOfAccrodin.workflow.value) {
         dispatch(initInteraction());
       }
       // const customerUUID = await getCustomerUUID();
@@ -163,9 +163,9 @@ export function fetchInteractionAction(type = "", params = {},
               }
               const callAgain = get(workflowResult, 'data.data.callAgain', false)
               const actionType = get(workflowResult, 'data.data.actionType', false)
-
+              const description = get(workflowResult, 'data.data.description', false)
               console.log('callagain', callAgain)
-              if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND") {
+              if (!callAgain || actionType == "COLLECTINPUT" || actionType == "WORKFLOWEND" || (actionType == "SENDMESSAGE" && description == "PRODUCT PURCHASE")) {
                 break;
               }
             }

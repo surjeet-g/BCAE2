@@ -467,6 +467,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   console.log('active customuui', activeData, get(profileReducer, `${activeData}.customerUuid`, ''))
                   //store selected result in cache
                   await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                  setLoader(true)
                   console.log('one',)
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
@@ -474,6 +475,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       requestId: item.requestId,
                     })
                   );
+                  setLoader(false)
                   console.log('two', response, actionType)
 
 
@@ -948,7 +950,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setService,
     activeService,
   ]);
-  console.log('new profile ', profileReducer.userSelectedProfileDetails)
+  // console.log('new profile ', profileReducer.userSelectedProfileDetails)
   const {
     statement,
     interactionType,
@@ -1124,16 +1126,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return (
         <HandleResolution
           customerUuid={get(profileReducer, `${activeData}.customerUuid`, '')}
-          fetchInteractionAction={async (params) => {
-            // setLoader(true)
+          popupAction={async (params) => {
+            setLoader(true)
+            console.log("htting popupAction", params)
             await dispatchInteraction(
               fetchInteractionAction(typeOfAccrodin.workflow.value, params, true)
             );
-            // setLoader(false);
+            setLoader(false);
           }}
           suggestionList={suggestionList}
           resolutionDetails={get(interactionReducer, "InteractionData", [])}
-
+          navigation={navigation}
         />
       );
 

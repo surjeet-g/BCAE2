@@ -12,8 +12,9 @@ import { SmallButton } from './SmallButton';
 export const HandleResolution = ({
     suggestionList = [],
     resolutionDetails = [],
-    fetchInteractionAction = () => { },
-    customerUuid = ""
+    popupAction = () => { },
+    customerUuid = "",
+    navigation
 }) => {
     console.log('HandleResolution : customerUuid', customerUuid)
     const RenderSend = ({ title = "", type = "", description = "" }) => {
@@ -137,23 +138,23 @@ export const HandleResolution = ({
                                                     {
                                                         text: strings.ok,
                                                         onPress: () => {
-                                                            if (buttonType == "NO") {
-                                                                const params = {
-                                                                    flowId: flowId,
-                                                                    conversationUid: conversationID,
-                                                                    data: {
-                                                                        source: "knowledgeBase",
-                                                                        inputType: "MESSAGE",
-                                                                        inputValue: "NO"
-                                                                    },
-                                                                    requestId: requestId,
-                                                                    customerUuid: customerUuid
 
-                                                                }
-
-                                                                fetchInteractionAction(params)
+                                                            const params = {
+                                                                flowId: flowId,
+                                                                conversationUid: conversationID,
+                                                                data: {
+                                                                    source: "knowledgeBase",
+                                                                    inputType: "MESSAGE",
+                                                                    inputValue: buttonType
+                                                                },
+                                                                requestId: requestId,
+                                                                customerUuid: customerUuid
 
                                                             }
+
+                                                            popupAction(params)
+
+
 
                                                         },
                                                     },
@@ -174,6 +175,9 @@ export const HandleResolution = ({
         }
 
     }
+    const flowId = get(resolutionDetails, 'flwId', '')
+    const conversationID = get(resolutionDetails, 'conversationUid', '')
+    const requestId = get(resolutionDetails, 'requestId', '')
     return (
         <View style={styles.bottomContainer}>
             <ClearSpace size={4} />
@@ -201,8 +205,21 @@ export const HandleResolution = ({
                             console.log('type or action type is empty',)
                             return null
                         }
-                        if (type == "object" && description == "PRODUCT PURCHASE") {
+                        if (actionType == "SENDMESSAGE" && type == "object" && description == "PRODUCT PURCHASE") {
+                            alert("//todo navigate to product page with convertionID")
+                            navigation.navigate('ProductListing', {
+                                productList: message,
+                                resolution: {
+                                    flowId: flowId,
+                                    conversationUid: conversationID,
+                                    data: {
+                                        source: "knowledgeBase",
+                                    },
+                                    requestId: requestId,
+                                    customerUuid: customerUuid
 
+                                }
+                            })
                             //todo navigate to product list pagewith resolution data with product item resolutionDetails
                         }
 
