@@ -1,0 +1,16 @@
+{
+    "actionType": "COLLECTINPUT",
+    "description": "COLLECT_REMARKS",
+    "type": "object",
+    "message": {
+        "element": "COLLECT_REMARKS",
+        "attributes": []
+    }
+}
+https: //bcae-test.comquest-brunei.com:1443/bcae/api/accounts/service/create
+{
+    "actionType": "SENDMESSAGE",
+    "description": "Redirect",
+    "type": "string",
+    "message": "REDIRECT_TO_TOPUP"
+}

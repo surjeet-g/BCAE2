@@ -1,9 +1,10 @@
 import get from "lodash.get";
-import React from "react";
+import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Divider, Text } from 'react-native-paper';
 import { Rows, Table, TableWrapper } from 'react-native-table-component';
 import { ClearSpace } from '../../../../Components/ClearSpace';
+import { CustomInput } from "../../../../Components/CustomInput";
 import { strings } from '../../../../Utilities/Language/index';
 import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
@@ -16,6 +17,7 @@ export const HandleResolution = ({
     customerUuid = "",
     navigation
 }) => {
+    const [remarks, setRemarks] = useState("")
     console.log('HandleResolution : customerUuid', customerUuid)
     const RenderSend = ({ title = "", type = "", description = "" }) => {
         console.log('enter rendersend', type, description)
@@ -168,8 +170,38 @@ export const HandleResolution = ({
                         <ClearSpace size={2} />
                     </>
                 )
-            default:
+            case "COLLECT_REMARKS":
+                return (
+                    <>
+                        <CustomInput
+                            multiline={true}
+                            onChangeText={(text) => setRemarks(text)}
+                            value={remarks}
+                            caption={strings.remarks}
+                            placeHolder={strings.remarks}
 
+                        />
+                        <ClearSpace size={4} />
+                        <SmallButton label={"Submit"} onPress={() => {
+                            const params = {
+                                flowId: flowId,
+                                conversationUid: conversationID,
+                                data: {
+                                    source: "knowledgeBase",
+                                    inputType: "MESSAGE",
+                                    inputValue: remarks
+                                },
+                                requestId: requestId,
+                                customerUuid: customerUuid
+
+                            }
+
+                            popupAction(params)
+                        }} />
+                    </>
+                )
+            default:
+                return (<Text>sdfsdf</Text>)
                 return null
 
         }

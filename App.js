@@ -25,61 +25,7 @@ const toastConfig = {
 };
 
 const App = () => {
-  // const appState = useRef(AppState.currentState);
-  // useEffect(() => {
-  //   const subscription = AppState.addEventListener(
-  //     "change",
-  //     async (nextAppState) => {
-  //       const token = await getToken();
 
-  //       if (nextAppState == "active") {
-  //         if (
-  //           token.accessToken != null &&
-  //           typeof token.accessToken != "undefined"
-  //         ) {
-  //           const lastLogin = await getData(storageKeys.LAST_LOGINT_TIMESTAMP);
-
-  //           if (lastLogin.length > 0) {
-  //             const lastLoggedDate = moment(lastLogin).format(
-  //               "YYYY-MM-DD HH:mm:ss"
-  //             );
-  //             const currentDate = moment(new Date()).format(
-  //               "YYYY-MM-DD HH:mm:ss"
-  //             );
-
-  //             const diffBwCurrentDate = moment.duration(
-  //               moment(currentDate).diff(moment(lastLoggedDate))
-  //             );
-
-  //             const hour = diffBwCurrentDate.asMinutes();
-
-  //             if (hour > 15) {
-  //               if (await logoutUserWithOutRedux()) {
-  //                 RNRestart.restart();
-  //               }
-  //             }
-  //           }
-  //         } else {
-  //           console.log("user not logged in");
-  //         }
-  //       } else {
-  //         if (
-  //           token.accessToken != null &&
-  //           typeof token.accessToken != "undefined"
-  //         ) {
-  //           await saveData(
-  //             storageKeys.LAST_LOGINT_TIMESTAMP,
-  //             moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-  //           );
-  //         }
-  //       }
-  //     }
-  //   );
-
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
 
   useEffect(() => {
     // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
@@ -90,8 +36,8 @@ const App = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         // animated={true}
-        backgroundColor={"#5E5676"}
-      // barStyle={statusBarStyle}
+        backgroundColor={"#7a71e8"}
+      // barStyle={statusBarStyle} 
       // showHideTransition={statusBarTransition}
       // hidden={hidden}
       />

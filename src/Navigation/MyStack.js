@@ -44,6 +44,7 @@ import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 import Notification from "../Screens/Notification/Notification";
+import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
@@ -358,6 +359,22 @@ function MyStack() {
           })}
           name="InteractionsToOrder"
           component={InteractionsToOrder}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Choose Product",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+              headerRight: () => null
+            },
+          })}
+          name="ProductList"
+          component={ProductListing}
         />
         <Stack.Screen
           options={({ navigation }) => ({

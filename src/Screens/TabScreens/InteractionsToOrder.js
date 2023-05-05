@@ -1108,9 +1108,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
    *
    */
   const RenderBottomChatBoard = () => {
-    const suggestionList = get(interactionReducer, "knowledgeHistory", []);
+    const suggestionList = get(interactionReducer, "knowledgeHistoryss", [
+      {
+        "actionType": "COLLECTINPUT",
+        "description": "COLLECT_REMARKS",
+        "type": "object",
+        "message": {
+          "element": "COLLECT_REMARKS",
+          "attributes": []
+        }
+      }
+    ]);
 
-    console.log('RenderBottomChatBoard,', interactionReducer)
+    console.log('RenderBottomChatBoard,', createInteractionType, activeChatBotSec)
     //todo
 
     if (activeChatBotSec == "") {
@@ -1118,7 +1128,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return null;
     }
     //todo 
-    if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+    // if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+    if (true) {
       // if (true) {
       const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
 
