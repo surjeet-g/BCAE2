@@ -347,6 +347,7 @@ const EditProfile = ({ navigation, props }) => {
       const isCustomer =
         USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
       let registerObject, userObject;
+
       if (isCustomer) {
         registerObject = {
           details: {
@@ -378,6 +379,7 @@ const EditProfile = ({ navigation, props }) => {
       } else {
         userObject = {
           firstName: firstName,
+          loginid: get(profile, "savedProfileData.loginid", ''),
           lastName: lastName,
           gender: gender?.code,
           userId: get(profile, "savedProfileData.userId", ''),
@@ -416,7 +418,6 @@ const EditProfile = ({ navigation, props }) => {
           // "mappingPayload": {}
         };
       }
-
 
       console.log('update profile 11', userObject)
       const status = await dispatch2(

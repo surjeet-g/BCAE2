@@ -4,7 +4,7 @@ import { serverCall } from "../../Utilities/API";
 import { endPoints, requestMethod } from "../../Utilities/API/ApiConstants";
 import {
   DEFAULT_PROFILE_IMAGE,
-  storageKeys,
+  storageKeys
 } from "../../Utilities/Constants/Constant";
 import { setProfileData } from "./../../Redux/ProfileAction";
 import {
@@ -13,7 +13,7 @@ import {
   resetLoginData,
   resetShowSecondLoginAlertData,
   setLoginData,
-  setShowSecondLoginAlert,
+  setShowSecondLoginAlert
 } from "./LoginAction";
 
 export function verifyLoginData(navigation, params) {
@@ -29,7 +29,7 @@ export function verifyLoginData(navigation, params) {
           loginId,
           password,
           channel: "UAM_MOBILE",
-          deviceId: fcmDeviceId,
+          deviceId: fcmDeviceId || "empty",
           userGroup: (userType == "Business") ? "UG_BUSINESS" : "UG_CONSUMER",
           loginType,
         };
@@ -115,7 +115,7 @@ export function verifyLoginData(navigation, params) {
                 // Consumer User Type
                 profileResult = await serverCall(
                   endPoints.PROFILE_DETAILS +
-                    result?.data?.data?.user?.customerUuid,
+                  result?.data?.data?.user?.customerUuid,
                   requestMethod.GET,
                   {},
                   navigation

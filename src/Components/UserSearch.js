@@ -71,7 +71,9 @@ export const userNavigationIcon = (props) => {
               source={require("../Assets/icons/search_user.png")}
               style={{ width: 60, height: 60 }}
             />
+
           </Pressable>
+
         </View>
       );
     },

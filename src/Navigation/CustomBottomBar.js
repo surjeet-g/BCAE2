@@ -6,7 +6,7 @@ import {
   bottomBarHeight,
   color,
   fontSizes,
-  spacing,
+  spacing
 } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 
@@ -32,7 +32,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         break;
       case "Chat":
         navigation.navigate("Chat", {
-          contactNo: profile.savedProfileData.contactNo,
+          contactNo: "123213",
         });
         break;
       case "Search":
@@ -169,7 +169,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </Pressable>
 
         <Pressable
-          onPress={() => onNavClick("Offers")}
+          onPress={() => onNavClick("Chat")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -192,7 +192,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             adjustsFontSizeToFit
             style={state.index === 2 ? styles.selectedText : styles.upperText}
           >
-            {strings.offers}
+            {/* {strings.offers} */}
+            Chat
           </Text>
         </Pressable>
 

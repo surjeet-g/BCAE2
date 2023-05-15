@@ -10,8 +10,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
-  TextInput,
+  StyleSheet, Switch, TextInput,
   View
 } from "react-native";
 import { Chip, List, Text, useTheme } from "react-native-paper";
@@ -108,19 +107,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //to store active interaction object
   const [activeInteraction, setActiveInteraction] = useState("");
   //auto suggestion drop box vi
-  const [autosuggestionlist, setautoSuggestionList] = useState(true);
+  const [autosuggestionlist, setautoSuggestionList] = useState(false);
   //for disble more section while search input box vissible
-  const [searchStandAloneModal, setsearchStandaloneModel] = useState(true);
+  const [searchStandAloneModal, setsearchStandaloneModel] = useState(false);
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
   const [openBottomModal, setOpenBottomModal] = useState(false);
-  const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(true);
+  const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(false);
 
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
   const [userSeachEnable, setUserSeachEnable] = useState(false);
   const [bottomBarTitle, setBottombartitle] = useState("");
+
   const interactionResponseScreen = {
     SUCCESS: "SUCCESS",
     FAILED: "FAILED",
@@ -164,6 +164,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setOpenBottomModal(false);
     setBottombartitle("");
   };
+
   const headerRightForNav = () => {
     return (
       <View style={navBar.navRightCon}>
@@ -263,7 +264,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         INTXN_STATEMENT,
         INTXN_CAUSE,
         PROBLEM_CAUSE,
-        SERVICE_CATEGORY,
+        PRODUCT_FAMILY,
         INTXN_CATEGORY,
       } = MASTER_DATA_CONSTANT;
       //set service
@@ -275,7 +276,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       // master only invoke load
       masterDispatch(
         getMasterData(
-          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${SERVICE_CATEGORY},${INTXN_CATEGORY}`
+          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PRODUCT_FAMILY},${INTXN_CATEGORY}`
         )
       );
 
@@ -284,22 +285,34 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
     fetchMyAPI();
   }, []);
+  console.log("",)
+  const [interactionList, setInteractionList] = useState([])
+  const [priorityList, setPriorityList] = useState([])
+  const [problemList, setProblemList] = useState([])
 
-  const interactionList = get(masterReducer, "masterdataData.INTXN_TYPE", []);
-  const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
-  const problemList = get(masterReducer, "masterdataData.INTXN_CAUSE", []);
-  const serviceTypelist = get(masterReducer, "masterdataData.SERVICE_TYPE", []);
-  const serviceCategoryList = get(
-    masterReducer,
-    "masterdataData.SERVICE_CATEGORY",
-    []
-  );
-  const interactionCategoryList = get(
-    masterReducer,
-    "masterdataData.INTXN_CATEGORY",
-    []
-  );
-  const contactTypeList = get(masterReducer, "masterdataData.CONTACT_TYPE", []);
+  const [serviceTypelist, setServiceTypelist] = useState([])
+  const [serviceCategoryList, setServiceCategoryList] = useState([])
+  const [interactionCategoryList, setInteractionCategoryList] = useState([])
+  const [contactTypeList, setContactTypeList] = useState([])
+
+
+  useEffect(() => {
+    console.log("master data", masterReducer)
+    setInteractionList(get(masterReducer, "masterdataData.INTXN_TYPE", []))
+    setPriorityList(get(masterReducer, "masterdataData.PRIORITY", []))
+    setProblemList(get(masterReducer, "masterdataData.INTXN_CAUSE", []))
+    setServiceTypelist(get(masterReducer, "masterdataData.SERVICE_TYPE", []));
+    setInteractionCategoryList(get(masterReducer, "masterdataData.PRODUCT_FAMILY", []))
+    setInteractionCategoryList(get(
+      masterReducer,
+      "masterdataData.INTXN_CATEGORY",
+      []
+    ))
+    setContactTypeList(get(masterReducer, "masterdataData.CONTACT_TYPE", []))
+  }, [masterReducer])
+
+
+
 
   const customerPic =
     get(profileReducer, "savedProfileData.customerPhoto", null) ??
@@ -699,24 +712,27 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }, []);
+  const serviceList = [
+    {
+      code: "SC_BANK",
+      description: "Banking",
+    },
+    {
+      code: "SC_INSURANCE",
+      description: "Insurance",
+    },
 
+  ];
   const renderProfileTab = useMemo(() => {
-    const serviceList = [
-      {
-        code: "SC_BANK",
-        description: "Banking",
-      },
-      {
-        code: "SC_INSURANCE",
-        description: "Insurance",
-      },
 
-    ];
 
 
     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
 
     const addr = get(profileReducer, `${activeData}.customerAddress`, []);
+    const mobilePath = userType == USERTYPE.CUSTOMER ? "mobileNo" : "contactNo"
+    const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
+
 
     return (
       <ImageBackground
@@ -814,9 +830,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   color: colors.textColor,
                 }}
               >
+
                 {get(
                   profileReducer,
-                  `${activeData}.customerContact[0].emailId`,
+                  `${activeData}.${emailPath}`,
                   ""
                 )}
               </Text>
@@ -842,14 +859,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
           >
             {get(
               profileReducer,
-              `${activeData}.customerContact[0].mobileNo`,
+              `${activeData}.${mobilePath}`,
               ""
             )}
           </Text>
-          <Image
-            source={require("../../Assets/icons/interaction_loc.png")}
-            style={{ width: 45, height: 45 }}
-          />
+          {userType == USERTYPE.CUSTOMER &&
+            <Image
+              source={require("../../Assets/icons/interaction_loc.png")}
+              style={{ width: 45, height: 45 }}
+            />
+
+          }
           <Text
             numberOfLines={3}
             variant="bodySmall"
@@ -1311,6 +1331,23 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {renderProfileTab}
 
         <ClearSpace size={2} />
+        <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
+          <Text variant="bodyMedium">
+            Smart Assistance
+          </Text>
+          <Switch
+            // trackColor={{ false: '#767577', true: '#81b0ff' }}
+            // thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            // ios_backgroundColor="#3e3e3e"
+            onValueChange={(status) => {
+              if (status) setOpenBottomModal(true)
+            }}
+          // value={isEnabled}
+          />
+        </View>
+
+
+
         <Text variant="bodyMedium">Type your statement here</Text>
         <View style={styles.searchSection}>
           <TextInput
@@ -1376,6 +1413,30 @@ const InteractionsToOrder = ({ route, navigation }) => {
               {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
                 <>
                   <CustomDropDownFullWidth
+                    selectedValue={get(
+                      interactionCategory,
+                      "value.description",
+                      ""
+                    )}
+                    data={interactionCategoryList}
+                    onChangeText={(text) => {
+                      dispatchInteraction(
+                        setInteractionFormField({
+                          field: "interactionCategory",
+                          value: text,
+                          clearError: true,
+                        })
+                      );
+                    }}
+                    value={get(interactionCategory, "value.code", "")}
+                    caption={"Interaction Category"}
+                    placeHolder={"Select interaction category"}
+                  />
+
+                  {interactionCategory.error &&
+                    showErrorMessage(interactionCategory.error)}
+
+                  <CustomDropDownFullWidth
                     selectedValue={get(interactionType, "value.description", "")}
                     data={interactionList}
                     onChangeText={(text) => {
@@ -1412,33 +1473,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   />
                   {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
 
-                  <CustomDropDownFullWidth
-                    selectedValue={get(
-                      interactionCategory,
-                      "value.description",
-                      ""
-                    )}
-                    data={interactionCategoryList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "interactionCategory",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(interactionCategory, "value.code", "")}
-                    caption={strings.serviceType}
-                    placeHolder={"Select interaction category"}
-                  />
 
-                  {interactionCategory.error &&
-                    showErrorMessage(interactionCategory.error)}
 
                   <CustomDropDownFullWidth
                     selectedValue={get(serviceCategory, "value.description", "")}
-                    data={serviceCategoryList}
+                    data={serviceList}
                     onChangeText={(text) => {
                       dispatchInteraction(
                         setInteractionFormField({

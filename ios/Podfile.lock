@@ -234,19 +234,19 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - OpenSSL-Universal (1.1.1100)
-  - Permission-Camera (3.7.2):
+  - Permission-Camera (3.8.0):
     - RNPermissions
-  - Permission-LocationAccuracy (3.7.2):
+  - Permission-LocationAccuracy (3.8.0):
     - RNPermissions
-  - Permission-LocationAlways (3.7.2):
+  - Permission-LocationAlways (3.8.0):
     - RNPermissions
-  - Permission-LocationWhenInUse (3.7.2):
+  - Permission-LocationWhenInUse (3.8.0):
     - RNPermissions
-  - Permission-Notifications (3.7.2):
+  - Permission-Notifications (3.8.0):
     - RNPermissions
-  - Permission-PhotoLibrary (3.7.2):
+  - Permission-PhotoLibrary (3.8.0):
     - RNPermissions
-  - Permission-PhotoLibraryAddOnly (3.7.2):
+  - Permission-PhotoLibraryAddOnly (3.8.0):
     - RNPermissions
   - PromisesObjC (2.2.0)
   - RCT-Folly (2021.07.22.00):
@@ -500,11 +500,9 @@ PODS:
   - React-jsinspector (0.71.2)
   - React-logger (0.71.2):
     - glog
-  - react-native-date-picker (4.2.9):
+  - react-native-date-picker (4.2.10):
     - React-Core
-  - react-native-document-picker (8.1.3):
-    - React-Core
-  - react-native-document-scanner-plugin (0.7.3):
+  - react-native-document-picker (8.2.0):
     - React-Core
   - react-native-geocoder (0.5.0):
     - React
@@ -520,7 +518,9 @@ PODS:
     - React
   - react-native-maps (1.4.0):
     - React-Core
-  - react-native-netinfo (9.3.7):
+  - react-native-netinfo (9.3.8):
+    - React-Core
+  - react-native-restart (0.0.27):
     - React-Core
   - react-native-safe-area-context (4.5.0):
     - RCT-Folly
@@ -528,6 +528,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-webview (11.26.1):
+    - React-Core
   - React-perflogger (0.71.2)
   - React-RCTActionSheet (0.71.2):
     - React-Core/RCTActionSheetHeaders (= 0.71.2)
@@ -637,7 +639,7 @@ PODS:
   - RNGoogleSignin (2.1.1):
     - GoogleSignIn (~> 5.0.0)
     - React
-  - RNPermissions (3.7.2):
+  - RNPermissions (3.8.0):
     - React-Core
   - RNReanimated (2.14.4):
     - DoubleConversion
@@ -672,8 +674,6 @@ PODS:
   - RNShare (7.9.1):
     - React-Core
   - RNSVG (13.8.0):
-    - React-Core
-  - RNVectorIcons (9.2.0):
     - React-Core
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
@@ -739,7 +739,6 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
-  - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - react-native-geocoder (from `../node_modules/react-native-geocoder`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -747,7 +746,9 @@ DEPENDENCIES:
   - react-native-location (from `../node_modules/react-native-location`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -776,7 +777,6 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -875,8 +875,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
-  react-native-document-scanner-plugin:
-    :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-geocoder:
     :path: "../node_modules/react-native-geocoder"
   react-native-geolocation:
@@ -891,8 +889,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-restart:
+    :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -949,8 +951,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  RNVectorIcons:
-    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -992,13 +992,13 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Permission-Camera: db22e80aa0858a8b6d65979a97f2f481dd8a0ebd
-  Permission-LocationAccuracy: da87e9c0d89a0006ab7127a5515305104b175310
-  Permission-LocationAlways: 4d1851ee9fe9a0407454e2e2207bcaf1b5c47f38
-  Permission-LocationWhenInUse: c8e343e44167ba8c87c3e4a3fe7880edcdee6fc9
-  Permission-Notifications: dbc8cb572cdfbc3c2941feecce4c7900bbdccea1
-  Permission-PhotoLibrary: 7d80161682e08042fd8b0bf934ea97a8495e0e6a
-  Permission-PhotoLibraryAddOnly: 78cb2964b7f9f1e78a30b4c8fca0a03bec2d766d
+  Permission-Camera: e6d142d7d8b714afe0a83e5e6ae17eb949f1e3e9
+  Permission-LocationAccuracy: d6aa5146c084e7077e7efc4cbb543c7f6c72c51a
+  Permission-LocationAlways: e7ce67f3091ec096b6ac274bc30a18830a66b33c
+  Permission-LocationWhenInUse: 1c80e4797ae587642a83125e80b86686cefeba53
+  Permission-Notifications: aa91ec29236626ff59cb60e08389c0a59a9d32c5
+  Permission-PhotoLibrary: 31787bbe77d0d3ae6a5267b8435e4a2e9ef78f1d
+  Permission-PhotoLibraryAddOnly: 16c92ad62b802514f3f788e00b298080be996337
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: c154ebcfbf41d6fef86c52674fc1aa08837ff538
@@ -1014,17 +1014,18 @@ SPEC CHECKSUMS:
   React-jsiexecutor: c7e028406112db456ac3cf5720d266bc7bc20938
   React-jsinspector: ea8101acf525ec08b2d87ddf0637d45f8e3b4148
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
-  react-native-date-picker: c063a8967058c58a02d7d0e1d655f0453576fb0d
-  react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
-  react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
+  react-native-date-picker: 89c419d88fa8e3c5f2d3cbae0bb7f7454ae8ea55
+  react-native-document-picker: 495c444c0c773c6e83a5d91165890ecb1c0a399a
   react-native-geocoder: 757427682892bb256f3b3745858cc90eba148a8e
   react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-google-maps: f4cf51c3c6360eb4f945adc12dc89575ec3d944a
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-location: 5a40ec1cc6abf2f6d94df979f98ec76c3a415681
   react-native-maps: 7135a33610202745d08fdf151ce6b0d01952a99c
-  react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
+  react-native-netinfo: fbc23bc2fe217155d85f2f7e0644b1654df8029b
+  react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
+  react-native-webview: 9f111dfbcfc826084d6c507f569e5e03342ee1c1
   React-perflogger: c7ccda3d1d1da837f7ff4e54e816022a6803ee87
   React-RCTActionSheet: 01c125aebbad462a24228f68c584c7a921d6c28e
   React-RCTAnimation: 5277a9440acffc4a5b7baa6ae3880fe467277ae6
@@ -1048,12 +1049,11 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNGoogleSignin: 6baed9bb19c9c54614bef63bdc55c381b4e33c44
-  RNPermissions: 2fbbcb7244357507f958d626d58eb15fb0013d85
+  RNPermissions: 215c54462104b3925b412b0fb3c9c497b21c358b
   RNReanimated: cc5e3aa479cb9170bcccf8204291a6950a3be128
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNShare: a5dc3b9c53ddc73e155b8cd9a94c70c91913c43c
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
-  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

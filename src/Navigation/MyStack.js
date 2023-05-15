@@ -43,6 +43,7 @@ import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
+import Chat from "../Screens/Chat/Chat";
 import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
@@ -212,6 +213,22 @@ function MyStack() {
           }}
           name="RegisterSuccess"
           component={RegisterSuccess}
+        />
+        <Stack.Screen
+          options={() => ({
+            ...options,
+            ...{
+              headerTintColor: "white",
+              headerTitle: "Chat",
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4C5A81",
+              },
+              headerRight: null
+            },
+          })}
+          name="Chat"
+          component={Chat}
         />
 
         <Stack.Screen

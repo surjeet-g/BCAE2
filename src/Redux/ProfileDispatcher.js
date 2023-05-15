@@ -112,7 +112,7 @@ export function updateProfileData(obj, navigation, isCustomer) {
 
     const customerUUDI = await getCustomerUUID();
     const userId = await getUserId();
-
+    console.log("hitts isCossoumer:", isCustomer, "userId", userId, "payload", obj)
     let result = await serverCall(
       isCustomer
         ? endPoints.UPDATE_MOBILE_USER + customerUUDI
@@ -121,7 +121,7 @@ export function updateProfileData(obj, navigation, isCustomer) {
       obj,
       navigation
     );
-    console.log("res", obj);
+    console.log("hitts isCossoumer:", result);
     if (result.success) {
       dispatch(setProfileError([]));
       Toast.show({
