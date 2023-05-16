@@ -70,9 +70,10 @@ export const getUserType = async (cb = () => { }) => {
   } catch (error) {
     console.log("user Type is ", error);
   }
-  cb(userType)
+  cb(userType);
   return userType;
 };
+
 export const getUserTypeForProfile = async () => {
   let userType;
   try {

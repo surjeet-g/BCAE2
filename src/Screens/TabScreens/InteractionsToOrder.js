@@ -135,7 +135,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [del, setDel] = useState([]);
-  const [userType, setUserType] = useState(USERTYPE.USER);
+  const [userType, setUserType] = useState("");
 
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
@@ -478,6 +478,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   // borderRadius: 3,
                 }}
                 onPress={async () => {
+                  setsearchStandaloneModel(true)
                   //check if smart assistance not enable then going this normal way
                   if (!isEnabledsmartAssist) {
                     interactionDataToCreateInt(item)
@@ -1190,7 +1191,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
 
-  console.log('profile result', profileReducer)
   return (
     <>
       {(enableSuccessScreen == interactionResponseScreen.FAILED) &&
@@ -1254,10 +1254,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <Text style={modalStyle.interactionText}>
             Provided details doesn’t match any customer kindly go ahead and search
           </Text>
-
-
-
-
 
         </View>
       }
