@@ -9,6 +9,7 @@ import {
   spacing
 } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
+import { getUserType } from "../Utilities/UserManagement/userInfo";
 
 const CustomBottomBar = ({ state, descriptors, navigation }) => {
   let profile = useSelector((state) => state.profile);
@@ -49,11 +50,14 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
     }
   };
 
-  const onNavClickButton = (val) => {
+  const onNavClickButton = async (val) => {
     setModal(false);
     switch (val) {
       case "InteractionsToOrder":
-        navigation.navigate("InteractionsToOrder", { refresh: true });
+        const userID = await getUserType();
+        navigation.navigate("InteractionsToOrder", {
+          refresh: true, userTypeParams: userID
+        });
         break;
       case "ViewOrder":
         navigation.navigate("ViewOrder", { refresh: true });

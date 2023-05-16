@@ -65,7 +65,7 @@ import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from 
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
-import { getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import { USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
@@ -90,6 +90,7 @@ const INTELIGENCE_STATUS = {
   RESOVLED: "RESOLVED"
 }
 const InteractionsToOrder = ({ route, navigation }) => {
+
   //to do empty
   // const [createInteractionType, setCreateInteractionType] = useState("")
   const [createInteractionType, setCreateInteractionType] = useState(INTELIGENCE_STATUS.RESOVLED)
@@ -135,8 +136,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [del, setDel] = useState([]);
-  const [userType, setUserType] = useState("");
 
+  const { params = {} } = route
+  const { userTypeParams = USERTYPE.USER } = params
+  const [userType, setUserType] = useState(userTypeParams);
+  console.log("use",)
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
@@ -237,7 +241,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, [profileReducer.IsSearchEmpty])
 
   useEffect(() => {
-    getUserType(setUserType);
+    // getUserType(setUserType);
   }, []);
 
   useEffect(() => {
@@ -1214,7 +1218,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             okHandler={async () => {
               await resetStateData("setInteractionResponse");
               navigation.navigate(STACK_INTERACTION_DETAILS, {
-                // interactionID: intereactionAddResponse?.intxnNo,
+                interactionID: intereactionAddResponse?.intxnNo,
               });
             }}
             cancelHandler={async () => {
@@ -1274,7 +1278,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             headerTitle: "headerTitle",
             profileSearchData: get(profileReducer, "profileSearchData", [])
           });
-        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen])
+        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
 
       }
       {
@@ -1291,6 +1295,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             />
           );
         }, [
+          userType,
           profileReducer,
           setLoader,
           setUserType,
@@ -1636,7 +1641,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                     if (logg) console.log('create complienta :customer id', customerID)
                     if (logg) console.log('create complienta :input', input)
-
+                    const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
+                    console.log("profile info", profileInfo)
                     const params = {
                       customerId: customerID,
                       // statement: input.statement.value,
@@ -1651,8 +1657,17 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       priorityCode: input.priorityCode.value?.code,
                       contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
                       remarks: input.remarks.value,
+                      appointAddress: {
+                        address1: profileInfo.address1,
+                        address2: profileInfo.address2,
+                        address3: profileInfo.address3,
+                        city: profileInfo.city,
+                        state: profileInfo.state,
+                        district: profileInfo.district,
+                        postcode: profileInfo.postcode,
+                        country: profileInfo.country,
+                      }
                     };
-
 
 
                     if (logg) console.log('create complienta :create obj', params)
