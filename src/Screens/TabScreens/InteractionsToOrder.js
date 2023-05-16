@@ -1214,10 +1214,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
             okHandler={async () => {
               await resetStateData("setInteractionResponse");
               navigation.navigate(STACK_INTERACTION_DETAILS, {
-                interactionID: intereactionAddResponse?.intxnNo,
+                // interactionID: intereactionAddResponse?.intxnNo,
               });
             }}
-            cancelHandler={() => { }}
+            cancelHandler={async () => {
+              await resetStateData("setInteractionResponse");
+              setEnableSuccessScreen(interactionResponseScreen.NONE)
+            }}
           />
         </View>
 

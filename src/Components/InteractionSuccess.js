@@ -12,10 +12,10 @@ const { height, width } = Dimensions.get('screen');
 */
 
 export const InteractionSuccess = ({
-  intxId,
-  cancelButtonRequired,
-  okHandler,
-  cancelHandler,
+  intxId = "",
+  cancelButtonRequired = false,
+  okHandler = () => { },
+  cancelHandler = () => { },
 }) => {
   return (
     <View style={styles.successContainer}>
@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
   },
   idText: {
     color: "black",
-    fontWeight: 700,
+    fontWeight: "700",
     marginTop: 30,
   },
 });

@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     bottom: spacing.HEIGHT_31 * 2,
   },
   forgotText: {
-    fontWeight: 700,
+    fontWeight: "700",
     color: "#4B3694",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
@@ -713,10 +713,10 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
-    fontWeight: 400,
+    fontWeight: "400",
   },
   rgisterText: {
-    fontWeight: 700,
+    fontWeight: "700",
     color: "#4B3694",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
