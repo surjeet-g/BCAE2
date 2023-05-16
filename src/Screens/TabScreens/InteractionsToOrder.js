@@ -699,11 +699,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const renderProfileTab = useMemo(() => {
 
 
-
+    console.log("profile", profileReducer)
     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
+    console.log("profile active ", activeData)
     const addr = get(profileReducer, `${activeData}.customerAddress`, []);
-    const mobilePath = userType == USERTYPE.CUSTOMER ? "mobileNo" : "contactNo"
+    const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
     const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
 
 

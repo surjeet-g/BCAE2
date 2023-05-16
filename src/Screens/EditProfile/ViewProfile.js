@@ -747,7 +747,7 @@ export const ViewProfile = ({ navigation }) => {
           </View>
         )
       }
-    </View >
+    </View>
   );
 };
 const styles = StyleSheet.create({
