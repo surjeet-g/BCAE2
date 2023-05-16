@@ -268,13 +268,13 @@ export function addInteractionAction(obj, fileAttachments) {
     // if (Ids.length != 0) {
     //   obj = { ...obj, ...{ attachment: [Ids] } }
     // }
-
+    console.log("add interaction payload", obj)
     let result = await serverCall(
       endPoints.INTERACTION_ADD,
       requestMethod.POST,
       obj
     );
-
+    console.log("add interaction payload", result)
     if (result.success) {
       dispatch(enableLoaderAddInteractionAdd(false));
 

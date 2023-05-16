@@ -91,7 +91,7 @@ const InteractionInitialState = {
     },
     contactPerference: {
       field: "contactPerference",
-      required: false,
+      required: true,
       error: "",
       value: [],
       type: INPUT_TYPE.ARRAY,

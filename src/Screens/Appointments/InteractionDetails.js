@@ -75,7 +75,6 @@ const InteractionDetails = (props) => {
     InteractionFollowupData,
   } = interactionReducer;
 
-  console.log("$$$-InteractionDetailsData", InteractionDetailsData);
 
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {

@@ -65,12 +65,11 @@ import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from 
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
-import {
-  getCustomerID, getUserType, USERTYPE
-} from "../../Utilities/UserManagement/userInfo";
+import { getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
+import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
 export const typeOfAccrodin = {
@@ -97,7 +96,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   // const [activeChatBotSec, setactiveChatBot] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState(typeOfAccrodin.resolved.title);
   const [activeService, setService] = useState("");
-
+  const [isEnabledsmartAssist, setSmartAssistance] = useState(false)
   //need enable screen loader
   const [loader, setLoader] = useState(true);
   //attachment
@@ -302,7 +301,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setPriorityList(get(masterReducer, "masterdataData.PRIORITY", []))
     setProblemList(get(masterReducer, "masterdataData.INTXN_CAUSE", []))
     setServiceTypelist(get(masterReducer, "masterdataData.SERVICE_TYPE", []));
-    setInteractionCategoryList(get(masterReducer, "masterdataData.PRODUCT_FAMILY", []))
+    setServiceCategoryList(get(masterReducer, "masterdataData.PRODUCT_FAMILY", []))
     setInteractionCategoryList(get(
       masterReducer,
       "masterdataData.INTXN_CATEGORY",
@@ -328,7 +327,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
   };
 
   const onChangeKnowledgeSearchText = async (text) => {
+
+
     setKnowledgeSearchText(text);
+
     if (activeService == "") {
       Toast.show({
         type: "bctError",
@@ -476,12 +478,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   // borderRadius: 3,
                 }}
                 onPress={async () => {
+                  //check if smart assistance not enable then going this normal way
+                  if (!isEnabledsmartAssist) {
+                    interactionDataToCreateInt(item)
+
+                    setKnowledgeSearchText("");
+                    setautoSuggestionList(false);
+                    setOpenBottomModal(true)
+                    return;
+                  }
                   const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                  console.log('active customuui', activeData, get(profileReducer, `${activeData}.customerUuid`, ''))
+
                   //store selected result in cache
                   await setBottombartitle(typeOfAccrodin.knowlegde.title);
                   setLoader(true)
-                  console.log('one',)
+
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                       customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
@@ -489,53 +500,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     })
                   );
                   setLoader(false)
-                  console.log('two', response, actionType)
+
 
 
 
 
                   const status = await handleInteligenceResponse(response, item, actionType)
                   console.log('response', status)
-                  return null
-
-                  setActiveInteraction(item);
-                  //open form model
-                  setOpenBottomModalChatBot(true);
-                  //disable other windo
-                  setsearchStandaloneModel(true);
-                  //make empt search box
-                  setKnowledgeSearchText("");
-                  setautoSuggestionList(false);
-                  //todo
-
-                  //pre populating result
-                  // dispatchInteraction(
-                  //   setInteractionFormField({
-                  //     field: "statement",
-                  //     value: item.requestStatement,
-                  //     clearError: true,
-                  //   })
-                  // );
-
-                  // dispatchInteraction(
-                  //   setInteractionFormField({
-                  //     field: "statementId",
-                  //     value: item.requestId,
-                  //     clearError: true,
-                  //   })
-                  // );
 
 
 
-                  //set selected data into state value
-                  setActiveInteraction(item);
-                  //open form model
-                  setOpenBottomModalChatBot(true);
-                  //disable other windo
-                  setsearchStandaloneModel(true);
-                  //make empt search box
-                  setKnowledgeSearchText("");
-                  setautoSuggestionList(false);
                 }}
               />
             );
@@ -592,6 +566,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         { code: "", description: "" }
       );
       if (debuggg) console.log('serviveType', serviveType)
+
       const serviveCatType = get(
         serviceCategoryList?.filter(
           (it) => it.code == item.serviceCategory
@@ -599,24 +574,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
         "[0]",
         { code: "", description: "" }
       );
-      if (debuggg) console.log('serviveCatType', serviveCatType)
+
+
+      if (debuggg) console.log('serviveCatType', serviceCategoryList, serviveCatType)
       const prirtyCode = get(
-        serviceCategoryList?.filter(
-          (it) => it.code == item.serviceCategory
+        priorityList?.filter(
+          (it) => it.code == item.priorityCode
         ),
         "[0]",
         { code: "", description: "" }
       );
+
       if (debuggg) console.log('prirtyCode', prirtyCode)
       //to do from api response
       //make array
-      const contactPerferance = get(
-        contactTypeList?.filter(
-          (it) => it.code == get(item, "contactPreference[0].code")
-        ),
-        "[0]",
-        { code: "", description: "" }
-      );
+      const contactPerferance = get(item, "contactPreference", [])
 
       const problemCause = get(
         problemList?.filter(
@@ -634,7 +606,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       setDropDownFormField("priorityCode", prirtyCode);
 
-      setDropDownFormField("contactPerference", contactPerferance);
+      // setFormField("contactPerference", contactPerferance);
 
       setDropDownFormField("interactionCategory", interCat);
 
@@ -1181,78 +1153,92 @@ const InteractionsToOrder = ({ route, navigation }) => {
       />
     );
   };
-
-  Object.keys(interactionRedux.formData).map((it) => {
-    const item = interactionRedux.formData[it];
-    if (item.type == INPUT_TYPE.INPUTBOX && item.required) {
-      if (item.value == "") {
-        isButtonEnable = false
+  if (openBottomModal) {
+    Object.keys(interactionRedux.formData).map((it) => {
+      const item = interactionRedux.formData[it];
+      if (item.type == INPUT_TYPE.INPUTBOX && item.required) {
+        if (item.value == "") {
+          isButtonEnable = false
+        }
       }
-    }
-    if (item.type == INPUT_TYPE.DROPDOWN && item.required) {
-      if (item.value.code == "") {
-        isButtonEnable == false
+      if (item.type == INPUT_TYPE.DROPDOWN && item.required) {
+        if (item.value.code == "") {
+          isButtonEnable == false
+        }
       }
-    }
+      if (item.type == INPUT_TYPE.ARRAY && item.required) {
+        if (item.value?.length != 0) {
+          const data = item.value.filter(item => item.active == true)
+          console.log(":123data", data, data.length)
+          if (data?.length == 0) isButtonEnable = false;
+
+        }
+        else {
+          isButtonEnable == false
+        }
+      }
 
 
-  });
+    });
+  }
+
 
   const isModelOpen =
     openBottomModal || openBottomModalChatBoard || userSeachEnable;
 
-  if (enableSuccessScreen == interactionResponseScreen.SUCCESS) {
-    return (
-      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-        <InteractionSuccess
-          intxId={intereactionAddResponse?.intxnNo}
-          cancelButtonRequired={true}
-          okHandler={async () => {
-            await resetStateData("setInteractionResponse");
-            navigation.navigate(STACK_INTERACTION_DETAILS, {
-              interactionID: intereactionAddResponse?.intxnNo,
-            });
-          }}
-          cancelHandler={() => { }}
-        />
-      </View>
-    );
-  }
 
 
-  if (enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) {
-    return (
-      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-        <InteractionSuccess
-          intxId={intereactionAddResponse?.intxnNo}
-          cancelButtonRequired={true}
-          okHandler={async () => {
-            await resetStateData("setInteractionResponse");
-            navigation.navigate(STACK_INTERACTION_DETAILS, {
-              interactionID: intereactionAddResponse?.intxnNo,
-            });
-          }}
-          cancelHandler={() => { }}
-        />
-      </View>
-    );
-  }
-  if (enableSuccessScreen == interactionResponseScreen.FAILED) {
-    return (
-      <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
-        <InteractionFailed
-          okHandler={() => {
-            //Failed action
-            resetReducerNdState();
-          }}
-        />
-      </View>
-    );
-  }
+
+
   console.log('profile result', profileReducer)
   return (
     <>
-      {profileReducer.IsSearchEmpty &&
+      {(enableSuccessScreen == interactionResponseScreen.FAILED) &&
+
+        <View style={{ ...commonStyle.center, flex: 1, position: "relative", backgroundColor: "red", top: '50%', marginBottom: 1000 }}>
+          <InteractionFailed
+            okHandler={() => {
+              //Failed action
+              resetReducerNdState();
+            }}
+          />
+        </View>
+      }
+
+      {(enableSuccessScreen == interactionResponseScreen.SUCCESS) &&
+
+        <View style={{ ...commonStyle.center, flex: 1, position: "relative", backgroundColor: "red", top: '50%', marginBottom: 1000 }}>
+          <InteractionSuccess
+            intxId={intereactionAddResponse?.intxnNo}
+            cancelButtonRequired={true}
+            okHandler={async () => {
+              await resetStateData("setInteractionResponse");
+              navigation.navigate(STACK_INTERACTION_DETAILS, {
+                interactionID: intereactionAddResponse?.intxnNo,
+              });
+            }}
+            cancelHandler={() => { }}
+          />
+        </View>
+
+      }
+      {(enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) &&
+        <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
+          <InteractionSuccess
+            intxId={intereactionAddResponse?.intxnNo}
+            cancelButtonRequired={true}
+            okHandler={async () => {
+              await resetStateData("setInteractionResponse");
+              navigation.navigate(STACK_INTERACTION_DETAILS, {
+                interactionID: intereactionAddResponse?.intxnNo,
+              });
+            }}
+            cancelHandler={() => { }}
+          />
+        </View>
+      }
+      {
+        profileReducer.IsSearchEmpty &&
         <View style={{
           ...modalStyle.successContainer,
           height,
@@ -1275,7 +1261,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         </View>
       }
-      {userType == USERTYPE.USER &&
+      {
+        userType == USERTYPE.USER &&
         useMemo(() => {
           return userNavigationIcon({
             navigation,
@@ -1291,7 +1278,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
         }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen])
 
       }
-      {userType == USERTYPE.USER &&
+      {
+        userType == USERTYPE.USER &&
         useMemo(() => {
           return (
             <RenderUserSelectResult
@@ -1313,12 +1301,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
         ])
       }
 
-      {loader && (
-        <LoadingAnimation title="while we are creating Interaction." />
-      )}
-      {interactionReducer.initInteraction && (
-        <LoadingAnimation title="fetch data" />
-      )}
+      {
+        loader && (
+          <LoadingAnimation title="while we are creating Interaction." />
+        )
+      }
+      {
+        interactionReducer.initInteraction && (
+          <LoadingAnimation title="fetch data" />
+        )
+      }
       <View
         style={{
           ...styles.container,
@@ -1340,9 +1332,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
             // thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
             // ios_backgroundColor="#3e3e3e"
             onValueChange={(status) => {
-              if (status) setOpenBottomModal(true)
+              setSmartAssistance(status)
+
             }}
-          // value={isEnabled}
+            value={isEnabledsmartAssist}
           />
         </View>
 
@@ -1400,7 +1393,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </FooterModel>
 
 
-      <FooterModel open={openBottomModal} setOpen={setOpenBottomModal}
+      <FooterModel
+        open={openBottomModal}
+        setOpen={setOpenBottomModal}
         title={bottomBarTitle}>
         <ScrollView contentContainerStyle={{ flex: 1 }}>
           <KeyboardAvoidingView
@@ -1528,25 +1523,27 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     placeHolder={"Select " + strings.priority_type}
                   />
 
-                  <CustomDropDownFullWidth
-                    selectedValue={get(contactPerference, "value.description", "")}
-                    data={contactTypeList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "contactPerference",
-                          value: text,
-                          clearError: true,
+                  {contactTypeList.length != 0 && (
+                    <View style={{ marginTop: 10 }}>
+                      <CheckGroupbox
+                        data={contactTypeList.map((ite) => {
+                          return {
+                            code: ite.code,
+                            description: ite.description,
+                            active: false,
+                          }
                         })
-                      );
-                    }}
-                    value={get(contactPerference, "value.code", "")}
-                    caption={strings.contact_type}
-                    placeHolder={"Select " + strings.contact_type}
-                  />
-                  {contactPerference.error &&
-                    showErrorMessage(contactPerference.error)}
-                  {/* <KeyboardAwareView animated={false}> */}
+                        }
+                        values={get(contactPerference, "value", "")}
+                        setValues={(data) => {
+                          setFormField("contactPerference", data);
+
+                        }}
+                        label="Contact Preference"
+                      />
+                    </View>
+                  )}
+
                 </>
               }
               <CustomInput
@@ -1633,9 +1630,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   onPress={async () => {
                     const logg = true
                     if (logg) console.log('create complienta :entered', interactionRedux)
-
+                    const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+                    const customerID = get(profileReducer, `${activeData}.customerId`, "");
+                    if (customerID == "") console.log("cusomter id is empty");
                     const input = interactionRedux.formData;
-                    const customerID = await getCustomerID();
+
                     if (logg) console.log('create complienta :customer id', customerID)
                     if (logg) console.log('create complienta :input', input)
 
@@ -1651,9 +1650,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       serviceType: input.serviceType.value?.code,
                       channel: input.channel.value,
                       priorityCode: input.priorityCode.value?.code,
-                      contactPreference: [input.contactPerference.value?.code],
+                      contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
                       remarks: input.remarks.value,
                     };
+
+
+
                     if (logg) console.log('create complienta :create obj', params)
 
 
@@ -1669,7 +1671,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       dispatchInteraction(setInteractionReset());
 
                     } else {
-                      setEnableSuccessScreen(interactionResponseScreen.FAILED);
+                      // setEnableSuccessScreen(interactionResponseScreen.FAILED);
                     }
                   }}
                 />

@@ -1,6 +1,7 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "./CustomButton";
+const { height, width } = Dimensions.get('screen');
 /**
 * After success response for interaction
 *
@@ -9,6 +10,7 @@ import { CustomButton } from "./CustomButton";
 * @param {function} okHandler interaction id
 * @param {bool} cancelButtonRequired interaction id
 */
+
 export const InteractionSuccess = ({
   intxId,
   cancelButtonRequired,
@@ -44,7 +46,7 @@ export const InteractionSuccess = ({
 
 export const styles = StyleSheet.create({
   successContainer: {
-
+    height: height * .6,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
