@@ -1,3 +1,6 @@
+export const GETAPPOINMENTS_DATA = 'GETAPPOINMENTS_DATA';
+export const GETAPPOINMENTS_ERROR = 'GETAPPOINMENTS_ERROR';
+export const GETAPPOINMENTS_LOADER = 'GETAPPOINMENTS_LOADER';
 export const INTERACTION_INIT = "INTERACTION_INIT";
 export const INTERACTION_DATA = "INTERACTION_DATA";
 export const INTERACTION_ERROR = "INTERACTION_ERROR";
@@ -132,4 +135,14 @@ export function intractionKnowlegeHistoryReset() {
 
 export function intractionKnowlegeHistoryRemoveUserInputTypes() {
   return { type: INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS };
+}
+export const setgetAppoinmentsData = (data) => {
+  return { type: GETAPPOINMENTS_DATA, data }
+}
+export const setgetAppoinmentsLoader = (data) => {
+  return { type: GETAPPOINMENTS_LOADER, data }
+}
+
+export const setgetAppoinments_ERROR = (data) => {
+  return { type: GETAPPOINMENTS_ERROR, data }
 }

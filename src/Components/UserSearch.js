@@ -131,8 +131,6 @@ export const RenderUserSelectResult = (props) => {
                   // borderRadius: 3,
                 }}
                 onPress={async () => {
-
-
                   props.setLoader(true);
                   const status = await props.profileDispatch(
                     fetchSavedProfileDataByUser(

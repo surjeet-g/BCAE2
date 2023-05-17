@@ -1,16 +1,51 @@
+import moment from 'moment';
 import React, { useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Calendar } from "react-native-calendars";
 import { Chip } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from 'react-redux';
 import { CustomDropDownFullWidth } from '../../../../Components/CustomDropDownFullWidth';
+import { getAppoinmentsData } from '../../../../Redux/InteractionDispatcher';
 import { SHADOW_STYLE } from '../../../../Utilities/themeConfig';
 
-var { height, width } = Dimensions.get('screen');
-const AppointmentPop = ({ setAppoinmentPopup, appointList = [], locationList = [], appoinmentInfo1 = {} }) => {
+const { height, width } = Dimensions.get('screen');
 
-    console.log("apointment lsit", appointList, "locationlist", locationList)
-    console.log("",)
+const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
+    locationList = [], appoinmentInfo1 = {}, formData = {
+        "customerId": "286",
+        "problemCause": "IC0021",
+        "interactionCategory": "SERVICE_RELATED",
+
+        "interactionType": "INTEREST",
+        "serviceCategory": "PF_BANK",
+        "serviceType": "ST_CREDITCARD",
+        "channel": "MOBILE_APP",
+        "priorityCode": "PRTYMED",
+        "contactPreference": [],
+        "remarks": "",
+        "appointAddress": {
+            "address1": "sdfsdf",
+            "address2": "dsfdsfds",
+            "address3": "ffdsfds",
+            "city": "New Delhiuth",
+            "state": "Delhi",
+            "district": "South delhi",
+            "postcode": "110062",
+            "country": "India"
+        },
+        "templateId": 82
+    }
+}) => {
+    const dispatch = useDispatch([
+        getAppoinmentsData
+    ]);
+
+    const interactionReducer = useSelector((state) => state.interaction);
+
+    console.log("interactionReducer : ", interactionReducer.getAppoinmentsData)
+
+
     const [selectedAppoinment, setSelectedAppointment] = useState({ code: "", description: "" })
     const [selLocation, setSelecetedLoc] = useState({ code: "", description: "" })
     const themConfig = {
@@ -289,9 +324,26 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [], locationList = [
                     <CustomDropDownFullWidth
                         selectedValue={selectedAppoinment?.description}
                         data={appointList}
-                        onChangeText={(text) => {
+                        onChangeText={async (text) => {
                             setSelectedAppointment(text)
-                            console.log("hitting", text)
+                            if (["BUS_VISIT", "CUST_VISIT"].includes(text.code)) return;
+                            console.log("payload ",)
+                            const templeAPIPayload = {
+                                ...formData,
+                                mapCategory: "INTERACTION",
+                                customerCategory: "REG",
+                                tranType: formData.interactionType,
+                                tranCategory: formData.interactionCategory,
+                                tranPriority: formData.priorityCode,
+                                appointmentType: text.code,
+                                appointmentDate: moment().format('y-MM-DD'),
+                                // location: "BCT",
+                                address: formData.appointAddress
+
+                            }
+                            console.log("payload data", templeAPIPayload)
+                            dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
+
 
                         }}
                         value={selectedAppoinment?.code}

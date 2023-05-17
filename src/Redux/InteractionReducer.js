@@ -1,8 +1,9 @@
 import get from "lodash.get";
 import { INPUT_TYPE } from "../Utilities/Constants/Constant";
+
 import {
   CREATE_FOLLOWUP,
-  CREATE_FOLLOWUP_FAILURE, INTERACTION_ADD_LOADER_ENABLE, INTERACTION_ASSIGN_SELF,
+  CREATE_FOLLOWUP_FAILURE, GETAPPOINMENTS_DATA, GETAPPOINMENTS_ERROR, INTERACTION_ADD_LOADER_ENABLE, INTERACTION_ASSIGN_SELF,
   INTERACTION_ASSIGN_SELF_FAILURE, INTERACTION_DATA,
   INTERACTION_EDIT_LOADER_ENABLE,
   INTERACTION_ERROR,
@@ -14,6 +15,7 @@ import {
 } from "./InteractionAction";
 
 const InteractionInitialState = {
+  isgetAppoinmentsError: false, getAppoinmentsData: {}, getAppoinmentsLoader: false,
   initInteraction: false,
   loaderAdd: false,
   userSelectedProfileDetails: {},
@@ -326,6 +328,23 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         // todo here logic
       };
+    case GETAPPOINMENTS_ERROR:
+      return {
+        ...state,
+        initgetAppoinments: false,
+        getAppoinmentsLoader: false,
+        isgetAppoinmentsError: true,
+        getAppoinmentsData: action.data,
+      }
+
+    case GETAPPOINMENTS_DATA:
+      return {
+        ...state,
+        initgetAppoinments: false,
+        getAppoinmentsLoader: false,
+        isgetAppoinmentsError: false,
+        getAppoinmentsData: action.data,
+      }
     default:
       return state;
   }

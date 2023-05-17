@@ -92,10 +92,10 @@ const INTELIGENCE_STATUS = {
 }
 
 
-
+import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
 
 const InteractionsToOrder = ({ route, navigation }) => {
-
+  const [appoinmentFormData, setAppoinmentFormData] = useState({})
   //to do empty
   // const [createInteractionType, setCreateInteractionType] = useState("")
   const [createInteractionType, setCreateInteractionType] = useState(INTELIGENCE_STATUS.RESOVLED)
@@ -117,7 +117,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [searchStandAloneModal, setsearchStandaloneModel] = useState(false);
   const { colors, fonts, roundness } = useTheme();
   //bottom model enble or not
-  const [openBottomModal, setOpenBottomModal] = useState(false);
+  const [openBottomModal, setOpenBottomModal] = useState(true);
   const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(false);
 
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
@@ -145,7 +145,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const { params = {} } = route
   const { userTypeParams = USERTYPE.USER } = params
   const [userType, setUserType] = useState(userTypeParams);
-  console.log("use",)
+
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
@@ -158,6 +158,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     if (exclude != "setInteractionResponse") {
       setInteractionResponse({});
     }
+    setAppoinmentFormData({})
     // setUserType("");
     // setService("")
     setCreateInteractionType("")
@@ -218,6 +219,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     updateInteractionAction,
     addInteractionAction,
     resetKnowSearch,
+    getAppoinmentsData
   ]);
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
@@ -1282,7 +1284,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
           return userNavigationIcon({
             navigation,
             setEnableSuccessScreens: () => {
-              setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER)
+              //to do when user search is empty
+              {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
             },
             setLoader,
             profileDispatch,
@@ -1316,7 +1319,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
           headerRightForNav,
         ])
       }
-      {appoimentPopUp && <AppointmentPop appointList={appointList}
+      {appoimentPopUp && <AppointmentPop
+        appointList={appointList}
+        formData1={appoinmentFormData}
+
         locationList={locationList} setAppoinmentPopup={setAppoinmentPopup}
       />}
       {
@@ -1346,9 +1352,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             Smart Assistance
           </Text>
           <Switch
-            // trackColor={{ false: '#767577', true: '#81b0ff' }}
-            // thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
+
             onValueChange={(status) => {
               setSmartAssistance(status)
 
@@ -1642,16 +1646,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
               <View style={{ flex: 1 }}>
                 <CustomButton
-                  isDisabled={!isButtonEnable}
+                  // isDisabled={!isButtonEnable}
+                  isDisabled={false}
                   loading={loaderAdd}
                   label={strings.submit}
                   onPress={async () => {
+                    const input = interactionRedux.formData;
+
+
+
+
                     const logg = true
                     if (logg) console.log('create complienta :entered', interactionRedux)
                     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
                     const customerID = get(profileReducer, `${activeData}.customerId`, "");
                     if (customerID == "") console.log("cusomter id is empty");
-                    const input = interactionRedux.formData;
+
 
                     if (logg) console.log('create complienta :customer id', customerID)
                     if (logg) console.log('create complienta :input', input)
@@ -1683,7 +1693,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       }
                     };
 
+                    const templeAPIPayload = {
+                      mapCategory: "INTERACTION",
+                      serviceCategory: input.serviceCategory.value?.code,
+                      serviceType: input.serviceType.value?.code,
+                      customerCategory: "REG",
+                      tranType: input.interactionType.value?.code, //interaction type
+                      tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
+                      tranPriority: input.priorityCode.value?.code,
+                    }
 
+                    console.log("payload", templeAPIPayload)
+                    const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
+                    console.log("templete view response ", appoinTemplete)
+                    if (appoinTemplete != false) {
+                      //for reference
+                      setAppoinmentFormData({ ...params, templateId: appoinTemplete })
+                      setAppoinmentPopup(true)
+                      return;
+                    }
+                    return false;
                     if (logg) console.log('create complienta :create obj', params)
 
 
