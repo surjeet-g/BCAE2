@@ -70,6 +70,7 @@ import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
+import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
 export const typeOfAccrodin = {
@@ -89,6 +90,10 @@ const INTELIGENCE_STATUS = {
   PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM",
   RESOVLED: "RESOLVED"
 }
+
+
+
+
 const InteractionsToOrder = ({ route, navigation }) => {
 
   //to do empty
@@ -132,7 +137,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   );
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
-
+  const [appoimentPopUp, setAppoinmentPopup] = useState(true)
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [del, setDel] = useState([]);
@@ -269,6 +274,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
         PROBLEM_CAUSE,
         PRODUCT_FAMILY,
         INTXN_CATEGORY,
+        LOCATION,
+        TICKET_CHANNEL,
+        APPOINT_TYPE
       } = MASTER_DATA_CONSTANT;
       //set service
       //to get data from api
@@ -279,7 +287,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       // master only invoke load
       masterDispatch(
         getMasterData(
-          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PRODUCT_FAMILY},${INTXN_CATEGORY}`
+          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PRODUCT_FAMILY},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION}`
         )
       );
 
@@ -297,7 +305,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [serviceCategoryList, setServiceCategoryList] = useState([])
   const [interactionCategoryList, setInteractionCategoryList] = useState([])
   const [contactTypeList, setContactTypeList] = useState([])
-
+  const [locationList, setLocationList] = useState([])
+  const [appointList, setAppoimentList] = useState([])
 
   useEffect(() => {
     console.log("master data", masterReducer)
@@ -311,6 +320,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       "masterdataData.INTXN_CATEGORY",
       []
     ))
+    setAppoimentList(get(masterReducer, "masterdataData.APPOINT_TYPE", []))
+    setLocationList(get(masterReducer, "masterdataData.LOCATION", []))
     setContactTypeList(get(masterReducer, "masterdataData.CONTACT_TYPE", []))
   }, [masterReducer])
 
@@ -1244,6 +1255,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           />
         </View>
       }
+
       {
         profileReducer.IsSearchEmpty &&
         <View style={{
@@ -1304,7 +1316,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
           headerRightForNav,
         ])
       }
-
+      {appoimentPopUp && <AppointmentPop appointList={appointList}
+        locationList={locationList} setAppoinmentPopup={setAppoinmentPopup}
+      />}
       {
         loader && (
           <LoadingAnimation title="while we are creating Interaction." />
@@ -1325,7 +1339,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         {/* profile card */}
         {renderProfileTab}
-
+        { }
         <ClearSpace size={2} />
         <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
           <Text variant="bodyMedium">

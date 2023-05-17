@@ -41,6 +41,9 @@ export const MASTER_DATA_CONSTANT = {
   ACCOUNT_LEVEL: "ACCOUNT_LEVEL",
   ACCOUNT_TYPE: "ACCOUNT_TYPE",
   ACCOUNT_CLASS: "ACCOUNT_CLASS",
+  APPOINT_TYPE: "APPOINT_TYPE",
+  TICKET_CHANNEL: "TICKET_CHANNEL",
+  LOCATION: "LOCATION"
 };
 export const getMasterData = (valueParam = "") => {
   if (typeof valueParam != "string") {
