@@ -113,6 +113,7 @@ export function fetchInteractionAction(type = "", params = {},
       if (debg) {
         console.log('API Requrest', interactionResult, "API STATUS", interactionResult?.success, "API DATA", interactionResult?.data)
       }
+      let noService;
       if (interactionResult?.success) {
         let data = [];
 
@@ -134,6 +135,7 @@ export function fetchInteractionAction(type = "", params = {},
           console.log('interact->dispater->knwolege result', interactionResult)
           //for showing history in pop 
           let converstionHistory = []
+          noService = get(interactionResult, 'data.data.resolutionAction.noService', false)
           if (flowId != "") {
             const conversationID = get(interactionResult, 'data.data.conversationUid', '')
             const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
@@ -188,10 +190,12 @@ export function fetchInteractionAction(type = "", params = {},
         // }
 
         dispatch(setInteractionData(data, false));
+
         console.log('data after', data)
         if (type == typeOfAccrodin.knowlegde.value) {
           console.log('flow Id ', flowId)
-          const actionTypea = (flowId != "") ? "auto_resolution" : "choose_item"
+
+          const actionTypea = noService ? "noservive" : (flowId != "") ? "auto_resolution" : "choose_item"
           return { response: data, actionType: actionTypea };
         }
         else {

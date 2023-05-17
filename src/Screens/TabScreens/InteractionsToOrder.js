@@ -102,7 +102,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   // const [activeChatBotSec, setactiveChatBot] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState(typeOfAccrodin.resolved.title);
   const [activeService, setService] = useState("");
-  const [isEnabledsmartAssist, setSmartAssistance] = useState(false)
+  const [isEnabledsmartAssist, setSmartAssistance] = useState(true)
   //need enable screen loader
   const [loader, setLoader] = useState(true);
   //attachment
@@ -137,10 +137,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   );
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
-  const [appoimentPopUp, setAppoinmentPopup] = useState(true)
+  const [appoimentPopUp, setAppoinmentPopup] = useState(false)
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
-  const [del, setDel] = useState([]);
 
   const { params = {} } = route
   const { userTypeParams = USERTYPE.USER } = params
@@ -379,10 +378,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
     try {
       const debugg = true
       if (debugg) console.log('handleInteligenceResponse: parms resp', resp, "item", item)
-      const isCreateInteraction = get(resp, 'outcome.interactionCreation', false)
+      const isCreateInteraction = false
       if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
       if (debugg) console.log('handleInteligenceResponse : actionType', actionType)
-
+      if (actionType == "noservive") {
+        Toast.show({
+          type: "bctError",
+          text1: "No Resolution Found",
+        });
+        return;
+      }
       //interaction creation part  
       if (actionType == "auto_resolution") {
         await setBottombartitle(typeOfAccrodin.resolved.title);
@@ -984,7 +989,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     //product list
     console.log('HandleMultipleCaseInChatBoard suggestion list ', suggestionList)
     console.log('HandleMultipleCaseInChatBoard :createInteractionType', createInteractionType)
-    if (createInteractionType == INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM) {
+    if (createInteractionType != INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM) {
       console.log('HandleMultipleCaseInChatBoard :suggestion list', suggestionList)
       return (
         <View style={styles.bottomContainer}>
@@ -1054,8 +1059,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {get(suggestionList, 'length', 0) > 0 ? (
-              suggestionList.map((ite) => (
+            {get(suggestionList, 'resolutionAction.data.length', 0) > 0 ? (
+              get(suggestionList, 'resolutionAction.data').map((ite) => (
                 // eslint-disable-next-line react/jsx-key
                 <Chip
                   mode="outlined"
@@ -1089,7 +1094,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     borderColor: "transparent",
                   }}
                 >
-                  {ite.requestStatement}
+                  {ite.serviceName}
                 </Chip>
               ))
             ) : (
@@ -1118,17 +1123,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
    *
    */
   const RenderBottomChatBoard = () => {
-    const suggestionList = get(interactionReducer, "knowledgeHistoryss", [
-      {
-        "actionType": "COLLECTINPUT",
-        "description": "COLLECT_REMARKS",
-        "type": "object",
-        "message": {
-          "element": "COLLECT_REMARKS",
-          "attributes": []
-        }
-      }
-    ]);
+    const suggestionList = get(interactionReducer, "knowledgeHistory", []);
 
     console.log('RenderBottomChatBoard,', createInteractionType, activeChatBotSec)
     //todo
@@ -1137,10 +1132,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
       console.log("setactiveChatBot not set for title for chat bot");
       return null;
     }
-    //todo 
-    // if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
-    if (true) {
-      // if (true) {
+
+    if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
+
+
       const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
 
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
