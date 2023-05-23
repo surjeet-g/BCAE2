@@ -63,13 +63,13 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(false);
-  const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
-  const [password, setPassword] = useState("Test@123");
+  // const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
+  // const [password, setPassword] = useState("Test@123");
   //bussiness
   // const [username, setUsername] = useState("mobappbcae@yopmail.com");
   // const [password, setPassword] = useState("Test@123");
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [secureTextEntry, setsecureTextEntry] = useState(true);
