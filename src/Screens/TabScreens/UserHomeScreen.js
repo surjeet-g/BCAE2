@@ -114,7 +114,9 @@ export const UserHomeScreen = ({ navigation }) => {
 
           {/* View More view */}
           <View style={styles.bottomView}>
-            <TouchableOpacity onPress={() => setShowIndex(index)}>
+            <TouchableOpacity
+            //  onPress={() => setShowIndex(index)}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -122,7 +124,7 @@ export const UserHomeScreen = ({ navigation }) => {
                   alignContent: 'center',
                   justifyContent: "space-around",
                 }}
-                onPress={() => setShowIndex(index)}
+              // onPress={() => setShowIndex(index)}
               >
                 <Text
                   variant="bodySmall"

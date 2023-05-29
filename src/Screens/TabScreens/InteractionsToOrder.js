@@ -1641,8 +1641,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
               <View style={{ flex: 1 }}>
                 <CustomButton
-                  // isDisabled={!isButtonEnable}
-                  isDisabled={false}
+                  isDisabled={!isButtonEnable}
+                  // isDisabled={false}
                   loading={loaderAdd}
                   label={strings.submit}
                   onPress={async () => {
@@ -1688,26 +1688,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       }
                     };
 
-                    const templeAPIPayload = {
-                      mapCategory: "INTERACTION",
-                      serviceCategory: input.serviceCategory.value?.code,
-                      serviceType: input.serviceType.value?.code,
-                      customerCategory: "REG",
-                      tranType: input.interactionType.value?.code, //interaction type
-                      tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
-                      tranPriority: input.priorityCode.value?.code,
-                    }
+                    // const templeAPIPayload = {
+                    //   mapCategory: "INTERACTION",
+                    //   serviceCategory: input.serviceCategory.value?.code,
+                    //   serviceType: input.serviceType.value?.code,
+                    //   customerCategory: "REG",
+                    //   tranType: input.interactionType.value?.code, //interaction type
+                    //   tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
+                    //   tranPriority: input.priorityCode.value?.code,
+                    // }
 
-                    console.log("payload", templeAPIPayload)
-                    const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
-                    console.log("templete view response ", appoinTemplete)
-                    if (appoinTemplete != false) {
-                      //for reference
-                      setAppoinmentFormData({ ...params, templateId: appoinTemplete })
-                      setAppoinmentPopup(true)
-                      return;
-                    }
-                    return false;
+                    // console.log("payload", templeAPIPayload)
+                    // const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
+                    // console.log("templete view response ", appoinTemplete)
+                    // if (appoinTemplete != false) {
+                    //   //for reference
+                    //   setAppoinmentFormData({ ...params, templateId: appoinTemplete })
+                    //   setAppoinmentPopup(true)
+                    //   return;
+                    // }
+
                     if (logg) console.log('create complienta :create obj', params)
 
 
@@ -1719,6 +1719,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     if (status) {
                       console.log("interaction type response ", response);
                       setInteractionResponse(response);
+                      setOpenBottomModal(false)
                       setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
                       dispatchInteraction(setInteractionReset());
 
