@@ -67,7 +67,7 @@ export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
-const STACK_CREATE_CUSTOMER = "CreateCustomer";
+export const STACK_CREATE_CUSTOMER = "CreateCustomer";
 const STACK_NOTIFICATION = "Notification";
 
 const Stack = createStackNavigator();

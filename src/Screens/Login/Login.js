@@ -63,7 +63,7 @@ export const Login = ({ navigation }) => {
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
   const [isFirstSelected, setFirstSelected] = useState(false);
-  const [username, setUsername] = useState("vipinv0647@gmail.com");
+  const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
   const [password, setPassword] = useState("Test@123");
   //bussiness
   // const [username, setUsername] = useState("mobappbcae@yopmail.com");

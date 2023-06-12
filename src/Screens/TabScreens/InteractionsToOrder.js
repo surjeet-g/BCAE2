@@ -70,6 +70,7 @@ import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
+import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
 import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
@@ -90,9 +91,6 @@ const INTELIGENCE_STATUS = {
   PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM",
   RESOVLED: "RESOLVED"
 }
-
-
-import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
 
 const InteractionsToOrder = ({ route, navigation }) => {
   const [appoinmentFormData, setAppoinmentFormData] = useState({})
@@ -242,7 +240,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     if (profileReducer.IsSearchEmpty) {
       setTimeout(() => {
         navigation.navigate(STACK_CREATE_CUSTOMER)
-      }, 5000)
+      }, 3000)
     }
   }, [profileReducer.IsSearchEmpty])
 
@@ -752,6 +750,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       >
         <View style={{ flexDirection: "column" }}>
           <View style={{ flexDirection: "row-reverse" }}>
+
             <View>
               <ImageBackground
                 source={require("../../Assets/icons/active_background.png")}
@@ -919,45 +918,47 @@ const InteractionsToOrder = ({ route, navigation }) => {
           )}
         </Pressable>
 
-        {modelProfileServiceModel && (
-          <>
-            <Pressable
-              onPress={() => {
-                setProfileSeriveModal(false)
-              }}
-              style={{
-                backgroundColor: "transparent",
-                position: "absolute",
-                width: width,
-                height: height,
+        {
+          modelProfileServiceModel && (
+            <>
+              <Pressable
+                onPress={() => {
+                  setProfileSeriveModal(false)
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                  position: "absolute",
+                  width: width,
+                  height: height,
 
-              }}>
+                }}>
 
-            </Pressable>
-            <View style={styles.modelContainerProfile}>
-              {serviceList.map((ite) => {
-                return (
-                  <List.Item
-                    key={ite.code}
-                    title={ite.description}
-                    titleStyle={{
-                      fontSize: 10,
-                      padding: 0,
-                      margin: 0,
-                    }}
+              </Pressable>
+              <View style={styles.modelContainerProfile}>
+                {serviceList.map((ite) => {
+                  return (
+                    <List.Item
+                      key={ite.code}
+                      title={ite.description}
+                      titleStyle={{
+                        fontSize: 10,
+                        padding: 0,
+                        margin: 0,
+                      }}
 
-                    onPress={() => {
-                      setService(ite);
-                      setProfileSeriveModal(false);
-                    }}
-                    style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
-                  />
-                );
-              })}
-            </View>
-          </>
-        )}
-      </ImageBackground>
+                      onPress={() => {
+                        setService(ite);
+                        setProfileSeriveModal(false);
+                      }}
+                      style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
+                    />
+                  );
+                })}
+              </View>
+            </>
+          )
+        }
+      </ImageBackground >
     );
   }, [
     addresss,
@@ -1248,7 +1249,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             cancelButtonRequired={true}
             okHandler={async () => {
               await resetStateData("setInteractionResponse");
-              navigation.navigate(STACK_INTERACTION_DETAILS, {
+              navigation.navigate(STACK_CREATE_CUSTOMER, {
                 interactionID: intereactionAddResponse?.intxnNo,
               });
             }}
