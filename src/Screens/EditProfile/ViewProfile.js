@@ -61,7 +61,7 @@ export const ViewProfile = ({ navigation }) => {
   useEffect(() => {
     async function getUserID() {
       const userType = await getUserType();
-      console.log(">>rrr", userType);
+      console.log(">>rrr", userType, profileResult);
       setUserType(userType);
       const userID = await getUserId();
       const language = await getLanguage();

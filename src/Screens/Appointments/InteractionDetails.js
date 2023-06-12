@@ -37,8 +37,9 @@ import {
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // const { interactionID } = route.params;
-  const interactionID = 325
+  let { interactionID } = route.params
+  interactionID = parseInt(interactionID)
+
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -75,12 +76,12 @@ const InteractionDetails = (props) => {
     InteractionFollowupData,
   } = interactionReducer;
 
-
+  console.log("interaction", InteractionDetailsData)
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
     //fetch order list or enble button
     dispatch(getOrderListData(navigation, 1, 0));
-
+    console.log("interactionL firt", interactionID)
     dispatch(getInteractionDetailsForID(interactionID, navigation));
 
     dispatch(getWorkFlowForInteractionID(interactionID));
@@ -93,7 +94,7 @@ const InteractionDetails = (props) => {
 
     let userType = await getUserType();
     setUserType(userType);
-  }, []);
+  }, [interactionID]);
 
   console.log('>>order details', orderReducer)
   useLayoutEffect(() => {

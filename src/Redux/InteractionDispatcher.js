@@ -291,6 +291,7 @@ export function addInteractionAction(obj, fileAttachments) {
         status: true,
         response: {
           intxnNo: result?.data?.data?.intxnNo,
+          intxnId: result?.data?.data?.intxnId,
           message: result?.data?.message,
         },
       };
@@ -339,6 +340,7 @@ export function getFollowupForInteractionID(interactionId, navigation = null) {
 
 export function getInteractionDetailsForID(interactionId, navigation = null) {
   return async (dispatch) => {
+    console.log("interactionL ID", interactionId)
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
     let params = {
       searchParams: {
@@ -346,6 +348,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
       },
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("interactionL resul", result)
     if (result.success) {
       dispatch(setInteractionsDetailsDataInStore(result.data.data));
     } else {

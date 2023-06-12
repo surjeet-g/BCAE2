@@ -144,7 +144,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const { params = {} } = route
   const { userTypeParams = USERTYPE.USER } = params
   const [userType, setUserType] = useState(userTypeParams);
-
+  console.log("usertype", userType)
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
 
@@ -510,6 +510,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     setOpenBottomModal(true)
                     return;
                   }
+                  //auto and clear search text
+                  setautoSuggestionList(false);
+                  setKnowledgeSearchText("")
                   const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
 
                   //store selected result in cache
@@ -994,25 +997,30 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return (
         <View style={styles.bottomContainer}>
           <ClearSpace size={2} />
-
-
-
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {get(resolutionHistory, 'length', 0) > 0 ? (
-              resolutionHistory.map((ite) => (
+            {get(suggestionList, 'length', 0) > 0 ? (
+              suggestionList.map((ite) => (
                 // eslint-disable-next-line react/jsx-key
                 <Chip
                   mode="outlined"
                   onPress={async () => {
+                    // await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                    setOpenBottomModalChatBot(false);
+                    setLoader(true)
+                    const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+
+                    console.log("ddfdf", {
+                      customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
+                      requestId: ite
+                    })
                     const { response, actionType } = await dispatchInteraction(
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                        serviceUuid: ite.serviceUuid,
-                        accountUuid: ite.accountUuid,
-                        actionCount: 1,
-                        requestId: get(interactionReducer, "InteractionData.requestId", "")
-
+                        customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
+                        requestId: ite.requestId
                       })
                     );
+                    setLoader(false)
+                    const status = await handleInteligenceResponse(response, ite, actionType)
                     console.log('view->HandleMultipleCaseInChatBoard->api response ', response, actionType)
                     // const status = await handleInteligenceResponse(mockresponse, item)
                   }}
@@ -1028,7 +1036,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     borderColor: "transparent",
                   }}
                 >
-                  {ite.serviceName}
+                  {ite.requestStatement}
                 </Chip>
               ))
             ) : (
@@ -1055,9 +1063,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return (
         <View style={styles.bottomContainer}>
           <ClearSpace size={2} />
-
-
-
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {get(suggestionList, 'resolutionAction.data.length', 0) > 0 ? (
               get(suggestionList, 'resolutionAction.data').map((ite) => (
@@ -1200,9 +1205,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
     openBottomModal || openBottomModalChatBoard || userSeachEnable;
 
 
-
-
-
   return (
     <>
       {(enableSuccessScreen == interactionResponseScreen.FAILED) &&
@@ -1225,8 +1227,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
             cancelButtonRequired={true}
             okHandler={async () => {
               await resetStateData("setInteractionResponse");
+              console.log("hiting", intereactionAddResponse)
+
               navigation.navigate(STACK_INTERACTION_DETAILS, {
-                interactionID: intereactionAddResponse?.intxnNo,
+                interactionID: intereactionAddResponse?.intxnId,
               });
             }}
             cancelHandler={async () => {

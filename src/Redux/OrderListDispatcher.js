@@ -6,17 +6,17 @@ import {
   setOrderListError
 } from "./OrderListAction";
 // import Geocoder from "@timwangdev/react-native-geocoder";
-import { getCustomerID } from "../Utilities/UserManagement/userInfo";
+import { getCustomerUUID } from "../Utilities/UserManagement/userInfo";
 
 export function getOrderListData(navigation, limit = 100, page = 0) {
   return async (dispatch) => {
     dispatch(initOrderListData());
 
-    const customerID = await getCustomerID();
+    const customerID = await getCustomerUUID();
 
     let params = {
       searchParams: {
-        customerId: customerID,
+        customerUuid: customerID,
       },
     };
 

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
 import { TextInput, useTheme } from "react-native-paper";
@@ -17,7 +17,7 @@ import MapView, {
   Callout,
   Circle,
   Marker,
-  PROVIDER_GOOGLE,
+  PROVIDER_GOOGLE
 } from "react-native-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
@@ -38,7 +38,7 @@ import { countryCodes } from "../../Components/react-native-country-codes-picker
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
   getMasterData,
-  MASTER_DATA_CONSTANT,
+  MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 const { height } = Dimensions.get("screen");
@@ -185,25 +185,9 @@ const AddLocation = ({ route, navigation }) => {
             latitude: currentLatitude.toString(),
           },
         };
-        // const addressParams = {
-        //   address: {
-        //     addrZone: "kerala",
-        //     isPrimary: false,
-        //     addressType: "DIFF",
-        //     address1: "sdsd",
-        //     address2: "sdsd,Kampong Bang Nukat",
-        //     address3: ",TG2343",
-        //     city: "sfs",
-        //     district: "sfs",
-        //     state: "Kampong Bang Nukat",
-        //     postcode: "TG2343",
-        //     country: "dsfsd",
-        //     longitude: (114.7214024043128).toString(),
-        //     latitude: (4.543040540540541).toString(),
-        //   },
-        // };
-        // edit address
 
+        // edit address
+        console.log("addressParams", addressParams)
         if (!isEditAddress) {
           if (isCurrentLocation) {
             await addSavedLocation(addressParams);
@@ -215,14 +199,14 @@ const AddLocation = ({ route, navigation }) => {
           addressParams.address.isPrimary = includingSavedAddress[0].isPrimary;
           await addSavedLocation(addressParams);
         }
-
+        console.log("hiting", navigation)
         //alert(JSON.stringify(savedLocation.savedLocationData))
-        setTimeout(() => {
-          //   if(savedLocation.savedLocationData.data.message == 'Successfully Created Customer Favourite Address'){
-          hideAddLocationModal();
-          navigation.goBack();
-          //}
-        }, 1000);
+        // setTimeout(() => {
+        //   if(savedLocation.savedLocationData.data.message == 'Successfully Created Customer Favourite Address'){
+        // hideAddLocationModal();
+        navigation.goBack();
+        //}
+        // }, 1000);
       }
       // } else {
       //   Alert.alert(strings.attention, strings.please_enter_title, [
@@ -340,7 +324,7 @@ const AddLocation = ({ route, navigation }) => {
     } catch (error) {
       console.log(
         "There has been a problem with RNLocation fetch operation: " +
-          error.message
+        error.message
       );
     }
   };
