@@ -239,7 +239,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   useEffect(() => {
     if (profileReducer.IsSearchEmpty) {
       setTimeout(() => {
-        navigation.navigate(STACK_CREATE_CUSTOMER)
+        //todo
+        // navigation.navigate(STACK_CREATE_CUSTOMER)
       }, 3000)
     }
   }, [profileReducer.IsSearchEmpty])

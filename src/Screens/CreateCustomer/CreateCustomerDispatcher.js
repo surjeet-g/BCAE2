@@ -355,7 +355,7 @@ export function updateCustomerStatus(formData, navigation = null) {
       getQuote: formData.getQuote,
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
-    console.log("$$$-updateCustomerStatus-result", JSON.stringify(result));
+    console.log("Update customerStatus result", result, params);
     if (result.success) {
       // TODO: Check what to next step - like where to navigate
       Toast.show({

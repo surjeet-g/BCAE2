@@ -1918,6 +1918,7 @@ const CreateCustomer = ({ navigation }) => {
         dispatch(updateCustomerData(formData, navigation));
         break;
       case 3: // Available Products
+
         let item = products.find((product) => product.quantity > 0);
         if (logg) console.log("Available Product", item, products)
         if (item === undefined)
@@ -1926,6 +1927,7 @@ const CreateCustomer = ({ navigation }) => {
           const selectedProducts = products.filter(
             (product) => product.quantity > 0
           );
+
           handleServiceDetails("details", selectedProducts);
           dispatch(setCurrentStepInStore(currentStep + 1));
         }

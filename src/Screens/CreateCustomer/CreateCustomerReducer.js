@@ -8,7 +8,7 @@ import {
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: 9,
+    currentStep: 0,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},

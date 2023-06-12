@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 12,
   },
-  priceTxt: { color: "#EFA848", fontWeight: 700, fontSize: 18 },
+  priceTxt: { color: "#EFA848", fontWeight: "700", fontSize: 18 },
   quantityView: { flexDirection: "row", alignItems: "center" },
   quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
   quantityTxt: {
