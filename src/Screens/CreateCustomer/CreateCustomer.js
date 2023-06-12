@@ -58,7 +58,8 @@ import {
   getUniqueDistricts,
   getUniqueState
 } from "./utilities";
-
+//enble logs
+const logg = true
 const CreateCustomer = ({ navigation }) => {
   const { colors } = useTheme();
 
@@ -77,6 +78,7 @@ const CreateCustomer = ({ navigation }) => {
     updateAccountData,
     createOrderForCustomer,
   ]);
+
   const [formData, setFormData] = useState({
     getQuote: false,
     showAccountCreationModal: false,
@@ -226,6 +228,53 @@ const CreateCustomer = ({ navigation }) => {
     }
   }, [currentStep]);
 
+
+  const onPlaceChosen_2 = (params) => {
+    // here is your callback function
+    console.log("onPlaceChosen_2", JSON.stringify(params));
+    // {
+    // "address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351",
+
+    const addressSplit = params.address1.split(",");
+    const address2Split = params.address2.split(",");
+    if (currentStep === 2) {
+      handleCustomerDetails("address1", get(addressSplit, "[0]", ""));
+      handleCustomerDetails("address2", get(addressSplit, "[1]", ""));
+      handleCustomerDetails("address3", get(address2Split, "[1]", ""));
+      handleCustomerDetails("country", params.country);
+      handleCustomerDetails("district", params.district);
+      handleCustomerDetails("postCode", params.postcode);
+      handleCustomerDetails("state", params.state);
+      handleCustomerDetails("city", params.city);
+    } else if (currentStep === 5) {
+      handleServiceDetails("address1", get(addressSplit, "[0]", ""));
+      handleServiceDetails("address2", get(addressSplit, "[1]", ""));
+      handleServiceDetails("address3", get(address2Split, "[1]", ""));
+      handleServiceDetails("country", params.country);
+      handleServiceDetails("district", params.district);
+      handleServiceDetails("postCode", params.postcode);
+      handleServiceDetails("state", params.state);
+      handleServiceDetails("city", params.city);
+    } else if (currentStep === 8) {
+      handleAccountDetails("address1", get(addressSplit, "[0]", ""));
+      handleAccountDetails("address2", get(addressSplit, "[1]", ""));
+      handleAccountDetails("address3", get(address2Split, "[1]", ""));
+      handleAccountDetails("country", params.country);
+      handleAccountDetails("district", params.district);
+      handleAccountDetails("postCode", params.postcode);
+      handleAccountDetails("state", params.state);
+      handleAccountDetails("city", params.city);
+    }
+    setAddressTakenType("AUTO");
+  };
+
+  const locationIconClick = () => {
+    navigation.navigate("SavedLocation", {
+      onPlaceChosen_2,
+      fromPage: "CreateCustomer_2",
+    });
+  };
+
   // Step = 0
   const renderUploadDocsUI = () => {
     return (
@@ -235,7 +284,6 @@ const CreateCustomer = ({ navigation }) => {
       </View>
     );
   };
-
   // Step = 1
   const renderCustomerDetailsUI = () => {
     return (
@@ -368,51 +416,7 @@ const CreateCustomer = ({ navigation }) => {
     );
   };
 
-  const locationIconClick = () => {
-    navigation.navigate("SavedLocation", {
-      onPlaceChosen_2,
-      fromPage: "CreateCustomer_2",
-    });
-  };
 
-  const onPlaceChosen_2 = (params) => {
-    // here is your callback function
-    console.log("onPlaceChosen_2", JSON.stringify(params));
-    // {
-    // "address1":"hno1,b1","address2":"Uttara kannada,Karnataka","address3":"India,581351",
-
-    const addressSplit = params.address1.split(",");
-    const address2Split = params.address2.split(",");
-    if (currentStep === 2) {
-      handleCustomerDetails("address1", get(addressSplit, "[0]", ""));
-      handleCustomerDetails("address2", get(addressSplit, "[1]", ""));
-      handleCustomerDetails("address3", get(address2Split, "[1]", ""));
-      handleCustomerDetails("country", params.country);
-      handleCustomerDetails("district", params.district);
-      handleCustomerDetails("postCode", params.postcode);
-      handleCustomerDetails("state", params.state);
-      handleCustomerDetails("city", params.city);
-    } else if (currentStep === 5) {
-      handleServiceDetails("address1", get(addressSplit, "[0]", ""));
-      handleServiceDetails("address2", get(addressSplit, "[1]", ""));
-      handleServiceDetails("address3", get(address2Split, "[1]", ""));
-      handleServiceDetails("country", params.country);
-      handleServiceDetails("district", params.district);
-      handleServiceDetails("postCode", params.postcode);
-      handleServiceDetails("state", params.state);
-      handleServiceDetails("city", params.city);
-    } else if (currentStep === 8) {
-      handleAccountDetails("address1", get(addressSplit, "[0]", ""));
-      handleAccountDetails("address2", get(addressSplit, "[1]", ""));
-      handleAccountDetails("address3", get(address2Split, "[1]", ""));
-      handleAccountDetails("country", params.country);
-      handleAccountDetails("district", params.district);
-      handleAccountDetails("postCode", params.postcode);
-      handleAccountDetails("state", params.state);
-      handleAccountDetails("city", params.city);
-    }
-    setAddressTakenType("AUTO");
-  };
 
   // Step = 2
   const renderCustomerAddressUI = () => {
@@ -2178,7 +2182,8 @@ const CreateCustomer = ({ navigation }) => {
       </View>
     );
   };
-
+  //main
+  if (logg) console.log("Full State value", formData)
   return (
     <View style={styles.container}>
       {loader && <LoadingAnimation title="while we are fetching country" />}
@@ -2243,7 +2248,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "#4C5A81",
                   borderRadius: 10,
                   color: "white",
@@ -2258,7 +2263,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "red",
                   borderRadius: 10,
                   color: "white",
@@ -2288,7 +2293,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "#4C5A81",
                   borderRadius: 10,
                   color: "white",
@@ -2303,7 +2308,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "red",
                   borderRadius: 10,
                   color: "white",
@@ -2333,7 +2338,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "#4C5A81",
                   borderRadius: 10,
                   color: "white",
@@ -2348,7 +2353,7 @@ const CreateCustomer = ({ navigation }) => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   backgroundColor: "red",
                   borderRadius: 10,
                   color: "white",
@@ -2443,12 +2448,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   previewInfoItemTitleTxt: {
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 14,
     color: "#000000",
   },
   previewInfoItemValueTxt: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
     color: "#000000",
     marginTop: 5,

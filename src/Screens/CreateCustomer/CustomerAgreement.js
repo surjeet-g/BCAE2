@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomSignature from "./CustomSignature";
 
@@ -31,10 +31,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   headerView: { flexDirection: "row", alignItems: "center" },
-  contractTxt: { color: "#000", fontWeight: 400, fontSize: 16, marginLeft: 10 },
+  contractTxt: { color: "#000", fontWeight: "400", fontSize: 16, marginLeft: 10 },
   contractSubTxt: {
     color: "#9A9A9A",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
     marginVertical: 10,
   },

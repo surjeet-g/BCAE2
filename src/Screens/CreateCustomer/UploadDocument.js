@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Divider, RadioButton } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { RadioButton, Divider } from "react-native-paper";
 
 const UploadDocument = () => {
   const [value, setValue] = React.useState("passport");
@@ -38,7 +38,7 @@ const UploadDocument = () => {
               status={value === "passport" ? "checked" : "unchecked"}
               onPress={() => setValue("passport")}
             />
-            <Text style={{ color: "#fff", fontWeight: 600 }}>{"Passport"}</Text>
+            <Text style={{ color: "#fff", fontWeight: "600" }}>{"Passport"}</Text>
           </View>
           <View
             style={{
@@ -51,7 +51,7 @@ const UploadDocument = () => {
               status={value === "license" ? "checked" : "unchecked"}
               onPress={() => setValue("license")}
             />
-            <Text style={{ color: "#fff", fontWeight: 600 }}>{"License"}</Text>
+            <Text style={{ color: "#fff", fontWeight: "600" }}>{"License"}</Text>
           </View>
         </View>
         <Pressable onPress={() => alert("Open file picker")}>
@@ -75,7 +75,7 @@ const UploadDocument = () => {
             style={{
               textAlign: "center",
               color: "white",
-              fontWeight: 600,
+              fontWeight: "600",
               fontSize: 16,
             }}
           >
@@ -85,7 +85,7 @@ const UploadDocument = () => {
             style={{
               textAlign: "center",
               color: "white",
-              fontWeight: 400,
+              fontWeight: "400",
               fontSize: 14,
               marginTop: 10,
               marginBottom: 30,
@@ -117,7 +117,7 @@ const UploadDocument = () => {
               marginLeft: 10,
               color: "white",
               fontSize: 16,
-              fontWeight: 600,
+              fontWeight: "600",
             }}
           >
             Use Camera
@@ -145,7 +145,7 @@ const UploadDocument = () => {
           <Text
             style={{
               color: "#9A9A9A",
-              fontWeight: 400,
+              fontWeight: "400",
               fontSize: 12,
               marginHorizontal: 10,
             }}
@@ -180,7 +180,7 @@ const UploadDocument = () => {
               marginLeft: 10,
               color: "white",
               fontSize: 16,
-              fontWeight: 600,
+              fontWeight: "600",
             }}
           >
             Start with IVR

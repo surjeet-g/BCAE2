@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable, Image, Button } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import SignatureScreen from "react-native-signature-canvas";
 
 const CustomSignature = (props) => {
@@ -84,14 +84,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   headerView: { flexDirection: "row", justifyContent: "space-between" },
-  esign: { fontWeight: 400, fontSize: 16, color: "#000" },
+  esign: { fontWeight: "400", fontSize: 16, color: "#000" },
   clearView: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   clearImg: { height: 15, width: 15, marginRight: 3, tintColor: "#000" },
-  clearTxt: { fontWeight: 400, fontSize: 12, color: "#000" },
+  clearTxt: { fontWeight: "400", fontSize: 12, color: "#000" },
   previewImgStyle: {
     alignSelf: "center",
     width: "80%",
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: "center",
     fontSize: 20,
-    fontWeight: 400,
+    fontWeight: "400",
     color: "green",
   },
 });

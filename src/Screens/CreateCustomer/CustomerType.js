@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useState } from "react";
+import React from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const CustomerType = (props) => {
-  const { name = "NA", icon = "", onPress = () => {} } = props;
+  const { name = "NA", icon = "", onPress = () => { } } = props;
 
   return (
     <View style={styles.container}>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#202223",
     fontSize: 18,
-    fontWeight: 400,
+    fontWeight: "400",
     textAlign: "center",
   },
 });

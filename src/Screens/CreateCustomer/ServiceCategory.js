@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useState } from "react";
+import React from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const ServiceCategory = (props) => {
   const { item, onSelect, onDeSelect } = props;
@@ -22,7 +22,7 @@ const ServiceCategory = (props) => {
         style={{
           ...styles.nameTxt,
           color: item.selected ? "#495470" : "#2B2B2B",
-          fontWeight: item.selected ? 700 : 400,
+          fontWeight: item.selected ? "700" : "400",
         }}
       >
         {item?.description}
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#2B2B2B",
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     textAlign: "center",
   },
 });

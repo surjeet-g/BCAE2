@@ -1,6 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 // Usage
 /* <SelectedProduct item={{ id: 1,name: "", type: "", price: 0, quantity: 0 }} />; */
@@ -68,12 +67,12 @@ const styles = StyleSheet.create({
   },
   productNameTxt: {
     color: "#202223",
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 16,
   },
   productTypeTxt: {
     color: "#686B6C",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
   },
   priceTxt: { color: "#EFA848", fontWeight: 700, fontSize: 18 },
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
   quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
   quantityTxt: {
     color: "#000000",
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 14,
     marginHorizontal: 10,
   },

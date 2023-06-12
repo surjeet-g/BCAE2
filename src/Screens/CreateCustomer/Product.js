@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DashedDivider from "./../../Components/DashedDivider";
 
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 30,
     fontSize: 14,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   productTxtView: {
     flexDirection: "column",
@@ -129,20 +129,20 @@ const styles = StyleSheet.create({
   },
   productNameTxt: {
     color: "#202223",
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 16,
     marginBottom: 5,
   },
   productTypeTxt: {
     color: "#686B6C",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
     marginVertical: 5,
   },
-  priceTxt: { color: "#4C5A81", fontWeight: 600, fontSize: 20 },
+  priceTxt: { color: "#4C5A81", fontWeight: "600", fontSize: 20 },
   oldpriceTxt: {
     color: "#E22D2D",
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 13,
     marginLeft: 10,
     textDecorationLine: "line-through",
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   quantityIcon: { backgroundColor: "#E4EDFF", borderRadius: 5, padding: 3 },
   quantityTxt: {
     color: "#000000",
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 14,
     marginHorizontal: 10,
   },
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "#fff",
     marginVertical: 5,
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 12,
   },
 });

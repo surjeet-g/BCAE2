@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Divider } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native";
 import DashedDivider from "./../../Components/DashedDivider";
 
 // // Usage
@@ -17,8 +16,8 @@ const BillDetails = (props) => {
   ) => {
     return (
       <View style={{ ...styles.itemView, backgroundColor }}>
-        <Text style={{ color, fontWeight: 600, fontSize: 16 }}>{title}</Text>
-        <Text style={{ color, fontWeight: 600, fontSize: 16 }}>{price}</Text>
+        <Text style={{ color, fontWeight: "600", fontSize: 16 }}>{title}</Text>
+        <Text style={{ color, fontWeight: "600", fontSize: 16 }}>{price}</Text>
       </View>
     );
   };

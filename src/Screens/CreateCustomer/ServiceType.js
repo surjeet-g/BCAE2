@@ -1,5 +1,5 @@
-import { StyleSheet, Text, Pressable } from "react-native";
 import React, { useState } from "react";
+import { Pressable, StyleSheet, Text } from "react-native";
 
 const ServiceType = (props) => {
   const { name = "NA" } = props;
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   nameTxt: {
     color: "#2B2B2B",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 14,
   },
 });
