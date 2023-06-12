@@ -1918,18 +1918,18 @@ const CreateCustomer = ({ navigation }) => {
         dispatch(updateCustomerData(formData, navigation));
         break;
       case 3: // Available Products
-        {
-          let item = products.find((product) => product.quantity > 0);
-          if (item === undefined)
-            alert("Select atleast one service to continue!!!");
-          else {
-            const selectedProducts = products.filter(
-              (product) => product.quantity > 0
-            );
-            handleServiceDetails("details", selectedProducts);
-            dispatch(setCurrentStepInStore(currentStep + 1));
-          }
+        let item = products.find((product) => product.quantity > 0);
+        if (logg) console.log("Available Product", item, products)
+        if (item === undefined)
+          alert("Select atleast one service to continue!!!");
+        else {
+          const selectedProducts = products.filter(
+            (product) => product.quantity > 0
+          );
+          handleServiceDetails("details", selectedProducts);
+          dispatch(setCurrentStepInStore(currentStep + 1));
         }
+
         break;
       case 4: // Selected Products screen & Need quote only
         dispatch(createCustomerService(formData, navigation));

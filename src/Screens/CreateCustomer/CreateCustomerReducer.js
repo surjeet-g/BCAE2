@@ -8,7 +8,7 @@ import {
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: 0,
+    currentStep: 9,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},
@@ -44,7 +44,7 @@ const initialState = {
 };
 
 const CreateCustomerReducer = (state = initialState, action) => {
-  console.log("$$$-------->>>>>>>>>in reducer");
+
   // console.log("$$$-state", JSON.stringify(state));
   console.log("$$$-action", JSON.stringify(action));
   switch (action.type) {
