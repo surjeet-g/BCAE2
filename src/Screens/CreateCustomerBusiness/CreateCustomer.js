@@ -18,7 +18,6 @@ import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
-import { ClearSpace } from "../../Components/ClearSpace";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import {
   getMasterData,
@@ -49,11 +48,9 @@ import {
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
-import { Facerecogne } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS } from "./Steps";
 import UploadDocument from "./UploadDocument";
 import {
   getCityByDistrict,
@@ -277,32 +274,12 @@ const CreateCustomer = ({ navigation }) => {
       fromPage: "CreateCustomer_2",
     });
   };
-  const handleTitleFace = () => {
-    switch (currentStep) {
-      case FACE_RECOG_UPLOAD_DOCUS_SUCCESS:
-        return "Verification"
-
-      default:
-        return "Face recognization"
-
-    }
-  }
-  // Step = -1
-  const renderfaceRegconize = () => {
-    return (
-      <View>
-        <CustomTitleText title={handleTitleFace()} />
-        <ClearSpace size={1} />
-        <Facerecogne step={currentStep} />
-      </View>
-    );
-  };
 
   // Step = 0
   const renderUploadDocsUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Face recognization"} />
+        <CustomTitleText title={"Upload your documents"} />
         <UploadDocument />
       </View>
     );
@@ -2117,76 +2094,14 @@ const CreateCustomer = ({ navigation }) => {
       </View>
     );
   };
-  const faceRecTitle = () => {
-    switch (currentStep) {
-      case FACE_RECOG_GET_START:
-        return "Get started"
-        break;
-      case FACE_RECOG_IM_READY:
-        return "I'm ready"
-        break;
-      case FACE_RECOG_TAKE_SELFI:
-        return "Take selfie"
-        break;
-      case FACE_RECOG_UPLOAD_DOCUS:
-        return "Upload document"
-      case FACE_RECOG_UPLOAD_DOCUS_SUCCESS:
-        return "Continue"
-      default:
-        break;
-    }
-    return ""
-  }
+
   // render the buttons in the bottom based on the currentStep
   const renderBottomButtonsUI = () => {
-    //no footer on success screens
-    if (currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS)
-      return null
-
-
-    //face regnozise
-    if (currentStep === FACE_RECOG_GET_START || currentStep === FACE_RECOG_IM_READY || currentStep === FACE_RECOG_TAKE_SELFI || currentStep == FACE_RECOG_UPLOAD_DOCUS || currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS) {
-      return (
-        <View style={styles.bottomButtonView}>
-          <View style={{ flex: 1 }}>
-            <CustomButton
-              label={faceRecTitle()}
-              onPress={() => {
-                if (currentStep == FACE_RECOG_UPLOAD_DOCUS) {
-                  // alert("//todo  upload docs")
-                  dispatch(setCurrentStepInStore(currentStep + 1))
-
-                }
-                else {
-                  dispatch(setCurrentStepInStore(currentStep + 1))
-                }
-              }}
-            />
-          </View>
-        </View>
-      );
-    }
-    if (currentStep === FACE_RECOG_UPLOAD_SELFI) {
-      return (
-        <View style={styles.bottomButtonView}>
-          <View style={{ flex: 1 }}>
-            <CustomButton label={"Retake"} onPress={handlePrevious} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <CustomButton label={"Continue"} onPress={() => {
-              dispatch(setCurrentStepInStore(currentStep + 1))
-            }} />
-          </View>
-        </View>
-      );
-    }
-
     if (currentStep === 0) {
       return (
         <View style={styles.bottomButtonView}>
           <View style={{ flex: 1 }}>
             <CustomButton
-
               label={strings.skip_proceed}
               onPress={() => setShowCustomerTypeModal(true)}
             />
@@ -2274,16 +2189,8 @@ const CreateCustomer = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {loader && <LoadingAnimation title="while we are fetching country" />}
-      {/* {renderStepsIndicatorView()} */}
+      {renderStepsIndicatorView()}
       <ScrollView nestedScrollEnabled={true}>
-
-        {currentStep == FACE_RECOG_GET_START && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_IM_READY && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_TAKE_SELFI && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_SELFI && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_DOCUS && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS && renderfaceRegconize()}
         {currentStep == 0 && renderUploadDocsUI()}
         {currentStep == 1 && renderCustomerDetailsUI()}
         {currentStep == 2 && renderCustomerAddressUI()}

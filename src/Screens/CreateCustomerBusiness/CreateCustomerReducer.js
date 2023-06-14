@@ -4,12 +4,11 @@ import {
   REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
   SET_SIGNATURE
 } from "./CreateCustomerAction";
-import { FACE_RECOG_TAKE_SELFI } from "./Steps";
 
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: FACE_RECOG_TAKE_SELFI,
+    currentStep: 0,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},

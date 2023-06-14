@@ -1,0 +1,18 @@
+export const FACE_RECOG_GET_START = -7
+export const FACE_RECOG_IM_READY = -6
+export const FACE_RECOG_TAKE_SELFI = -5
+export const FACE_RECOG_UPLOAD_SELFI = -4
+export const FACE_RECOG_UPLOAD_SELFI_SUCCESS = -3
+export const FACE_RECOG_UPLOAD_DOCUS = -2
+export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
+
+export const STEP_CUSTOMER_FORM = 0
+// export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
+// export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
+// export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
+
+
+
+
+
+
