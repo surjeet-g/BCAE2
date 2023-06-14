@@ -8,6 +8,7 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
+    const [tempImg, setTempImg] = useState({})
     const [type, setType] = useState(RNCamera.Constants.Type.front);
     const switchCamara = () => {
         if (type === RNCamera.Constants.Type.front) {
@@ -39,7 +40,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
 
     const onFacesDetecteds = async (param) => {
         const { faces } = param
-        console.log("param", param)
+        // console.log("param", param)
         if (!flag && faces[0] && cameraRef.current) {
             if (faces[0]) {
                 setBox({
@@ -60,38 +61,48 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
             }
 
 
-            // const { width, height } = face.bounds.size;
-            // const originX = face.bounds.origin.x;
-            // const originY = face.bounds.origin.y
-            // console.log("cross data ", face)
 
-            // if (typeof width != undefined && width < 30) return false
-            // try {
-            //     const options = { quality: 1, base64: true, skipProcessing: true };
-            //     const { uri, base64 } = await cameraRef.current.takePictureAsync(options);
-            //     setFlag(true)
-            //     const cropData = {
-            //         offset: { x: originX, y: originY },
-            //         size: { width, height },
-            //     };
-
-
-            // } catch (error) {
-            //     console.error('Failed to crop face:', error);
-            // }
         }
     };
     const takePicture = async () => {
         // return null
         if (cameraRef.current) {
             console.log("cameraRef", cameraRef.current);
-            const options = { quality: 0.5, base64: true };
+            const options = { quality: 0.5, base64: true, };
             const data = await cameraRef.current.takePictureAsync(options)
+            setTempImg({})
+            console.log("data", data)
+            setTempImg({
+                // uri: data.uri,
+                type: 'image/jpeg',
+                name: `${new Date().toISOString()}image.jpg`,
+            })
+            console.log("data", data)
+
+            // const cropRegion = { x: box.boxs.x, y: box.boxs.y, height: box.boxs.height, width: box.boxs.width, };
+            // console.log("cross", cropRegion)
+            // const path = await RNPhotoManipulator.crop(image, cropRegion, {
+            //     width: data.width,
+            //     height: data.height,
+            // })
+            // console.log("path", path)
+            // setImgURI(path)
+            // return null
+            console.log("image", image)
             if (isIdcard) {
-                await cropFace(data.uri, {});
+                const uriVal = await cropFace(data.uri, {});
+
+                seURI({
+                    ...tempImg,
+                    uri: uriVal
+                })
+
             }
             else {
-                seURI(data.uri)
+                seURI({
+                    ...tempImg,
+                    uri: data.uri
+                })
             }
 
 
@@ -102,6 +113,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
             <View style={styles.container}>
 
                 <RNCamera
+
                     useCamera2Api={false}
 
                     ref={cameraRef}
@@ -109,7 +121,8 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                     type={type}
                     captureAudio={false}
                     onFacesDetected={onFacesDetecteds}
-                    faceDetectionLandmarks={RNCamera.Constants.FaceDetection.Landmarks.all}
+
+                // faceDetectionLandmarks={RNCamera.Constants.FaceDetection.Landmarks.all}
                 />
                 {box && (
                     <>
@@ -126,6 +139,9 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                 )}
             </View>
             <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                {/* {img_uri &&
+                    <Image source={{ uri: img_uri }} style={{ width: 300, height: 300 }} />
+                } */}
                 <TouchableOpacity onPress={takePicture} style={styles.capture}>
                     <Text style={{ fontSize: 14 }}> Capture </Text>
                 </TouchableOpacity>
@@ -134,6 +150,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                         style={{ width: 20, height: 20 }}
                     />
                 </TouchableOpacity>
+
 
             </View>
         </View>
