@@ -49,6 +49,7 @@ import {
 } from "./CreateCustomerDispatcher";
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
+import { FaceDetection } from "./FaceDetection";
 import { Facerecogne } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
@@ -121,7 +122,7 @@ const CreateCustomer = ({ navigation }) => {
 
   const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
   const { currentStep } = createCustomerReducerData.formData;
-
+  const [showFaceDection, setShowCam] = useState(true)
   useEffect(() => {
     setFormData(createCustomerReducerData.formData);
   }, [createCustomerReducerData.formData]);
@@ -145,7 +146,7 @@ const CreateCustomer = ({ navigation }) => {
       COUNTRY,
       PRODUCT_TYPE,
     } = MASTER_DATA_CONSTANT;
-
+    return null
     dispatch(
       getMasterData(
         `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},,${PRIORITY},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${PRODUCT_TYPE}`
@@ -1968,6 +1969,9 @@ const CreateCustomer = ({ navigation }) => {
       case 7: // Account Preferences
         dispatch(updateAccountData(formData, currentStep, navigation));
         break;
+      case FACE_RECOG_TAKE_SELFI:
+        setShowCam(true)
+        break;
       case 8: // Account Address
         isSameAccountAddressChecked
           ? dispatch(
@@ -2158,7 +2162,8 @@ const CreateCustomer = ({ navigation }) => {
 
                 }
                 else {
-                  dispatch(setCurrentStepInStore(currentStep + 1))
+                  handleContinue()
+                  // dispatch(setCurrentStepInStore(currentStep + 1))
                 }
               }}
             />
@@ -2271,8 +2276,10 @@ const CreateCustomer = ({ navigation }) => {
   };
   //main
   if (logg) console.log("Full State value", formData)
+  return <FaceDetection />
   return (
     <View style={styles.container}>
+      {showFaceDection && <FaceDetection />}
       {loader && <LoadingAnimation title="while we are fetching country" />}
       {/* {renderStepsIndicatorView()} */}
       <ScrollView nestedScrollEnabled={true}>
