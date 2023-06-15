@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { Dimensions, Image, Pressable, StyleSheet, View } from "react-native";
 
+import get from 'lodash.get';
 import { launchImageLibrary } from "react-native-image-picker";
 import { Divider, RadioButton, Text } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
-import { FACE_RECOG_GET_START, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI_SUCCESS } from './Steps';
+import { FACE_RECOG_GET_START, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI_SUCCESS } from './Steps';
 const progresImg = require('../../Assets/icons/progressing.png')
 const faceRegImg = require('../../Assets/icons/faceReg.png')
 const camImg = require('../../Assets/icons/cust_cam.png')
@@ -20,7 +21,6 @@ const upImg = require('../../Assets/icons/cust2_upload_icon_.png')
 const tickImg = require('../../Assets/icons/cust_done_black.png')
 const idImg = require('../../Assets/icons/cust_id_card.png')
 const warImg = require('../../Assets/icons/cust_error.gif')
-
 const { height, width } = Dimensions.get('screen');
 const customWidth = width * .9
 const UploadDocument = () => {
@@ -293,20 +293,29 @@ const TextPoint = ({ texts = [] }) => {
     </View>
   )
 }
-export const Facerecogne = ({ step = FACE_RECOG_GET_START }) => {
-  if (step == FACE_RECOG_UPLOAD_DOCUS_SUCCESS) {
+export const Facerecogne = ({ step = FACE_RECOG_GET_START, faces = {} }) => {
+  if (step == FACE_RECOG_UPLOAD_DOCUS_SUCCESS || step == FACE_RECOG_UPLOAD_DOCUS_LOADER) {
+    const isLoaderScreen = step == FACE_RECOG_UPLOAD_DOCUS_LOADER
+    const faceURI = get(faces, 'face.uri', '')
+    const idURI = get(faces, 'idCard.uri', '')
+
     return (
       <View style={{ ...styles.container, ...commonStyle.center }}>
-        <Text variant="labelSmall">Match complete successfully</Text>
+        <Text variant="labelSmall">{isLoaderScreen ? "Matching...." : "Match complete successfully"}</Text>
         <ClearSpace size={5} />
+
         <View style={{ ...commonStyle.row_space_arround_between_center, width: width * .8, }}>
           <View style={{ ...commonStyle.center, width: "50%" }}>
-            <Image source={verImg} style={{
-              height: 50,
-              weight: 50,
-              borderRadius: 50,
+            {faceURI &&
+              <Image source={{ uri: faceURI }}
+                style={{
+                  marginTop: 5,
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50
 
-            }} />
+                }} />
+            }
             <View style={{
               marginTop: 4,
               backgroundColor: "#EAF0FF",
@@ -322,23 +331,29 @@ export const Facerecogne = ({ step = FACE_RECOG_GET_START }) => {
           </View>
 
           <View style={{ ...commonStyle.center, width: "50%" }}>
-            <Image source={verImg}
-              style={{
-                height: 50,
-                weight: 50,
-                borderRadius: 50,
+            {idURI &&
+              <Image
+                source={{ uri: idURI }}
+                style={{
+                  marginTop: 5,
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50
 
-              }} />
-            <View style={{
-              marginTop: 4,
-              backgroundColor: "#EAF0FF",
-              borderRadius: 6,
-              borderColor: "#3E73CB",
-              borderStyle: "solid",
-              borderWidth: .5,
-              marginTop: 12,
-              paddingHorizontal: 30
-            }}>
+                }} />
+            }
+
+            <View
+              style={{
+                marginTop: 4,
+                backgroundColor: "#EAF0FF",
+                borderRadius: 6,
+                borderColor: "#3E73CB",
+                borderStyle: "solid",
+                borderWidth: .5,
+                marginTop: 12,
+                paddingHorizontal: 30
+              }}>
               <Text>ID</Text>
             </View>
 
@@ -346,10 +361,16 @@ export const Facerecogne = ({ step = FACE_RECOG_GET_START }) => {
           <ClearSpace size={5} />
 
         </View>
-        <Image source={succsImg} style={{
+        <Image source={isLoaderScreen ? loadImg : succsImg} style={{
           marginTop: 5,
           height: height * .4
         }} />
+        {isLoaderScreen &&
+          <>
+            <Text variant="bodyMedium">Please wait its verifying...</Text>
+            <ClearSpace size={3} />
+          </>
+        }
         <Text variant="bodySmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</Text>
 
       </View>

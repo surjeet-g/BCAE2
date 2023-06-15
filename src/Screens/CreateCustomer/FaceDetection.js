@@ -1,4 +1,5 @@
 
+// import ImageEditor from "@react-native-community/image-editor";
 import React, { useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
@@ -6,7 +7,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 const camraIcon = require('../../Assets/icons/cus_cam_switch.png')
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-
+// console.log("ImageEditor", ImageEditor)
 export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
     const [tempImg, setTempImg] = useState({})
     const [type, setType] = useState(RNCamera.Constants.Type.front);
@@ -88,19 +89,21 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
             // console.log("path", path)
             // setImgURI(path)
             // return null
-            console.log("image", image)
+
             if (isIdcard) {
                 const uriVal = await cropFace(data.uri, {});
 
                 seURI({
-                    ...tempImg,
+                    type: 'image/jpeg',
+                    name: `${new Date().toISOString()}image.jpg`,
                     uri: uriVal
                 })
 
             }
             else {
                 seURI({
-                    ...tempImg,
+                    type: 'image/jpeg',
+                    name: `${new Date().toISOString()}image.jpg`,
                     uri: data.uri
                 })
             }
@@ -109,7 +112,10 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
         }
     }
     return (
-        <View style={styles.container}>
+        <View style={{
+            ...styles.container, position: "absolute",
+            top: 10,
+        }}>
             <View style={styles.container}>
 
                 <RNCamera
@@ -138,7 +144,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                     </>
                 )}
             </View>
-            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
                 {/* {img_uri &&
                     <Image source={{ uri: img_uri }} style={{ width: 300, height: 300 }} />
                 } */}
@@ -162,6 +168,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         width: width,
         height: height,
         zIndex: 999,

@@ -25,6 +25,7 @@ import {
   MASTER_DATA_CONSTANT
 } from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
+import { endPoints } from "../../Utilities/API/ApiConstants";
 import { CustomButton } from "./../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "./../../Components/CustomInput";
@@ -54,8 +55,9 @@ import { Facerecogne } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS } from "./Steps";
+import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, STEP_CUSTOMER_FORM } from "./Steps";
 import UploadDocument from "./UploadDocument";
+import { APICallForMuti } from "./util";
 import {
   getCityByDistrict,
   getPostCodeByCity,
@@ -90,6 +92,12 @@ const CreateCustomer = ({ navigation }) => {
     accountDetails: {},
     serviceDetails: { details: [] },
   });
+  const initalImgObj = {
+    face: {},
+    idCard: {}
+  }
+  const [loaderLbl, setLoaderLbl] = useState("while we are fetching country")
+  const [userIDImg, setUserIDImg] = useState(initalImgObj)
   const [loader, setLoader] = useState(false);
   const [activeDropDown, setActiveDropDown] = useState("district");
   const [addressTakenType, setAddressTakenType] = useState("Manual");
@@ -122,7 +130,7 @@ const CreateCustomer = ({ navigation }) => {
 
   const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
   const { currentStep } = createCustomerReducerData.formData;
-  const [showFaceDection, setShowCam] = useState(true)
+  const [showFaceDection, setShowCam] = useState(false)
   useEffect(() => {
     setFormData(createCustomerReducerData.formData);
   }, [createCustomerReducerData.formData]);
@@ -232,7 +240,11 @@ const CreateCustomer = ({ navigation }) => {
     }
   }, [currentStep]);
 
+  const enableLoader = (status, lbl = "") => {
+    setLoaderLbl(lbl)
+    setLoader(status)
 
+  }
   const onPlaceChosen_2 = (params) => {
     // here is your callback function
     console.log("onPlaceChosen_2", JSON.stringify(params));
@@ -289,12 +301,13 @@ const CreateCustomer = ({ navigation }) => {
     }
   }
   // Step = -1
+  console.log("id card object", userIDImg)
   const renderfaceRegconize = () => {
     return (
       <View>
         <CustomTitleText title={handleTitleFace()} />
         <ClearSpace size={1} />
-        <Facerecogne step={currentStep} />
+        <Facerecogne step={currentStep} faces={userIDImg} />
       </View>
     );
   };
@@ -1934,6 +1947,7 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleContinue = () => {
+    console.log("current step", currentStep)
     switch (currentStep) {
       case 1: // Customer Details
         dispatch(createCustomer(formData, navigation));
@@ -1972,6 +1986,10 @@ const CreateCustomer = ({ navigation }) => {
       case FACE_RECOG_TAKE_SELFI:
         setShowCam(true)
         break;
+      case FACE_RECOG_UPLOAD_DOCUS:
+        setShowCam(true)
+        break;
+
       case 8: // Account Address
         isSameAccountAddressChecked
           ? dispatch(
@@ -2144,7 +2162,8 @@ const CreateCustomer = ({ navigation }) => {
   // render the buttons in the bottom based on the currentStep
   const renderBottomButtonsUI = () => {
     //no footer on success screens
-    if (currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS)
+    if (currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS || currentStep == FACE_RECOG_UPLOAD_DOCUS_LOADER ||
+      currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS)
       return null
 
 
@@ -2156,15 +2175,10 @@ const CreateCustomer = ({ navigation }) => {
             <CustomButton
               label={faceRecTitle()}
               onPress={() => {
-                if (currentStep == FACE_RECOG_UPLOAD_DOCUS) {
-                  // alert("//todo  upload docs")
-                  dispatch(setCurrentStepInStore(currentStep + 1))
 
-                }
-                else {
-                  handleContinue()
-                  // dispatch(setCurrentStepInStore(currentStep + 1))
-                }
+                handleContinue()
+                // dispatch(setCurrentStepInStore(currentStep + 1))
+
               }}
             />
           </View>
@@ -2276,198 +2290,256 @@ const CreateCustomer = ({ navigation }) => {
   };
   //main
   if (logg) console.log("Full State value", formData)
-  return <FaceDetection />
-  return (
-    <View style={styles.container}>
-      {showFaceDection && <FaceDetection />}
-      {loader && <LoadingAnimation title="while we are fetching country" />}
-      {/* {renderStepsIndicatorView()} */}
-      <ScrollView nestedScrollEnabled={true}>
 
-        {currentStep == FACE_RECOG_GET_START && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_IM_READY && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_TAKE_SELFI && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_SELFI && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_DOCUS && renderfaceRegconize()}
-        {currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS && renderfaceRegconize()}
-        {currentStep == 0 && renderUploadDocsUI()}
-        {currentStep == 1 && renderCustomerDetailsUI()}
-        {currentStep == 2 && renderCustomerAddressUI()}
-        {currentStep == 3 && renderServicesUI()}
-        {currentStep == 4 && renderSelectedServicesUI()}
-        {currentStep == 5 && renderServiceAddressUI()}
-        {currentStep == 6 && renderCreateAccount_DetailsUI()}
-        {currentStep == 7 && renderCreateAccount_PreferencesUI()}
-        {currentStep == 8 && renderCreateAccount_AddressUI()}
-        {currentStep == 9 && renderAgreementUI()}
-        {currentStep == 10 && renderPreviewUI()}
-      </ScrollView>
-      {/* Bottom Button View */}
-      {renderBottomButtonsUI()}
-      {/* Choose customer type modal */}
-      <Modal
-        visible={showCustomerTypeModal}
-        dismissable={false}
-        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
-      >
-        <FooterModel
-          open={showCustomerTypeModal}
-          setOpen={setShowCustomerTypeModal}
-          title={"Choose purpose of customer creation"}
+  return (
+    <>
+      {showFaceDection && <FaceDetection
+
+        seURI={(async (data) => {
+          setShowCam(false)
+          console.log("hiiting", currentStep)
+          if (currentStep == FACE_RECOG_TAKE_SELFI) {
+            setUserIDImg({ ...userIDImg, face: data })
+            await dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_SELFI_SUCCESS));
+            setTimeout(() => {
+              dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
+
+            }, 1000)
+          }
+          else {
+            setUserIDImg({ ...userIDImg, idCard: data })
+
+            const formDataState = new FormData();
+            formDataState.append('source', userIDImg.face);
+            formDataState.append('target', userIDImg.idCard);
+
+            dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
+            // console.log("formData", formDataState)
+            const resImgCheck = await APICallForMuti(endPoints.FACE_MATCH_API, formDataState, "Face not verifed")
+            if (resImgCheck.status) {
+              dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_SUCCESS));
+              //api call if success data parse and give me
+              const formDataState = new FormData();
+              formDataState.append('file', userIDImg.idCard);
+              const docuScanStatus = await APICallForMuti(endPoints.DOCU_SCAN, formDataState)
+              //scaned docs
+              if (docuScanStatus.status) {
+                const docData = docuScanStatus.response
+                handleCustomerDetails("firstName", get(docData, 'data.firstName', ''))
+                handleCustomerDetails("lastName", get(docData, 'data.lastName', ''))
+                handleCustomerDetails("idType", get(docData, 'data.idValue', ''))
+                dispatch(setCurrentStepInStore(STEP_CUSTOMER_FORM));
+              }
+              else {
+                dispatch(setCurrentStepInStore(STEP_CUSTOMER_FORM));
+
+              }
+            }
+            else {
+              dispatch(setCurrentStepInStore(FACE_RECOG_TAKE_SELFI));
+
+            }
+
+          }
+
+
+
+        })
+        }
+        isIdcard={currentStep == FACE_RECOG_UPLOAD_DOCUS}
+      />}
+      <View style={styles.container}>
+
+        {loader && <LoadingAnimation title={loaderLbl} />}
+        {/* {renderStepsIndicatorView()} */}
+        <ScrollView nestedScrollEnabled={true}>
+
+          {currentStep == FACE_RECOG_GET_START && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_IM_READY && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_TAKE_SELFI && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_UPLOAD_SELFI && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_UPLOAD_DOCUS && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_UPLOAD_DOCUS_LOADER && renderfaceRegconize()}
+          {currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS && renderfaceRegconize()}
+          {currentStep == 0 && renderUploadDocsUI()}
+          {currentStep == STEP_CUSTOMER_FORM && renderCustomerDetailsUI()}
+          {currentStep == 2 && renderCustomerAddressUI()}
+          {currentStep == 3 && renderServicesUI()}
+          {currentStep == 4 && renderSelectedServicesUI()}
+          {currentStep == 5 && renderServiceAddressUI()}
+          {currentStep == 6 && renderCreateAccount_DetailsUI()}
+          {currentStep == 7 && renderCreateAccount_PreferencesUI()}
+          {currentStep == 8 && renderCreateAccount_AddressUI()}
+          {currentStep == 9 && renderAgreementUI()}
+          {currentStep == 10 && renderPreviewUI()}
+        </ScrollView>
+        {/* Bottom Button View */}
+        {renderBottomButtonsUI()}
+        {/* Choose customer type modal */}
+        <Modal
+          visible={showCustomerTypeModal}
+          dismissable={false}
+          contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
         >
-          <View style={styles.modalContainer}>
-            <FlatList
-              data={CUSTOMER_CATEGORY_LIST}
-              numColumns={4}
-              renderItem={({ item, index }) => (
-                <CustomerType
-                  name={item.description}
-                  icon={handleCustomerTypeIcon(item)}
-                  onPress={() => handleAccountTypeSelection(item)}
-                />
-              )}
-              keyExtractor={(item, index) => index}
-            />
-          </View>
-        </FooterModel>
-      </Modal>
-      {/* Account Creation Modal */}
-      <Modal
-        visible={formData?.showAccountCreationModal}
-        dismissable={false}
-        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
-      >
-        <FooterModel
-          open={formData?.showAccountCreationModal}
-          setOpen={dispatchSetShowAccountCreationModal}
-          title={"Do you want to create an account?"}
+          <FooterModel
+            open={showCustomerTypeModal}
+            setOpen={setShowCustomerTypeModal}
+            title={"Choose purpose of customer creation"}
+          >
+            <View style={styles.modalContainer}>
+              <FlatList
+                data={CUSTOMER_CATEGORY_LIST}
+                numColumns={4}
+                renderItem={({ item, index }) => (
+                  <CustomerType
+                    name={item.description}
+                    icon={handleCustomerTypeIcon(item)}
+                    onPress={() => handleAccountTypeSelection(item)}
+                  />
+                )}
+                keyExtractor={(item, index) => index}
+              />
+            </View>
+          </FooterModel>
+        </Modal>
+        {/* Account Creation Modal */}
+        <Modal
+          visible={formData?.showAccountCreationModal}
+          dismissable={false}
+          contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
         >
-          <View style={styles.modalContainer}>
-            <Pressable onPress={handleAccountCreationYes}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "#4C5A81",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                Yes
-              </Text>
-            </Pressable>
-            <Pressable onPress={handleAccountCreationNo}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "red",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                No
-              </Text>
-            </Pressable>
-          </View>
-        </FooterModel>
-      </Modal>
-      {/* Use customer details same as Account details Modal */}
-      <Modal
-        visible={showSameAccountDetailsModal}
-        dismissable={false}
-        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
-      >
-        <FooterModel
-          open={showSameAccountDetailsModal}
-          setOpen={setShowSameAccountDetailsModal}
-          title={"Do you want to use account details same as customer details?"}
+          <FooterModel
+            open={formData?.showAccountCreationModal}
+            setOpen={dispatchSetShowAccountCreationModal}
+            title={"Do you want to create an account?"}
+          >
+            <View style={styles.modalContainer}>
+              <Pressable onPress={handleAccountCreationYes}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "#4C5A81",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  Yes
+                </Text>
+              </Pressable>
+              <Pressable onPress={handleAccountCreationNo}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "red",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  No
+                </Text>
+              </Pressable>
+            </View>
+          </FooterModel>
+        </Modal>
+        {/* Use customer details same as Account details Modal */}
+        <Modal
+          visible={showSameAccountDetailsModal}
+          dismissable={false}
+          contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
         >
-          <View style={styles.modalContainer}>
-            <Pressable onPress={handleSameAccountDetailsYes}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "#4C5A81",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                Yes
-              </Text>
-            </Pressable>
-            <Pressable onPress={handleSameAccountDetailsNo}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "red",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                No
-              </Text>
-            </Pressable>
-          </View>
-        </FooterModel>
-      </Modal>
-      {/* Create Order Modal */}
-      <Modal
-        visible={showCreateOrderModal}
-        dismissable={false}
-        contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
-      >
-        <FooterModel
-          open={showCreateOrderModal}
-          setOpen={setShowCreateOrderModal}
-          title={"Are you sure, you want to generate the order?"}
+          <FooterModel
+            open={showSameAccountDetailsModal}
+            setOpen={setShowSameAccountDetailsModal}
+            title={"Do you want to use account details same as customer details?"}
+          >
+            <View style={styles.modalContainer}>
+              <Pressable onPress={handleSameAccountDetailsYes}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "#4C5A81",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  Yes
+                </Text>
+              </Pressable>
+              <Pressable onPress={handleSameAccountDetailsNo}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "red",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  No
+                </Text>
+              </Pressable>
+            </View>
+          </FooterModel>
+        </Modal>
+        {/* Create Order Modal */}
+        <Modal
+          visible={showCreateOrderModal}
+          dismissable={false}
+          contentContainerStyle={{ flex: 1, justifyContent: "flex-end" }}
         >
-          <View style={styles.modalContainer}>
-            <Pressable onPress={handleCreateOrderYes}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "#4C5A81",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                Yes
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => setShowCreateOrderModal(false)}>
-              <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                  fontWeight: "600",
-                  backgroundColor: "red",
-                  borderRadius: 10,
-                  color: "white",
-                }}
-              >
-                No
-              </Text>
-            </Pressable>
-          </View>
-        </FooterModel>
-      </Modal>
-    </View>
+          <FooterModel
+            open={showCreateOrderModal}
+            setOpen={setShowCreateOrderModal}
+            title={"Are you sure, you want to generate the order?"}
+          >
+            <View style={styles.modalContainer}>
+              <Pressable onPress={handleCreateOrderYes}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "#4C5A81",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  Yes
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => setShowCreateOrderModal(false)}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontWeight: "600",
+                    backgroundColor: "red",
+                    borderRadius: 10,
+                    color: "white",
+                  }}
+                >
+                  No
+                </Text>
+              </Pressable>
+            </View>
+          </FooterModel>
+        </Modal>
+      </View>
+    </>
   );
 };
 

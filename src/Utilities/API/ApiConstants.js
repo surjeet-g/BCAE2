@@ -1,5 +1,7 @@
+const SERVER_TYE = "test"
+
 //Staging environment
-export const BASE_URL = "https://bcae-test.comquest-brunei.com:1443/bcae/";
+export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-test.comquest-brunei.com:1443/bcae/";
 // export const BASE_URL = "https://st-td123.comquest-brunei.com:13443/td123/";
 
 export const BASE_URL_TENANT =
@@ -10,8 +12,11 @@ export const PROD_BASE_URL = "https://123.comquest-brunei.com/NCC/";
 export const PROD_BASE_URL_TENANT =
   "https://bcae-prod.comquest-brunei.com:19443/tenant/";
 
-export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
+export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da6";
+
 export const endPoints = {
+  FACE_MATCH_API: "api/common/face-compare",
+  DOCU_SCAN: "api/common/scan-document",
   INTERACTION_APPOINMENT_TEMP: 'api/master/interaction-template',
   INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment',
   SEACH_CUSTOMERS: "api/customer/get-customer",
