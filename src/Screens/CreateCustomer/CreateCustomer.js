@@ -94,7 +94,8 @@ const CreateCustomer = ({ navigation }) => {
   });
   const initalImgObj = {
     face: {},
-    idCard: {}
+    idCard: {},
+    fullId: {}
   }
   const [loaderLbl, setLoaderLbl] = useState("while we are fetching country")
   const [userIDImg, setUserIDImg] = useState(initalImgObj)
@@ -1937,6 +1938,9 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handlePrevious = () => {
+    if (currentStep === STEP_CUSTOMER_FORM) {
+      return null
+    }
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(setCurrentStepInStore(4));
     } else if (currentStep === 9 && !createAccount) {
@@ -2297,21 +2301,21 @@ const CreateCustomer = ({ navigation }) => {
 
         seURI={(async (data) => {
           setShowCam(false)
-          console.log("hiiting", currentStep)
+
           if (currentStep == FACE_RECOG_TAKE_SELFI) {
             setUserIDImg({ ...userIDImg, face: data })
             await dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_SELFI_SUCCESS));
             setTimeout(() => {
-              dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
+              dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS));
 
             }, 1000)
           }
           else {
-            setUserIDImg({ ...userIDImg, idCard: data })
+            setUserIDImg({ ...userIDImg, idCard: data.idFace })
 
             const formDataState = new FormData();
             formDataState.append('source', userIDImg.face);
-            formDataState.append('target', userIDImg.idCard);
+            formDataState.append('target', data.idFace);
 
             dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
             // console.log("formData", formDataState)
@@ -2320,14 +2324,14 @@ const CreateCustomer = ({ navigation }) => {
               dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_SUCCESS));
               //api call if success data parse and give me
               const formDataState = new FormData();
-              formDataState.append('file', userIDImg.idCard);
+              formDataState.append('file', data.fullId);
               const docuScanStatus = await APICallForMuti(endPoints.DOCU_SCAN, formDataState)
               //scaned docs
               if (docuScanStatus.status) {
                 const docData = docuScanStatus.response
-                handleCustomerDetails("firstName", get(docData, 'data.firstName', ''))
-                handleCustomerDetails("lastName", get(docData, 'data.lastName', ''))
-                handleCustomerDetails("idType", get(docData, 'data.idValue', ''))
+                handleCustomerDetails("firstName", get(docData, 'data.data.firstName', ''))
+                handleCustomerDetails("lastName", get(docData, 'data.data.lastName', ''))
+                handleCustomerDetails("idType", get(docData, 'data.data.idValue', ''))
                 dispatch(setCurrentStepInStore(STEP_CUSTOMER_FORM));
               }
               else {

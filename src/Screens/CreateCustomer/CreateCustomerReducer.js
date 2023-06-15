@@ -4,12 +4,12 @@ import {
   REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
   SET_SIGNATURE
 } from "./CreateCustomerAction";
-import { FACE_RECOG_UPLOAD_DOCUS } from "./Steps";
+import { FACE_RECOG_GET_START } from "./Steps";
 
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: FACE_RECOG_UPLOAD_DOCUS,
+    currentStep: FACE_RECOG_GET_START,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},

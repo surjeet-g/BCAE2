@@ -363,7 +363,8 @@ export const Facerecogne = ({ step = FACE_RECOG_GET_START, faces = {} }) => {
         </View>
         <Image source={isLoaderScreen ? loadImg : succsImg} style={{
           marginTop: 5,
-          height: height * .4
+          height: height * .4,
+          width: "100%"
         }} />
         {isLoaderScreen &&
           <>

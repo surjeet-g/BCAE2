@@ -94,9 +94,16 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                 const uriVal = await cropFace(data.uri, {});
 
                 seURI({
-                    type: 'image/jpeg',
-                    name: `${new Date().toISOString()}image.jpg`,
-                    uri: uriVal
+                    fullId: {
+                        type: 'image/jpeg',
+                        name: `${new Date().toISOString()}image.jpg`,
+                        uri: data.uri
+                    },
+                    idFace: {
+                        type: 'image/jpeg',
+                        name: `${new Date().toISOString()}image.jpg`,
+                        uri: uriVal
+                    }
                 })
 
             }

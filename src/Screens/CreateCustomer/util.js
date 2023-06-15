@@ -34,7 +34,7 @@ export const APICallForMuti = async (url, formData, errorMsg = "") => {
             });
         }
         //todo 
-        return { status: true, response: res }
+
         return { status: false, response: res }
     }
 }
