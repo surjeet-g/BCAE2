@@ -69,7 +69,7 @@ export const TextBoxWithCTAEmail = (props) => {
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
-            height: 55,
+            height: 45,
             backgroundColor: colors.background,
             borderRadius: 10,
             borderColor: colors.gray,
@@ -126,6 +126,7 @@ export const TextBoxWithCTAEmail = (props) => {
             placeholderTextColor="#C7CAD1"
             onChangeText={(text) => props.onChangeText(text)}
             style={{
+              width: '120%',
               borderColor: "red",
               paddingRight: "40%",
               color: color.secondary,
@@ -137,7 +138,7 @@ export const TextBoxWithCTAEmail = (props) => {
                   : 0,
             }}
             underlineColor="transparent"
-            activeUnderlineColor="transparent"
+            activeUnderlineColor="#b1aeae"
             keyboardType={props.keyboardType ? props.keyboardType : "default"}
             value={props.value}
             onSubmitEditing={() =>
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
-    height: spacing.HEIGHT_38,
+    height: spacing.HEIGHT_34,
   },
 
   correctStyle: {

@@ -42,13 +42,15 @@ export const CustomInput = (props) => {
         <TextInput
           {...props}
           underlineColor="transparent"
-          activeUnderlineColor="transparent"
+          activeUnderlineColor="#b1aeae"
           style={{
             ...MULT_LINE,
             padding: 0,
             margin: 0,
             borderRadius: 0,
             backgroundColor: "transparent",
+            width: "99%",
+            marginLeft: 2
           }}
           placeholderTextColor="#C7CAD1"
           placeholder={placeHolder || caption}

@@ -119,7 +119,7 @@ export const TextBoxWithCTA = (props) => {
             }}
             autoCapitalize="none"
             placeholderTextColor="#C7CAD1"
-            activeUnderlineColor="transparent"
+            activeUnderlineColor="#b1aeae"
             underlineColor="transparent"
 
             autoCorrect={false}
@@ -133,6 +133,7 @@ export const TextBoxWithCTA = (props) => {
             }
             onChangeText={(text) => props.onChangeText(text)}
             style={{
+              width: '120%',
               color: color.secondary,
               ...styles.textInput,
               ...customStyle,
