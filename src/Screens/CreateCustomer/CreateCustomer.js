@@ -65,6 +65,7 @@ import {
   getUniqueState
 } from "./utilities";
 //enble logs
+import { commonStyle } from '../../Utilities/Style/commonStyle';
 const logg = true
 const CreateCustomer = ({ navigation }) => {
   const { colors } = useTheme();
@@ -155,7 +156,7 @@ const CreateCustomer = ({ navigation }) => {
       COUNTRY,
       PRODUCT_TYPE,
     } = MASTER_DATA_CONSTANT;
-    return null
+
     dispatch(
       getMasterData(
         `${COUNTRY},${CUSTOMER_ID_TYPE},${CUSTOMER_CATEGORY},${CONTACT_PREFERENCE},${CONTACT_TYPE},${GENDER},,${PRIORITY},${NOTIFICATION_TYPE},${BILL_LANGUAGE},${CURRENCY},${ACCOUNT_CATEGORY},${ACCOUNT_LEVEL},${ACCOUNT_TYPE},${PRODUCT_TYPE}`
@@ -326,8 +327,15 @@ const CreateCustomer = ({ navigation }) => {
   const renderCustomerDetailsUI = () => {
     return (
       <View>
-        <CustomTitleText title={"Customer Information"} />
+        <CustomTitleText title={"Document details"} />
         <View style={styles.backgroundView}>
+          <View style={commonStyle.center}>
+            <Image source={require('../../Assets/icons/announcement.png')} style={{
+              width: 80,
+              height: 80,
+              borderRadius: 80
+            }} />
+          </View>
           <CustomInput
             value={formData?.customerDetails?.title}
             caption={strings.title}
@@ -469,8 +477,15 @@ const CreateCustomer = ({ navigation }) => {
     const isAutoAddress = addressTakenType == "AUTO";
     return (
       <View>
-        <CustomTitleText title={"Customer Details"} />
+        <CustomTitleText title={"Document details"} />
         <View style={styles.backgroundView}>
+          <View style={commonStyle.center}>
+            <Image source={require('../../Assets/icons/announcement.png')} style={{
+              width: 80,
+              height: 80,
+              borderRadius: 80
+            }} />
+          </View>
           <CustomInput
             value={formData?.customerDetails?.emailId}
             caption={strings.email}
@@ -2244,6 +2259,25 @@ const CreateCustomer = ({ navigation }) => {
         </View>
       );
     }
+    if (currentStep === STEP_CUSTOMER_FORM) {
+
+
+      return (
+        <View style={styles.bottomButtonView}>
+          <View style={{ flex: 1 }}>
+
+            <CustomButton label={"Scan Again"}
+              isDisabled={true}
+              onPress={handlePrevious} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton label={"Continue"} onPress={handleContinue}
+              isDisabled={!checkFormValidation()}
+            />
+          </View>
+        </View>
+      );
+    }
     // For all other currentStep
     return (
       <View style={styles.bottomButtonView}>
@@ -2259,7 +2293,22 @@ const CreateCustomer = ({ navigation }) => {
       </View>
     );
   };
+  const checkFormValidation = () => {
+    switch (currentStep) {
+      case STEP_CUSTOMER_FORM:
+        const custDetails = get(formData, 'customerDetails', false)
+        if (!custDetails) return false
+        const fname = get(formData, 'customerDetails.firstName', "")
+        const lname = get(formData, 'customerDetails.lastName', "")
+        const idVal = get(formData, 'customerDetails.idValue', "")
+        if (fname == "" || lname == "" || idVal == "") return false
+        return true
 
+      default:
+        return "othere"
+    }
+
+  }
   const handleCustomerTypeIcon = (item) => {
     let icon = "";
     if (item.code === "BUS")

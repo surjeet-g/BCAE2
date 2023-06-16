@@ -1,15 +1,15 @@
 import {
+
   CREATE_CUSTOMER_FAILURE, CREATE_CUSTOMER_SERVICE_SUCCESS, CREATE_CUSTOMER_SUCCESS, FETCH_SERVICE_PRODUCTS_FAILURE,
   FETCH_SERVICE_PRODUCTS_SUCCESS,
   REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
   SET_SIGNATURE
 } from "./CreateCustomerAction";
-import { FACE_RECOG_GET_START } from "./Steps";
-
+import { STEP_CUSTOMER_FORM } from './Steps';
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: FACE_RECOG_GET_START,
+    currentStep: STEP_CUSTOMER_FORM,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},
