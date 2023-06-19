@@ -7,7 +7,7 @@ import {
   setCreateCustomerErrorDataInStore, setCreateCustomerServiceInStore, setCurrentStepInStore, setServiceProductsDataInStore,
   setServiceProductsErrorDataInStore, setShowAccountCreationModal
 } from "./CreateCustomerAction";
-import { STEP_CUSTOMER_ADDRESS } from "./Steps";
+import { handleNextHandle, STEP_CUSTOMER_ADDRESS } from "./Steps";
 
 export function fetchServiceProducts(serviceType, navigation = null) {
   return async (dispatch) => {
@@ -78,7 +78,7 @@ export function updateCustomerData(formData, navigation = null) {
         ),
         idType: formData.customerDetails.idType.code,
         idValue: formData.customerDetails.idValue,
-        customerCategory: formData.customerDetails.categoryType.code,
+        // customerCategory: formData.customerDetails.categoryType.code,
         registeredNo: formData.customerDetails.registeredNo,
         registeredDate: moment(formData.customerDetails.registeredDate).format(
           "YYYY-MM-DD"
@@ -119,7 +119,7 @@ export function updateCustomerData(formData, navigation = null) {
   };
 }
 
-export function createCustomerService(formData, navigation = null) {
+export function createCustomerService(formData, navigation = null, currenStp = 0) {
   return async (dispatch) => {
     let url = endPoints.CREATE_CUSTOMER_SERVICE_API;
     let params = {
@@ -132,7 +132,7 @@ export function createCustomerService(formData, navigation = null) {
       dispatch(setCreateCustomerServiceInStore(formData, result.data.data));
       formData?.getQuote
         ? dispatch(setCurrentStepInStore(10))
-        : dispatch(setCurrentStepInStore(5));
+        : dispatch(setCurrentStepInStore(handleNextHandle(currenStp)));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
       Toast.show({

@@ -55,7 +55,7 @@ import { Facerecogne } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
+import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, handleBackNavHandle, STEP_AGREE, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
 import UploadDocument from "./UploadDocument";
 import { APICallForMuti } from "./util";
 
@@ -331,11 +331,13 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Document details"} />
         <View style={styles.backgroundView}>
           <View style={commonStyle.center}>
-            <Image source={require('../../Assets/icons/announcement.png')} style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80
-            }} />
+            {get(userIDImg, 'face.uri', '') != "" &&
+              <Image source={{ uri: get(userIDImg, 'face.uri', '') }} style={{
+                width: 80,
+                height: 80,
+                borderRadius: 80
+              }} />
+            }
           </View>
           {/* <CustomInput
             value={formData?.customerDetails?.title}
@@ -481,11 +483,13 @@ const CreateCustomer = ({ navigation }) => {
         <CustomTitleText title={"Document details"} />
         <View style={styles.backgroundView}>
           <View style={commonStyle.center}>
-            <Image source={require('../../Assets/icons/announcement.png')} style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80
-            }} />
+            {get(userIDImg, 'face.uri', '') != "" &&
+              <Image source={{ uri: get(userIDImg, 'face.uri', '') }} style={{
+                width: 80,
+                height: 80,
+                borderRadius: 80
+              }} />
+            }
           </View>
           <CustomInput
             value={formData?.customerDetails?.emailId}
@@ -697,9 +701,9 @@ const CreateCustomer = ({ navigation }) => {
             <ServiceCategory
               item={item}
               onSelect={async () => {
-                // enableLoader(true, "Please wait...Fetching data")
+                enableLoader(true, "Please wait...Fetching data")
                 dispatch(fetchServiceProducts(item.code, navigation));
-                // enableLoader(false, "Please wait...Fetching data")
+                enableLoader(false, "Please wait...Fetching data")
 
               }}
               onDeSelect={() => {
@@ -743,28 +747,30 @@ const CreateCustomer = ({ navigation }) => {
   const renderSelectedServicesUI = () => {
     return (
       <View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginVertical: 10,
-          }}
-        >
-          <CustomTitleText title={"Need Quote Only"} />
-          <Switch
-            trackColor={{
-              false: "#9A9A9A",
-              true: "#F5AD47",
+        {0 == 1 &&
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginVertical: 10,
             }}
-            thumbColor={"#fff"}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {
-              setFormData({ ...formData, getQuote: !formData?.getQuote });
-            }}
-            value={formData?.getQuote}
-          />
-        </View>
+          >
+            <CustomTitleText title={"Need Quote Only"} />
+            <Switch
+              trackColor={{
+                false: "#9A9A9A",
+                true: "#F5AD47",
+              }}
+              thumbColor={"#fff"}
+              // ios_backgroundColor="#3e3e3e"
+              onValueChange={() => {
+                setFormData({ ...formData, getQuote: !formData?.getQuote });
+              }}
+              value={formData?.getQuote}
+            />
+          </View>
+        }
         <CustomTitleText title={"Selected Product"} />
         <SwipeListView
           showsVerticalScrollIndicator={false}
@@ -1963,15 +1969,16 @@ const CreateCustomer = ({ navigation }) => {
     }
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(setCurrentStepInStore(4));
-    } else if (currentStep === 9 && !createAccount) {
-      dispatch(setCurrentStepInStore(5));
+      // } else if (currentStep === STEP_AGREE && !createAccount) {
+    } else if (currentStep === STEP_AGREE) {
+      dispatch(setCurrentStepInStore(handleBackNavHandle(STEP_AGREE)));
     } else if (currentStep === 7 && useSameCustomerDetails) {
       dispatch(setCurrentStepInStore(5));
     } else dispatch(setCurrentStepInStore(currentStep - 1));
   };
 
   const handleContinue = () => {
-    console.log("current step", currentStep)
+
     switch (currentStep) {
       case STEP_CUSTOMER_FORM: // Customer Details
         dispatch(createCustomer(formData, navigation));
@@ -1980,8 +1987,7 @@ const CreateCustomer = ({ navigation }) => {
         dispatch(updateCustomerData(formData, navigation));
         break;
       case STEP_SERVICE_LIST: // Available Products
-        dispatch(setCurrentStepInStore(STEP_SERVICE_2_SHOW_SELECTED));
-        return false
+
         let item = products.find((product) => product.quantity > 0);
         if (logg) console.log("Available Product", item, products)
         if (item === undefined)
@@ -1997,7 +2003,7 @@ const CreateCustomer = ({ navigation }) => {
 
         break;
       case 4: // Selected Products screen & Need quote only
-        dispatch(createCustomerService(formData, navigation));
+        dispatch(createCustomerService(formData, navigation, currentStep));
         break;
       case 5: // Service Address UI Step
         dispatch(updateCustomerServiceData(formData, currentStep, navigation));
@@ -2236,17 +2242,17 @@ const CreateCustomer = ({ navigation }) => {
         </View>
       );
     }
-    if (currentStep === 9) {
+    if (currentStep === STEP_AGREE) {
       return (
         <View style={styles.bottomButtonView}>
+
           <View style={{ flex: 1 }}>
-            <CustomButton label={strings.previous} onPress={handlePrevious} />
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.previous} onPress={handlePrevious} />
+            </View>
           </View>
           <View style={{ flex: 1 }}>
-            <CustomButton
-              label={strings.proceed_to_preview}
-              onPress={handleContinue}
-            />
+            <CustomButton label={strings.submit} onPress={handleSubmit} />
           </View>
         </View>
       );
@@ -2254,12 +2260,14 @@ const CreateCustomer = ({ navigation }) => {
     if (currentStep === 10) {
       return (
         <View style={styles.bottomButtonView}>
+
           <View style={{ flex: 1 }}>
             <CustomButton label={strings.previous} onPress={handlePrevious} />
           </View>
           <View style={{ flex: 1 }}>
             <CustomButton label={strings.submit} onPress={handleSubmit} />
           </View>
+
         </View>
       );
     }
@@ -2424,7 +2432,7 @@ const CreateCustomer = ({ navigation }) => {
           {currentStep == 6 && renderCreateAccount_DetailsUI()}
           {currentStep == 7 && renderCreateAccount_PreferencesUI()}
           {currentStep == 8 && renderCreateAccount_AddressUI()}
-          {currentStep == 9 && renderAgreementUI()}
+          {currentStep == STEP_AGREE && renderAgreementUI()}
           {currentStep == 10 && renderPreviewUI()}
         </ScrollView>
         {/* Bottom Button View */}
