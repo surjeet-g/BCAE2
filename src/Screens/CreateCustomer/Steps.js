@@ -8,8 +8,9 @@ export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
 export const FACE_RECOG_UPLOAD_DOCUS_LOADER = -9
 
 export const STEP_CUSTOMER_FORM = 1
-
-
+export const STEP_CUSTOMER_ADDRESS = 2
+export const STEP_SERVICE_LIST = 3
+export const STEP_SERVICE_2_SHOW_SELECTED = 4
 // export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
 // export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1
 // export const FACE_RECOG_UPLOAD_DOCUS_SUCCESS = -1

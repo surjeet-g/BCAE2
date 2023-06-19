@@ -7,6 +7,7 @@ import {
   setCreateCustomerErrorDataInStore, setCreateCustomerServiceInStore, setCurrentStepInStore, setServiceProductsDataInStore,
   setServiceProductsErrorDataInStore, setShowAccountCreationModal
 } from "./CreateCustomerAction";
+import { STEP_CUSTOMER_ADDRESS } from "./Steps";
 
 export function fetchServiceProducts(serviceType, navigation = null) {
   return async (dispatch) => {
@@ -15,8 +16,10 @@ export function fetchServiceProducts(serviceType, navigation = null) {
     let result = await serverCall(url, requestMethod.GET, {}, navigation);
     if (result.success) {
       dispatch(setServiceProductsDataInStore(result.data.data, serviceType));
+      // return true
     } else {
       dispatch(setServiceProductsErrorDataInStore(result));
+      // return false
     }
   };
 }
@@ -37,11 +40,11 @@ export function createCustomer(formData, navigation = null) {
         ),
         idType: formData.customerDetails.idType.code,
         idValue: formData.customerDetails.idValue,
-        customerCategory: formData.customerDetails.categoryType.code,
-        registeredNo: formData.customerDetails.registeredNo,
-        registeredDate: moment(formData.customerDetails.registeredDate).format(
-          "YYYY-MM-DD"
-        ),
+        // customerCategory: formData.customerDetails.categoryType.code,
+        // registeredNo: formData.customerDetails.registeredNo,
+        // registeredDate: moment(formData.customerDetails.registeredDate).format(
+        //   "YYYY-MM-DD"
+        // ),
       },
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
@@ -50,7 +53,7 @@ export function createCustomer(formData, navigation = null) {
       dispatch(
         setCreateCustomerDataInStore({ ...formData, ...result.data.data })
       );
-      dispatch(setCurrentStepInStore(2));
+      dispatch(setCurrentStepInStore(STEP_CUSTOMER_ADDRESS));
     } else {
       dispatch(setCreateCustomerErrorDataInStore(result));
       Toast.show({

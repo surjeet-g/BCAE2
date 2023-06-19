@@ -286,8 +286,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         idValue: idNumber,
         address: {
           addressType: addreType,
-          buildingName: buildingNo,
-          houseNo: hno,
+          // buildingName: buildingNo,
+          // houseNo: hno,
           address1: `${hno},${buildingNo}`,
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,

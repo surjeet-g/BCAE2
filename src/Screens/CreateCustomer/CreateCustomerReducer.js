@@ -5,11 +5,11 @@ import {
   REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
   SET_SIGNATURE
 } from "./CreateCustomerAction";
-import { STEP_CUSTOMER_FORM } from './Steps';
+import { STEP_SERVICE_LIST } from './Steps';
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: STEP_CUSTOMER_FORM,
+    currentStep: STEP_SERVICE_LIST,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},
@@ -31,14 +31,14 @@ const initialState = {
       id: 2,
       description: "Prepaid",
       code: "PT_PREPAID",
-      icon: require("../../Assets/icons/ic_prepaid.png"),
+      icon: require("../../Assets/icons/cust_pre_red.png"),
       selected: false,
     },
     {
       id: 3,
       description: "Hybrid",
       code: "PT_HYBRID",
-      icon: require("../../Assets/icons/ic_word.png"),
+      icon: require("../../Assets/icons/cust_hybrid.png"),
       selected: false,
     },
   ],

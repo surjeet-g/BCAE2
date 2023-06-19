@@ -55,9 +55,10 @@ import { Facerecogne } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, STEP_CUSTOMER_FORM } from "./Steps";
+import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
 import UploadDocument from "./UploadDocument";
 import { APICallForMuti } from "./util";
+
 import {
   getCityByDistrict,
   getPostCodeByCity,
@@ -136,7 +137,7 @@ const CreateCustomer = ({ navigation }) => {
   useEffect(() => {
     setFormData(createCustomerReducerData.formData);
   }, [createCustomerReducerData.formData]);
-  console.log("formData", JSON.stringify(formData));
+
 
   // Used to fetch master data
   useEffect(() => {
@@ -336,12 +337,12 @@ const CreateCustomer = ({ navigation }) => {
               borderRadius: 80
             }} />
           </View>
-          <CustomInput
+          {/* <CustomInput
             value={formData?.customerDetails?.title}
             caption={strings.title}
             placeHolder={strings.title}
             onChangeText={(text) => handleCustomerDetails("title", text)}
-          />
+          /> */}
           <CustomInput
             value={formData?.customerDetails?.firstName}
             caption={strings.firstname}
@@ -407,12 +408,12 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.id_number}
             onChangeText={(text) => handleCustomerDetails("idValue", text)}
           />
-          <CustomInput
+          {/* <CustomInput
             value={formData?.customerDetails?.idPlace}
             caption={strings.place_of_issue}
             placeHolder={strings.place_of_issue}
             onChangeText={(text) => handleCustomerDetails("idPlace", text)}
-          />
+          /> */}
           {(customerCategoryCode === "BUS" ||
             customerCategoryCode === "GOV") && (
               <CustomInput
@@ -684,6 +685,7 @@ const CreateCustomer = ({ navigation }) => {
 
   // Step = 3
   const renderServicesUI = () => {
+
     return (
       <View>
         <CustomTitleText title={"Select Category"} />
@@ -694,8 +696,11 @@ const CreateCustomer = ({ navigation }) => {
           renderItem={({ item, index }) => (
             <ServiceCategory
               item={item}
-              onSelect={() => {
+              onSelect={async () => {
+                // enableLoader(true, "Please wait...Fetching data")
                 dispatch(fetchServiceProducts(item.code, navigation));
+                // enableLoader(false, "Please wait...Fetching data")
+
               }}
               onDeSelect={() => {
                 dispatch(removeCategoryProducts(item.code));
@@ -1968,14 +1973,15 @@ const CreateCustomer = ({ navigation }) => {
   const handleContinue = () => {
     console.log("current step", currentStep)
     switch (currentStep) {
-      case 1: // Customer Details
+      case STEP_CUSTOMER_FORM: // Customer Details
         dispatch(createCustomer(formData, navigation));
         break;
-      case 2: // Customer Address
+      case STEP_CUSTOMER_ADDRESS: // Customer Address
         dispatch(updateCustomerData(formData, navigation));
         break;
-      case 3: // Available Products
-
+      case STEP_SERVICE_LIST: // Available Products
+        dispatch(setCurrentStepInStore(STEP_SERVICE_2_SHOW_SELECTED));
+        return false
         let item = products.find((product) => product.quantity > 0);
         if (logg) console.log("Available Product", item, products)
         if (item === undefined)
@@ -2194,10 +2200,8 @@ const CreateCustomer = ({ navigation }) => {
             <CustomButton
               label={faceRecTitle()}
               onPress={() => {
-
                 handleContinue()
                 // dispatch(setCurrentStepInStore(currentStep + 1))
-
               }}
             />
           </View>
@@ -2392,11 +2396,7 @@ const CreateCustomer = ({ navigation }) => {
               dispatch(setCurrentStepInStore(FACE_RECOG_TAKE_SELFI));
 
             }
-
           }
-
-
-
         })
         }
         isIdcard={currentStep == FACE_RECOG_UPLOAD_DOCUS}
@@ -2417,9 +2417,9 @@ const CreateCustomer = ({ navigation }) => {
           {currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS && renderfaceRegconize()}
           {currentStep == 0 && renderUploadDocsUI()}
           {currentStep == STEP_CUSTOMER_FORM && renderCustomerDetailsUI()}
-          {currentStep == 2 && renderCustomerAddressUI()}
-          {currentStep == 3 && renderServicesUI()}
-          {currentStep == 4 && renderSelectedServicesUI()}
+          {currentStep == STEP_CUSTOMER_ADDRESS && renderCustomerAddressUI()}
+          {currentStep == STEP_SERVICE_LIST && renderServicesUI()}
+          {currentStep == STEP_SERVICE_2_SHOW_SELECTED && renderSelectedServicesUI()}
           {currentStep == 5 && renderServiceAddressUI()}
           {currentStep == 6 && renderCreateAccount_DetailsUI()}
           {currentStep == 7 && renderCreateAccount_PreferencesUI()}

@@ -214,6 +214,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         isVerified: false,
         password: password,
         confirmPassword: confirmPassword,
+        extNo: countryCode,
       };
       console.log("userRegister===>2", registerObject);
       dispatch(
