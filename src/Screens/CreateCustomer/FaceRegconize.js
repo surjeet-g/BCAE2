@@ -293,6 +293,26 @@ const TextPoint = ({ texts = [] }) => {
     </View>
   )
 }
+//step ORDER_SUCESS
+export const renderOrderSucces = () => {
+  return (
+    <View style={{ ...styles.container, ...commonStyle.center, marginTop: 100 }}>
+
+      <ClearSpace size={5} />
+      <Image source={succsImg} style={{
+        marginTop: 5,
+        height: height * .4,
+        width: "100%"
+      }} />
+
+        <ClearSpace size={2} />
+      <Text variant="labelMedium">Congratulations!</Text>
+      <ClearSpace size={2} />
+      <Text variant="labelSmall"> Your request submitted successfully for home delivery.
+      Our agent will reach out to you once it is out for delivery</Text>
+          </View>
+  )
+}
 export const Facerecogne = ({ step = FACE_RECOG_GET_START, faces = {} }) => {
   if (step == FACE_RECOG_UPLOAD_DOCUS_SUCCESS || step == FACE_RECOG_UPLOAD_DOCUS_LOADER) {
     const isLoaderScreen = step == FACE_RECOG_UPLOAD_DOCUS_LOADER

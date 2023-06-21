@@ -12,9 +12,9 @@ export const STEP_CUSTOMER_ADDRESS = 2
 export const STEP_SERVICE_LIST = 3
 export const STEP_SERVICE_2_SHOW_SELECTED = 4
 export const STEP_AGREE = 9
-export const STEP_ACK_SUCCESS = 10
-export const STEP_ACK_ERROR = 11
-export const CREATE_APPOINMENT_ACK = 12
+export const STEP_ACK_SUCCESS = 11
+export const STEP_ACK_ERROR = 12
+
 
 export const handleBackNavHandle = (step) => {
     switch (step) {

@@ -51,11 +51,11 @@ import {
 import CustomerAgreement from "./CustomerAgreement";
 import CustomerType from "./CustomerType";
 import { FaceDetection } from "./FaceDetection";
-import { Facerecogne } from "./FaceRegconize";
+import { Facerecogne, renderOrderSucces } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct, { RenderAppoinmentModel, RenderSelectStore } from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, handleBackNavHandle, STEP_AGREE, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
+import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, handleBackNavHandle, STEP_ACK_SUCCESS, STEP_AGREE, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
 import UploadDocument from "./UploadDocument";
 import { APICallForMuti } from "./util";
 
@@ -100,7 +100,7 @@ const CreateCustomer = ({ navigation }) => {
     fullId: {}
   }
   const [activeProduct, setAcitveProduct] = useState({})
-  const [loaderLbl, setLoaderLbl] = useState("while we are fetching country")
+  const [loaderLbl, setLoaderLbl] = useState("while we are fetching data")
   const [userIDImg, setUserIDImg] = useState(initalImgObj)
   const [loader, setLoader] = useState(false);
   const [activeDropDown, setActiveDropDown] = useState("district");
@@ -135,7 +135,7 @@ const CreateCustomer = ({ navigation }) => {
   const customerCategoryCode = formData?.customerDetails?.categoryType?.code;
   const { currentStep } = createCustomerReducerData.formData;
   const [showFaceDection, setShowCam] = useState(false)
-  const [showBottomModal, setShowBottomModal] = useState(true);
+  const [showBottomModal, setShowBottomModal] = useState(false);
   const [showWorkFromPopUP, setWorkFromPopUp] = useState(false)
 
   useEffect(() => {
@@ -2228,6 +2228,9 @@ const CreateCustomer = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
+    dispatch(setCurrentStepInStore(STEP_ACK_SUCCESS))
+    return false
+    //todo remove
     if (currentStep === 10 && formData?.getQuote) {
       dispatch(updateCustomerStatus(formData, navigation));
     } else {
@@ -2382,7 +2385,7 @@ const CreateCustomer = ({ navigation }) => {
   // render the buttons in the bottom based on the currentStep
   const renderBottomButtonsUI = () => {
     //no footer on success screens
-    if (currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS || currentStep == FACE_RECOG_UPLOAD_DOCUS_LOADER ||
+    if (currentStep == STEP_ACK_SUCCESS || currentStep == FACE_RECOG_UPLOAD_SELFI_SUCCESS || currentStep == FACE_RECOG_UPLOAD_DOCUS_LOADER ||
       currentStep == FACE_RECOG_UPLOAD_DOCUS_SUCCESS)
       return null
 
@@ -2623,9 +2626,12 @@ const CreateCustomer = ({ navigation }) => {
               //scaned docs
               if (docuScanStatus.status) {
                 const docData = docuScanStatus.response
+                console.log("scaned result ", docData)
                 handleCustomerDetails("firstName", get(docData, 'data.data.firstName', ''))
                 handleCustomerDetails("lastName", get(docData, 'data.data.lastName', ''))
                 handleCustomerDetails("idType", get(docData, 'data.data.idValue', ''))
+                const genderDoc = get(docData, 'data.data.idValue', '')
+
                 dispatch(setCurrentStepInStore(STEP_CUSTOMER_FORM));
               }
               else {
@@ -2666,7 +2672,10 @@ const CreateCustomer = ({ navigation }) => {
           {currentStep == 7 && renderCreateAccount_PreferencesUI()}
           {currentStep == 8 && renderCreateAccount_AddressUI()}
           {currentStep == STEP_AGREE && renderAgreementUI()}
-          {currentStep == 10 && renderPreviewUI()}
+          {/* {currentStep == 10 && renderPreviewUI()} */}
+          {currentStep == STEP_ACK_SUCCESS && renderOrderSucces()}
+
+
         </ScrollView>
         {/* Bottom Button View */}
         {renderBottomButtonsUI()}
