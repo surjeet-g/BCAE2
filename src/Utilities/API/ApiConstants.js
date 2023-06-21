@@ -15,6 +15,8 @@ export const PROD_BASE_URL_TENANT =
 export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 
 export const endPoints = {
+  APPOINTMENT_CREATE: "api/master/temp-appointment/create",
+  APPOINTEMENT_TEMPLATE: "api/master/interaction-template",
   FACE_MATCH_API: "api/common/face-compare",
   DOCU_SCAN: "api/common/scan-document",
   INTERACTION_APPOINMENT_TEMP: 'api/master/interaction-template',

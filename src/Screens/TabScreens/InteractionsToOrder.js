@@ -1323,8 +1323,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       {appoimentPopUp && <AppointmentPop
         appointList={appointList}
         formData1={appoinmentFormData}
-
-        locationList={locationList} setAppoinmentPopup={setAppoinmentPopup}
+        locationList={locationList}
+        setAppoinmentPopup={setAppoinmentPopup}
       />}
       {
         loader && (

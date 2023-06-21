@@ -5,12 +5,12 @@ import {
   REMOVE_SERVICE_PRODUCTS, SET_CURRENT_STEP, SET_SERVICE_CATEGORIES, SET_SHOW_ACCOUNT_CREATION_MODAL,
   SET_SIGNATURE
 } from "./CreateCustomerAction";
-import { STEP_CUSTOMER_FORM } from "./Steps";
+import { STEP_SERVICE_2_SHOW_SELECTED } from "./Steps";
 
 const initialState = {
   initCreateCustomer: false,
   formData: {
-    currentStep: STEP_CUSTOMER_FORM,
+    currentStep: STEP_SERVICE_2_SHOW_SELECTED,
     getQuote: false,
     showAccountCreationModal: false,
     customerDetails: {},
