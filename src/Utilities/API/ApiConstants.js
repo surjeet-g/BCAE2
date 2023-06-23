@@ -1,4 +1,4 @@
-const SERVER_TYE = "test"
+const SERVER_TYE = "stage"
 
 //Staging environment
 export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-test.comquest-brunei.com:1443/bcae/";
@@ -15,12 +15,12 @@ export const PROD_BASE_URL_TENANT =
 export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 
 export const endPoints = {
-  APPOINTMENT_CREATE: "api/master/temp-appointment/create",
+  APPOINTMENT_CREATE: "api/master/temp-appointment/mobile/create",
   APPOINTEMENT_TEMPLATE: "api/master/interaction-template",
   FACE_MATCH_API: "api/common/face-compare",
   DOCU_SCAN: "api/common/scan-document",
-  INTERACTION_APPOINMENT_TEMP: 'api/master/interaction-template',
-  INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment',
+  INTERACTION_APPOINMENT_TEMP: 'api/master/interaction-template/mobile',
+  INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment/mobile',
   SEACH_CUSTOMERS: "api/customer/get-customer",
   INTERACTION_ADD: "api/interaction/create",
   INTERACTION_WORKFLOW: "api/workflow/resolution",
@@ -77,10 +77,10 @@ export const endPoints = {
   ORDER_LIST_API: "api/order/search",
   GET_APPOINTMENT_DASHBOARD: "api/appointment",
   FETCH_SERVICE_PRODUCTS_API: "api/product",
-  CREATE_CUSTOMER_API: "api/customer/create",
-  UPDATE_CUSTOMER_API: "api/customer/",
-  CREATE_CUSTOMER_SERVICE_API: "api/accounts/service/create",
-  UPDATE_CUSTOMER_SERVICE_API: "api/accounts/service/update",
+  CREATE_CUSTOMER_API: "api/customer/create/mobile",
+  UPDATE_CUSTOMER_API: "api/customer/mobile/",
+  CREATE_CUSTOMER_SERVICE_API: "api/accounts/service/create/mobile",
+  UPDATE_CUSTOMER_SERVICE_API: "api/accounts/service/update/mobile",
   UPDATE_ACCOUNT_API: "api/accounts/update/",
   UPDATE_CUSTOMER_STATUS_API: "api/customer/update-status",
   CREATE_ORDER_API: "api/order/create",

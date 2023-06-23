@@ -1,6 +1,6 @@
 import moment from "moment";
-import React, { useState } from "react";
-import { Alert, Image, ScrollView, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, Keyboard, ScrollView, View } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,7 +77,27 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     return finalString;
   };
+  const [keyEnabled, setKeyboardVisible] = useState(false)
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
@@ -922,83 +942,85 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           </Card>
         </ScrollView>
       </View>
-      <StickyFooter>
-        <>
-          <View>
-            <Button
-              label={strings.register}
-              isDisabled={isButtomDiable}
-              onPress={submit}
-              loading={
-                registerForm?.initOtpForm
-                  ? registerForm?.otpUsageType === "Register"
-                  : false
-              }
-              mode="contained"
-            />
-          </View>
-          <Text
-            style={{
-              color: "#393939",
-              fontSize: fontSizes.FONT_14,
-              textAlign: "center",
-              fontWeight: 400,
-              marginTop: 10,
-            }}
-          >
-            By continuing, I accept and agree to BCAE
-          </Text>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+      {!keyEnabled &&
+        < StickyFooter >
+          <>
+            <View>
+              <Button
+                label={strings.register}
+                isDisabled={isButtomDiable}
+                onPress={submit}
+                loading={
+                  registerForm?.initOtpForm
+                    ? registerForm?.otpUsageType === "Register"
+                    : false
+                }
+                mode="contained"
+              />
+            </View>
             <Text
               style={{
+                color: "#393939",
                 fontSize: fontSizes.FONT_14,
                 textAlign: "center",
-                fontWeight: 600,
-                color: "#4B3694",
-                marginTop: 5,
+                fontWeight: 400,
+                marginTop: 10,
               }}
-              onPress={() => alert("Navigate to T&C")}
             >
-              Terms & Conditions of Use
+              By continuing, I accept and agree to BCAE
             </Text>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to T&C")}
+              >
+                Terms & Conditions of Use
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#000000",
+                  marginTop: 5,
+                }}
+              >
+                {" "}
+                &{" "}
+              </Text>
+              <Text
+                style={{
+                  fontSize: fontSizes.FONT_14,
+                  textAlign: "center",
+                  fontWeight: 600,
+                  color: "#4B3694",
+                  marginTop: 5,
+                }}
+                onPress={() => alert("Navigate to Privacy Policy")}
+              >
+                Privacy Policy
+              </Text>
+            </View>
             <Text
               style={{
-                fontSize: fontSizes.FONT_14,
+                color: "#393939",
+                fontSize: fontSizes.FONT_12,
                 textAlign: "center",
-                fontWeight: 600,
-                color: "#000000",
-                marginTop: 5,
+                fontWeight: 400,
+                marginTop: 10,
               }}
             >
-              {" "}
-              &{" "}
+              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
             </Text>
-            <Text
-              style={{
-                fontSize: fontSizes.FONT_14,
-                textAlign: "center",
-                fontWeight: 600,
-                color: "#4B3694",
-                marginTop: 5,
-              }}
-              onPress={() => alert("Navigate to Privacy Policy")}
-            >
-              Privacy Policy
-            </Text>
-          </View>
-          <Text
-            style={{
-              color: "#393939",
-              fontSize: fontSizes.FONT_12,
-              textAlign: "center",
-              fontWeight: 400,
-              marginTop: 10,
-            }}
-          >
-            © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
-          </Text>
-        </>
-      </StickyFooter>
+          </>
+        </StickyFooter>
+      }
     </View>
   );
 });

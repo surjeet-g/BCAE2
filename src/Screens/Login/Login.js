@@ -12,12 +12,14 @@ import CustomSwitch from "react-native-custom-switch-new";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
 import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { Toast } from "../../Components/Toast";
 import { ToggleButton } from "../../Components/ToggleButton";
+import { STACK_CREATE_CUSTOMER } from "../../Navigation/MyStack";
 import {
   color,
   fontSizes,
@@ -539,6 +541,21 @@ export const Login = ({ navigation }) => {
                   <Text style={styles.rgisterText}> {strings.register}</Text>
                 </Pressable>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  marginVertical: 10,
+                }}
+              >
+                <Text style={styles.noAccText}>Customer Onboarding?</Text>
+                <Pressable
+                  onPress={() => navigation.navigate(STACK_CREATE_CUSTOMER, {})}
+                >
+                  <Text style={styles.rgisterText}> Customer Onboarding</Text>
+                </Pressable>
+              </View>
+              <ClearSpace size={2} />
             </View>
 
             {!login.initLogin &&

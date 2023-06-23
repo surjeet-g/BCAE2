@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SHADOW_STYLE } from "../Utilities/themeConfig";
-var { height, width } = Dimensions.get("screen");
+var { height } = Dimensions.get("window");
 
 export const StickyFooter = ({
   children,
@@ -10,9 +9,10 @@ export const StickyFooter = ({
   isAddlocation = false,
 }) => {
   const { colors } = useTheme();
-
+  const [enable, setEnable] = useState(true)
   return (
     <View
+
       style={{
         padding: isAddlocation ? 2 : 12,
         position: isSplash ? "absolute" : "relative",
@@ -21,7 +21,7 @@ export const StickyFooter = ({
         width: "100%",
       }}
     >
-      {children}
+      {enable && children}
     </View>
   );
 };

@@ -32,185 +32,185 @@ export const RenderAppoinmentModel = ({
   const [openYearPicker, setDatePickerYear] = useState(false);
   const [openRegDatePicker, setOpenRegDatePicker] = useState(false);
   const [year, setYear] = useState(new Date())
-  activeProduct = {
-    "productBenefit": null,
-    "contractList": null,
-    "productId": "257",
-    "productNo": "PROD-266",
-    "status": "AC",
-    "productName": "Fibre 100mpbs_PP ",
-    "productFamily": "PF_TELE",
-    "productCategory": "PC_PLAN",
-    "productSubCategory": "PSC_RES",
-    "productType": "PT_POSTPAID",
-    "productSubType": "PST_MOBILE",
-    "serviceType": "ST_CREDITCARD",
-    "productImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-qc6WxJ3SBNtzZ_q62bdzXPd6mWVYR-1SmQN4Ab88Bw&usqp=CAU&ec=48600112",
-    "multipleSelection": null,
-    "activationDate": "2023-05-23",
-    "expiryDate": null,
-    "chargeType": null,
-    "isTaxable": null,
-    "taxablePercentage": null,
-    "warrantyPeriod": null,
-    "productLocation": null,
-    "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
-    "isAppointRequired": "N",
-    "uomCategory": "UOM_SRVC",
-    "productClass": "PCS_PLAT",
-    "serviceClass": "SC_ALL",
-    "contractFlag": "N",
-    "serviceTypeDescription": {
-      "code": "ST_CREDITCARD",
-      "description": "Credit Card"
-    },
-    "productTypeDescription": {
-      "code": "PT_POSTPAID",
-      "description": "Postpaid"
-    },
-    "productSubTypeDesc": {
-      "code": "PST_MOBILE",
-      "description": "Mobile"
-    },
-    "productCategoryDesc": {
-      "code": "PC_PLAN",
-      "description": "Plan"
-    },
-    "productSubCategoryDesc": {
-      "code": "PSC_RES",
-      "description": "Residential"
-    },
-    "productChargesList": [
-      {
-        "productChargeMapId": 306,
-        "productId": 257,
-        "chargeId": 58,
-        "chargeAmount": "100.0000",
-        "frequency": null,
-        "billingEffective": null,
-        "advanceCharge": null,
-        "chargeUpfront": null,
-        "status": "AC",
-        "startDate": "2023-05-23",
-        "endDate": null,
-        "changesApplied": "N",
-        "remarks": null,
-        "prorated": null,
-        "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
-        "chargeDetails": {
-          "chargeId": 58,
-          "chargeName": "Postpaid Charge",
-          "status": "AC",
-          "chargeCat": "CC_NRC",
-          "serviceType": "ST_POSTPAID",
-          "currency": "CUR-USD",
-          "startDate": "2023-01-01",
-          "endDate": "2029-01-01",
-          "glcode": "GLDUMMY2",
-          "chargeCatDesc": {
-            "code": "CC_NRC",
-            "description": "Nonrecurring charge"
-          },
-          "currencyDesc": {
-            "code": "CUR-USD",
-            "description": "USD"
-          }
-        }
-      },
-      {
-        "productChargeMapId": 305,
-        "productId": 257,
-        "chargeId": 59,
-        "chargeAmount": "50.0000",
-        "frequency": null,
-        "billingEffective": null,
-        "advanceCharge": null,
-        "chargeUpfront": null,
-        "status": "AC",
-        "startDate": "2023-05-23",
-        "endDate": null,
-        "changesApplied": "N",
-        "remarks": null,
-        "prorated": null,
-        "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
-        "chargeDetails": {
-          "chargeId": 59,
-          "chargeName": "Postpaid Charge",
-          "status": "AC",
-          "chargeCat": "CC_RC",
-          "serviceType": "ST_POSTPAID",
-          "currency": "CUR-USD",
-          "startDate": "2023-01-01",
-          "endDate": "2029-01-01",
-          "glcode": "GLDUMMY3",
-          "chargeCatDesc": {
-            "code": "CC_RC",
-            "description": "Recurring charge"
-          },
-          "currencyDesc": {
-            "code": "CUR-USD",
-            "description": "USD"
-          }
-        }
-      }
-    ],
-    "createdByUser": {
-      "userFamily": [
-        "UAM_WEB",
-        "UAM_MOBILE"
-      ],
-      "mappingPayload": {
-        "userDeptRoleMapping": [
-          {
-            "roleId": [
-              1,
-              2,
-              3
-            ],
-            "unitId": "DEPT.OU.ORG"
-          }
-        ]
-      },
-      "userId": 1,
-      "contactNo": "9092068640",
-      "email": "productadmin@bcae.com",
-      "userType": "UT_BUSINESS",
-      "userGroup": "UG_ADMIN",
-      "userSource": null,
-      "customerId": null,
-      "customerUuid": null,
-      "photo": null,
-      "title": "ms",
-      "firstName": "Product",
-      "lastName": "admin",
-      "gender": "F",
-      "dob": "1999-09-28",
-      "officeNo": null,
-      "extn": "91",
-      "loginid": "ADMIN",
-      "notificationType": null,
-      "biAccess": "Y",
-      "waAccess": "N",
-      "loginPassword": "3c834dad181356e3b6d8e4f3c4065c08$a1abf932e2bc8642f2fda17a46760f6e3cc7325d2bfd18671e6ed9842b59c1a4",
-      "loginAttempts": 0,
-      "status": "AC",
-      "inviteToken": null,
-      "loc": "BCT_CHENNAI",
-      "country": "India",
-      "icNumber": null,
+  // activeProduct = {
+  //   "productBenefit": null,
+  //   "contractList": null,
+  //   "productId": "257",
+  //   "productNo": "PROD-266",
+  //   "status": "AC",
+  //   "productName": "Fibre 100mpbs_PP ",
+  //   "productFamily": "PF_TELE",
+  //   "productCategory": "PC_PLAN",
+  //   "productSubCategory": "PSC_RES",
+  //   "productType": "PT_POSTPAID",
+  //   "productSubType": "PST_MOBILE",
+  //   "serviceType": "ST_CREDITCARD",
+  //   "productImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-qc6WxJ3SBNtzZ_q62bdzXPd6mWVYR-1SmQN4Ab88Bw&usqp=CAU&ec=48600112",
+  //   "multipleSelection": null,
+  //   "activationDate": "2023-05-23",
+  //   "expiryDate": null,
+  //   "chargeType": null,
+  //   "isTaxable": null,
+  //   "taxablePercentage": null,
+  //   "warrantyPeriod": null,
+  //   "productLocation": null,
+  //   "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
+  //   "isAppointRequired": "N",
+  //   "uomCategory": "UOM_SRVC",
+  //   "productClass": "PCS_PLAT",
+  //   "serviceClass": "SC_ALL",
+  //   "contractFlag": "N",
+  //   "serviceTypeDescription": {
+  //     "code": "ST_CREDITCARD",
+  //     "description": "Credit Card"
+  //   },
+  //   "productTypeDescription": {
+  //     "code": "PT_POSTPAID",
+  //     "description": "Postpaid"
+  //   },
+  //   "productSubTypeDesc": {
+  //     "code": "PST_MOBILE",
+  //     "description": "Mobile"
+  //   },
+  //   "productCategoryDesc": {
+  //     "code": "PC_PLAN",
+  //     "description": "Plan"
+  //   },
+  //   "productSubCategoryDesc": {
+  //     "code": "PSC_RES",
+  //     "description": "Residential"
+  //   },
+  //   "productChargesList": [
+  //     {
+  //       "productChargeMapId": 306,
+  //       "productId": 257,
+  //       "chargeId": 58,
+  //       "chargeAmount": "100.0000",
+  //       "frequency": null,
+  //       "billingEffective": null,
+  //       "advanceCharge": null,
+  //       "chargeUpfront": null,
+  //       "status": "AC",
+  //       "startDate": "2023-05-23",
+  //       "endDate": null,
+  //       "changesApplied": "N",
+  //       "remarks": null,
+  //       "prorated": null,
+  //       "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
+  //       "chargeDetails": {
+  //         "chargeId": 58,
+  //         "chargeName": "Postpaid Charge",
+  //         "status": "AC",
+  //         "chargeCat": "CC_NRC",
+  //         "serviceType": "ST_POSTPAID",
+  //         "currency": "CUR-USD",
+  //         "startDate": "2023-01-01",
+  //         "endDate": "2029-01-01",
+  //         "glcode": "GLDUMMY2",
+  //         "chargeCatDesc": {
+  //           "code": "CC_NRC",
+  //           "description": "Nonrecurring charge"
+  //         },
+  //         "currencyDesc": {
+  //           "code": "CUR-USD",
+  //           "description": "USD"
+  //         }
+  //       }
+  //     },
+  //     {
+  //       "productChargeMapId": 305,
+  //       "productId": 257,
+  //       "chargeId": 59,
+  //       "chargeAmount": "50.0000",
+  //       "frequency": null,
+  //       "billingEffective": null,
+  //       "advanceCharge": null,
+  //       "chargeUpfront": null,
+  //       "status": "AC",
+  //       "startDate": "2023-05-23",
+  //       "endDate": null,
+  //       "changesApplied": "N",
+  //       "remarks": null,
+  //       "prorated": null,
+  //       "productUuid": "718e028a-0c46-4745-b9c0-3dfbd0e8d431",
+  //       "chargeDetails": {
+  //         "chargeId": 59,
+  //         "chargeName": "Postpaid Charge",
+  //         "status": "AC",
+  //         "chargeCat": "CC_RC",
+  //         "serviceType": "ST_POSTPAID",
+  //         "currency": "CUR-USD",
+  //         "startDate": "2023-01-01",
+  //         "endDate": "2029-01-01",
+  //         "glcode": "GLDUMMY3",
+  //         "chargeCatDesc": {
+  //           "code": "CC_RC",
+  //           "description": "Recurring charge"
+  //         },
+  //         "currencyDesc": {
+  //           "code": "CUR-USD",
+  //           "description": "USD"
+  //         }
+  //       }
+  //     }
+  //   ],
+  //   "createdByUser": {
+  //     "userFamily": [
+  //       "UAM_WEB",
+  //       "UAM_MOBILE"
+  //     ],
+  //     "mappingPayload": {
+  //       "userDeptRoleMapping": [
+  //         {
+  //           "roleId": [
+  //             1,
+  //             2,
+  //             3
+  //           ],
+  //           "unitId": "DEPT.OU.ORG"
+  //         }
+  //       ]
+  //     },
+  //     "userId": 1,
+  //     "contactNo": "9092068640",
+  //     "email": "productadmin@bcae.com",
+  //     "userType": "UT_BUSINESS",
+  //     "userGroup": "UG_ADMIN",
+  //     "userSource": null,
+  //     "customerId": null,
+  //     "customerUuid": null,
+  //     "photo": null,
+  //     "title": "ms",
+  //     "firstName": "Product",
+  //     "lastName": "admin",
+  //     "gender": "F",
+  //     "dob": "1999-09-28",
+  //     "officeNo": null,
+  //     "extn": "91",
+  //     "loginid": "ADMIN",
+  //     "notificationType": null,
+  //     "biAccess": "Y",
+  //     "waAccess": "N",
+  //     "loginPassword": "3c834dad181356e3b6d8e4f3c4065c08$a1abf932e2bc8642f2fda17a46760f6e3cc7325d2bfd18671e6ed9842b59c1a4",
+  //     "loginAttempts": 0,
+  //     "status": "AC",
+  //     "inviteToken": null,
+  //     "loc": "BCT_CHENNAI",
+  //     "country": "India",
+  //     "icNumber": null,
 
-      "oneTimePassword": null,
-      "createdBy": 1,
-      "createdAt": "2023-01-30T14:04:06.338Z",
-      "updatedBy": 1,
-      "updatedAt": "2023-06-06T03:17:36.083Z",
-      "activationDate": "2023-04-03T16:00:00.000Z",
-      "expiryDate": "2023-12-29T16:00:00.000Z",
-      "biAccessKey": null,
-      "multipleSession": "N"
-    },
-    "updatedByUser": null
-  }
+  //     "oneTimePassword": null,
+  //     "createdBy": 1,
+  //     "createdAt": "2023-01-30T14:04:06.338Z",
+  //     "updatedBy": 1,
+  //     "updatedAt": "2023-06-06T03:17:36.083Z",
+  //     "activationDate": "2023-04-03T16:00:00.000Z",
+  //     "expiryDate": "2023-12-29T16:00:00.000Z",
+  //     "biAccessKey": null,
+  //     "multipleSession": "N"
+  //   },
+  //   "updatedByUser": null
+  // }
 
   return (
     <View style={{
@@ -323,10 +323,10 @@ export const RenderAppoinmentModel = ({
                   "appointmentType": text?.code,
                   "templateId": templeteId,
                   "appointmentDate": "2023-07-27", //to do year
-                  //   "appointmentDate": moment(year).format("YYYY-MM-DD")
+                  "appointmentDate": moment(year).format("YYYY-MM-DD"),
                   "location": "BCT_CHENNAI"
                 }
-                const availableAPI = await APICall(endPoints.INTERACTION_AVALABLE_APPOINMENT, "POST", mockParams, "Techincal Error..Please try again")
+                const availableAPI = await APICall(endPoints.INTERACTION_AVALABLE_APPOINMENT, "POST", paramsAvailable, "Techincal Error..Please try again")
                 enableLoader(false)
 
                 let availableEvents = get(availableAPI, 'response.data.currentAppointments', false)
