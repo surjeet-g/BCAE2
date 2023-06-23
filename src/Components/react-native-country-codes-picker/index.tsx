@@ -1,21 +1,15 @@
 import React from 'react';
 import {
-    FlatList,
-    TextInput,
-    View,
-    Text,
     Animated,
     Dimensions,
-    Easing,
-    Platform,
-    Keyboard,
-    ViewStyle, Modal, Pressable, Image
+    Easing, FlatList, Keyboard, Modal, Platform, View, ViewStyle
 } from 'react-native';
-import {CountryItem, ItemTemplateProps, Style} from "./types/Types";
-import {useKeyboardStatus} from "./helpers/useKeyboardStatus";
-import {CountryButton} from "./components/CountryButton";
-import {countriesRemover} from "./helpers/countriesRemover";
-import { ICON_STYLE } from '../../Utilities/Style/navBar';
+
+import { Text, TextInput } from 'react-native-paper';
+import { CountryButton } from "./components/CountryButton";
+import { countriesRemover } from "./helpers/countriesRemover";
+import { useKeyboardStatus } from "./helpers/useKeyboardStatus";
+import { CountryItem, ItemTemplateProps, Style } from "./types/Types";
 
 
 
@@ -62,22 +56,22 @@ interface Props {
 }
 
 export const CountryPicker = ({
-                                  show,
-                                  pickerButtonOnPress,
-                                  inputPlaceholder,
-                                  searchMessage,
-                                  lang = 'en',
-                                  style,
-                                  enableModalAvoiding,
-                                  androidWindowSoftInputMode,
-                                  onBackdropPress,
-                                  disableBackdrop,
-                                  excludedCountries,
-                                  initialState,
-                                  onRequestClose,
-                                  itemTemplate: ItemTemplate = CountryButton,
-                                  ...rest
-                              }: Props) => {
+    show,
+    pickerButtonOnPress,
+    inputPlaceholder,
+    searchMessage,
+    lang = 'en',
+    style,
+    enableModalAvoiding,
+    androidWindowSoftInputMode,
+    onBackdropPress,
+    disableBackdrop,
+    excludedCountries,
+    initialState,
+    onRequestClose,
+    itemTemplate: ItemTemplate = CountryButton,
+    ...rest
+}: Props) => {
     const codes = countriesRemover(excludedCountries);
     const keyboardStatus = useKeyboardStatus();
     const animationDriver = React.useRef(new Animated.Value(0)).current;
@@ -158,7 +152,7 @@ export const CountryPicker = ({
         }).start(() => setShowModal(false));
     };
 
-    const renderItem = ({item, index}: { item: CountryItem, index: number }) => {
+    const renderItem = ({ item, index }: { item: CountryItem, index: number }) => {
         let itemName = item?.name[lang];
         let checkName = itemName.length ? itemName : item?.name['en'];
 
@@ -182,7 +176,7 @@ export const CountryPicker = ({
     };
 
     return (
-    
+
         <Modal
             animationType="fade"
             transparent={true}
@@ -194,7 +188,7 @@ export const CountryPicker = ({
             <View
                 style={{
                     flex: 1,
-                
+
                     justifyContent: 'flex-end'
                 }}
             >
@@ -235,15 +229,16 @@ export const CountryPicker = ({
                         }}
                     >
                         <TextInput
+
                             style={[styles.searchBar, style?.textInput]}
                             value={searchValue}
                             onChangeText={setSearchValue}
                             placeholder={inputPlaceholder || 'Search your country'}
                             {...rest}
                         />
-               
+
                     </View>
-                    <View style={[styles.line, style?.line]}/>
+                    <View style={[styles.line, style?.line]} />
                     {resultCountries.length === 0 ? (
                         <View style={[styles.countryMessage, style?.countryMessageContainer]}>
                             <Text
@@ -283,7 +278,7 @@ export const CountryPicker = ({
                 />
             </View>
         </Modal>
- 
+
     )
 };
 
@@ -299,14 +294,14 @@ interface CountryListProps {
 }
 
 export const CountryList = ({
-                                lang = 'en',
-                                searchValue = '',
-                                excludedCountries,
-                                style,
-                                pickerButtonOnPress,
-                                itemTemplate: ItemTemplate = CountryButton,
-                                ...rest
-                            }: CountryListProps) => {
+    lang = 'en',
+    searchValue = '',
+    excludedCountries,
+    style,
+    pickerButtonOnPress,
+    itemTemplate: ItemTemplate = CountryButton,
+    ...rest
+}: CountryListProps) => {
     const codes = countriesRemover(excludedCountries);
 
     const resultCountries = React.useMemo(() => {
@@ -319,7 +314,7 @@ export const CountryList = ({
         });
     }, [searchValue]);
 
-    const renderItem = ({item, index}: { item: CountryItem, index: number }) => {
+    const renderItem = ({ item, index }: { item: CountryItem, index: number }) => {
         let itemName = item?.name[lang];
         let checkName = itemName.length ? itemName : item?.name['en'];
 
