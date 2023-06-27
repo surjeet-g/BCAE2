@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, ImageBackground, StyleSheet, View } from "react-native";
+import { Dimensions, Image, ImageBackground, StyleSheet, View } from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
 
-import BCAE_LOGO from "../../Assets/svg/bcae_logo.svg";
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
 import { getToken } from "../../Storage/token";
@@ -11,6 +10,7 @@ import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
+import { commonStyle } from '../../Utilities/Style/commonStyle';
 var { height, width } = Dimensions.get("screen");
 
 const Splash = ({ route, navigation }) => {
@@ -76,15 +76,15 @@ const Splash = ({ route, navigation }) => {
           flex: 1,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: height * 0.03,
-          }}
-        >
-          <BCAE_LOGO />
+        <View style={commonStyle.center}>
+          <Image
+            source={require("../../Assets/icons/logo_new.png")}
+            // resizeMode="cover"
+            style={{
+              marginTop: 32,
+              // flex: 1,
+            }}
+          />
         </View>
       </ImageBackground>
       <StickyFooter isSplash={true}>
@@ -101,6 +101,7 @@ const Splash = ({ route, navigation }) => {
               {strings.version}
             </Text>
           </View>
+
           <View
             style={{
               marginBottom: 10,

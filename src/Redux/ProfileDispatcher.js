@@ -1,9 +1,7 @@
 import {
   initProfile,
   setProfileData,
-  setProfileError,
-  setSearchEmpty,
-  setSearchProfileData,
+  setProfileError, setSearchProfileData,
   setSearchProfileDataError,
   setUserSelectedProfile
 } from "./ProfileAction";
@@ -98,7 +96,7 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
       const len = profileResult?.data?.data?.rows?.length;
-      if (len == 0) dispatch(setSearchEmpty(true));
+      // if (len == 0) dispatch(setSearchEmpty(true));
     } else {
       dispatch(setSearchProfileDataError([]));
       return false;

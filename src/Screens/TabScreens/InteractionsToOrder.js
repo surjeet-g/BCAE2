@@ -54,7 +54,7 @@ import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 
 import { RenderUserSelectResult } from "../../Components/UserSearch";
-import { STACK_CREATE_CUSTOMER, STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
@@ -121,7 +121,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
-  const [userSeachEnable, setUserSeachEnable] = useState(false);
+
   const [bottomBarTitle, setBottombartitle] = useState("");
 
   const interactionResponseScreen = {
@@ -133,6 +133,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [enableSuccessScreen, setEnableSuccessScreen] = useState(
     interactionResponseScreen.NONE
   );
+
+
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
   const [appoimentPopUp, setAppoinmentPopup] = useState(false)
@@ -142,10 +144,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const { params = {} } = route
   const { userTypeParams = USERTYPE.USER } = params
   const [userType, setUserType] = useState(userTypeParams);
-  console.log("usertype", userType)
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
-
+  console.log("usertype", userType)
+  const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
   /**
    * Reset State data
    *
@@ -236,14 +238,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
     }
   );
   //handle customer empty case
-  useEffect(() => {
-    if (profileReducer.IsSearchEmpty) {
-      setTimeout(() => {
-        //todo
-        // navigation.navigate(STACK_CREATE_CUSTOMER)
-      }, 3000)
-    }
-  }, [profileReducer.IsSearchEmpty])
+  // useEffect(() => {
+  // if (profileReducer.IsSearchEmpty) {
+  // setTimeout(() => {
+  //todo
+  // navigation.navigate(STACK_CREATE_CUSTOMER)
+  // }, 3000)
+  // }
+  // }, [profileReducer.IsSearchEmpty])
 
   useEffect(() => {
     // getUserType(setUserType);
@@ -307,7 +309,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [contactTypeList, setContactTypeList] = useState([])
   const [locationList, setLocationList] = useState([])
   const [appointList, setAppoimentList] = useState([])
-
+  const [SearchModelisOpen, setSearchOpen] = useState(true)
   useEffect(() => {
     console.log("master data", masterReducer)
     setInteractionList(get(masterReducer, "masterdataData.INTXN_TYPE", []))
@@ -500,6 +502,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}
                 onPress={async () => {
                   setsearchStandaloneModel(true)
+                  setKnowledgeSearchText(false);
+
+                  //open form model
+                  setautoSuggestionList(false);
+                  Keyboard.dismiss();
                   //check if smart assistance not enable then going this normal way
                   if (!isEnabledsmartAssist) {
                     interactionDataToCreateInt(item)
@@ -521,7 +528,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                       customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                      requestId: item.requestId,
+                      requestId: parseInt(item.requestId),
                     })
                   );
                   setLoader(false)
@@ -640,8 +647,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       setDropDownFormField("serviceCategory", serviveCatType);
 
       setDropDownFormField("serviceType", serviveType);
-
-      setDropDownFormField("problemCause", problemCause)
+      //problem cause
+      //setDropDownFormField("problemCause", problemCause)
 
 
       if (!get(item, 'requestId', false) != false) {
@@ -730,6 +737,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
     const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
     const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
 
+    const customerCategoryPath = userType == USERTYPE.CUSTOMER ? "customerCatDesc.description" : "customerCatDesc.description"
+    const customerStatusPath = userType == USERTYPE.CUSTOMER ? "statusDesc.description" : "statusDesc.description"
+    const customerCategory = get(profileReducer, `${activeData}.${customerCategoryPath}`, "")
+    const customerStatus = get(profileReducer, `${activeData}.${customerStatusPath}`, "")
+
+    console.log("cutomer cat", customerCategory, customerStatus)
 
     return (
       <ImageBackground
@@ -767,7 +780,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     paddingRight: 15,
                   }}
                 >
-                  Active
+                  {customerStatus}
                 </Text>
               </ImageBackground>
             </View>
@@ -786,7 +799,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     paddingRight: 18,
                   }}
                 >
-                  Business
+                  {customerCategory}
                 </Text>
               </ImageBackground>
             </View>
@@ -959,7 +972,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             </>
           )
         }
-      </ImageBackground >
+      </ImageBackground>
     );
   }, [
     addresss,
@@ -1018,7 +1031,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     const { response, actionType } = await dispatchInteraction(
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                        requestId: ite.requestId
+                        requestId: parseInt(ite.requestId)
                       })
                     );
                     setLoader(false)
@@ -1078,7 +1091,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     const { response, actionType } = await dispatchInteraction(
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                        requestId: get(ite, "requestId", "")
+                        requestId: parseInt(get(ite, "requestId", ""))
                       })
                     );
                     setLoader(false)
@@ -1243,7 +1256,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </View>
 
       }
-      {(enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) &&
+      {/* {(enableSuccessScreen == interactionResponseScreen.EMPTY_CUSTOMER) &&
         <View style={{ ...commonStyle.center, flex: 1, margin: 10 }}>
           <InteractionSuccess
             intxId={intereactionAddResponse?.intxnNo}
@@ -1257,7 +1270,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             cancelHandler={() => { }}
           />
         </View>
-      }
+      } */}
 
       {
         profileReducer.IsSearchEmpty &&
@@ -1284,6 +1297,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         useMemo(() => {
           return userNavigationIcon({
             navigation,
+            setSearchOpen: setSearchOpen,
             setEnableSuccessScreens: () => {
               //to do when user search is empty
               {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
@@ -1291,10 +1305,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
             setLoader,
             profileDispatch,
             headerRightForNav,
-            headerTitle: "headerTitle",
+            headerTitle: "Interaction",
             profileSearchData: get(profileReducer, "profileSearchData", [])
           });
-        }, [headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
+        }, [setSearchOpen, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
 
       }
       {
@@ -1304,6 +1318,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
             <RenderUserSelectResult
               profileSearchData={get(profileReducer, "profileSearchData", [])}
               setLoader={setLoader}
+              setUserSeachEnable={setUserSeachEnable}
+              SearchModelisOpen={SearchModelisOpen}
+              setSearchOpen={setSearchOpen}
               profileDispatch={profileDispatch}
               headerRightForNav={headerRightForNav}
               headerTitle={"Interaction"}
@@ -1317,6 +1334,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           setUserType,
           profileDispatch,
           navigation,
+          userSeachEnable,
           headerRightForNav,
         ])
       }
@@ -1336,17 +1354,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <LoadingAnimation title="fetch data" />
         )
       }
+
       <View
         style={{
           ...styles.container,
           backgroundColor: isModelOpen ? "gray" : "#F0F0F0",
-          opacity: isModelOpen ? 0.3 : 1,
+          opacity: isModelOpen ? userSeachEnable ? 0 : 0.3 : 1,
         }}
       >
 
         {/* profile card */}
         {renderProfileTab}
-        { }
+
         <ClearSpace size={2} />
         <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
           <Text variant="bodyMedium">
@@ -1407,6 +1426,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {/* search box end */}
         {/*knowledge search*/}
       </View>
+
       <FooterModel
         open={openBottomModalChatBoard}
         setOpen={setOpenBottomModalChatBot}
@@ -1510,8 +1530,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     placeHolder={"Select Serive Category"}
                   />
                   {serviceCategory.error && showErrorMessage(serviceCategory.error)}
-
-                  <CustomDropDownFullWidth
+                  {/* problem cause */}
+                  {/* <CustomDropDownFullWidth
                     selectedValue={get(problemCause, "value.description", "")}
                     data={problemList}
                     onChangeText={(text) => {
@@ -1526,7 +1546,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     value={get(problemCause, "value.code", "")}
                     caption={strings.problem_stat_cause}
                     placeHolder={"Select " + strings.problem_stat_cause}
-                  />
+                  /> */}
                   {problemCause.error && showErrorMessage(problemCause.error)}
 
                   <CustomDropDownFullWidth
@@ -1672,7 +1692,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       customerId: customerID,
                       // statement: input.statement.value,
                       // statementId: input.statementId.value,
-                      problemCause: input.problemCause.value?.code,
+                      //problem cause
+                      // problemCause: input.problemCause.value?.code,
                       interactionCategory:
                         input.interactionCategory.value?.code,
                       serviceCategory: input.serviceCategory.value?.code,

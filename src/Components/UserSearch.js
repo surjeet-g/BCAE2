@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dimensions,
   FlatList,
@@ -45,6 +45,7 @@ export const userNavigationIcon = (props) => {
                           await props.profileDispatch(
                             seachCustomers(text)
                           );
+                          props.setSearchOpen(true)
 
                           props.setLoader(false);
                         }}
@@ -86,8 +87,10 @@ export const userNavigationIcon = (props) => {
  *
  */
 export const RenderUserSelectResult = (props) => {
+  console.log("vipin - enter readner seraerch result ", props.profileSearchData)
+  const SearchModelisOpen = props.SearchModelisOpen
+  const setSearchOpen = props.setSearchOpen
 
-  const [isOpen, setOpen] = useState(true)
   return (
     <View
       style={{
@@ -100,7 +103,8 @@ export const RenderUserSelectResult = (props) => {
 
       }}
     >
-      {(props.profileSearchData.length == 0 || isOpen == false) ? (
+
+      {(props.profileSearchData.length == 0 || SearchModelisOpen == false) ? (
         <Text></Text>
       ) : (
         <FlatList
@@ -125,7 +129,8 @@ export const RenderUserSelectResult = (props) => {
                   alignItems: "center",
                   backgroundColor: "#fff",
                   height: 40,
-
+                  zIndex: 99999,
+                  elevation: 5,
                   borderBottomWidth: 0.5,
                   paddingHorizontal: 4,
                   // borderRadius: 3,
@@ -142,9 +147,11 @@ export const RenderUserSelectResult = (props) => {
                       headerRight: props.headerRightForNav,
                       headerTitle: props.headerTitle,
                     });
+                    props.setUserSeachEnable(false)
+
                     // props.profileDispatch(setProfileReset());
                   }
-                  setOpen(false)
+                  setSearchOpen(false)
                   props.setLoader(false);
 
                 }}
