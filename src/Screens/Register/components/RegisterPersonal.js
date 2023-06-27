@@ -68,6 +68,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     userRegister,
     getOtpForCheck,
   ]);
+
+  const [isMobileOtpSend, setIsMobileOTPSend] = useState(false)
+  const [isEmailOtpSend, setIsEmailOTPSend] = useState(false)
+
   const { colors } = useTheme();
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
@@ -229,7 +233,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setCountry(params.country);
     setHno(params.hno);
     setPostcode(params.postCode);
-    // setDialPick(params.dialPick);
+    setDialPick(params.dialPick);
     setAddrType(params.addressType);
     setCity(params.city);
   };
@@ -315,7 +319,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           address2: `${district},${state}`,
           address3: `${country},${postcode}`,
           city,
-          town: street,
+          // town: street,
           state: state,
           district: district,
           country: country,
@@ -444,6 +448,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               showOtpSentMessage
             )
           );
+          setIsMobileOTPSend(true)
           buttonEnableDiable();
           //setIsDisableSendOtp(true);
           //runOtpTimer(otpTimer);
@@ -481,7 +486,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   clearTimerRef = useRef();
   const runOtpTimer = (otpTimer) => {
     clearTimerRef.current = setTimeout(() => {
-
       setOtpTimer(otpTimer);
       otpTimer = otpTimer - 1;
       if (otpTimer < 0) {
@@ -553,6 +557,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     }
   };
   const submitEmail = () => {
+
     if (firstName.trim() === "") {
       Toast.show({
         type: "bctError",
@@ -563,6 +568,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       setEmailError(strings.emailValidError);
     } else {
       dispatch(sendOtp("", email, firstName, "email", showOtpEmailSentMessage));
+      setIsEmailOTPSend(true)
       buttonEnableDiable();
     }
   };
@@ -879,7 +885,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
                 onPressOnCountyCode={() => setCountryPickModel(true)}
                 countryCode={dialpick}
-                label={strings.send_otp}
+                label={isMobileOtpSend ? "RESEND OTP" : strings.send_otp}
                 onPress={submitResndOTP}
                 bgColor={color.BCAE_PRIMARY}
                 keyboardType={"numeric"}
@@ -972,8 +978,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                     ? true
                     : false
                 }
+
                 isDisableButton={isDisableSendOtpEmail}
-                label={"CONFIRM EMAIL"}
+                label={isEmailOtpSend ? "RESEND OTP" : "CONFIRM EMAIL"}
                 onPress={submitEmail}
                 bgColor={color.BCAE_PRIMARY}
                 btnTextPro={{

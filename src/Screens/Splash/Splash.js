@@ -91,7 +91,7 @@ const Splash = ({ route, navigation }) => {
         <View>
           <View style={{ alignItems: "flex-start", marginLeft: "10%" }}>
             <Text variant="headlineLarge" style={styles.highlightText}>
-              Business{"\n"}Centric{"\n"}Automation{"\n"}Engine
+              Digital{"\n"}Transformation{"\n"}works
             </Text>
             <Text
               style={{
