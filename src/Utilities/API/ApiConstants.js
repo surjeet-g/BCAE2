@@ -1,4 +1,4 @@
-const SERVER_TYE = "test"
+const SERVER_TYE = "stage"
 
 //Staging environment
 export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-test.comquest-brunei.com:1443/bcae/";

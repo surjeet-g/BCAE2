@@ -77,7 +77,7 @@ import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
 export const typeOfAccrodin = {
-  category: { value: "category", title: "Top 10 Catgory" },
+  category: { value: "category", title: "Top 10 Category" },
   frequently: { value: "frequently", title: "Most frequently interaction" },
   rencently: { value: "rencently", title: "Recently inteaction" },
   searchbox: { value: "searchbox", title: "Seach input" },
@@ -308,7 +308,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       if (serviceList.length > 0) {
         console.log("",)
         const parsedata = serviceList.map(item => {
-          console.log("item", item)
+
           return { description: item.serviceName, code: item.serviceNo }
         });
         setServiceList(parsedata)
@@ -1456,7 +1456,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         open={openBottomModal}
         setOpen={setOpenBottomModal}
         title={bottomBarTitle}>
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
           <KeyboardAvoidingView
             // keyboardVerticalOffset={50}
             behavior={Platform.OS === "ios" ? "padding" : "padding"}

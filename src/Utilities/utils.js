@@ -5,7 +5,19 @@ import { supportedCountriesList } from "../Utilities/Constants/Constant";
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+export function validatePassword(text) {
+  // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:
 
+  let reg =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/;
+  if (reg.test(text) === false) {
+    //console.log("Password is Not Correct");
+    return false;
+  } else {
+    //console.log("Password is Correct");
+    return true;
+  }
+}
 export const getPhoneNumberLength = (code) => {
   let country = supportedCountriesList?.find(
     (country) => country?.countryShortCode === code
