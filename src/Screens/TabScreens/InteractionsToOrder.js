@@ -65,12 +65,14 @@ import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from 
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
-import { USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import { getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
+import { endPoints } from '../../Utilities/API/ApiConstants';
+import { APICall } from "../CreateCustomer/util";
 import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
@@ -142,7 +144,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [isSolutionFound, setSolutionFound] = useState(false);
 
   const { params = {} } = route
-  const { userTypeParams = USERTYPE.USER } = params
+  const { userTypeParams = USERTYPE.CUSTOMER } = params
   const [userType, setUserType] = useState(userTypeParams);
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
@@ -247,21 +249,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   // }
   // }, [profileReducer.IsSearchEmpty])
 
-  useEffect(() => {
-    // getUserType(setUserType);
-  }, []);
 
-  useEffect(() => {
-    async function fetchMyAPI() {
-      setService({
-        code: "SC_INSURANCE",
-        description: "Insurance",
-      });
-    }
-
-    fetchMyAPI();
-
-  }, []);
 
 
   useEffect(() => {
@@ -298,7 +286,43 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
     fetchMyAPI();
   }, []);
-  console.log("",)
+
+  const [serviceList, setServiceList] = useState([])
+  // const serviceList = [
+  //   {
+  //     code: "SC_BANK",
+  //     description: "Banking",
+  //   },
+  //   {
+  //     code: "SC_INSURANCE",
+  //     description: "Insurance",
+  //   },
+
+  // ];
+
+  useEffect(() => {
+    async function fetchMyAPI() {
+      const customerUUID = await getCustomerUUID()
+      const res = await APICall(`${endPoints.SERVICE_LIST}`, 'POST', { customerUuid: customerUUID.toString() });
+      const serviceList = get(res, 'response.data', [])
+      if (serviceList.length > 0) {
+        console.log("",)
+        const parsedata = serviceList.map(item => {
+          console.log("item", item)
+          return { description: item.serviceName, code: item.serviceNo }
+        });
+        setServiceList(parsedata)
+        setService({
+          code: parsedata[0].code,
+          description: parsedata[0].description,
+        });
+      }
+    }
+
+    fetchMyAPI();
+
+  }, []);
+
   const [interactionList, setInteractionList] = useState([])
   const [priorityList, setPriorityList] = useState([])
   const [problemList, setProblemList] = useState([])
@@ -716,17 +740,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       </View>
     );
   }, []);
-  const serviceList = [
-    {
-      code: "SC_BANK",
-      description: "Banking",
-    },
-    {
-      code: "SC_INSURANCE",
-      description: "Insurance",
-    },
 
-  ];
+
   const renderProfileTab = useMemo(() => {
 
 
@@ -1742,15 +1757,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       addInteractionAction(params, fileAttachments)
                     );
                     if (logg) console.log('create complienta :create obj', params)
+                    console.log("interaction type response ", response);
 
                     if (status) {
-                      console.log("interaction type response ", response);
                       setInteractionResponse(response);
                       setOpenBottomModal(false)
                       setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
                       dispatchInteraction(setInteractionReset());
 
                     } else {
+
                       // setEnableSuccessScreen(interactionResponseScreen.FAILED);
                     }
                   }}

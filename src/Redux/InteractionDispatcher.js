@@ -296,9 +296,10 @@ export function addInteractionAction(obj, fileAttachments) {
         },
       };
     } else {
+      console.log("resssss", result)
       Toast.show({
         type: "bctError",
-        text1: "Something wents wrong",
+        text1: result?.message || "Something wents wrong",
       });
       dispatch(enableLoaderAddInteractionAdd(false));
       return { status: false, response: { id: 1, message: "dfdf" } };
