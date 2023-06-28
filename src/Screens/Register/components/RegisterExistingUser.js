@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Alert, Image, Keyboard, ScrollView, View } from "react-native";
+import { Alert, Image, Keyboard, Platform, ScrollView, View } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -86,13 +86,22 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        setKeyboardVisible(true); // or some other action
+        if (Platform.OS === "android") {
+          setKeyboardVisible(true) // or some other action
+        }
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        setKeyboardVisible(false); // or some other action
+        if (Platform.OS === "android") {
+          setKeyboardVisible(false); // or some other action
+        }
+        // scrollRef.current?.scrollTo({
+        //   y: 1000,
+        //   animated: true,
+        // });
+
       }
     );
 

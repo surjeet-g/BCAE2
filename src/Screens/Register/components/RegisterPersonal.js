@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Dimensions, Image, Keyboard, ScrollView, View } from "react-native";
+import { Alert, Dimensions, Image, Keyboard, Platform, ScrollView, View } from "react-native";
 
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
@@ -96,19 +96,24 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
     return finalString;
   };
+
   const [keyEnabled, setKeyboardVisible] = useState(false)
   const [currentYPosition, setCurrentYPosition] = useState(0)
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        setKeyboardVisible(true); // or some other action
+        if (Platform.OS === "android") {
+          setKeyboardVisible(true) // or some other action
+        }
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        setKeyboardVisible(false); // or some other action
+        if (Platform.OS === "android") {
+          setKeyboardVisible(false); // or some other action
+        }
         // scrollRef.current?.scrollTo({
         //   y: 1000,
         //   animated: true,
