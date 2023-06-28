@@ -500,6 +500,14 @@ PODS:
   - React-jsinspector (0.71.2)
   - React-logger (0.71.2):
     - glog
+  - react-native-camera (4.2.1):
+    - React-Core
+    - react-native-camera/RCT (= 4.2.1)
+    - react-native-camera/RN (= 4.2.1)
+  - react-native-camera/RCT (4.2.1):
+    - React-Core
+  - react-native-camera/RN (4.2.1):
+    - React-Core
   - react-native-date-picker (4.2.10):
     - React-Core
   - react-native-document-picker (8.2.0):
@@ -520,6 +528,9 @@ PODS:
     - React-Core
   - react-native-netinfo (9.3.8):
     - React-Core
+  - react-native-photo-manipulator (1.2.7):
+    - React
+    - WCPhotoManipulator (~> 2.0.4)
   - react-native-restart (0.0.27):
     - React-Core
   - react-native-safe-area-context (4.5.0):
@@ -639,6 +650,15 @@ PODS:
   - RNGoogleSignin (2.1.1):
     - GoogleSignIn (~> 5.0.0)
     - React
+  - RNImageCropPicker (0.40.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.40.0)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.40.0):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
   - RNPermissions (3.8.0):
     - React-Core
   - RNReanimated (2.14.4):
@@ -675,7 +695,11 @@ PODS:
     - React-Core
   - RNSVG (13.8.0):
     - React-Core
+  - RNVectorIcons (9.2.0):
+    - React-Core
   - SocketRocket (0.6.0)
+  - TOCropViewController (2.6.1)
+  - WCPhotoManipulator (2.0.4)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -737,6 +761,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-geocoder (from `../node_modules/react-native-geocoder`)
@@ -746,6 +771,7 @@ DEPENDENCIES:
   - react-native-location (from `../node_modules/react-native-location`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-photo-manipulator (from `../node_modules/react-native-photo-manipulator`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -772,11 +798,13 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNGoogleSignin (from `../node_modules/react-native-google-signin`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -814,6 +842,8 @@ SPEC REPOS:
     - OpenSSL-Universal
     - PromisesObjC
     - SocketRocket
+    - TOCropViewController
+    - WCPhotoManipulator
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -871,6 +901,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
@@ -889,6 +921,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-photo-manipulator:
+    :path: "../node_modules/react-native-photo-manipulator"
   react-native-restart:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -941,6 +975,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/react-native-google-signin"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -951,6 +987,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1014,6 +1052,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: c7e028406112db456ac3cf5720d266bc7bc20938
   React-jsinspector: ea8101acf525ec08b2d87ddf0637d45f8e3b4148
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
+  react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-date-picker: 89c419d88fa8e3c5f2d3cbae0bb7f7454ae8ea55
   react-native-document-picker: 495c444c0c773c6e83a5d91165890ecb1c0a399a
   react-native-geocoder: 757427682892bb256f3b3745858cc90eba148a8e
@@ -1023,6 +1062,7 @@ SPEC CHECKSUMS:
   react-native-location: 5a40ec1cc6abf2f6d94df979f98ec76c3a415681
   react-native-maps: 7135a33610202745d08fdf151ce6b0d01952a99c
   react-native-netinfo: fbc23bc2fe217155d85f2f7e0644b1654df8029b
+  react-native-photo-manipulator: dce015c4d602abb529931a40d9d34c277ee478b8
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
   react-native-webview: 9f111dfbcfc826084d6c507f569e5e03342ee1c1
@@ -1049,12 +1089,16 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNGoogleSignin: 6baed9bb19c9c54614bef63bdc55c381b4e33c44
+  RNImageCropPicker: 486e2f7e2b0461ce24321f751410dce1b3b49e6d
   RNPermissions: 215c54462104b3925b412b0fb3c9c497b21c358b
   RNReanimated: cc5e3aa479cb9170bcccf8204291a6950a3be128
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNShare: a5dc3b9c53ddc73e155b8cd9a94c70c91913c43c
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  WCPhotoManipulator: 45b7be19b75c9edf6d2b44f2f61dbc3673862a8f
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

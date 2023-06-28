@@ -802,6 +802,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }}
                 onChangeText={(text) => {
                   setIdNumber(text);
+                  setIdNumberError("");
                   buttonEnableDiable();
                 }}
                 value={idNumber}
@@ -810,7 +811,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 right={
                   idNumber && (
                     <TextInput.Icon
-                      onPress={() => setIdNumber("")}
+                      onPress={() => {
+                        setIdNumber("")
+                        setIdNumberError(strings.idNumberError)
+                      }}
                       theme={{ colors: { onSurfaceVariant: colors.gray } }}
                       icon="close"
                     />

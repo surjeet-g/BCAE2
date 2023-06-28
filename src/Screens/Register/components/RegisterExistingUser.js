@@ -615,14 +615,23 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 style={{
                   backgroundColor: "transparent",
                 }}
-                onChangeText={setIdNumber}
+                // onChangeText={setIdNumber}
+                onChangeText={(text) => {
+                  setIdNumber(text);
+                  setIdNumberError("");
+
+                  buttonEnableDiable();
+                }}
                 value={idNumber}
                 caption={strings.id_number}
                 placeHolder={strings.id_number}
                 right={
                   idNumber && (
                     <TextInput.Icon
-                      onPress={() => setIdNumber("")}
+                      onPress={() => {
+                        setIdNumber("")
+                        setIdNumberError(strings.idNumberError)
+                      }}
                       theme={{ colors: { onSurfaceVariant: colors.gray } }}
                       icon="close"
                     />

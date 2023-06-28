@@ -13,8 +13,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-BCAE2-BCAE2Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-BCAE2-BCAE2Tests.a */; };
-		D609E4EE29A2A43000F679F3 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4EB29A2A10A00F679F3 /* MaterialCommunityIcons.ttf */; };
-		D609E4EF29A2A43300F679F3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D609E4E929A2A0F300F679F3 /* MaterialIcons.ttf */; };
 		D67FE57F2991044500F29E22 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D67FE57E2991044500F29E22 /* libRNGoogleSignin.a */; };
 		D69DCEDB29911A9300DE4D02 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D69DCEDA29911A9300DE4D02 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
@@ -269,8 +267,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D609E4EF29A2A43300F679F3 /* MaterialIcons.ttf in Resources */,
-				D609E4EE29A2A43000F679F3 /* MaterialCommunityIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D69DCEDB29911A9300DE4D02 /* GoogleService-Info.plist in Resources */,
 			);
@@ -530,7 +526,7 @@
 				CODE_SIGN_ENTITLEMENTS = BCAE2/BCAE2.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = KFP6944LXB;
 				ENABLE_BITCODE = NO;
@@ -565,7 +561,7 @@
 				CODE_SIGN_ENTITLEMENTS = BCAE2/BCAE2Release.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = KFP6944LXB;
 				INFOPLIST_FILE = BCAE2/Info.plist;
