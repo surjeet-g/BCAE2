@@ -2,7 +2,6 @@ import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Dimensions, Image, Keyboard, ScrollView, View } from "react-native";
 
-import DatePicker from "react-native-date-picker";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
@@ -15,6 +14,7 @@ import {
   getPhoneNumberLength
 } from "../../../Utilities/utils";
 
+import { DatePickerModal } from 'react-native-paper-dates';
 import {
   fetchRegisterFormData,
   getOtpForCheck,
@@ -97,6 +97,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     return finalString;
   };
   const [keyEnabled, setKeyboardVisible] = useState(false)
+  const [currentYPosition, setCurrentYPosition] = useState(0)
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -108,6 +109,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       'keyboardDidHide',
       () => {
         setKeyboardVisible(false); // or some other action
+        // scrollRef.current?.scrollTo({
+        //   y: 1000,
+        //   animated: true,
+        // });
+
       }
     );
 
@@ -118,6 +124,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   }, []);
   const [mobileOTPDisabled, setMobileOTPDiabled] = useState(false)
   const [emailOTPDisabled, setEmailOTPDiabled] = useState(false)
+  const scrollRef = useRef();
 
   const [dialpick, setDialPick] = useState("+673");
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
@@ -234,6 +241,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setHno(params.hno);
     setPostcode(params.postCode);
     setDialPick(params.dialPick);
+    setNumberMaxLength(getPhoneNumberLength(params.dialPick));
     setAddrType(params.addressType);
     setCity(params.city);
   };
@@ -579,14 +587,19 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const onClickPasswordChange = (text) => {
     //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
     setPassword(text);
+    setConfirmPasswordError("");
     setPasswordError("");
     buttonEnableDiable();
   };
   const onClickConfirmPasswordChange = (text) => {
     //console.log("onCheckBoxClick====>isSelected===>"+isSelected)
     setConfirmPassword(text);
+
     setConfirmPasswordError("");
     buttonEnableDiable();
+    if (password != "" && (text != password)) {
+      setConfirmPasswordError(strings.password_not_match)
+    }
   };
   const clearFirstName = () => {
     setFirstName("");
@@ -656,7 +669,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
-        <ScrollView nestedScrollEnabled={true}>
+        {/* <Text>{currentYPosition}</Text> */}
+        <ScrollView nestedScrollEnabled={true}
+          ref={scrollRef}
+          onScroll={event => {
+            setCurrentYPosition(event.nativeEvent.contentOffset.y)
+          }}
+        >
+
           <Card
             style={{
               ...SHADOW_STYLE,
@@ -746,7 +766,38 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
               {genderError !== "" && showErrorMessage(genderError)}
             </View>
-            <DatePicker
+            <DatePickerModal
+              locale="en"
+              mode="single"
+              visible={open}
+              onDismiss={() => {
+                setOpen(false)
+              }}
+              date={dob == "" ? new Date() : dob}
+              // onConfirm={onConfirmSingle}
+              onConfirm={(params) => {
+
+                setOpen(false);
+                setDob(moment(params?.date).format("YYYY-MM-DD"));
+                setDobError("");
+                buttonEnableDiable();
+              }}
+            // validRange={{
+            //   startDate: new Date(2021, 1, 2),  // optional
+            //   endDate: new Date(), // optional
+            //   disabledDates: [new Date()] // optional
+            // }}
+            // onChange={} // same props as onConfirm but triggered without confirmed by user
+            // saveLabel="Save" // optional
+            // saveLabelDisabled={true} // optional, default is false
+            // uppercase={false} // optional, default is true
+            // label="Select date" // optional
+            // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
+            // startYear={2000} // optional, default is 1800
+            // endYear={2100} // optional, default is 2200
+            //
+            />
+            {/* <DatePicker
               modal
               mode="date"
               validRange={{ endDate: new Date() }}
@@ -761,7 +812,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 setDobError("");
                 buttonEnableDiable();
               }}
-            />
+            /> */}
             <View style={{ marginTop: 10 }}>
               <CustomInput
                 style={{
@@ -984,7 +1035,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
 
                 isDisableButton={isDisableSendOtpEmail}
-                label={isEmailOtpSend ? "RESEND OTP" : "CONFIRM EMAIL"}
+                label={isEmailOtpSend ? "RESEND OTP" : "SEND OTP"}
                 onPress={submitEmail}
                 bgColor={color.BCAE_PRIMARY}
                 btnTextPro={{

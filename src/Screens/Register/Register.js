@@ -156,7 +156,7 @@ const Register = ({ navigation, props }) => {
               textPro={{
                 fontSize: fontSizes.FONT_13,
                 fontWeight: "600",
-                lineHeight: spacing.HEIGHT_16,
+                // lineHeight: spacing.HEIGHT_16,
               }}
               onPressFirst={async () => {
                 dispatch(resetRegister());

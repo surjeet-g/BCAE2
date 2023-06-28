@@ -534,6 +534,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   //check if smart assistance not enable then going this normal way
                   if (!isEnabledsmartAssist) {
                     interactionDataToCreateInt(item)
+                    setBottombartitle("Create Interaction")
 
                     setKnowledgeSearchText("");
                     setautoSuggestionList(false);
@@ -1705,10 +1706,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     console.log("profile info", profileInfo)
                     const params = {
                       customerId: customerID,
+
                       // statement: input.statement.value,
                       // statementId: input.statementId.value,
                       //problem cause
                       // problemCause: input.problemCause.value?.code,
+                      moduleName: "KnowledgeBaseMobileApp",
                       interactionCategory:
                         input.interactionCategory.value?.code,
                       serviceCategory: input.serviceCategory.value?.code,

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Image, Keyboard, ScrollView, View } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
+import { DatePickerModal } from 'react-native-paper-dates';
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton as Button } from "../../../Components/CustomButton";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
@@ -25,7 +26,6 @@ import {
 } from "../../../Utilities/utils";
 
 import get from "lodash.get";
-import DatePicker from "react-native-date-picker";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
 import { ClearSpace } from "../../../Components/ClearSpace";
 import {
@@ -56,6 +56,9 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     setConfirmPasswordError("");
     buttonEnableDiable();
+    if (password != "" && (textStr != password)) {
+      setConfirmPasswordError(strings.password_not_match)
+    }
   };
 
   const formatOtpTimer = (otpTmr) => {
@@ -508,6 +511,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   const onClickPasswordChange = (text) => {
     setPassword(text);
     setPasswordError("");
+    setConfirmPasswordError("");
+
     buttonEnableDiable();
   };
   const masterReducer = useSelector((state) => state.masterdata);
@@ -657,19 +662,22 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 },
               }}
             />
-            <DatePicker
-              modal
-              mode="date"
-              validRange={{ endDate: new Date() }}
-              open={open}
-              onCancel={() => setOpen(false)}
+
+            <DatePickerModal
+              locale="en"
+              mode="single"
+              visible={open}
+              onDismiss={() => {
+                setOpen(false)
+              }}
               date={dob == "" ? new Date() : dob}
-              maximumDate={new Date()}
+              // onConfirm={onConfirmSingle}
               onConfirm={(params) => {
-                console.log("data", params);
+
                 setOpen(false);
-                setDob(params);
+                setDob(moment(params?.date).format("YYYY-MM-DD"));
                 setDobError("");
+                buttonEnableDiable();
               }}
             />
 

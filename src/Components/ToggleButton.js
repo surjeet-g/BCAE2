@@ -41,7 +41,9 @@ export const ToggleButton = (props) => {
           //...SHADOW_STYLE,
           justifyContent: "center",
           alignItems: "center",
-          height: spacing.HEIGHT_32,
+          // minHeight: spacing.HEIGHT_32,
+          paddingVertical: '2%',
+
           ...width,
           ...customStyle,
         }}
@@ -71,7 +73,8 @@ export const ToggleButton = (props) => {
           borderRadius: spacing.HEIGHT_24,
           justifyContent: "center",
           alignItems: "center",
-          height: spacing.HEIGHT_32,
+          paddingVertical: '2%',
+          // minHeight: spacing.HEIGHT_32,
           ...width,
           ...customStyle,
         }}
