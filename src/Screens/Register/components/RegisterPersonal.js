@@ -319,7 +319,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
         lastName: lastName,
         gender: gender?.code, //gender.code
         //customerNo: "",  not required for personal customer
-        extNo: countryCode,
+        extNo: dialpick,
         mobileNo: mobileNo,
         emailId: email,
         birthDate: moment(dob).format("YYYY-MM-DD"),
@@ -455,7 +455,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           //console.log("count", mobileNumberWIthCounty);
           dispatch(
             sendOtp(
-              countryCode,
+              dialpick,
               mobileNo,
               firstName,
               "mobile",

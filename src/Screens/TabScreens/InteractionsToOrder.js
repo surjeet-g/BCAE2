@@ -557,7 +557,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                       customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                      requestId: 61,
+                      requestId: parseInt(item.requestId),
                       moduleName: "KnowledgeBaseMobileApp"
 
                     })
@@ -827,7 +827,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             <View>
               <Image
                 source={{
-                  uri: "data:image/jpeg;base64," + customerPic,
+                  uri: customerPic,
                 }}
                 // imageStyle={{ borderRadius: 60 }}
                 style={{ height: 60, width: 60 }}
