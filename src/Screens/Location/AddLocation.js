@@ -839,6 +839,23 @@ const AddLocation = ({ route, navigation }) => {
                       setPostcodeName(addressRes[0]?.postCode);
                       setValuePostcode(addressRes[0]?.postCode);
                     }
+                    else if (addressRes.length > 1) {
+                      setValueState(addressRes[0]?.state);
+                      setStateName(addressRes[0]?.state);
+
+                      setCountryName(addressRes[0]?.country);
+                      setValueState(addressRes[0]?.state);
+                      setStateName(addressRes[0]?.state);
+
+                      setValueDist(addressRes[0]?.district);
+                      setDistName(addressRes[0]?.district);
+
+                      //setKampongName(addressRes[0]?.city);
+                      //setValueKampong(addressRes[0]?.city);
+
+                      setPostcodeName(addressRes[0]?.postCode);
+                      setValuePostcode(addressRes[0]?.postCode);
+                    }
                   }
                 )
               );
