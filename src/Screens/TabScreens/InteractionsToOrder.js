@@ -368,6 +368,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const customerPic =
     get(profileReducer, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
+
+  console.log("customer picture 1", customerPic, profileReducer)
   const addresss = get(profileReducer, "savedProfileData.customerAddress", []);
 
   const resetStateAfterSearchClicked = () => {
@@ -383,13 +385,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
     setKnowledgeSearchText(text);
 
-    if (activeService == "") {
-      Toast.show({
-        type: "bctError",
-        text1: "Please select service",
-      });
-      return null;
-    }
+
     if (text.length > 0) {
       // setresultLoader(true)
       await knowledgeSearchDispatch(
@@ -923,43 +919,44 @@ const InteractionsToOrder = ({ route, navigation }) => {
             {handleMultipleContact(addr)}
           </Text>
         </View>
-
-        <Pressable
-          onPress={() => {
-            if (serviceList.length > 0) {
-              setProfileSeriveModal(!modelProfileServiceModel);
-            }
-          }}
-          style={{
-            zIndex: 9,
-            flexDirection: "row",
-            width: "50%",
-            alignItems: "center",
-            marginTop: 5,
-          }}
-        >
-          <Image
-            source={require("../../Assets/icons/interaction_service.png")}
-            style={{ width: 45, height: 45 }}
-          />
-          <Text
-            variant="bodyMedium"
+        {serviceList.length > 0 &&
+          <Pressable
+            onPress={() => {
+              if (serviceList.length > 0) {
+                setProfileSeriveModal(!modelProfileServiceModel);
+              }
+            }}
             style={{
-              fontWeight: "400",
-              color: colors.textColor,
-              marginRight: 5,
+              zIndex: 9,
+              flexDirection: "row",
+              width: "50%",
+              alignItems: "center",
+              marginTop: 5,
             }}
           >
-            Services : {activeService?.description}
-          </Text>
-          {serviceList.length > 0 && (
-            <Icon
-              name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
-              size={20}
-              color={colors.textColor}
+            <Image
+              source={require("../../Assets/icons/interaction_service.png")}
+              style={{ width: 45, height: 45 }}
             />
-          )}
-        </Pressable>
+            <Text
+              variant="bodyMedium"
+              style={{
+                fontWeight: "400",
+                color: colors.textColor,
+                marginRight: 5,
+              }}
+            >
+              Services : {activeService?.description}
+            </Text>
+            {serviceList.length > 0 && (
+              <Icon
+                name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
+                size={20}
+                color={colors.textColor}
+              />
+            )}
+          </Pressable>
+        }
 
         {
           modelProfileServiceModel && (
