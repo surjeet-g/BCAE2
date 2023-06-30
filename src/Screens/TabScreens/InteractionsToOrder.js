@@ -351,8 +351,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setLocationList(get(masterReducer, "masterdataData.LOCATION", []))
     setContactTypeList(get(masterReducer, "masterdataData.CONTACT_TYPE", []))
   }, [masterReducer])
+  const resetCreateInterationForm = () => {
+    const data = { code: "", description: "" }
+    setDropDownFormField("interactionType", data);
+    setDropDownFormField("interactionCategory", data);
+    setDropDownFormField("serviceCategory", data);
+    setDropDownFormField("serviceType", data);
+    setDropDownFormField("priorityCode", data);
 
-
+  }
+  useLayoutEffect(() => {
+    resetCreateInterationForm()
+  }, [])
 
 
   const customerPic =
@@ -1422,6 +1432,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 //open form model
                 setautoSuggestionList(false);
                 Keyboard.dismiss();
+                resetCreateInterationForm()
               }}
             >
               <Icon
