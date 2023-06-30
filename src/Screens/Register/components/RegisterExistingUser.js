@@ -1,6 +1,6 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { Alert, Image, Keyboard, Platform, ScrollView, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, Dimensions, Image, Keyboard, Platform, ScrollView, View } from "react-native";
 
 import { CountryPicker } from "react-native-country-codes-picker";
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -24,6 +24,7 @@ import {
   excludedCountriesList,
   getPhoneNumberLength
 } from "../../../Utilities/utils";
+var { height, width } = Dimensions.get("screen");
 
 import get from "lodash.get";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
@@ -81,6 +82,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     return finalString;
   };
   const [keyEnabled, setKeyboardVisible] = useState(false)
+  const [currentYPosition, setCurrentYPosition] = useState(0)
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -96,11 +98,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       () => {
         if (Platform.OS === "android") {
           setKeyboardVisible(false); // or some other action
+          console.log("dd:", currentYPosition, "f:", height)
+          scrollRef.current?.scrollTo({
+            y: currentYPosition - (height / 100) * 3,
+            animated: true,
+          });
         }
-        // scrollRef.current?.scrollTo({
-        //   y: 1000,
-        //   animated: true,
-        // });
 
       }
     );
@@ -109,7 +112,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
-  }, []);
+  }, [currentYPosition]);
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
@@ -123,6 +126,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   // const [otp, setOTP] = useState("123123");
   // const [otpEmail, setEmailOTP] = useState("123123");
   // const [email, setEmail] = useState("vipin.bahwan@gmail.com");
+  const scrollRef = useRef();
 
   const [dialpick, setDialPick] = useState("+673");
   const [countryPickModel, setCountryPickModel] = useState(false);
@@ -534,7 +538,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
-        <ScrollView nestedScrollEnabled={true}>
+        <ScrollView nestedScrollEnabled={true}
+          ref={scrollRef}
+          onScroll={event => {
+            setCurrentYPosition(event.nativeEvent.contentOffset.y)
+          }}
+        >
           {/* <View style={{ marginTop: spacing.HEIGHT_30 }}>
         <CustomInput
           style={{

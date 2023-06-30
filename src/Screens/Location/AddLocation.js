@@ -567,8 +567,22 @@ const AddLocation = ({ route, navigation }) => {
         return { description: item.postCode, id: item.postCode };
       });
     }
+    let uniquePostalCode = [];
 
-    return finalPostcodeData;
+    let uniqueCodeData = [];
+    if (finalPostcodeData?.length > 0) {
+      finalPostcodeData?.map((item) => {
+        if (!(uniquePostalCode.indexOf(item.id) > -1)) {
+          uniquePostalCode.push(item.id);
+        }
+      });
+    }
+    uniquePostalCode?.map((item) => {
+      uniqueCodeData.push({ description: item, id: item });
+    });
+
+
+    return uniqueCodeData;
   };
   const getCountryList = () => {
     const countryGetList = get(masterReducer, "masterdataData.COUNTRY", []);

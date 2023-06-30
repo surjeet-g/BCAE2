@@ -96,7 +96,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
     return finalString;
   };
-
   const [keyEnabled, setKeyboardVisible] = useState(false)
   const [currentYPosition, setCurrentYPosition] = useState(0)
   useEffect(() => {
@@ -113,11 +112,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       () => {
         if (Platform.OS === "android") {
           setKeyboardVisible(false); // or some other action
+          console.log("dd:", currentYPosition, "f:", height)
+          scrollRef.current?.scrollTo({
+            y: currentYPosition - (height / 100) * 3,
+            animated: true,
+          });
         }
-        // scrollRef.current?.scrollTo({
-        //   y: 1000,
-        //   animated: true,
-        // });
 
       }
     );
@@ -126,7 +126,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
-  }, []);
+  }, [currentYPosition]);
   const [mobileOTPDisabled, setMobileOTPDiabled] = useState(false)
   const [emailOTPDisabled, setEmailOTPDiabled] = useState(false)
   const scrollRef = useRef();
@@ -606,6 +606,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     if (password != "" && (text != password)) {
       setConfirmPasswordError(strings.password_not_match)
     }
+
   };
   const clearFirstName = () => {
     setFirstName("");
@@ -675,7 +676,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
-        {/* <Text>{currentYPosition}</Text> */}
+
         <ScrollView nestedScrollEnabled={true}
           ref={scrollRef}
           onScroll={event => {

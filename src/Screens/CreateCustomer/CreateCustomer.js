@@ -175,7 +175,7 @@ const CreateCustomer = ({ navigation }) => {
     masterReducer?.masterdataData?.CUSTOMER_CATEGORY;
   const GENDER_LIST = masterReducer?.masterdataData?.GENDER;
   const PRIORITY_LIST = masterReducer?.masterdataData?.PRIORITY;
-  const CONTACT_TYPE_LIST = masterReducer?.masterdataData?.CONTACT_TYPE;
+  const CONTACT_TYPE_LIST = masterReducer?.masterdataData?.CONTACT_PREFERENCE;
   const ACCOUNT_CATEGORY_LIST = masterReducer?.masterdataData?.ACCOUNT_CATEGORY;
   const ACCOUNT_TYPE_LIST = masterReducer?.masterdataData?.ACCOUNT_TYPE;
   const ACCOUNT_LEVEL_LIST = masterReducer?.masterdataData?.ACCOUNT_LEVEL;

@@ -260,6 +260,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         PRIORITY,
         CONTACT_TYPE,
         INTXN_STATEMENT,
+        CONTACT_PREFERENCE,
         INTXN_CAUSE,
         PROBLEM_CAUSE,
         PROD_SUB_TYPE,
@@ -277,7 +278,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       // master only invoke load
       masterDispatch(
         getMasterData(
-          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PROD_SUB_TYPE},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION}`
+          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PROD_SUB_TYPE},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION},${CONTACT_PREFERENCE}`
         )
       );
 
@@ -349,7 +350,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     ))
     setAppoimentList(get(masterReducer, "masterdataData.APPOINT_TYPE", []))
     setLocationList(get(masterReducer, "masterdataData.LOCATION", []))
-    setContactTypeList(get(masterReducer, "masterdataData.CONTACT_TYPE", []))
+    setContactTypeList(get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []))
   }, [masterReducer])
   const resetCreateInterationForm = () => {
     const data = { code: "", description: "" }
@@ -809,25 +810,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 </Text>
               </ImageBackground>
             </View>
-            <View>
-              <ImageBackground
-                source={require("../../Assets/icons/business_background.png")}
-                resizeMode="cover"
-                style={{ width: "100%" }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    paddingLeft: 18,
-                    paddingRight: 18,
-                  }}
+            {customerCategory != "" &&
+              <View>
+                <ImageBackground
+                  source={require("../../Assets/icons/business_background.png")}
+                  resizeMode="cover"
+                  style={{ width: "100%" }}
                 >
-                  {customerCategory}
-                </Text>
-              </ImageBackground>
-            </View>
+                  <Text
+                    style={{
+                      color: "#cf4751",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      paddingLeft: 18,
+                      paddingRight: 18,
+                    }}
+                  >
+                    {customerCategory}
+                  </Text>
+                </ImageBackground>
+              </View>
+            }
+
           </View>
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             <View>

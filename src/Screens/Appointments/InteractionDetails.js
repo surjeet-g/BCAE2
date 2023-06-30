@@ -37,9 +37,9 @@ import {
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  let { interactionID } = route.params
-  interactionID = parseInt(interactionID)
-
+  // let { interactionID } = route.params
+  // interactionID = parseInt(interactionID)
+  let interactionID = parseInt(292)
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -115,7 +115,17 @@ const InteractionDetails = (props) => {
       },
     });
   }, [showPopupMenu]);
+  const handleMutiContactPer = (data) => {
+    const len = get(data, 'length', 0)
+    if (len == 0) return ""
+    let final = []
 
+    data.map(item => {
+      final.push(`${item.description}`)
+      return;
+    })
+    return final.join(`,\n`)
+  }
   const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
     return (
@@ -280,6 +290,7 @@ const InteractionDetails = (props) => {
   };
 
   const DetailsInfoUIFull = () => {
+    console.log("data", InteractionDetailsData)
     return (
       <View
         style={{
@@ -363,8 +374,8 @@ const InteractionDetails = (props) => {
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* Problem Statement View */}
             <DetailInfoItem
-              title={"Problem Statement"}
-              value={InteractionDetailsData?.intxnCause?.description}
+              title={"Service Category"}
+              value={InteractionDetailsData?.serviceCategory?.description}
               flex={2}
             />
 
@@ -379,7 +390,7 @@ const InteractionDetails = (props) => {
           {/* Row 5*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* Contact type View */}
-            <DetailInfoItem title={"Contact Type"} value={"NA"} flex={2} />
+            <DetailInfoItem title={"Contact Type"} value={handleMutiContactPer(InteractionDetailsData?.contactPreference)} flex={2} />
 
             {/*Follow up View */}
             <DetailInfoItem
