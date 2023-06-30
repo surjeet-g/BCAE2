@@ -557,7 +557,7 @@ const EditProfile = ({ navigation, props }) => {
             <View style={[{ alignItems: "center" }]}>
               <ImageBackground
                 source={{
-                  uri: "data:image/jpeg;base64," + customerPic,
+                  uri: customerPic,
                 }}
                 imageStyle={{ borderRadius: 80 }}
                 style={{ height: 110, width: 110 }}

@@ -23,10 +23,9 @@ import LoadingAnimation from "../Components/LoadingAnimation";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
 import { USERTYPE } from "../Utilities/UserManagement/userInfo";
+import { Appointment } from "./../Screens/Appointments/Appointment";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
-import Search from "./../Screens/Search";
-import { Appointment } from "./../Screens/Appointments/Appointment";
 
 const BottomTab = createBottomTabNavigator();
 const initialRoutByPlat =
@@ -61,7 +60,7 @@ const BottomBarNavigation = () => {
     ? "savedProfileData.customerPhoto"
     : "savedProfileData.profilePicture";
   const profile = get(profileRed, profilePath, null);
-
+  console.log("customer pic", profile, profileRed)
   const { colors, fonts } = useTheme();
   const options = (navigation) => ({
     activeTintColor: "#e91e63",
@@ -89,9 +88,7 @@ const BottomBarNavigation = () => {
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${
-                  profile || DEFAULT_PROFILE_IMAGE
-                }`,
+                uri: profile || DEFAULT_PROFILE_IMAGE
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
@@ -153,9 +150,8 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${
-                          profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                        uri:
+                          profile || DEFAULT_PROFILE_IMAGE,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}
@@ -190,9 +186,7 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${
-                          profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                        uri: profile || DEFAULT_PROFILE_IMAGE,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}
@@ -228,9 +222,7 @@ const BottomBarNavigation = () => {
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
                       source={{
-                        uri: `data:image/jpeg;base64,${
-                          profile || DEFAULT_PROFILE_IMAGE
-                        }`,
+                        uri: profile || DEFAULT_PROFILE_IMAGE,
                       }}
                       // imageStyle={{ borderRadius: 80 }}
                       style={navBar.roundIcon}

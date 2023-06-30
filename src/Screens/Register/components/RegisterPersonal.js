@@ -261,6 +261,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   //   buttonEnableDiable();
   // };
   const submit = async () => {
+
     // if (!mobileOTPVerifcation) {
     //   Toast.show({
     //     type: "bctError",

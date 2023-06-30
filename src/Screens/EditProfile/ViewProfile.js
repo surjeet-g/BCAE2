@@ -67,11 +67,12 @@ export const ViewProfile = ({ navigation }) => {
       const language = await getLanguage();
       setSelectedLanguage(language.name);
       if (profileResult.typeOfUser == USERTYPE.CUSTOMER) {
+        console.log("profile ff ", profileResult)
         setUserInfo({
           email: profileResult?.customerContact[0]?.emailId,
           name: `${profileResult?.firstName} ${profileResult?.lastName}`,
           userId: userID,
-          profilePicture: profileResult?.profilePicture,
+          profilePicture: profileResult?.customerPhoto,
         });
       } else {
         console.log("hititn", profileResult);
@@ -199,7 +200,6 @@ export const ViewProfile = ({ navigation }) => {
     //while logout we have to reset the data of first two tab as still it has logout info
     // dispatch(deleteNdLogoutUser(props.navigation, profile?.savedProfileData));
   };
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -210,8 +210,7 @@ export const ViewProfile = ({ navigation }) => {
           <View>
             <Image
               source={{
-                uri: `data:image/jpeg;base64,${userInfo.profileImageData || DEFAULT_PROFILE_IMAGE
-                  }`,
+                uri: userInfo.profilePicture || DEFAULT_PROFILE_IMAGE,
               }}
               // imageStyle={{ borderRadius: 80 }}
               style={{
@@ -372,7 +371,6 @@ export const ViewProfile = ({ navigation }) => {
               variant="bodyMedium"
               style={{
                 fontWeight: "600",
-
                 color: colors.secondary,
               }}
             >

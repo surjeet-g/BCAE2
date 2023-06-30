@@ -262,7 +262,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         INTXN_STATEMENT,
         INTXN_CAUSE,
         PROBLEM_CAUSE,
-        PRODUCT_FAMILY,
+        PROD_SUB_TYPE,
         INTXN_CATEGORY,
         LOCATION,
         TICKET_CHANNEL,
@@ -277,7 +277,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       // master only invoke load
       masterDispatch(
         getMasterData(
-          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PRODUCT_FAMILY},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION}`
+          `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PROD_SUB_TYPE},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION}`
         )
       );
 
@@ -305,6 +305,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       const customerUUID = await getCustomerUUID()
       const res = await APICall(`${endPoints.SERVICE_LIST}`, 'POST', { customerUuid: customerUUID.toString() });
       const serviceList = get(res, 'response.data', [])
+      console.log("servicelist", serviceList)
       if (serviceList.length > 0) {
         console.log("",)
         const parsedata = serviceList.map(item => {
@@ -340,7 +341,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setPriorityList(get(masterReducer, "masterdataData.PRIORITY", []))
     setProblemList(get(masterReducer, "masterdataData.INTXN_CAUSE", []))
     setServiceTypelist(get(masterReducer, "masterdataData.SERVICE_TYPE", []));
-    setServiceCategoryList(get(masterReducer, "masterdataData.PRODUCT_FAMILY", []))
+    setServiceCategoryList(get(masterReducer, "masterdataData.PROD_SUB_TYPE", []))
     setInteractionCategoryList(get(
       masterReducer,
       "masterdataData.INTXN_CATEGORY",
@@ -531,19 +532,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   //open form model
                   setautoSuggestionList(false);
                   Keyboard.dismiss();
+                  setKnowledgeSearchText(item?.requestStatement);
+
                   //check if smart assistance not enable then going this normal way
                   if (!isEnabledsmartAssist) {
                     interactionDataToCreateInt(item)
                     setBottombartitle("Create Interaction")
 
-                    setKnowledgeSearchText("");
                     setautoSuggestionList(false);
                     setOpenBottomModal(true)
                     return;
                   }
+                  console.log("intreaction data", item)
+                  interactionDataToCreateInt(item)
+
                   //auto and clear search text
                   setautoSuggestionList(false);
-                  setKnowledgeSearchText("")
                   const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
 
                   //store selected result in cache
@@ -553,14 +557,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const { response, actionType } = await dispatchInteraction(
                     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                       customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                      requestId: parseInt(item.requestId),
+                      requestId: 61,
+                      moduleName: "KnowledgeBaseMobileApp"
+
                     })
                   );
+                  console.log("intreaction data response    ", response)
                   setLoader(false)
-
-
-
-
 
                   const status = await handleInteligenceResponse(response, item, actionType)
                   console.log('response', status)
@@ -1047,7 +1050,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     const { response, actionType } = await dispatchInteraction(
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                        requestId: parseInt(ite.requestId)
+                        requestId: parseInt(ite.requestId),
+                        moduleName: "KnowledgeBaseMobileApp"
+
                       })
                     );
                     setLoader(false)
@@ -1531,7 +1536,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                   <CustomDropDownFullWidth
                     selectedValue={get(serviceCategory, "value.description", "")}
-                    data={serviceList}
+                    data={serviceCategoryList}
                     onChangeText={(text) => {
                       dispatchInteraction(
                         setInteractionFormField({
@@ -1711,7 +1716,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       // statementId: input.statementId.value,
                       //problem cause
                       // problemCause: input.problemCause.value?.code,
-                      moduleName: "KnowledgeBaseMobileApp",
                       interactionCategory:
                         input.interactionCategory.value?.code,
                       serviceCategory: input.serviceCategory.value?.code,

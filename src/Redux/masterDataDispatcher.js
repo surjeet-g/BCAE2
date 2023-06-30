@@ -2,6 +2,7 @@ import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "../Utilities/API";
 import { setmasterDataData, setmasterDataError } from "./masterDataAction";
 export const MASTER_DATA_CONSTANT = {
+  PROD_SUB_TYPE: "PROD_SUB_TYPE", //SERVICE CATEGORY
   PRODUCT_FAMILY: "PRODUCT_FAMILY",
   COUNTRY: "COUNTRY",
   NOTIFICATION_TYPE: "NOTIFICATION_TYPE",
