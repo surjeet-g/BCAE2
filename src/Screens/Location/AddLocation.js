@@ -13,12 +13,14 @@ import {
 import Geocoder from "react-native-geocoder";
 import { TextInput, useTheme } from "react-native-paper";
 
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, {
   Callout,
   Circle,
   Marker,
   PROVIDER_GOOGLE
 } from "react-native-maps";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addNewLocations } from "../../Redux/SavedLocationDispatcher";
 import { color, spacing } from "../../Utilities/Constants/Constant";
@@ -690,6 +692,17 @@ const AddLocation = ({ route, navigation }) => {
           placeholder="Search"
           keyboardType="default"
           inlineImageLeft="Search"
+        />
+        <GooglePlacesAutocomplete
+          placeholder='Search'
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+          }}
+          query={{
+            key: 'AIzaSyC2jf1PLD2duwbbwsBDPcbX79fRFLF0nEo',
+            language: 'en',
+          }}
         />
       </View>
 

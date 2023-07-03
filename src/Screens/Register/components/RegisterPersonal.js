@@ -40,6 +40,7 @@ import {
 import { SHADOW_STYLE } from "../../../Utilities/themeConfig";
 import { styles } from "../Register";
 var { height, width } = Dimensions.get("screen");
+
 export const showErrorMessage = (errMessage) => {
   if (typeof errMessage != "string") return null;
   let pattern = /Successful/i;
@@ -783,7 +784,6 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               date={dob == "" ? new Date() : dob}
               // onConfirm={onConfirmSingle}
               onConfirm={(params) => {
-
                 setOpen(false);
                 setDob(moment(params?.date).format("YYYY-MM-DD"));
                 setDobError("");
@@ -957,7 +957,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   color: color.WHITE,
                   fontSize: fontSizes.FONT_12,
                   fontWeight: "400",
-                  lineHeight: spacing.HEIGHT_14,
+                  // lineHeight: spacing.HEIGHT_14,
                 }}
               />
               {!mobileOTPDisabled && otpTimer > 0 && otpTimer < OTP_TIMER && (
@@ -996,7 +996,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   color: color.WHITE,
                   fontSize: fontSizes.FONT_12,
                   fontWeight: "400",
-                  lineHeight: spacing.HEIGHT_14,
+                  // lineHeight: spacing.HEIGHT_14,
                 }}
               />
               {otp !== "" &&
@@ -1049,7 +1049,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   color: color.WHITE,
                   fontSize: fontSizes.FONT_12,
                   fontWeight: "400",
-                  lineHeight: spacing.HEIGHT_14,
+                  // lineHeight: spacing.HEIGHT_14,
                 }}
               />
               {!emailOTPDisabled && otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
@@ -1091,7 +1091,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   color: color.WHITE,
                   fontSize: fontSizes.FONT_12,
                   fontWeight: "400",
-                  lineHeight: spacing.HEIGHT_14,
+                  // lineHeight: spacing.HEIGHT_14,
                 }}
               />
               {otpEmail !== "" &&

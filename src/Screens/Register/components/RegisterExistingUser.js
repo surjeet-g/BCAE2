@@ -840,7 +840,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                     : false
                 }
                 isDisableButton={isDisableSendOtpEmail}
-                label={"CONFIRM EMAIL"}
+                label={"SEND OTP"}
                 onPress={submitEmail}
                 bgColor={color.BCAE_PRIMARY}
                 btnTextPro={{

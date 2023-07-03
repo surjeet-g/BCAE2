@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
-    height: spacing.HEIGHT_34,
+    // height: spacing.HEIGHT_34,
   },
 
   correctStyle: {

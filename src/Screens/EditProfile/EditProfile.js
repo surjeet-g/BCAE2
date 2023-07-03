@@ -200,6 +200,7 @@ const EditProfile = ({ navigation, props }) => {
         path: "images",
       },
     };
+    return null
 
     /**
      * The first arg is the options object for customization (it can also be null or omitted for default options),
