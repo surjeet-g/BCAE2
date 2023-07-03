@@ -11,9 +11,9 @@ import {
   View
 } from "react-native";
 import Geocoder from "react-native-geocoder";
+import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { TextInput, useTheme } from "react-native-paper";
 
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, {
   Callout,
   Circle,
@@ -29,6 +29,7 @@ import { strings } from "../../Utilities/Language";
 // import Modal from "react-native-modal";
 import RNLocation from "react-native-location";
 
+import axios from "axios";
 import get from "lodash.get";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
@@ -50,7 +51,7 @@ const AddLocation = ({ route, navigation }) => {
   const [activeDropDown, setActiveDropDown] = useState("district");
 
   let savedLocation = useSelector((state) => state.savedLocations);
-
+  const [search, setSearchText] = useState("")
   let savedLocationWithoutAuth = useSelector((state) => state.registerForm);
   const dispatch = useDispatch([addNewLocations, getMasterData]);
   const { width, height } = Dimensions.get("window");
@@ -687,23 +688,42 @@ const AddLocation = ({ route, navigation }) => {
             color: colors.onSurfaceVariant,
           }}
           // style={styles.searchInput}
-          //onChangeText={setSearchText}
-          value={geoAddress}
+          onChangeText={async (text) => {
+            setSearchText(text)
+          }}
+          axios
+          right={
+            <TextInput.Icon
+              onPress={async () => {
+                const req = await axios.get(`https://nominatim.openstreetmap.org/search?q=${search}&format=json`)
+                const lon = get(req, 'data[0].lon', '')
+                const lat = get(req, 'data[0].lat', '')
+                mapRef.current.animateToRegion(
+                  {
+                    latitude: parseFloat(lat),
+                    longitude: parseFloat(lon),
+                    latitudeDelta: latitudeDelta,
+                    longitudeDelta: longitudeDelta,
+                  },
+                  0
+                );
+                getLocationAddress(parseFloat(lat), parseFloat(lon));
+
+                // setCurrentLocationget(true);
+
+                // console.log("data", parseFloat(lon), parseFloat(lat), req.data)
+
+              }}
+              style={{ width: 23, height: 23 }}
+              icon="feature-search-outline"
+            />
+          }
+          value={search}
           placeholder="Search"
           keyboardType="default"
           inlineImageLeft="Search"
         />
-        <GooglePlacesAutocomplete
-          placeholder='Search'
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details);
-          }}
-          query={{
-            key: 'AIzaSyC2jf1PLD2duwbbwsBDPcbX79fRFLF0nEo',
-            language: 'en',
-          }}
-        />
+
       </View>
 
       <View
@@ -800,96 +820,99 @@ const AddLocation = ({ route, navigation }) => {
         />
         {/* </View> */}
       </StickyFooter>
+      <KeyboardAwareView animated={false}>
+        <FooterModel
+          open={isPostalCodeModal}
+          setOpen={setPostalModalCode}
+          title={`Enter address details`}
+        >
 
-      <FooterModel
-        open={isPostalCodeModal}
-        setOpen={setPostalModalCode}
-        title={`Enter address details`}
-      >
-        <View style={{ paddingHorizontal: "4%" }}>
-          {suggestPostCode && (
-            <Text style={{ marginLeft: 5 }}>
-              Is this is your postal code : {suggestPostCode}?
-            </Text>
-          )}
-          <CustomInput
-            value={searchPostal}
-            caption={strings.postCode}
-            placeHolder={strings.postCode}
-            onChangeText={setSearchPostal}
-          />
-          <ClearSpace size={2} />
-          <Pressable
-            style={{ paddingVertical: 5 }}
-            onPress={() => {
-              setAddNaviFrom("manual");
-              setAddLocationModalVisible(true);
-            }}
-          >
-            <Text style={{ color: "#0061ff", marginLeft: 5 }}>
-              {"Don't you know postal code ?"}
-            </Text>
-          </Pressable>
-          <CustomButton
-            loading={false}
-            label={strings.search}
-            isDisabled={searchPostal == ""}
-            onPress={() => {
-              setLoader(true);
-              dispatch1(
-                fetchRegisterFormData(
-                  {
-                    type: "POSTAL_CODE",
-                    search: searchPostal,
-                  },
-                  (addressRes = []) => {
-                    setLoader(false);
-                    setPostalModalCode(false);
-                    setAddLocationModalVisible(true);
+          <View style={{ paddingHorizontal: "4%" }}>
+            {suggestPostCode && (
+              <Text style={{ marginLeft: 5 }}>
+                Is this is your postal code : {suggestPostCode}?
+              </Text>
+            )}
+            <CustomInput
+              value={searchPostal}
+              caption={strings.postCode}
+              placeHolder={strings.postCode}
+              onChangeText={setSearchPostal}
+            />
+            <ClearSpace size={2} />
+            <Pressable
+              style={{ paddingVertical: 5 }}
+              onPress={() => {
+                setAddNaviFrom("manual");
+                setAddLocationModalVisible(true);
+              }}
+            >
+              <Text style={{ color: "#0061ff", marginLeft: 5 }}>
+                {"Don't you know postal code ?"}
+              </Text>
+            </Pressable>
+            <CustomButton
+              loading={false}
+              label={strings.search}
+              isDisabled={searchPostal == ""}
+              onPress={() => {
+                setLoader(true);
+                dispatch1(
+                  fetchRegisterFormData(
+                    {
+                      type: "POSTAL_CODE",
+                      search: searchPostal,
+                    },
+                    (addressRes = []) => {
+                      setLoader(false);
+                      setPostalModalCode(false);
+                      setAddLocationModalVisible(true);
 
-                    if (addressRes.length == 0) return null;
-                    setAddNaviFrom("auto");
-                    if (addressRes.length == 1) {
-                      console.log("address response data", addressRes[0]);
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
-                      setCountryName(addressRes[0]?.country);
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
+                      if (addressRes.length == 0) return null;
+                      setAddNaviFrom("auto");
+                      if (addressRes.length == 1) {
+                        console.log("address response data", addressRes[0]);
+                        setValueState(addressRes[0]?.state);
+                        setStateName(addressRes[0]?.state);
+                        setCountryName(addressRes[0]?.country);
+                        setValueState(addressRes[0]?.state);
+                        setStateName(addressRes[0]?.state);
 
-                      setValueDist(addressRes[0]?.district);
-                      setDistName(addressRes[0]?.district);
+                        setValueDist(addressRes[0]?.district);
+                        setDistName(addressRes[0]?.district);
 
-                      setKampongName(addressRes[0]?.city);
-                      setValueKampong(addressRes[0]?.city);
+                        setKampongName(addressRes[0]?.city);
+                        setValueKampong(addressRes[0]?.city);
 
-                      setPostcodeName(addressRes[0]?.postCode);
-                      setValuePostcode(addressRes[0]?.postCode);
+                        setPostcodeName(addressRes[0]?.postCode);
+                        setValuePostcode(addressRes[0]?.postCode);
+                      }
+                      else if (addressRes.length > 1) {
+                        setValueState(addressRes[0]?.state);
+                        setStateName(addressRes[0]?.state);
+
+                        setCountryName(addressRes[0]?.country);
+                        setValueState(addressRes[0]?.state);
+                        setStateName(addressRes[0]?.state);
+
+                        setValueDist(addressRes[0]?.district);
+                        setDistName(addressRes[0]?.district);
+
+                        //setKampongName(addressRes[0]?.city);
+                        //setValueKampong(addressRes[0]?.city);
+
+                        setPostcodeName(addressRes[0]?.postCode);
+                        setValuePostcode(addressRes[0]?.postCode);
+                      }
                     }
-                    else if (addressRes.length > 1) {
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
+                  )
+                );
+              }}
+            />
+          </View>
 
-                      setCountryName(addressRes[0]?.country);
-                      setValueState(addressRes[0]?.state);
-                      setStateName(addressRes[0]?.state);
-
-                      setValueDist(addressRes[0]?.district);
-                      setDistName(addressRes[0]?.district);
-
-                      //setKampongName(addressRes[0]?.city);
-                      //setValueKampong(addressRes[0]?.city);
-
-                      setPostcodeName(addressRes[0]?.postCode);
-                      setValuePostcode(addressRes[0]?.postCode);
-                    }
-                  }
-                )
-              );
-            }}
-          />
-        </View>
-      </FooterModel>
+        </FooterModel>
+      </KeyboardAwareView>
       <FooterModel
         open={isAddLocationModalVisible}
         setOpen={setAddLocationModalVisible}

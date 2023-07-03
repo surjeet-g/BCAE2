@@ -9,14 +9,12 @@ import {
 } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import {
-  buttonSize,
   color,
   fontSizes,
   spacing
 } from "../Utilities/Constants/Constant";
 
 import theme from "../Utilities/themeConfig";
-import { CustomActivityIndicator } from "./CustomActivityIndicator";
 export const TextBoxWithCTA = (props) => {
   const { roundness, colors } = useTheme();
   const [active, setActive] = useState(false);
@@ -44,13 +42,10 @@ export const TextBoxWithCTA = (props) => {
               backgroundColor: color.BLACK,
               borderRadius: 10,
               ...styles.ctaStyle,
+
             }}
           >
-            <CustomActivityIndicator
-              size={buttonSize.SMALL}
-              bgColor={color.BLACK}
-              loderColor={color.WHITE}
-            />
+            <Text style={{ color: "white", fontSize: 10 }}>Loading</Text>
           </View>
         ) : props?.label ? (
           <TouchableOpacity

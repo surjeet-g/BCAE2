@@ -4,9 +4,13 @@ import React, { useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import { launchImageLibrary } from "react-native-image-picker";
+import Toast from "react-native-toast-message";
+import { strings } from '../../Utilities/Language';
 const camraIcon = require('../../Assets/icons/cus_cam_switch.png')
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
+
 // console.log("ImageEditor", ImageEditor)
 export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
     const [tempImg, setTempImg] = useState({})
@@ -24,6 +28,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
     const cameraRef = useRef(null);
     const [flag, setFlag] = useState(false)
 
+    const [fileAttachments, setFileAttachments] = useState({})
     const handleNegData = (val) => val < 0 ? 1 : val
 
     const cropFace = async (imageUri) => {
@@ -65,6 +70,81 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
 
         }
     };
+    const uploadFromGallery = async () => {
+        let options = {
+            storageOptions: {
+                skipBackup: true,
+                path: "images",
+                mediaType: "photo",
+                includeBase64: true,
+                maxHeight: 200,
+                maxWidth: 200,
+            },
+        };
+        launchImageLibrary(
+            {
+                mediaType: "photo|video",
+                includeBase64: true,
+                width: 1024,
+                height: 1024,
+                compressImageQuality: 1,
+            },
+            async (response) => {
+                if (response.didCancel) {
+                    console.log("User cancelled image picker");
+                    // Toast.show({
+                    //     type: "bctError",
+                    //     text1: "User cancelled image picker",
+                    // });
+                } else if (response.error) {
+                    console.log("ImagePicker Error: ", response.error);
+                    Toast.show({
+                        type: "bctError",
+                        text1: "ImagePicker Error: " + response.error,
+                    });
+                } else if (response.customButton) {
+                    console.log("User tapped custom button: ", response.customButton);
+                } else if (response.errorCode) {
+                    Toast.show({
+                        type: "bctError",
+                        text1: "Technical Issue",
+                    });
+                } else {
+                    if (response?.assets[0]?.fileSize < 5000000) {
+                        setTempImg({
+                            // uri: data.uri,
+                            type: 'image/jpeg',
+                            name: `${new Date().toISOString()}image.jpg`,
+                        })
+
+                        if (true) {
+                            console.log("response?.assets", response?.assets)
+                            const uriVal = await cropFace(response?.assets[0]?.uri, {});
+                            console.log("urk", uriVal)
+                            seURI({
+                                fullId: {
+                                    type: 'image/jpeg',
+                                    name: `${new Date().toISOString()}image.jpg`,
+                                    uri: response?.assets[0]?.uri
+                                },
+                                idFace: {
+                                    type: 'image/jpeg',
+                                    name: `${new Date().toISOString()}image.jpg`,
+                                    uri: uriVal
+                                }
+                            })
+
+                        }
+                    } else {
+                        Toast.show({
+                            type: "bctError",
+                            text1: strings.max_per_file_size,
+                        });
+                    }
+                }
+            }
+        );
+    }
     const takePicture = async () => {
         // return null
         if (cameraRef.current) {
@@ -163,6 +243,11 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
                         style={{ width: 20, height: 20 }}
                     />
                 </TouchableOpacity>
+                {isIdcard &&
+                    <TouchableOpacity onPress={uploadFromGallery} style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> Open Gallery </Text>
+                    </TouchableOpacity>
+                }
 
 
             </View>

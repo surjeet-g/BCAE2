@@ -12,7 +12,8 @@ import {
   View
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
-import DatePicker from "react-native-date-picker";
+import { DatePickerModal } from 'react-native-paper-dates';
+
 import { Checkbox, Modal, TextInput, useTheme } from "react-native-paper";
 import StepIndicator from "react-native-step-indicator";
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -363,7 +364,7 @@ const CreateCustomer = ({ navigation }) => {
             placeHolder={strings.lastname}
             onChangeText={(text) => handleCustomerDetails("lastName", text)}
           />
-          <DatePicker
+          {/* <DatePicker
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
@@ -374,6 +375,20 @@ const CreateCustomer = ({ navigation }) => {
             onConfirm={(params) => {
               console.log("data", params);
               handleCustomerDetails("birthDate", params);
+              setOpenBirthDatePicker(false);
+            }}
+          /> */}
+          <DatePickerModal
+            locale="en"
+            mode="single"
+            visible={openBirthDatePicker}
+            onDismiss={() => {
+              setOpenBirthDatePicker(false)
+            }}
+            date={!formData?.customerDetails?.birthDate ? new Date() : new Date(formData?.customerDetails?.birthDate)}
+            // onConfirm={onConfirmSingle}
+            onConfirm={(params) => {
+              handleCustomerDetails("birthDate", moment(params?.date).format("YYYY-MM-DD"));
               setOpenBirthDatePicker(false);
             }}
           />
@@ -433,7 +448,7 @@ const CreateCustomer = ({ navigation }) => {
                 }
               />
             )}
-          <DatePicker
+          {/* <DatePicker
             modal
             mode="date"
             validRange={{ endDate: new Date() }}
@@ -444,6 +459,20 @@ const CreateCustomer = ({ navigation }) => {
             onConfirm={(params) => {
               console.log("data", params);
               handleCustomerDetails("registeredDate", params);
+              setOpenRegDatePicker(false);
+            }}
+          /> */}
+          <DatePickerModal
+            locale="en"
+            mode="single"
+            visible={openRegDatePicker}
+            onDismiss={() => {
+              setOpenRegDatePicker(false)
+            }}
+            date={!formData?.customerDetails?.registeredDate ? new Date() : new Date(formData?.customerDetails?.registeredDate)}
+            // onConfirm={onConfirmSingle}
+            onConfirm={(params) => {
+              handleCustomerDetails("registeredDate", moment(params?.date).format("YYYY-MM-DD"));
               setOpenRegDatePicker(false);
             }}
           />

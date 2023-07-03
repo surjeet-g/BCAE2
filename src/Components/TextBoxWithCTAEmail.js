@@ -7,7 +7,6 @@ import {
   View
 } from "react-native";
 import {
-  buttonSize,
   color,
   fontSizes,
   spacing
@@ -15,7 +14,6 @@ import {
 
 import { Text, TextInput, useTheme } from "react-native-paper";
 import theme from "../Utilities/themeConfig";
-import { CustomActivityIndicator } from "./CustomActivityIndicator";
 
 export const TextBoxWithCTAEmail = (props) => {
   const { roundness, colors } = useTheme();
@@ -44,12 +42,15 @@ export const TextBoxWithCTAEmail = (props) => {
           </View>
         )}
         {props?.loader ? (
-          <View style={{ backgroundColor: color.BLACK, ...styles.ctaStyle }}>
-            <CustomActivityIndicator
-              size={buttonSize.SMALL}
-              bgColor={color.BLACK}
-              loderColor={color.WHITE}
-            />
+          <View
+            style={{
+              backgroundColor: color.BLACK,
+              borderRadius: 10,
+              ...styles.ctaStyle,
+
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 10 }}>Loading</Text>
           </View>
         ) : props?.label ? (
           <TouchableOpacity

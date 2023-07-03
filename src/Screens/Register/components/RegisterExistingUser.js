@@ -604,8 +604,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 }}
                 onChangeText={setCustomerID}
                 value={customerID}
-                caption={"Cusomer ID"}
-                placeHolder={"Cusomer ID"}
+                caption={"Customer ID"}
+                placeHolder={"Customer ID"}
                 right={
                   customerID && (
                     <TextInput.Icon
@@ -688,7 +688,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
               onDismiss={() => {
                 setOpen(false)
               }}
-              date={dob == "" ? new Date() : dob}
+              date={dob == "" ? new Date() : new Date(dob)}
               // onConfirm={onConfirmSingle}
               onConfirm={(params) => {
 

@@ -781,7 +781,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               onDismiss={() => {
                 setOpen(false)
               }}
-              date={dob == "" ? new Date() : dob}
+              date={dob == "" ? new Date() : new Date(dob)}
               // onConfirm={onConfirmSingle}
               onConfirm={(params) => {
                 setOpen(false);

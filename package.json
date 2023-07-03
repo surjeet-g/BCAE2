@@ -46,7 +46,6 @@
     "react-native-fs": "^2.20.0",
     "react-native-geocoder": "https://github.com/v0647/packages.git#35cdd4550802ec55b03967318620947a25a2a6d1",
     "react-native-gesture-handler": "^2.9.0",
-    "react-native-google-places-autocomplete": "^2.5.1",
     "react-native-google-signin": "^2.1.1",
     "react-native-image-crop-picker": "^0.40.0",
     "react-native-image-picker": "^4.10.0",
