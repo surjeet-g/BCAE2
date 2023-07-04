@@ -252,7 +252,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     setCity(params.city);
   };
   const onFirstNameChange = (textStr) => {
-    setFirstName(textStr);
+    const filteredText = textStr.replace(/[^\w\s]/gi, '');
+    setFirstName(filteredText);
     setFirstNameError("");
     buttonEnableDiable();
   };
@@ -620,7 +621,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     });
   };
   const onLastNameChange = (textStr) => {
-    setLastName(textStr);
+    const filteredText = textStr.replace(/[^\w\s]/gi, '');
+    setLastName(filteredText);
     setLastNameError("");
     buttonEnableDiable();
   };

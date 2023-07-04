@@ -116,7 +116,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
-
+  const [mobileOTPDisabled, setMobileOTPDiabled] = useState(false)
+  const [emailOTPDisabled, setEmailOTPDiabled] = useState(false)
   // const [firstName, setFirstName] = useState("vipin");
   // const [lastName, setLastName] = useState("vv");
   // const [customerID, setCustomerID] = useState("123123");
@@ -337,10 +338,12 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   };
 
   const showOtpSentMessage = () => {
+    setMobileOTPDiabled(false)
     setIsDisableSendOtp(true);
     runOtpTimer(otpTimer);
   };
   const showOtpEmailSentMessage = () => {
+    setEmailOTPDiabled(false)
     setIsDisableSendOtpEmail(true);
     runOtpTimerEmail(otpTimer);
   };
@@ -420,6 +423,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
         getOtpForCheck({ reference: mobileNo, otp }, "mobileOtp")
       ); // country code to be added to verify OTP
       if (resp.status) {
+        setMobileOTPDiabled(true)
         setMobileOTPVerifcation(true);
       } else {
         setMobileOTPVerifcation(false);
@@ -437,6 +441,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       );
       if (resp.status) {
         setEmailOTPVerification(true);
+        setEmailOTPDiabled(true)
       } else {
         setEmailOTPVerification(false);
       }
@@ -645,7 +650,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
                   buttonEnableDiable();
                 }}
-                maxLength={15}
                 value={idNumber}
                 caption={strings.id_number}
                 placeHolder={strings.id_number}
@@ -760,7 +764,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                   lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {otpTimer > 0 && otpTimer < OTP_TIMER && (
+              {!mobileOTPDisabled && otpTimer > 0 && otpTimer < OTP_TIMER && (
                 <View style={{ alignItems: "flex-end", marginTop: 10 }}>
                   <Text style={styles.errorText}>
                     {strings.otp_sent} {formatOtpTimer(otpTimer)}
@@ -851,7 +855,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                   lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
+              {!emailOTPDisabled && otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
                 <View style={{ alignItems: "flex-end", marginTop: 10 }}>
                   <Text style={styles.errorText}>
                     {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}

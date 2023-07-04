@@ -5,14 +5,12 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
+  Keyboard, Pressable,
   ScrollView,
   StyleSheet, Switch, TextInput,
   View
 } from "react-native";
+
 import { Chip, List, Text, useTheme } from "react-native-paper";
 import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -69,6 +67,7 @@ import { getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userIn
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
+import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
 import { endPoints } from '../../Utilities/API/ApiConstants';
@@ -1386,80 +1385,89 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <LoadingAnimation title="fetch data" />
         )
       }
+      <KeyboardAwareView
+      // keyboardVerticalOffset={50}
 
-      <View
-        style={{
-          ...styles.container,
-          backgroundColor: isModelOpen ? "gray" : "#F0F0F0",
-          opacity: isModelOpen ? userSeachEnable ? 0 : 0.3 : 1,
-        }}
+
       >
+        <View
+          style={{
+            ...styles.container,
+            backgroundColor: isModelOpen ? "gray" : "#F0F0F0",
+            opacity: isModelOpen ? userSeachEnable ? 0 : 0.3 : 1,
+          }}
+        >
 
-        {/* profile card */}
-        {renderProfileTab}
+          {/* profile card */}
+          {renderProfileTab}
 
-        <ClearSpace size={2} />
-        <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
-          <Text variant="bodyMedium">
-            Smart Assistance
-          </Text>
-          <Switch
+          <ClearSpace size={2} />
 
-            onValueChange={(status) => {
-              setSmartAssistance(status)
+          <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
+            <Text variant="bodyMedium">
+              Smart Assistance
+            </Text>
+            <Switch
 
-            }}
-            value={isEnabledsmartAssist}
-          />
-        </View>
+              onValueChange={(status) => {
+                setSmartAssistance(status)
 
-
-
-        <Text variant="bodyMedium">Type your statement here</Text>
-        <View style={styles.searchSection}>
-          <TextInput
-            style={styles.input}
-            onFocus={() => setsearchStandaloneModel(false)}
-            value={knowledgeSearchText}
-            placeholder="ex. Biiling problem"
-            onChangeText={onChangeKnowledgeSearchText}
-            underlineColorAndroid="transparent"
-          />
-          {knowledgeSearchText && (
-            <Pressable
-              onPress={() => {
-                setKnowledgeSearchText(false);
-                setsearchStandaloneModel(true);
-                //open form model
-                setautoSuggestionList(false);
-                Keyboard.dismiss();
-                resetCreateInterationForm()
               }}
-            >
-              <Icon
-                style={styles.searchIcon}
-                name="close"
-                size={30}
-                color={"#C7CAD1"}
-              />
-            </Pressable>
+              value={isEnabledsmartAssist}
+            />
+          </View>
+
+
+
+          <Text variant="bodyMedium">Type your statement here</Text>
+
+          <View style={styles.searchSection}>
+            <TextInput
+              style={styles.input}
+              onFocus={() => setsearchStandaloneModel(false)}
+              value={knowledgeSearchText}
+              placeholder="ex. Biiling problem"
+              onChangeText={onChangeKnowledgeSearchText}
+              underlineColorAndroid="transparent"
+            />
+            {knowledgeSearchText && (
+              <Pressable
+                onPress={() => {
+                  setKnowledgeSearchText(false);
+                  setsearchStandaloneModel(true);
+                  //open form model
+                  setautoSuggestionList(false);
+                  Keyboard.dismiss();
+                  resetCreateInterationForm()
+                }}
+              >
+                <Icon
+                  style={styles.searchIcon}
+                  name="close"
+                  size={30}
+                  color={"#C7CAD1"}
+                />
+              </Pressable>
+            )}
+          </View>
+
+
+
+
+          {searchStandAloneModal && (
+            <>
+              <ClearSpace size={5} />
+              <Text variant="bodyMedium">More for you</Text>
+              <ClearSpace size={2} />
+              {renderAccordion}
+            </>
           )}
+          <RenderSearchResult />
+
+          {/* search box end */}
+          {/*knowledge search*/}
         </View>
-
-        {searchStandAloneModal && (
-          <>
-            <ClearSpace size={5} />
-            <Text variant="bodyMedium">More for you</Text>
-            <ClearSpace size={2} />
-            {renderAccordion}
-          </>
-        )}
-        <RenderSearchResult />
-
-        {/* search box end */}
-        {/*knowledge search*/}
-      </View>
-
+      </KeyboardAwareView>
       <FooterModel
         open={openBottomModalChatBoard}
         setOpen={setOpenBottomModalChatBot}
@@ -1467,104 +1475,104 @@ const InteractionsToOrder = ({ route, navigation }) => {
       >
         <RenderBottomChatBoard />
       </FooterModel>
+      {
+        openBottomModal &&
+        <KeyboardAwareView
+          // keyboardVerticalOffset={50}
+          animated={false}
+        >
+          <FooterModel
+            open={openBottomModal}
+            setOpen={setOpenBottomModal}
+            title={bottomBarTitle}>
+            <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
+
+              {/* Field View */}
+              <View style={{ marginHorizontal: 10 }}>
+                {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
+                  <>
+                    <CustomDropDownFullWidth
+                      selectedValue={get(
+                        interactionCategory,
+                        "value.description",
+                        ""
+                      )}
+                      data={interactionCategoryList}
+                      onChangeText={(text) => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "interactionCategory",
+                            value: text,
+                            clearError: true,
+                          })
+                        );
+                      }}
+                      value={get(interactionCategory, "value.code", "")}
+                      caption={"Interaction Category"}
+                      placeHolder={"Select interaction category"}
+                    />
+
+                    {interactionCategory.error &&
+                      showErrorMessage(interactionCategory.error)}
+
+                    <CustomDropDownFullWidth
+                      selectedValue={get(interactionType, "value.description", "")}
+                      data={interactionList}
+                      onChangeText={(text) => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "interactionType",
+                            value: text,
+                            clearError: true,
+                          })
+                        );
+                      }}
+                      value={get(interactionType, "value.code", "")}
+                      caption={strings.intractionType}
+                      placeHolder={"Select " + strings.intractionType}
+                    />
+
+                    {interactionType.error && showErrorMessage(interactionType.error)}
+
+                    <CustomDropDownFullWidth
+                      selectedValue={get(serviceType, "value.description", "")}
+                      data={serviceTypelist}
+                      onChangeText={(text) => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "serviceType",
+                            value: text,
+                            clearError: true,
+                          })
+                        );
+                      }}
+                      value={get(serviceType, "value.code", "")}
+                      caption={strings.serviceType}
+                      placeHolder={"Select " + strings.serviceType}
+                    />
+                    {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
 
 
-      <FooterModel
-        open={openBottomModal}
-        setOpen={setOpenBottomModal}
-        title={bottomBarTitle}>
-        <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
-          <KeyboardAvoidingView
-            // keyboardVerticalOffset={50}
-            behavior={Platform.OS === "ios" ? "padding" : "padding"}
-            style={{ flex: 1 }}
-          >
-            {/* Field View */}
-            <View style={{ marginHorizontal: 10 }}>
-              {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
-                <>
-                  <CustomDropDownFullWidth
-                    selectedValue={get(
-                      interactionCategory,
-                      "value.description",
-                      ""
-                    )}
-                    data={interactionCategoryList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "interactionCategory",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(interactionCategory, "value.code", "")}
-                    caption={"Interaction Category"}
-                    placeHolder={"Select interaction category"}
-                  />
 
-                  {interactionCategory.error &&
-                    showErrorMessage(interactionCategory.error)}
-
-                  <CustomDropDownFullWidth
-                    selectedValue={get(interactionType, "value.description", "")}
-                    data={interactionList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "interactionType",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(interactionType, "value.code", "")}
-                    caption={strings.intractionType}
-                    placeHolder={"Select " + strings.intractionType}
-                  />
-
-                  {interactionType.error && showErrorMessage(interactionType.error)}
-
-                  <CustomDropDownFullWidth
-                    selectedValue={get(serviceType, "value.description", "")}
-                    data={serviceTypelist}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "serviceType",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(serviceType, "value.code", "")}
-                    caption={strings.serviceType}
-                    placeHolder={"Select " + strings.serviceType}
-                  />
-                  {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
-
-
-
-                  <CustomDropDownFullWidth
-                    selectedValue={get(serviceCategory, "value.description", "")}
-                    data={serviceCategoryList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "serviceCategory",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(serviceCategory, "value.code", "")}
-                    caption={"Serive Category"}
-                    placeHolder={"Select Serive Category"}
-                  />
-                  {serviceCategory.error && showErrorMessage(serviceCategory.error)}
-                  {/* problem cause */}
-                  {/* <CustomDropDownFullWidth
+                    <CustomDropDownFullWidth
+                      selectedValue={get(serviceCategory, "value.description", "")}
+                      data={serviceCategoryList}
+                      onChangeText={(text) => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "serviceCategory",
+                            value: text,
+                            clearError: true,
+                          })
+                        );
+                      }}
+                      value={get(serviceCategory, "value.code", "")}
+                      caption={"Serive Category"}
+                      placeHolder={"Select Serive Category"}
+                    />
+                    {serviceCategory.error && showErrorMessage(serviceCategory.error)}
+                    {/* problem cause */}
+                    {/* <CustomDropDownFullWidth
                     selectedValue={get(problemCause, "value.description", "")}
                     data={problemList}
                     onChangeText={(text) => {
@@ -1580,90 +1588,90 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     caption={strings.problem_stat_cause}
                     placeHolder={"Select " + strings.problem_stat_cause}
                   /> */}
-                  {problemCause.error && showErrorMessage(problemCause.error)}
+                    {problemCause.error && showErrorMessage(problemCause.error)}
 
-                  <CustomDropDownFullWidth
-                    selectedValue={get(priorityCode, "value.description", "")}
-                    data={priorityList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "priorityCode",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(priorityCode, "value.code", "")}
-                    caption={strings.priority_type}
-                    placeHolder={"Select " + strings.priority_type}
-                  />
+                    <CustomDropDownFullWidth
+                      selectedValue={get(priorityCode, "value.description", "")}
+                      data={priorityList}
+                      onChangeText={(text) => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "priorityCode",
+                            value: text,
+                            clearError: true,
+                          })
+                        );
+                      }}
+                      value={get(priorityCode, "value.code", "")}
+                      caption={strings.priority_type}
+                      placeHolder={"Select " + strings.priority_type}
+                    />
 
-                  {contactTypeList.length != 0 && (
-                    <View style={{ marginTop: 10 }}>
-                      <CheckGroupbox
-                        data={contactTypeList.map((ite) => {
-                          return {
-                            code: ite.code,
-                            description: ite.description,
-                            active: false,
+                    {contactTypeList.length != 0 && (
+                      <View style={{ marginTop: 10 }}>
+                        <CheckGroupbox
+                          data={contactTypeList.map((ite) => {
+                            return {
+                              code: ite.code,
+                              description: ite.description,
+                              active: false,
+                            }
+                          })
                           }
-                        })
-                        }
-                        values={get(contactPerference, "value", "")}
-                        setValues={(data) => {
-                          setFormField("contactPerference", data);
+                          values={get(contactPerference, "value", "")}
+                          setValues={(data) => {
+                            setFormField("contactPerference", data);
 
-                        }}
-                        label="Contact Preference"
-                      />
-                    </View>
-                  )}
+                          }}
+                          label="Contact Preference"
+                        />
+                      </View>
+                    )}
 
-                </>
-              }
-              <CustomInput
-                value={get(remarks, "value", "")}
-                caption={strings.remarks}
-                placeHolder={strings.remarks}
-                onChangeText={(text) => {
-                  dispatchInteraction(
-                    setInteractionFormField({
-                      field: "remarks",
-                      value: text,
-                      clearError: true,
-                    })
-                  );
-                }}
-                right={
-                  <TextInput.Icon
-                    onPress={() => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "remarks",
-                          value: "",
-                          clearError: false,
-                        })
-                      );
-                    }}
-                    style={{ width: 23, height: 23 }}
-                    icon={require("../../Assets/icons/ic_close.png")}
+                  </>
+                }
+                <CustomInput
+                  value={get(remarks, "value", "")}
+                  caption={strings.remarks}
+                  placeHolder={strings.remarks}
+                  onChangeText={(text) => {
+                    dispatchInteraction(
+                      setInteractionFormField({
+                        field: "remarks",
+                        value: text,
+                        clearError: true,
+                      })
+                    );
+                  }}
+                  right={
+                    <TextInput.Icon
+                      onPress={() => {
+                        dispatchInteraction(
+                          setInteractionFormField({
+                            field: "remarks",
+                            value: "",
+                            clearError: false,
+                          })
+                        );
+                      }}
+                      style={{ width: 23, height: 23 }}
+                      icon={require("../../Assets/icons/ic_close.png")}
+                    />
+                  }
+                />
+
+                {remarks.error && showErrorMessage(remarks.error)}
+                {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
+
+                  <ImagePicker
+                    attachmentModalVisible={attachmentModalVisible}
+                    setAttachmentModalVisible={setAttachmentModalVisible}
+                    fileAttachments={fileAttachments}
+                    setFileAttachments={setFileAttachments}
                   />
                 }
-              />
-
-              {remarks.error && showErrorMessage(remarks.error)}
-              {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
-
-                <ImagePicker
-                  attachmentModalVisible={attachmentModalVisible}
-                  setAttachmentModalVisible={setAttachmentModalVisible}
-                  fileAttachments={fileAttachments}
-                  setFileAttachments={setFileAttachments}
-                />
-              }
-              {/* </KeyboardAwareView> */}
-              {/* <CustomInput
+                {/* </KeyboardAwareView> */}
+                {/* <CustomInput
             value={attachment.value}
             caption={strings.attachment}
             placeHolder={strings.attachment}
@@ -1677,124 +1685,126 @@ const InteractionsToOrder = ({ route, navigation }) => {
               );
             }}
           /> */}
-            </View>
-            {/* {attachment.error && showErrorMessage(attachment.error)} */}
-            {/* Bottom Button View */}
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "white",
-                marginHorizontal: 15,
-                marginBottom: 20,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <CustomButton
-                  label={strings.cancel}
-                  onPress={() => {
-                    setOpenBottomModal(false);
-                    dispatchInteraction(setInteractionReset());
-                  }}
-                />
               </View>
-
-              <View style={{ flex: 1 }}>
-                <CustomButton
-                  isDisabled={!isButtonEnable}
-                  // isDisabled={false}
-                  loading={loaderAdd}
-                  label={strings.submit}
-                  onPress={async () => {
-                    const input = interactionRedux.formData;
-
-
-
-
-                    const logg = true
-                    if (logg) console.log('create complienta :entered', interactionRedux)
-                    const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                    const customerID = get(profileReducer, `${activeData}.customerId`, "");
-                    if (customerID == "") console.log("cusomter id is empty");
-
-
-                    if (logg) console.log('create complienta :customer id', customerID)
-                    if (logg) console.log('create complienta :input', input)
-                    const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
-                    console.log("profile info", profileInfo)
-                    const params = {
-                      customerId: customerID,
-
-                      // statement: input.statement.value,
-                      // statementId: input.statementId.value,
-                      //problem cause
-                      // problemCause: input.problemCause.value?.code,
-                      interactionCategory:
-                        input.interactionCategory.value?.code,
-                      serviceCategory: input.serviceCategory.value?.code,
-                      interactionType: input.interactionType.value?.code,
-                      serviceType: input.serviceType.value?.code,
-                      channel: "MOBILEAPP",
-                      priorityCode: input.priorityCode.value?.code,
-                      contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
-                      remarks: input.remarks.value,
-                      appointAddress: {
-                        address1: profileInfo.address1,
-                        address2: profileInfo.address2,
-                        address3: profileInfo.address3,
-                        city: profileInfo.city,
-                        state: profileInfo.state,
-                        district: profileInfo.district,
-                        postcode: profileInfo.postcode,
-                        country: profileInfo.country,
-                      }
-                    };
-
-                    // const templeAPIPayload = {
-                    //   mapCategory: "INTERACTION",
-                    //   serviceCategory: input.serviceCategory.value?.code,
-                    //   serviceType: input.serviceType.value?.code,
-                    //   customerCategory: "REG",
-                    //   tranType: input.interactionType.value?.code, //interaction type
-                    //   tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
-                    //   tranPriority: input.priorityCode.value?.code,
-                    // }
-
-                    // console.log("payload", templeAPIPayload)
-                    // const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
-                    // console.log("templete view response ", appoinTemplete)
-                    // if (appoinTemplete != false) {
-                    //   //for reference
-                    //   setAppoinmentFormData({ ...params, templateId: appoinTemplete })
-                    //   setAppoinmentPopup(true)
-                    //   return;
-                    // }
-
-                    if (logg) console.log('create complienta :create obj', params)
-
-
-                    const { status, response } = await dispatchInteraction(
-                      addInteractionAction(params, fileAttachments)
-                    );
-                    if (logg) console.log('create complienta :create obj', params)
-                    console.log("interaction type response ", response);
-
-                    if (status) {
-                      setInteractionResponse(response);
-                      setOpenBottomModal(false)
-                      setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
+              {/* {attachment.error && showErrorMessage(attachment.error)} */}
+              {/* Bottom Button View */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  marginHorizontal: 15,
+                  marginBottom: 20,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <CustomButton
+                    label={strings.cancel}
+                    onPress={() => {
+                      setOpenBottomModal(false);
                       dispatchInteraction(setInteractionReset());
+                    }}
+                  />
+                </View>
 
-                    } else {
+                <View style={{ flex: 1 }}>
+                  <CustomButton
+                    isDisabled={!isButtonEnable}
+                    // isDisabled={false}
+                    loading={loaderAdd}
+                    label={strings.submit}
+                    onPress={async () => {
+                      const input = interactionRedux.formData;
 
-                      // setEnableSuccessScreen(interactionResponseScreen.FAILED);
-                    }
-                  }}
-                />
+
+
+
+                      const logg = true
+                      if (logg) console.log('create complienta :entered', interactionRedux)
+                      const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+                      const customerID = get(profileReducer, `${activeData}.customerId`, "");
+                      if (customerID == "") console.log("cusomter id is empty");
+
+
+                      if (logg) console.log('create complienta :customer id', customerID)
+                      if (logg) console.log('create complienta :input', input)
+                      const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
+                      console.log("profile info", profileInfo)
+                      const params = {
+                        customerId: customerID,
+
+                        // statement: input.statement.value,
+                        // statementId: input.statementId.value,
+                        //problem cause
+                        // problemCause: input.problemCause.value?.code,
+                        interactionCategory:
+                          input.interactionCategory.value?.code,
+                        serviceCategory: input.serviceCategory.value?.code,
+                        interactionType: input.interactionType.value?.code,
+                        serviceType: input.serviceType.value?.code,
+                        channel: "MOBILEAPP",
+                        priorityCode: input.priorityCode.value?.code,
+                        contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
+                        remarks: input.remarks.value,
+                        appointAddress: {
+                          address1: profileInfo.address1,
+                          address2: profileInfo.address2,
+                          address3: profileInfo.address3,
+                          city: profileInfo.city,
+                          state: profileInfo.state,
+                          district: profileInfo.district,
+                          postcode: profileInfo.postcode,
+                          country: profileInfo.country,
+                        }
+                      };
+
+                      // const templeAPIPayload = {
+                      //   mapCategory: "INTERACTION",
+                      //   serviceCategory: input.serviceCategory.value?.code,
+                      //   serviceType: input.serviceType.value?.code,
+                      //   customerCategory: "REG",
+                      //   tranType: input.interactionType.value?.code, //interaction type
+                      //   tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
+                      //   tranPriority: input.priorityCode.value?.code,
+                      // }
+
+                      // console.log("payload", templeAPIPayload)
+                      // const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
+                      // console.log("templete view response ", appoinTemplete)
+                      // if (appoinTemplete != false) {
+                      //   //for reference
+                      //   setAppoinmentFormData({ ...params, templateId: appoinTemplete })
+                      //   setAppoinmentPopup(true)
+                      //   return;
+                      // }
+
+                      if (logg) console.log('create complienta :create obj', params)
+
+
+                      const { status, response } = await dispatchInteraction(
+                        addInteractionAction(params, fileAttachments)
+                      );
+                      if (logg) console.log('create complienta :create obj', params)
+                      console.log("interaction type response ", response);
+
+                      if (status) {
+                        setInteractionResponse(response);
+                        setOpenBottomModal(false)
+                        setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
+                        dispatchInteraction(setInteractionReset());
+
+                      } else {
+
+                        // setEnableSuccessScreen(interactionResponseScreen.FAILED);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
-      </FooterModel>
+
+            </ScrollView>
+          </FooterModel>
+        </KeyboardAwareView>
+      }
     </>
   );
 };
@@ -1838,6 +1848,7 @@ const styles = StyleSheet.create({
     lineHeight: spacing.HEIGHT_27 * 2,
   },
   searchSection: {
+
     padding: 5,
     paddingLeft: 10,
     flexDirection: "row",
@@ -1846,6 +1857,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     marginTop: 10,
+
   },
   searchIcon: {
     padding: 10,
@@ -1858,6 +1870,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     backgroundColor: "#fff",
     color: "#424242",
+
   },
   dropDownCard: {
     // shadowColor: '#171717',
