@@ -12,7 +12,7 @@ import { handleNextHandle, STEP_CUSTOMER_ADDRESS } from "./Steps";
 export function fetchServiceProducts(serviceType, navigation = null) {
   return async (dispatch) => {
     let url =
-      endPoints.FETCH_SERVICE_PRODUCTS_API + "?serviceType=" + serviceType;
+      endPoints.FETCH_SERVICE_PRODUCTS_API + "?productType=" + serviceType;
     let result = await serverCall(url, requestMethod.GET, {}, navigation);
     if (result.success) {
       dispatch(setServiceProductsDataInStore(result.data.data, serviceType));

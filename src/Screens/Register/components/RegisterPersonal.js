@@ -866,6 +866,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 value={idNumber}
                 caption={strings.id_number}
                 placeHolder={strings.id_number}
+                maxLength={15}
                 right={
                   idNumber && (
                     <TextInput.Icon

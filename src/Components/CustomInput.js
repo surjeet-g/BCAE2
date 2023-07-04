@@ -52,6 +52,7 @@ export const CustomInput = (props) => {
             width: "99%",
             marginLeft: 2
           }}
+
           placeholderTextColor="#C7CAD1"
           placeholder={placeHolder || caption}
           onFocus={() => {

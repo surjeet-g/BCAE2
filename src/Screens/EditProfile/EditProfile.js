@@ -53,7 +53,7 @@ import {
   getUserTypeForProfile,
   USERTYPE
 } from "../../Utilities/UserManagement/userInfo";
-import { handleMultipleContact, handleUserStatus } from "../../Utilities/utils";
+import { handleMultipleContact } from "../../Utilities/utils";
 const EditProfile = ({ navigation, props }) => {
   const { colors, fonts } = useTheme();
   let savedLocation = useSelector((state) => state.savedLocations);
@@ -532,6 +532,8 @@ const EditProfile = ({ navigation, props }) => {
     ? "savedProfileData.customerContact[0].mobileNo"
     : "savedProfileData.contactNo";
   console.log("profile reducers", addresss);
+
+  console.log("profile ", get(profile, "savedProfileData.statusDesc.description", ""))
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {profile.initProfile && (
@@ -589,9 +591,7 @@ const EditProfile = ({ navigation, props }) => {
               <Text variant="bodyLarge" style={styles.caption}>
                 {"Status: "}{" "}
                 <Text variant="bodySmall" style={styles.caption_small}>
-                  {handleUserStatus(
-                    get(profile, "savedProfileData.status", "")
-                  )}
+                  {get(profile, "savedProfileData.statusDesc.description", "")}
                 </Text>
               </Text>
               <ClearSpace />

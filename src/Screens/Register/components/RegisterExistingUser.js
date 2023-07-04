@@ -645,6 +645,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
                   buttonEnableDiable();
                 }}
+                maxLength={15}
                 value={idNumber}
                 caption={strings.id_number}
                 placeHolder={strings.id_number}

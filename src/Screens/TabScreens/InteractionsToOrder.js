@@ -1733,7 +1733,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       serviceCategory: input.serviceCategory.value?.code,
                       interactionType: input.interactionType.value?.code,
                       serviceType: input.serviceType.value?.code,
-                      channel: input.channel.value,
+                      channel: "MOBILEAPP",
                       priorityCode: input.priorityCode.value?.code,
                       contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
                       remarks: input.remarks.value,
