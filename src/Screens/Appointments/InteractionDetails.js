@@ -37,9 +37,9 @@ import {
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  // let { interactionID } = route.params
-  // interactionID = parseInt(interactionID)
-  let interactionID = parseInt(292)
+  let { interactionID } = route.params
+  interactionID = parseInt(interactionID)
+  // let interactionID = parseInt(167)
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
   const [showBottomModal, setShowBottomModal] = useState(false);
@@ -80,7 +80,7 @@ const InteractionDetails = (props) => {
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
     //fetch order list or enble button
-    dispatch(getOrderListData(navigation, 1, 0));
+    // dispatch(getOrderListData(navigation, 1, 0));
     console.log("interactionL firt", interactionID)
     dispatch(getInteractionDetailsForID(interactionID, navigation));
 
@@ -316,7 +316,7 @@ const InteractionDetails = (props) => {
           }}
           numberOfLines={1}
         >
-          Interaction ID: {InteractionDetailsData?.intxnId}
+          Interaction ID: {InteractionDetailsData?.intxnNo}
         </Text>
 
         <View

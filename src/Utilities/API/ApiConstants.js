@@ -1,7 +1,7 @@
-const SERVER_TYE = "stage"
-
+const SERVER_TYE = "demo"
+// test "https://bcae-test.comquest-brunei.com:1443/bcae/";
 //Staging environment
-export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-test.comquest-brunei.com:1443/bcae/";
+export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
 // export const BASE_URL = "https://st-td123.comquest-brunei.com:13443/td123/";
 
 export const BASE_URL_TENANT =
@@ -11,8 +11,8 @@ export const PROD_BASE_URL = "https://123.comquest-brunei.com/NCC/";
 
 export const PROD_BASE_URL_TENANT =
   "https://bcae-prod.comquest-brunei.com:19443/tenant/";
-
-export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da6";
+const testTenatId = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
+export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
 
 export const endPoints = {
   SERVICE_LIST: "api/accounts/get-service-list?limit=10&page=0",

@@ -432,7 +432,7 @@ export const ViewProfile = ({ navigation }) => {
         </Pressable>
         <Divider />
         <Pressable
-          onPress={() => setShowAnnouncementModal(true)}
+          // onPress={() => setShowAnnouncementModal(true)}
           style={styles.listItem}
         >
           <Icon

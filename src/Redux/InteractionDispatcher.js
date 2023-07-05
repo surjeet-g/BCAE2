@@ -345,7 +345,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
     let params = {
       searchParams: {
-        interactionId,
+        interactionId: interactionId,
       },
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);

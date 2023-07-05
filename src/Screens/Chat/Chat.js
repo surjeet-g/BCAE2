@@ -71,7 +71,7 @@ const Chat = ({ route, navigation }) => {
                     }}
                     ref={webViewRef}
                     source={{
-                        uri: 'https://bcae-test.comquest-brunei.com:1443/bcae-chat/',
+                        uri: 'https://bcae-demo.comquest-brunei.com:1443/bcae-chat/',
                     }}
                 />
             )}

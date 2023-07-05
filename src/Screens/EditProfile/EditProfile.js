@@ -450,10 +450,10 @@ const EditProfile = ({ navigation, props }) => {
     );
   };
   const masterReducer = useSelector((state) => state.masterdata);
-  const customerPic =
+  let customerPic =
     get(profile, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
-
+  if (customerPic == "") customerPic = DEFAULT_PROFILE_IMAGE
   const addresss = get(profile, "savedProfileData.customerAddress", []);
   const contactPerference = get(
     masterReducer,
