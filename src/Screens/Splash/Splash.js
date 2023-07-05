@@ -83,6 +83,8 @@ const Splash = ({ route, navigation }) => {
             style={{
               marginTop: 32,
               // flex: 1,
+              width: 300,
+              height: 100
             }}
           />
         </View>

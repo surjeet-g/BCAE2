@@ -1385,11 +1385,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <LoadingAnimation title="fetch data" />
         )
       }
-      <KeyboardAwareView
-      // keyboardVerticalOffset={50}
-
-
-      >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View
           style={{
             ...styles.container,
@@ -1467,7 +1463,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           {/* search box end */}
           {/*knowledge search*/}
         </View>
-      </KeyboardAwareView>
+      </ScrollView>
       <FooterModel
         open={openBottomModalChatBoard}
         setOpen={setOpenBottomModalChatBot}
