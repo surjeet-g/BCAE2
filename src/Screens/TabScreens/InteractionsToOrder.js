@@ -914,15 +914,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
           }
           <Text
-            numberOfLines={3}
+            numberOfLines={4}
             variant="bodySmall"
             style={{
               fontWeight: "400",
-              width: "60%",
-
+              width: width * .4,
+              flexWrap: "wrap",
+              wordWrap: "break-word",
               color: colors.textColor,
             }}
           >
+
+
             {handleMultipleContact(addr)}
           </Text>
         </View>
