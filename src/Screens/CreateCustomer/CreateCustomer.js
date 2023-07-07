@@ -1,6 +1,8 @@
 import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
+import RNFS from 'react-native-fs';
+
 import {
   FlatList,
   Image,
@@ -2460,8 +2462,10 @@ const CreateCustomer = ({ navigation }) => {
             setUserIDImg({ ...userIDImg, idCard: data.idFace })
 
             const formDataState = new FormData();
-            console.log("source", data.idFace)
-            formDataState.append('source', data.idFace);
+            const base64D = await RNFS.readFile(data.idFace.uri, 'base64');
+
+            // console.log("source", `data:${userIDImg?.face?.type};base64,${base64D}`)
+            formDataState.append('source', `data:${userIDImg?.face?.type};base64,${base64D}`);
             formDataState.append('target', userIDImg.face);
 
             dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
