@@ -2460,8 +2460,9 @@ const CreateCustomer = ({ navigation }) => {
             setUserIDImg({ ...userIDImg, idCard: data.idFace })
 
             const formDataState = new FormData();
-            formDataState.append('source', userIDImg.face);
-            formDataState.append('target', data.idFace);
+            console.log("source", data.idFace)
+            formDataState.append('source', data.idFace);
+            formDataState.append('target', userIDImg.face);
 
             dispatch(setCurrentStepInStore(FACE_RECOG_UPLOAD_DOCUS_LOADER));
             // console.log("formData", formDataState)

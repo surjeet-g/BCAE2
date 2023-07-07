@@ -36,6 +36,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
             const croppedImage = await ImageCropPicker.openCropper({
                 path: imageUri
             });
+
             return croppedImage.path;
         } catch (error) {
             console.error('Failed to crop face:', error);
@@ -119,6 +120,7 @@ export const FaceDetection = ({ isIdcard = false, seURI = () => { } }) => {
 
                         if (true) {
                             console.log("response?.assets", response?.assets)
+
                             const uriVal = await cropFace(response?.assets[0]?.uri, {});
                             console.log("urk", uriVal)
                             seURI({
