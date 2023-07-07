@@ -50,7 +50,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   ]);
   let registerForm = useSelector((state) => state.registerForm);
   //4 minute
-  const OTP_TIMER = 90;
 
   const onConfirmPasswordChange = (textStr) => {
     setConfirmPassword(textStr);
@@ -113,6 +112,8 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
       keyboardDidShowListener.remove();
     };
   }, [currentYPosition]);
+  const masterReducer = useSelector((state) => state.masterdata);
+
   //to do remove dummy data
   const [emailOTPVerification, setEmailOTPVerification] = useState(false);
   const [mobileOTPVerifcation, setMobileOTPVerifcation] = useState(false);
@@ -128,7 +129,10 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
   // const [otpEmail, setEmailOTP] = useState("123123");
   // const [email, setEmail] = useState("vipin.bahwan@gmail.com");
   const scrollRef = useRef();
+  const timerCounter = parseFloat(get(masterReducer, 'masterdataConfig.otpExpirationDuration.email_sms', 1.5))
 
+  const OTP_TIMER = timerCounter * 60;
+  console.log("Timer ex", OTP_TIMER)
   const [dialpick, setDialPick] = useState("+673");
   const [countryPickModel, setCountryPickModel] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -533,7 +537,6 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
 
     buttonEnableDiable();
   };
-  const masterReducer = useSelector((state) => state.masterdata);
 
   const customerIdList = get(
     masterReducer,
@@ -1018,7 +1021,9 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                   color: "#4B3694",
                   marginTop: 5,
                 }}
-                onPress={() => alert("Navigate to T&C")}
+                onPress={
+                  () => navigation.navigate("TermConidtion")
+                }
               >
                 Terms & Conditions of Use
               </Text>

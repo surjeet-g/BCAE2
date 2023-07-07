@@ -1,9 +1,10 @@
-import { MASTERDATA_DATA, MASTERDATA_ERROR, MASTERDATA_INIT } from './masterDataAction'
+import { MASTERDATA_CONFIG_DATA, MASTERDATA_DATA, MASTERDATA_ERROR, MASTERDATA_INIT } from './masterDataAction'
 
 const masterdataInitialState = {
     initmasterData: false,
     ismasterDataError: false,
     masterdataData: {},
+    masterdataConfig: {}
 }
 
 const masterDataReducer = (state = masterdataInitialState, action) => {
@@ -14,6 +15,7 @@ const masterDataReducer = (state = masterdataInitialState, action) => {
                 initmasterData: true,
                 ismasterDataError: false,
                 masterdataData: {},
+                masterdataConfig: {}
             }
 
         case MASTERDATA_ERROR:
@@ -30,6 +32,13 @@ const masterDataReducer = (state = masterdataInitialState, action) => {
                 initmasterData: false,
                 ismasterDataError: false,
                 masterdataData: { ...state.masterdataData, ...action.data },
+            }
+        case MASTERDATA_CONFIG_DATA:
+            return {
+                ...state,
+                // initmasterData: false,
+                // ismasterDataError: false,
+                masterdataConfig: action.data,
             }
         default:
             return state;

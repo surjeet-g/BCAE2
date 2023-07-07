@@ -24,7 +24,7 @@ import { resetRegister, setOtpFormData } from "../../Redux/RegisterAction";
 
 import { useTheme } from "react-native-paper";
 import { HeaderTitle } from "../../Components/headerTitle";
-import { getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
+import { getMasterConfig, getMasterData, MASTER_DATA_CONSTANT } from "../../Redux/masterDataDispatcher";
 import theme from "../../Utilities/themeConfig";
 import { RegisterExistingUser } from "./components/RegisterExistingUser";
 import { RegisterPersonal } from "./components/RegisterPersonal";
@@ -43,7 +43,8 @@ const Register = ({ navigation, props }) => {
     sendOtp,
     userRegister,
     getOtpForCheck,
-    getMasterData
+    getMasterData,
+    getMasterConfig
   ]);
 
   const preRequiredDataFetch = () => {
@@ -51,6 +52,7 @@ const Register = ({ navigation, props }) => {
     const { GENDER, ADDRESS_TYPE, CUSTOMER_ID_TYPE } = MASTER_DATA_CONSTANT;
 
     dispatch(getMasterData(`${GENDER},${ADDRESS_TYPE},${CUSTOMER_ID_TYPE}`));
+    dispatch(getMasterConfig());
 
     dispatch(setOtpFormData({}, "Register"));
     dispatch(setOtpFormData({}, "mobile"));

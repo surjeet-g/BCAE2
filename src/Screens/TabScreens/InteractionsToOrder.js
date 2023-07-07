@@ -486,6 +486,41 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return false
     }
   }
+  const searchWordCustomiz = (text) => {
+    try {
+      if (text.length == 0) return text
+      if (knowledgeSearchText == "") return text
+      const searchIndx = text.toLocaleLowerCase().search(knowledgeSearchText.toLocaleLowerCase())
+      console.log("search index", searchIndx)
+      if (searchIndx == -1) return text
+      let finalData = []
+      const len = knowledgeSearchText.length
+      const sliceText = text.slice(searchIndx, searchIndx + len)
+      const arrayRange = Array.from({ length: len }, (x, i) => i + searchIndx);
+      console.log("arr", arrayRange)
+      const largeIdx = Math.max.apply(0, arrayRange)
+      console.log("larget", largeIdx)
+
+      const word = text.split("")
+      word.map((item, idx) => {
+        if (arrayRange.includes(idx)) {
+          if (idx == largeIdx) {
+            finalData.push(<Text style={{ color: 'red' }}>{sliceText}</Text>)
+          }
+        }
+        else {
+          finalData.push(item)
+
+        }
+      })
+      console.log("data", finalData)
+      return finalData
+    } catch (error) {
+      console.log("erre", error)
+      return text
+    }
+
+  }
   const RenderSearchResult = () => {
     if (!autosuggestionlist) return null;
     const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
@@ -516,7 +551,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
           renderItem={({ item }) => {
             return (
               <List.Item
-                title={item?.requestStatement}
+                title={() => {
+                  return (<Text>{searchWordCustomiz(item?.requestStatement)}</Text>)
+                }}
                 titleStyle={{
                   fontSize: 10,
                   padding: 0,
@@ -526,7 +563,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor: "#fff",
-                  height: 40,
+                  // height: 40,
                   borderBottomColor: colors.gray,
                   borderBottomWidth: 0.5,
                   paddingHorizontal: 4,

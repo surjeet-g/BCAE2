@@ -17,6 +17,7 @@ import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getOrderListData } from "../../Redux/OrderListDispatcher";
@@ -284,6 +285,7 @@ export const HomeScreen = ({ navigation }) => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
       dispatch(getCustomerAccountData(navigation, customerUUDI));
+      console.log("hittin home ",)
       dispatch(getInteractionListData(navigation, 1));
       dispatch(getOrderListData(navigation, 1));
     }
@@ -405,6 +407,7 @@ export const HomeScreen = ({ navigation }) => {
   };
 
   const FlatListItemBottom = (props) => {
+    const HEADER_INDEX = { ORDER: 0, INTERACTION: 1, APPOINMENT: 2 }
     const { item, index } = props;
     return (
       <View
@@ -552,7 +555,20 @@ export const HomeScreen = ({ navigation }) => {
           )}
           {/* View More view */}
           <View style={styles.bottomView}>
-            <TouchableOpacity onPress={() => onHandleAppointment()}>
+            <TouchableOpacity
+              onPress={() => {
+                if (index == HEADER_INDEX.INTERACTION) {
+                  if (interactionList?.interactionListData[0]?.intxnId) {
+                    navigation.navigate(STACK_INTERACTION_DETAILS, {
+                      interactionID: interactionList?.interactionListData[0]?.intxnId
+                    })
+                  }
+                }
+                else {
+                  // onHandleAppointment()
+                }
+              }}
+            >
               <View
                 style={{
                   flexDirection: "row",

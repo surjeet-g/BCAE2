@@ -13,7 +13,6 @@ export function logoutUser(navigation) {
 
     let params = {};
     const userId = await getUserId();
-    console.log("hiting logout");
     let result = await serverCall(
       `${endPoints.LOGOUT_USER}${userId}`,
       requestMethod.DELETE,
@@ -21,9 +20,11 @@ export function logoutUser(navigation) {
     );
     console.log("result", result);
     if (result.success) {
-      dispatch(setLogoutData(result?.data));
+
       await clearAllData()
       navigation.navigate("Splash", {});
+      dispatch(setLogoutData(result?.data));
+
     } else {
       dispatch(setLogoutError(result));
     }

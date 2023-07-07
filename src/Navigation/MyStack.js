@@ -46,6 +46,7 @@ import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 import Chat from "../Screens/Chat/Chat";
 import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
+import { TermNdCondition } from "../Screens/TermNdConidtions/TermNdCondition";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
 import AppointmentDetails from "./../Screens/Appointments/AppointmentDetails";
@@ -94,7 +95,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Splash"}
+        initialRouteName={STACK_REGISTER}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -303,6 +304,14 @@ function MyStack() {
           }}
           name="ForgotPassword"
           component={ForgotPassword}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Forgot Password",
+          }}
+          name="TermConidtion"
+          component={TermNdCondition}
         />
         <Stack.Screen
           options={{ headerShown: true, title: "Registration" }}

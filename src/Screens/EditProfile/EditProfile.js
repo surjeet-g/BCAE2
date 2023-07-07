@@ -10,7 +10,8 @@ import {
   StyleSheet,
   View
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import { launchCamera } from "react-native-image-picker";
+
 import { useDispatch, useSelector } from "react-redux";
 import { getDataFromDB } from "../../Storage/token";
 import {
@@ -23,6 +24,7 @@ import {
 
 import get from "lodash.get";
 import { Text, TextInput, useTheme } from "react-native-paper";
+import Toast from "react-native-toast-message";
 import Camara from "../../Assets/svg/camera_icon.svg";
 import { CheckGroupbox } from "../../Components/CheckGroupbox";
 import { ClearSpace } from "../../Components/ClearSpace";
@@ -98,6 +100,7 @@ const EditProfile = ({ navigation, props }) => {
   const [postCode, setPostcode] = useState("");
   const [contactValues, setContactValues] = useState([]);
   const [notificationValues, setNotificationValues] = useState([]);
+  const [profileImageData, setProfilePic] = useState("")
   useEffect(() => {
     // dispatch1(setProfileReset());
     getDataFromDB(storageKeys.LOGIN_ID).then((result) => {
@@ -200,38 +203,107 @@ const EditProfile = ({ navigation, props }) => {
         path: "images",
       },
     };
-    return null
+
 
     /**
      * The first arg is the options object for customization (it can also be null or omitted for default options),
      * The second arg is the callback which sends object: response (more info in the API Reference)
      */
-    launchImageLibrary(
+    // launchImageLibrary(
+    //   {
+    //     mediaType: "photo|video",
+    //     includeBase64: true,
+    //     width: 1024,
+    //     height: 1024,
+    //     compressImageQuality: 1,
+    //   },
+    //   (response) => {
+    //     console.log("Response = ", response);
+
+    //     if (response.didCancel) {
+    //       console.log("User cancelled image picker");
+    //     } else if (response.error) {
+    //       console.log("ImagePicker Error: ", response.error);
+    //     } else if (response.customButton) {
+    //       console.log("User tapped custom button: ", response.customButton);
+    //     } else {
+    //       const source = { uri: response.uri };
+
+    //       // You can also display the image using data:
+    //       // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+    //       //alert(JSON.stringify(response?.assets[0]))
+    //       // setProfileImageData(response?.assets[0]?.base64);
+    //     }
+    //   }
+    // );
+
+    launchCamera(
       {
-        mediaType: "photo",
+        mediaType: "photo|video",
         includeBase64: true,
-        maxHeight: 200,
-        maxWidth: 200,
+        width: 1024,
+        height: 1024,
+        compressImageQuality: 1,
       },
-      (response) => {
-        console.log("Response = ", response);
+      async (response) => {
 
         if (response.didCancel) {
           console.log("User cancelled image picker");
+          Toast.show({
+            type: "bctError",
+            text1: "User cancelled image picker",
+          });
         } else if (response.error) {
           console.log("ImagePicker Error: ", response.error);
+          Toast.show({
+            type: "bctError",
+            text1: "ImagePicker Error: " + response.error,
+          });
         } else if (response.customButton) {
           console.log("User tapped custom button: ", response.customButton);
-        } else {
-          const source = { uri: response.uri };
+          // alert(response.customButton);
+        } else if (response?.errorCode) {
+          let errorMsg = "";
+          switch (response?.errorCode) {
+            case "camera_unavailable":
+              errorMsg = "Camara unavailable";
 
-          // You can also display the image using data:
-          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-          //alert(JSON.stringify(response?.assets[0]))
-          setProfileImageData(response?.assets[0]?.base64);
+              break;
+            case "permission":
+              errorMsg = "Permission not grant";
+
+              break;
+            case "others":
+              errorMsg = "Technical error";
+
+              break;
+
+            default:
+              errorMsg = "Technical error";
+              break;
+          }
+          Toast.show({
+            type: "bctError",
+            text1: errorMsg,
+          });
+        } else {
+          // const source = { uri: response.uri };
+
+          if (response?.assets[0]?.fileSize < 5000000) {
+            const base644 = `data:${response?.assets[0].type};base64,${response?.assets[0].base64}`
+            // await setProfilePic(base644)
+            await submit("profiePic", base644)
+
+          } else {
+            BaseToast.show({
+              type: "bctError",
+              text1: strings.max_per_file_size,
+            });
+          }
         }
       }
     );
+
   };
 
   const buttonEnableDisable = () => {
@@ -332,7 +404,7 @@ const EditProfile = ({ navigation, props }) => {
     if (firstName == "" || lastName == "") return false;
     return true;
   };
-  const submit = async () => {
+  const submit = async (type = "", imgBase64 = "") => {
     Keyboard.dismiss();
     if (firstName == "" || lastName == "") {
       Alert.alert(strings.attention, strings.field_empty_alert, [
@@ -345,10 +417,11 @@ const EditProfile = ({ navigation, props }) => {
       //   setCountryError(strings.countryError);
       // }
       //else if (location === "") { setLocationError(strings.locationError) }
-      const isCustomer =
+      let isCustomer =
         USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
       let registerObject, userObject;
-
+      if (type == "profiePic") isCustomer = false
+      //profile pic upload 
       if (isCustomer) {
         registerObject = {
           details: {
@@ -360,7 +433,7 @@ const EditProfile = ({ navigation, props }) => {
               .filter((it) => it.active)
               .map((ite) => ite.code),
             // nationality : country
-            // profilePicture: profileImageData,
+
             // address: {
             //   address: location,
             //   hno: "",
@@ -378,12 +451,13 @@ const EditProfile = ({ navigation, props }) => {
           },
         };
       } else {
+        // console.log("savedProfileInfo", profile)
         userObject = {
           firstName: firstName,
           loginid: get(profile, "savedProfileData.loginid", ''),
           lastName: lastName,
           gender: gender?.code,
-          userId: get(profile, "savedProfileData.userId", ''),
+          userId: parseInt(get(profile, "savedProfileData.userId", '')),
           contactNo: get(profile, "savedProfileData.contactNo", ''),
           email: get(profile, "savedProfileData.email", ''),
           userType: get(profile, "savedProfileData.userType", ''),
@@ -396,6 +470,7 @@ const EditProfile = ({ navigation, props }) => {
           notificationType: notificationValues
             .filter((it) => it.active)
             .map((ite) => ite.code),
+          ...(type == "profiePic") && { profilePicture: imgBase64 }
           // "userId": 0,
           // "contactNo": 0,
           // "email": "string",
@@ -420,7 +495,8 @@ const EditProfile = ({ navigation, props }) => {
         };
       }
 
-      console.log('update profile 11', userObject)
+      console.log("dare", userObject)
+
       const status = await dispatch2(
         updateProfileData(isCustomer ? registerObject : userObject, navigation, isCustomer)
       );
@@ -453,6 +529,7 @@ const EditProfile = ({ navigation, props }) => {
   let customerPic =
     get(profile, "savedProfileData.customerPhoto", null) ??
     DEFAULT_PROFILE_IMAGE;
+
   if (customerPic == "") customerPic = DEFAULT_PROFILE_IMAGE
   const addresss = get(profile, "savedProfileData.customerAddress", []);
   const contactPerference = get(

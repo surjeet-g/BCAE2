@@ -1,6 +1,6 @@
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "../Utilities/API";
-import { setmasterDataData, setmasterDataError } from "./masterDataAction";
+import { setmasterDataConfig, setmasterDataData, setmasterDataError } from "./masterDataAction";
 export const MASTER_DATA_CONSTANT = {
   PROD_SUB_TYPE: "PROD_SUB_TYPE", //SERVICE CATEGORY
   PRODUCT_FAMILY: "PRODUCT_FAMILY",
@@ -62,6 +62,26 @@ export const getMasterData = (valueParam = "") => {
       dispatch(setmasterDataData(result?.data?.data));
     } else {
       dispatch(setmasterDataError(result.data));
+    }
+  };
+};
+
+
+export const getMasterConfig = () => {
+
+  return async (dispatch) => {
+    // dispatch(initmasterDataData());
+    let params = {};
+    const result = await serverCall(
+      `${endPoints.MASTER_CONFIG}`,
+      requestMethod.GET,
+      {}
+    );
+    console.log("resoinse ", result)
+    if (result.success) {
+      dispatch(setmasterDataConfig(result?.data?.data));
+    } else {
+      // dispatch(setmasterDataError(result.data));
     }
   };
 };

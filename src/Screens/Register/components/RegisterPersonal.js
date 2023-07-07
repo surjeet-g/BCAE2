@@ -75,8 +75,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
   const { colors } = useTheme();
   let registerForm = useSelector((state) => state.registerForm);
-  //4 minute
-  const OTP_TIMER = 90;
+
 
   const formatOtpTimer = (otpTmr) => {
     let minute = 0;
@@ -375,7 +374,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     "masterdataData.CUSTOMER_ID_TYPE",
     []
   );
+  //4 minute
 
+  const timerCounter = parseFloat(get(masterReducer, 'masterdataConfig.otpExpirationDuration.email_sms', 1.5))
+
+  const OTP_TIMER = timerCounter * 60;
+  console.log("timerCounter", OTP_TIMER)
   const showAlert = (message = "") => {
     // if (
     //   !registerForm.initRegisterForm &&
@@ -1217,7 +1221,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   marginTop: 5,
                 }}
                 onPress={
-                  () => alert("Navigate to T&C")
+                  () => navigation.navigate("TermConidtion")
                   // navigation.navigate("ShowWebPage", {
                   //   fromLogin: true,
                   //   title: "Privacy Policy",

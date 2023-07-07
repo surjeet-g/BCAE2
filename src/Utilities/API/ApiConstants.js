@@ -15,6 +15,8 @@ const testTenatId = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
 
 export const endPoints = {
+  MASTER_CONFIG: "api/master/get-app-config",
+  TERM_ND_CONDITION: "api/master/template/get-terms-conditions?entityType=APPLICATION&serviceType=ALL",
   SERVICE_LIST: "api/accounts/get-service-list?limit=10&page=0",
   APPOINTMENT_CREATE: "api/master/temp-appointment/mobile/create",
   APPOINTEMENT_TEMPLATE: "api/master/interaction-template",
