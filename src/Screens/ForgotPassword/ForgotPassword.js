@@ -1,40 +1,24 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Text,
-  Pressable,
-  ImageBackground,
-} from "react-native";
-import {
-  spacing,
-  fontSizes,
-  color,
-  buttonSize,
-  DEBUG_BUILD,
-  STAGE_FAQ,
-  PROD_FAQ,
-  validateEmail,
-} from "../../Utilities/Constants/Constant";
-import DatePicker from "react-native-date-picker";
-import {
-  resetForgotPassword,
-  verifyForgotPasswordData,
-} from "../ForgotPassword/ForgotPasswordDispatcher.js";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
+import {
+  Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View
+} from "react-native";
+import DatePicker from "react-native-date-picker";
+import { TextInput, useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { CustomButton } from "../../Components/CustomButton";
 import { CustomInput } from "../../Components/CustomInput";
 import { StickyFooter } from "../../Components/StickyFooter";
-import { strings } from "../../Utilities/Language";
-import { ToggleButton } from "../../Components/ToggleButton";
-import CustomerEmailForgotPassword from "./component/CustomerEmailForgotPassword";
-import { CustomButton } from "../../Components/CustomButton";
 import { Toast } from "../../Components/Toast";
-import { Button, TextInput, useTheme } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
-import CustomerIDForgotPassword from "./component/CustomerIDForgotPassword";
-import { HEADER_MARGIN } from "../../Utilities/themeConfig";
+import { ToggleButton } from "../../Components/ToggleButton";
+import {
+  color, fontSizes, spacing, validateEmail
+} from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language";
+import {
+  resetForgotPassword,
+  verifyForgotPasswordData
+} from "../ForgotPassword/ForgotPasswordDispatcher.js";
 import { HeaderTitle } from "./../../Components/headerTitle";
 
 const ForgotPassword = ({ navigation }) => {
@@ -209,7 +193,7 @@ const ForgotPassword = ({ navigation }) => {
               textPro={{
                 fontSize: fontSizes.FONT_13,
                 fontWeight: "600",
-                lineHeight: spacing.HEIGHT_16,
+                // lineHeight: spacing.HEIGHT_16,
               }}
               onPressFirst={onPressFirst}
               onPressSecond={onPressSecond}
@@ -376,8 +360,8 @@ const ForgotPassword = ({ navigation }) => {
               isFirstSelected
                 ? !validateEmail(username)
                 : customerId == "" || dob == "" || lastName == ""
-                ? true
-                : false
+                  ? true
+                  : false
             }
             onPress={isFirstSelected ? submitEmail : submitCustomerId}
           />
@@ -387,7 +371,7 @@ const ForgotPassword = ({ navigation }) => {
             color: "#393939",
             fontSize: fontSizes.FONT_14,
             textAlign: "center",
-            fontWeight: 400,
+            fontWeight: "400",
             marginTop: 10,
           }}
         >
@@ -398,7 +382,7 @@ const ForgotPassword = ({ navigation }) => {
             style={{
               fontSize: fontSizes.FONT_14,
               textAlign: "center",
-              fontWeight: 600,
+              fontWeight: "600",
               color: "#4B3694",
               marginTop: 5,
             }}
@@ -410,7 +394,7 @@ const ForgotPassword = ({ navigation }) => {
             style={{
               fontSize: fontSizes.FONT_14,
               textAlign: "center",
-              fontWeight: 600,
+              fontWeight: "600",
               color: "#000000",
               marginTop: 5,
             }}
@@ -422,7 +406,7 @@ const ForgotPassword = ({ navigation }) => {
             style={{
               fontSize: fontSizes.FONT_14,
               textAlign: "center",
-              fontWeight: 600,
+              fontWeight: "600",
               color: "#4B3694",
               marginTop: 5,
             }}
@@ -436,7 +420,7 @@ const ForgotPassword = ({ navigation }) => {
             color: "#393939",
             fontSize: fontSizes.FONT_12,
             textAlign: "center",
-            fontWeight: 400,
+            fontWeight: "400",
             marginTop: 10,
           }}
         >
@@ -472,7 +456,7 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
-    fontWeight: 400,
+    fontWeight: "400",
   },
   rgisterText: {
     fontWeight: 700,

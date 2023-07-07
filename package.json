@@ -6,6 +6,7 @@
     "ios:img-fix": "npx react-native-fix-image",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "android:build": "cd android && sudo ./gradlew assembleRelease && cd ../",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",

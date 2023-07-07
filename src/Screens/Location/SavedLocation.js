@@ -167,8 +167,7 @@ const SavedLocation = ({ route, navigation }) => {
           if (allSavedAdd.length == 0) return null;
 
           const addrArray = allSavedAdd.filter((add) => add.addressNo == key);
-          console.log("sdsd", allSavedAdd)
-          return;
+
           navigation.navigate("AddLocation", {
             customerId: 33,
             fromPage: fromPage,
