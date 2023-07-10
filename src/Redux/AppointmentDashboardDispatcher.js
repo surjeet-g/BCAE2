@@ -1,6 +1,7 @@
 import { endPoints, requestMethod } from "../../src/Utilities/API/ApiConstants";
 import { serverCall } from "../Utilities/API";
 import {
+  getCustomerID,
   //getCustomerUUID,
   getUserId,
   getUserType,
@@ -11,15 +12,16 @@ import {
   setAppointmentDashboardData,
   setAppointmentDashboardError
 } from "./AppointmentDashboardAction";
-export const getAppointmentDashboardData = (navigation) => {
+export const getAppointmentDashboardData = (navigation = null) => {
   return async (dispatch) => {
     await dispatch(initAppointmentDashboardData());
     const userType = await getUserType();
     const userId = await getUserId();
+    const customerId = await getCustomerID()
 
     let appointment_url =
       userType == USERTYPE.CUSTOMER
-        ? endPoints.GET_APPOINTMENT_DASHBOARD + "/customer/" + "286"
+        ? endPoints.GET_APPOINTMENT_DASHBOARD + "/customer/" + customerId
         : endPoints.GET_APPOINTMENT_DASHBOARD + "/user/" + userId;
 
     let params = {};
@@ -29,7 +31,8 @@ export const getAppointmentDashboardData = (navigation) => {
       params,
       navigation
     );
-    console.log('data', result)
+
+    console.log('data appoinment', result, appointment_url)
     if (result.success) {
       dispatch(setAppointmentDashboardData(result?.data?.data));
       return true;

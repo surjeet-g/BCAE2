@@ -136,9 +136,9 @@ const BottomBarNavigation = () => {
               return (
                 <View style={navBar.navRightCon}>
                   <Pressable
-                    onPress={() =>
-                      alert("ToDo - Navigate to Notifications Screen")
-                    }
+                    onPress={() => {
+                      // alert("ToDo - Navigate to Notifications Screen")
+                    }}
                     style={navBar.roundIcon}
                   >
                     <Image
@@ -172,8 +172,10 @@ const BottomBarNavigation = () => {
               return (
                 <View style={navBar.navRightCon}>
                   <Pressable
-                    onPress={() =>
-                      alert("ToDo - Navigate to Notifications Screen")
+                    onPress={() => {
+
+                      // alert("ToDo - Navigate to Notifications Screen")
+                    }
                     }
                     style={navBar.roundIcon}
                   >
@@ -208,8 +210,9 @@ const BottomBarNavigation = () => {
               return (
                 <View style={navBar.navRightCon}>
                   <Pressable
-                    onPress={() =>
-                      alert("ToDo - Navigate to Notifications Screen")
+                    onPress={() => {
+                      // alert("ToDo - Navigate to Notifications Screen")
+                    }
                     }
                     style={navBar.roundIcon}
                   >

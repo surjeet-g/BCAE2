@@ -18,6 +18,7 @@ import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
+import { getAppointmentDashboardData } from "../../Redux/AppointmentDashboardDispatcher";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getOrderListData } from "../../Redux/OrderListDispatcher";
@@ -32,7 +33,8 @@ export const CustomCalendar = (props) => {
   const initDate = new Date().toString();
   const [selected, setSelected] = useState(initDate);
   const [showIndex, setShowIndex] = useState(0);
-  const marked = ["2023-03-08", "2023-03-18", "2023-03-23", "2023-03-28"];
+  const marked = props.marked
+
   // const marked = useMemo(
   //   () => ({
   //     [selected]: {
@@ -137,20 +139,21 @@ export const CustomCalendar = (props) => {
               style={
                 ([
                   styles.customDay,
-                  state === "disabled"
+                  state == "disabled"
                     ? styles.disabledText
                     : styles.defaultText,
                 ],
                 {
-                  color:
-                    marked.indexOf(
-                      "" +
-                      moment(
-                        date?.year + "-" + date?.month + "-" + date?.day
-                      ).format("YYYY-MM-DD")
-                    ) > -1
-                      ? "white"
-                      : "black",
+                  color: state == "disabled" ? "gray" : "#000000",
+                  // color:
+                  //   marked.indexOf(
+                  //     "" +
+                  //     moment(
+                  //       date?.year + "-" + date?.month + "-" + date?.day
+                  //     ).format("YYYY-MM-DD")
+                  //   ) > -1
+                  //     ? "white"
+                  //     : "black",
                   textAlign:
                     marked.indexOf(
                       "" +
@@ -274,21 +277,38 @@ export const HomeScreen = ({ navigation }) => {
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
   let interactionList = useSelector((state) => state.interactionList);
+  const appoinmentListRed = useSelector((state) => state.dashboardAppointments);
+  console.log("appoinment data",
+  )
+  const [marked, setMarkedDate] = useState(["2023-07-07"])
   let orderList = useSelector((state) => state.orderList);
   const [showIn, setShowIndex] = useState(0)
   const dispatch = useDispatch([
     getCustomerAccountData,
     getInteractionListData,
     getOrderListData,
+    getAppointmentDashboardData
   ]);
+  //set appoinment 
+  useEffect(() => {
+    const appoinments = get(appoinmentListRed, 'appointmentDashboardData', [])
+    if (appoinments.length > 0) {
+      const result = appoinments.map(item => {
+        return item.appointDate
+      })
+      // console.log("resukt", result)
+      //console.log("appoinmentListRed.appointmentDashboardData", appoinmentListRed.appointmentDashboardData)
+      setMarkedDate(result)
+    }
+  }, [appoinmentListRed.appointmentDashboardData])
 
   useEffect(() => {
     async function fetchAccountAPI() {
       const customerUUDI = await getCustomerUUID();
       dispatch(getCustomerAccountData(navigation, customerUUDI));
-      console.log("hittin home ",)
       dispatch(getInteractionListData(navigation, 1));
       dispatch(getOrderListData(navigation, 1));
+      dispatch(getAppointmentDashboardData())
     }
     fetchAccountAPI();
   }, []);
@@ -678,6 +698,7 @@ export const HomeScreen = ({ navigation }) => {
           </Text>
           <View style={{ margin: 10 }}>
             <CustomCalendar
+              marked={marked}
               onDaySelect={(day) =>
                 console.log(`Date selected: ${day.dateString}`)
               }
@@ -729,7 +750,7 @@ const styles = StyleSheet.create({
     bottom: -20, //Here is the trick
   },
   disabledText: {
-    color: "grey",
+    color: "red",
   },
   defaultText: {
     color: "#000000",

@@ -46,7 +46,7 @@ const initialState = {
 const CreateCustomerReducer = (state = initialState, action) => {
 
   // console.log("$$$-state", JSON.stringify(state));
-  console.log("$$$-action", JSON.stringify(action));
+  // console.log("$$$-action", JSON.stringify(action));
   switch (action.type) {
     case FETCH_SERVICE_PRODUCTS_SUCCESS: {
       const newProducts = action.data.map((product) => {
