@@ -56,7 +56,7 @@ export let strings = new LocalizedStrings({
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
     password: "Password",
-    forgot_password: "Forgot Password?",
+    forgot_password: "Forgot Password",
     customer_email_ID: "Email ID",
     mobile_no: "Mobile Number",
     something_went_wrong: "Oops, something went wrong, Please try again later.",
@@ -298,8 +298,8 @@ export let strings = new LocalizedStrings({
     mom_growth: "MOM Growth",
     top_per: "Top & poor performer",
     view_all: "View All",
-         tasks: "Tasks",
-         //add en-US
+    tasks: "Tasks",
+    //add en-US
   },
   en: {
     building_name: "Building Name/Others*",
@@ -356,7 +356,7 @@ export let strings = new LocalizedStrings({
     back_to_login: "Back to log in",
     customer_ID: "Customer ID",
     password: "Password",
-    forgot_password: "Forgot Password?",
+    forgot_password: "Forgot Password",
     customer_email_ID: "Email ID",
     mobile_no: "Mobile Number",
     something_went_wrong: "Oops, something went wrong, Please try again later.",
@@ -598,7 +598,7 @@ export let strings = new LocalizedStrings({
     mom_growth: "MOM Growth",
     top_per: "Top & poor performer",
     view_all: "View All",
-         tasks: "Tasks",
+    tasks: "Tasks",
   },
 
   ml: {

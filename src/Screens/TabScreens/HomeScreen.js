@@ -21,9 +21,10 @@ import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getOrderListData } from "../../Redux/OrderListDispatcher";
-import { DATE_FORMAT } from "../../Utilities/Constants/Constant";
+import { DATE_FORMAT, SUPPORT_NUM } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
+import { openWhatsApp } from "../../Utilities/utils";
 
 var { height, width } = Dimensions.get("screen");
 
@@ -412,7 +413,7 @@ export const HomeScreen = ({ navigation }) => {
     return (
       <View
         style={{
-          width: 140,
+          width: 150,
           height: 140,
           margin: 5,
           padding: 15,
@@ -438,6 +439,8 @@ export const HomeScreen = ({ navigation }) => {
             >
               {item.title || "No Name"}
             </Text>
+            <ClearSpace size={3} />
+
 
             {/* <Image
               source={require("../../Assets/icons/frequent_interaction.png")}
@@ -613,6 +616,9 @@ export const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Pressable
+        onPress={() => {
+          openWhatsApp(SUPPORT_NUM)
+        }}
         style={{
           position: "absolute",
           bottom: height * 0.15,

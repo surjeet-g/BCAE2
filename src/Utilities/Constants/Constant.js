@@ -200,6 +200,7 @@ export const spacing = {
   HEIGHT_50: hp("6.25%"),
 };
 
+export const SUPPORT_NUM = "+1 5550393936"
 export const bottomBarHeight = 50;
 
 export const fontSizes = {

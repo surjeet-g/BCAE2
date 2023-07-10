@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Linking } from 'react-native';
 import { countryCodes as ccc } from "react-native-country-codes-picker/constants/countryCodes";
 import { supportedCountriesList } from "../Utilities/Constants/Constant";
 
@@ -18,6 +18,19 @@ export function validatePassword(text) {
     return true;
   }
 }
+export const openWhatsApp = (phoneNumber) => {
+  const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;
+
+  Linking.canOpenURL(whatsappUrl)
+    .then((supported) => {
+      if (supported) {
+        return Linking.openURL(whatsappUrl);
+      } else {
+        console.log("WhatsApp is not installed on your device");
+      }
+    })
+    .catch((error) => console.log("An error occurred", error));
+};
 export const getPhoneNumberLength = (code) => {
   let country = supportedCountriesList?.find(
     (country) => country?.countryShortCode === code
