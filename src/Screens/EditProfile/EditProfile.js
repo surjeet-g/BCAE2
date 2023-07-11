@@ -420,11 +420,11 @@ const EditProfile = ({ navigation, props }) => {
       let isCustomer =
         USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
       let registerObject, userObject;
-      if (type == "profiePic") isCustomer = false
       //profile pic upload 
       if (isCustomer) {
         registerObject = {
           details: {
+            ...(type == "profiePic") && { customerPhoto: imgBase64 },
             firstName: firstName,
             lastName: lastName,
             gender: gender?.code,
@@ -470,7 +470,8 @@ const EditProfile = ({ navigation, props }) => {
           notificationType: notificationValues
             .filter((it) => it.active)
             .map((ite) => ite.code),
-          ...(type == "profiePic") && { profilePicture: imgBase64 }
+          ...(type == "profiePic") && { profilePicture: imgBase64 },
+
           // "userId": 0,
           // "contactNo": 0,
           // "email": "string",
@@ -495,8 +496,8 @@ const EditProfile = ({ navigation, props }) => {
         };
       }
 
-      console.log("dare", userObject)
-
+      console.log("date : ", userObject)
+      // return null
       const status = await dispatch2(
         updateProfileData(isCustomer ? registerObject : userObject, navigation, isCustomer)
       );
@@ -526,8 +527,9 @@ const EditProfile = ({ navigation, props }) => {
     );
   };
   const masterReducer = useSelector((state) => state.masterdata);
+
   let customerPic =
-    get(profile, "savedProfileData.customerPhoto", null) ??
+    get(profile, "formData.profilePath", null) ??
     DEFAULT_PROFILE_IMAGE;
 
   if (customerPic == "") customerPic = DEFAULT_PROFILE_IMAGE

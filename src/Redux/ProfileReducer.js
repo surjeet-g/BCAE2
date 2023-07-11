@@ -93,7 +93,8 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
       const custoPath = isConsumer ? "customerNo" : "userId"
       const countyPath = isConsumer ? "customerAddress[0].country" : "country"
       const mobilePath = isConsumer ? "customerContact[0].mobileNo" : "contactNo"
-
+      const profilePath = isConsumer ? "customerPhoto" : "profilePicture"
+      console.log("data ff", action.data)
       return {
         ...state,
         initProfile: false,
@@ -109,6 +110,8 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
           },
           idValue: get(action.data, "idValue", ""),
           location: get(action.data, "customerAddress[0]", ""),
+          profilePath: get(action.data, profilePath, ""),
+
 
           nationality: get(action.data, countyPath, ""),
         },

@@ -14,6 +14,7 @@ import {
   fetchSavedProfileDataByUser,
   seachCustomers
 } from "../Redux/ProfileDispatcher";
+import { navBar } from "../Utilities/Style/navBar";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -21,7 +22,7 @@ export const userNavigationIcon = (props) => {
   return props.navigation.setOptions({
     headerRight: () => {
       return (
-        <View>
+        <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
           <Pressable
             onPress={() => {
               props.navigation.setOptions({
@@ -73,6 +74,12 @@ export const userNavigationIcon = (props) => {
               style={{ width: 60, height: 60 }}
             />
 
+          </Pressable>
+          <Pressable
+            onPress={() => props.setOpenBottomModal(true)}
+            style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
+          >
+            <Icon name="plus" size={19} color={"#1231232"} />
           </Pressable>
 
         </View>

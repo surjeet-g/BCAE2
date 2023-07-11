@@ -81,7 +81,7 @@ export const ViewProfile = ({ navigation }) => {
           email: profileResult?.email,
           name: `${profileResult?.firstName} ${profileResult?.lastName}`,
           userId: userID,
-          profilePicture: profileResult?.customerPhoto,
+          profilePicture: profileResult?.profilePicture,
         });
       }
     }

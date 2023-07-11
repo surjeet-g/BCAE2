@@ -335,6 +335,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [locationList, setLocationList] = useState([])
   const [appointList, setAppoimentList] = useState([])
   const [SearchModelisOpen, setSearchOpen] = useState(true)
+
   useEffect(() => {
     console.log("master data", masterReducer)
     setInteractionList(get(masterReducer, "masterdataData.INTXN_TYPE", []))
@@ -1373,6 +1374,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         useMemo(() => {
           return userNavigationIcon({
             navigation,
+            setOpenBottomModal: setOpenBottomModal,
             setSearchOpen: setSearchOpen,
             setEnableSuccessScreens: () => {
               //to do when user search is empty
@@ -1384,7 +1386,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             headerTitle: "Interaction",
             profileSearchData: get(profileReducer, "profileSearchData", [])
           });
-        }, [setSearchOpen, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
+        }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
 
       }
       {
