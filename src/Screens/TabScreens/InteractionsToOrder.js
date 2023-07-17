@@ -1798,25 +1798,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   };
                   console.log("params", params)
 
-                  // const templeAPIPayload = {
-                  //   mapCategory: "INTERACTION",
-                  //   serviceCategory: input.serviceCategory.value?.code,
-                  //   serviceType: input.serviceType.value?.code,
-                  //   customerCategory: "REG",
-                  //   tranType: input.interactionType.value?.code, //interaction type
-                  //   tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
-                  //   tranPriority: input.priorityCode.value?.code,
-                  // }
+                  const templeAPIPayload = {
+                    mapCategory: "INTERACTION",
+                    serviceCategory: input.serviceCategory.value?.code,
+                    serviceType: input.serviceType.value?.code,
+                    customerCategory: "REG",
+                    tranType: input.interactionType.value?.code, //interaction type
+                    tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
+                    tranPriority: input.priorityCode.value?.code,
+                  }
 
                   // console.log("payload", templeAPIPayload)
-                  // const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
-                  // console.log("templete view response ", appoinTemplete)
-                  // if (appoinTemplete != false) {
-                  //   //for reference
-                  //   setAppoinmentFormData({ ...params, templateId: appoinTemplete })
-                  //   setAppoinmentPopup(true)
-                  //   return;
-                  // }
+                  const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
+                  console.log("templete view response ", appoinTemplete)
+                  if (appoinTemplete != false) {
+                    //for reference
+                    setAppoinmentFormData({ ...params, templateId: appoinTemplete })
+                    setAppoinmentPopup(true)
+                    return;
+                  }
 
                   if (logg) console.log('create complienta :create obj', params)
 
