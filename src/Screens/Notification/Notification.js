@@ -7,7 +7,7 @@ import {
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,7 +22,7 @@ import { getNotificationsData } from "../../Redux/NotificationsDispatcher";
 import {
   bottomBarHeight,
   color,
-  spacing,
+  spacing
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -52,7 +52,7 @@ const Notifications = ({ route, navigation }) => {
           <View style={navBar.navRightCon}>
             <Pressable
               onPress={() => {
-                alert("dsfd");
+                // alert("dsfd");
               }}
               style={{ marginLeft: 0 }}
             >
@@ -117,8 +117,8 @@ const Notifications = ({ route, navigation }) => {
           )}
 
           {!notifications?.initNotifications &&
-          !notifications?.isNotificationsError &&
-          notifications?.notificationsData?.length > 0 ? (
+            !notifications?.isNotificationsError &&
+            notifications?.notificationsData?.length > 0 ? (
             <View
               style={{
                 margin: 5,
