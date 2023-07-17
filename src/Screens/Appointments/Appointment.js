@@ -59,7 +59,7 @@ export const Appointment = ({ navigation }) => {
     dispatchDashboardAppointment(getAppointmentDashboardData(navigation));
   const [createModal, setCreateModal] = useState(false);
   const [editModel, showEditModel] = useState(false);
-  const [showviewEventModel, setviewEventModel] = useState(true);
+  const [showviewEventModel, setviewEventModel] = useState(false);
 
   const { colors, fonts, roundness } = useTheme();
   const [isFirstSelected, setFirstSelected] = useState(TAB_INTERACTIVE);
@@ -647,7 +647,7 @@ export const Appointment = ({ navigation }) => {
               paddingBottom: 12,
               borderRadius: 10,
               width: width * 0.9,
-              height: height * 0.6,
+              height: height * 0.65,
             }}
             theme={{
               "stylesheet.calendar.header": {
