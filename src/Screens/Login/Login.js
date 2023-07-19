@@ -617,7 +617,7 @@ export const Login = ({ navigation }) => {
                 marginTop: 10,
               }}
             >
-              By continuing, I accept and agree to BCAE
+              By continuing, I accept and agree to Dtworks
             </Text>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
               <Text
@@ -666,7 +666,7 @@ export const Login = ({ navigation }) => {
                 marginTop: 10,
               }}
             >
-              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+              © {new Date().getFullYear()} Dtworks. All rights reserved.
             </Text>
           </StickyFooter>
         </View>

@@ -1061,7 +1061,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
                 marginTop: 10,
               }}
             >
-              © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+              © {new Date().getFullYear()} Dtworks. All rights reserved.
             </Text>
           </>
         </StickyFooter>

@@ -22,6 +22,9 @@ const Splash = ({ route, navigation }) => {
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       checkLanguage();
+      setTimeout(() => {
+        checkLogin()
+      }, 1000)
 
     });
     return willFocusSubscription;
@@ -121,7 +124,7 @@ const Splash = ({ route, navigation }) => {
             variant="labelSmall"
             style={{ textAlign: "center", marginBottom: 30 }}
           >
-            © {new Date().getFullYear()} Bahwan CyberTek. All rights reserved.
+            © {new Date().getFullYear()} Dtworks. All rights reserved.
           </Text>
         </View>
       </StickyFooter>

@@ -95,7 +95,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
-        initialRouteName={"Appointment"}
+        initialRouteName={"Splash"}
         screenOptions={() => ({
           headerTransparent: true,
           headerTintColor: "white",
@@ -284,6 +284,7 @@ function MyStack() {
             headerShown: true,
             title: "Login",
             headerLeft: null,
+            headerRight: () => { }
           }}
           name={STACK_LOGIN}
           component={Login}
@@ -292,6 +293,7 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Login",
+
           }}
           name={STACK_VERIFY_LOGIN_OTP}
           component={VerifyLoginOTP}
@@ -301,6 +303,7 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Forgot Password",
+            headerRight: null
           }}
           name="ForgotPassword"
           component={ForgotPassword}
@@ -309,12 +312,13 @@ function MyStack() {
           options={{
             headerShown: true,
             title: "Forgot Password",
+            headerRight: null
           }}
           name="TermConidtion"
           component={TermNdCondition}
         />
         <Stack.Screen
-          options={{ headerShown: true, title: "Registration" }}
+          options={{ headerShown: true, title: "Registration", headerRight: null }}
           name="Register with us"
           component={Register}
         />
