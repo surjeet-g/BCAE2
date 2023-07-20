@@ -1,18 +1,26 @@
+import get from 'lodash.get';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Calendar } from "react-native-calendars";
 import { Chip } from "react-native-paper";
+import Toast from 'react-native-toast-message';
+
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
 import { CustomDropDownFullWidth } from '../../../../Components/CustomDropDownFullWidth';
 import { getAppoinmentsData } from '../../../../Redux/InteractionDispatcher';
+import { endPoints } from '../../../../Utilities/API/ApiConstants';
 import { SHADOW_STYLE } from '../../../../Utilities/themeConfig';
+import { getCustomerID } from '../../../../Utilities/UserManagement/userInfo';
+import { APICall } from '../../../CreateCustomer/util';
 
 const { height, width } = Dimensions.get('screen');
 
 const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
-    locationList = [], appoinmentInfo1 = {}, formData = {
+    locationList = [],
+    appoinmentInfo = {},
+    formData = {
         "customerId": "286",
         "problemCause": "IC0021",
         "interactionCategory": "SERVICE_RELATED",
@@ -34,7 +42,8 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
             "postcode": "110062",
             "country": "India"
         },
-        "templateId": 82
+        "templateId": 82,
+        "productNo": "PROD-201"
     }
 }) => {
     const dispatch = useDispatch([
@@ -102,7 +111,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
         },
     }
 
-    const appoinmentInfo = {
+    const appoinmentInfoDummy = {
         "status": 200,
         "message": "Success",
         "data": {
@@ -245,7 +254,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
         }
     }
 
-    const currenEvent = appoinmentInfo.data.currentAppointments;
+    const currenEvent = get(appoinmentInfo, 'data.currentAppointments', []);
 
     let marked = []
 
@@ -286,6 +295,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                     borderTopLeftRadius: 15,
                     borderTopRightRadius: 15,
                     ...SHADOW_STYLE,
+                    marginBottom: 80
                 }}
             >
                 <View style={{ paddingHorizontal: 5, paddingRight: 10 }}>
@@ -356,8 +366,22 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                             data={locationList}
                             onChangeText={(text) => {
                                 setSelecetedLoc(text)
+                                console.log("text", text)
+                                const templeAPIPayload = {
+                                    ...formData,
+                                    mapCategory: "INTERACTION",
+                                    customerCategory: "REG",
+                                    tranType: formData.interactionType,
+                                    tranCategory: formData.interactionCategory,
+                                    tranPriority: formData.priorityCode,
+                                    appointmentType: text.code,
+                                    appointmentDate: moment().format('y-MM-DD'),
+                                    location: text.code,
+                                    address: formData.appointAddress
 
-
+                                }
+                                // console.log("payload data", templeAPIPayload)
+                                dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
                             }}
                             value={selLocation?.code}
                             caption={"Brach"}
@@ -398,7 +422,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                                                 : styles.defaultText,
                                         ],
                                         {
-                                            color: state === "disabled" ? "##d3d9de" : dayStatus == false ? "black" : dayStatus.textColor,
+                                            color: state === "disabled" ? "#d3d9de" : dayStatus == false ? "black" : dayStatus.textColor,
                                             textAlign: dayStatus == false ? "right" : "left",
                                             fontSize: dayStatus == false ? 10 : 10,
                                             paddingRight: dayStatus == false ? 0 : 5,
@@ -428,13 +452,51 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                     }}
                 />
 
-                <View style={{ position: "relative", flexWrap: "wrap", flexDirection: "row", alignSelf: "flex-start", marginLeft: 30, top: -height * .06, zIndex: 999 }}>
-                    {marked.length && marked.map(ite => {
-
+                <View
+                    style={{
+                        position: "relative",
+                        flexWrap: "wrap",
+                        flexDirection: "row",
+                        alignSelf: "flex-start",
+                        marginLeft: 30,
+                        // top: -height * .06,
+                        marginTop: 30,
+                        zIndex: 999
+                    }}>
+                    {marked.length > 0 && marked.map(ite => {
                         return (
                             <Chip style={{ backgroundColor: 'green', marginRight: 5, marginBottom: 3 }}
                                 textStyle={{ fontSize: 12, color: ite.textColor }}
-                                onPress={() => console.log('Pressed')}
+                                onPress={async () => {
+                                    const customerID = await getCustomerID()
+
+                                    const params = {
+                                        "appointDtlId": get(ite, 'appointDtlId', ''),
+                                        "appointAgentId": get(ite, 'appointUserId', ''),
+                                        "customerId": customerID.toString(),
+                                        "productNo": get(formData, 'productNo', ''),
+                                        "operation": "CREATE"
+                                    }
+
+                                    console.log("Parmas :", params)
+                                    // return
+
+                                    // temp[slot.id].status = !slot.status
+                                    // console.log("temp ", temp, "current slot ", slot.status)
+
+                                    //  setSlote(temp)
+                                    //  enableLoader(true)
+                                    const { status, response } = await APICall(endPoints.APPOINTMENT_CREATE, "POST", params, "Techincal Error..Please try again")
+                                    console.log("response", response)
+                                    if (status) {
+                                        Toast.show({
+                                            type: "bctSuccess",
+                                            text1: "Appointment created successfully",
+                                        });
+                                    }
+                                    setAppoinmentPopup(false)
+
+                                }}
                                 color="black" >{ite.slotName}</Chip>
                         )
                     })

@@ -94,7 +94,7 @@ const INTELIGENCE_STATUS = {
 }
 
 const InteractionsToOrder = ({ route, navigation }) => {
-  const [appoinmentFormData, setAppoinmentFormData] = useState({})
+  const [appoinmentFormData, setAppoinmentFormData] = useState()
   //to do empty
   // const [createInteractionType, setCreateInteractionType] = useState("")
   const [createInteractionType, setCreateInteractionType] = useState(INTELIGENCE_STATUS.RESOVLED)
@@ -138,7 +138,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
-  const [appoimentPopUp, setAppoinmentPopup] = useState(false)
+  const [appoimentPopUp, setAppoinmentPopup] = useState(true)
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [activeState, setActiveState] = useState({})
@@ -305,7 +305,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       const customerUUID = await getCustomerUUID()
       const res = await APICall(`${endPoints.SERVICE_LIST}`, 'POST', { customerUuid: customerUUID.toString() });
       const serviceList = get(res, 'response.data', [])
-      console.log("servicelist", serviceList)
+      //console.log("servicelist", serviceList, )
       if (serviceList.length > 0) {
         console.log("",)
         const parsedata = serviceList.map(item => {
@@ -314,6 +314,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         });
         setServiceList(parsedata)
         setService({
+          productNo: get(serviceList, '[0].productDetails[0].productNo', ""),
           code: parsedata[0].code,
           description: parsedata[0].description,
         });
@@ -1751,10 +1752,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 loading={loaderAdd}
                 label={strings.submit}
                 onPress={async () => {
+
                   const input = interactionRedux.formData;
-
-
-
 
                   const logg = true
                   if (logg) console.log('create complienta :entered', interactionRedux)
@@ -1807,13 +1806,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
                     tranPriority: input.priorityCode.value?.code,
                   }
-
+                  console.log("appointment templte", templeAPIPayload)
                   // console.log("payload", templeAPIPayload)
                   const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
                   console.log("templete view response ", appoinTemplete)
                   if (appoinTemplete != false) {
                     //for reference
-                    setAppoinmentFormData({ ...params, templateId: appoinTemplete })
+                    setAppoinmentFormData({ ...params, templateId: appoinTemplete, productNo: activeService.productNo })
                     setAppoinmentPopup(true)
                     return;
                   }
