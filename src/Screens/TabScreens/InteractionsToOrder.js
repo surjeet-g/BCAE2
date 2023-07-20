@@ -138,7 +138,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
-  const [appoimentPopUp, setAppoinmentPopup] = useState(true)
+  const [appoimentPopUp, setAppoinmentPopup] = useState(false)
   const [requestStatementHistory, setRequestStatementHistory] = useState([]);
   const [isSolutionFound, setSolutionFound] = useState(false);
   const [activeState, setActiveState] = useState({})
@@ -1419,7 +1419,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       }
       {appoimentPopUp && <AppointmentPop
         appointList={appointList}
-        formData1={appoinmentFormData}
+        formData={appoinmentFormData}
         locationList={locationList}
         setAppoinmentPopup={setAppoinmentPopup}
       />}
@@ -1798,13 +1798,20 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   console.log("params", params)
 
                   const templeAPIPayload = {
-                    mapCategory: "INTERACTION",
+                    mapCategory: "TMC_INTERACTION",
                     serviceCategory: input.serviceCategory.value?.code,
                     serviceType: input.serviceType.value?.code,
                     customerCategory: "REG",
                     tranType: input.interactionType.value?.code, //interaction type
                     tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
                     tranPriority: input.priorityCode.value?.code,
+                    // "mapCategory": "TMC_INTERACTION",
+                    // "serviceCategory": "PST_LOANS",
+                    // "serviceType": "ST_BANK",
+                    // "customerCategory": "REG",
+                    // "tranType": "REQUEST",
+                    // "tranCategory": "ACCOUNT_RELATED",
+                    // "tranPriority": "PRTYHGH"
                   }
                   console.log("appointment templte", templeAPIPayload)
                   // console.log("payload", templeAPIPayload)

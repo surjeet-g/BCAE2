@@ -1,11 +1,12 @@
 import get from 'lodash.get';
-import moment from 'moment';
 import React, { useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Calendar } from "react-native-calendars";
 import { Chip } from "react-native-paper";
 import Toast from 'react-native-toast-message';
 
+import moment from 'moment';
+import { Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
 import { CustomDropDownFullWidth } from '../../../../Components/CustomDropDownFullWidth';
@@ -20,31 +21,7 @@ const { height, width } = Dimensions.get('screen');
 const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
     locationList = [],
     appoinmentInfo = {},
-    formData = {
-        "customerId": "286",
-        "problemCause": "IC0021",
-        "interactionCategory": "SERVICE_RELATED",
-
-        "interactionType": "INTEREST",
-        "serviceCategory": "PF_BANK",
-        "serviceType": "ST_CREDITCARD",
-        "channel": "MOBILE_APP",
-        "priorityCode": "PRTYMED",
-        "contactPreference": [],
-        "remarks": "",
-        "appointAddress": {
-            "address1": "sdfsdf",
-            "address2": "dsfdsfds",
-            "address3": "ffdsfds",
-            "city": "New Delhiuth",
-            "state": "Delhi",
-            "district": "South delhi",
-            "postcode": "110062",
-            "country": "India"
-        },
-        "templateId": 82,
-        "productNo": "PROD-201"
-    }
+    formData
 }) => {
     const dispatch = useDispatch([
         getAppoinmentsData
@@ -254,8 +231,8 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
         }
     }
 
-    const currenEvent = get(appoinmentInfo, 'data.currentAppointments', []);
-
+    const currenEvent = get(interactionReducer, 'getAppoinmentsData.data.currentAppointments', []);
+    console.log("appointtemtn full data", currenEvent)
     let marked = []
 
 
@@ -336,23 +313,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                         data={appointList}
                         onChangeText={async (text) => {
                             setSelectedAppointment(text)
-                            if (["BUS_VISIT", "CUST_VISIT"].includes(text.code)) return;
-                            console.log("payload ",)
-                            const templeAPIPayload = {
-                                ...formData,
-                                mapCategory: "INTERACTION",
-                                customerCategory: "REG",
-                                tranType: formData.interactionType,
-                                tranCategory: formData.interactionCategory,
-                                tranPriority: formData.priorityCode,
-                                appointmentType: text.code,
-                                appointmentDate: moment().format('y-MM-DD'),
-                                // location: "BCT",
-                                address: formData.appointAddress
-
-                            }
-                            console.log("payload data", templeAPIPayload)
-                            dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
+                            //if (["BUS_VISIT", "CUST_VISIT"].includes(text.code)) return;
 
 
                         }}
@@ -366,22 +327,23 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                             data={locationList}
                             onChangeText={(text) => {
                                 setSelecetedLoc(text)
-                                console.log("text", text)
-                                const templeAPIPayload = {
-                                    ...formData,
-                                    mapCategory: "INTERACTION",
-                                    customerCategory: "REG",
-                                    tranType: formData.interactionType,
-                                    tranCategory: formData.interactionCategory,
-                                    tranPriority: formData.priorityCode,
-                                    appointmentType: text.code,
-                                    appointmentDate: moment().format('y-MM-DD'),
-                                    location: text.code,
-                                    address: formData.appointAddress
+                                // console.log("text", text)
+                                // const templeAPIPayload = {
+                                //     ...formData,
+                                //     mapCategory: "TMC_INTERACTION",
+                                //     customerCategory: "REG",
+                                //     tranType: formData.interactionType,
+                                //     tranCategory: formData.interactionCategory,
+                                //     tranPriority: formData.priorityCode,
+                                //     appointmentType: text.code,
+                                //     appointmentDate: moment().format('y-MM-DD'),
+                                //     location: text.code,
+                                //     address: formData.appointAddress,
+                                //     templateId: 165,
 
-                                }
-                                // console.log("payload data", templeAPIPayload)
-                                dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
+                                // }
+                                // // console.log("payload data", templeAPIPayload)
+                                // dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
                             }}
                             value={selLocation?.code}
                             caption={"Brach"}
@@ -402,7 +364,27 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                     dayComponent={({ date, state, }) => {
                         const dayStatus = checkIfExistingDateNdAppointDateMatching(date?.dateString, marked)
                         return (
-                            <View
+                            <Pressable
+                                onPress={() => {
+                                    if (get(selectedAppoinment, 'code', '') == "") return null
+                                    // console.log("formData", formData)
+                                    const templeAPIPayload = {
+                                        "mapCategory": "TMC_INTERACTION",
+                                        "serviceCategory": formData.serviceCategory,
+                                        "serviceType": formData.serviceType,
+                                        "customerCategory": "REG",
+                                        "tranType": formData.interactionType,
+                                        "tranCategory": formData.interactionCategory,
+                                        "tranPriority": formData.priorityCode,
+                                        "appointmentType": selectedAppoinment.code,
+                                        "templateId": formData.templateId,
+                                        "appointmentDate": moment(date).format('y-MM-DD')
+
+                                    }
+                                    // console.log("payload data", templeAPIPayload)
+                                    dispatch(getAppoinmentsData(templeAPIPayload, 'getAppoinment'));
+
+                                }}
                                 style={{
                                     // flex: 1,
                                     height: height * 0.1,
@@ -441,7 +423,7 @@ const AppointmentPop = ({ setAppoinmentPopup, appointList = [],
                                 >
                                     {dayStatus == false ? "" : dayStatus.title}
                                 </Text>
-                            </View>
+                            </Pressable>
                         );
                     }}
                     // markedDates={marked}
