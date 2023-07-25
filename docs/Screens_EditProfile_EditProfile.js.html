@@ -1,4 +1,32 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Screens/EditProfile/EditProfile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Screens/EditProfile/EditProfile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -311,7 +339,7 @@ const EditProfile = ({ navigation, props }) => {
         } else {
           // const source = { uri: response.uri };
 
-          if (response?.assets[0]?.fileSize < 5000000) {
+          if (response?.assets[0]?.fileSize &lt; 5000000) {
             const base644 = `data:${response?.assets[0].type};base64,${response?.assets[0].base64}`
             // await setProfilePic(base644)
             await submit("profiePic", base644)
@@ -451,7 +479,7 @@ const EditProfile = ({ navigation, props }) => {
       if (isCustomer) {
         registerObject = {
           details: {
-            ...(type == "profiePic") && { customerPhoto: imgBase64 },
+            ...(type == "profiePic") &amp;&amp; { customerPhoto: imgBase64 },
             firstName: firstName,
             lastName: lastName,
             gender: gender?.code,
@@ -497,7 +525,7 @@ const EditProfile = ({ navigation, props }) => {
           notificationType: notificationValues
             .filter((it) => it.active)
             .map((ite) => ite.code),
-          ...(type == "profiePic") && { profilePicture: imgBase64 },
+          ...(type == "profiePic") &amp;&amp; { profilePicture: imgBase64 },
 
           // "userId": 0,
           // "contactNo": 0,
@@ -538,19 +566,19 @@ const EditProfile = ({ navigation, props }) => {
 
   const showErrorMessage = (errMessage) => {
     return (
-      <View
+      &lt;View
         style={{
           marginTop: spacing.HEIGHT_6,
           flexDirection: "row",
           alignItems: "center",
         }}
       >
-        <Image
+        &lt;Image
           style={styles.errorLogo}
           source={require("../../Assets/icons/ci_error_warning.png")}
         />
-        <Text style={styles.errorText}> {errMessage}</Text>
-      </View>
+        &lt;Text style={styles.errorText}> {errMessage}&lt;/Text>
+      &lt;/View>
     );
   };
   const masterReducer = useSelector((state) => state.masterdata);
@@ -592,7 +620,7 @@ const EditProfile = ({ navigation, props }) => {
   // const profileCurrentPer = ["CNT_PREF_EMAIL", "CNT_PREF_MOBILE"]
   let contactPerf = [];
   if (
-    get(contactPerference, "length", 0) != 0 &&
+    get(contactPerference, "length", 0) != 0 &amp;&amp;
     get(profileCurrentPer, "length", 0) != 0
   ) {
     contactPerf = contactPerference.map((it) => {
@@ -609,7 +637,7 @@ const EditProfile = ({ navigation, props }) => {
     USERTYPE.CUSTOMER == get(profile, "savedProfileData.typeOfUser");
   let notifTypesFiltered = [];
   if (
-    !isConsumer &&
+    !isConsumer &amp;&amp;
     get(notificationTypesList, "length", 0) != 0
   ) {
     notifTypesFiltered = notificationTypesList.map((it) => {
@@ -641,37 +669,37 @@ const EditProfile = ({ navigation, props }) => {
 
   console.log("profile ", get(profile, "savedProfileData.statusDesc.description", ""))
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {profile.initProfile && (
-        <View
+    &lt;SafeAreaView style={{ flex: 1 }}>
+      {profile.initProfile &amp;&amp; (
+        &lt;View
           style={{
             alignItems: "center",
             justifyContent: "center",
             marginTop: 200,
           }}
         >
-          <LoadingAnimation></LoadingAnimation>
-          <Text style={styles.emptyList}>{strings.please_wait}</Text>
-        </View>
+          &lt;LoadingAnimation>&lt;/LoadingAnimation>
+          &lt;Text style={styles.emptyList}>{strings.please_wait}&lt;/Text>
+        &lt;/View>
       )}
-      {!profile.initProfile && (
-        <View style={styles.container}>
-          <View
+      {!profile.initProfile &amp;&amp; (
+        &lt;View style={styles.container}>
+          &lt;View
             style={{
               // height: 150,
               backgroundColor: colors.secondary,
               paddingTop: 20,
             }}
           >
-            <View style={[{ alignItems: "center" }]}>
-              <ImageBackground
+            &lt;View style={[{ alignItems: "center" }]}>
+              &lt;ImageBackground
                 source={{
                   uri: customerPic,
                 }}
                 imageStyle={{ borderRadius: 80 }}
                 style={{ height: 110, width: 110 }}
               >
-                <Pressable
+                &lt;Pressable
                   onPress={changeProfileImage}
                   style={{
                     flex: 1,
@@ -679,40 +707,40 @@ const EditProfile = ({ navigation, props }) => {
                     justifyContent: "flex-end",
                   }}
                 >
-                  <Camara width="20" height="20" />
-                </Pressable>
-              </ImageBackground>
-              <ClearSpace size={2} />
-              <Text variant="bodyLarge" style={styles.caption}>
+                  &lt;Camara width="20" height="20" />
+                &lt;/Pressable>
+              &lt;/ImageBackground>
+              &lt;ClearSpace size={2} />
+              &lt;Text variant="bodyLarge" style={styles.caption}>
                 {strings.customer_ID + " : " + get(profile, custoPath, "")}
-              </Text>
-              <ClearSpace size={2} />
-              <Text variant="bodyLarge" style={styles.caption}>
+              &lt;/Text>
+              &lt;ClearSpace size={2} />
+              &lt;Text variant="bodyLarge" style={styles.caption}>
                 {"Email Id :"}{" "}
-                <Text variant="bodySmall" style={styles.caption_small}>
+                &lt;Text variant="bodySmall" style={styles.caption_small}>
                   {get(profile, emailPath, "")}
-                </Text>
-              </Text>
-              <ClearSpace size={2} />
-              <Text variant="bodyLarge" style={styles.caption}>
+                &lt;/Text>
+              &lt;/Text>
+              &lt;ClearSpace size={2} />
+              &lt;Text variant="bodyLarge" style={styles.caption}>
                 {"Status: "}{" "}
-                <Text variant="bodySmall" style={styles.caption_small}>
+                &lt;Text variant="bodySmall" style={styles.caption_small}>
                   {get(profile, "savedProfileData.statusDesc.description", "")}
-                </Text>
-              </Text>
-              <ClearSpace />
+                &lt;/Text>
+              &lt;/Text>
+              &lt;ClearSpace />
 
-              <ClearSpace />
-            </View>
-          </View>
+              &lt;ClearSpace />
+            &lt;/View>
+          &lt;/View>
 
           {registerForm.initRegisterForm ? (
-            <FullPageLoder
+            &lt;FullPageLoder
               bgColor={color.DISABLED_GREY}
               loderColor={color.BCAE_PRIMARY}
             />
           ) : (
-            <ScrollView
+            &lt;ScrollView
               style={{
                 flexGrow: 1,
                 paddingHorizontal: spacing.WIDTH_30,
@@ -723,51 +751,51 @@ const EditProfile = ({ navigation, props }) => {
               nestedScrollEnabled={true}
             >
               {/* First Name */}
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                <CustomInput
+              &lt;View style={{ marginTop: spacing.HEIGHT_30 }}>
+                &lt;CustomInput
                   // editable={false}
                   caption={strings.first_name}
                   placeholder={strings.first_name}
                   onChangeText={(text) => onFirstNameChange(text)}
                   value={firstName}
                   right={
-                    <TextInput.Icon
+                    &lt;TextInput.Icon
                       onPress={clearFirstName}
                       style={{ width: 23, height: 23 }}
                       icon={require("../../Assets/icons/ic_close.png")}
                     />
                   }
                 />
-                {/* {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {/* {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
-                {firstNameError && showErrorMessage(firstNameError)}
-              </View>
+                {firstNameError &amp;&amp; showErrorMessage(firstNameError)}
+              &lt;/View>
 
               {/* Last Name */}
-              <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                <CustomInput
+              &lt;View style={{ marginTop: spacing.HEIGHT_5 }}>
+                &lt;CustomInput
                   // editable={false}
                   caption={strings.last_name}
                   placeholder={strings.last_name}
                   onChangeText={(text) => onLastNameChange(text)}
                   value={lastName}
                   right={
-                    <TextInput.Icon
+                    &lt;TextInput.Icon
                       onPress={clearLastName}
                       style={{ width: 23, height: 23 }}
                       icon={require("../../Assets/icons/ic_close.png")}
                     />
                   }
                 />
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {lastNameError && showErrorMessage(lastNameError)}
-              </View>
+                {lastNameError &amp;&amp; showErrorMessage(lastNameError)}
+              &lt;/View>
 
-              <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                <CustomInput
+              &lt;View style={{ marginTop: spacing.HEIGHT_5 }}>
+                &lt;CustomInput
                   disabled={true}
                   editable={false}
                   caption={strings.country}
@@ -775,10 +803,10 @@ const EditProfile = ({ navigation, props }) => {
                   onChangeText={(text) => { }}
                   value={get(profile, countyPath, "")}
                 />
-              </View>
-              {contactPerf.length != 0 && (
-                <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                  <CheckGroupbox
+              &lt;/View>
+              {contactPerf.length != 0 &amp;&amp; (
+                &lt;View style={{ marginTop: spacing.HEIGHT_5 }}>
+                  &lt;CheckGroupbox
                     data={contactPerf}
                     values={contactValues}
                     setValues={(data) => {
@@ -787,11 +815,11 @@ const EditProfile = ({ navigation, props }) => {
                     }}
                     label="Contact Preference"
                   />
-                </View>
+                &lt;/View>
               )}
-              {!isConsumer && notifTypesFiltered.length != 0 && (
-                <View style={{ marginTop: spacing.HEIGHT_5 }}>
-                  <CheckGroupbox
+              {!isConsumer &amp;&amp; notifTypesFiltered.length != 0 &amp;&amp; (
+                &lt;View style={{ marginTop: spacing.HEIGHT_5 }}>
+                  &lt;CheckGroupbox
                     data={notifTypesFiltered}
                     values={notificationValues}
                     setValues={(data) => {
@@ -800,11 +828,11 @@ const EditProfile = ({ navigation, props }) => {
                     }}
                     label="Notification Type"
                   />
-                </View>
+                &lt;/View>
               )}
               {/* Gender */}
-              <View style={{}}>
-                <CustomDropDown
+              &lt;View style={{}}>
+                &lt;CustomDropDown
                   selectedValue={get(gender, "description", "")}
                   setValue={(text) => onGenderClick(text)}
                   data={get(masterReducer, "masterdataData.GENDER", [])}
@@ -812,16 +840,16 @@ const EditProfile = ({ navigation, props }) => {
                   value={get(gender, "description", "")}
                   placeHolder={strings.gender}
                 />
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {genderError && showErrorMessage(genderError)}
-              </View>
+                {genderError &amp;&amp; showErrorMessage(genderError)}
+              &lt;/View>
 
               {/* Address */}
-              {addresss.length > 0 && (
-                <View style={{ marginTop: spacing.HEIGHT_40 }}>
-                  <CustomInput
+              {addresss.length > 0 &amp;&amp; (
+                &lt;View style={{ marginTop: spacing.HEIGHT_40 }}>
+                  &lt;CustomInput
                     multiline={true}
                     numberOfLines={2}
                     style={{
@@ -831,7 +859,7 @@ const EditProfile = ({ navigation, props }) => {
                     caption={strings.location}
                     placeHolder={strings.location}
                     right={
-                      <TextInput.Icon
+                      &lt;TextInput.Icon
                         onPress={() => locationIconClick()}
                         theme={{ colors: { onSurfaceVariant: colors.primary } }}
                         icon="map"
@@ -839,33 +867,33 @@ const EditProfile = ({ navigation, props }) => {
                     }
                   />
 
-                  {!registerForm.initRegisterForm &&
-                    registerForm?.loggedProfile?.errorCode == "404" &&
+                  {!registerForm.initRegisterForm &amp;&amp;
+                    registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                     this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                  {locationError !== "" && showErrorMessage(locationError)}
-                </View>
+                  {locationError !== "" &amp;&amp; showErrorMessage(locationError)}
+                &lt;/View>
               )}
 
               {/* Location */}
-              {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                            <CustomDropDown
+              {/* &lt;View style={{ marginTop: spacing.HEIGHT_20 }}>
+                            &lt;CustomDropDown
                                 data={registerForm?.registerFormData?.LOCATION ?? []}
                                 onChangeText={(text) => onLocationClick(text)}
                                 value={location}
                                 placeHolder={strings.location}
                             />
-                            {!registerForm.initRegisterForm && registerForm?.loggedProfile?.errorCode == '404' &&
+                            {!registerForm.initRegisterForm &amp;&amp; registerForm?.loggedProfile?.errorCode == '404' &amp;&amp;
                                 this.showErrorMessage(registerForm?.loggedProfile?.message)
                             }
 
-                            {locationError !== "" &&
+                            {locationError !== "" &amp;&amp;
                                 showErrorMessage(locationError)
                             }
-                        </View> */}
+                        &lt;/View> */}
 
               {/* Country */}
-              {/* <View style={{ marginTop: spacing.HEIGHT_10 }}>
-                <CustomDropDown
+              {/* &lt;View style={{ marginTop: spacing.HEIGHT_10 }}>
+                &lt;CustomDropDown
                 
                   selectedValue={nationality}
                   // setValue={setValueCountry}
@@ -877,23 +905,23 @@ const EditProfile = ({ navigation, props }) => {
                   value={country}
                   placeHolder={strings.country}
                 />
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.showErrorMessage(registerForm?.loggedProfile?.message)}
-                {countryError !== "" && showErrorMessage(countryError)}
-              </View> */}
-              <View style={{ marginTop: 10 }}>
-                <CustomInput
+                {countryError !== "" &amp;&amp; showErrorMessage(countryError)}
+              &lt;/View> */}
+              &lt;View style={{ marginTop: 10 }}>
+                &lt;CustomInput
                   value={userTyp}
                   placeHolder={"User Type"}
                   caption={"User Type"}
                   disabled={true}
                 />
-              </View>
+              &lt;/View>
 
 
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
-                <CustomInput
+              &lt;View style={{ marginTop: spacing.HEIGHT_30 }}>
+                &lt;CustomInput
                   disabled={true}
                   // editable={false}
                   placeHolder={strings.mobile_number}
@@ -902,20 +930,20 @@ const EditProfile = ({ navigation, props }) => {
                   value={get(profile, mobilePath, "")}
 
                 />
-                {/* {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {/* {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.showErrorMessage(registerForm?.loggedProfile?.message)} */}
-                {firstNameError && showErrorMessage(firstNameError)}
-              </View>
+                {firstNameError &amp;&amp; showErrorMessage(firstNameError)}
+              &lt;/View>
 
               {/* Email */}
-              {/* <View style={{ marginTop: spacing.HEIGHT_20 }}>
-                <CustomInput
+              {/* &lt;View style={{ marginTop: spacing.HEIGHT_20 }}>
+                &lt;CustomInput
                   value={email}
                   placeHolder={strings.email}
                   caption={strings.email}
                   right={
-                    <TextInput.Icon
+                    &lt;TextInput.Icon
                       onPress={clearFirstName}
                       style={{ width: 23, height: 23 }}
                       icon={require("../../Assets/icons/ic_close.png")}
@@ -923,19 +951,19 @@ const EditProfile = ({ navigation, props }) => {
                   }
                   disabled={false}
                 />
-                {!registerForm.initRegisterForm &&
-                  registerForm?.loggedProfile?.errorCode == "404" &&
+                {!registerForm.initRegisterForm &amp;&amp;
+                  registerForm?.loggedProfile?.errorCode == "404" &amp;&amp;
                   this.
                   (registerForm?.loggedProfile?.message)}
-                {emailError !== "" && 
+                {emailError !== "" &amp;&amp; 
                 (emailError)}
-              </View> */}
+              &lt;/View> */}
 
-              <View style={{ paddingBottom: spacing.HEIGHT_50 }} />
-            </ScrollView>
+              &lt;View style={{ paddingBottom: spacing.HEIGHT_50 }} />
+            &lt;/ScrollView>
           )}
-          <StickyFooter>
-            <CustomButton
+          &lt;StickyFooter>
+            &lt;CustomButton
               loading={false}
               label={"Update"}
               isDisabled={!isbuttonEnable()}
@@ -943,10 +971,10 @@ const EditProfile = ({ navigation, props }) => {
                 await submit();
               }}
             />
-          </StickyFooter>
-        </View>
+          &lt;/StickyFooter>
+        &lt;/View>
       )}
-    </SafeAreaView>
+    &lt;/SafeAreaView>
   );
 };
 
@@ -1018,3 +1046,26 @@ const styles = StyleSheet.create({
 });
 
 export default EditProfile;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Interaction.html">Interaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="EditProfile.html">EditProfile</a></li><li><a href="ForgotPassword.html">ForgotPassword</a></li><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li><li><a href="ViewProfile.html">ViewProfile</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jul 25 2023 13:59:14 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
