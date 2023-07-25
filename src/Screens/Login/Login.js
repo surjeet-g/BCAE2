@@ -64,7 +64,7 @@ export const Login = ({ navigation }) => {
   const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
-  const [isFirstSelected, setFirstSelected] = useState(false);
+  const [isRegisterFirstSelected, setFirstSelected] = useState(false);
   // const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
   // const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("skavi7060@gmail.com");
@@ -112,6 +112,7 @@ export const Login = ({ navigation }) => {
     setPasswordError("");
     setNumberError("");
     dispatch(resetLogin());
+    navigation.navigate("Register with us")
   };
 
   const onSelectConsumerUserType = () => {
@@ -287,7 +288,7 @@ export const Login = ({ navigation }) => {
                   {strings.check_usertype}
                 </Text> */}
                 <ToggleButton
-                  isFirstSelected={isFirstSelected}
+                  isFirstSelected={isRegisterFirstSelected}
                   label={{
                     first: BUSINESS,
                     second: CONSUMER,
@@ -308,6 +309,7 @@ export const Login = ({ navigation }) => {
                   onPressSecond={onSelectConsumerUserType}
                 ></ToggleButton>
               </View>
+
 
               {/* Radio Button View */}
               <View

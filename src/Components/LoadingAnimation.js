@@ -3,6 +3,7 @@ import { Dimensions, Image, View } from "react-native";
 import { Text } from "react-native-paper";
 import { ClearSpace } from "./ClearSpace";
 var { height, width } = Dimensions.get('screen');
+
 export default function LoadingAnimation({ title = "" }) {
 
   return (

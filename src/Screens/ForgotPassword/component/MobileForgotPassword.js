@@ -1,36 +1,25 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Dimensions,
+  Alert, Dimensions,
   Image,
-  Pressable,
-  Alert,
+  Pressable, StyleSheet, Text,
+  TouchableOpacity, View
 } from "react-native";
-import {
-  capitalizeFirstLetter,
-  getPhoneNumberLength,
-  excludedCountriesList,
-} from "../../../Utilities/utils";
 import CountryPicker from "react-native-country-codes-picker";
-import { useDispatch, useSelector } from "react-redux";
 import { Button, TextInput } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
+import {
+  excludedCountriesList
+} from "../../../Utilities/utils";
 
 import {
-  fontSizes,
-  color,
-  spacing,
-  buttonSize,
-  buttonType,
+  buttonSize, color, fontSizes, spacing
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import {
   resetForgotPassword,
-  verifyForgotPasswordData,
+  verifyForgotPasswordData
 } from "../ForgotPasswordDispatcher";
 const { height, width } = Dimensions.get("screen");
 
@@ -50,7 +39,7 @@ const MobileLoging = (props) => {
       //setUsernameError(strings.numberError);
     } else if (number.length !== 7) {
       Alert.alert(strings.attention, strings.sevenDigit, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     } else {
       dispatch(verifyForgotPasswordData(props.navigation, number));

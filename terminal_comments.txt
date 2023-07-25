@@ -8,6 +8,5 @@ kamal
 
 git checkout mks_develop && git pull && git checkout vp_develop && git merge mks_develop --no-commit --no-ff
 
-
 git stash apply
 

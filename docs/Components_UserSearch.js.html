@@ -1,4 +1,32 @@
-import React from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Components/UserSearch.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Components/UserSearch.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
 import {
   Dimensions,
   FlatList,
@@ -22,21 +50,21 @@ export const userNavigationIcon = (props) => {
   return props.navigation.setOptions({
     headerRight: () => {
       return (
-        <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
-          <Pressable
+        &lt;View style={{ flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
+          &lt;Pressable
             onPress={() => {
               props.navigation.setOptions({
                 headerTitle: () => {
                   let searchString = "";
                   return (
-                    <View
+                    &lt;View
                       style={{
                         flexDirection: "row",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
-                      <Searchbar
+                      &lt;Searchbar
                         style={{ width: width * 0.7, height: 40 }}
                         placeholder={"Search customer"}
                         onChangeText={async (text) => {
@@ -51,7 +79,7 @@ export const userNavigationIcon = (props) => {
                           props.setLoader(false);
                         }}
                       />
-                      <Icon
+                      &lt;Icon
                         onPress={() => {
                           props.profileDispatch(setSearchProfileReset());
                           props.navigation.setOptions({
@@ -63,43 +91,43 @@ export const userNavigationIcon = (props) => {
                         size={25}
                         color={"#000"}
                       />
-                    </View>
+                    &lt;/View>
                   );
                 },
               });
             }}
           >
-            <Image
+            &lt;Image
               source={require("../Assets/icons/search_user.png")}
               style={{ width: 60, height: 60 }}
             />
 
-          </Pressable>
-          <Pressable
+          &lt;/Pressable>
+          &lt;Pressable
             onPress={() => props.setOpenBottomModal(true)}
             style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
           >
-            <Icon name="plus" size={19} color={"#1231232"} />
-          </Pressable>
+            &lt;Icon name="plus" size={19} color={"#1231232"} />
+          &lt;/Pressable>
 
-        </View>
+        &lt;/View>
       );
     },
   });
 };
-// /**
-//  * Change Header middle section
-//  * @param {obj} profileSearchData data for search result
-//  * @param {obj} setLoader loader for pre loader screen
-//  *
-//  */
+/**
+ * Change Header middle section
+ * @param {obj} profileSearchData data for search result
+ * @param {obj} setLoader loader for pre loader screen
+ *
+ */
 export const RenderUserSelectResult = (props) => {
   console.log("vipin - enter readner seraerch result ", props.profileSearchData)
   const SearchModelisOpen = props.SearchModelisOpen
   const setSearchOpen = props.setSearchOpen
 
   return (
-    <View
+    &lt;View
       style={{
         top: 60,
         right: 10,
@@ -112,16 +140,16 @@ export const RenderUserSelectResult = (props) => {
     >
 
       {(props.profileSearchData.length == 0 || SearchModelisOpen == false) ? (
-        <Text></Text>
+        &lt;Text>&lt;/Text>
       ) : (
-        <FlatList
+        &lt;FlatList
           contentContainerStyle={{
             maxHeight: 500,
           }}
           data={props.profileSearchData}
           renderItem={({ item }) => {
             return (
-              <List.Item
+              &lt;List.Item
                 description={
                   `customer No : ${item.customerNo}`
                 }
@@ -167,6 +195,29 @@ export const RenderUserSelectResult = (props) => {
           }}
         />
       )}
-    </View>
+    &lt;/View>
   );
 };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Interaction.html">Interaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="Interaction.html">Interaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CheckGroupbox">CheckGroupbox</a></li><li><a href="global.html#RenderUserSelectResult">RenderUserSelectResult</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jul 25 2023 11:39:58 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

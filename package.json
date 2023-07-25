@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "docs": "jsdoc -c jsdoc.conf.json",
     "ios:img-fix": "npx react-native-fix-image",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -28,7 +29,9 @@
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/stack": "^6.2.1",
     "axios": "^0.27.2",
+    "better-docs": "^2.7.2",
     "crypto-js": "^4.1.1",
+    "jsdoc": "^4.0.2",
     "lodash.get": "^4.4.2",
     "moment": "^2.29.4",
     "react": "18.2.0",
