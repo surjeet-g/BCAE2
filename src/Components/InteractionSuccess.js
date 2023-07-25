@@ -3,14 +3,7 @@ import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "./CustomButton";
 const { height, width } = Dimensions.get('screen');
 
-/**
- * Takes 2 numbers and returns their sum.
- * description of module here
- * @module Interaction
- * @param   {number} a the first number
- * @param   {number} b the second number
- * @returns {number} the sum of a and b
- */
+
 export const InteractionSuccess = ({
   intxId = "",
   cancelButtonRequired = false,
