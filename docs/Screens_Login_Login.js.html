@@ -1,4 +1,32 @@
-import React, { useEffect, useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Screens/Login/Login.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Screens/Login/Login.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -282,21 +310,21 @@ export const Login = ({ navigation }) => {
   };
 
   return (
-    <ImageBackground
+    &lt;ImageBackground
       style={styles.container}
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <HeaderTitle header="Let us know," subHeader="Who you are?" />
-      <KeyboardAwareView animated={false}>
-        <View
+      &lt;HeaderTitle header="Let us know," subHeader="Who you are?" />
+      &lt;KeyboardAwareView animated={false}>
+        &lt;View
           style={{
             flex: 1,
             justifyContent: "space-between",
           }}
         >
-          <ScrollView nestedScrollEnabled={true}>
-            <View
+          &lt;ScrollView nestedScrollEnabled={true}>
+            &lt;View
               style={{
                 margin: 10,
                 flex: 1,
@@ -307,11 +335,11 @@ export const Login = ({ navigation }) => {
               }}
             >
               {/* Toggle Button View */}
-              <View>
-                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+              &lt;View>
+                {/* &lt;Text style={{ fontWeight: 600, marginBottom: 10 }}>
                   {strings.check_usertype}
-                </Text> */}
-                <ToggleButton
+                &lt;/Text> */}
+                &lt;ToggleButton
                   isFirstSelected={isRegisterFirstSelected}
                   label={{
                     first: BUSINESS,
@@ -331,12 +359,12 @@ export const Login = ({ navigation }) => {
                   }}
                   onPressFirst={onSelectBusinessUserType}
                   onPressSecond={onSelectConsumerUserType}
-                ></ToggleButton>
-              </View>
+                >&lt;/ToggleButton>
+              &lt;/View>
 
 
               {/* Radio Button View */}
-              <View
+              &lt;View
                 style={{
                   flexDirection: "row",
                   justifyContent: "flex-end",
@@ -344,7 +372,7 @@ export const Login = ({ navigation }) => {
                   marginBottom: -20,
                 }}
               >
-                <CustomSwitch
+                &lt;CustomSwitch
                   buttonWidth={25}
                   buttonPadding={5}
                   switchWidth={90}
@@ -367,49 +395,49 @@ export const Login = ({ navigation }) => {
                   }}
                 />
 
-                {/* <View
+                {/* &lt;View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                   }}
                 >
-                  <RadioButton
+                  &lt;RadioButton
                     value={EMAIL}
                     status={loginMode === EMAIL ? "checked" : "unchecked"}
                     onPress={onSelectEmailLoginMode}
                   />
-                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                  &lt;Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(EMAIL)}
-                  </Text>
-                </View>
-                <View
+                  &lt;/Text>
+                &lt;/View>
+                &lt;View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                   }}
                 >
-                  <RadioButton
+                  &lt;RadioButton
                     value={MOBILE}
                     status={loginMode === MOBILE ? "checked" : "unchecked"}
                     onPress={onSelectMobileLoginMode}
                   />
-                  <Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
+                  &lt;Text style={{ color: "#3D3D3D", fontWeight: 600 }}>
                     {capitalizeFirstLetter(MOBILE)}
-                  </Text>
-                </View> */}
-              </View>
+                  &lt;/Text>
+                &lt;/View> */}
+              &lt;/View>
 
               {loginMode === EMAIL ? (
-                <View>
+                &lt;View>
                   {/* Email Address Input View */}
-                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    <CustomInput
+                  &lt;View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                    &lt;CustomInput
                       caption="Email Address"
                       value={username}
                       onChangeText={(text) => onIDChange(text)}
                       right={
-                        username && (
-                          <TextInput.Icon
+                        username &amp;&amp; (
+                          &lt;TextInput.Icon
                             onPress={clearTextClick}
                             style={{ width: 23, height: 23 }}
                             icon="close"
@@ -418,22 +446,22 @@ export const Login = ({ navigation }) => {
                       }
                     />
 
-                    {!login.initLogin &&
-                      login?.loggedProfile?.errorCode == "404" && (
-                        <CustomErrorText
+                    {!login.initLogin &amp;&amp;
+                      login?.loggedProfile?.errorCode == "404" &amp;&amp; (
+                        &lt;CustomErrorText
                           errMessage={login?.loggedProfile?.message}
                         />
                       )}
-                    {usernameError !== "" && (
-                      <CustomErrorText errMessage={usernameError} />
+                    {usernameError !== "" &amp;&amp; (
+                      &lt;CustomErrorText errMessage={usernameError} />
                     )}
-                  </View>
-                </View>
+                  &lt;/View>
+                &lt;/View>
               ) : (
-                <View>
+                &lt;View>
                   {/* Mobile Number View */}
-                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    <CountryPicker
+                  &lt;View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                    &lt;CountryPicker
                       show={countryPickModel}
                       excludedCountries={excludedCountriesList()}
                       pickerButtonOnPress={(item) => {
@@ -448,7 +476,7 @@ export const Login = ({ navigation }) => {
                         },
                       }}
                     />
-                    <CustomInputWithCC
+                    &lt;CustomInputWithCC
                       onPressOnCountyCode={() => setCountryPickModel(true)}
                       countryCode={countryCode}
                       caption={strings.mobile_no}
@@ -458,30 +486,30 @@ export const Login = ({ navigation }) => {
                       keyboardType="numeric"
                       maxLength={numberMaxLength}
                     />
-                    {!login.initLogin &&
-                      login?.loggedProfile?.errorCode == "404" && (
-                        <CustomErrorText
+                    {!login.initLogin &amp;&amp;
+                      login?.loggedProfile?.errorCode == "404" &amp;&amp; (
+                        &lt;CustomErrorText
                           errMessage={login?.loggedProfile?.message}
                         />
                       )}
-                    {numberError !== "" && (
-                      <CustomErrorText errMessage={numberError} />
+                    {numberError !== "" &amp;&amp; (
+                      &lt;CustomErrorText errMessage={numberError} />
                     )}
-                  </View>
-                </View>
+                  &lt;/View>
+                &lt;/View>
               )}
 
               {/* Password Input View */}
-              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                <CustomInput
+              &lt;View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                &lt;CustomInput
                   value={password}
                   caption={strings.password}
                   placeHolder={strings.password}
                   onChangeText={(text) => onPasswordChange(text)}
                   secureTextEntry={secureTextEntry}
                   right={
-                    password && (
-                      <TextInput.Icon
+                    password &amp;&amp; (
+                      &lt;TextInput.Icon
                         onPress={hideShowClick}
                         style={{ width: 23, height: 23 }}
                         icon={
@@ -494,30 +522,30 @@ export const Login = ({ navigation }) => {
                   }
                 />
 
-                {!login.initLogin &&
-                  login?.loggedProfile?.errorCode &&
-                  login.loggedProfile.errorCode != "404" &&
-                  login?.loggedProfile?.errorCode != "10000" &&
-                  login?.loggedProfile?.errorCode != "10001" && (
-                    <CustomErrorText
+                {!login.initLogin &amp;&amp;
+                  login?.loggedProfile?.errorCode &amp;&amp;
+                  login.loggedProfile.errorCode != "404" &amp;&amp;
+                  login?.loggedProfile?.errorCode != "10000" &amp;&amp;
+                  login?.loggedProfile?.errorCode != "10001" &amp;&amp; (
+                    &lt;CustomErrorText
                       errMessage={login?.loggedProfile?.message}
                     />
                   )}
-                {passwordError !== "" && (
-                  <CustomErrorText errMessage={passwordError} />
+                {passwordError !== "" &amp;&amp; (
+                  &lt;CustomErrorText errMessage={passwordError} />
                 )}
-              </View>
-            </View>
+              &lt;/View>
+            &lt;/View>
 
             {/* Bottom View */}
-            <View
+            &lt;View
               style={{
                 marginVertical: 10,
               }}
             >
               {/* Login with OTP View */}
-              <View>
-                <Text
+              &lt;View>
+                &lt;Text
                   style={{
                     textAlign: "center",
                     alignSelf: "center",
@@ -533,64 +561,64 @@ export const Login = ({ navigation }) => {
                   }}
                 >
                   {strings.login_with_otp}
-                </Text>
-              </View>
+                &lt;/Text>
+              &lt;/View>
 
               {/* Forgot Password View */}
-              <View
+              &lt;View
                 style={{
                   alignSelf: "center",
                   marginVertical: 10,
                 }}
               >
-                <Pressable
+                &lt;Pressable
                   onPress={() => navigation.navigate("ForgotPassword")}
                   style={{ flexDirection: "row" }}
                 >
-                  <Text style={styles.noAccText}>{"Trouble Sign-In? "}</Text>
-                  <Text style={styles.forgotText}>
+                  &lt;Text style={styles.noAccText}>{"Trouble Sign-In? "}&lt;/Text>
+                  &lt;Text style={styles.forgotText}>
                     {strings.forgot_password}
-                  </Text>
-                </Pressable>
-              </View>
+                  &lt;/Text>
+                &lt;/Pressable>
+              &lt;/View>
 
               {/* Register View */}
-              <View
+              &lt;View
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
                   marginVertical: 10,
                 }}
               >
-                <Text style={styles.noAccText}>{strings.dont_account}</Text>
-                <Pressable
+                &lt;Text style={styles.noAccText}>{strings.dont_account}&lt;/Text>
+                &lt;Pressable
                   onPress={() => navigation.navigate("Register with us", {})}
                 >
-                  <Text style={styles.rgisterText}> {strings.register}</Text>
-                </Pressable>
-              </View>
-              <View
+                  &lt;Text style={styles.rgisterText}> {strings.register}&lt;/Text>
+                &lt;/Pressable>
+              &lt;/View>
+              &lt;View
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
                   marginVertical: 10,
                 }}
               >
-                <Text style={styles.noAccText}>Customer Onboarding?</Text>
-                <Pressable
+                &lt;Text style={styles.noAccText}>Customer Onboarding?&lt;/Text>
+                &lt;Pressable
                   onPress={() => navigation.navigate(STACK_CREATE_CUSTOMER, {})}
                 >
-                  <Text style={styles.rgisterText}> Customer Onboarding</Text>
-                </Pressable>
-              </View>
-              <ClearSpace size={2} />
-            </View>
+                  &lt;Text style={styles.rgisterText}> Customer Onboarding&lt;/Text>
+                &lt;/Pressable>
+              &lt;/View>
+              &lt;ClearSpace size={2} />
+            &lt;/View>
 
-            {!login.initLogin &&
+            {!login.initLogin &amp;&amp;
               (login?.loggedProfile?.errorCode == "10000" ||
-                login?.loggedProfile?.errorCode == "10001") && (
-                <View style={styles.toast}>
-                  <Toast
+                login?.loggedProfile?.errorCode == "10001") &amp;&amp; (
+                &lt;View style={styles.toast}>
+                  &lt;Toast
                     bgColor={color.TOAST_RED}
                     customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
                     textPro={{
@@ -609,13 +637,13 @@ export const Login = ({ navigation }) => {
                         : strings.something_went_wrong
                     }
                   />
-                </View>
+                &lt;/View>
               )}
-          </ScrollView>
-          <StickyFooter>
+          &lt;/ScrollView>
+          &lt;StickyFooter>
             {/* Login View */}
-            {/* <View> */}
-            <CustomButton
+            {/* &lt;View> */}
+            &lt;CustomButton
               loading={login.initLogin}
               label={strings.login}
               isDisabled={
@@ -633,8 +661,8 @@ export const Login = ({ navigation }) => {
                   : submitWithMobile(PASSWORD);
               }}
             />
-            {/* </View> */}
-            <Text
+            {/* &lt;/View> */}
+            &lt;Text
               style={{
                 color: "#393939",
                 fontSize: fontSizes.FONT_14,
@@ -644,9 +672,9 @@ export const Login = ({ navigation }) => {
               }}
             >
               By continuing, I accept and agree to Dtworks
-            </Text>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <Text
+            &lt;/Text>
+            &lt;View style={{ flexDirection: "row", justifyContent: "center" }}>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -656,9 +684,9 @@ export const Login = ({ navigation }) => {
                 }}
                 onPress={() => navigation.navigate("TermConidtion")}
               >
-                Terms & Conditions of Use
-              </Text>
-              <Text
+                Terms &amp; Conditions of Use
+              &lt;/Text>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -668,9 +696,9 @@ export const Login = ({ navigation }) => {
                 }}
               >
                 {" "}
-                &{" "}
-              </Text>
-              <Text
+                &amp;{" "}
+              &lt;/Text>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -681,9 +709,9 @@ export const Login = ({ navigation }) => {
                 onPress={() => alert("Navigate to Privacy Policy")}
               >
                 Privacy Policy
-              </Text>
-            </View>
-            <Text
+              &lt;/Text>
+            &lt;/View>
+            &lt;Text
               style={{
                 color: "#393939",
                 fontSize: fontSizes.FONT_12,
@@ -693,17 +721,17 @@ export const Login = ({ navigation }) => {
               }}
             >
               © {new Date().getFullYear()} Dtworks. All rights reserved.
-            </Text>
-          </StickyFooter>
-        </View>
-      </KeyboardAwareView>
+            &lt;/Text>
+          &lt;/StickyFooter>
+        &lt;/View>
+      &lt;/KeyboardAwareView>
       {/* Modal for showing the second login alert */}
-      <Modal
+      &lt;Modal
         visible={login?.showSecondLoginAlert}
         dismissable={false}
         contentContainerStyle={{ flex: 1 }}
       >
-        <View
+        &lt;View
           style={{
             backgroundColor: "white",
             padding: 20,
@@ -711,11 +739,11 @@ export const Login = ({ navigation }) => {
             borderRadius: 10,
           }}
         >
-          <Text style={{ fontSize: 22 }}>Login Error</Text>
-          <Text style={{ marginTop: 10, fontSize: 18 }}>
+          &lt;Text style={{ fontSize: 22 }}>Login Error&lt;/Text>
+          &lt;Text style={{ marginTop: 10, fontSize: 18 }}>
             {login?.secondLoginAlertInfo?.data?.message}
-          </Text>
-          <CustomButton
+          &lt;/Text>
+          &lt;CustomButton
             label={"Ok"}
             onPress={() =>
               dispatch(
@@ -727,13 +755,13 @@ export const Login = ({ navigation }) => {
               )
             }
           />
-          <CustomButton
+          &lt;CustomButton
             label={"Cancel"}
             onPress={() => dispatch(resetShowSecondLoginAlert())}
           />
-        </View>
-      </Modal>
-    </ImageBackground>
+        &lt;/View>
+      &lt;/Modal>
+    &lt;/ImageBackground>
   );
 };
 
@@ -768,3 +796,26 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Interaction.html">Interaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jul 25 2023 13:28:42 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

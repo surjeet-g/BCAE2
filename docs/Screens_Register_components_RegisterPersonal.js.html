@@ -1,4 +1,32 @@
-import moment from "moment";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Screens/Register/components/RegisterPersonal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Screens/Register/components/RegisterPersonal.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Dimensions, Image, Keyboard, Platform, ScrollView, View } from "react-native";
 
@@ -51,13 +79,13 @@ export const showErrorMessage = (errMessage) => {
   }
 
   return (
-    <View style={{ marginTop: spacing.HEIGHT_10, flexDirection: "row" }}>
-      <Image
+    &lt;View style={{ marginTop: spacing.HEIGHT_10, flexDirection: "row" }}>
+      &lt;Image
         style={styles.errorLogo}
         source={require("../../../Assets/icons/ci_error_warning.png")}
       />
-      <Text style={styles.errorText}>{errMessage}</Text>
-    </View>
+      &lt;Text style={styles.errorText}>{errMessage}&lt;/Text>
+    &lt;/View>
   );
 };
 /**
@@ -402,8 +430,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   console.log("timerCounter", OTP_TIMER)
   const showAlert = (message = "") => {
     // if (
-    //   !registerForm.initRegisterForm &&
-    //   registerForm?.otpFormData?.status == "200" &&
+    //   !registerForm.initRegisterForm &amp;&amp;
+    //   registerForm?.otpFormData?.status == "200" &amp;&amp;
     //   registerForm?.otpUsageType === "Register"
     // ) {
     //showErrorMessage(registerForm?.otpFormData?.message)
@@ -423,25 +451,25 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   };
   const showMobileErrorMessage = () => {
     return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
-        <Image
+      &lt;View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+        &lt;Image
           style={styles.errorLogo}
           source={require("../../../Assets/icons/ci_error_warning.png")}
         />
-        <Text style={styles.errorText}>{strings.otpMobileFailed}</Text>
-      </View>
+        &lt;Text style={styles.errorText}>{strings.otpMobileFailed}&lt;/Text>
+      &lt;/View>
     );
   };
 
   const showEmailErrorMessage = () => {
     return (
-      <View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
-        <Image
+      &lt;View style={{ marginTop: spacing.HEIGHT_6, flexDirection: "row" }}>
+        &lt;Image
           style={styles.errorLogo}
           source={require("../../../Assets/icons/ci_error_warning.png")}
         />
-        <Text style={styles.errorText}>{strings.otpEmailFailed}</Text>
-      </View>
+        &lt;Text style={styles.errorText}>{strings.otpEmailFailed}&lt;/Text>
+      &lt;/View>
     );
   };
 
@@ -501,9 +529,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     }
   };
   const buttonEnableDiable = () => {
-    // console.log("buttonEnableDiable==>"+firstName+"<===>"+lastName+"<===>"+gender+"<===>"+location
-    // +"<===>"+mobileNo+"<===>"+otp+"<===>"+email
-    // +"<===>"+otpEmail+"<===>"+password+"<===>"+confirmPassword)
+    // console.log("buttonEnableDiable==>"+firstName+"&lt;===>"+lastName+"&lt;===>"+gender+"&lt;===>"+location
+    // +"&lt;===>"+mobileNo+"&lt;===>"+otp+"&lt;===>"+email
+    // +"&lt;===>"+otpEmail+"&lt;===>"+password+"&lt;===>"+confirmPassword)
     if (
       firstName === "" ||
       lastName === "" ||
@@ -532,7 +560,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     clearTimerRef.current = setTimeout(() => {
       setOtpTimer(otpTimer);
       otpTimer = otpTimer - 1;
-      if (otpTimer < 0) {
+      if (otpTimer &lt; 0) {
         setIsDisableSendOtp(false);
         setOtpTimer(OTP_TIMER);
       } else {
@@ -548,7 +576,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       otpTimer = otpTimer - 1;
 
 
-      if (otpTimer < 0) {
+      if (otpTimer &lt; 0) {
         setIsDisableSendOtpEmail(false);
         setOtpTimerEmail(OTP_TIMER);
       } else {
@@ -633,7 +661,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
 
     setConfirmPasswordError("");
     buttonEnableDiable();
-    if (password != "" && (text != password)) {
+    if (password != "" &amp;&amp; (text != password)) {
       setConfirmPasswordError(strings.password_not_match)
     }
 
@@ -705,17 +733,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ flex: 1, padding: 12 }}>
+    &lt;View style={{ flex: 1 }}>
+      &lt;View style={{ flex: 1, padding: 12 }}>
 
-        <ScrollView nestedScrollEnabled={true}
+        &lt;ScrollView nestedScrollEnabled={true}
           ref={scrollRef}
           onScroll={event => {
             setCurrentYPosition(event.nativeEvent.contentOffset.y)
           }}
         >
 
-          <Card
+          &lt;Card
             style={{
               ...SHADOW_STYLE,
               padding: 12,
@@ -724,8 +752,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               borderRadius: 16,
             }}
           >
-            <View style={{ marginVertical: 5 }}>
-              <CustomDropDown
+            &lt;View style={{ marginVertical: 5 }}>
+              &lt;CustomDropDown
                 selectedValue={selectedValueTitle?.description}
                 setValue={setTitle}
                 data={[
@@ -742,10 +770,10 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 placeHolder={strings.title}
               />
 
-              {titleError !== "" && showErrorMessage(titleError)}
-            </View>
-            <View style={{ marginTop: 10 }}>
-              <CustomInput
+              {titleError !== "" &amp;&amp; showErrorMessage(titleError)}
+            &lt;/View>
+            &lt;View style={{ marginTop: 10 }}>
+              &lt;CustomInput
                 style={{
                   backgroundColor: "transparent",
                 }}
@@ -754,8 +782,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 caption={strings.first_name}
                 placeHolder={strings.first_name}
                 right={
-                  firstName && (
-                    <TextInput.Icon
+                  firstName &amp;&amp; (
+                    &lt;TextInput.Icon
                       onPress={clearFirstName}
                       // style={{ width: 15, height: 15 }}
                       theme={{ colors: { onSurfaceVariant: colors.gray } }}
@@ -765,12 +793,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
               />
 
-              {firstNameError !== "" && showErrorMessage(firstNameError)}
-            </View>
+              {firstNameError !== "" &amp;&amp; showErrorMessage(firstNameError)}
+            &lt;/View>
 
             {/* Last Name */}
-            <View style={{ marginTop: 5 }}>
-              <CustomInput
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;CustomInput
                 style={{
                   backgroundColor: "transparent",
                 }}
@@ -779,8 +807,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 placeHolder={strings.last_name}
                 caption={strings.last_name}
                 right={
-                  lastName && (
-                    <TextInput.Icon
+                  lastName &amp;&amp; (
+                    &lt;TextInput.Icon
                       onPress={clearLastName}
                       theme={{ colors: { onSurfaceVariant: colors.gray } }}
                       icon="close"
@@ -789,11 +817,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
               />
 
-              {lastNameError !== "" && showErrorMessage(lastNameError)}
-            </View>
+              {lastNameError !== "" &amp;&amp; showErrorMessage(lastNameError)}
+            &lt;/View>
             {/* Gender */}
-            <View style={{ marginTop: 5 }}>
-              <CustomDropDown
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;CustomDropDown
                 selectedValue={selectedValueGender}
                 setValue={setValueGender}
                 data={genderList}
@@ -802,9 +830,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 placeHolder={strings.gender}
               />
 
-              {genderError !== "" && showErrorMessage(genderError)}
-            </View>
-            <DatePickerModal
+              {genderError !== "" &amp;&amp; showErrorMessage(genderError)}
+            &lt;/View>
+            &lt;DatePickerModal
               locale="en"
               mode="single"
               visible={open}
@@ -834,7 +862,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
             // endYear={2100} // optional, default is 2200
             //
             />
-            {/* <DatePicker
+            {/* &lt;DatePicker
               modal
               mode="date"
               validRange={{ endDate: new Date() }}
@@ -850,8 +878,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 buttonEnableDiable();
               }}
             /> */}
-            <View style={{ marginTop: 10 }}>
-              <CustomInput
+            &lt;View style={{ marginTop: 10 }}>
+              &lt;CustomInput
                 style={{
                   backgroundColor: "transparent",
                 }}
@@ -861,17 +889,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 onFocus={() => setOpen(true)}
                 placeHolder={"Date of birth"}
                 right={
-                  <TextInput.Icon
+                  &lt;TextInput.Icon
                     onPress={() => setOpen(true)}
                     theme={{ colors: { onSurfaceVariant: colors.primary } }}
                     icon="calendar"
                   />
                 }
               />
-              {dobError !== "" && showErrorMessage(dobError)}
-            </View>
-            <View style={{ marginTop: 5 }}>
-              <CustomDropDown
+              {dobError !== "" &amp;&amp; showErrorMessage(dobError)}
+            &lt;/View>
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;CustomDropDown
                 selectedValue={selectedValueIdType}
                 setValue={setValueIdType}
                 data={customerIdList}
@@ -880,11 +908,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 placeHolder={strings.id_type}
               />
 
-              {idTypeError !== "" && showErrorMessage(idTypeError)}
-            </View>
+              {idTypeError !== "" &amp;&amp; showErrorMessage(idTypeError)}
+            &lt;/View>
 
-            <View style={{ marginTop: 10 }}>
-              <CustomInput
+            &lt;View style={{ marginTop: 10 }}>
+              &lt;CustomInput
                 style={{
                   backgroundColor: "transparent",
                 }}
@@ -898,8 +926,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 placeHolder={strings.id_number}
                 maxLength={15}
                 right={
-                  idNumber && (
-                    <TextInput.Icon
+                  idNumber &amp;&amp; (
+                    &lt;TextInput.Icon
                       onPress={() => {
                         setIdNumber("")
                         setIdNumberError(strings.idNumberError)
@@ -910,11 +938,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   )
                 }
               />
-              {idNumberError !== "" && showErrorMessage(idNumberError)}
-            </View>
+              {idNumberError !== "" &amp;&amp; showErrorMessage(idNumberError)}
+            &lt;/View>
 
-            <View style={{ marginTop: 10 }}>
-              <CustomInput
+            &lt;View style={{ marginTop: 10 }}>
+              &lt;CustomInput
                 multiline={true}
                 numberOfLines={2}
                 style={{
@@ -924,19 +952,19 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 caption={strings.location}
                 placeHolder={strings.location}
                 right={
-                  <TextInput.Icon
+                  &lt;TextInput.Icon
                     onPress={() => locationIconClick()}
                     theme={{ colors: { onSurfaceVariant: colors.primary } }}
                     icon="map"
                   />
                 }
               />
-            </View>
-          </Card>
+            &lt;/View>
+          &lt;/Card>
 
           {/* ID Type */}
 
-          <CountryPicker
+          &lt;CountryPicker
             show={countryPickModel}
             excludedCountries={excludedCountriesList()}
             pickerButtonOnPress={(item) => {
@@ -952,11 +980,11 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               },
             }}
           />
-          <ClearSpace size={1} />
-          <Text variant="headlineSmall">Mobile Verification</Text>
-          <ClearSpace size={1} />
+          &lt;ClearSpace size={1} />
+          &lt;Text variant="headlineSmall">Mobile Verification&lt;/Text>
+          &lt;ClearSpace size={1} />
           {/* Mobile Number */}
-          <Card
+          &lt;Card
             style={{
               ...SHADOW_STYLE,
               padding: 12,
@@ -964,14 +992,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               backgroundColor: colors.background,
             }}
           >
-            <View style={{ marginTop: 5 }}>
-              <TextBoxWithCTA
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;TextBoxWithCTA
                 onChangeText={(text) => onMobleNoChange(text)}
                 value={mobileNo}
                 placeHolder={strings.mobile_number}
                 isResendOTP={true}
                 loader={
-                  registerForm?.initOtpForm &&
+                  registerForm?.initOtpForm &amp;&amp;
                     registerForm?.otpUsageType === "mobile"
                     ? true
                     : false
@@ -991,30 +1019,30 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   // lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {!mobileOTPDisabled && otpTimer > 0 && otpTimer < OTP_TIMER && (
-                <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-                  <Text style={styles.errorText}>
+              {!mobileOTPDisabled &amp;&amp; otpTimer > 0 &amp;&amp; otpTimer &lt; OTP_TIMER &amp;&amp; (
+                &lt;View style={{ alignItems: "flex-end", marginTop: 10 }}>
+                  &lt;Text style={styles.errorText}>
                     {strings.otp_sent} {formatOtpTimer(otpTimer)}
-                  </Text>
-                </View>
+                  &lt;/Text>
+                &lt;/View>
               )}
-              {!registerForm.initOtpForm &&
-                registerForm?.isOtpFormError &&
-                registerForm?.otpFormDataForMobile?.errorCode > 200 &&
-                registerForm?.otpUsageType === "mobile" &&
+              {!registerForm.initOtpForm &amp;&amp;
+                registerForm?.isOtpFormError &amp;&amp;
+                registerForm?.otpFormDataForMobile?.errorCode > 200 &amp;&amp;
+                registerForm?.otpUsageType === "mobile" &amp;&amp;
                 showErrorMessage(registerForm?.otpFormDataForMobile?.message)}
-              {numberError !== "" && showErrorMessage(numberError)}
-            </View>
+              {numberError !== "" &amp;&amp; showErrorMessage(numberError)}
+            &lt;/View>
             {/* OTP */}
-            <View style={{ marginTop: 5 }}>
-              <TextBoxWithCTA
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;TextBoxWithCTA
                 onChangeText={(text) => onOTPChange(text)}
                 value={otp}
                 placeHolder={strings.mobile_otp}
                 isConfirmOTP={true}
                 label={strings.confirm_otp}
                 loader={
-                  registerForm?.initOtpForm &&
+                  registerForm?.initOtpForm &amp;&amp;
                     registerForm?.otpUsageType === "mobileOtp"
                     ? true
                     : false
@@ -1030,27 +1058,27 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   // lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {otp !== "" &&
-                !registerForm.initOtpForm &&
-                registerForm?.otpFormDataForMobile?.data?.otp !== undefined &&
-                registerForm?.otpFormDataForMobile?.data?.otp !== otp &&
-                registerForm?.otpUsageType === "mobileOtp" &&
+              {otp !== "" &amp;&amp;
+                !registerForm.initOtpForm &amp;&amp;
+                registerForm?.otpFormDataForMobile?.data?.otp !== undefined &amp;&amp;
+                registerForm?.otpFormDataForMobile?.data?.otp !== otp &amp;&amp;
+                registerForm?.otpUsageType === "mobileOtp" &amp;&amp;
                 showMobileErrorMessage()}
 
-              {otp !== "" &&
-                !registerForm.initOtpForm &&
-                registerForm?.otpFormDataForMobile?.data?.data === null &&
-                registerForm?.otpUsageType === "mobileOtp" &&
+              {otp !== "" &amp;&amp;
+                !registerForm.initOtpForm &amp;&amp;
+                registerForm?.otpFormDataForMobile?.data?.data === null &amp;&amp;
+                registerForm?.otpUsageType === "mobileOtp" &amp;&amp;
                 showMobileErrorMessage()}
 
-              {otpNumberError !== "" && showErrorMessage(otpNumberError)}
-            </View>
-          </Card>
-          <ClearSpace size={1} />
-          <Text variant="headlineSmall">Email Verification</Text>
-          <ClearSpace size={1} />
+              {otpNumberError !== "" &amp;&amp; showErrorMessage(otpNumberError)}
+            &lt;/View>
+          &lt;/Card>
+          &lt;ClearSpace size={1} />
+          &lt;Text variant="headlineSmall">Email Verification&lt;/Text>
+          &lt;ClearSpace size={1} />
           {/* Mobile Number */}
-          <Card
+          &lt;Card
             style={{
               ...SHADOW_STYLE,
               padding: 12,
@@ -1059,14 +1087,14 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
             }}
           >
             {/* Email */}
-            <View style={{ marginTop: 5 }}>
-              <TextBoxWithCTAEmail
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;TextBoxWithCTAEmail
                 onChangeText={(text) => onEmailChange(text)}
                 value={email}
                 placeHolder={strings.email}
                 isEmail={true}
                 loader={
-                  registerForm?.initOtpForm &&
+                  registerForm?.initOtpForm &amp;&amp;
                     registerForm?.otpUsageType === "email"
                     ? true
                     : false
@@ -1083,33 +1111,33 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   // lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {!emailOTPDisabled && otpTimerEmail > 0 && otpTimerEmail < OTP_TIMER && (
-                <View style={{ alignItems: "flex-end", marginTop: 10 }}>
-                  <Text style={styles.errorText}>
+              {!emailOTPDisabled &amp;&amp; otpTimerEmail > 0 &amp;&amp; otpTimerEmail &lt; OTP_TIMER &amp;&amp; (
+                &lt;View style={{ alignItems: "flex-end", marginTop: 10 }}>
+                  &lt;Text style={styles.errorText}>
                     {strings.otp_sent} {formatOtpTimer(otpTimerEmail)}
-                  </Text>
-                </View>
+                  &lt;/Text>
+                &lt;/View>
               )}
-              {!registerForm.initOtpForm &&
-                registerForm?.isOtpFormError &&
-                registerForm?.otpFormDataForEmail?.errorCode > 200 &&
-                registerForm?.otpUsageType === "email" &&
+              {!registerForm.initOtpForm &amp;&amp;
+                registerForm?.isOtpFormError &amp;&amp;
+                registerForm?.otpFormDataForEmail?.errorCode > 200 &amp;&amp;
+                registerForm?.otpUsageType === "email" &amp;&amp;
                 showErrorMessage(registerForm?.otpFormDataForEmail?.message)}
 
-              {emailError !== "" && showErrorMessage(emailError)}
-            </View>
+              {emailError !== "" &amp;&amp; showErrorMessage(emailError)}
+            &lt;/View>
 
             {/* OTP */}
 
-            <View style={{ marginTop: 5 }}>
-              <TextBoxWithCTA
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;TextBoxWithCTA
                 onChangeText={(text) => onEmailOTPChange(text)}
                 value={otpEmail}
                 placeHolder={strings.email_otp}
                 isConfirmOTP={true}
                 label={"CONFIRM OTP"}
                 loader={
-                  registerForm?.initOtpForm &&
+                  registerForm?.initOtpForm &amp;&amp;
                     registerForm?.otpUsageType === "emailOtp"
                     ? true
                     : false
@@ -1125,27 +1153,27 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   // lineHeight: spacing.HEIGHT_14,
                 }}
               />
-              {otpEmail !== "" &&
-                !registerForm.initOtpForm &&
-                registerForm?.otpFormDataForEmail?.data?.otp !== undefined &&
-                registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &&
-                registerForm?.otpUsageType === "emailOtp" &&
+              {otpEmail !== "" &amp;&amp;
+                !registerForm.initOtpForm &amp;&amp;
+                registerForm?.otpFormDataForEmail?.data?.otp !== undefined &amp;&amp;
+                registerForm?.otpFormDataForEmail?.data?.otp !== otpEmail &amp;&amp;
+                registerForm?.otpUsageType === "emailOtp" &amp;&amp;
                 showEmailErrorMessage()}
 
-              {otpEmail !== "" &&
-                !registerForm.initOtpForm &&
-                registerForm?.otpFormDataForEmail?.data?.data === null &&
-                registerForm?.otpUsageType === "emailOtp" &&
+              {otpEmail !== "" &amp;&amp;
+                !registerForm.initOtpForm &amp;&amp;
+                registerForm?.otpFormDataForEmail?.data?.data === null &amp;&amp;
+                registerForm?.otpUsageType === "emailOtp" &amp;&amp;
                 showEmailErrorMessage()}
 
-              {otpEmailError !== "" && showErrorMessage(otpEmailError)}
-            </View>
-          </Card>
-          <ClearSpace size={1} />
-          <Text variant="headlineSmall">Set password</Text>
-          <ClearSpace size={1} />
+              {otpEmailError !== "" &amp;&amp; showErrorMessage(otpEmailError)}
+            &lt;/View>
+          &lt;/Card>
+          &lt;ClearSpace size={1} />
+          &lt;Text variant="headlineSmall">Set password&lt;/Text>
+          &lt;ClearSpace size={1} />
           {/* Mobile Number */}
-          <Card
+          &lt;Card
             style={{
               ...SHADOW_STYLE,
               padding: 12,
@@ -1153,16 +1181,16 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               backgroundColor: colors.background,
             }}
           >
-            <View style={{ marginTop: 5 }}>
-              <CustomInput
+            &lt;View style={{ marginTop: 5 }}>
+              &lt;CustomInput
                 value={password}
                 caption={strings.password}
                 placeHolder={strings.password}
                 onChangeText={onClickPasswordChange}
                 secureTextEntry={secureTextEntry}
                 right={
-                  password && (
-                    <TextInput.Icon
+                  password &amp;&amp; (
+                    &lt;TextInput.Icon
                       onPress={() => setsecureTextEntry(!secureTextEntry)}
                       style={{ width: 23, height: 23 }}
                       icon={
@@ -1176,18 +1204,18 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               />
 
               {/* {showErrorMessage("sds")} */}
-              {passwordError !== "" && showErrorMessage(passwordError)}
-            </View>
-            <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-              <CustomInput
+              {passwordError !== "" &amp;&amp; showErrorMessage(passwordError)}
+            &lt;/View>
+            &lt;View style={{ marginBottom: spacing.HEIGHT_20 }}>
+              &lt;CustomInput
                 value={confirmPassword}
                 caption={strings.confirmPassword}
                 placeHolder={strings.confirmPassword}
                 onChangeText={onClickConfirmPasswordChange}
                 secureTextEntry={secureTextEntryConfim}
                 right={
-                  confirmPassword && (
-                    <TextInput.Icon
+                  confirmPassword &amp;&amp; (
+                    &lt;TextInput.Icon
                       onPress={() =>
                         setsecureTextEntryConfim(!secureTextEntryConfim)
                       }
@@ -1202,17 +1230,17 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
               />
 
-              {passwordConfirmError !== "" &&
+              {passwordConfirmError !== "" &amp;&amp;
                 showErrorMessage(passwordConfirmError)}
-            </View>
-          </Card>
-        </ScrollView>
-      </View>
-      {!keyEnabled &&
-        <StickyFooter>
-          <>
-            <View>
-              <Button
+            &lt;/View>
+          &lt;/Card>
+        &lt;/ScrollView>
+      &lt;/View>
+      {!keyEnabled &amp;&amp;
+        &lt;StickyFooter>
+          &lt;>
+            &lt;View>
+              &lt;Button
                 label={strings.register}
                 isDisabled={isButtomDiable}
                 onPress={submit}
@@ -1223,8 +1251,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }
                 mode="contained"
               />
-            </View>
-            <Text
+            &lt;/View>
+            &lt;Text
               style={{
                 color: "#393939",
                 fontSize: fontSizes.FONT_14,
@@ -1234,9 +1262,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               }}
             >
               By continuing, I accept and agree to Dtworks
-            </Text>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <Text
+            &lt;/Text>
+            &lt;View style={{ flexDirection: "row", justifyContent: "center" }}>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -1253,9 +1281,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                   // })
                 }
               >
-                Terms & Conditions of Use
-              </Text>
-              <Text
+                Terms &amp; Conditions of Use
+              &lt;/Text>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -1265,9 +1293,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 }}
               >
                 {" "}
-                &{" "}
-              </Text>
-              <Text
+                &amp;{" "}
+              &lt;/Text>
+              &lt;Text
                 style={{
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
@@ -1278,9 +1306,9 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
                 onPress={() => alert("Navigate to Privacy Policy")}
               >
                 Privacy Policy
-              </Text>
-            </View>
-            <Text
+              &lt;/Text>
+            &lt;/View>
+            &lt;Text
               style={{
                 color: "#393939",
                 fontSize: fontSizes.FONT_12,
@@ -1290,10 +1318,33 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               }}
             >
               © {new Date().getFullYear()} Dtworks. All rights reserved.
-            </Text>
-          </>
-        </StickyFooter>
+            &lt;/Text>
+          &lt;/>
+        &lt;/StickyFooter>
       }
-    </View>
+    &lt;/View>
   );
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Interaction.html">Interaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jul 25 2023 13:28:42 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,4 +1,32 @@
-import get from "lodash.get";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Screens/TabScreens/Component/Interaction/Resolution.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Screens/TabScreens/Component/Interaction/Resolution.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import get from "lodash.get";
 import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Divider, Text } from 'react-native-paper';
@@ -10,6 +38,12 @@ import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
 
 
+/**
+* Resolution Corner : Handle the user inputs 
+* @memberOf Interaction
+ * @namespace Resolution  
+* @param {string} popupAction what kind of action need to trigger Eg. (SENDMESSAGE,COLLECTINPUT,WORKFLOWEND)
+ */
 export const HandleResolution = ({
     suggestionList = [],
     resolutionDetails = [],
@@ -24,17 +58,17 @@ export const HandleResolution = ({
         console.log('enter rendersend', type, description)
         if (type == "string") {
             return (
-                <View style={{}}>
-                    <Text>{title}</Text>
-                    <ClearSpace size={2} />
-                </View>
+                &lt;View style={{}}>
+                    &lt;Text>{title}&lt;/Text>
+                    &lt;ClearSpace size={2} />
+                &lt;/View>
             )
             //todo navigate to product listing page
-        } else if (type == "object" && description == "PRODUCT PURCHASE") {
+        } else if (type == "object" &amp;&amp; description == "PRODUCT PURCHASE") {
             console.log('RenderSend:',)
-            return (<Text>TOdo</Text>)
+            return (&lt;Text>TOdo&lt;/Text>)
         }
-        else if (type == "object" && description == "ORDER_DETAILS") {
+        else if (type == "object" &amp;&amp; description == "ORDER_DETAILS") {
             console.log('RenderSend:ORDER_DETAILS title', title)
             const orderDetail = [
                 ['Order No', get(title, 'orderNo', '')],
@@ -47,25 +81,25 @@ export const HandleResolution = ({
 
 
             return (
-                <View style={styles.container}>
+                &lt;View style={styles.container}>
 
-                    <ClearSpace size={2} />
-                    <Text variant="bodyMedium">Order Details</Text>
-                    <ClearSpace size={2} />
-                    <Table borderStyle={{ borderWidth: 1 }}>
-                        {/* <Row data={['', 'Head1', 'Head2', 'Head3']} flexArr={[1, 2, 1, 1]} style={styles.head} textStyle={styles.text} /> */}
+                    &lt;ClearSpace size={2} />
+                    &lt;Text variant="bodyMedium">Order Details&lt;/Text>
+                    &lt;ClearSpace size={2} />
+                    &lt;Table borderStyle={{ borderWidth: 1 }}>
+                        {/* &lt;Row data={['', 'Head1', 'Head2', 'Head3']} flexArr={[1, 2, 1, 1]} style={styles.head} textStyle={styles.text} /> */}
 
-                        <TableWrapper style={styles.wrapper}>
-                            {/* <Col data={['Order No', 'Bill Amount', 'Customer Name', 'Customer Contact No']}
+                        &lt;TableWrapper style={styles.wrapper}>
+                            {/* &lt;Col data={['Order No', 'Bill Amount', 'Customer Name', 'Customer Contact No']}
                                 style={styles.title} heightArr={[40, 40]}
                                 textStyle={styles.text} /> */}
-                            <Rows data={orderDetail}
+                            &lt;Rows data={orderDetail}
                                 flexArr={[2, 2, 1]} style={styles.row} textStyle={styles.text} />
 
-                        </TableWrapper>
-                    </Table>
-                    <ClearSpace size={2} />
-                    {productDetails.length != 0 && productDetails.map(productDetail => {
+                        &lt;/TableWrapper>
+                    &lt;/Table>
+                    &lt;ClearSpace size={2} />
+                    {productDetails.length != 0 &amp;&amp; productDetails.map(productDetail => {
 
                         const productFormated = [
                             ['Product Name', get(productDetail, 'productDetails.productName', '')],
@@ -77,27 +111,27 @@ export const HandleResolution = ({
                             ['Product Category Type', get(productDetail, 'productDetails.productCategoryDesc.description', '')],
                         ]
                         return (
-                            <>
-                                <Table borderStyle={{ borderWidth: 1 }}>
-                                    {/* <Row data={['', 'Head1', 'Head2', 'Head3']} flexArr={[1, 2, 1, 1]} style={styles.head} textStyle={styles.text} /> */}
+                            &lt;>
+                                &lt;Table borderStyle={{ borderWidth: 1 }}>
+                                    {/* &lt;Row data={['', 'Head1', 'Head2', 'Head3']} flexArr={[1, 2, 1, 1]} style={styles.head} textStyle={styles.text} /> */}
 
-                                    <TableWrapper style={styles.wrapper}>
-                                        {/* <Col data={['Order No', 'Bill Amount', 'Customer Name', 'Customer Contact No']}
+                                    &lt;TableWrapper style={styles.wrapper}>
+                                        {/* &lt;Col data={['Order No', 'Bill Amount', 'Customer Name', 'Customer Contact No']}
                                 style={styles.title} heightArr={[40, 40]}
                                 textStyle={styles.text} /> */}
-                                        <Rows data={productFormated}
+                                        &lt;Rows data={productFormated}
                                             flexArr={[2, 2, 1]} style={styles.row} textStyle={styles.text} />
 
-                                    </TableWrapper>
-                                </Table>
-                                <ClearSpace />
-                            </>
+                                    &lt;/TableWrapper>
+                                &lt;/Table>
+                                &lt;ClearSpace />
+                            &lt;/>
                         )
                     })
 
 
                     }
-                </View>
+                &lt;/View>
             )
         }
         else {
@@ -120,14 +154,14 @@ export const HandleResolution = ({
                 }
 
                 return (
-                    <>
-                        <View style={commonStyle.row_space_arround_evenly}>
+                    &lt;>
+                        &lt;View style={commonStyle.row_space_arround_evenly}>
                             {attribute.map((item, idx) => {
                                 const buttonName = get(item, 'value', '')
                                 const popupTitle = get(item, 'popup', '')
                                 const buttonType = get(item, 'name', '')
                                 return (
-                                    <SmallButton
+                                    &lt;SmallButton
                                         label={buttonName}
                                         color={buttonType == "NO" ? "red" : "#9C8FC4"}
                                         onPress={() => {
@@ -167,14 +201,14 @@ export const HandleResolution = ({
                                 )
                             })}
 
-                        </View>
-                        <ClearSpace size={2} />
-                    </>
+                        &lt;/View>
+                        &lt;ClearSpace size={2} />
+                    &lt;/>
                 )
             case "COLLECT_REMARKS":
                 return (
-                    <>
-                        <CustomInput
+                    &lt;>
+                        &lt;CustomInput
                             multiline={true}
                             onChangeText={(text) => setRemarks(text)}
                             value={remarks}
@@ -182,8 +216,8 @@ export const HandleResolution = ({
                             placeHolder={strings.remarks}
 
                         />
-                        <ClearSpace size={4} />
-                        <SmallButton label={"Submit"} onPress={() => {
+                        &lt;ClearSpace size={4} />
+                        &lt;SmallButton label={"Submit"} onPress={() => {
                             const params = {
                                 flowId: flowId,
                                 conversationUid: conversationID,
@@ -199,10 +233,10 @@ export const HandleResolution = ({
 
                             popupAction(params)
                         }} />
-                    </>
+                    &lt;/>
                 )
             default:
-                return (<Text>sdfsdf</Text>)
+                return (&lt;Text>sdfsdf&lt;/Text>)
                 return null
 
         }
@@ -212,10 +246,10 @@ export const HandleResolution = ({
     const conversationID = get(resolutionDetails, 'conversationUid', '')
     const requestId = get(resolutionDetails, 'requestId', '')
     return (
-        <View style={styles.bottomContainer}>
-            <ClearSpace size={4} />
+        &lt;View style={styles.bottomContainer}>
+            &lt;ClearSpace size={4} />
 
-            <View
+            &lt;View
                 style={{
                     padding: 8,
                     paddingLeft: 10,
@@ -228,7 +262,7 @@ export const HandleResolution = ({
 
                 }}
             >
-                {suggestionList.length != 0 &&
+                {suggestionList.length != 0 &amp;&amp;
                     suggestionList.map((item, idx) => {
                         const actionType = get(item, 'actionType', '');
                         const description = get(item, 'description', '');
@@ -238,7 +272,7 @@ export const HandleResolution = ({
                             console.log('type or action type is empty',)
                             return null
                         }
-                        if (actionType == "SENDMESSAGE" && type == "object" && description == "PRODUCT PURCHASE") {
+                        if (actionType == "SENDMESSAGE" &amp;&amp; type == "object" &amp;&amp; description == "PRODUCT PURCHASE") {
                             alert("//todo navigate to product page with convertionID")
                             navigation.navigate('ProductListing', {
                                 productList: message,
@@ -259,17 +293,17 @@ export const HandleResolution = ({
                         switch (actionType) {
                             case "SENDMESSAGE":
                                 console.log('HandleResolution:SENDMESSAGE',)
-                                return <RenderSend title={message} type={type} description={description} />
+                                return &lt;RenderSend title={message} type={type} description={description} />
 
                             case "COLLECTINPUT":
                                 console.log('HandleResolution:COLLECTINPUT',)
-                                return <RenderCollectInput message={message} />
+                                return &lt;RenderCollectInput message={message} />
 
 
                             case "WORKFLOWEND":
                                 console.log('HandleResolution:WORKFLOWEND',)
 
-                                return <Divider bold={true} />
+                                return &lt;Divider bold={true} />
 
 
                             default:
@@ -280,9 +314,9 @@ export const HandleResolution = ({
 
                     })}
 
-            </View>
+            &lt;/View>
 
-        </View>
+        &lt;/View>
     )
 }
 
@@ -300,4 +334,26 @@ const styles = StyleSheet.create({
     title: { flex: 1, backgroundColor: '#f6f8fa' },
     row: { height: 40 },
     text: { textAlign: 'center' }
-})
+})</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Interaction.html">Interaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="Interaction.html">Interaction</a></li><li><a href="Interaction.Resolution.html">Resolution</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jul 25 2023 12:54:47 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

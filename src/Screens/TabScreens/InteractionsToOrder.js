@@ -151,7 +151,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [userType, setUserType] = useState(userTypeParams);
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
-  console.log("usertype", userType)
+  //console.log("usertype", userType)
   const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
   /**
   * Reset state values. This will hanlde reset the state values 
@@ -223,6 +223,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     resetKnowSearch,
     getAppoinmentsData
   ]);
+
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       resetReducerNdState();
@@ -254,7 +255,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   useEffect(() => {
-    async function fetchMyAPI() {
+    /**
+    * Fetch API Data : Fetch master data and profile  for interaction screen
+    * @memberOf Interaction
+
+    */
+    async function fetchData() {
       const {
         SERVICE_TYPE,
         INTXN_TYPE,
@@ -286,21 +292,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
     }
 
-    fetchMyAPI();
+    fetchData();
   }, []);
 
   const [serviceList, setServiceList] = useState([])
-  // const serviceList = [
-  //   {
-  //     code: "SC_BANK",
-  //     description: "Banking",
-  //   },
-  //   {
-  //     code: "SC_INSURANCE",
-  //     description: "Insurance",
-  //   },
-
-  // ];
 
   useEffect(() => {
     async function fetchMyAPI() {
@@ -355,6 +350,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setLocationList(get(masterReducer, "masterdataData.LOCATION", []))
     setContactTypeList(get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []))
   }, [masterReducer])
+
   const resetCreateInterationForm = () => {
     const data = { code: "", description: "" }
     setDropDownFormField("interactionType", data);
@@ -395,9 +391,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const onChangeKnowledgeSearchText = async (text) => {
 
-
     setKnowledgeSearchText(text);
-
 
     if (text.length > 0) {
       // setresultLoader(true)
@@ -412,17 +406,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   /**
-  * handleInteligenceResponse 
-  *
-  * @param {number} params The number to raise.
-  * @param {number} actionType actionType enum "auto_resolution","choose_item" choose_item: having multple items,auto_resolution : already resovled
-  * @param {Object} item whilte onclick the data .
-  * @return {number} x raised to the n-th power.
+  * Handle the knowledge search API response
+  * @memberOf Interaction
+  * @param  {Object} apiRespData Knowledge serach API response data
+  * @param  {string} actionType what kind of response is received from API
+  * @returns {JSX} Return JSX of
   */
-  const handleInteligenceResponse = async (resp, item = {}, actionType = "auto_resolution") => {
+  const handleInteligenceResponse = async (apiRespData, item = {}, actionType = "auto_resolution") => {
     try {
       const debugg = true
-      if (debugg) console.log('handleInteligenceResponse: parms resp', resp, "item", item)
+      if (debugg) console.log('handleInteligenceResponse: parms resp', apiRespData, "item", item)
       const isCreateInteraction = false
       if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
       if (debugg) console.log('handleInteligenceResponse : actionType', actionType)
@@ -445,7 +438,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         //todo popup
         if (debugg) console.log('handleInteligenceResponse : crate interaction if condition')
 
-        const status = interactionDataToCreateInt(item)
+        const status = presetInteractionFormData(item)
         if (debugg) console.log('handleInteligenceResponse : interactionDataToCreateInt func response', status)
 
         if (status) {
@@ -466,7 +459,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       else {
         if (debugg) console.log('handleInteligenceResponse : not create interaction else condition')
 
-        const resolutionList = get(resp, 'resolutionAction.data', [])
+        const resolutionList = get(apiRespData, 'resolutionAction.data', [])
         const solutionCount = resolutionList.length
         if (solutionCount == 0) {
 
@@ -595,7 +588,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   })
                   //check if smart assistance not enable then going this normal way
                   if (!isEnabledsmartAssist) {
-                    interactionDataToCreateInt(item)
+                    presetInteractionFormData(item)
                     setBottombartitle("Create Interaction")
 
                     setautoSuggestionList(false);
@@ -603,7 +596,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     return;
                   }
                   console.log("intreaction data", item)
-                  interactionDataToCreateInt(item)
+                  presetInteractionFormData(item)
 
                   //auto and clear search text
                   setautoSuggestionList(false);
@@ -658,8 +651,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
       })
     );
   };
-
-  const interactionDataToCreateInt = (item) => {
+  /**
+  * Pre set the form's data before open the create interaction popup
+  * @memberOf Interaction
+  * @param  {Object} item form data 
+  */
+  const presetInteractionFormData = (item) => {
     try {
       const debuggg = true;
       if (debuggg) console.log('parmas interactionDataToCreateInt', item)
@@ -760,8 +757,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
     await dispatchInteraction(fetchInteractionAction(value));
     setOpenBottomModalChatBot(true);
   };
-
-  const renderAccordion = useMemo(() => {
+  /**
+  * Handle the dropdown of (Top 10 Category,Recently inteaction)
+  * @memberOf Interaction
+  */
+  const renderAccordin = useMemo(() => {
     return (
       <View style={styles.accodinContainer}>
         <Pressable
@@ -1512,7 +1512,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               <ClearSpace size={5} />
               <Text variant="bodyMedium">More for you</Text>
               <ClearSpace size={2} />
-              {renderAccordion}
+              {renderAccordin}
             </>
           )}
           <RenderSearchResult />
