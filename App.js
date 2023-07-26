@@ -23,12 +23,7 @@ const toastConfig = {
     <ToastTemplete bgColor="green" text={text1} type="error" />
   ),
 };
-/**
- * return full name of the user
- * @param   {string} firstName  First Name of the User
- * @param   {string} lastName   Last Name of the User
- * @return  {string}            Fullname of the user
- */
+
 const App = () => {
 
 
