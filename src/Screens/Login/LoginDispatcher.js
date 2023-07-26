@@ -41,10 +41,7 @@ export function verifyLoginData(navigation, params) {
           params,
           navigation
         );
-        console.log(
-          "Surjeet ==============USER_LOGIN==============>" +
-          JSON.stringify(result)
-        );
+
         if (result.success) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));

@@ -526,6 +526,7 @@ const InteractionDetails = (props) => {
               caption={strings.priority}
               placeHolder={"Select " + strings.priority}
             />
+
             <CustomDropDownFullWidth
               selectedValue={get(formSource, "description", "")}
               data={sourceList}
