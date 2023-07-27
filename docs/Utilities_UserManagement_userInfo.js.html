@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: Splash</title>
+    <title>JSDoc: Source: Utilities/UserManagement/userInfo.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,191 +17,125 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: Splash</h1>
+    <h1 class="page-title">Source: Utilities/UserManagement/userInfo.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>Splash</h2>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import get from "lodash.get";
+import { getDataFromDB } from "../../Storage/token";
+import { storageKeys } from "../Constants/Constant";
+
+export const USERTYPE = {
+  CUSTOMER: "CUSTOMER",
+  USER: "USER"
+}
+/**
+* Gives Customer UUID
+* @method
+* @returns {number} Return UUID
+*/
+export const getCustomerUUID = async () => {
+  let custUUDI;
+  try {
+    custUUDI = get(
+      await getDataFromDB(storageKeys.PROFILE_DETAILS),
+      "customerUuid",
+      ""
+    );
+    if (custUUDI == "") throw "Customer UUDI is empty";
+  } catch (error) {
+    console.log("getCustomerUUID ", error);
+  }
+  return custUUDI;
+};
+/**
+* Gives User Id
+* @method
+* @returns {number} Return User Id
+*/
+export const getUserId = async () => {
+  let userId;
+  try {
+    userId = get(
+      await getDataFromDB(storageKeys.PROFILE_DETAILS),
+      "userId",
+      ""
+    );
+    if (userId == "") throw "Customer UserID is empty";
+  } catch (error) {
+    console.log("getUserId ", error);
+  }
+  return userId;
+};
+/**
+* Gives Customer Id
+* @method
+* @returns {number} Return Customer Id
+*/
+export const getCustomerID = async () => {
+  let userId;
+  try {
+    userId = get(
+      await getDataFromDB(storageKeys.PROFILE_DETAILS),
+      "customerId",
+      ""
+    );
+    if (userId == "") throw "Customer customerIDis empty";
+  } catch (error) {
+    console.log("getUserId ", error);
+  }
+
+  return parseInt(userId);
+};
+/**
+* Gives Type of user (user/customer)
+* @method
+* @returns {string} Return Type of user 
+*/
+export const getUserType = async (cb = () => { }) => {
+  let userType;
+  try {
+
+    userType = await getDataFromDB(storageKeys.USERTYPE)
+    if (["UT_CONSUMER"].includes(userType)) {
+
+      userType = USERTYPE.CUSTOMER
+    }
+    else {
+      userType = USERTYPE.USER
+    }
+
+    if (userType == null) throw "User Type  empty";
+
+  } catch (error) {
+    console.log("user Type is ", error);
+  }
+  cb(userType);
+  return userType;
+};
+
+export const getUserTypeForProfile = async () => {
+  let userType;
+  try {
+
+    userType = await getDataFromDB(storageKeys.USERTYPE)
+
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Check if user is already logged in or not. if logged, navigate to homescreen</p></div>
-        
+    if (userType == null) throw "User Type  empty";
 
-        
+  } catch (error) {
+    console.log("user Type is ", error);
+  }
 
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Screens_Splash_Splash.js.html">Screens/Splash/Splash.js</a>, <a href="Screens_Splash_Splash.js.html#line16">line 16</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".checkLogin"><span class="type-signature">(static) </span>checkLogin<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Check if user is already logged in or not. if logged, navigate to homescreen</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Screens_Splash_Splash.js.html">Screens/Splash/Splash.js</a>, <a href="Screens_Splash_Splash.js.html#line63">line 63</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+  return userType;
+};</code></pre>
+        </article>
+    </section>
 
 
 

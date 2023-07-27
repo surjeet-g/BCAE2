@@ -1,7 +1,13 @@
 import React from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
-import { spacing, fontSizes, color } from "../Utilities/Constants/Constant";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 
+/**
+* Custom error text
+* @method
+* @param  {string} errMessage error text
+* @returns {JSX} Return JSX 
+*/
 export const CustomErrorText = (props) => {
   const { errMessage } = props;
   return (

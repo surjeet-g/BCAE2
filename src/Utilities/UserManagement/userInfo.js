@@ -6,7 +6,11 @@ export const USERTYPE = {
   CUSTOMER: "CUSTOMER",
   USER: "USER"
 }
-
+/**
+* Gives Customer UUID
+* @method
+* @returns {number} Return UUID
+*/
 export const getCustomerUUID = async () => {
   let custUUDI;
   try {
@@ -21,7 +25,11 @@ export const getCustomerUUID = async () => {
   }
   return custUUDI;
 };
-
+/**
+* Gives User Id
+* @method
+* @returns {number} Return User Id
+*/
 export const getUserId = async () => {
   let userId;
   try {
@@ -36,7 +44,11 @@ export const getUserId = async () => {
   }
   return userId;
 };
-
+/**
+* Gives Customer Id
+* @method
+* @returns {number} Return Customer Id
+*/
 export const getCustomerID = async () => {
   let userId;
   try {
@@ -52,6 +64,11 @@ export const getCustomerID = async () => {
 
   return parseInt(userId);
 };
+/**
+* Gives Type of user (user/customer)
+* @method
+* @returns {string} Return Type of user 
+*/
 export const getUserType = async (cb = () => { }) => {
   let userType;
   try {

@@ -3,11 +3,20 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
 import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
-
+/**
+* Custom UI for Drop down TextInput
+* @method
+* @param  {string} label caption of Button
+* @param  {Object} selectedValue current active value
+* @param  {Array}  data all data for dropdown data
+* @param  {bool} isDisabled Toggle state value of button disble or enable
+* @param  {function} setValues invoke clicking on submitting dropdown list items
+* @returns {JSX} Return JSX of
+*/
 export const CustomDropDownFullWidth = (props) => {
   const {
     selectedValue,
-    setValue = () => {},
+    setValue = () => { },
     caption = "",
     placeHolder = "",
     data,
@@ -88,7 +97,7 @@ export const CustomDropDownFullWidth = (props) => {
             contentContainerStyle={{ zIndex: 9999999999 }}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-            // keyExtractor={item => item.description}
+          // keyExtractor={item => item.description}
           />
         </View>
       )}

@@ -1,4 +1,32 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Components/TextBoxWithCTA.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Components/TextBoxWithCTA.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -36,18 +64,18 @@ export const TextBoxWithCTA = (props) => {
   let isDisableButton = props.isDisableButton ?? false;
 
   return (
-    <View style={{ marginTop: 10 }}>
-      <View style={{ marginTop: 10 }}>
-        <Text style={styles.placeHolderText}>{props.placeHolder}</Text>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        {props?.correctOtp && (
-          <View style={{ borderRadius: 10, ...styles.correctStyle }}>
-            <Image source={require("../Assets/icons/Verify.png")} />
-          </View>
+    &lt;View style={{ marginTop: 10 }}>
+      &lt;View style={{ marginTop: 10 }}>
+        &lt;Text style={styles.placeHolderText}>{props.placeHolder}&lt;/Text>
+      &lt;/View>
+      &lt;View style={{ flexDirection: "row" }}>
+        {props?.correctOtp &amp;&amp; (
+          &lt;View style={{ borderRadius: 10, ...styles.correctStyle }}>
+            &lt;Image source={require("../Assets/icons/Verify.png")} />
+          &lt;/View>
         )}
         {props?.loader ? (
-          <View
+          &lt;View
             style={{
               backgroundColor: color.BLACK,
               borderRadius: 10,
@@ -55,10 +83,10 @@ export const TextBoxWithCTA = (props) => {
 
             }}
           >
-            <Text style={{ color: "white", fontSize: 10 }}>Loading</Text>
-          </View>
+            &lt;Text style={{ color: "white", fontSize: 10 }}>Loading&lt;/Text>
+          &lt;/View>
         ) : props?.label ? (
-          <TouchableOpacity
+          &lt;TouchableOpacity
             onPress={onClicked}
             disabled={isDisableButton}
             style={{
@@ -67,11 +95,11 @@ export const TextBoxWithCTA = (props) => {
               ...styles.ctaStyle,
             }}
           >
-            <Text style={{ ...btnTextPro }}>{props.label}</Text>
-          </TouchableOpacity>
+            &lt;Text style={{ ...btnTextPro }}>{props.label}&lt;/Text>
+          &lt;/TouchableOpacity>
         ) : null}
 
-        <View
+        &lt;View
           style={{
             flexDirection: "row",
             marginVertical: spacing.HEIGHT_3,
@@ -85,8 +113,8 @@ export const TextBoxWithCTA = (props) => {
             paddingHorizontal: 12,
           }}
         >
-          {props?.isResendOTP && props?.countryCode != "" && (
-            <TouchableOpacity
+          {props?.isResendOTP &amp;&amp; props?.countryCode != "" &amp;&amp; (
+            &lt;TouchableOpacity
               style={{
                 flexDirection: "row",
                 position: "absolute",
@@ -97,10 +125,10 @@ export const TextBoxWithCTA = (props) => {
                 marginLeft: 10,
               }}
               onPress={() => {
-                props?.onPressOnCountyCode && props.onPressOnCountyCode();
+                props?.onPressOnCountyCode &amp;&amp; props.onPressOnCountyCode();
               }}
             >
-              <Text
+              &lt;Text
                 style={{
                   color: color.DARK_GREY,
                   fontSize: fontSizes.FONT_14,
@@ -108,14 +136,14 @@ export const TextBoxWithCTA = (props) => {
                 }}
               >
                 {props.countryCode}{" "}
-                <Image
+                &lt;Image
                   source={require("../Assets/icons/ci_dropdown.png")}
                   style={{ width: spacing.WIDTH_16, height: spacing.WIDTH_16 }}
                 />
-              </Text>
-            </TouchableOpacity>
+              &lt;/Text>
+            &lt;/TouchableOpacity>
           )}
-          <TextInput
+          &lt;TextInput
             onFocus={() => {
               setActive(true);
             }}
@@ -129,10 +157,10 @@ export const TextBoxWithCTA = (props) => {
 
             autoCorrect={false}
             editable={
-              props?.isResendOTP && props?.countryCode == "" ? false : true
+              props?.isResendOTP &amp;&amp; props?.countryCode == "" ? false : true
             }
             placeholder={
-              props?.isResendOTP && props?.countryCode != ""
+              props?.isResendOTP &amp;&amp; props?.countryCode != ""
                 ? ""
                 : props.placeHolder
             }
@@ -143,7 +171,7 @@ export const TextBoxWithCTA = (props) => {
               ...styles.textInput,
               ...customStyle,
               paddingLeft:
-                props?.isResendOTP && props?.countryCode != ""
+                props?.isResendOTP &amp;&amp; props?.countryCode != ""
                   ? spacing.WIDTH_37 * 2
                   : 0,
             }}
@@ -154,9 +182,9 @@ export const TextBoxWithCTA = (props) => {
             }
             maxLength={props.maxLength || 100}
           />
-        </View>
-      </View>
-    </View>
+        &lt;/View>
+      &lt;/View>
+    &lt;/View>
   );
 };
 
@@ -204,3 +232,26 @@ const styles = StyleSheet.create({
     height: spacing.HEIGHT_38,
   },
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="CustomerOnBoarding.html">CustomerOnBoarding</a></li><li><a href="EditProfile.html">EditProfile</a></li><li><a href="ForgotPassword.html">ForgotPassword</a></li><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li><li><a href="ViewProfile.html">ViewProfile</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CheckGroupbox">CheckGroupbox</a></li><li><a href="global.html#CustomActivityIndicator">CustomActivityIndicator</a></li><li><a href="global.html#CustomButton">CustomButton</a></li><li><a href="global.html#CustomDropDown">CustomDropDown</a></li><li><a href="global.html#CustomDropDownFullWidth">CustomDropDownFullWidth</a></li><li><a href="global.html#CustomErrorText">CustomErrorText</a></li><li><a href="global.html#CustomInput">CustomInput</a></li><li><a href="global.html#FooterModel">FooterModel</a></li><li><a href="global.html#ImagePicker">ImagePicker</a></li><li><a href="global.html#ShareDoc">ShareDoc</a></li><li><a href="global.html#StickyFooter">StickyFooter</a></li><li><a href="global.html#TextBoxWithCTA">TextBoxWithCTA</a></li><li><a href="global.html#TextBoxWithCTAEmail">TextBoxWithCTAEmail</a></li><li><a href="global.html#ToastTemplete">ToastTemplete</a></li><li><a href="global.html#ToggleButton">ToggleButton</a></li><li><a href="global.html#downloadFile">downloadFile</a></li><li><a href="global.html#getCustomerID">getCustomerID</a></li><li><a href="global.html#getCustomerUUID">getCustomerUUID</a></li><li><a href="global.html#getFcmDeviceId">getFcmDeviceId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#getUserType">getUserType</a></li><li><a href="global.html#notificationListener">notificationListener</a></li><li><a href="global.html#permission">permission</a></li><li><a href="global.html#requestUserPermission">requestUserPermission</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Jul 27 2023 10:23:59 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

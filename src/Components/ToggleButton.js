@@ -5,14 +5,13 @@ import { color, spacing } from "../Utilities/Constants/Constant";
 import { SHADOW_STYLE } from "../Utilities/themeConfig";
 
 /**
- * Components : Toggle Button
- * @namespace Components  
- */
-/**
-* Toggle Button able to switch tab
-* @memberOf Components
-* @param  {string} text search string
-* @returns {JSX} Return JSX of
+* @method
+* @param  {string} label Caption of component
+* @param  {function} onPressFirst invoke clicking on first tab
+* @param  {function} onPressSecond invoke clicking on second tab
+* @param  {object} textPro customize the text inside toggle button
+* @param  {boolean} isFirstSelected status of toggle buttom
+* @returns {JSX} Return JSX 
 */
 export const ToggleButton = (props) => {
   const { colors } = useTheme();

@@ -3,7 +3,12 @@ import { Dimensions, Image, View } from "react-native";
 import { Text } from "react-native-paper";
 import { ClearSpace } from "./ClearSpace";
 var { height, width } = Dimensions.get('screen');
-
+/**
+* Pre Loader component.it's provide custom UI for loader
+* @method
+* @param  {string} title title of model
+* @returns {JSX} Return JSX
+*/
 export default function LoadingAnimation({ title = "" }) {
 
   return (

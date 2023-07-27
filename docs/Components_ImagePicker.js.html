@@ -1,4 +1,32 @@
-import React from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Components/ImagePicker.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Components/ImagePicker.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
 import {
   Alert,
   Dimensions,
@@ -74,7 +102,7 @@ export const ImagePicker = ({
             text1: "Technical Issue",
           });
         } else {
-          if (response?.assets[0]?.fileSize < 5000000) {
+          if (response?.assets[0]?.fileSize &lt; 5000000) {
             setFileAttachments([
               ...fileAttachments,
               {
@@ -111,7 +139,7 @@ export const ImagePicker = ({
         base64: true,
       });
 
-      if (response[0]?.size < 5000000) {
+      if (response[0]?.size &lt; 5000000) {
         setFileAttachments([
           ...fileAttachments,
           {
@@ -153,12 +181,12 @@ export const ImagePicker = ({
     );
   };
   const showAttachmentModal = () => {
-    if (fileAttachments.length < 5) {
+    if (fileAttachments.length &lt; 5) {
       let totalSize = 0;
       fileAttachments.forEach((element) => {
         totalSize += element.fileSize;
       });
-      if (totalSize < 25000000) {
+      if (totalSize &lt; 25000000) {
         setAttachmentModalVisible(true);
       } else {
         Alert.alert(strings.attention, strings.max_file_size, [
@@ -224,7 +252,7 @@ export const ImagePicker = ({
         } else {
           // const source = { uri: response.uri };
 
-          if (response?.assets[0]?.fileSize < 5000000) {
+          if (response?.assets[0]?.fileSize &lt; 5000000) {
             setFileAttachments([
               ...fileAttachments,
               {
@@ -301,7 +329,7 @@ export const ImagePicker = ({
   };
   const EmptyAttachmentItem = (props) => {
     return (
-      <Pressable
+      &lt;Pressable
         style={{
           borderRadius: 6,
           borderWidth: 1,
@@ -313,43 +341,43 @@ export const ImagePicker = ({
         }}
         onPress={() => showAttachmentModal()}
       >
-        <Image source={require("../Assets/icons/add_tickets.png")} />
-      </Pressable>
+        &lt;Image source={require("../Assets/icons/add_tickets.png")} />
+      &lt;/Pressable>
     );
   };
 
   return (
-    <View>
-      <View style={{}}>
-        <Text style={{ fontSize: 16, fontWeight: 400, color: "#000000" }}>
+    &lt;View>
+      &lt;View style={{}}>
+        &lt;Text style={{ fontSize: 16, fontWeight: 400, color: "#000000" }}>
           Attachment
-        </Text>
-        <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
+        &lt;/Text>
+        &lt;Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
           (Maximum 5 files can be attached with max file size of 5MB each)
-        </Text>
-        <FlatList
+        &lt;/Text>
+        &lt;FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={[{}, {}, {}, {}, {}]}
           //   key={item.id}
           renderItem={({ item, index }) =>
             fileAttachments[index]?.fileName?.length > 0 ? (
-              <AttachmentItem
+              &lt;AttachmentItem
                 index={index}
                 item={fileAttachments[index]}
                 showDeleteIcon={true}
                 onDeleteClicked={onDeleteClicked}
               />
             ) : (
-              <EmptyAttachmentItem />
+              &lt;EmptyAttachmentItem />
             )
           }
         />
-      </View>
+      &lt;/View>
 
-      {attachmentModalVisible && (
-        <>
-          <Pressable
+      {attachmentModalVisible &amp;&amp; (
+        &lt;>
+          &lt;Pressable
             onPress={() => {
               setAttachmentModalVisible(false);
             }}
@@ -362,9 +390,9 @@ export const ImagePicker = ({
               elevation: 9999,
               zIndex: 9,
             }}
-          ></Pressable>
-          <View>
-            <View
+          >&lt;/Pressable>
+          &lt;View>
+            &lt;View
               style={{
                 alignItems: "center",
                 justifyContent: "space-evenly",
@@ -378,7 +406,7 @@ export const ImagePicker = ({
                 padding: 10,
               }}
             >
-              <View
+              &lt;View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -388,7 +416,7 @@ export const ImagePicker = ({
                   marginHorizontal: 15,
                 }}
               >
-                <View
+                &lt;View
                   style={{
                     flexDirection: "column",
                     justifyContent: "space-between",
@@ -400,7 +428,7 @@ export const ImagePicker = ({
                     marginHorizontal: 15,
                   }}
                 >
-                  <Text
+                  &lt;Text
                     style={{
                       fontWeight: 600,
                       color: "#202223",
@@ -409,10 +437,10 @@ export const ImagePicker = ({
                     }}
                   >
                     Choose Files
-                  </Text>
-                  <Text>Select files for attachments</Text>
-                </View>
-                <Icon
+                  &lt;/Text>
+                  &lt;Text>Select files for attachments&lt;/Text>
+                &lt;/View>
+                &lt;Icon
                   onPress={() => {
                     setAttachmentModalVisible(false);
                   }}
@@ -420,16 +448,16 @@ export const ImagePicker = ({
                   size={25}
                   color={"#000"}
                 />
-              </View>
+              &lt;/View>
 
-              <View
+              &lt;View
                 style={{
                   alignItems: "center",
                   flex: 1,
                   flexDirection: "row",
                 }}
               >
-                <Pressable
+                &lt;Pressable
                   onPress={() => handleDocumentSelection()}
                   style={{
                     marginTop: spacing.HEIGHT_6,
@@ -439,13 +467,13 @@ export const ImagePicker = ({
                     width: "33%",
                   }}
                 >
-                  <Image
+                  &lt;Image
                     style={styles.upperLogo}
                     source={require("../Assets/icons/picker_document.png")}
                   />
-                </Pressable>
+                &lt;/Pressable>
 
-                <Pressable
+                &lt;Pressable
                   onPress={() => {
                     // setAttachmentModalVisible(false);
                     launchCamera1();
@@ -458,13 +486,13 @@ export const ImagePicker = ({
                     width: "33%",
                   }}
                 >
-                  <Image
+                  &lt;Image
                     style={styles.upperLogo}
                     source={require("../Assets/icons/picker_camera.png")}
                   />
-                </Pressable>
+                &lt;/Pressable>
 
-                <Pressable
+                &lt;Pressable
                   onPress={() => launchImageLibrary1()}
                   style={{
                     marginTop: spacing.HEIGHT_6,
@@ -474,17 +502,17 @@ export const ImagePicker = ({
                     width: "33%",
                   }}
                 >
-                  <Image
+                  &lt;Image
                     style={styles.upperLogo}
                     source={require("../Assets/icons/picker_gallery.png")}
                   />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </>
+                &lt;/Pressable>
+              &lt;/View>
+            &lt;/View>
+          &lt;/View>
+        &lt;/>
       )}
-    </View>
+    &lt;/View>
   );
 };
 
@@ -497,3 +525,26 @@ const styles = StyleSheet.create({
     height: 80,
   },
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="CustomerOnBoarding.html">CustomerOnBoarding</a></li><li><a href="EditProfile.html">EditProfile</a></li><li><a href="ForgotPassword.html">ForgotPassword</a></li><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li><li><a href="ViewProfile.html">ViewProfile</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CheckGroupbox">CheckGroupbox</a></li><li><a href="global.html#CustomActivityIndicator">CustomActivityIndicator</a></li><li><a href="global.html#CustomButton">CustomButton</a></li><li><a href="global.html#CustomDropDown">CustomDropDown</a></li><li><a href="global.html#CustomDropDownFullWidth">CustomDropDownFullWidth</a></li><li><a href="global.html#CustomErrorText">CustomErrorText</a></li><li><a href="global.html#CustomInput">CustomInput</a></li><li><a href="global.html#FooterModel">FooterModel</a></li><li><a href="global.html#ImagePicker">ImagePicker</a></li><li><a href="global.html#ShareDoc">ShareDoc</a></li><li><a href="global.html#StickyFooter">StickyFooter</a></li><li><a href="global.html#TextBoxWithCTA">TextBoxWithCTA</a></li><li><a href="global.html#TextBoxWithCTAEmail">TextBoxWithCTAEmail</a></li><li><a href="global.html#ToastTemplete">ToastTemplete</a></li><li><a href="global.html#ToggleButton">ToggleButton</a></li><li><a href="global.html#downloadFile">downloadFile</a></li><li><a href="global.html#getCustomerID">getCustomerID</a></li><li><a href="global.html#getCustomerUUID">getCustomerUUID</a></li><li><a href="global.html#getFcmDeviceId">getFcmDeviceId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#getUserType">getUserType</a></li><li><a href="global.html#notificationListener">notificationListener</a></li><li><a href="global.html#permission">permission</a></li><li><a href="global.html#requestUserPermission">requestUserPermission</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Jul 27 2023 10:23:59 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

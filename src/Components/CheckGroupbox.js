@@ -4,14 +4,17 @@ import { Pressable, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { commonStyle } from "../Utilities/Style/commonStyle";
-// /**
-// * Group check box
-// *
-// * @param {func} setValues set enable check box
-// * @return {number} values active values for check box
-// * @return {JSX} return dom
 
-// */
+/**
+* Custom UI for Group Checkbox
+* @method
+* @param  {string} label caption of Button
+* @param  {Object} values active checkbox data
+* @param  {Array} data all data checkbox's data
+* @param  {bool} isDisabled Toggle state value of button disble or enable
+* @param  {function} setValues invoke clicking on submitting checkbox
+* @returns {JSX} Return JSX of
+*/
 export const CheckGroupbox = ({ data, label, setValues, values }) => {
   useEffect(() => {
     setValues(data);

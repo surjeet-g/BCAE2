@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Components/FooterModel.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Components/FooterModel.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import { Dimensions, ScrollView, Text, View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { SHADOW_STYLE } from "../Utilities/themeConfig";
+import { ClearSpace } from "./ClearSpace";
+
+var { height, width } = Dimensions.get("screen");
+
+/**
+* Footer Model Popup.it is  wrapper component
+* @method
+* @param  {Object} children wrapper component
+* @param  {string} subtitle sub-caption of model
+* @param  {string} title title of model
+* @param  {bool} open Toggle state value of close  or open the model
+* @param  {function} setOpen invoke clicking on close buttom
+* @returns {JSX} Return JSX of
+*/
+export const FooterModel = ({
+  setOpen = () => { },
+  open = false,
+  children,
+  title = "",
+  subtitle = "",
+}) => {
+  if (!open) return null;
+  return (
+    &lt;>
+      &lt;View style={{ backgroundColor: "#928d8dab", height: height, width: width, position: "absolute" }} />
+
+
+      &lt;View
+        style={{
+          position: "absolute",
+          bottom: 1,
+          width: width,
+          backgroundColor: "transparent",
+        }}
+      >
+        {/* header */}
+        &lt;View
+          style={{
+            backgroundColor: "white",
+            minHeight: height * 0.2,
+            maxHeight: height * 0.8,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+            ...SHADOW_STYLE,
+          }}
+        >
+          &lt;View
+            style={{
+              position: "relative",
+              top: 1,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            &lt;ClearSpace size={3} />
+            &lt;View
+              style={{
+                width: 70,
+                height: 3,
+                backgroundColor: "black",
+                borderRadius: 5,
+              }}
+            />
+          &lt;/View>
+
+          &lt;ClearSpace size={2} />
+          &lt;View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // position: "relative",
+              marginVertical: 5,
+              // flex: 1,
+              // height: 300,
+              marginHorizontal: 15,
+            }}
+          >
+            &lt;Text
+              style={{
+                fontWeight: 600,
+                color: "#202223",
+                fontSize: 16,
+                // flex: 1,
+              }}
+            >
+              {title}
+            &lt;/Text>
+
+            &lt;Icon
+              onPress={() => {
+                setOpen(false);
+              }}
+              name="close-circle"
+              size={25}
+              color={"#000"}
+            />
+          &lt;/View>
+          &lt;View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // position: "relative",
+              marginVertical: 5,
+              // flex: 1,
+              // height: 300,
+              marginHorizontal: 15,
+            }}
+          >
+            &lt;Text
+              style={{
+                fontWeight: 400,
+                color: "#3D3D3D",
+                fontSize: 16,
+                // flex: 1,
+              }}
+            >
+              {subtitle}
+            &lt;/Text>
+          &lt;/View>
+
+          &lt;ScrollView
+            nestedScrollEnabled={true}
+            contentContainerStyle={{ marginBottom: 20 }}
+          >
+            {children}
+          &lt;/ScrollView>
+        &lt;/View>
+      &lt;/View>
+    &lt;/>
+
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="CustomerOnBoarding.html">CustomerOnBoarding</a></li><li><a href="EditProfile.html">EditProfile</a></li><li><a href="ForgotPassword.html">ForgotPassword</a></li><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li><li><a href="ViewProfile.html">ViewProfile</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CheckGroupbox">CheckGroupbox</a></li><li><a href="global.html#CustomActivityIndicator">CustomActivityIndicator</a></li><li><a href="global.html#CustomButton">CustomButton</a></li><li><a href="global.html#CustomDropDown">CustomDropDown</a></li><li><a href="global.html#CustomDropDownFullWidth">CustomDropDownFullWidth</a></li><li><a href="global.html#CustomErrorText">CustomErrorText</a></li><li><a href="global.html#CustomInput">CustomInput</a></li><li><a href="global.html#FooterModel">FooterModel</a></li><li><a href="global.html#ImagePicker">ImagePicker</a></li><li><a href="global.html#ShareDoc">ShareDoc</a></li><li><a href="global.html#StickyFooter">StickyFooter</a></li><li><a href="global.html#TextBoxWithCTA">TextBoxWithCTA</a></li><li><a href="global.html#TextBoxWithCTAEmail">TextBoxWithCTAEmail</a></li><li><a href="global.html#ToastTemplete">ToastTemplete</a></li><li><a href="global.html#ToggleButton">ToggleButton</a></li><li><a href="global.html#downloadFile">downloadFile</a></li><li><a href="global.html#getCustomerID">getCustomerID</a></li><li><a href="global.html#getCustomerUUID">getCustomerUUID</a></li><li><a href="global.html#getFcmDeviceId">getFcmDeviceId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#getUserType">getUserType</a></li><li><a href="global.html#notificationListener">notificationListener</a></li><li><a href="global.html#permission">permission</a></li><li><a href="global.html#requestUserPermission">requestUserPermission</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Jul 27 2023 10:23:59 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

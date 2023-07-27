@@ -4,6 +4,16 @@ import { List, TextInput, useTheme } from "react-native-paper";
 import { CustomInput } from "../Components/CustomInput";
 import { color, fontSizes, spacing } from "../Utilities/Constants/Constant";
 
+/**
+* Custom UI for Drop down TextInput
+* @method
+* @param  {string} label caption of Button
+* @param  {Object} selectedValue current active value
+* @param  {Array}  data all data for dropdown data
+* @param  {bool} isDisabled Toggle state value of button disble or enable
+* @param  {function} setValues invoke clicking on submitting dropdown list items
+* @returns {JSX} Return JSX
+*/
 export const CustomDropDown = (props) => {
   const { selectedValue, setValue } = props;
   const [hideShow, setHideShow] = useState(false);
@@ -42,7 +52,7 @@ export const CustomDropDown = (props) => {
           height: 50,
           flexDirection: "row",
           alignItems: "center",
-          justifyContent:"space-between"
+          justifyContent: "space-between"
         }}
       >
         <Text
@@ -82,7 +92,7 @@ export const CustomDropDown = (props) => {
             data={props?.data ?? []}
             renderItem={renderItem}
             keyExtractor={(item, index) => `key-${index}`}
-            // keyExtractor={item => item.description}
+          // keyExtractor={item => item.description}
           />
         </View>
       )}

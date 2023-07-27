@@ -7,6 +7,16 @@ import { ClearSpace } from "./ClearSpace";
 
 var { height, width } = Dimensions.get("screen");
 
+/**
+* Footer Model Popup.it is  wrapper component
+* @method
+* @param  {Object} children wrapper component
+* @param  {string} subtitle sub-caption of model
+* @param  {string} title title of model
+* @param  {bool} open Toggle state value of close  or open the model
+* @param  {function} setOpen invoke clicking on close buttom
+* @returns {JSX} Return JSX of
+*/
 export const FooterModel = ({
   setOpen = () => { },
   open = false,
