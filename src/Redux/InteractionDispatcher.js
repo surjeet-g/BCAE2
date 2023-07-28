@@ -20,10 +20,13 @@ import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
 import {
   getCustomerID
 } from "../Utilities/UserManagement/userInfo";
+
 /**
-* API Call for fetch last interactions
+* Reducer Dispatch
+* Handle API call for Fetch Interaction details for Top category and Recently Interaction
 * @memberOf Interaction
-* @param  {string} type which type of interaction eg : rencently interaction, top category
+* @param  {string} type type of data eg (frequently,category)
+* @returns {Object} Dispatcher to reducer
 */
 export function fetchInteractionAction(type = "", params = {},
   isRemovedHistory = false) {
@@ -252,9 +255,12 @@ export function updateInteractionAction(obj) {
 }
 
 /**
-* API Call for add new interaction
+* Reducer Dispatch
+* Handle API call for create interaction
 * @memberOf Interaction
 * @param  {Object} obj payload for create interaction API
+* @param  {Object} fileAttachments file attachments payload for create interaction API
+* @returns {Object} Dispatcher to reducer
 */
 export function addInteractionAction(obj, fileAttachments) {
   return async (dispatch) => {
@@ -321,7 +327,14 @@ const validateFormData = async (formData, dispatch) => {
   //df,//df,//df,//df,//df,//df,//df,//df,//df
   return status;
 };
-
+/**
+* Reducer Dispatch
+* Handle API call for getting workflow by inteaction id
+* @memberOf Interaction
+* @param  {number} interactionId interaction ID
+* @param  {Object} navigation handle section timeout
+* @returns {Object} Dispatcher to reducer
+*/
 export function getWorkFlowForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
     let url =
@@ -335,6 +348,14 @@ export function getWorkFlowForInteractionID(interactionId, navigation = null) {
   };
 }
 
+/**
+* Reducer Dispatch
+* Handle API call for getting followup by inteaction id
+* @memberOf Interaction
+* @param  {number} interactionId interaction ID
+* @param  {Object} navigation handle section timeout
+* @returns {Object} Dispatcher to reducer
+*/
 export function getFollowupForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
     let url =
@@ -348,6 +369,14 @@ export function getFollowupForInteractionID(interactionId, navigation = null) {
   };
 }
 
+/**
+* Reducer Dispatch
+* Handle API call for getting interaction details by inteaction id
+* @memberOf Interaction
+* @param  {number} interactionId interaction ID
+* @param  {Object} navigation handle section timeout
+* @returns {Object} Dispatcher to reducer
+*/
 export function getInteractionDetailsForID(interactionId, navigation = null) {
   return async (dispatch) => {
     console.log("interactionL ID", interactionId)
@@ -419,7 +448,13 @@ export function assignInteractionToSelf(
     }
   };
 }
-
+/**
+* Reducer Dispatch
+* Handle API call for getting appointment details
+* @memberOf Interaction
+* @param  {Object} payload interaction ID
+* @returns {Object} Dispatcher to reducer
+*/
 export const getAppoinmentsData = (payload, type = "templete") => {
   return async (dispatch) => {
     // const appPayload = {
@@ -435,729 +470,6 @@ export const getAppoinmentsData = (payload, type = "templete") => {
     }
 
 
-    console.log("templete API ", result)
-    if (type !== "getAppoinment") {
-      result = {
-        "success": true,
-        "status": 200,
-        "message": "Success",
-        "data": {
-          "mappedTemplate": {
-            "templateId": 82,
-            "templateCategory": "TC_APPOINT",
-            "templateName": "Business Visit - Technicians",
-            "userGroup": "UG_BUSINESS",
-            "templateNo": "TEMP00000080",
-            "templateMap": [
-              {
-                "templateMapId": 5241,
-                "templateId": 82,
-                "templateMapName": "Temp clone",
-                "mapCategory": "INTERACTION",
-                "serviceCategory": "PF_BANK",
-                "serviceType": "ST_CREDITCARD",
-                "customerClass": null,
-                "tranType": "INTEREST",
-                "tranPriority": "PRTYMED"
-              }
-            ],
-            "appointmentHdr": [
-              {
-                "appointId": 79,
-                "appointName": "Business Visit",
-                "appointType": "CUST_VISIT",
-                "userGroup": "UG_BUSINESS",
-                "notifyId": 1,
-                "rosterId": 1,
-                "appointmentDet": [
-                  {
-                    "appointDtlId": 4519,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-09",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "14:00:00",
-                    "appointEndTime": "15:00:00"
-                  },
-                  {
-                    "appointDtlId": 4520,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-09",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "15:00:00",
-                    "appointEndTime": "16:00:00"
-                  },
-                  {
-                    "appointDtlId": 4617,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "13:00:00",
-                    "appointEndTime": "14:00:00"
-                  },
-                  {
-                    "appointDtlId": 4618,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:30:00",
-                    "appointEndTime": "15:45:00"
-                  },
-                  {
-                    "appointDtlId": 3927,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "17:00:00",
-                    "appointEndTime": "17:10:00"
-                  },
-                  {
-                    "appointDtlId": 4619,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-16",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "07:00:00",
-                    "appointEndTime": "08:00:00"
-                  },
-                  {
-                    "appointDtlId": 4620,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-16",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "08:00:00",
-                    "appointEndTime": "09:00:00"
-                  },
-                  {
-                    "appointDtlId": 4621,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-16",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "09:00:00",
-                    "appointEndTime": "10:00:00"
-                  },
-                  {
-                    "appointDtlId": 4622,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-16",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "10:00:00",
-                    "appointEndTime": "11:00:00"
-                  },
-                  {
-                    "appointDtlId": 2886,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:10:00",
-                    "appointEndTime": "12:20:00"
-                  },
-                  {
-                    "appointDtlId": 2887,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:20:00",
-                    "appointEndTime": "12:30:00"
-                  },
-                  {
-                    "appointDtlId": 2888,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:30:00",
-                    "appointEndTime": "12:40:00"
-                  },
-                  {
-                    "appointDtlId": 2889,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:40:00",
-                    "appointEndTime": "12:50:00"
-                  },
-                  {
-                    "appointDtlId": 2905,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:00:00",
-                    "appointEndTime": "12:10:00"
-                  },
-                  {
-                    "appointDtlId": 2906,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:10:00",
-                    "appointEndTime": "12:20:00"
-                  },
-                  {
-                    "appointDtlId": 2907,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:20:00",
-                    "appointEndTime": "12:30:00"
-                  },
-                  {
-                    "appointDtlId": 2908,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:30:00",
-                    "appointEndTime": "12:40:00"
-                  },
-                  {
-                    "appointDtlId": 2909,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:40:00",
-                    "appointEndTime": "12:50:00"
-                  },
-                  {
-                    "appointDtlId": 2910,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:50:00",
-                    "appointEndTime": "13:00:00"
-                  },
-                  {
-                    "appointDtlId": 2911,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:00:00",
-                    "appointEndTime": "13:10:00"
-                  },
-                  {
-                    "appointDtlId": 2912,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:10:00",
-                    "appointEndTime": "13:20:00"
-                  },
-                  {
-                    "appointDtlId": 2913,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:20:00",
-                    "appointEndTime": "13:30:00"
-                  },
-                  {
-                    "appointDtlId": 2914,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:30:00",
-                    "appointEndTime": "13:40:00"
-                  },
-                  {
-                    "appointDtlId": 2915,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:40:00",
-                    "appointEndTime": "13:50:00"
-                  },
-                  {
-                    "appointDtlId": 2916,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:50:00",
-                    "appointEndTime": "14:00:00"
-                  },
-                  {
-                    "appointDtlId": 2917,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:00:00",
-                    "appointEndTime": "15:15:00"
-                  },
-                  {
-                    "appointDtlId": 2918,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:15:00",
-                    "appointEndTime": "15:30:00"
-                  },
-                  {
-                    "appointDtlId": 2919,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:30:00",
-                    "appointEndTime": "15:45:00"
-                  },
-                  {
-                    "appointDtlId": 2920,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:45:00",
-                    "appointEndTime": "16:00:00"
-                  },
-                  {
-                    "appointDtlId": 2921,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:00:00",
-                    "appointEndTime": "16:15:00"
-                  },
-                  {
-                    "appointDtlId": 2922,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:15:00",
-                    "appointEndTime": "16:30:00"
-                  },
-                  {
-                    "appointDtlId": 2923,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:30:00",
-                    "appointEndTime": "16:45:00"
-                  },
-                  {
-                    "appointDtlId": 2924,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:45:00",
-                    "appointEndTime": "17:00:00"
-                  },
-                  {
-                    "appointDtlId": 2900,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:45:00",
-                    "appointEndTime": "16:00:00"
-                  },
-                  {
-                    "appointDtlId": 2901,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:00:00",
-                    "appointEndTime": "16:15:00"
-                  },
-                  {
-                    "appointDtlId": 2902,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:15:00",
-                    "appointEndTime": "16:30:00"
-                  },
-                  {
-                    "appointDtlId": 2903,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:30:00",
-                    "appointEndTime": "16:45:00"
-                  },
-                  {
-                    "appointDtlId": 2904,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "16:45:00",
-                    "appointEndTime": "17:00:00"
-                  },
-                  {
-                    "appointDtlId": 2885,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:00:00",
-                    "appointEndTime": "12:10:00"
-                  },
-                  {
-                    "appointDtlId": 2890,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "12:50:00",
-                    "appointEndTime": "13:00:00"
-                  },
-                  {
-                    "appointDtlId": 2891,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:00:00",
-                    "appointEndTime": "13:10:00"
-                  },
-                  {
-                    "appointDtlId": 2892,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:10:00",
-                    "appointEndTime": "13:20:00"
-                  },
-                  {
-                    "appointDtlId": 2893,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:20:00",
-                    "appointEndTime": "13:30:00"
-                  },
-                  {
-                    "appointDtlId": 2894,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:30:00",
-                    "appointEndTime": "13:40:00"
-                  },
-                  {
-                    "appointDtlId": 2895,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:40:00",
-                    "appointEndTime": "13:50:00"
-                  },
-                  {
-                    "appointDtlId": 2896,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "13:50:00",
-                    "appointEndTime": "14:00:00"
-                  },
-                  {
-                    "appointDtlId": 2897,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:00:00",
-                    "appointEndTime": "15:15:00"
-                  },
-                  {
-                    "appointDtlId": 2898,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:15:00",
-                    "appointEndTime": "15:30:00"
-                  },
-                  {
-                    "appointDtlId": 2965,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-04",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "07:00:00",
-                    "appointEndTime": "08:00:00"
-                  },
-                  {
-                    "appointDtlId": 2966,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-04",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "08:00:00",
-                    "appointEndTime": "09:00:00"
-                  },
-                  {
-                    "appointDtlId": 2967,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-04",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "09:00:00",
-                    "appointEndTime": "10:00:00"
-                  },
-                  {
-                    "appointDtlId": 2968,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-04",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "10:00:00",
-                    "appointEndTime": "11:00:00"
-                  },
-                  {
-                    "appointDtlId": 2899,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-04-29",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 4,
-                    "appointStartTime": "15:30:00",
-                    "appointEndTime": "15:45:00"
-                  },
-                  {
-                    "appointDtlId": 4511,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 7,
-                    "appointDate": "2023-05-09",
-                    "appointInterval": "15",
-                    "appointAgentsAvailability": 3,
-                    "appointStartTime": "13:00:00",
-                    "appointEndTime": "14:00:00"
-                  },
-                  {
-                    "appointDtlId": 3937,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "18:40:00",
-                    "appointEndTime": "18:50:00"
-                  },
-                  {
-                    "appointDtlId": 3938,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "18:50:00",
-                    "appointEndTime": "19:00:00"
-                  },
-                  {
-                    "appointDtlId": 3939,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "19:00:00",
-                    "appointEndTime": "19:10:00"
-                  },
-                  {
-                    "appointDtlId": 3940,
-                    "appointMode": "CUST_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "19:10:00",
-                    "appointEndTime": "19:20:00"
-                  }
-                ]
-              },
-              {
-                "appointId": 111,
-                "appointName": "Business Visit",
-                "appointType": "BUS_VISIT",
-                "userGroup": "UG_BUSINESS",
-                "notifyId": 1,
-                "rosterId": 4,
-                "appointmentDet": [
-                  {
-                    "appointDtlId": 3943,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "19:40:00",
-                    "appointEndTime": "19:50:00"
-                  },
-                  {
-                    "appointDtlId": 3944,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "19:50:00",
-                    "appointEndTime": "20:00:00"
-                  },
-                  {
-                    "appointDtlId": 3942,
-                    "appointMode": "BUS_VISIT",
-                    "calenderId": 1,
-                    "shiftId": 1,
-                    "appointDate": "2023-05-17",
-                    "appointInterval": "10",
-                    "appointAgentsAvailability": 2,
-                    "appointStartTime": "19:30:00",
-                    "appointEndTime": "19:40:00"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      }
-    }
     if (result.success) {
       const templeteId = get(result, 'data.mappedTemplate.templateId', '');
       console.log("templete getAppoinmentsData disp templete id", result?.data, templeteId)

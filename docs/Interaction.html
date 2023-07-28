@@ -106,6 +106,69 @@ user can able to search statement</p></div>
 
         
             
+<h4 class="name" id=".exports.getAppoinmentsData"><span class="type-signature">(static, constant) </span>exports.getAppoinmentsData<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Reducer Dispatch
+Handle API call for getting appointment details</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line458">line 458</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id=".renderAccordin"><span class="type-signature">(static, constant) </span>renderAccordin<span class="type-signature"></span></h4>
 
 
@@ -178,7 +241,7 @@ user can able to search statement</p></div>
     
 
     
-    <h4 class="name" id=".exports.addInteractionAction"><span class="type-signature">(static) </span>exports.addInteractionAction<span class="signature">(obj)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".exports.addInteractionAction"><span class="type-signature">(static) </span>exports.addInteractionAction<span class="signature">(obj, fileAttachments)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -186,7 +249,8 @@ user can able to search statement</p></div>
 
 
 <div class="description">
-    <p>API Call for add new interaction</p>
+    <p>Reducer Dispatch
+Handle API call for create interaction</p>
 </div>
 
 
@@ -242,6 +306,29 @@ user can able to search statement</p></div>
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>fileAttachments</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>file attachments payload for create interaction API</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -279,7 +366,7 @@ user can able to search statement</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line259">line 259</a>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line265">line 265</a>
     </li></ul></dd>
     
 
@@ -304,6 +391,28 @@ user can able to search statement</p></div>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Dispatcher to reducer</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -315,7 +424,7 @@ user can able to search statement</p></div>
     
 
     
-    <h4 class="name" id=".exports.fetchInteractionAction"><span class="type-signature">(static) </span>exports.fetchInteractionAction<span class="signature">(type)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".exports.fetchInteractionAction"><span class="type-signature">(static) </span>exports.fetchInteractionAction<span class="signature">(type)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -323,7 +432,8 @@ user can able to search statement</p></div>
 
 
 <div class="description">
-    <p>API Call for fetch last interactions</p>
+    <p>Reducer Dispatch
+Handle API call for Fetch Interaction details for Top category and Recently Interaction</p>
 </div>
 
 
@@ -375,7 +485,7 @@ user can able to search statement</p></div>
 
             
 
-            <td class="description last"><p>which type of interaction eg : rencently interaction, top category</p></td>
+            <td class="description last"><p>type of data eg (frequently,category)</p></td>
         </tr>
 
     
@@ -416,7 +526,7 @@ user can able to search statement</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line28">line 28</a>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line31">line 31</a>
     </li></ul></dd>
     
 
@@ -441,6 +551,577 @@ user can able to search statement</p></div>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Dispatcher to reducer</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".exports.getFollowupForInteractionID"><span class="type-signature">(static) </span>exports.getFollowupForInteractionID<span class="signature">(interactionId, navigation)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Reducer Dispatch
+Handle API call for getting followup by inteaction id</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>interactionId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>interaction ID</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>navigation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>handle section timeout</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line359">line 359</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Dispatcher to reducer</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".exports.getInteractionDetailsForID"><span class="type-signature">(static) </span>exports.getInteractionDetailsForID<span class="signature">(interactionId, navigation)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Reducer Dispatch
+Handle API call for getting interaction details by inteaction id</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>interactionId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>interaction ID</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>navigation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>handle section timeout</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line380">line 380</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Dispatcher to reducer</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".exports.getWorkFlowForInteractionID"><span class="type-signature">(static) </span>exports.getWorkFlowForInteractionID<span class="signature">(interactionId, navigation)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Reducer Dispatch
+Handle API call for getting workflow by inteaction id</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>interactionId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>interaction ID</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>navigation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>handle section timeout</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Redux_InteractionDispatcher.js.html">Redux/InteractionDispatcher.js</a>, <a href="Redux_InteractionDispatcher.js.html#line338">line 338</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Dispatcher to reducer</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1222,7 +1903,7 @@ user can able to search statement</p></div>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Jul 27 2023 10:23:59 GMT+0530 (India Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jul 28 2023 12:06:28 GMT+0530 (India Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

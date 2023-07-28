@@ -10,6 +10,7 @@ export const RESET = "RESET";
 export function initRegisterForm() {
   return { type: INIT_REGISTRE_FORM };
 }
+
 export function setRegisterFormData(data) {
   return { type: SET_REGISTRE_FORM, data };
 }
