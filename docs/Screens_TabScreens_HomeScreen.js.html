@@ -1,4 +1,32 @@
-import get from "lodash.get";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Screens/TabScreens/HomeScreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Screens/TabScreens/HomeScreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
@@ -94,7 +122,7 @@ export const HomeScreen = ({ navigation }) => {
   const FlatListItemTop = (props) => {
     const { item, index } = props;
     return (
-      <View
+      &lt;View
         style={{
           width: 140,
           height: 140,
@@ -105,12 +133,12 @@ export const HomeScreen = ({ navigation }) => {
           elevation: 5,
         }}
       >
-        <View style={{ flex: 1, flexDirection: "column" }}>
-          {/* Title & Image View */}
-          <View
+        &lt;View style={{ flex: 1, flexDirection: "column" }}>
+          {/* Title &amp; Image View */}
+          &lt;View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text
+            &lt;Text
               variant="bodyMedium"
               style={{
                 fontWeight: 700,
@@ -119,16 +147,16 @@ export const HomeScreen = ({ navigation }) => {
               }}
             >
               {item.title || "No Name"}
-            </Text>
+            &lt;/Text>
 
-            <Image
+            &lt;Image
               source={require("../../Assets/icons/frequent_interaction.png")}
               style={{ width: 40, height: 40 }}
             />
-          </View>
+          &lt;/View>
           {/*required Text to sho like amount */}
-          {index === 0 && (
-            <Text
+          {index === 0 &amp;&amp; (
+            &lt;Text
               variant="bodyMedium"
               style={{
                 fontWeight: 700,
@@ -142,10 +170,10 @@ export const HomeScreen = ({ navigation }) => {
                 "customerAccountData[0].accountBalance",
                 "NA"
               )}
-            </Text>
+            &lt;/Text>
           )}
-          {index === 1 && (
-            <Text
+          {index === 1 &amp;&amp; (
+            &lt;Text
               variant="bodyMedium"
               style={{
                 fontWeight: 700,
@@ -154,11 +182,11 @@ export const HomeScreen = ({ navigation }) => {
               }}
             >
               {"70 % Utilization"}
-            </Text>
+            &lt;/Text>
           )}
 
-          {index === 1 && (
-            <Slider
+          {index === 1 &amp;&amp; (
+            &lt;Slider
               step={1}
               minimumValue={0}
               maximumValue={100}
@@ -168,11 +196,11 @@ export const HomeScreen = ({ navigation }) => {
             />
           )}
           {/* View More view */}
-          <View style={styles.bottomView}>
-            <TouchableOpacity
+          &lt;View style={styles.bottomView}>
+            &lt;TouchableOpacity
             // onPress={() => setShowIndex(index)}
             >
-              <View
+              &lt;View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -180,7 +208,7 @@ export const HomeScreen = ({ navigation }) => {
                 }}
               // onPress={() => setShowIndex(index)}
               >
-                <Text
+                &lt;Text
                   variant="bodySmall"
                   style={{
                     fontWeight: 600,
@@ -189,16 +217,16 @@ export const HomeScreen = ({ navigation }) => {
                   }}
                 >
                   {strings.view_more}
-                </Text>
-                <Image
+                &lt;/Text>
+                &lt;Image
                   source={require("../../Assets/icons/right_arrow.png")}
                   style={{ marginLeft: 20, tintColor: "#EFA848" }}
                 />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+              &lt;/View>
+            &lt;/TouchableOpacity>
+          &lt;/View>
+        &lt;/View>
+      &lt;/View>
     );
   };
 
@@ -206,7 +234,7 @@ export const HomeScreen = ({ navigation }) => {
     const HEADER_INDEX = { ORDER: 0, INTERACTION: 1, APPOINMENT: 2 }
     const { item, index } = props;
     return (
-      <View
+      &lt;View
         style={{
           width: 150,
           height: 140,
@@ -218,12 +246,12 @@ export const HomeScreen = ({ navigation }) => {
           elevation: 5,
         }}
       >
-        <View style={{ flex: 1, flexDirection: "column" }}>
-          {/* Title & Image View */}
-          <View
+        &lt;View style={{ flex: 1, flexDirection: "column" }}>
+          {/* Title &amp; Image View */}
+          &lt;View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text
+            &lt;Text
               variant="bodyMedium"
               style={{
                 fontWeight: 700,
@@ -233,19 +261,19 @@ export const HomeScreen = ({ navigation }) => {
               }}
             >
               {item.title || "No Name"}
-            </Text>
-            <ClearSpace size={3} />
+            &lt;/Text>
+            &lt;ClearSpace size={3} />
 
 
-            {/* <Image
+            {/* &lt;Image
               source={require("../../Assets/icons/frequent_interaction.png")}
               style={{ width: 50, height: 50 }}
             /> */}
-          </View>
+          &lt;/View>
           {/*required Text to sho like amount */}
-          {index === 0 && (
-            <View>
-              <Text
+          {index === 0 &amp;&amp; (
+            &lt;View>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -259,8 +287,8 @@ export const HomeScreen = ({ navigation }) => {
                 }}
               >
                 {/* Id: {orderList?.orderListData[0]?.intxnId || "NA"} */}
-              </Text>
-              <Text
+              &lt;/Text>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -277,12 +305,12 @@ export const HomeScreen = ({ navigation }) => {
                 {moment(orderList?.orderListData[0]?.createdAt).format(
                   DATE_FORMAT
                 )} */}
-              </Text>
-            </View>
+              &lt;/Text>
+            &lt;/View>
           )}
-          {index === 1 && (
-            <View>
-              <Text
+          {index === 1 &amp;&amp; (
+            &lt;View>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -296,8 +324,8 @@ export const HomeScreen = ({ navigation }) => {
                 }}
               >
                 Id: {interactionList?.interactionListData[0]?.intxnId || "NA"}
-              </Text>
-              <Text
+              &lt;/Text>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -314,12 +342,12 @@ export const HomeScreen = ({ navigation }) => {
                 {moment(
                   interactionList?.interactionListData[0]?.createdAt
                 ).format(DATE_FORMAT)}
-              </Text>
-            </View>
+              &lt;/Text>
+            &lt;/View>
           )}
-          {index === 2 && (
-            <View>
-              <Text
+          {index === 2 &amp;&amp; (
+            &lt;View>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -333,8 +361,8 @@ export const HomeScreen = ({ navigation }) => {
                 }}
               >
                 {"Appt. ID : 1234"}
-              </Text>
-              <Text
+              &lt;/Text>
+              &lt;Text
                 variant="bodyMedium"
                 style={{
                   fontWeight: 700,
@@ -348,12 +376,12 @@ export const HomeScreen = ({ navigation }) => {
                 }}
               >
                 {strings.date}:{"10 Jan 2023"}
-              </Text>
-            </View>
+              &lt;/Text>
+            &lt;/View>
           )}
           {/* View More view */}
-          <View style={styles.bottomView}>
-            <TouchableOpacity
+          &lt;View style={styles.bottomView}>
+            &lt;TouchableOpacity
               onPress={() => {
                 if (index == HEADER_INDEX.INTERACTION) {
                   if (interactionList?.interactionListData[0]?.intxnId) {
@@ -367,14 +395,14 @@ export const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
-              <View
+              &lt;View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
               >
-                <Text
+                &lt;Text
                   variant="bodySmall"
                   style={{
                     fontWeight: 600,
@@ -388,8 +416,8 @@ export const HomeScreen = ({ navigation }) => {
                   }}
                 >
                   {strings.view_more}
-                </Text>
-                <Image
+                &lt;/Text>
+                &lt;Image
                   source={require("../../Assets/icons/right_arrow.png")}
                   style={{
                     marginLeft: 20,
@@ -401,16 +429,16 @@ export const HomeScreen = ({ navigation }) => {
                           : "#ffffff",
                   }}
                 />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+              &lt;/View>
+            &lt;/TouchableOpacity>
+          &lt;/View>
+        &lt;/View>
+      &lt;/View>
     );
   };
   return (
-    <View style={styles.container}>
-      <Pressable
+    &lt;View style={styles.container}>
+      &lt;Pressable
         onPress={() => {
           openWhatsApp(SUPPORT_NUM)
         }}
@@ -425,15 +453,15 @@ export const HomeScreen = ({ navigation }) => {
           width: 50,
         }}
       >
-        <Image
+        &lt;Image
           resizeMode="contain"
           resizeMethod="resize"
           source={require("../../Assets/icons/floating_whatsapp.png")}
         />
-      </Pressable>
-      <ScrollView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text
+      &lt;/Pressable>
+      &lt;ScrollView style={{ flex: 1 }}>
+        &lt;View style={styles.container}>
+          &lt;Text
             style={{
               color: "#2B2B2B",
               fontSize: 16,
@@ -443,9 +471,9 @@ export const HomeScreen = ({ navigation }) => {
             }}
           >
             {strings.account_details}
-          </Text>
-          <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
-            <FlatList
+          &lt;/Text>
+          &lt;View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
+            &lt;FlatList
               showsHorizontalScrollIndicator={false}
               horizontal
               initialNumToRender={2}
@@ -455,12 +483,12 @@ export const HomeScreen = ({ navigation }) => {
                 { title: strings.not_available },
               ]}
               renderItem={({ item, index }) => (
-                <FlatListItemTop item={item} index={index} />
+                &lt;FlatListItemTop item={item} index={index} />
               )}
               keyExtractor={(item, index) => index}
             />
-          </View>
-          <Text
+          &lt;/View>
+          &lt;Text
             style={{
               color: "#2B2B2B",
               fontSize: 16,
@@ -470,16 +498,16 @@ export const HomeScreen = ({ navigation }) => {
             }}
           >
             {strings.appointment}
-          </Text>
-          <View style={{ margin: 10 }}>
-            <CustomCalendar
+          &lt;/Text>
+          &lt;View style={{ margin: 10 }}>
+            &lt;CustomCalendar
               marked={marked}
               onDaySelect={(day) =>
                 console.log(`Date selected: ${day.dateString}`)
               }
             />
-          </View>
-          <Text
+          &lt;/View>
+          &lt;Text
             style={{
               color: "#2B2B2B",
               fontSize: 16,
@@ -489,9 +517,9 @@ export const HomeScreen = ({ navigation }) => {
             }}
           >
             {strings.history}
-          </Text>
-          <View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
-            <FlatList
+          &lt;/Text>
+          &lt;View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
+            &lt;FlatList
               showsHorizontalScrollIndicator={false}
               horizontal
               initialNumToRender={2}
@@ -501,15 +529,15 @@ export const HomeScreen = ({ navigation }) => {
                 { title: strings.appointment },
               ]}
               renderItem={({ item, index }) => (
-                <FlatListItemBottom item={item} index={index} />
+                &lt;FlatListItemBottom item={item} index={index} />
               )}
               keyExtractor={(item, index) => index}
             />
-          </View>
-        </View>
-        <ClearSpace size={20} />
-      </ScrollView>
-    </View>
+          &lt;/View>
+        &lt;/View>
+        &lt;ClearSpace size={20} />
+      &lt;/ScrollView>
+    &lt;/View>
   );
 };
 
@@ -538,7 +566,7 @@ export const CustomCalendar = (props) => {
   // );
 
   return (
-    <Calendar
+    &lt;Calendar
       style={{
         paddingBottom: 12,
         borderRadius: 10,
@@ -597,7 +625,7 @@ export const CustomCalendar = (props) => {
       }}
       dayComponent={({ date, state }) => {
         return (
-          <View
+          &lt;View
             style={{
               flex: 1,
               paddingTop: 5,
@@ -607,17 +635,17 @@ export const CustomCalendar = (props) => {
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD")
-                ) > -1 &&
+                ) > -1 &amp;&amp;
                   moment(date?.year + "-" + date?.month + "-" + date?.day).format(
                     "YYYY-MM-DD"
-                  ) < moment(new Date()).format("YYYY-MM-DD")
+                  ) &lt; moment(new Date()).format("YYYY-MM-DD")
                   ? "green"
                   : marked.indexOf(
                     "" +
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD")
-                  ) > -1 &&
+                  ) > -1 &amp;&amp;
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD") >
@@ -626,7 +654,7 @@ export const CustomCalendar = (props) => {
                     : "#E1E4EB",
             }}
           >
-            <Text
+            &lt;Text
               style={
                 ([
                   styles.customDay,
@@ -694,8 +722,8 @@ export const CustomCalendar = (props) => {
                 // console.log(item.name);
                 // console.log(date?.year + "-" + date?.month + "-" + date?.day);
               } */}
-            </Text>
-            <Text
+            &lt;/Text>
+            &lt;Text
               style={{
                 textAlign: "center",
                 fontSize: 5,
@@ -706,10 +734,10 @@ export const CustomCalendar = (props) => {
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
                     ).format("YYYY-MM-DD")
-                  ) > -1 &&
+                  ) > -1 &amp;&amp;
                     moment(
                       date?.year + "-" + date?.month + "-" + date?.day
-                    ).format("YYYY-MM-DD") <
+                    ).format("YYYY-MM-DD") &lt;
                     moment(new Date()).format("YYYY-MM-DD")
                     ? "white"
                     : marked.indexOf(
@@ -717,7 +745,7 @@ export const CustomCalendar = (props) => {
                       moment(
                         date?.year + "-" + date?.month + "-" + date?.day
                       ).format("YYYY-MM-DD")
-                    ) > -1 &&
+                    ) > -1 &amp;&amp;
                       moment(
                         date?.year + "-" + date?.month + "-" + date?.day
                       ).format("YYYY-MM-DD") >
@@ -731,25 +759,25 @@ export const CustomCalendar = (props) => {
                 moment(
                   date?.year + "-" + date?.month + "-" + date?.day
                 ).format("YYYY-MM-DD")
-              ) > -1 &&
+              ) > -1 &amp;&amp;
                 moment(date?.year + "-" + date?.month + "-" + date?.day).format(
                   "YYYY-MM-DD"
-                ) < moment(new Date()).format("YYYY-MM-DD")
+                ) &lt; moment(new Date()).format("YYYY-MM-DD")
                 ? strings.completed_appointment
                 : marked.indexOf(
                   "" +
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD")
-                ) > -1 &&
+                ) > -1 &amp;&amp;
                   moment(
                     date?.year + "-" + date?.month + "-" + date?.day
                   ).format("YYYY-MM-DD") >
                   moment(new Date()).format("YYYY-MM-DD")
                   ? strings.upcoming_appointment
                   : ""}
-            </Text>
-          </View>
+            &lt;/Text>
+          &lt;/View>
         );
       }}
       current={initDate}
@@ -757,7 +785,7 @@ export const CustomCalendar = (props) => {
       markingType={"custom"}
       onDayPress={(day) => {
         setSelected(day.dateString);
-        props.onDaySelect && props.onDaySelect(day);
+        props.onDaySelect &amp;&amp; props.onDaySelect(day);
       }}
       {...props}
     />
@@ -791,3 +819,26 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="CustomerOnBoarding.html">CustomerOnBoarding</a></li><li><a href="EditProfile.html">EditProfile</a></li><li><a href="ForgotPassword.html">ForgotPassword</a></li><li><a href="HomeScreen.html">HomeScreen</a></li><li><a href="Interaction.html">Interaction</a></li><li><a href="Login.html">Login</a></li><li><a href="Register.html">Register</a></li><li><a href="Splash.html">Splash</a></li><li><a href="ViewProfile.html">ViewProfile</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CheckGroupbox">CheckGroupbox</a></li><li><a href="global.html#CustomActivityIndicator">CustomActivityIndicator</a></li><li><a href="global.html#CustomButton">CustomButton</a></li><li><a href="global.html#CustomDropDown">CustomDropDown</a></li><li><a href="global.html#CustomDropDownFullWidth">CustomDropDownFullWidth</a></li><li><a href="global.html#CustomErrorText">CustomErrorText</a></li><li><a href="global.html#CustomInput">CustomInput</a></li><li><a href="global.html#FooterModel">FooterModel</a></li><li><a href="global.html#ImagePicker">ImagePicker</a></li><li><a href="global.html#ShareDoc">ShareDoc</a></li><li><a href="global.html#StickyFooter">StickyFooter</a></li><li><a href="global.html#TextBoxWithCTA">TextBoxWithCTA</a></li><li><a href="global.html#TextBoxWithCTAEmail">TextBoxWithCTAEmail</a></li><li><a href="global.html#ToastTemplete">ToastTemplete</a></li><li><a href="global.html#ToggleButton">ToggleButton</a></li><li><a href="global.html#downloadFile">downloadFile</a></li><li><a href="global.html#getCustomerID">getCustomerID</a></li><li><a href="global.html#getCustomerUUID">getCustomerUUID</a></li><li><a href="global.html#getFcmDeviceId">getFcmDeviceId</a></li><li><a href="global.html#getUserId">getUserId</a></li><li><a href="global.html#getUserType">getUserType</a></li><li><a href="global.html#notificationListener">notificationListener</a></li><li><a href="global.html#permission">permission</a></li><li><a href="global.html#requestUserPermission">requestUserPermission</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jul 28 2023 12:29:13 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
