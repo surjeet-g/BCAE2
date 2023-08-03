@@ -91,7 +91,8 @@ const Splash = ({ route, navigation }) => {
             source={require("../../Assets/icons/logo_new.png")}
             // resizeMode="cover"
             style={{
-              marginTop: 32,
+              marginTop: 15,
+              padding: 60,
               // flex: 1,
               width: 300,
               height: 100
