@@ -2,6 +2,7 @@
 export const PROFILE_INIT = "PROFILE_INIT";
 export const PROFILE_DATA = "PROFILE_DATA";
 export const PROFILE_SEARCH_DATA = "PROFILE_SEARCH_DATA";
+export const SERVICE_DATA = "SERVICE_DATA";
 
 export const PROFILE_ERROR = "PROFILE_ERROR";
 export const PROFILE_SEARCH_ERROR = "PROFILE_SEARCH_ERROR";
@@ -49,6 +50,10 @@ export function setProfileError(data) {
 
 export function setSearchProfileData(data) {
   return { type: PROFILE_SEARCH_DATA, data };
+}
+
+export function setServiceData(data) {
+  return { type: SERVICE_DATA, data };
 }
 
 export function setSearchProfileReset(data) {

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, ImageBackground, StyleSheet, View } from "react-native";
-
 import { Text, useTheme } from "react-native-paper";
-
 import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
+import { getLanguage } from "../../Utilities/Language/language";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
 var { height, width } = Dimensions.get("screen");
 

@@ -13,6 +13,7 @@ export function logoutUser(navigation) {
 
     let params = {};
     const userId = await getUserId();
+    console.log("userId", userId);
     let result = await serverCall(
       `${endPoints.LOGOUT_USER}${userId}`,
       requestMethod.DELETE,

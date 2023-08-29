@@ -11,6 +11,7 @@ import {
   PROFILE_SEARCH_INIT, PROFILE_SET_EMPTY, PROFILE_SET_FORM,
   PROFILE_SET_USER_SELECTED_PROFILE,
   PROFILE_SET_USER_SELECTED_RESET,
+  SERVICE_DATA,
   SET_USER_SEARCH
 } from "./ProfileAction";
 
@@ -23,6 +24,7 @@ const mySavedProfileInitialState = {
   profileSearchError: false,
   savedProfileData: {},
   profileSearchData: {},
+  serviceData: {},
   IsSearchEmpty: false,
   formData: {
     firstName: "",
@@ -85,6 +87,11 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
         initSeachProfile: false,
         profileError: false,
         profileSearchData: action.data,
+      };
+    case SERVICE_DATA:
+      return {
+        ...state,
+        serviceData: action.data,
       };
     case PROFILE_DATA:
       // eslint-disable-next-line no-case-declarations

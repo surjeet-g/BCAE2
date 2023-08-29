@@ -18,7 +18,7 @@ export const getKnowledgeSearchData = (searchQuery, service) => {
     );
 
     if (result.success) {
-      console.log('result', endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery, result?.data?.data)
+      console.log('knowledge search result..', endPoints.KNOWLEDGE_SEARCH + "?q=" + searchQuery, result?.data?.data)
       dispatch(setKnowledgeSearchData(result?.data?.data));
       return true;
     } else {

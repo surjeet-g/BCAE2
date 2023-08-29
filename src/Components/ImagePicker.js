@@ -11,7 +11,7 @@ import {
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { spacing } from "../Utilities/Constants/Constant";
@@ -260,11 +260,12 @@ export const ImagePicker = ({
 
     // }
 
-    check(PERMISSIONS.IOS.CAMERA)
+
+    check(PERMISSIONS.ANDROID.CAMERA)
       .then((result) => {
         switch (result) {
           case RESULTS.UNAVAILABLE:
-            request(PERMISSIONS.IOS.CAMERA)
+            request(PERMISSIONS.ANDROID.CAMERA)
               .then((result) => {
                 console.warn("point three", result);
                 openCamara();
@@ -273,7 +274,7 @@ export const ImagePicker = ({
 
             break;
           case RESULTS.DENIED:
-            request(PERMISSIONS.IOS.CAMERA)
+            request(PERMISSIONS.ANDROID.CAMERA)
               .then((result) => {
                 console.warn("point w", result);
                 openCamara();

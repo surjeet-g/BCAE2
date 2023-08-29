@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
+  KeyboardAvoidingView,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -35,8 +36,8 @@ import {
   excludedCountriesList,
   getPhoneNumberLength
 } from "../../Utilities/utils";
-import { HeaderTitle } from "./../../Components/headerTitle";
 import { StickyFooter } from "./../../Components/StickyFooter";
+import { HeaderTitle } from "./../../Components/headerTitle";
 import {
   callLogoutAndLogin,
   resetLogin,
@@ -118,7 +119,7 @@ export const Login = ({ navigation }) => {
     setPasswordError("");
     setNumberError("");
     dispatch(resetLogin());
-    navigation.navigate("Register with us")
+    // navigation.navigate("Register with us")
   };
 
   const onSelectConsumerUserType = () => {
@@ -452,12 +453,18 @@ export const Login = ({ navigation }) => {
                       onPressOnCountyCode={() => setCountryPickModel(true)}
                       countryCode={countryCode}
                       caption={strings.mobile_no}
-                      onChangeText={(text) => onIDChange(text)}
+                      onChangeText={(text) => {
+                        text = text.replace(/[^0-9]/g, '')
+                        onIDChange(text)
+                      }
+                      }
                       value={number}
                       placeHolder={strings.mobile_no}
                       keyboardType="numeric"
                       maxLength={numberMaxLength}
                     />
+
+
                     {!login.initLogin &&
                       login?.loggedProfile?.errorCode == "404" && (
                         <CustomErrorText
@@ -612,89 +619,93 @@ export const Login = ({ navigation }) => {
                 </View>
               )}
           </ScrollView>
-          <StickyFooter>
-            {/* Login View */}
-            {/* <View> */}
-            <CustomButton
-              loading={login.initLogin}
-              label={strings.login}
-              isDisabled={
-                loginMode === EMAIL
-                  ? username == "" || password == ""
-                    ? true
-                    : false
-                  : number == "" || password == ""
-                    ? true
-                    : false
-              }
-              onPress={() => {
-                loginMode === EMAIL
-                  ? submitWithEmail(PASSWORD)
-                  : submitWithMobile(PASSWORD);
-              }}
-            />
-            {/* </View> */}
-            <Text
-              style={{
-                color: "#393939",
-                fontSize: fontSizes.FONT_14,
-                textAlign: "center",
-                fontWeight: 400,
-                marginTop: 10,
-              }}
-            >
-              By continuing, I accept and agree to Dtworks
-            </Text>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+
+          <KeyboardAvoidingView style={{ flex: -75 }}>
+            <StickyFooter>
+              {/* Login View */}
+              {/* <View> */}
+              <CustomButton
+                loading={login.initLogin}
+                label={strings.login}
+                isDisabled={
+                  loginMode === EMAIL
+                    ? username == "" || password == ""
+                      ? true
+                      : false
+                    : number == "" || password == ""
+                      ? true
+                      : false
+                }
+                onPress={() => {
+                  loginMode === EMAIL
+                    ? submitWithEmail(PASSWORD)
+                    : submitWithMobile(PASSWORD);
+                }}
+              />
+              {/* </View> */}
               <Text
                 style={{
+                  color: "#393939",
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
-                  fontWeight: 600,
-                  color: "#4B3694",
-                  marginTop: 5,
+                  fontWeight: 400,
+                  marginTop: 10,
                 }}
-                onPress={() => navigation.navigate("TermConidtion")}
               >
-                Terms & Conditions of Use
+                By continuing, I accept and agree to Dtworks
               </Text>
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text
+                  style={{
+                    fontSize: fontSizes.FONT_14,
+                    textAlign: "center",
+                    fontWeight: 600,
+                    color: "#4B3694",
+                    marginTop: 5,
+                  }}
+                  onPress={() => navigation.navigate("TermConidtion")}
+                >
+                  Terms & Conditions of Use
+                </Text>
+                <Text
+                  style={{
+                    fontSize: fontSizes.FONT_14,
+                    textAlign: "center",
+                    fontWeight: 600,
+                    color: "#000000",
+                    marginTop: 5,
+                  }}
+                >
+                  {" "}
+                  &{" "}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: fontSizes.FONT_14,
+                    textAlign: "center",
+                    fontWeight: 600,
+                    color: "#4B3694",
+                    marginTop: 5,
+                  }}
+                  onPress={() => alert("Navigate to Privacy Policy")}
+                >
+                  Privacy Policy
+                </Text>
+              </View>
               <Text
                 style={{
-                  fontSize: fontSizes.FONT_14,
+                  color: "#393939",
+                  fontSize: fontSizes.FONT_12,
                   textAlign: "center",
-                  fontWeight: 600,
-                  color: "#000000",
-                  marginTop: 5,
+                  fontWeight: 400,
+                  marginTop: 10,
                 }}
               >
-                {" "}
-                &{" "}
+                © {new Date().getFullYear()} Dtworks. All rights reserved.
               </Text>
-              <Text
-                style={{
-                  fontSize: fontSizes.FONT_14,
-                  textAlign: "center",
-                  fontWeight: 600,
-                  color: "#4B3694",
-                  marginTop: 5,
-                }}
-                onPress={() => alert("Navigate to Privacy Policy")}
-              >
-                Privacy Policy
-              </Text>
-            </View>
-            <Text
-              style={{
-                color: "#393939",
-                fontSize: fontSizes.FONT_12,
-                textAlign: "center",
-                fontWeight: 400,
-                marginTop: 10,
-              }}
-            >
-              © {new Date().getFullYear()} Dtworks. All rights reserved.
-            </Text>
-          </StickyFooter>
+            </StickyFooter>
+          </KeyboardAvoidingView>
+
         </View>
       </KeyboardAwareView>
       {/* Modal for showing the second login alert */}

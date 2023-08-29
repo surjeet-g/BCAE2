@@ -100,7 +100,6 @@ export function sendOtp(
     let params = {};
     if (type === "email") {
       servicePoint = endPoints.GET_OTP_FOR_EMAIL;
-
       params = {
         reference: mobileno,
       };
@@ -112,7 +111,12 @@ export function sendOtp(
       };
     }
 
+
+    console.log("reg req...", params)
+
     let result = await serverCall(servicePoint, requestMethod.POST, params);
+
+    console.log("reg resp...", result)
 
     if (result.success && result?.data) {
       Toast.show({
@@ -181,7 +185,11 @@ export function userRegister(
     dispatch(initOtpForm(type));
     const servicePoint = endPoints.REGISTER;
 
+    console.log("reg req...", params)
+
     let result = await serverCall(servicePoint, requestMethod.POST, params);
+
+    console.log("reg resp...", result)
 
     if (result.success) {
       cbSuccess(result?.data?.message);

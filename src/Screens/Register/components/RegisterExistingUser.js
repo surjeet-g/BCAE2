@@ -241,6 +241,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
     // }
     else {
       let registerObject = {
+        userGroup: "UG_CONSUMER",
         userFamily: "UAM_MOBILE",
         userSource: "US_MOBILEAPP",
         accountType: "existing",

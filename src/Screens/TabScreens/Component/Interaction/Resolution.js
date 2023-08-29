@@ -117,6 +117,7 @@ export const HandleResolution = ({
                 if (attribute.length == 0) {
                     console.log('yes no button attribute data is empty',)
                     return null
+
                 }
 
                 return (

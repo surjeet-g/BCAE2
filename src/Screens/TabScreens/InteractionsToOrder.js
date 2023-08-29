@@ -75,6 +75,9 @@ import { APICall } from "../CreateCustomer/util";
 import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
 
+// export const [parsedCustServiceList, setParsedCustServiceList] = useState([]);
+
+
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Category" },
   frequently: { value: "frequently", title: "Most frequently interaction" },
@@ -98,6 +101,7 @@ const INTELIGENCE_STATUS = {
  * @namespace Interaction  
  */
 const InteractionsToOrder = ({ route, navigation }) => {
+
   const [appoinmentFormData, setAppoinmentFormData] = useState()
   //to do empty
   // const [createInteractionType, setCreateInteractionType] = useState("")
@@ -181,12 +185,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
     return (
       <View style={navBar.navRightCon}>
         <Pressable
-          onPress={() => setOpenBottomModal(true)}
+          onPress={() => {
+            resetCreateInterationForm(),
+              setOpenBottomModal(true)
+          }
+          }
           style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}
         >
           <Icon name="plus" size={19} color={colors.inverseSecondary} />
         </Pressable>
-      </View>
+      </View >
     );
   };
 
@@ -258,7 +266,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     /**
     * Fetch API Data : Fetch master data and profile  for interaction screen
     * @memberOf Interaction
-
+  
     */
     async function fetchData() {
       const {
@@ -301,24 +309,25 @@ const InteractionsToOrder = ({ route, navigation }) => {
     async function fetchMyAPI() {
       const customerUUID = await getCustomerUUID()
       const res = await APICall(`${endPoints.SERVICE_LIST}`, 'POST', { customerUuid: customerUUID.toString() });
-      const serviceList = get(res, 'response.data', [])
-      //console.log("servicelist", serviceList, )
-      if (serviceList.length > 0) {
-        console.log("",)
-        const parsedata = serviceList.map(item => {
-
+      custServiceList = get(res, 'response.data', [])
+      if (custServiceList.length > 0) {
+        const parsedata = custServiceList.map(item => {
           return { description: item.serviceName, code: item.serviceNo }
         });
-        setServiceList(parsedata)
-        setService({
-          productNo: get(serviceList, '[0].productDetails[0].productNo', ""),
-          code: parsedata[0].code,
-          description: parsedata[0].description,
-        });
+        dispatch(setServiceData(parsedata));
+        // parsedCustServiceList = parsedata
+        // setService({
+        //   productNo: get(serviceList, '[0].productDetails[0].productNo', ""),
+        //   code: parsedata[0].code,
+        //   description: parsedata[0].description,
+        // });
       }
     }
 
-    fetchMyAPI();
+    const isConsumer = userType == USERTYPE.CUSTOMER;
+    if (isConsumer) {
+      fetchMyAPI();
+    }
 
   }, []);
 
@@ -358,8 +367,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setDropDownFormField("serviceCategory", data);
     setDropDownFormField("serviceType", data);
     setDropDownFormField("priorityCode", data);
-
+    setFileAttachments([]);
+    setFormField("remarks", "");
   }
+
   useLayoutEffect(() => {
     resetCreateInterationForm()
   }, [])
@@ -807,13 +818,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   const renderProfileTab = useMemo(() => {
 
-
     console.log("profile", profileReducer)
     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
     console.log("profile active ", activeData)
     const addr = get(profileReducer, `${activeData}.customerAddress`, []);
-    const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
-    const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
+    // const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
+    // const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
+
+    const mobilePath = "customerContact[0].mobileNo"
+    const emailPath = "customerContact[0].emailId"
 
     const customerCategoryPath = userType == USERTYPE.CUSTOMER ? "customerCatDesc.description" : "customerCatDesc.description"
     const customerStatusPath = userType == USERTYPE.CUSTOMER ? "statusDesc.description" : "statusDesc.description"
@@ -821,6 +834,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
     const customerStatus = get(profileReducer, `${activeData}.${customerStatusPath}`, "")
 
     console.log("cutomer cat", customerCategory, customerStatus)
+
+    const serviceData = get(profileReducer, "serviceData", [])
+    console.log("serviceData..", serviceData)
+
 
     return (
       <ImageBackground
@@ -913,7 +930,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   color: colors.textColor,
                 }}
               >
-                {get(profileReducer, `${activeData}.customerNo`, "")}
+                Customer Id : {get(profileReducer, `${activeData}.customerNo`, "")}
               </Text>
               <Text
                 variant="bodySmall"
@@ -932,63 +949,76 @@ const InteractionsToOrder = ({ route, navigation }) => {
             </View>
           </View>
         </View>
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 10, backgroundColor: colors.textColor }}>
           <Image source={require("../../Assets/icons/line.png")} />
         </View>
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
-        >
-          <Image
-            source={require("../../Assets/icons/interaction_contact.png")}
-            style={{ width: 45, height: 45 }}
-          />
-          <Text
-            variant="bodySmall"
-            style={{
-              fontWeight: "400",
-              color: colors.textColor,
-            }}
-          >
-            {get(
-              profileReducer,
-              `${activeData}.${mobilePath}`,
-              ""
-            )}
-          </Text>
-          {userType == USERTYPE.CUSTOMER &&
+
+
+
+        {console.log("sel cust uuid..", get(profileReducer, 'userSelectedProfileDetails', ''))}
+
+
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, }}>
+
+          <View style={{ flexDirection: "row", alignItems: "center", minWidth: 140 }}>
+            <Image
+              source={require("../../Assets/icons/interaction_contact.png")}
+              style={{ width: 45, height: 45 }} />
+
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "400",
+                color: colors.textColor,
+
+              }}>
+              {
+
+                get(
+                  profileReducer,
+                  `${activeData}.${mobilePath}`,
+                  ""
+                )}
+
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row", alignItems: "center", }}>
             <Image
               source={require("../../Assets/icons/interaction_loc.png")}
-              style={{ width: 45, height: 45 }}
-            />
+              style={{ width: 45, height: 45 }} />
 
-          }
-          <Text
-            numberOfLines={4}
-            variant="bodySmall"
-            style={{
-              fontWeight: "400",
-              width: width * .4,
-              flexWrap: "wrap",
-              wordWrap: "break-word",
-              color: colors.textColor,
-            }}
-          >
-
-
-            {handleMultipleContact(addr)}
-          </Text>
+            <Text
+              numberOfLines={4}
+              variant="bodySmall"
+              alig
+              style={{
+                fontWeight: "400",
+                width: width * .4,
+                flexWrap: "wrap",
+                wordWrap: "break-word",
+                color: colors.textColor,
+              }}
+            >
+              {handleMultipleContact(addr)}
+            </Text>
+          </View>
         </View>
-        {serviceList.length > 0 &&
+
+
+
+
+        {serviceData.length > 0 &&
           <Pressable
             onPress={() => {
-              if (serviceList.length > 0) {
+              if (serviceData.length > 0) {
                 setProfileSeriveModal(!modelProfileServiceModel);
               }
             }}
             style={{
               zIndex: 9,
               flexDirection: "row",
-              width: "50%",
+              width: "100%",
               alignItems: "center",
               marginTop: 5,
             }}
@@ -1007,7 +1037,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             >
               Services : {activeService?.description}
             </Text>
-            {serviceList.length > 0 && (
+            {serviceData.length > 0 && (
               <Icon
                 name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
                 size={20}
@@ -1033,15 +1063,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 }}>
 
               </Pressable>
-              <View style={styles.modelContainerProfile}>
-                {serviceList.map((ite) => {
+              <View style={styles.serviceContainer}>
+                {serviceData.map((ite) => {
                   return (
                     <List.Item
                       key={ite.code}
                       title={ite.description}
                       titleStyle={{
-                        fontSize: 10,
-                        padding: 0,
+                        fontSize: 13,
+                        padding: 8,
                         margin: 0,
                       }}
 
@@ -1242,9 +1272,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
     if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
 
-
+      console.log('a1.........')
       const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
+      console.log('a2.........')
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
       return (
         <HandleResolution
@@ -1264,6 +1294,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
       );
 
     }
+    console.log('a3.........' + interactionList)
+    console.log('a5.........' + suggestionList)
+
     const interactionList = get(interactionReducer, 'InteractionData', [])
 
     return (
@@ -1274,6 +1307,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     );
   };
   if (openBottomModal) {
+    console.log('a4.........')
     Object.keys(interactionRedux.formData).map((it) => {
       const item = interactionRedux.formData[it];
       if (item.type == INPUT_TYPE.INPUTBOX && item.required) {
@@ -1534,6 +1568,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         setOpen={setOpenBottomModal}
         title={bottomBarTitle}>
         <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
+
 
           {/* Field View */}
           <View style={{ marginHorizontal: 10 }}>
@@ -1978,6 +2013,18 @@ const styles = StyleSheet.create({
     // minHeight: 100,
     bottom: -60,
     left: 40,
+  },
+  serviceContainer: {
+    zIndex: 99999999,
+    position: "absolute",
+    backgroundColor: "#fff",
+    elevation: 1,
+    width: 360,
+    borderRadius: 3,
+    // minHeight: 100,
+    bottom: -60,
+    left: 10,
+    right: 0,
   },
 });
 

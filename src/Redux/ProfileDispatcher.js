@@ -3,6 +3,7 @@ import {
   setProfileData,
   setProfileError, setSearchProfileData,
   setSearchProfileDataError,
+  setServiceData,
   setUserSelectedProfile
 } from "./ProfileAction";
 
@@ -10,11 +11,14 @@ import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 import {
+  USERTYPE,
   getCustomerUUID,
   getUserId,
-  getUserType,
-  USERTYPE
+  getUserType
 } from "../Utilities/UserManagement/userInfo";
+
+// export var parsedCustServiceList = [];
+
 
 /**
 * Reducer Dispatch
@@ -68,6 +72,37 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
   return async (dispatch) => {
     // dispatch(initProfile());
 
+    const currentUserType = await getUserType();
+    const isConsumer = currentUserType == USERTYPE.CUSTOMER;
+
+    if (!isConsumer) {
+      let custServiceResult = await serverCall(
+        endPoints.SERVICE_LIST,
+        requestMethod.POST,
+        { customerUuid: customerUUDI.toString() }
+      );
+      const custServiceList = custServiceResult?.data?.data;
+      if (custServiceList.length > 0) {
+        const parsedata = custServiceList.map(item => {
+          return { description: item.serviceName, code: item.serviceNo }
+        });
+        dispatch(setServiceData(parsedata));
+      }
+    }
+
+    // if (serviceList.length > 0) {
+    //   const parsedata = serviceList.map(item => {
+    //     return { description: item.serviceName, code: item.serviceNo }
+    //   });
+    //   setServiceList(parsedata)
+    //   setService({
+    //     productNo: get(serviceList, '[0].productDetails[0].productNo', ""),
+    //     code: parsedata[0].code,
+    //     description: parsedata[0].description,
+    //   });
+    // }
+
+
     console.log("task fetch");
     const userType = await getUserType();
     let typeOfUser =
@@ -95,7 +130,7 @@ export function fetchSavedProfileDataByUser(customerUUDI) {
 * @returns {Object} Dispatcher to reducer
 */
 export function seachCustomers(search = "", limit = 5, page = 0) {
-  console.log('search api',)
+  console.log('search api req..', search)
   return async (dispatch) => {
     // dispatch(initProfileSearch());
     //todo search params
@@ -110,6 +145,7 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
     if (profileResult?.success) {
       dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
       const len = profileResult?.data?.data?.rows?.length;
+      console.log("profile resp len..", len);
       // if (len == 0) dispatch(setSearchEmpty(true));
     } else {
       dispatch(setSearchProfileDataError([]));

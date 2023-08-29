@@ -1,8 +1,17 @@
 const SERVER_TYE = "stage"
 // test "https://bcae-test.comquest-brunei.com:1443/bcae/";
 //Staging environment
-export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/bcae-staging/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
+
+
+// export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
+
+export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
+
+
 // export const BASE_URL = "https://st-td123.comquest-brunei.com:13443/td123/";
+
+
+// https://bcae-test.comquest-brunei.com:1443/bcae-staging/api/knowledge-base/search-knowledge-base-consumer?q=i%20wan&st=undefined
 
 export const BASE_URL_TENANT =
   "https://bcae-test.comquest-brunei.com:1443/tenant/";
@@ -12,8 +21,9 @@ export const PROD_BASE_URL = "https://123.comquest-brunei.com/NCC/";
 export const PROD_BASE_URL_TENANT =
   "https://bcae-prod.comquest-brunei.com:19443/tenant/";
 const testTenatId = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
+console.log('SERVER_TYE---->', SERVER_TYE)
 export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
-
+console.log('TENANT_ID---->', TENANT_ID)
 export const endPoints = {
   MASTER_CONFIG: "api/master/get-app-config",
   TERM_ND_CONDITION: "api/master/template/get-terms-conditions?entityType=APPLICATION&serviceType=ALL",
@@ -46,7 +56,7 @@ export const endPoints = {
   MY_TICKETS_DETAILS_API: "api/complaint",
   GET_LOGIN_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=LOGIN",
   GET_LOGIN_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=LOGIN",
-  GET_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=REGISTER",
+  GET_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=REGISTER&userGroup=UG_CONSUMER",
   GET_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=REGISTER",
   CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",

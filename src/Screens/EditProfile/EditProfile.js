@@ -4,6 +4,7 @@ import {
   Image,
   ImageBackground,
   Keyboard,
+  PermissionsAndroid,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -15,8 +16,8 @@ import { launchCamera } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataFromDB } from "../../Storage/token";
 import {
-  color,
   DEFAULT_PROFILE_IMAGE,
+  color,
   fontSizes,
   spacing,
   storageKeys
@@ -35,10 +36,6 @@ import { FullPageLoder } from "../../Components/FullPageLoder";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { StickyFooter } from "../../Components/StickyFooter";
 import {
-  getMasterData,
-  MASTER_DATA_CONSTANT
-} from "../../Redux/masterDataDispatcher";
-import {
   setProfileFormField,
   setProfileReset
 } from "../../Redux/ProfileAction";
@@ -48,13 +45,17 @@ import {
 } from "../../Redux/ProfileDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
 import { fetchSavedLocations } from "../../Redux/SavedLocationDispatcher";
+import {
+  MASTER_DATA_CONSTANT,
+  getMasterData
+} from "../../Redux/masterDataDispatcher";
 import { TDLog } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language/index";
-import theme from "../../Utilities/themeConfig";
 import {
-  getUserTypeForProfile,
-  USERTYPE
+  USERTYPE,
+  getUserTypeForProfile
 } from "../../Utilities/UserManagement/userInfo";
+import theme from "../../Utilities/themeConfig";
 import { handleMultipleContact } from "../../Utilities/utils";
 
 /**
@@ -105,7 +106,7 @@ const EditProfile = ({ navigation, props }) => {
   const [postCode, setPostcode] = useState("");
   const [contactValues, setContactValues] = useState([]);
   const [notificationValues, setNotificationValues] = useState([]);
-  const [profileImageData, setProfilePic] = useState("")
+  const [profileImageData, setProfilePic] = useState(DEFAULT_PROFILE_IMAGE)
   useEffect(() => {
     // dispatch1(setProfileReset());
     /**
@@ -215,17 +216,19 @@ const EditProfile = ({ navigation, props }) => {
  * @param  {Object} params address data 
  */
   const changeProfileImage = () => {
-    let options = {
-      title: "Select Image",
-      customButtons: [
-        { name: "customOptionKey", title: "Choose Photo from Custom Option" },
-      ],
-      storageOptions: {
-        skipBackup: true,
-        path: "images",
-      },
-    };
+    // let options = {
+    //   title: "Select Image",
+    //   customButtons: [
+    //     { name: "customOptionKey", title: "Choose Photo from Custom Option" },
+    //   ],
+    //   storageOptions: {
+    //     skipBackup: true,
+    //     path: "images",
+    //   },
+    // };
 
+    // console.log("requestCameraPermission called 1...");
+    // requestCameraPermission
 
     /**
      * The first arg is the options object for customization (it can also be null or omitted for default options),
@@ -259,74 +262,114 @@ const EditProfile = ({ navigation, props }) => {
     //   }
     // );
 
-    launchCamera(
-      {
-        mediaType: "photo|video",
-        includeBase64: true,
-        width: 1024,
-        height: 1024,
-        compressImageQuality: 1,
-      },
-      async (response) => {
 
-        if (response.didCancel) {
-          console.log("User cancelled image picker");
-          Toast.show({
-            type: "bctError",
-            text1: "User cancelled image picker",
-          });
-        } else if (response.error) {
-          console.log("ImagePicker Error: ", response.error);
-          Toast.show({
-            type: "bctError",
-            text1: "ImagePicker Error: " + response.error,
-          });
-        } else if (response.customButton) {
-          console.log("User tapped custom button: ", response.customButton);
-          // alert(response.customButton);
-        } else if (response?.errorCode) {
-          let errorMsg = "";
-          switch (response?.errorCode) {
-            case "camera_unavailable":
-              errorMsg = "Camara unavailable";
-
-              break;
-            case "permission":
-              errorMsg = "Permission not grant";
-
-              break;
-            case "others":
-              errorMsg = "Technical error";
-
-              break;
-
-            default:
-              errorMsg = "Technical error";
-              break;
-          }
-          Toast.show({
-            type: "bctError",
-            text1: errorMsg,
-          });
-        } else {
-          // const source = { uri: response.uri };
-
-          if (response?.assets[0]?.fileSize < 5000000) {
-            const base644 = `data:${response?.assets[0].type};base64,${response?.assets[0].base64}`
-            // await setProfilePic(base644)
-            await submit("profiePic", base644)
-
-          } else {
-            BaseToast.show({
-              type: "bctError",
-              text1: strings.max_per_file_size,
-            });
-          }
-        }
-      }
-    );
 
   };
+
+
+
+
+  const requestCameraPermission = async () => {
+    try {
+      console.log("requestCameraPermission called 2...");
+
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Camera permission given");
+
+        launchCamera(
+          {
+            mediaType: "photo|video",
+            includeBase64: true,
+            width: 1024,
+            height: 1024,
+            compressImageQuality: 1,
+          },
+          async (response) => {
+
+            if (response.didCancel) {
+              console.log("User cancelled image picker");
+              Toast.show({
+                type: "bctError",
+                text1: "User cancelled image picker",
+              });
+            } else if (response.error) {
+              console.log("ImagePicker Error: ", response.error);
+              Toast.show({
+                type: "bctError",
+                text1: "ImagePicker Error: " + response.error,
+              });
+            } else if (response.customButton) {
+              console.log("User tapped custom button: ", response.customButton);
+              // alert(response.customButton);
+            } else if (response?.errorCode) {
+              let errorMsg = "";
+
+              console.log("Error code...", response?.errorCode);
+
+              switch (response?.errorCode) {
+                case "camera_unavailable":
+                  errorMsg = "Camara unavailable";
+
+                  break;
+                case "permission":
+                  errorMsg = "Permission not grant";
+
+                  break;
+                case "others":
+                  errorMsg = "Technical error";
+
+                  break;
+
+                default:
+                  errorMsg = "Technical error";
+                  break;
+              }
+              Toast.show({
+                type: "bctError",
+                text1: errorMsg,
+              });
+            } else {
+              // const source = { uri: response.uri };
+
+              // setProfileImageData(response?.assets[0]?.base64);
+
+              if (response?.assets[0]?.fileSize < 5000000) {
+                const base644 = `data:${response?.assets[0].type};base64,${response?.assets[0].base64}`
+                await setProfilePic(base644)
+                // await submit("profiePic", base644)
+
+              } else {
+                BaseToast.show({
+                  type: "bctError",
+                  text1: strings.max_per_file_size,
+                });
+              }
+            }
+          }
+        );
+
+
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+
+
+
 
   const buttonEnableDisable = () => {
     if (
@@ -663,16 +706,19 @@ const EditProfile = ({ navigation, props }) => {
               paddingTop: 20,
             }}
           >
+
             <View style={[{ alignItems: "center" }]}>
               <ImageBackground
                 source={{
-                  uri: customerPic,
+                  // uri: customerPic,
+
+                  uri: profileImageData
                 }}
                 imageStyle={{ borderRadius: 80 }}
                 style={{ height: 110, width: 110 }}
               >
                 <Pressable
-                  onPress={changeProfileImage}
+                  onPress={requestCameraPermission}
                   style={{
                     flex: 1,
                     alignItems: "flex-end",

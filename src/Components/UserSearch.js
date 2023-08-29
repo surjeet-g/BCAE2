@@ -18,10 +18,13 @@ import { navBar } from "../Utilities/Style/navBar";
 
 const { height, width } = Dimensions.get("screen");
 
+var custClicked = false;
+
 export const userNavigationIcon = (props) => {
   return props.navigation.setOptions({
     headerRight: () => {
       return (
+
         <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
           <Pressable
             onPress={() => {
@@ -75,12 +78,22 @@ export const userNavigationIcon = (props) => {
             />
 
           </Pressable>
-          <Pressable
-            onPress={() => props.setOpenBottomModal(true)}
-            style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
-          >
-            <Icon name="plus" size={19} color={"#1231232"} />
-          </Pressable>
+
+
+          {props.profileSearchData.length > 0 && custClicked &&
+            <Pressable
+              onPress={() => {
+                {
+                  console.log("custClicked..", custClicked);
+                  props.setOpenBottomModal(true)
+                }
+              }
+              }
+              style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
+            >
+              <Icon name="plus" size={19} color={"#1231232"} />
+            </Pressable>
+          }
 
         </View>
       );
@@ -121,6 +134,8 @@ export const RenderUserSelectResult = (props) => {
           data={props.profileSearchData}
           renderItem={({ item }) => {
             return (
+              custClicked = false,
+
               <List.Item
                 description={
                   `customer No : ${item.customerNo}`
@@ -142,21 +157,33 @@ export const RenderUserSelectResult = (props) => {
                   paddingHorizontal: 4,
                   // borderRadius: 3,
                 }}
+
+
+
                 onPress={async () => {
+
                   props.setLoader(true);
+
                   const status = await props.profileDispatch(
                     fetchSavedProfileDataByUser(
                       item.customerUuid
                     )
                   );
+
+                  console.log("customerUuid..", item.customerUuid)
+
                   if (status) {
+
+
+
                     props.navigation.setOptions({
                       headerRight: props.headerRightForNav,
                       headerTitle: props.headerTitle,
                     });
                     props.setUserSeachEnable(false)
-
+                    custClicked = true
                     // props.profileDispatch(setProfileReset());
+
                   }
                   setSearchOpen(false)
                   props.setLoader(false);

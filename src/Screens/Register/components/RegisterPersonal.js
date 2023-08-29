@@ -5,8 +5,8 @@ import { Alert, Dimensions, Image, Keyboard, Platform, ScrollView, View } from "
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomDropDown } from "../../../Components/CustomDropDown";
-import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import { TextBoxWithCTAEmail } from "../../../Components/TextBoxWithCTAEmail";
+import { CountryPicker } from "../../../Components/react-native-country-codes-picker";
 import { setOtpFormData } from "../../../Redux/RegisterAction";
 import { strings } from "../../../Utilities/Language/index";
 import {
@@ -331,6 +331,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
       console.log("submit validation success");
 
       let registerObject = {
+        userGroup: "UG_CONSUMER",
         userFamily: "UAM_MOBILE",
         userSource: "US_MOBILEAPP",
         accountType: "personal",
@@ -399,7 +400,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
   const timerCounter = parseFloat(get(masterReducer, 'masterdataConfig.otpExpirationDuration.email_sms', 1.5))
 
   const OTP_TIMER = timerCounter * 60;
-  console.log("timerCounter", OTP_TIMER)
+  console.log("timerCounter 1..", timerCounter)
+  console.log("timerCounter 2..", OTP_TIMER)
   const showAlert = (message = "") => {
     // if (
     //   !registerForm.initRegisterForm &&
@@ -815,10 +817,12 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
               // onConfirm={onConfirmSingle}
               onConfirm={(params) => {
                 setOpen(false);
+                console.log("date of birth...", params?.date)
                 setDob(moment(params?.date).format("YYYY-MM-DD"));
                 setDobError("");
                 buttonEnableDiable();
               }}
+
             // validRange={{
             //   startDate: new Date(2021, 1, 2),  // optional
             //   endDate: new Date(), // optional

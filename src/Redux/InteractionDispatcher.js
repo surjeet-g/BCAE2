@@ -33,6 +33,8 @@ export function fetchInteractionAction(type = "", params = {},
   return async (dispatch) => {
     const debg = true;
     try {
+      console.log('a..............')
+
       if (type != typeOfAccrodin.knowlegde.value && type != typeOfAccrodin.workflow.value) {
         dispatch(initInteraction());
       }
@@ -42,6 +44,8 @@ export function fetchInteractionAction(type = "", params = {},
 
       let interactionResult;
       if (type == typeOfAccrodin.rencently.value) {
+        console.log('b..............')
+
         interactionResult = await serverCall(
           `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
           requestMethod.POST,
@@ -54,12 +58,16 @@ export function fetchInteractionAction(type = "", params = {},
 
 
       } else if (type == typeOfAccrodin.frequently.value) {
+        console.log('c..............')
+
         interactionResult = await serverCall(
           `${endPoints.FREQUENTLY_ASKED}?limit=4`,
           requestMethod.GET,
           {}
         );
       } else if (type == typeOfAccrodin.category.value) {
+        console.log('d..............')
+
         interactionResult = await serverCall(
           `${endPoints.FREQUENTLY_ASKED}?limit=4`,
           requestMethod.GET,
@@ -67,6 +75,8 @@ export function fetchInteractionAction(type = "", params = {},
         );
       }
       else if (type == typeOfAccrodin.workflow.value) {
+        console.log('e..............')
+
         //remove all userinput knowlege data
         if (isRemovedHistory) {
           dispatch(intractionKnowlegeHistoryRemoveUserInputTypes())
