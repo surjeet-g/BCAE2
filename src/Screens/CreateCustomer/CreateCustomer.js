@@ -23,11 +23,11 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import LoadingAnimation from "../../Components/LoadingAnimation";
-import {
-  getMasterData,
-  MASTER_DATA_CONSTANT
-} from "../../Redux/masterDataDispatcher";
 import { fetchRegisterFormData } from "../../Redux/RegisterDispatcher";
+import {
+  MASTER_DATA_CONSTANT,
+  getMasterData
+} from "../../Redux/masterDataDispatcher";
 import { endPoints } from "../../Utilities/API/ApiConstants";
 import { CustomButton } from "./../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
@@ -58,7 +58,7 @@ import { Facerecogne, renderOrderSucces } from "./FaceRegconize";
 import Product from "./Product";
 import SelectedProduct, { RenderAppoinmentModel, RenderSelectStore } from "./SelectedProduct";
 import ServiceCategory from "./ServiceCategory";
-import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, handleBackNavHandle, STEP_ACK_SUCCESS, STEP_AGREE, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST } from "./Steps";
+import { FACE_RECOG_GET_START, FACE_RECOG_IM_READY, FACE_RECOG_TAKE_SELFI, FACE_RECOG_UPLOAD_DOCUS, FACE_RECOG_UPLOAD_DOCUS_LOADER, FACE_RECOG_UPLOAD_DOCUS_SUCCESS, FACE_RECOG_UPLOAD_SELFI, FACE_RECOG_UPLOAD_SELFI_SUCCESS, STEP_ACK_SUCCESS, STEP_AGREE, STEP_CUSTOMER_ADDRESS, STEP_CUSTOMER_FORM, STEP_SERVICE_2_SHOW_SELECTED, STEP_SERVICE_LIST, handleBackNavHandle } from "./Steps";
 import UploadDocument from "./UploadDocument";
 import { APICallForMuti } from "./util";
 
@@ -199,6 +199,10 @@ const CreateCustomer = ({ navigation }) => {
   useEffect(() => {
     setProducts(createCustomerReducerData.products);
   }, [createCustomerReducerData.products]);
+
+
+  const [selectedItem, setSelectedItem] = useState(null);
+
 
   // For handling the header title based on stepIndicator
   useLayoutEffect(() => {
@@ -361,6 +365,7 @@ const CreateCustomer = ({ navigation }) => {
 * @returns  {JSX} Return JSX 
 */
   const renderCustomerDetailsUI = () => {
+
     return (
       <View>
         <CustomTitleText title={"Document details"} />
@@ -379,7 +384,31 @@ const CreateCustomer = ({ navigation }) => {
             caption={strings.title}
             placeHolder={strings.title}
             onChangeText={(text) => handleCustomerDetails("title", text)}
-          /> */}
+          /> */
+
+            // <AutocompleteDropdown
+            //   clearOnFocus={false}
+            //   closeOnBlur={true}
+            //   closeOnSubmit={false}
+            //   initialValue={{ id: '1' }} // or just '2'
+            //   onSelectItem={setSelectedItem}
+            //   value={selectedItem}
+            //   dataSet={[
+            //     { id: '1', title: 'Alpha' },
+            //     { id: '2', title: 'Beta' },
+            //     { id: '3', title: 'Gamma' },
+            //   ]}
+            //   onChangeText={(text) => this.setSelectedItem({ query: text })}
+            //   flatListProps={{
+            //     keyExtractor: (_, idx) => idx,
+            //     renderItem: ({ item }) => <Text>{item}</Text>,
+            //   }}
+            // />
+
+          }
+
+
+
           <CustomInput
             value={formData?.customerDetails?.firstName}
             caption={strings.firstname}
@@ -547,6 +576,7 @@ const CreateCustomer = ({ navigation }) => {
       }));
     };
     const isAutoAddress = addressTakenType == "AUTO";
+
     return (
       <View>
         <CustomTitleText title={"Document details"} />
@@ -613,7 +643,10 @@ const CreateCustomer = ({ navigation }) => {
             color={"#F5AD47"}
           />
         </View>
+
+
         <View style={styles.backgroundView}>
+
           <CustomDropDownFullWidth
             searchEnable={true}
             setDropDownEnable={() => setActiveDropDown("country")}

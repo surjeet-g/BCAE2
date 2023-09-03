@@ -2,18 +2,19 @@ import React from "react";
 import {
   Dimensions,
   FlatList,
-  Image,
   Pressable,
   Text,
   View
 } from "react-native";
 import { List, Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 import { setSearchProfileReset } from "../Redux/ProfileAction";
 import {
   fetchSavedProfileDataByUser,
   seachCustomers
 } from "../Redux/ProfileDispatcher";
+import { color } from "../Utilities/Constants/Constant";
 import { navBar } from "../Utilities/Style/navBar";
 
 const { height, width } = Dimensions.get("screen");
@@ -40,7 +41,7 @@ export const userNavigationIcon = (props) => {
                       }}
                     >
                       <Searchbar
-                        style={{ width: width * 0.7, height: 40 }}
+                        style={{ width: width * 0.6, height: 45 }}
                         placeholder={"Search customer"}
                         onChangeText={async (text) => {
                           searchString = text;
@@ -54,7 +55,7 @@ export const userNavigationIcon = (props) => {
                           props.setLoader(false);
                         }}
                       />
-                      <Icon
+                      {/* <Icon
                         onPress={() => {
                           props.profileDispatch(setSearchProfileReset());
                           props.navigation.setOptions({
@@ -65,17 +66,36 @@ export const userNavigationIcon = (props) => {
                         name="close-circle"
                         size={25}
                         color={"#000"}
-                      />
+                      /> */}
+
+                      <Pressable
+                        onPress={() => {
+                          props.profileDispatch(setSearchProfileReset());
+                          props.navigation.setOptions({
+                            headerRight: props.headerRightForNav,
+                            headerTitle: props.headerTitle,
+                          });
+                        }}
+                        style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 5 }}
+                      >
+                        <Icon name="close" size={19} color={Colors.BLACK} />
+                      </Pressable>
+
                     </View>
                   );
                 },
               });
             }}
           >
-            <Image
+            {/* <Image
               source={require("../Assets/icons/search_user.png")}
               style={{ width: 60, height: 60 }}
-            />
+            /> */}
+
+            <View style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginRight: 5 }}>
+              <Icon name={"clipboard-search"} size={28} color={Colors.BLACK} />
+            </View>
+
 
           </Pressable>
 
@@ -173,9 +193,6 @@ export const RenderUserSelectResult = (props) => {
                   console.log("customerUuid..", item.customerUuid)
 
                   if (status) {
-
-
-
                     props.navigation.setOptions({
                       headerRight: props.headerRightForNav,
                       headerTitle: props.headerTitle,
@@ -183,7 +200,6 @@ export const RenderUserSelectResult = (props) => {
                     props.setUserSeachEnable(false)
                     custClicked = true
                     // props.profileDispatch(setProfileReset());
-
                   }
                   setSearchOpen(false)
                   props.setLoader(false);

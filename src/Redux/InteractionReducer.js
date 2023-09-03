@@ -8,9 +8,12 @@ import {
   INTERACTION_EDIT_LOADER_ENABLE,
   INTERACTION_ERROR,
   INTERACTION_FORM_ERROR, INTERACTION_GET_DETAILS_FAILURE,
-  INTERACTION_GET_DETAILS_SUCCESS, INTERACTION_GET_FOLLOWUP_FAILURE,
+  INTERACTION_GET_DETAILS_SUCCESS,
+  INTERACTION_GET_FOLLOWUP_FAILURE,
   INTERACTION_GET_FOLLOWUP_SUCCESS, INTERACTION_GET_WORKFLOW_FAILURE,
   INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT, INTERACTION_KNEWLEGE_HISTORY, INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS, INTERACTION_KNEWLEGE_HISTORY_RESET, INTERACTION_RESET,
+  INTERACTION_SEARCH_DETAILS_FAILURE,
+  INTERACTION_SEARCH_DETAILS_SUCCESS,
   INTERACTION_SET_FORM
 } from "./InteractionAction";
 
@@ -25,6 +28,8 @@ const InteractionInitialState = {
   InteractionWorkFlowData: [],
   interactionWorkFlowErrorData: {},
   InteractionFollowupData: [],
+  interactionSearchData: [],
+  interactionSearchErrorData: {},
   interactionFollowupErrorData: {},
   knowledgeHistory: [],
   formData: {
@@ -278,6 +283,24 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         InteractionDetailsData: action.data.rows[0],
         interactionDetailsErrorData: {},
       };
+
+
+
+
+    case INTERACTION_SEARCH_DETAILS_FAILURE:
+      return {
+        ...state,
+        interactionSearchErrorData: action.data,
+      };
+    case INTERACTION_SEARCH_DETAILS_SUCCESS:
+      return {
+        ...state,
+        interactionSearchData: action.data.rows,
+        interactionSearchErrorData: {},
+      };
+
+
+
     case CREATE_FOLLOWUP_FAILURE:
       return {
         // todo here logic

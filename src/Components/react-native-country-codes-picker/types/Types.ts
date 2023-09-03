@@ -1,4 +1,4 @@
-import {ViewStyle} from "react-native";
+import { ViewStyle } from "react-native";
 
 export interface ItemTemplateProps {
     item: CountryItem,
@@ -8,7 +8,7 @@ export interface ItemTemplateProps {
 }
 
 export interface CountryItem {
-    name: {[key: string]: string},
+    name: { [key: string]: string },
     dial_code: string,
     code: string,
     flag: string

@@ -21,7 +21,7 @@ import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingAnimation from "../Components/LoadingAnimation";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
-import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
+import { DEFAULT_PROFILE_IMAGE, color } from "../Utilities/Constants/Constant";
 import { USERTYPE } from "../Utilities/UserManagement/userInfo";
 import { Appointment } from "./../Screens/Appointments/Appointment";
 import Help from "./../Screens/Help";
@@ -66,12 +66,14 @@ const BottomBarNavigation = () => {
     activeTintColor: "#e91e63",
     headerShown: true,
     headerStyle: {
-      backgroundColor: "white",
+      ...fonts.titleLarge,
+      backgroundColor: "#4C5A81",
     },
     headerTitleStyle: {
       ...fonts.titleMedium,
-      ...{ color: "black", fontWeight: "700" },
+      ...{ color: "white", fontWeight: "700" },
     },
+
     headerRight: () => {
       return (
         <View style={navBar.navRightCon}>
@@ -97,6 +99,7 @@ const BottomBarNavigation = () => {
         </View>
       );
     },
+
     headerLeft: () => (
       <Pressable
         onPress={() => {
@@ -104,7 +107,7 @@ const BottomBarNavigation = () => {
         }}
         style={{ marginLeft: 5 }}
       >
-        <Icon name="menu" size={25} color={colors.primary} />
+        <Icon name="menu" size={25} color={color.WHITE} />
       </Pressable>
     ),
   });
@@ -122,7 +125,7 @@ const BottomBarNavigation = () => {
           options={({ navigation }) => ({
             ...options(navigation),
           })}
-          name="HomeScreen"
+          name="Home"
           component={isConsumer ? HomeScreen : UserHomeScreen}
         />
 

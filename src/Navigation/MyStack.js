@@ -42,9 +42,12 @@ import VerifyLoginOTP from "../Screens/Login/component/VerifyLoginOTP";
 import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
+
 import Chat from "../Screens/Chat/Chat";
 import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
+import InteractionSearch from "../Screens/TabScreens/InteractionSearch";
+import InteractionSearchResult from "../Screens/TabScreens/InteractionSearchResult";
 import { TermNdCondition } from "../Screens/TermNdConidtions/TermNdCondition";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
@@ -64,6 +67,8 @@ export const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
+export const STACK_INTERACTION_SEARCH = "InteractionSearch";
+export const STACK_INTERACTION_SEARCH_RESULT = "InteractionSearchResult";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
 const STACK_APPOINTMENT_DETAILS = "AppointmentDetails";
@@ -129,25 +134,13 @@ function MyStack() {
 
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Profile",
-              headerStyle: {
-                backgroundColor: "#4C5A81",
-              },
-              headerRight: () => {
-                return (
-                  <View>
-                    <Pressable
-                      onPress={() => navigation.navigate("EditProfile")}
-                    >
-                      <Image
-                        style={{ width: 80, height: 80 }}
-                        source={require("../Assets/icons/ic_edit.png")}
-                      />
-                    </Pressable>
-                  </View>
-                );
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
               },
             },
           })}
@@ -200,14 +193,20 @@ function MyStack() {
 
         <Stack.Screen
           options={({ navigation }) => ({
-            ...options,
             ...{
+              headerTintColor: "#fff",
               headerTitle: "Edit Profile",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
             },
           })}
           name="EditProfile"
           component={EditProfile}
         />
+
         <Stack.Screen
           options={{
             title: "",
@@ -270,6 +269,41 @@ function MyStack() {
           name="Splash"
           component={Splash}
         />
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Interaction Search",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+            },
+          })}
+          name={STACK_INTERACTION_SEARCH}
+          component={InteractionSearch}
+        />
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Interaction Search",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+            },
+          })}
+          name={STACK_INTERACTION_SEARCH_RESULT}
+          component={InteractionSearchResult}
+        />
+
+
+
         <Stack.Screen
           options={{ headerShown: false }}
           name="ForgotUserInfo"

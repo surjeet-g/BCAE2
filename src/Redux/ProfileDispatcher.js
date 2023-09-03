@@ -143,9 +143,21 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
     );
     console.log("task - pro result", profileResult);
     if (profileResult?.success) {
-      dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
+
       const len = profileResult?.data?.data?.rows?.length;
       console.log("profile resp len..", len);
+      if (search == "" || search.length < 5) {
+        dispatch(setSearchProfileData([]));
+
+        Toast.show({
+          type: "bctError",
+          text1: "Please enter minimum 5 characters",
+        });
+      }
+      else {
+        dispatch(setSearchProfileData(profileResult?.data?.data?.rows));
+      }
+
       // if (len == 0) dispatch(setSearchEmpty(true));
     } else {
       dispatch(setSearchProfileDataError([]));
@@ -166,7 +178,8 @@ export function updateProfileData(obj, navigation, isCustomer) {
 
     const customerUUDI = await getCustomerUUID();
     const userId = await getUserId();
-    console.log("hitts isCossoumer:", isCustomer, "userId", userId, "payload", obj)
+
+    console.log("hitts isCossoumer2:", isCustomer, "userId", userId, "payload", obj)
     let result = await serverCall(
       isCustomer
         ? endPoints.UPDATE_MOBILE_USER + customerUUDI

@@ -1,641 +1,105 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-
-import {
-    Dimensions,
-    FlatList,
-    Image,
-    ImageBackground,
-    Keyboard, Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View
-} from "react-native";
-
-import { Chip, List, Text, useTheme } from "react-native-paper";
-import Toast from 'react-native-toast-message';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { Dimensions, Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
-import {
-    color,
-    DEFAULT_PROFILE_IMAGE,
-    fontSizes,
-    INPUT_TYPE,
-    spacing
-} from "../../Utilities/Constants/Constant";
-
+import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "../../Components/CustomInput";
+import { STACK_INTERACTION_SEARCH_RESULT } from "../../Navigation/MyStack";
+import { setInteractionFormField, setInteractionReset } from "../../Redux/InteractionAction";
+import { addInteractionAction, fetchInteractionAction, getAppoinmentsData, updateInteractionAction } from "../../Redux/InteractionDispatcher";
+import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
+import { MASTER_DATA_CONSTANT, getMasterData } from "../../Redux/masterDataDispatcher";
+import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
-import { CustomInput } from "./../../Components/CustomInput";
+import { navBar } from "../../Utilities/Style/navBar";
+import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 var { height, width } = Dimensions.get("screen");
 
-import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js";
-
-import {
-    setInteractionFormField,
-    setInteractionReset
-} from "../../Redux/InteractionAction";
-import {
-    addInteractionAction,
-    fetchInteractionAction,
-    updateInteractionAction
-} from "../../Redux/InteractionDispatcher";
-
-import get from "lodash.get";
-import { ClearSpace } from "../../Components/ClearSpace";
-import { ImagePicker } from "../../Components/ImagePicker";
-
-import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
-import {
-    getMasterData,
-    MASTER_DATA_CONSTANT
-} from "../../Redux/masterDataDispatcher";
-import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
-import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
-import { navBar } from "../../Utilities/Style/navBar";
-import theme from "../../Utilities/themeConfig";
-import { getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userInfo";
-import { handleMultipleContact } from "../../Utilities/utils";
-import { showErrorMessage } from "../Register/components/RegisterPersonal";
-
-import { CheckGroupbox } from "../../Components/CheckGroupbox";
-import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
-import { endPoints } from '../../Utilities/API/ApiConstants';
-import { APICall } from "../CreateCustomer/util";
-import { HandleResolution } from "./Component/Interaction/Resolution";
-
-// export const [parsedCustServiceList, setParsedCustServiceList] = useState([]);
-
-
-export const typeOfAccrodin = {
-    category: { value: "category", title: "Top 10 Category" },
-    frequently: { value: "frequently", title: "Most frequently interaction" },
-    rencently: { value: "rencently", title: "Recently inteaction" },
-    searchbox: { value: "searchbox", title: "Seach input" },
-    productChoose: { value: "productChoose", title: "Select Product" },
-    knowlegde: { value: "knowlegde", title: "Select Service" },
-    resolved: { value: "Resolved", title: "Resolution Corner" },
-    workflow: { value: "workflow", title: "workflow Corner" },
-};
-const INTELIGENCE_STATUS = {
-    CREATE_INTERACTION: "CREATE_INTERACTION",
-    CREATE_INTERACTION_AUTO: "CREATE_INTERACTION_AUTO",
-    PRODUCT_WITH_MULTIPLE_ITEM: "PRODUCT_WITH_MULTIPLE_ITEM",
-    PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM",
-    RESOVLED: "RESOLVED"
-}
 /**
- * Customer/User can able to create their interactions and also provides smart assistance.
- * user can able to search statement 
- * @namespace Interaction  
- */
-const InteractionsToOrder = ({ route, navigation }) => {
-
-    const [appoinmentFormData, setAppoinmentFormData] = useState()
-    //to do empty
-    // const [createInteractionType, setCreateInteractionType] = useState("")
-    const [createInteractionType, setCreateInteractionType] = useState(INTELIGENCE_STATUS.RESOVLED)
-    // const [activeChatBotSec, setactiveChatBot] = useState("");
-    const [activeChatBotSec, setactiveChatBot] = useState(typeOfAccrodin.resolved.title);
-    const [activeService, setService] = useState("");
-    const [isEnabledsmartAssist, setSmartAssistance] = useState(true)
-    //need enable screen loader
-    const [loader, setLoader] = useState(true);
-    //attachment
-    const [fileAttachments, setFileAttachments] = useState([]);
-
-    const [resultLoader, setresultLoader] = useState(false);
-    //to store active interaction object
-    const [activeInteraction, setActiveInteraction] = useState("");
-    //auto suggestion drop box vi
-    const [autosuggestionlist, setautoSuggestionList] = useState(false);
-    //for disble more section while search input box vissible
-    const [searchStandAloneModal, setsearchStandaloneModel] = useState(false);
-    const { colors, fonts, roundness } = useTheme();
-    //bottom model enble or not
-    const [openBottomModal, setOpenBottomModal] = useState(true);
-    const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(false);
-
-    const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
-    //attachment
-    const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
-
-    const [bottomBarTitle, setBottombartitle] = useState("");
-
-    const interactionResponseScreen = {
-        SUCCESS: "SUCCESS",
-        FAILED: "FAILED",
-        EMPTY_CUSTOMER: "EMPTY_CUSTOMER",
-        NONE: "NONE",
-    };
-    const [enableSuccessScreen, setEnableSuccessScreen] = useState(
-        interactionResponseScreen.NONE
-    );
-
-
-    const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
-    const [intereactionAddResponse, setInteractionResponse] = useState({});
-    const [appoimentPopUp, setAppoinmentPopup] = useState(false)
-    const [requestStatementHistory, setRequestStatementHistory] = useState([]);
-    const [isSolutionFound, setSolutionFound] = useState(false);
-    const [activeState, setActiveState] = useState({})
-    const { params = {} } = route
-    const { userTypeParams = USERTYPE.CUSTOMER } = params
-    const [userType, setUserType] = useState(userTypeParams);
-    let interactionRedux = useSelector((state) => state.interaction);
-    let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
-    //console.log("usertype", userType)
-    const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
-    /**
-    * Reset state values. This will hanlde reset the state values 
-    * @memberOf Interaction
-    */
-    const resetStateData = (exclude = "") => {
-        if (exclude != "setInteractionResponse") {
-            setInteractionResponse({});
-        }
-        setAppoinmentFormData({})
-        // setUserType("");
-        // setService("")
-        setCreateInteractionType("")
-        setSolutionFound(false);
-        setRequestStatementHistory([]);
-        setProfileSeriveModal(false);
-        setEnableSuccessScreen(interactionResponseScreen.NONE);
-        setFileAttachments([]);
-        setautoSuggestionList(true);
-        setsearchStandaloneModel(true);
-        setKnowledgeSearchText("");
-        setOpenBottomModal(false);
-        setBottombartitle("");
-    };
-
-    const headerRightForNav = () => {
-        return (
-            <View style={navBar.navRightCon}>
-                <Pressable
-                    onPress={() => {
-                        resetCreateInterationForm(),
-                            setOpenBottomModal(true)
-                    }
-                    }
-                    style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}
-                >
-                    <Icon name="plus" size={19} color={colors.inverseSecondary} />
-                </Pressable>
-            </View >
-        );
-    };
-
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: headerRightForNav,
-        });
-    }, []);
-
-    /**
-    * Reset Reducer data this function handles exception error of old data
-    * @memberOf Interaction
-    */
-    const resetReducerNdState = (params = "") => {
-        resetStateData(params);
-        dispatchInteraction(setInteractionReset());
-        dispatchInteraction(resetKnowSearch());
-    };
-
-    const masterDispatch = useDispatch([getMasterData]);
-    const profileDispatch = useDispatch([
-        fetchMyProfileData,
-        seachCustomers,
-        setUserSearch,
-        fetchSavedProfileDataByUser,
-        setProfileReset,
-    ]);
-
-    const dispatchInteraction = useDispatch([
-        setInteractionReset,
-        fetchInteractionAction,
-        updateInteractionAction,
-        addInteractionAction,
-        resetKnowSearch,
-        getAppoinmentsData
-    ]);
-
-    useEffect(() => {
-        const willFocusSubscription = navigation.addListener("focus", () => {
-            resetReducerNdState();
-        });
-        return willFocusSubscription;
-    }, []);
-
-    const knowledgeSearchDispatch = useDispatch([getKnowledgeSearchData]);
-    const { profileReducer, masterReducer, interactionReducer } = useSelector(
-        (state) => {
-            return {
-                profileReducer: state.profile,
-                masterReducer: state.masterdata,
-                interactionReducer: state.interaction,
-            };
-        }
-    );
-    //handle customer empty case
-    // useEffect(() => {
-    // if (profileReducer.IsSearchEmpty) {
-    // setTimeout(() => {
-    //todo
-    // navigation.navigate(STACK_CREATE_CUSTOMER)
-    // }, 3000)
-    // }
-    // }, [profileReducer.IsSearchEmpty])
-
-
-
-
-    useEffect(() => {
-        /**
-        * Fetch API Data : Fetch master data and profile  for interaction screen
-        * @memberOf Interaction
-      
-        */
-        async function fetchData() {
-            const {
-                SERVICE_TYPE,
-                INTXN_TYPE,
-                PRIORITY,
-                CONTACT_TYPE,
-                INTXN_STATEMENT,
-                CONTACT_PREFERENCE,
-                INTXN_CAUSE,
-                PROBLEM_CAUSE,
-                PROD_SUB_TYPE,
-                INTXN_CATEGORY,
-                LOCATION,
-                TICKET_CHANNEL,
-                APPOINT_TYPE
-            } = MASTER_DATA_CONSTANT;
-            //set service
-            //to get data from api
-
-            //  await dispatchInteraction(fetchInteractionAction(true));
-            profileDispatch(fetchMyProfileData(navigation));
-            setLoader(false);
-            // master only invoke load
-            masterDispatch(
-                getMasterData(
-                    `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PROD_SUB_TYPE},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION},${CONTACT_PREFERENCE}`
-                )
-            );
-
-
-        }
-
-        fetchData();
-    }, []);
-
-    const [serviceList, setServiceList] = useState([])
-
-    useEffect(() => {
-        async function fetchMyAPI() {
-            const customerUUID = await getCustomerUUID()
-            const res = await APICall(`${endPoints.SERVICE_LIST}`, 'POST', { customerUuid: customerUUID.toString() });
-            custServiceList = get(res, 'response.data', [])
-            if (custServiceList.length > 0) {
-                const parsedata = custServiceList.map(item => {
-                    return { description: item.serviceName, code: item.serviceNo }
-                });
-                dispatch(setServiceData(parsedata));
-                // parsedCustServiceList = parsedata
-                // setService({
-                //   productNo: get(serviceList, '[0].productDetails[0].productNo', ""),
-                //   code: parsedata[0].code,
-                //   description: parsedata[0].description,
-                // });
-            }
-        }
-
-        const isConsumer = userType == USERTYPE.CUSTOMER;
-        if (isConsumer) {
-            fetchMyAPI();
-        }
-
-    }, []);
+* Search for interaction in this screen
+* @namespace InteractionSearch
+*/
+const InteractionSearch = ({ navigation }) => {
 
     const [interactionList, setInteractionList] = useState([])
     const [priorityList, setPriorityList] = useState([])
     const [problemList, setProblemList] = useState([])
-
     const [serviceTypelist, setServiceTypelist] = useState([])
     const [serviceCategoryList, setServiceCategoryList] = useState([])
     const [interactionCategoryList, setInteractionCategoryList] = useState([])
     const [contactTypeList, setContactTypeList] = useState([])
     const [locationList, setLocationList] = useState([])
     const [appointList, setAppoimentList] = useState([])
-    const [SearchModelisOpen, setSearchOpen] = useState(true)
+    const [showPopupMenu, setShowPopupMenu] = useState(false);
 
-    useEffect(() => {
-        console.log("master data", masterReducer)
-        setInteractionList(get(masterReducer, "masterdataData.INTXN_TYPE", []))
-        setPriorityList(get(masterReducer, "masterdataData.PRIORITY", []))
-        setProblemList(get(masterReducer, "masterdataData.INTXN_CAUSE", []))
-        setServiceTypelist(get(masterReducer, "masterdataData.SERVICE_TYPE", []));
-        setServiceCategoryList(get(masterReducer, "masterdataData.PROD_SUB_TYPE", []))
-        setInteractionCategoryList(get(
-            masterReducer,
-            "masterdataData.INTXN_CATEGORY",
-            []
-        ))
-        setAppoimentList(get(masterReducer, "masterdataData.APPOINT_TYPE", []))
-        setLocationList(get(masterReducer, "masterdataData.LOCATION", []))
-        setContactTypeList(get(masterReducer, "masterdataData.CONTACT_PREFERENCE", []))
-    }, [masterReducer])
+    const [mobileNoMaxLength, setMobileNoMaxLength] = useState(10);
+    const [mobileNo, setMobileNo] = useState("");
 
-    const resetCreateInterationForm = () => {
-        const data = { code: "", description: "" }
-        setDropDownFormField("interactionType", data);
-        setDropDownFormField("interactionCategory", data);
-        setDropDownFormField("serviceCategory", data);
-        setDropDownFormField("serviceType", data);
-        setDropDownFormField("priorityCode", data);
-        setFileAttachments([]);
-        setFormField("remarks", "");
-    }
+    const [interactionNoMaxLength, setInteractionNoMaxLength] = useState(11);
+    const [interactionNo, setInteractionNo] = useState("");
+
+    const [customerNameMaxLength, setCustomerNameMaxLength] = useState(20);
+    const [customerName, setCustomerName] = useState("");
+
+    let interactionRedux = useSelector((state) => state.interaction);
+    const { interactionType } = interactionRedux.formData;
+
+    let masterReducer = useSelector((state) => state.masterdata);
+
+    const [selInteractionTypeDesc, setSelInteractionTypeDesc] = useState("");
+    const [selInteractionTypeVal, setSelInteractionTypeVal] = useState("");
+
 
     useLayoutEffect(() => {
-        resetCreateInterationForm()
+        navigation.setOptions({
+            headerRight: () => {
+                return (
+                    <View>
+                        <View style={navBar.navRightCon}>
+                            <Pressable onPress={() => setShowPopupMenu(!showPopupMenu)}>
+                                {/* <Image
+                                    style={{ margin: 10 }}
+                                    source={require("../../Assets/icons/ic_more_vertical.png")}
+                                /> */}
+                            </Pressable>
+                        </View>
+                    </View>
+                );
+            },
+        });
+    }, [showPopupMenu]);
+
+
+    useEffect(async () => {
+        const { INTXN_TYPE } = MASTER_DATA_CONSTANT;
+        dispatch(getMasterData(`${INTXN_TYPE}`));
     }, [])
 
-
-    let customerPic =
-        get(profileReducer, "savedProfileData.customerPhoto", null) ??
-        DEFAULT_PROFILE_IMAGE;
-
-    if (customerPic == "") customerPic = DEFAULT_PROFILE_IMAGE
-
-    console.log("customer picture 1", customerPic, profileReducer)
-    const addresss = get(profileReducer, "savedProfileData.customerAddress", []);
-
-    const resetStateAfterSearchClicked = () => {
-        //search result panal
-
-        setKnowledgeSearchText("");
-        setautoSuggestionList(false);
-        //search box end
+    const onInteractionNoChange = (textStr) => {
+        setInteractionNo(textStr);
+        //   setNumberError("");
     };
 
-    /**
-     * Statement search and listout statements
-     * @memberOf Interaction
-     * @param  {string} text search string
-     * @returns {JSX} Return JSX of
-     */
-
-    const onChangeKnowledgeSearchText = async (text) => {
-
-        setKnowledgeSearchText(text);
-
-        if (text.length > 0) {
-            // setresultLoader(true)
-            await knowledgeSearchDispatch(
-                getKnowledgeSearchData(text, activeService?.code)
-            );
-            //enable list show
-            setautoSuggestionList(true);
-            // setresultLoader(false)
-        }
+    const onMobileNoChange = (textStr) => {
+        setMobileNo(textStr);
+        //   setNumberError("");
     };
 
+    const onCustomerNameChange = (textStr) => {
+        setCustomerName(textStr);
+        //   setNumberError("");
+    };
 
-    /**
-    * Handle the knowledge search API response
-    * @memberOf Interaction
-    * @param  {Object} apiRespData Knowledge serach API response data
-    * @param  {string} actionType what kind of response is received from API
-    * @returns {JSX} Return JSX of
-    */
-    const handleInteligenceResponse = async (apiRespData, item = {}, actionType = "auto_resolution") => {
-        try {
-            const debugg = true
-            if (debugg) console.log('handleInteligenceResponse: parms resp', apiRespData, "item", item)
-            const isCreateInteraction = false
-            if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
-            if (debugg) console.log('handleInteligenceResponse : actionType', actionType)
-            if (actionType == "noservive") {
-                Toast.show({
-                    type: "bctError",
-                    text1: "No Resolution Found",
-                });
-                return;
-            }
-            //interaction creation part  
-            if (actionType == "auto_resolution") {
-                await setBottombartitle(typeOfAccrodin.resolved.title);
-                await setCreateInteractionType(INTELIGENCE_STATUS.RESOVLED)
-                setactiveChatBot(typeOfAccrodin.resolved)
-                setOpenBottomModalChatBot(true)
-                return null
-            }
-            if (isCreateInteraction) {
-                //todo popup
-                if (debugg) console.log('handleInteligenceResponse : crate interaction if condition')
-
-                const status = presetInteractionFormData(item)
-                if (debugg) console.log('handleInteligenceResponse : interactionDataToCreateInt func response', status)
-
-                if (status) {
-                    //set title for bottom sheet
-                    await setBottombartitle("Create Interaction")
-                    //set active bototm sheet section
-                    await setCreateInteractionType(INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO)
-                    //open bottom sheet section
-                    await setOpenBottomModal(true)
-                    console.log('success',)
-                    return true
-                }
-                else {
-                    console.log('failed',)
-                }
-                return 1
-            }
-            else {
-                if (debugg) console.log('handleInteligenceResponse : not create interaction else condition')
-
-                const resolutionList = get(apiRespData, 'resolutionAction.data', [])
-                const solutionCount = resolutionList.length
-                if (solutionCount == 0) {
-
-                    Toast.show({
-                        type: "bctError",
-                        text1: "//TODO chck message No Resolution",
-                    });
-                    setOpenBottomModalChatBot(false)
-
-                }
-                if (solutionCount == 1) {
-                    if (debugg) console.log('handleInteligenceResponse : one  solution')
-
-                    //directly navigate to corresponding order or product with payload [0]
-                }
-                else {
-                    if (debugg) console.log('handleInteligenceResponse : multiple solution  solution')
-                    await setCreateInteractionType(INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM)
-                    setactiveChatBot(typeOfAccrodin.productChoose)
-                    await setBottombartitle(typeOfAccrodin.productChoose.title);
-                    setOpenBottomModalChatBot(true)
-                    //to do bottom list item 
-                }
-                return true
-
-            }
-        } catch (error) {
-            console.log('error on handleInteligenceResponse', error)
-            return false
-        }
-    }
-    const searchWordCustomiz = (text) => {
-        try {
-            if (text.length == 0) return text
-            if (knowledgeSearchText == "") return text
-            const searchIndx = text.toLocaleLowerCase().search(knowledgeSearchText.toLocaleLowerCase())
-            console.log("search index", searchIndx)
-            if (searchIndx == -1) return text
-            let finalData = []
-            const len = knowledgeSearchText.length
-            const sliceText = text.slice(searchIndx, searchIndx + len)
-            const arrayRange = Array.from({ length: len }, (x, i) => i + searchIndx);
-            console.log("arr", arrayRange)
-            const largeIdx = Math.max.apply(0, arrayRange)
-            console.log("larget", largeIdx)
-
-            const word = text.split("")
-            word.map((item, idx) => {
-                if (arrayRange.includes(idx)) {
-                    if (idx == largeIdx) {
-                        finalData.push(<Text style={{ color: 'red' }}>{sliceText}</Text>)
-                    }
-                }
-                else {
-                    finalData.push(item)
-
-                }
-            })
-            console.log("data", finalData)
-            return finalData
-        } catch (error) {
-            console.log("erre", error)
-            return text
-        }
+    const resetSearchInteractionForm = () => {
+        // const data = { code: "", description: "" }
+        // setDropDownFormField("interactionType", data);
 
     }
-    const RenderSearchResult = () => {
-        if (!autosuggestionlist) return null;
-        const result = get(knowledgeSearchStore, "knowledgeSearchData", []);
-
-        if (result.length == 0) {
-            return (
-                <View
-                    style={{
-                        marginTop: 20,
-                        flexDirection: "row",
-                        backgroundColor: "#fff",
-                        height: 50,
-                        borderRadius: 5,
-                        padding: 4,
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    <Text style={styles.input}>{strings.no_solution}</Text>
-                    <Image source={require("../../Assets/icons/no_data.png")} />
-                </View>
-            );
-        } else {
-            return (
-                <FlatList
-                    contentContainerStyle={{ height: 500 }}
-                    data={result}
-                    renderItem={({ item }) => {
-                        return (
-                            <List.Item
-                                title={() => {
-                                    return (<Text>{searchWordCustomiz(item?.requestStatement)}</Text>)
-                                }}
-                                titleStyle={{
-                                    fontSize: 10,
-                                    padding: 0,
-                                    margin: 0,
-                                }}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "#fff",
-                                    // height: 40,
-                                    borderBottomColor: colors.gray,
-                                    borderBottomWidth: 0.5,
-                                    paddingHorizontal: 4,
-                                    // borderRadius: 3,
-                                }}
-                                onPress={async () => {
-                                    setsearchStandaloneModel(true)
-                                    setKnowledgeSearchText(false);
-
-                                    //open form model
-                                    setautoSuggestionList(false);
-                                    Keyboard.dismiss();
-                                    setKnowledgeSearchText(item?.requestStatement);
-                                    setActiveState({
-                                        requestId: item.requestId,
-                                        requestStatement: item.requestStatement
-                                    })
-                                    //check if smart assistance not enable then going this normal way
-                                    if (!isEnabledsmartAssist) {
-                                        presetInteractionFormData(item)
-                                        setBottombartitle("Create Interaction")
-
-                                        setautoSuggestionList(false);
-                                        setOpenBottomModal(true)
-                                        return;
-                                    }
-                                    console.log("intreaction data", item)
-                                    presetInteractionFormData(item)
-
-                                    //auto and clear search text
-                                    setautoSuggestionList(false);
-                                    const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
-                                    //store selected result in cache
-                                    await setBottombartitle(typeOfAccrodin.knowlegde.title);
-                                    setLoader(true)
-
-                                    const { response, actionType } = await dispatchInteraction(
-                                        fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                                            customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                                            requestId: parseInt(item.requestId),
-                                            moduleName: "KnowledgeBaseMobileApp"
-
-                                        })
-                                    );
-                                    console.log("intreaction data response    ", response)
-                                    setLoader(false)
-
-                                    const status = await handleInteligenceResponse(response, item, actionType)
-                                    console.log('response', status)
-
-
-
-                                }}
-                            />
-                        );
-                    }
-                    }
-                />
-            );
-        }
-    };
 
     const setDropDownFormField = (field, { code, description }) => {
-        dispatchInteraction(
+        dispatch(
             setInteractionFormField({
                 field,
                 value: { code: code, description: description },
@@ -645,7 +109,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
     };
 
     const setFormField = (field, value) => {
-        dispatchInteraction(
+        dispatch(
             setInteractionFormField({
                 field,
                 value,
@@ -653,1036 +117,185 @@ const InteractionsToOrder = ({ route, navigation }) => {
             })
         );
     };
-    /**
-    * Pre set the form's data before open the create interaction popup
-    * @memberOf Interaction
-    * @param  {Object} item form data 
-    */
-    const presetInteractionFormData = (item) => {
-        try {
-            const debuggg = true;
-            if (debuggg) console.log('parmas interactionDataToCreateInt', item)
 
-            const interCat = get(
-                interactionCategoryList?.filter(
-                    (it) => it.code == item.intxnCategory
-                ),
-                "[0]",
-                { code: "", description: "" }
-            );
-            if (debuggg) console.log('category', interCat)
-
-            const interType = get(
-                interactionList?.filter((it) => it.code == item.intxnType),
-                "[0]",
-                { code: "", description: "" }
-            );
-            if (debuggg) console.log('interType', interType)
-            const serviveType = get(
-                serviceTypelist?.filter((it) => it.code == item.serviceType),
-                "[0]",
-                { code: "", description: "" }
-            );
-            if (debuggg) console.log('serviveType', serviveType)
-
-            const serviveCatType = get(
-                serviceCategoryList?.filter(
-                    (it) => it.code == item.serviceCategory
-                ),
-                "[0]",
-                { code: "", description: "" }
-            );
-
-
-            if (debuggg) console.log('serviveCatType', serviceCategoryList, serviveCatType)
-            const prirtyCode = get(
-                priorityList?.filter(
-                    (it) => it.code == item.priorityCode
-                ),
-                "[0]",
-                { code: "", description: "" }
-            );
-
-            if (debuggg) console.log('prirtyCode', prirtyCode)
-            //to do from api response
-            //make array
-            const contactPerferance = get(item, "contactPreference", [])
-
-            const problemCause = get(
-                problemList?.filter(
-                    (it) => it.code == item.intxnCause
-                ),
-                "[0]",
-                { code: "", description: "" }
-            );
-
-            if (debuggg) console.log('prirtyList', problemList, "api response", item.intxnCause)
-
-            console.log('master data parse from ', "interationcar", interCat, "interType",
-                interType, "serviveType", serviveType, "serviveCatType", serviveCatType,
-                "prirtyCode", prirtyCode, "contactPerferance", contactPerferance, "problemCause", problemCause)
-
-            setDropDownFormField("priorityCode", prirtyCode);
-
-            // setFormField("contactPerference", contactPerferance);
-
-            setDropDownFormField("interactionCategory", interCat);
-
-            setDropDownFormField("interactionType", interType);
-
-            setDropDownFormField("serviceCategory", serviveCatType);
-
-            setDropDownFormField("serviceType", serviveType);
-            //problem cause
-            //setDropDownFormField("problemCause", problemCause)
-
-
-            if (!get(item, 'requestId', false) != false) {
-                setFormField("statement", item.requestId);
-            }
-            if (get(item, 'statementId', false) != false) {
-                setFormField("statementId", item.requestStatement);
-            }
-
-            return true
-        } catch (error) {
-
-            console.log("error in interactionTocreate", error);
-            return false
-
-        }
-    };
-    const handleAccodin = async ({ value, title }) => {
-        await setactiveChatBot(value);
-        await setBottombartitle(title);
-        await setCreateInteractionType("")
-        await dispatchInteraction(fetchInteractionAction(value));
-        setOpenBottomModalChatBot(true);
-    };
-    /**
-    * Handle the dropdown of (Top 10 Category,Recently inteaction)
-    * @memberOf Interaction
-    */
-    const renderAccordin = useMemo(() => {
-        return (
-            <View style={styles.accodinContainer}>
-                <Pressable
-                    style={styles.accodinItem}
-                    onPress={() => {
-                        handleAccodin(typeOfAccrodin.category);
-                    }}
-                >
-                    <Image
-                        source={require("../../Assets/icons/interaction_category.gif")}
-                        style={styles.gif}
-                    />
-                    <Text style={styles.accordinTxt}>Top 10 Category</Text>
-                    <Icon name="chevron-down" size={30} color={colors.accodinItem} />
-                </Pressable>
-
-                <Pressable
-                    style={styles.accodinItem}
-                    onPress={() => handleAccodin(typeOfAccrodin.frequently)}
-                >
-                    <Image
-                        source={require("../../Assets/icons/interaction_fewq.gif")}
-                        style={styles.gif}
-                    />
-                    <Text style={styles.accordinTxt}>Most frequent Interaction</Text>
-                    <Icon name="chevron-down" size={30} color={colors.accodinItem} />
-                </Pressable>
-                <Pressable
-                    style={styles.accodinItem}
-                    onPress={() => handleAccodin(typeOfAccrodin.rencently)}
-                >
-                    <Image
-                        source={require("../../Assets/icons/interaction_most_feq.gif")}
-                        style={styles.gif}
-                    />
-                    <Text style={styles.accordinTxt}>Recently Interaction</Text>
-                    <Icon name="chevron-down" size={30} color={colors.accodinItem} />
-                </Pressable>
-            </View>
-        );
-    }, []);
-
-
-    const renderProfileTab = useMemo(() => {
-
-        console.log("profile", profileReducer)
-        const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-        console.log("profile active ", activeData)
-        const addr = get(profileReducer, `${activeData}.customerAddress`, []);
-        // const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
-        // const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
-
-        const mobilePath = "customerContact[0].mobileNo"
-        const emailPath = "customerContact[0].emailId"
-
-        const customerCategoryPath = userType == USERTYPE.CUSTOMER ? "customerCatDesc.description" : "customerCatDesc.description"
-        const customerStatusPath = userType == USERTYPE.CUSTOMER ? "statusDesc.description" : "statusDesc.description"
-        const customerCategory = get(profileReducer, `${activeData}.${customerCategoryPath}`, "")
-        const customerStatus = get(profileReducer, `${activeData}.${customerStatusPath}`, "")
-
-        console.log("cutomer cat", customerCategory, customerStatus)
-
-        const serviceData = get(profileReducer, "serviceData", [])
-        console.log("serviceData..", serviceData)
-
-
-        return (
-            <ImageBackground
-                source={require("../../Assets/icons/login_card_background.png")}
-                // resizeMode="contain"
-                style={{
-                    // margin: 5,
-                    zIndex: 999,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingBottom: 20,
-                    backgroundColor: "#ffff",
-                    borderRadius: 16,
-                    elevation: 1,
-                    borderColor:
-                        userType == USERTYPE.CUSTOMER ? "#0CD222" : colors.userTypeColor,
-                    borderWidth: 3,
-                }}
-            >
-                <View style={{ flexDirection: "column" }}>
-                    <View style={{ flexDirection: "row-reverse" }}>
-
-                        <View>
-                            <ImageBackground
-                                source={require("../../Assets/icons/active_background.png")}
-                                resizeMode="cover"
-                                style={{ width: "100%" }}
-                            >
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                        paddingLeft: 15,
-                                        paddingRight: 15,
-                                    }}
-                                >
-                                    {customerStatus}
-                                </Text>
-                            </ImageBackground>
-                        </View>
-                        {customerCategory != "" &&
-                            <View>
-                                <ImageBackground
-                                    source={require("../../Assets/icons/business_background.png")}
-                                    resizeMode="cover"
-                                    style={{ width: "100%" }}
-                                >
-                                    <Text
-                                        style={{
-                                            color: "#cf4751",
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingLeft: 18,
-                                            paddingRight: 18,
-                                        }}
-                                    >
-                                        {customerCategory}
-                                    </Text>
-                                </ImageBackground>
-                            </View>
-                        }
-
-                    </View>
-                    <View style={{ flexDirection: "row", marginTop: 20 }}>
-                        <View>
-                            <Image
-                                source={{
-                                    uri: customerPic,
-                                }}
-                                // imageStyle={{ borderRadius: 60 }}
-                                style={{ height: 60, width: 60 }}
-                            />
-                        </View>
-                        <View style={{ flexDirection: "column", marginLeft: 10 }}>
-                            <Text
-                                variant="bodyMedium"
-                                style={{
-                                    fontWeight: "700",
-                                    color: colors.textColor,
-                                }}
-                            >
-                                {get(profileReducer, `${activeData}.firstName`, "")}{" "}
-                                {get(profileReducer, `${activeData}.lastName`, "")}
-                            </Text>
-                            <Text
-                                variant="bodySmall"
-                                style={{
-                                    fontWeight: "400",
-                                    color: colors.textColor,
-                                }}
-                            >
-                                Customer Id : {get(profileReducer, `${activeData}.customerNo`, "")}
-                            </Text>
-                            <Text
-                                variant="bodySmall"
-                                style={{
-                                    fontWeight: "400",
-                                    color: colors.textColor,
-                                }}
-                            >
-
-                                {get(
-                                    profileReducer,
-                                    `${activeData}.${emailPath}`,
-                                    ""
-                                )}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={{ marginTop: 10, backgroundColor: colors.textColor }}>
-                    <Image source={require("../../Assets/icons/line.png")} />
-                </View>
-
-
-
-                {console.log("sel cust uuid..", get(profileReducer, 'userSelectedProfileDetails', ''))}
-
-
-                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, }}>
-
-                    <View style={{ flexDirection: "row", alignItems: "center", minWidth: 140 }}>
-                        <Image
-                            source={require("../../Assets/icons/interaction_contact.png")}
-                            style={{ width: 45, height: 45 }} />
-
-                        <Text
-                            variant="bodySmall"
-                            style={{
-                                fontWeight: "400",
-                                color: colors.textColor,
-
-                            }}>
-                            {
-
-                                get(
-                                    profileReducer,
-                                    `${activeData}.${mobilePath}`,
-                                    ""
-                                )}
-
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Image
-                            source={require("../../Assets/icons/interaction_loc.png")}
-                            style={{ width: 45, height: 45 }} />
-
-                        <Text
-                            numberOfLines={4}
-                            variant="bodySmall"
-                            alig
-                            style={{
-                                fontWeight: "400",
-                                width: width * .4,
-                                flexWrap: "wrap",
-                                wordWrap: "break-word",
-                                color: colors.textColor,
-                            }}
-                        >
-                            {handleMultipleContact(addr)}
-                        </Text>
-                    </View>
-                </View>
-
-
-
-
-                {serviceData.length > 0 &&
-                    <Pressable
-                        onPress={() => {
-                            if (serviceData.length > 0) {
-                                setProfileSeriveModal(!modelProfileServiceModel);
-                            }
-                        }}
-                        style={{
-                            zIndex: 9,
-                            flexDirection: "row",
-                            width: "100%",
-                            alignItems: "center",
-                            marginTop: 5,
-                        }}
-                    >
-                        <Image
-                            source={require("../../Assets/icons/interaction_service.png")}
-                            style={{ width: 45, height: 45 }}
-                        />
-                        <Text
-                            variant="bodyMedium"
-                            style={{
-                                fontWeight: "400",
-                                color: colors.textColor,
-                                marginRight: 5,
-                            }}
-                        >
-                            Services : {activeService?.description}
-                        </Text>
-                        {serviceData.length > 0 && (
-                            <Icon
-                                name={!modelProfileServiceModel ? "chevron-down" : "chevron-up"}
-                                size={20}
-                                color={colors.textColor}
-                            />
-                        )}
-                    </Pressable>
-                }
-
-                {
-                    modelProfileServiceModel && (
-                        <>
-                            <Pressable
-                                onPress={() => {
-                                    setProfileSeriveModal(false)
-                                }}
-                                style={{
-                                    backgroundColor: "transparent",
-                                    position: "absolute",
-                                    width: width,
-                                    height: height,
-
-                                }}>
-
-                            </Pressable>
-                            <View style={styles.serviceContainer}>
-                                {serviceData.map((ite) => {
-                                    return (
-                                        <List.Item
-                                            key={ite.code}
-                                            title={ite.description}
-                                            titleStyle={{
-                                                fontSize: 13,
-                                                padding: 8,
-                                                margin: 0,
-                                            }}
-
-                                            onPress={() => {
-                                                setService(ite);
-                                                setProfileSeriveModal(false);
-                                            }}
-                                            style={{ borderWidthColor: "gray", borderBottomWidth: 0.2 }}
-                                        />
-                                    );
-                                })}
-                            </View>
-                        </>
-                    )
-                }
-            </ImageBackground>
-        );
-    }, [
-        addresss,
-        customerPic,
-        profileReducer,
-        modelProfileServiceModel,
-        userType,
-        setService,
-        activeService,
+    const dispatch = useDispatch([
+        getMasterData,
+        setInteractionReset,
+        setInteractionFormField,
+        fetchInteractionAction,
+        updateInteractionAction,
+        addInteractionAction,
+        resetKnowSearch,
+        getAppoinmentsData
     ]);
-    // console.log('new profile ', profileReducer.userSelectedProfileDetails)
-    const {
-        statement,
-        interactionType,
-        channel,
-        problemCause,
-        priorityCode,
-        contactPerference,
-        remarks,
-        attachment,
-        serviceType,
-        interactionCategory,
-        serviceCategory,
-    } = interactionRedux.formData;
-
-    const { loaderAdd } = interactionRedux;
-
-    let isButtonEnable = true;
-
-    //handling loader
-    const HandleMultipleCaseInChatBoard = ({ suggestionList, resolutionHistory = [] }) => {
-        //product list
-        console.log('HandleMultipleCaseInChatBoard suggestion list ', suggestionList)
-        console.log('HandleMultipleCaseInChatBoard :createInteractionType', createInteractionType)
-        if (createInteractionType != INTELIGENCE_STATUS.PRODUCT_WITH_MULTIPLE_ITEM) {
-            console.log('HandleMultipleCaseInChatBoard :suggestion list', suggestionList)
-            return (
-                <View style={styles.bottomContainer}>
-                    <ClearSpace size={2} />
-                    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                        {get(suggestionList, 'length', 0) > 0 ? (
-                            suggestionList.map((ite) => (
-                                // eslint-disable-next-line react/jsx-key
-                                <Chip
-                                    mode="outlined"
-                                    onPress={async () => {
-                                        // await setBottombartitle(typeOfAccrodin.knowlegde.title);
-                                        setOpenBottomModalChatBot(false);
-                                        setLoader(true)
-                                        const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
-                                        console.log("ddfdf", {
-                                            customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                                            requestId: ite
-                                        })
-                                        const { response, actionType } = await dispatchInteraction(
-                                            fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                                                customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                                                requestId: parseInt(ite.requestId),
-                                                moduleName: "KnowledgeBaseMobileApp"
-
-                                            })
-                                        );
-                                        setLoader(false)
-                                        const status = await handleInteligenceResponse(response, ite, actionType)
-                                        console.log('view->HandleMultipleCaseInChatBoard->api response ', response, actionType)
-                                        // const status = await handleInteligenceResponse(mockresponse, item)
-                                    }}
-                                    textStyle={{
-                                        fontSize: 14,
-                                        fontWeight: "400",
-                                    }}
-                                    style={{
-                                        backgroundColor: "#edf1f7",
-                                        borderRadius: 15,
-                                        marginRight: 5,
-                                        marginBottom: 5,
-                                        borderColor: "transparent",
-                                    }}
-                                >
-                                    {ite.requestStatement}
-                                </Chip>
-                            ))
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Text style={{ textAlign: "center" }} variant="labelMedium">
-                                    No data available!
-                                </Text>
-                            </View>
-                        )}
-                    </View>
-                    <ClearSpace size={3} />
-
-                    {/* <Text variant="labelMedium" style={{ textAlign: "center" }}>
-            Couldn't Find a resolution?
-            <Text onPress={() => { }} style={{ color: "red" }}>
-              {" "}
-              Create Interaction
-            </Text>{" "}
-          </Text> */}
-                </View>
-            )
-        }
-        else {
-            return (
-                <View style={styles.bottomContainer}>
-                    <ClearSpace size={2} />
-                    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                        {get(suggestionList, 'resolutionAction.data.length', 0) > 0 ? (
-                            get(suggestionList, 'resolutionAction.data').map((ite) => (
-                                // eslint-disable-next-line react/jsx-key
-                                <Chip
-                                    mode="outlined"
-                                    onPress={async () => {
-                                        setLoader(true)
-
-                                        const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                                        const { response, actionType } = await dispatchInteraction(
-                                            fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                                                customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                                                requestId: parseInt(get(ite, "requestId", ""))
-                                            })
-                                        );
-                                        setLoader(false)
-                                        const status = await handleInteligenceResponse(response, ite, actionType)
-
-                                        console.log('response', status)
-                                        return null
-                                        console.log('view->HandleMultipleCaseInChatBoard->api response ', response, actionType)
-                                        // const status = await handleInteligenceResponse(mockresponse, item)
-                                    }}
-                                    textStyle={{
-                                        fontSize: 14,
-                                        fontWeight: "400",
-                                    }}
-                                    style={{
-                                        backgroundColor: "#edf1f7",
-                                        borderRadius: 15,
-                                        marginRight: 5,
-                                        marginBottom: 5,
-                                        borderColor: "transparent",
-                                    }}
-                                >
-                                    {ite.serviceName}
-                                </Chip>
-                            ))
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Text style={{ textAlign: "center" }} variant="labelMedium">
-                                    No data available!
-                                </Text>
-                            </View>
-                        )}
-                    </View>
-                    <ClearSpace size={3} />
-
-                    {/* <Text variant="labelMedium" style={{ textAlign: "center" }}>
-            Couldn't Find a resolution?
-            <Text onPress={() => { }} style={{ color: "red" }}>
-              {" "}
-              Create Interaction
-            </Text>{" "}
-          </Text> */}
-                </View>
-            )
-        }
-    }
-    /**
-     * render bottom chat
-     *
-     */
-    const RenderBottomChatBoard = () => {
-        const suggestionList = get(interactionReducer, "knowledgeHistory", []);
-
-        console.log('RenderBottomChatBoard,', createInteractionType, activeChatBotSec)
-        //todo
-
-        if (activeChatBotSec == "") {
-            console.log("setactiveChatBot not set for title for chat bot");
-            return null;
-        }
-
-        if (createInteractionType == INTELIGENCE_STATUS.RESOVLED) {
-
-            console.log('a1.........')
-            const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-            console.log('a2.........')
-            // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
-            return (
-                <HandleResolution
-                    customerUuid={get(profileReducer, `${activeData}.customerUuid`, '')}
-                    popupAction={async (params) => {
-                        setLoader(true)
-                        console.log("htting popupAction", params)
-                        await dispatchInteraction(
-                            fetchInteractionAction(typeOfAccrodin.workflow.value, params, true)
-                        );
-                        setLoader(false);
-                    }}
-                    suggestionList={suggestionList}
-                    resolutionDetails={get(interactionReducer, "InteractionData", [])}
-                    navigation={navigation}
-                />
-            );
-
-        }
-        console.log('a3.........' + interactionList)
-        console.log('a5.........' + suggestionList)
-
-        const interactionList = get(interactionReducer, 'InteractionData', [])
-
-        return (
-            <HandleMultipleCaseInChatBoard
-                suggestionList={interactionList}
-                resolutionHistory={suggestionList}
-            />
-        );
-    };
-    if (openBottomModal) {
-        console.log('a4.........')
-        Object.keys(interactionRedux.formData).map((it) => {
-            const item = interactionRedux.formData[it];
-            if (item.type == INPUT_TYPE.INPUTBOX && item.required) {
-                if (item.value == "") {
-                    isButtonEnable = false
-                }
-            }
-            if (item.type == INPUT_TYPE.DROPDOWN && item.required) {
-                if (item.value.code == "") {
-                    isButtonEnable == false
-                }
-            }
-            if (item.type == INPUT_TYPE.ARRAY && item.required) {
-                if (item.value?.length != 0) {
-                    const data = item.value.filter(item => item.active == true)
-                    console.log(":123data", data, data.length)
-                    if (data?.length == 0) isButtonEnable = false;
-
-                }
-                else {
-                    isButtonEnable == false
-                }
-            }
-
-
-        });
-    }
-
-
-    const isModelOpen =
-        openBottomModal || openBottomModalChatBoard || userSeachEnable;
-
 
     return (
-        <>
-            <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
-                {/* Field View */}
-                <View style={{ marginHorizontal: 10 }}>
-                    {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
-                        <>
-                            <CustomDropDownFullWidth
-                                selectedValue={get(
-                                    interactionCategory,
-                                    "value.description",
-                                    ""
-                                )}
-                                data={interactionCategoryList}
-                                onChangeText={(text) => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "interactionCategory",
-                                            value: text,
-                                            clearError: true,
-                                        })
-                                    );
-                                }}
-                                value={get(interactionCategory, "value.code", "")}
-                                caption={"Interaction Category"}
-                                placeHolder={"Select interaction category"}
-                            />
+        <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
 
-                            {interactionCategory.error &&
-                                showErrorMessage(interactionCategory.error)}
+            {/* Field View */}
+            <View style={{ marginHorizontal: 20, marginTop: 60 }}>
 
-                            <CustomDropDownFullWidth
-                                selectedValue={get(interactionType, "value.description", "")}
-                                data={interactionList}
-                                onChangeText={(text) => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "interactionType",
-                                            value: text,
-                                            clearError: true,
-                                        })
-                                    );
-                                }}
-                                value={get(interactionType, "value.code", "")}
-                                caption={strings.intractionType}
-                                placeHolder={"Select " + strings.intractionType}
-                            />
-
-                            {interactionType.error && showErrorMessage(interactionType.error)}
-
-                            <CustomDropDownFullWidth
-                                selectedValue={get(serviceType, "value.description", "")}
-                                data={serviceTypelist}
-                                onChangeText={(text) => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "serviceType",
-                                            value: text,
-                                            clearError: true,
-                                        })
-                                    );
-                                }}
-                                value={get(serviceType, "value.code", "")}
-                                caption={strings.serviceType}
-                                placeHolder={"Select " + strings.serviceType}
-                            />
-                            {serviceTypelist.error && showErrorMessage(serviceTypelist.error)}
-
-
-
-                            <CustomDropDownFullWidth
-                                selectedValue={get(serviceCategory, "value.description", "")}
-                                data={serviceCategoryList}
-                                onChangeText={(text) => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "serviceCategory",
-                                            value: text,
-                                            clearError: true,
-                                        })
-                                    );
-                                }}
-                                value={get(serviceCategory, "value.code", "")}
-                                caption={"Serive Category"}
-                                placeHolder={"Select Serive Category"}
-                            />
-                            {serviceCategory.error && showErrorMessage(serviceCategory.error)}
-                            {/* problem cause */}
-                            {/* <CustomDropDownFullWidth
-                    selectedValue={get(problemCause, "value.description", "")}
-                    data={problemList}
-                    onChangeText={(text) => {
-                      dispatchInteraction(
-                        setInteractionFormField({
-                          field: "problemCause",
-                          value: text,
-                          clearError: true,
-                        })
-                      );
-                    }}
-                    value={get(problemCause, "value.code", "")}
-                    caption={strings.problem_stat_cause}
-                    placeHolder={"Select " + strings.problem_stat_cause}
-                  /> */}
-                            {problemCause.error && showErrorMessage(problemCause.error)}
-
-                            <CustomDropDownFullWidth
-                                selectedValue={get(priorityCode, "value.description", "")}
-                                data={priorityList}
-                                onChangeText={(text) => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "priorityCode",
-                                            value: text,
-                                            clearError: true,
-                                        })
-                                    );
-                                }}
-                                value={get(priorityCode, "value.code", "")}
-                                caption={strings.priority_type}
-                                placeHolder={"Select " + strings.priority_type}
-                            />
-
-                            {contactTypeList.length != 0 && (
-                                <View style={{ marginTop: 10 }}>
-                                    <CheckGroupbox
-                                        data={contactTypeList.map((ite) => {
-                                            return {
-                                                code: ite.code,
-                                                description: ite.description,
-                                                active: false,
-                                            }
-                                        })
-                                        }
-                                        values={get(contactPerference, "value", "")}
-                                        setValues={(data) => {
-                                            setFormField("contactPerference", data);
-
-                                        }}
-                                        label="Contact Preference"
-                                    />
-                                </View>
-                            )}
-
-                        </>
-                    }
+                <View style={{ paddingVertical: 10 }}>
                     <CustomInput
-                        value={get(remarks, "value", "")}
-                        caption={strings.remarks}
-                        placeHolder={strings.remarks}
+                        value={interactionNo}
+                        keyboardType="text"
+                        maxLength={interactionNoMaxLength}
+                        caption={strings.interaction_number}
+                        placeHolder={strings.enter_interaction_number}
                         onChangeText={(text) => {
-                            dispatchInteraction(
-                                setInteractionFormField({
-                                    field: "remarks",
-                                    value: text,
-                                    clearError: true,
-                                })
-                            );
+                            // text = text.replace(/[^0-9]/g, '')
+                            onInteractionNoChange(text)
+                            // dispatchInteraction(
+                            //   setInteractionFormField({
+                            //     field: "remarks",
+                            //     value: text,
+                            //     clearError: true,
+                            //   })
+                            // );
                         }}
-                        right={
-                            <TextInput.Icon
-                                onPress={() => {
-                                    dispatchInteraction(
-                                        setInteractionFormField({
-                                            field: "remarks",
-                                            value: "",
-                                            clearError: false,
-                                        })
-                                    );
-                                }}
-                                style={{ width: 23, height: 23 }}
-                                icon={require("../../Assets/icons/ic_close.png")}
-                            />
-                        }
+                    />
+                </View>
+
+                <View style={{ paddingVertical: 10 }}>
+                    <CustomInput
+                        value={customerName}
+                        keyboardType="text"
+                        maxLength={customerNameMaxLength}
+                        caption={strings.customer_name}
+                        placeHolder={strings.enter_customer_name}
+                        onChangeText={(text) => {
+                            text = text.replace(/[^A-Za-z]/g, '')
+                            // text = text.replace(/^[A-Za-z]+$/, '')
+                            onCustomerNameChange(text)
+                            // dispatch(
+                            //   setInteractionFormField({
+                            //     field: "remarks",
+                            //     value: text,
+                            //     clearError: true,
+                            //   })
+                            // );
+
+                        }}
+                    />
+                </View>
+
+                <View style={{ paddingVertical: 10 }}>
+                    <CustomDropDownFullWidth
+                        selectedValue={selInteractionTypeDesc}
+                        data={masterReducer.masterdataData.INTXN_TYPE}
+                        onChangeText={(text) => {
+                            setSelInteractionTypeDesc(text.description)
+                            setSelInteractionTypeVal(text.code)
+                            // dispatch(
+                            //     setInteractionFormField({
+                            //         field: "interactionType",
+                            //         value: text,
+                            //         clearError: true,
+                            //     })
+                            // );
+                        }}
+                        value={selInteractionTypeVal}
+                        caption={strings.intractionType}
+                        placeHolder={strings.sel_interaction_type}
                     />
 
-                    {remarks.error && showErrorMessage(remarks.error)}
-                    {(createInteractionType !== INTELIGENCE_STATUS.CREATE_INTERACTION_AUTO) &&
-
-                        <ImagePicker
-                            attachmentModalVisible={attachmentModalVisible}
-                            setAttachmentModalVisible={setAttachmentModalVisible}
-                            fileAttachments={fileAttachments}
-                            setFileAttachments={setFileAttachments}
-                        />
-                    }
-                    {/* </KeyboardAwareView> */}
-                    {/* <CustomInput
-            value={attachment.value}
-            caption={strings.attachment}
-            placeHolder={strings.attachment}
-            onChangeText={(text) => {
-              dispatchInteraction(
-                setInteractionFormField({
-                  field: "attachment",
-                  value: text,
-                  clearError: true,
-                })
-              );
-            }}
-          /> */}
+                    {interactionType.error && showErrorMessage(interactionType.error)}
                 </View>
-                {/* {attachment.error && showErrorMessage(attachment.error)} */}
+
+                <View style={{ paddingVertical: 10 }}>
+                    <CustomInput
+                        value={mobileNo}
+                        keyboardType="numeric"
+                        maxLength={mobileNoMaxLength}
+                        caption={strings.primary_contact_number}
+                        placeHolder={strings.enter_primary_contact_number}
+                        onChangeText={(text) => {
+                            text = text.replace(/[^0-9]/g, '')
+                            onMobileNoChange(text)
+                            // dispatch(
+                            //   setInteractionFormField({
+                            //     field: "remarks",
+                            //     value: text,
+                            //     clearError: true,
+                            //   })
+                            // );
+                        }}
+                    />
+                </View>
+
+
                 {/* Bottom Button View */}
                 <View
                     style={{
                         flexDirection: "row",
-                        backgroundColor: "white",
+                        backgroundColor: "transparent",
                         marginHorizontal: 15,
+                        marginTop: 20,
                         marginBottom: 20,
                     }}
                 >
+
                     <View style={{ flex: 1 }}>
                         <CustomButton
-                            label={strings.cancel}
+                            label={strings.clear}
                             onPress={() => {
-                                setOpenBottomModal(false);
-                                dispatchInteraction(setInteractionReset());
+                                setInteractionNo("")
+                                setCustomerName("")
+                                setMobileNo("")
+                                setSelInteractionTypeDesc("")
+                                setSelInteractionTypeDesc("")
                             }}
                         />
                     </View>
 
                     <View style={{ flex: 1 }}>
                         <CustomButton
-                            isDisabled={!isButtonEnable}
-                            // isDisabled={false}
-                            loading={loaderAdd}
-                            label={strings.submit}
+                            isDisabled={false}
+                            // loading={loaderAdd}
+                            label={strings.search}
                             onPress={async () => {
+                                if ((interactionNo == "") && (customerName == "") && (selInteractionTypeVal == "") && (mobileNo == "")) {
+                                    Toast.show({
+                                        type: "bctError",
+                                        text1: strings.int_search_err_msg,
+                                    });
+                                }
+                                else {
+                                    const customerUUDI = await getCustomerUUID();
 
-                                const input = interactionRedux.formData;
-
-                                const logg = true
-                                if (logg) console.log('create complienta :entered', interactionRedux)
-                                const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                                const customerID = get(profileReducer, `${activeData}.customerId`, "");
-                                if (customerID == "") console.log("cusomter id is empty");
-
-
-                                if (logg) console.log('create complienta :customer id', customerID)
-                                if (logg) console.log('create complienta :input', input)
-                                const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
-                                console.log("profile info", profileInfo)
-                                const params = {
-                                    customerId: customerID,
-
-                                    // statement: input.statement.value,
-                                    // statementId: input.statementId.value,
-                                    //problem cause
-                                    // problemCause: input.problemCause.value?.code,
-                                    interactionCategory:
-                                        input.interactionCategory.value?.code,
-                                    serviceCategory: input.serviceCategory.value?.code,
-                                    interactionType: input.interactionType.value?.code,
-                                    serviceType: input.serviceType.value?.code,
-                                    channel: "MOBILEAPP",
-                                    priorityCode: input.priorityCode.value?.code,
-                                    contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
-                                    remarks: input.remarks.value,
-                                    statement: get(activeState, 'requestStatement', ''),
-                                    statementId: get(activeState, 'requestId', ''),
-                                    appointAddress: {
-                                        address1: profileInfo.address1,
-                                        address2: profileInfo.address2,
-                                        address3: profileInfo.address3,
-                                        city: profileInfo.city,
-                                        state: profileInfo.state,
-                                        district: profileInfo.district,
-                                        postcode: profileInfo.postcode,
-                                        country: profileInfo.country,
+                                    let params = {
+                                        searchParams: {
+                                            interactionNumber: interactionNo,
+                                            interactionType: selInteractionTypeVal,
+                                            customerName: customerName,
+                                            contactNumber: parseInt(mobileNo),
+                                            customerUuid: customerUUDI
+                                        }
                                     }
-                                };
-                                console.log("params", params)
 
-                                const templeAPIPayload = {
-                                    mapCategory: "TMC_INTERACTION",
-                                    serviceCategory: input.serviceCategory.value?.code,
-                                    serviceType: input.serviceType.value?.code,
-                                    customerCategory: "REG",
-                                    tranType: input.interactionType.value?.code, //interaction type
-                                    tranCategory: input.interactionCategory.value?.code, //inteaction cateogy
-                                    tranPriority: input.priorityCode.value?.code,
-                                    // "mapCategory": "TMC_INTERACTION",
-                                    // "serviceCategory": "PST_LOANS",
-                                    // "serviceType": "ST_BANK",
-                                    // "customerCategory": "REG",
-                                    // "tranType": "REQUEST",
-                                    // "tranCategory": "ACCOUNT_RELATED",
-                                    // "tranPriority": "PRTYHGH"
-                                }
-                                console.log("appointment templte", templeAPIPayload)
-                                // console.log("payload", templeAPIPayload)
-                                const appoinTemplete = await dispatchInteraction(getAppoinmentsData(templeAPIPayload));
-                                console.log("templete view response ", appoinTemplete)
-                                if (appoinTemplete != false) {
-                                    //for reference
-                                    setAppoinmentFormData({ ...params, templateId: appoinTemplete, productNo: activeService.productNo })
-                                    setAppoinmentPopup(true)
-                                    return;
-                                }
-
-                                if (logg) console.log('create complienta :create obj', params)
-
-
-                                const { status, response } = await dispatchInteraction(
-                                    addInteractionAction(params, fileAttachments)
-                                );
-                                if (logg) console.log('create complienta :create obj', params)
-                                console.log("interaction type response ", response);
-
-                                if (status) {
-                                    setInteractionResponse(response);
-                                    setOpenBottomModal(false)
-                                    setEnableSuccessScreen(interactionResponseScreen.SUCCESS);
-                                    dispatchInteraction(setInteractionReset());
-
-                                } else {
-
-                                    // setEnableSuccessScreen(interactionResponseScreen.FAILED);
+                                    navigation.navigate(STACK_INTERACTION_SEARCH_RESULT, {
+                                        interactionSearchParams: params
+                                    })
                                 }
                             }}
                         />
                     </View>
+
                 </View>
 
-            </ScrollView>
+            </View>
 
-        </>
+        </ScrollView>
     );
 };
 
+
 const styles = StyleSheet.create({
+    logo: {
+        height: "100%",
+    },
     container: {
         flex: 1,
-        padding: 10,
-        backgroundColor: "#F0F0F0",
-        marginTop: 60,
-    },
-    dot: {
-        backgroundColor: "#F5AD47",
-        width: 6,
-        height: 6,
-        borderRadius: 6,
-        marginRight: 5,
-    },
-    fullspace: {
-        flex: 1,
-    },
-    modalContainer: {
-        flex: 1,
-        padding: 10,
     },
     triangleCorner: {
         width: 0,
@@ -1693,7 +306,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 200,
         borderTopColor: "white",
     },
-
     highlightText: {
         color: "#202223",
         textAlign: "left",
@@ -1701,95 +313,5 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         lineHeight: spacing.HEIGHT_27 * 2,
     },
-    searchSection: {
-
-        padding: 5,
-        paddingLeft: 10,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#fff",
-        borderRadius: 10,
-        marginTop: 10,
-
-    },
-    searchIcon: {
-        padding: 10,
-    },
-    input: {
-        flex: 1,
-        paddingTop: 10,
-        paddingRight: 10,
-        paddingBottom: 10,
-        paddingLeft: 0,
-        backgroundColor: "#fff",
-        color: "#424242",
-
-    },
-    dropDownCard: {
-        // shadowColor: '#171717',
-        maxHeight: spacing.HEIGHT_50 * 5,
-        paddingTop: 10,
-        width: "100%",
-        marginVertical: spacing.WIDTH_10,
-        elevation: 3,
-    },
-    accodinContainer: {
-        backgroundColor: theme.colors.background,
-        borderRadius: 5,
-        alignItems: "center",
-        elevation: 1,
-    },
-    accodinItem: {
-        flexDirection: "row",
-        marginHorizontal: 8,
-        paddingVertical: 10,
-        alignItems: "center",
-        borderBottomColor: theme.colors.gray,
-        borderBottomWidth: 0.5,
-    },
-    accordinTxt: {
-        flex: 0.8,
-        fontWeight: "500",
-    },
-    accordinImg: {
-        flex: 0.1,
-    },
-    accordinIcon: {
-        flex: 0.1,
-    },
-    bottomContainer: {
-        paddingHorizontal: 10,
-    },
-    gif: {
-        width: 30,
-        height: 30,
-        flex: 0.1,
-        marginRight: 8,
-    },
-    modelContainerProfile: {
-        zIndex: 99999999,
-        position: "absolute",
-        backgroundColor: "#fff",
-        elevation: 1,
-        width: 200,
-        borderRadius: 3,
-        // minHeight: 100,
-        bottom: -60,
-        left: 40,
-    },
-    serviceContainer: {
-        zIndex: 99999999,
-        position: "absolute",
-        backgroundColor: "#fff",
-        elevation: 1,
-        width: 360,
-        borderRadius: 3,
-        // minHeight: 100,
-        bottom: -60,
-        left: 10,
-        right: 0,
-    },
 });
-
 export default InteractionSearch;

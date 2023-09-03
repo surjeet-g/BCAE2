@@ -97,6 +97,7 @@ const EditProfile = ({ navigation, props }) => {
     idValue,
     nationality,
     location,
+    profilePath
   } = profile.formData;
 
   const [street, setStreet] = useState("");
@@ -106,7 +107,13 @@ const EditProfile = ({ navigation, props }) => {
   const [postCode, setPostcode] = useState("");
   const [contactValues, setContactValues] = useState([]);
   const [notificationValues, setNotificationValues] = useState([]);
-  const [profileImageData, setProfilePic] = useState(DEFAULT_PROFILE_IMAGE)
+
+
+  // const customerImg = get(profile, "formData.profilePath", DEFAULT_PROFILE_IMAGE) ?? DEFAULT_PROFILE_IMAGE;
+  // if (customerImg == "") customerImg = DEFAULT_PROFILE_IMAGE
+  const [profileImageData, setProfilePic] = useState(get(profile, "formData.profilePath", DEFAULT_PROFILE_IMAGE))
+
+
   useEffect(() => {
     // dispatch1(setProfileReset());
     /**
@@ -342,10 +349,12 @@ const EditProfile = ({ navigation, props }) => {
               // const source = { uri: response.uri };
 
               // setProfileImageData(response?.assets[0]?.base64);
-
+              console.log("profile pic data..", response?.assets[0].base64);
               if (response?.assets[0]?.fileSize < 5000000) {
                 const base644 = `data:${response?.assets[0].type};base64,${response?.assets[0].base64}`
+                console.log("profile pic data2..", base644);
                 await setProfilePic(base644)
+                // customerPic
                 // await submit("profiePic", base644)
 
               } else {
@@ -598,11 +607,10 @@ const EditProfile = ({ navigation, props }) => {
   };
   const masterReducer = useSelector((state) => state.masterdata);
 
-  let customerPic =
-    get(profile, "formData.profilePath", null) ??
-    DEFAULT_PROFILE_IMAGE;
-
+  let customerPic = get(profile, "formData.profilePath", null) ?? DEFAULT_PROFILE_IMAGE;
   if (customerPic == "") customerPic = DEFAULT_PROFILE_IMAGE
+  // setProfilePic(customerPic)
+
   const addresss = get(profile, "savedProfileData.customerAddress", []);
   const contactPerference = get(
     masterReducer,
@@ -668,6 +676,7 @@ const EditProfile = ({ navigation, props }) => {
 
 
   console.log("is consumer", isConsumer);
+
   const emailPath = isConsumer
     ? "savedProfileData.customerContact[0].emailId"
     : "savedProfileData.email";
@@ -702,8 +711,11 @@ const EditProfile = ({ navigation, props }) => {
           <View
             style={{
               // height: 150,
-              backgroundColor: colors.secondary,
-              paddingTop: 20,
+              backgroundColor: "#4C5A81",
+              marginTop: 70,
+              marginLeft: 10,
+              marginRight: 10,
+              padding: 20
             }}
           >
 
@@ -761,7 +773,7 @@ const EditProfile = ({ navigation, props }) => {
             <ScrollView
               style={{
                 flexGrow: 1,
-                paddingHorizontal: spacing.WIDTH_30,
+                paddingHorizontal: 10,
                 backgroundColor: "white",
                 margin: 12,
                 borderRadius: 8,
@@ -769,7 +781,7 @@ const EditProfile = ({ navigation, props }) => {
               nestedScrollEnabled={true}
             >
               {/* First Name */}
-              <View style={{ marginTop: spacing.HEIGHT_30 }}>
+              <View style={{ marginTop: 10 }}>
                 <CustomInput
                   // editable={false}
                   caption={strings.first_name}
@@ -849,7 +861,7 @@ const EditProfile = ({ navigation, props }) => {
                 </View>
               )}
               {/* Gender */}
-              <View style={{}}>
+              <View style={{ marginTop: 5 }}>
                 <CustomDropDown
                   selectedValue={get(gender, "description", "")}
                   setValue={(text) => onGenderClick(text)}
@@ -982,11 +994,12 @@ const EditProfile = ({ navigation, props }) => {
           )}
           <StickyFooter>
             <CustomButton
+              style={{ backgroundColor: "#4C5A81" }}
               loading={false}
               label={"Update"}
               isDisabled={!isbuttonEnable()}
               onPress={async () => {
-                await submit();
+                await submit("profiePic", profileImageData);
               }}
             />
           </StickyFooter>

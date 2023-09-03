@@ -561,6 +561,7 @@ export const Login = ({ navigation }) => {
                 </Pressable>
               </View>
 
+
               {/* Register View */}
               <View
                 style={{

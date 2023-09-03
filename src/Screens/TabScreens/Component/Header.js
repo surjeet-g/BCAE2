@@ -1,50 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Platform,
+  Alert,
   Dimensions,
   Image,
-  Pressable,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Switch,
-  Alert,
   Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import {
-  spacing,
-  fontSizes,
-  color,
-  buttonType,
-  buttonSize,
-  bottomBarHeight,
-  validatePassword,
   DEBUG_BUILD,
-  STAGE_FAQ,
   PROD_FAQ,
+  STAGE_FAQ,
+  buttonSize,
+  buttonType,
+  color,
+  fontSizes,
+  spacing,
+  validatePassword
 } from "../../../Utilities/Constants/Constant";
 
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 
-import { strings } from "../../../Utilities/Language";
-import { Modal, TextInput, Button } from "react-native-paper";
+import NetInfo from "@react-native-community/netinfo";
+import { Button, Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMyProfileData } from "../../../Redux/ProfileDispatcher";
 import {
-  logoutUser,
   deleteNdLogoutUser,
+  logoutUser,
 } from "../../../Redux/LogoutDispatcher";
-import { resetMyDashboardData } from "../../../Redux/MyDashboardDispatcher";
 import {
   changePassword,
   resetPasswordChangeData,
 } from "../../../Screens/ForgotPassword/ForgotPasswordDispatcher";
-import { saveDataToDB, getDataFromDB } from "../../../Storage/token";
+import { getDataFromDB, saveDataToDB } from "../../../Storage/token";
 import { storageKeys } from "../../../Utilities/Constants/Constant";
-import { saveToken } from "../../../Storage/token";
-import NetInfo from "@react-native-community/netinfo";
+import { strings } from "../../../Utilities/Language";
 
 var { height, width } = Dimensions.get("screen");
 const Header = (props, { IsShowBell }) => {
@@ -105,7 +100,7 @@ const Header = (props, { IsShowBell }) => {
       Alert.alert(strings.attention, strings.passwordValidError, [
         {
           text: strings.ok,
-          onPress: () => {},
+          onPress: () => { },
         },
       ]);
     }
@@ -161,7 +156,7 @@ const Header = (props, { IsShowBell }) => {
     setIsNotiEnabled(!isNotiEnabled);
     saveDataToDB(storageKeys.PUSH_NOTIFICATION, {
       push_notification: !isNotiEnabled,
-    }).then(function () {});
+    }).then(function () { });
   };
 
   const onLogoutPressed = () =>
@@ -242,7 +237,7 @@ const Header = (props, { IsShowBell }) => {
       requestChangePassword();
     } else {
       Alert.alert(strings.attention, strings.password_not_match, [
-        { text: strings.ok, onPress: () => {} },
+        { text: strings.ok, onPress: () => { } },
       ]);
     }
   };
@@ -274,7 +269,7 @@ const Header = (props, { IsShowBell }) => {
         strings.attention,
         strings.mandatory_password_change + "\n" + strings.want_to_continue,
         [
-          { text: strings.cancel, onPress: () => {} },
+          { text: strings.cancel, onPress: () => { } },
           ,
           { text: strings.ok, onPress: () => props.navigation.goBack() },
         ]
@@ -457,6 +452,9 @@ const Header = (props, { IsShowBell }) => {
                     profile?.savedProfileData?.lastName}
                 </Text>
               </View>
+
+
+
               <View style={[styles.box3]}>
                 <TouchableOpacity
                   activeOpacity={0.5}
@@ -468,6 +466,32 @@ const Header = (props, { IsShowBell }) => {
                   ></Image>
                 </TouchableOpacity>
               </View>
+
+
+              {/* <View style={navBar.navRightCon}>
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={onEditProfilePressed}
+                  style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+                >
+                  <Icon name="plus" size={19} color={colors.BLACK} />
+                </TouchableOpacity>
+              </View> */}
+
+
+              {/* <View style={navBar.navRightCon}>
+                <Pressable
+                  onPress={() => {
+                    resetCreateInterationForm(),
+                      setOpenBottomModal(true)
+                  }}
+                  style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+                >
+                  <Icon name="plus" size={19} color={colors.BLACK} />
+                </Pressable>
+              </View> */}
+
+
             </View>
           </View>
 
@@ -931,8 +955,8 @@ const Header = (props, { IsShowBell }) => {
                     size={buttonSize.LARGE}
                     disabled={
                       password == "" ||
-                      oldPassword == "" ||
-                      confirmPassword == ""
+                        oldPassword == "" ||
+                        confirmPassword == ""
                         ? true
                         : false
                     }

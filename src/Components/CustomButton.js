@@ -39,7 +39,7 @@ export const CustomButton = (props) => {
         mode={mode}
         label={label}
         color={isDisabled ? colors.inverseSecondary : colors.buttonDisableColor}
-        buttonColor={isDisabled ? colors.buttonDisableColor : colors.primary}
+        buttonColor={isDisabled ? colors.buttonDisableColor : "#4C5A81"}
         onPress={isDisabled ? () => { } : () => onPress()}
       >
         {label}

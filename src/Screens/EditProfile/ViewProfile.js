@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState
+  useEffect, useLayoutEffect, useState
 } from "react";
 import {
   Alert,
@@ -25,16 +25,17 @@ import AnnouncementItem from "../../Screens/Announcement/component/AnnouncementI
 import { getDataFromDB, saveDataToDB } from "../../Storage/token";
 import {
   DEFAULT_PROFILE_IMAGE,
+  color,
   mockAnnouncementList,
   spacing,
   storageKeys
 } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
-import { getLanguage } from "../../Utilities/Language/language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
+import { getLanguage } from "../../Utilities/Language/language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
-import { ICON_STYLE } from "../../Utilities/Style/navBar";
-import { getUserId, getUserType, USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import { ICON_STYLE, navBar } from "../../Utilities/Style/navBar";
+import { USERTYPE, getUserId, getUserType } from "../../Utilities/UserManagement/userInfo";
 const ICON = 25;
 /**
  * ViewProfile : Listout user infomation
@@ -60,6 +61,39 @@ export const ViewProfile = ({ navigation }) => {
     dispatch(fetchMyProfileData(navigation));
   }, []);
   const [userType, setUserType] = useState("");
+
+
+
+
+
+
+  const headerRightForNav = () => {
+    return (
+      <View style={navBar.navRightCon}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate("EditProfile")
+          }}
+          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
+        >
+          <Icon name={"account-edit"} size={30} color={colors.BLACK} />
+        </Pressable>
+      </View>
+    );
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: headerRightForNav,
+    });
+  }, []);
+
+
+
+
+
+
+
 
   useEffect(() => {
     /**
@@ -254,7 +288,7 @@ export const ViewProfile = ({ navigation }) => {
             >
               {userInfo.name}
             </Text>
-            <ClearSpace size={2} />
+            <ClearSpace size={0} />
             <Text
               variant="bodySmall"
               style={{ color: colors.profile_enabled, fontWeight: "500" }}
@@ -264,7 +298,7 @@ export const ViewProfile = ({ navigation }) => {
           </View>
         </View>
 
-        <ClearSpace size={2} />
+        <ClearSpace size={0} />
         <Pressable
           onPress={() => {
             navigation.navigate("Changepassword", {
@@ -303,7 +337,7 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
         <Divider />
-        <ClearSpace size={2} />
+        <ClearSpace size={0} />
         <Pressable onPress={() => showLanguageModal()} style={styles.listItem}>
           <Icon
             name="google-translate"
@@ -522,7 +556,7 @@ export const ViewProfile = ({ navigation }) => {
           </Text>
         </Pressable>
 
-        <ClearSpace size={2} />
+        <ClearSpace size={0} />
 
         <Button
           style={{
@@ -553,7 +587,7 @@ export const ViewProfile = ({ navigation }) => {
           {strings.logout}
         </Button>
 
-        <ClearSpace size={8} />
+        <ClearSpace size={0} />
       </ScrollView>
       <Modal
         visible={showAnnouncementModal}
@@ -776,6 +810,7 @@ export const ViewProfile = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   container: {
+    marginTop: 60,
     padding: 20,
     flex: 1,
     backgroundColor: "#F0F0F0",

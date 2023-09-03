@@ -28,6 +28,13 @@ export const INTERACTION_GET_DETAILS_SUCCESS =
   "INTERACTION_GET_DETAILS_SUCCESS";
 export const INTERACTION_GET_DETAILS_FAILURE =
   "INTERACTION_GET_DETAILS_FAILURE";
+
+export const INTERACTION_SEARCH_DETAILS_SUCCESS =
+  "INTERACTION_SEARCH_DETAILS_SUCCESS";
+export const INTERACTION_SEARCH_DETAILS_FAILURE =
+  "INTERACTION_SEARCH_DETAILS_FAILURE";
+
+
 export const CREATE_FOLLOWUP = "CREATE_FOLLOWUP";
 export const CREATE_FOLLOWUP_FAILURE = "CREATE_FOLLOWUP_FAILURE";
 export const INTERACTION_ASSIGN_SELF = "INTERACTION_ASSIGN_SELF";
@@ -112,6 +119,17 @@ export function setInteractionsDetailsDataInStore(data) {
 export function setInteractionsDetailsErrorDataInStore(data) {
   return { type: INTERACTION_GET_DETAILS_FAILURE, data };
 }
+
+
+export function setInteractionsSearchDataInStore(data) {
+  return { type: INTERACTION_SEARCH_DETAILS_SUCCESS, data };
+}
+
+export function setInteractionsSearchErrorDataInStore(data) {
+  return { type: INTERACTION_SEARCH_DETAILS_FAILURE, data };
+}
+
+
 
 export function setFollowupDataInStore(data) {
   return { type: CREATE_FOLLOWUP, data };

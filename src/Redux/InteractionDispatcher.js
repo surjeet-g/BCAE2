@@ -6,7 +6,7 @@ import {
   setFollowupErrorDataInStore, setgetAppoinmentsData, setInteractionData,
   setInteractionError, setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore, setInteractionsFollowupDataInStore,
-  setInteractionsFollowupErrorDataInStore, setInteractionsWorkFlowDataInStore,
+  setInteractionsFollowupErrorDataInStore, setInteractionsSearchDataInStore, setInteractionsSearchErrorDataInStore, setInteractionsWorkFlowDataInStore,
   setInteractionsWorkFlowErrorDataInStore,
   setknowledgeHistory
 } from "./InteractionAction";
@@ -402,6 +402,23 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
       dispatch(setInteractionsDetailsDataInStore(result.data.data));
     } else {
       dispatch(setInteractionsDetailsErrorDataInStore(result));
+    }
+  };
+}
+
+export function getInteractionDetailsSearch(params, navigation = null) {
+  return async (dispatch) => {
+    console.log("interaction search begins..", params)
+    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
+    console.log("interaction search url..", url)
+    let result = await serverCall(url, requestMethod.POST, params, navigation);
+    console.log("interaction search result..", result)
+    if (result.success) {
+      console.log("interaction search success..", result.data.data)
+      dispatch(setInteractionsSearchDataInStore(result.data.data));
+    } else {
+      console.log("interaction search failure..")
+      dispatch(setInteractionsSearchErrorDataInStore(result));
     }
   };
 }

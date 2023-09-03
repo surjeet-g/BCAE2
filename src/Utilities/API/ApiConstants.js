@@ -5,7 +5,15 @@ const SERVER_TYE = "stage"
 
 // export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
 
+
+
+// Recently using url
 export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
+
+
+// Demo url
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
+
 
 
 // export const BASE_URL = "https://st-td123.comquest-brunei.com:13443/td123/";
@@ -22,7 +30,16 @@ export const PROD_BASE_URL_TENANT =
   "https://bcae-prod.comquest-brunei.com:19443/tenant/";
 const testTenatId = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 console.log('SERVER_TYE---->', SERVER_TYE)
+
+// Recently using tenant id
 export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
+
+// Helpdesk 2.0 tenant id
+// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
+
+// Demo tenant id
+// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
+
 console.log('TENANT_ID---->', TENANT_ID)
 export const endPoints = {
   MASTER_CONFIG: "api/master/get-app-config",

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, ImageBackground, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { CustomButton } from "../../Components/CustomButton";
 import { StickyFooter } from "../../Components/StickyFooter";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
@@ -26,7 +25,7 @@ const Splash = ({ route, navigation }) => {
       checkLanguage();
       setTimeout(() => {
         checkLogin()
-      }, 1000)
+      }, 3000)
 
     });
     return willFocusSubscription;
@@ -97,23 +96,33 @@ const Splash = ({ route, navigation }) => {
             }}
           />
         </View>
+
+        <View style={{ alignItems: "center", marginTop: 350 }}>
+          <Text style={styles.highlightText}>
+            Digital{"\n"}Transformation{"\n"}Works
+          </Text>
+        </View>
+
       </ImageBackground>
+
+
+
       <StickyFooter isSplash={true}>
         <View>
-          <View style={{ alignItems: "flex-start", marginLeft: "10%" }}>
-            <Text variant="headlineLarge" style={styles.highlightText}>
-              Digital{"\n"}Transformation{"\n"}works
-            </Text>
+          <View style={{ alignItems: "center", marginBottom: 40 }}>
+            {/* <Text style={styles.highlightText}>
+              Digital Transformation works
+            </Text> */}
             <Text
               style={{
-                backgroundColor: color.VERSION_BACKGROUND,
+                backgroundColor: color.WHITE, alignContent: "center"
               }}
             >
               {strings.version}
             </Text>
           </View>
 
-          <View
+          {/* <View
             style={{
               marginBottom: 10,
             }}
@@ -125,7 +134,7 @@ const Splash = ({ route, navigation }) => {
               isDisabled={false}
               onPress={checkLogin}
             />
-          </View>
+          </View> */}
           <Text
             variant="labelSmall"
             style={{ textAlign: "center", marginBottom: 30 }}
@@ -155,11 +164,11 @@ const styles = StyleSheet.create({
     borderTopColor: "white",
   },
   highlightText: {
-    color: "#202223",
+    color: color.BCAE_DARK_BLUE,
     textAlign: "left",
     fontSize: fontSizes.FONT_19 * 2,
     fontWeight: "600",
-    lineHeight: spacing.HEIGHT_27 * 2,
+    lineHeight: spacing.HEIGHT_25 * 2,
   },
 });
 export default Splash;

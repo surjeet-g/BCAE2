@@ -47,6 +47,7 @@ export const MASTER_DATA_CONSTANT = {
   LOCATION: "LOCATION"
 };
 export const getMasterData = (valueParam = "") => {
+  console.log("getMasterData called..");
   if (typeof valueParam != "string") {
     console.log("params should be string");
   }
@@ -58,7 +59,9 @@ export const getMasterData = (valueParam = "") => {
       requestMethod.GET,
       params
     );
+    console.log("getMasterData result..", result);
     if (result.success) {
+      console.log("getMasterData success..", result?.data?.data);
       dispatch(setmasterDataData(result?.data?.data));
     } else {
       dispatch(setmasterDataError(result.data));

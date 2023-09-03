@@ -53,7 +53,7 @@ import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 
 import { RenderUserSelectResult } from "../../Components/UserSearch";
-import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
+import { STACK_INTERACTION_DETAILS, STACK_INTERACTION_SEARCH } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
@@ -188,13 +188,21 @@ const InteractionsToOrder = ({ route, navigation }) => {
           onPress={() => {
             resetCreateInterationForm(),
               setOpenBottomModal(true)
-          }
-          }
-          style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9" }}
+          }}
+          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
         >
-          <Icon name="plus" size={19} color={colors.inverseSecondary} />
+          <Icon name="plus" size={28} color={colors.BLACK} />
         </Pressable>
-      </View >
+
+        <Pressable
+          onPress={() => {
+            navigation.navigate(STACK_INTERACTION_SEARCH)
+          }}
+          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
+        >
+          <Icon name={"clipboard-search"} size={28} color={colors.BLACK} />
+        </Pressable>
+      </View>
     );
   };
 
@@ -561,84 +569,90 @@ const InteractionsToOrder = ({ route, navigation }) => {
       );
     } else {
       return (
-        <FlatList
-          contentContainerStyle={{ height: 500 }}
-          data={result}
-          renderItem={({ item }) => {
-            return (
-              <List.Item
-                title={() => {
-                  return (<Text>{searchWordCustomiz(item?.requestStatement)}</Text>)
-                }}
-                titleStyle={{
-                  fontSize: 10,
-                  padding: 0,
-                  margin: 0,
-                }}
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#fff",
-                  // height: 40,
-                  borderBottomColor: colors.gray,
-                  borderBottomWidth: 0.5,
-                  paddingHorizontal: 4,
-                  // borderRadius: 3,
-                }}
-                onPress={async () => {
-                  setsearchStandaloneModel(true)
-                  setKnowledgeSearchText(false);
+        <View style={{ flex: 1 }}>
+          <FlatList
+            scrollEnabled={true}
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
+            // contentContainerStyle={{ height: 500 }}
+            data={result}
+            renderItem={({ item }) => {
+              return (
+                <List.Item
+                  title={() => {
+                    return (<Text>{searchWordCustomiz(item?.requestStatement)}</Text>)
+                  }}
+                  titleStyle={{
+                    fontSize: 10,
+                    padding: 0,
+                    margin: 0,
+                  }}
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#fff",
+                    // height: 40,
+                    borderBottomColor: colors.gray,
+                    borderBottomWidth: 0.5,
+                    paddingHorizontal: 4,
+                    // borderRadius: 3,
+                  }}
+                  onPress={async () => {
+                    setsearchStandaloneModel(true)
+                    setKnowledgeSearchText(false);
 
-                  //open form model
-                  setautoSuggestionList(false);
-                  Keyboard.dismiss();
-                  setKnowledgeSearchText(item?.requestStatement);
-                  setActiveState({
-                    requestId: item.requestId,
-                    requestStatement: item.requestStatement
-                  })
-                  //check if smart assistance not enable then going this normal way
-                  if (!isEnabledsmartAssist) {
-                    presetInteractionFormData(item)
-                    setBottombartitle("Create Interaction")
-
+                    //open form model
                     setautoSuggestionList(false);
-                    setOpenBottomModal(true)
-                    return;
-                  }
-                  console.log("intreaction data", item)
-                  presetInteractionFormData(item)
-
-                  //auto and clear search text
-                  setautoSuggestionList(false);
-                  const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
-                  //store selected result in cache
-                  await setBottombartitle(typeOfAccrodin.knowlegde.title);
-                  setLoader(true)
-
-                  const { response, actionType } = await dispatchInteraction(
-                    fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                      customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
-                      requestId: parseInt(item.requestId),
-                      moduleName: "KnowledgeBaseMobileApp"
-
+                    Keyboard.dismiss();
+                    setKnowledgeSearchText(item?.requestStatement);
+                    setActiveState({
+                      requestId: item.requestId,
+                      requestStatement: item.requestStatement
                     })
-                  );
-                  console.log("intreaction data response    ", response)
-                  setLoader(false)
+                    //check if smart assistance not enable then going this normal way
+                    if (!isEnabledsmartAssist) {
+                      presetInteractionFormData(item)
+                      setBottombartitle("Create Interaction")
 
-                  const status = await handleInteligenceResponse(response, item, actionType)
-                  console.log('response', status)
+                      setautoSuggestionList(false);
+                      setOpenBottomModal(true)
+                      return;
+                    }
+                    console.log("intreaction data", item)
+                    presetInteractionFormData(item)
+
+                    //auto and clear search text
+                    setautoSuggestionList(false);
+                    const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
+
+                    //store selected result in cache
+                    await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                    setLoader(true)
+
+                    const { response, actionType } = await dispatchInteraction(
+                      fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
+                        customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
+                        requestId: parseInt(item.requestId),
+                        moduleName: "KnowledgeBaseMobileApp"
+
+                      })
+                    );
+                    console.log("intreaction data response    ", response)
+                    setLoader(false)
+
+                    const status = await handleInteligenceResponse(response, item, actionType)
+                    console.log('response', status)
 
 
 
-                }}
-              />
-            );
-          }
-          }
-        />
+                  }}
+                />
+              );
+            }
+            }
+          />
+        </View>
       );
     }
   };
@@ -1499,6 +1513,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
               onValueChange={(status) => {
                 setSmartAssistance(status)
 
+                setKnowledgeSearchText(false);
+                setsearchStandaloneModel(true);
+                //open form model
+                setautoSuggestionList(false);
+                Keyboard.dismiss();
+                resetCreateInterationForm()
               }}
               value={isEnabledsmartAssist}
             />
