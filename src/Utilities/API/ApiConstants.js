@@ -10,6 +10,10 @@ const SERVER_TYE = "stage"
 // Recently using url
 export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
 
+// export const BASE_URL = "https://bcae-test.comquest-brunei.com:1443/dtWorks/comquest/"
+
+
+
 
 // Demo url
 // export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
@@ -32,10 +36,10 @@ const testTenatId = "a89d6593-3aa8-437b-9629-9fcbaa201da6";
 console.log('SERVER_TYE---->', SERVER_TYE)
 
 // Recently using tenant id
-export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
+// export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
 
 // Helpdesk 2.0 tenant id
-// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
+export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
 
 // Demo tenant id
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
@@ -53,6 +57,7 @@ export const endPoints = {
   INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment/mobile',
   SEACH_CUSTOMERS: "api/customer/get-customer",
   INTERACTION_ADD: "api/interaction/create",
+  INTERACTION_UPDATE: "api/interaction/update",
   INTERACTION_WORKFLOW: "api/workflow/resolution",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
   INTELIGENCE: "api/intelligence-corner/based-on-interaction",
@@ -70,6 +75,7 @@ export const endPoints = {
   USER_LOGIN: "api/auth/login",
   GET_REGISTER_FORM_DATA: "api/master/lookup",
   INTERACTION_LIST_API: "api/interaction/search",
+  STATUS_LIST_API: "api/workflow/get-status",
   MY_TICKETS_DETAILS_API: "api/complaint",
   GET_LOGIN_OTP_FOR_MOBILE: "api/auth/send-otp?type=mobile&source=LOGIN",
   GET_LOGIN_OTP_FOR_EMAIL: "api/auth/send-otp?type=email&source=LOGIN",
@@ -97,6 +103,9 @@ export const endPoints = {
   ADDRESS_LOOKUP_REGISTRATION: "api/master/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
+  USERS_ROLE: "api/users/by-role",
+  CANCEL_REASONS: "api/master/lookup",
+  CANCEL_INTERACTION: "api/interaction/cancel/",
   KNOWLEDGE_SEARCH: "api/knowledge-Base/search",
   GET_WORKFLOW_LIST: "api/workflow/get-workflow-list",
   GET_WORKFLOW_FOR_ID: "api/workflow/get-workflow/",

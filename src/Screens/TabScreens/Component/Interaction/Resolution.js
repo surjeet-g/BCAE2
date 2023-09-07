@@ -110,6 +110,13 @@ export const HandleResolution = ({
         const flowId = get(resolutionDetails, 'flwId', '')
         const conversationID = get(resolutionDetails, 'conversationUid', '')
         const requestId = get(resolutionDetails, 'requestId', '')
+
+
+        console.log('element..', element)
+        console.log('attribute..', attribute)
+        console.log('flowId..', flowId)
+        console.log('conversationID..', conversationID)
+        console.log('requestId..', requestId)
         console.log('>>resolutionDetails', resolutionDetails)
 
         switch (element) {
@@ -263,7 +270,7 @@ export const HandleResolution = ({
                                 return <RenderSend title={message} type={type} description={description} />
 
                             case "COLLECTINPUT":
-                                console.log('HandleResolution:COLLECTINPUT',)
+                                console.log('HandleResolution:COLLECTINPUT', message)
                                 return <RenderCollectInput message={message} />
 
 

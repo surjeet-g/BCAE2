@@ -106,3 +106,5 @@ export const getUserTypeForProfile = async () => {
 
   return userType;
 };
+
+

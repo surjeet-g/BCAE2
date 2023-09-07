@@ -53,7 +53,7 @@ import { InteractionSuccess } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 
 import { RenderUserSelectResult } from "../../Components/UserSearch";
-import { STACK_INTERACTION_DETAILS, STACK_INTERACTION_SEARCH } from "../../Navigation/MyStack";
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
 import {
   getMasterData,
@@ -194,14 +194,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
           <Icon name="plus" size={28} color={colors.BLACK} />
         </Pressable>
 
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             navigation.navigate(STACK_INTERACTION_SEARCH)
           }}
           style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
         >
           <Icon name={"clipboard-search"} size={28} color={colors.BLACK} />
-        </Pressable>
+        </Pressable> */}
       </View>
     );
   };
@@ -438,6 +438,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       const isCreateInteraction = false
       if (debugg) console.log('handleInteligenceResponse :isCreateInteraction api response', isCreateInteraction)
       if (debugg) console.log('handleInteligenceResponse : actionType', actionType)
+
       if (actionType == "noservive") {
         Toast.show({
           type: "bctError",
@@ -445,6 +446,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
         });
         return;
       }
+
       //interaction creation part  
       if (actionType == "auto_resolution") {
         await setBottombartitle(typeOfAccrodin.resolved.title);
@@ -453,6 +455,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
         setOpenBottomModalChatBot(true)
         return null
       }
+
+      //product selection creation part  
+      // if (actionType == "choose_item") {
+      //   await setBottombartitle(typeOfAccrodin.resolved.title);
+      //   await setCreateInteractionType(INTELIGENCE_STATUS.RESOVLED)
+      //   setactiveChatBot(typeOfAccrodin.resolved)
+      //   setOpenBottomModalChatBot(true)
+      //   return null
+      // }
+
       if (isCreateInteraction) {
         //todo popup
         if (debugg) console.log('handleInteligenceResponse : crate interaction if condition')

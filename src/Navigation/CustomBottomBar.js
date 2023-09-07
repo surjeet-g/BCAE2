@@ -37,7 +37,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         });
         break;
       case "Search":
-        // navigation.navigate("Search", {});
+        // navigation.navigate("Search", {}); 
+        navigation.navigate("InteractionSearch")
         break;
       case "Offers":
         // navigation.navigate("Offers", {});

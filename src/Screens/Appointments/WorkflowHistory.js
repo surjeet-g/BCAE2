@@ -49,11 +49,11 @@ const WorkflowHistory = (props) => {
                   source={require("../../Assets/icons/ic_veritical_line.png")}
                   style={{ height: 100 }}
                 />
-                <PlaceHolderText
+                {/* <PlaceHolderText
                   text={`Workflow ${index + 1}`}
                   top={20}
                   right={-45}
-                />
+                /> */}
               </View>
               {/* Card View data*/}
 
@@ -81,7 +81,7 @@ const WorkflowHistory = (props) => {
                   }}
                 >
                   {moment(item?.intxnCreatedDate).format(
-                    "DD MMMM YYYY, hh:mm A"
+                    "DD MMM YYYY, hh:mm:ss A"
                   )}
                 </Text>
 
@@ -93,41 +93,83 @@ const WorkflowHistory = (props) => {
                 >
                   {/* Priority View */}
                   <WorkFlowInfoItem
-                    title={"Priority"}
-                    value={item?.priorityCodeDesc?.description}
+                    title={"From Department / Role"}
+                    value={item?.fromEntityName?.unitDesc + " - " + item?.fromRoleName?.roleDesc}
                   />
                 </View>
 
-                {/* Row 2 */}
                 <View
                   style={{
                     flexDirection: "row",
                     marginTop: 20,
                   }}
                 >
-                  {/* Source View */}
+                  {/* Priority View */}
                   <WorkFlowInfoItem
-                    title={"Source"}
-                    value={item?.channelDesc?.description}
+                    title={"To Department / Role"}
+                    value={item?.toEntityName?.unitDesc + " - " + item?.toRoleName?.roleDesc}
                   />
-
-                  {/* Remark View */}
-                  <WorkFlowInfoItem title={"Remark"} value={item?.remarks} />
                 </View>
 
-                {/* Row 3 */}
                 <View
                   style={{
                     flexDirection: "row",
                     marginTop: 20,
                   }}
                 >
-                  {/* Comments View */}
+                  {/* Priority View */}
+                  <WorkFlowInfoItem
+                    title={"User"}
+                    value={item?.toUserName?.toUser}
+                  />
+                </View>
+
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 20,
+                  }}
+                >
+                  {/* Priority View */}
+                  <WorkFlowInfoItem
+                    title={"Status"}
+                    value={item?.statusDescription?.description}
+                  />
+                </View>
+
+
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 20,
+                  }}
+                >
+                  {/* Priority View */}
+                  <WorkFlowInfoItem
+                    title={"Action Performed"}
+                    value={item?.flowActionDesc?.description}
+                  />
+                </View>
+
+
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 20,
+                  }}
+                >
+                  {/* Priority View */}
                   <WorkFlowInfoItem
                     title={"Comments"}
-                    value={item?.intxnDetails?.intxnDescription}
+                    value={item?.remarks}
                   />
                 </View>
+
+
+
               </View>
             </View>
           ))}

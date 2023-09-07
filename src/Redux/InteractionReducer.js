@@ -2,6 +2,8 @@ import get from "lodash.get";
 import { INPUT_TYPE } from "../Utilities/Constants/Constant";
 
 import {
+  CANCEL_REASONS_DATA,
+  CANCEL_REASONS_DATA_FAILURE,
   CREATE_FOLLOWUP,
   CREATE_FOLLOWUP_FAILURE, GETAPPOINMENTS_DATA, GETAPPOINMENTS_ERROR, INTERACTION_ADD_LOADER_ENABLE, INTERACTION_ASSIGN_SELF,
   INTERACTION_ASSIGN_SELF_FAILURE, INTERACTION_DATA,
@@ -14,7 +16,11 @@ import {
   INTERACTION_GET_WORKFLOW_SUCCESS, INTERACTION_INIT, INTERACTION_KNEWLEGE_HISTORY, INTERACTION_KNEWLEGE_HISTORY_REMOVE_USER_INPUTS, INTERACTION_KNEWLEGE_HISTORY_RESET, INTERACTION_RESET,
   INTERACTION_SEARCH_DETAILS_FAILURE,
   INTERACTION_SEARCH_DETAILS_SUCCESS,
-  INTERACTION_SET_FORM
+  INTERACTION_SET_FORM,
+  INTERACTION_USERS_BY_ROLE,
+  INTERACTION_USERS_BY_ROLE_FAILURE,
+  STATUS_DATA,
+  STATUS_DATA_FAILURE
 } from "./InteractionAction";
 
 const InteractionInitialState = {
@@ -29,8 +35,12 @@ const InteractionInitialState = {
   interactionWorkFlowErrorData: {},
   InteractionFollowupData: [],
   interactionSearchData: [],
+  interactionUsersByRoleData: [],
+  interactionUsersByRoleErrorData: [],
   interactionSearchErrorData: {},
   interactionFollowupErrorData: {},
+  interactionCancelReasonsData: [],
+  interactionCancelReasonsErrorData: {},
   knowledgeHistory: [],
   formData: {
     statement: {
@@ -122,6 +132,11 @@ const InteractionInitialState = {
   interactionDetailsErrorData: {},
   followupData: [],
   followupErrorData: {},
+  interactionSelfAssignData: {},
+  interactionSelfAssignErrorData: {},
+  statusData: [],
+  // rolesData: [],
+  statusErrorData: {}
 };
 
 const InteractionReducer = (state = InteractionInitialState, action) => {
@@ -251,6 +266,9 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         interactionWorkFlowErrorData: action.data,
       };
+
+
+
     case INTERACTION_GET_WORKFLOW_SUCCESS:
       return {
         // todo here logic
@@ -264,6 +282,29 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         interactionFollowupErrorData: action.data,
       };
+
+
+
+    case STATUS_DATA:
+      return {
+        ...state,
+        statusData: action.data.entities[0],
+
+        // rolesData: action.data.entities[0].roles.map(item => {
+        //   return { description: item.roleDesc, code: item.roles.roleId }
+        // }),
+
+        statusErrorData: {},
+      };
+
+    case STATUS_DATA_FAILURE:
+      return {
+        ...state,
+        statusErrorData: action.data,
+      };
+
+
+
     case INTERACTION_GET_FOLLOWUP_SUCCESS:
       return {
         // todo here logic
@@ -287,6 +328,28 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
 
 
 
+
+
+    case INTERACTION_USERS_BY_ROLE:
+      return {
+        // todo here logic
+        ...state,
+        interactionUsersByRoleData: action.data.data.map(item => {
+          return { description: item.firstName, code: item.userId }
+        }),
+        // interactionUsersByRoleData: action.data,
+        interactionUsersByRoleErrorData: {},
+      };
+
+    case INTERACTION_USERS_BY_ROLE_FAILURE:
+      return {
+        // todo here logic
+        ...state,
+        interactionUsersByRoleErrorData: action.data,
+      };
+
+
+
     case INTERACTION_SEARCH_DETAILS_FAILURE:
       return {
         ...state,
@@ -297,6 +360,23 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         interactionSearchData: action.data.rows,
         interactionSearchErrorData: {},
+      };
+
+
+
+    case CANCEL_REASONS_DATA:
+      return {
+        ...state,
+        interactionCancelReasonsData: action.data,
+        // .map(item => {
+        //   return { description: item.description, code: item.code }
+        // }),
+        interactionCancelReasonsErrorData: {},
+      };
+    case CANCEL_REASONS_DATA_FAILURE:
+      return {
+        ...state,
+        interactionCancelReasonsErrorData: action.data,
       };
 
 
@@ -314,11 +394,27 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         followupData: action.data,
         followupErrorData: {},
       };
+
+
+
+    case INTERACTION_ASSIGN_SELF:
+      return {
+        ...state,
+        interactionSelfAssignData: action.data,
+        interactionSelfAssignErrorData: {}
+      };
+
     case INTERACTION_ASSIGN_SELF_FAILURE:
       return {
         ...state,
-        // todo here logic
+        interactionSelfAssignData: {},
+        interactionSelfAssignErrorData: action.data
       };
+
+
+
+
+
     case INTERACTION_KNEWLEGE_HISTORY:
       console.log('reducers INTERACTION_KNEWLEGE_HISTORY', action.data)
       return {
@@ -346,11 +442,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         knowledgeHistory: newHistory
       };
-    case INTERACTION_ASSIGN_SELF:
-      return {
-        ...state,
-        // todo here logic
-      };
+
     case GETAPPOINMENTS_ERROR:
       return {
         ...state,

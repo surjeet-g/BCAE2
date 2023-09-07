@@ -14,11 +14,11 @@ import {
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
-import {
-  getMasterData,
-  MASTER_DATA_CONSTANT
-} from "../../Redux/masterDataDispatcher";
 import { getOrderListData } from '../../Redux/OrderListDispatcher';
+import {
+  MASTER_DATA_CONSTANT,
+  getMasterData
+} from "../../Redux/masterDataDispatcher";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
 import AttachmentItem from "./../../Components/AttachmentItem";
@@ -26,19 +26,30 @@ import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWi
 import { CustomInput } from "./../../Components/CustomInput";
 import { FooterModel } from "./../../Components/FooterModel";
 import {
+  assignInteractionToSelf,
+  cancelInteraction,
   createFollowupForInteractionID,
+  fetchCancelReasons,
+  fetchStatus,
+  fetchUsersByRole,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
-  getWorkFlowForInteractionID
+  getWorkFlowForInteractionID,
+  updateInteraction
 } from "./../../Redux/InteractionDispatcher";
 import {
-  getUserType,
-  USERTYPE
+  USERTYPE,
+  getUserType
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
   const { route, navigation } = props;
-  let { interactionID } = route.params
-  interactionID = parseInt(interactionID)
+  let { interactionSearchParams } = route.params
+  // let { interactionID } = route.params
+  let interactionID = interactionSearchParams
+  console.log("interactionID received..", interactionID.interactionSearchParams);
+
+
+
   // let interactionID = parseInt(167)
   const { colors } = useTheme();
   const [showPopupMenu, setShowPopupMenu] = useState(false);
@@ -50,6 +61,27 @@ const InteractionDetails = (props) => {
   const [formRemarks, setFormRemarks] = useState("");
 
   const [followupLoader, setFollowupLoader] = useState(false)
+
+  const [usersByRollList, setusersByRollList] = useState([])
+  // var usersByRollList = []
+
+  const [usersDesc, setUsersDesc] = useState("")
+  const [usersCode, setUsersCode] = useState("")
+
+  const [cancelReasonDesc, setCancelReasonDesc] = useState("")
+  const [cancelReasonCode, setCancelReasonCode] = useState("")
+
+  const [selRoleDesc, setRoleDesc] = useState("")
+  const [selRoleCode, setRoleCode] = useState("")
+
+  const [selDeptDesc, setDeptDesc] = useState("")
+  const [selDeptCode, setDeptCode] = useState("")
+
+  const [selStatusDesc, setStatusDesc] = useState("")
+  const [selStatusCode, setStatusCode] = useState("")
+
+  const [enteredRemarks, setRemarks] = useState("")
+
 
   const resetFollup = () => {
     setSource("")
@@ -63,7 +95,12 @@ const InteractionDetails = (props) => {
     getFollowupForInteractionID,
     getMasterData,
     createFollowupForInteractionID,
-    getOrderListData
+    assignInteractionToSelf,
+    getOrderListData,
+    fetchUsersByRole,
+    fetchStatus,
+    fetchCancelReasons,
+    cancelInteraction
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
@@ -74,29 +111,69 @@ const InteractionDetails = (props) => {
     InteractionDetailsData,
     InteractionWorkFlowData,
     InteractionFollowupData,
+    interactionUsersByRoleData,
+    statusData,
+    interactionCancelReasonsData
+    // rolesData
   } = interactionReducer;
 
-  console.log("interaction", InteractionDetailsData)
   // Calling API to get interaction details & workflow/followup data
   useEffect(async () => {
     //fetch order list or enble button
     // dispatch(getOrderListData(navigation, 1, 0));
-    console.log("interactionL firt", interactionID)
-    dispatch(getInteractionDetailsForID(interactionID, navigation));
+    console.log("interactionL firt", interactionID.interactionSearchParams.intxnId)
 
-    dispatch(getWorkFlowForInteractionID(interactionID));
+    dispatch(getInteractionDetailsForID(interactionID.interactionSearchParams.intxnId, navigation));
+    console.log("InteractionDetailsData..", InteractionDetailsData)
 
-    dispatch(getFollowupForInteractionID(interactionID));
+    dispatch(getWorkFlowForInteractionID(interactionID.interactionSearchParams.intxnNo));
+    console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
+
+    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnId));
 
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
 
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
+
+    dispatch(
+      fetchUsersByRole(interactionID.interactionSearchParams.currentRole.description.roleId, interactionID.interactionSearchParams.currentDepartment.description.unitId, navigation)
+    )
+    console.log("interactionUsersByRoleData got..", interactionReducer.interactionUsersByRoleData);
+
+
+    dispatch(
+      fetchStatus(interactionID.interactionSearchParams.intxnUuid, "INTERACTION")
+    )
+
+
+    dispatch(
+      fetchCancelReasons()
+    )
+    console.log("interactionCancelReasonsData got..", interactionReducer.interactionCancelReasonsData);
+
+
+
+
+    // if (interactionReducer.interactionUsersByRoleData.data.length > 0) {
+    //   const parsedata = interactionReducer.interactionUsersByRoleData.data.map(item => {
+    //     return { description: item.firstName, code: item.userId }
+    //   });
+    //   setusersByRollList(parsedata)
+    // }
+
+    // console.log("usersByRollList got..", usersByRollList);
+
+
+
+    // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "SELF"))
+
 
     let userType = await getUserType();
     setUserType(userType);
   }, [interactionID]);
 
   console.log('>>order details', orderReducer)
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
@@ -126,6 +203,8 @@ const InteractionDetails = (props) => {
     })
     return final.join(`,\n`)
   }
+
+
   const HorizontalFlatListItem = (props) => {
     const { item, index } = props;
     return (
@@ -164,11 +243,20 @@ const InteractionDetails = (props) => {
           {/* View More view */}
           <Pressable
             onPress={() => {
-              if (index == 0) {
-                navigation.navigate("AppointmentDetails");
-              } else if (index == 1) {
-                navigation.navigate("WorkflowHistory");
-              }
+
+              // let params = {
+              //   interactionWorkflowParams: InteractionWorkFlowData
+              // }
+
+              // navigation.navigate("WorkflowHistory", {
+              //   interactionWorkflowParams: params
+              // })
+
+              // if (index == 0) {
+              // navigation.navigate("AppointmentDetails");
+              // } else if (index == 1) {
+              navigation.navigate("WorkflowHistory");
+              // }
             }}
           >
             <View
@@ -289,6 +377,7 @@ const InteractionDetails = (props) => {
     );
   };
 
+
   const DetailsInfoUIFull = () => {
     console.log("data", InteractionDetailsData)
     return (
@@ -340,7 +429,7 @@ const InteractionDetails = (props) => {
             <DetailInfoItem
               title={"Created Date & time"}
               value={moment(InteractionDetailsData?.createdAt).format(
-                "DD MMMM YYYY, hh:mm A"
+                "DD MMM YYYY, hh:mm A"
               )}
               flex={2}
             />
@@ -484,24 +573,47 @@ const InteractionDetails = (props) => {
           right: 10,
         }}
       >
+
         {userType === USERTYPE.CUSTOMER ? (
+
           <View>
             {/* Follow up */}
             <PopUpMenuItem title={"Add followup"} modalIndex={1} />
           </View>
+
         ) : (
+
+
           <View>
-            {/* <PopUpMenuDivider /> */}
+            {/* Follow up */}
+            <PopUpMenuItem title={"Add followup"} modalIndex={1} />
+            <PopUpMenuDivider />
+
             {/* Assign to self */}
             <PopUpMenuItem title={"Assign to self"} modalIndex={2} />
             <PopUpMenuDivider />
+
             {/* Re-assign */}
             <PopUpMenuItem title={"Re-Assign"} modalIndex={3} />
+            <PopUpMenuDivider />
+
+            {/* Re-assign to self*/}
+            <PopUpMenuItem title={"Re-Assign To Self"} modalIndex={4} />
+            <PopUpMenuDivider />
+
+            {/* Edit */}
+            <PopUpMenuItem title={"Edit"} modalIndex={5} />
+            <PopUpMenuDivider />
+
+            {/* Cancel */}
+            <PopUpMenuItem title={"Cancel"} modalIndex={6} />
+
           </View>
         )}
       </View>
     );
   };
+
 
   const AddFollowUpModal = () => {
     const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
@@ -537,12 +649,14 @@ const InteractionDetails = (props) => {
               caption={strings.source}
               placeHolder={"Select " + strings.user}
             />
+
             <CustomInput
               value={formRemarks}
               caption={strings.remarks}
               placeHolder={strings.remarks}
               onChangeText={(text) => setFormRemarks(text)}
             />
+
             {/* Bottom Button View */}
             <View
               style={{
@@ -567,9 +681,11 @@ const InteractionDetails = (props) => {
                   label={strings.submit}
                   onPress={async () => {
                     setFollowupLoader(true)
+                    const intId = interactionID.interactionSearchParams.intxnNo
+                    console.log("intId..", intId);
                     await dispatch(
                       createFollowupForInteractionID(
-                        interactionID.toString(),
+                        interactionID.interactionSearchParams.intxnNo,
                         { formPriority, formSource, formRemarks },
                         navigation
                       )
@@ -586,38 +702,157 @@ const InteractionDetails = (props) => {
     );
   };
 
-  const AssignToSelfModal = () => {
+  const editModal = () => {
+    console.log("status received2..", statusData);
+
     return (
       <FooterModel
         open={showBottomModal}
         setOpen={setShowBottomModal}
-        title={"Assign to self"}
+        title={"Edit Interaction"}
       >
         <View style={{ paddingHorizontal: 10 }}>
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.current_dept_role}
-            placeHolder={"Select " + strings.current_dept_role}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.user}
-            placeHolder={"Select " + strings.user}
-          />
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={selStatusDesc}
+              data={statusData.status}
+              onChangeText={(text) => {
+                setStatusDesc(text.description),
+                  setStatusCode(text.code)
+              }}
+              value={selStatusCode}
+              caption={strings.status}
+              placeHolder={"Select " + strings.status}
+            />
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
+
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={selDeptDesc}
+              data={
+                statusData.entity.map(item => {
+                  return { description: item.unitDesc, code: item.unitId }
+                })
+              }
+              onChangeText={(text) => {
+                setDeptDesc(text.description),
+                  setDeptCode(text.code)
+              }}
+              value={selDeptCode}
+              caption={strings.selectDepId}
+              placeHolder={"Select " + strings.selectDepId}
+            />
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
+
+
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={selRoleDesc}
+              data={
+                statusData.roles.map(item => {
+                  return { description: item.roleDesc, code: item.roleId }
+                })
+              }
+              onChangeText={(text) => {
+                setRoleDesc(text.description),
+                  setRoleCode(text.code)
+              }}
+              value={selRoleCode}
+              caption={strings.role}
+              placeHolder={"Select " + strings.role}
+            />
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={usersDesc}
+              data={interactionReducer.interactionUsersByRoleData}
+              onChangeText={(text) => {
+                setUsersDesc(text.description),
+                  setUsersCode(text.code)
+              }}
+              value={usersCode}
+              caption={strings.user}
+              placeHolder={"Select " + strings.user}
+            />
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
+
           <CustomInput
-            value={""}
+            value={enteredRemarks}
             caption={strings.remarks}
             placeHolder={strings.remarks}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => {
+              setRemarks(text)
+            }
+            }
           />
+
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {
+                dispatch(
+                  updateInteraction(
+                    interactionID.interactionSearchParams.intxnNo,
+                    usersCode,
+                    selDeptCode,
+                    selRoleCode,
+                    selStatusCode,
+                    enteredRemarks
+                  )
+                )
+                setShowBottomModal(false)
+              }} />
+            </View>
+
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+
+  const assignToSelfModal = () => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Assign To Self"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+
+          <Text
+            variant="labelMedium"
+            style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
+          >
+            Are You Sure Want To Re Assign To Self ?
+          </Text>
+
           {/* Bottom Button View */}
           <View
             style={{
@@ -634,13 +869,18 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => { }} />
+              <CustomButton label={strings.submit} onPress={() => {
+                // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
+                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "", "SELF"))
+                setShowBottomModal(false)
+              }} />
             </View>
           </View>
         </View>
       </FooterModel>
     );
   };
+
 
   const ReAssignModal = () => {
     return (
@@ -650,24 +890,23 @@ const InteractionDetails = (props) => {
         title={"Re-assign"}
       >
         <View style={{ paddingHorizontal: 10 }}>
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.current_dept_role}
-            placeHolder={"Select " + strings.current_dept_role}
-          />
-          <CustomDropDownFullWidth
-            selectedValue={""}
-            setValue={""}
-            data={[]}
-            onChangeText={(text) => console.log(text)}
-            value={""}
-            caption={strings.user}
-            placeHolder={"Select " + strings.user}
-          />
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={usersDesc}
+              data={interactionReducer.interactionUsersByRoleData}
+              onChangeText={(text) => {
+                setUsersDesc(text.description),
+                  setUsersCode(text.code)
+              }}
+              value={usersCode}
+              caption={strings.user}
+              placeHolder={"Select " + strings.user}
+            />
+
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
 
           {/* Bottom Button View */}
           <View
@@ -685,16 +924,132 @@ const InteractionDetails = (props) => {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => { }} />
+              <CustomButton label={strings.submit} onPress={() => {
+                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + usersCode, "REASSIGN"))
+                setShowBottomModal(false)
+              }} />
             </View>
           </View>
         </View>
       </FooterModel>
     );
   };
+
+
+  const ReAssignToSelfModal = () => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Re-assign To Self"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+
+          <Text
+            variant="labelMedium"
+            style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
+          >
+            Are You Sure Want To Re Assign To Self ?
+          </Text>
+
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {
+                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
+                setShowBottomModal(false)
+              }} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+
+  const cancelModal = () => {
+    return (
+      <FooterModel
+        open={showBottomModal}
+        setOpen={setShowBottomModal}
+        title={"Cancel Interaction"}
+      >
+        <View style={{ paddingHorizontal: 10 }}>
+
+          <View style={{ paddingVertical: 10 }}>
+            <CustomDropDownFullWidth
+              selectedValue={cancelReasonDesc}
+              data={
+                interactionReducer.interactionCancelReasonsData.data.INTXN_STATUS_REASON.map(item => {
+                  return { description: item.description, code: item.code }
+                })
+              }
+              onChangeText={(text) => {
+                setCancelReasonDesc(text.description),
+                  setCancelReasonCode(text.code)
+              }}
+              value={cancelReasonCode}
+              caption={strings.cancel_reason}
+              placeHolder={"Select " + strings.cancel_reason}
+            />
+
+            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+          </View>
+
+
+          {/* Bottom Button View */}
+          <View
+            style={{
+              flexDirection: "row",
+              bottom: 0,
+              marginTop: 20,
+              backgroundColor: "white",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomButton
+                label={strings.cancel}
+                onPress={() => setShowBottomModal(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomButton label={strings.submit} onPress={() => {
+                // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
+                // dispatch(cancelInteraction(cancelReasonCode))
+                dispatch(
+                  cancelInteraction(cancelReasonCode, interactionID.interactionSearchParams.intxnNo)
+                )
+                setShowBottomModal(false)
+              }} />
+            </View>
+          </View>
+        </View>
+      </FooterModel>
+    );
+  };
+
+
+
+
   const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
   const sourceList = get(masterReducer, "masterdataData.SOURCE", []);
   const orderLen = get(orderReducer, 'orderListData.length', 0)
+
+
+
   return (
     <View style={styles.container}>
       {showPopupMenu && <PopUpMenu />}
@@ -705,11 +1060,10 @@ const InteractionDetails = (props) => {
         {/* Flatlist Horizontal view */}
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <FlatList
-            horizontal
-            initialNumToRender={2}
+            initialNumToRender={1}
             showsHorizontalScrollIndicator={false}
             data={[
-              { title: `Appointment${"\n"}Details` },
+              // { title: `Appointment${"\n"}Details` },
               { title: `Workflow${"\n"}History` },
             ]}
             renderItem={({ item, index }) => (
@@ -729,8 +1083,17 @@ const InteractionDetails = (props) => {
       </ScrollView>
 
       {showBottomModal && modalIndex === 1 && AddFollowUpModal()}
-      {showBottomModal && modalIndex === 2 && AssignToSelfModal()}
+
+      {showBottomModal && modalIndex === 2 && assignToSelfModal()}
+
       {showBottomModal && modalIndex === 3 && ReAssignModal()}
+
+      {showBottomModal && modalIndex === 4 && ReAssignToSelfModal()}
+
+      {showBottomModal && modalIndex === 5 && editModal()}
+
+      {showBottomModal && modalIndex === 6 && cancelModal()}
+
     </View>
   );
 };

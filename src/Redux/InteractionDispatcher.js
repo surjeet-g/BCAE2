@@ -1,14 +1,22 @@
 import {
   enableLoaderAddInteractionAdd,
   enableLoaderEditInteraction,
-  initInteraction, intractionKnowlegeHistoryRemoveUserInputTypes, setAssignInteractionToSelfDataInStore,
-  setAssignInteractionToSelfErrorDataInStore, setFollowupDataInStore,
+  initInteraction, intractionKnowlegeHistoryRemoveUserInputTypes,
+  setAssignInteractionToSelfDataInStore,
+  setAssignInteractionToSelfErrorDataInStore,
+  setCancelReasonsDataInStore,
+  setCancelReasonsErrorDataInStore,
+  setFollowupDataInStore,
   setFollowupErrorDataInStore, setgetAppoinmentsData, setInteractionData,
   setInteractionError, setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore, setInteractionsFollowupDataInStore,
   setInteractionsFollowupErrorDataInStore, setInteractionsSearchDataInStore, setInteractionsSearchErrorDataInStore, setInteractionsWorkFlowDataInStore,
   setInteractionsWorkFlowErrorDataInStore,
-  setknowledgeHistory
+  setknowledgeHistory,
+  setStatusDataInStore,
+  setStatusErrorDataInStore,
+  setUsersByRoleDataInStore,
+  setUsersByRoleErrorDataInStore
 } from "./InteractionAction";
 
 import { serverCall } from "..//Utilities/API";
@@ -33,11 +41,15 @@ export function fetchInteractionAction(type = "", params = {},
   return async (dispatch) => {
     const debg = true;
     try {
-      console.log('a..............')
+      console.log('a1..............', type)
+      console.log('a2..............', typeOfAccrodin.knowlegde.value)
+      console.log('a3..............', typeOfAccrodin.workflow.value)
+
 
       if (type != typeOfAccrodin.knowlegde.value && type != typeOfAccrodin.workflow.value) {
         dispatch(initInteraction());
       }
+
       // const customerUUID = await getCustomerUUID();
       const customerID = await getCustomerID();
       let flowId;
@@ -65,7 +77,10 @@ export function fetchInteractionAction(type = "", params = {},
           requestMethod.GET,
           {}
         );
-      } else if (type == typeOfAccrodin.category.value) {
+      }
+
+
+      else if (type == typeOfAccrodin.category.value) {
         console.log('d..............')
 
         interactionResult = await serverCall(
@@ -74,6 +89,8 @@ export function fetchInteractionAction(type = "", params = {},
           {}
         );
       }
+
+
       else if (type == typeOfAccrodin.workflow.value) {
         console.log('e..............')
 
@@ -114,7 +131,10 @@ export function fetchInteractionAction(type = "", params = {},
         dispatch(setknowledgeHistory(converstionHistory))
         return null
 
-      } else if (type == typeOfAccrodin.knowlegde.value) {
+      }
+
+
+      else if (type == typeOfAccrodin.knowlegde.value) {
         console.log('param knowledge', params)
         interactionResult = await serverCall(
           `${endPoints.KNOWLEDGE_SEARCH_STATEMENT}`,
@@ -123,10 +143,15 @@ export function fetchInteractionAction(type = "", params = {},
         );
         console.log('dispatcher result', interactionResult)
 
-      } else {
+      }
+
+
+      else {
         dispatch(setInteractionError([]));
         return false;
       }
+
+
       if (debg) {
         console.log('API Requrest', interactionResult, "API STATUS", interactionResult?.success, "API DATA", interactionResult?.data)
       }
@@ -153,11 +178,18 @@ export function fetchInteractionAction(type = "", params = {},
           //for showing history in pop 
           let converstionHistory = []
           noService = get(interactionResult, 'data.data.resolutionAction.noService', false)
+          console.log('flowId got..', flowId)
+
           if (flowId != "") {
+            console.log('flowId not empty..')
             const conversationID = get(interactionResult, 'data.data.conversationUid', '')
+
+            console.log('conversationID got..', conversationID)
             const mockArray = Array.from({ length: 50 }, (_, x) => x + 1)
+            console.log('mockArray got..', mockArray)
             // console.log('mockArray', mockArray)
             // (async function () {
+
             const bodyworkflow = {
               flowId: flowId,
               conversationUid: conversationID,
@@ -165,6 +197,7 @@ export function fetchInteractionAction(type = "", params = {},
                 source: "knowledgeBase"
               },
             }
+
             for await (const num of mockArray) {
               console.log('hititng inside',)
               const workflowResult = await serverCall(
@@ -337,6 +370,10 @@ const validateFormData = async (formData, dispatch) => {
   //df,//df,//df,//df,//df,//df,//df,//df,//df
   return status;
 };
+
+
+
+
 /**
 * Reducer Dispatch
 * Handle API call for getting workflow by inteaction id
@@ -347,9 +384,10 @@ const validateFormData = async (formData, dispatch) => {
 */
 export function getWorkFlowForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
-    let url =
-      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=false";
+    let url = endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=false";
+    console.log("workflow interaction request..", url);
     let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    console.log("workflow interaction response..", result);
     if (result.success) {
       dispatch(setInteractionsWorkFlowDataInStore(result.data.data));
     } else {
@@ -357,6 +395,8 @@ export function getWorkFlowForInteractionID(interactionId, navigation = null) {
     }
   };
 }
+
+
 
 /**
 * Reducer Dispatch
@@ -393,7 +433,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
     let params = {
       searchParams: {
-        interactionId: interactionId,
+        interactionId: Number(interactionId)
       },
     };
     let result = await serverCall(url, requestMethod.POST, params, navigation);
@@ -430,12 +470,14 @@ export function createFollowupForInteractionID(
 ) {
   return async (dispatch) => {
     let url = endPoints.INSERTFOLLOWUP;
+    console.log("createFollowupForInteractionID url..", url);
     let params = {
-      interactionNumber: interactionId,
+      interactionNumber: "" + interactionId,
       remarks: param.formRemarks,
       priorityCode: param.formPriority.code,
       source: param.formSource.code,
     };
+    console.log("createFollowupForInteractionID params..", params);
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     console.log("$$$-createFollowupForInteractionID-result", result);
 
@@ -459,22 +501,100 @@ export function createFollowupForInteractionID(
 
 export function assignInteractionToSelf(
   interactionId,
-  type,
-  navigation = null
+  userId,
+  type
 ) {
   return async (dispatch) => {
+
     let url = endPoints.INTERACTION_ASSIGN_SELF + interactionId;
-    let params = {
-      type,
-    };
-    let result = await serverCall(url, requestMethod.PUT, params, navigation);
-    if (result.success) {
-      dispatch(setAssignInteractionToSelfDataInStore(result.data.data));
-    } else {
-      dispatch(setAssignInteractionToSelfErrorDataInStore(result));
+
+    if (userId == "") {
+      let params = {
+        type
+      };
+      let result = await serverCall(url, requestMethod.PUT, params);
+      console.log("self assign result..", result)
+
+      if (result.success) {
+        console.log("self assign success..", result)
+        Toast.show({
+          type: "bctSuccess",
+          text1: "" + result.message,
+        });
+        dispatch(setAssignInteractionToSelfDataInStore(result));
+      } else {
+        console.log("self assign failure..", result)
+        Toast.show({
+          type: "bctError",
+          text1: "" + result.message,
+        });
+        dispatch(setAssignInteractionToSelfErrorDataInStore(result));
+      }
     }
+    else {
+      let params = {
+        userId,
+        type
+      };
+      let result = await serverCall(url, requestMethod.PUT, params);
+      console.log("re assign success..", result)
+
+      if (result.success) {
+        Toast.show({
+          type: "bctSuccess",
+          text1: "" + result.message,
+        });
+        dispatch(setAssignInteractionToSelfDataInStore(result));
+      } else {
+        Toast.show({
+          type: "bctError",
+          text1: "" + result.message,
+        });
+        dispatch(setAssignInteractionToSelfErrorDataInStore(result));
+      }
+    }
+
   };
 }
+
+
+
+
+export function cancelInteraction(
+  cancelReason,
+  interactionId
+) {
+  return async (dispatch) => {
+
+    let url = endPoints.CANCEL_INTERACTION + interactionId;
+    console.log("cancel int url..", url)
+
+    let params = {
+      cancelReason
+    };
+    let result = await serverCall(url, requestMethod.PUT, params);
+    console.log("cancel int result..", result)
+
+    if (result.success) {
+      console.log("cancel int success..", result)
+      Toast.show({
+        type: "bctSuccess",
+        text1: "" + result.message,
+      });
+      // dispatch(setAssignInteractionToSelfDataInStore(result));
+    } else {
+      console.log("cancel int failure..", result)
+      Toast.show({
+        type: "bctError",
+        text1: "" + result.message,
+      });
+      // dispatch(setAssignInteractionToSelfErrorDataInStore(result));
+    }
+
+  };
+}
+
+
 /**
 * Reducer Dispatch
 * Handle API call for getting appointment details
@@ -509,5 +629,151 @@ export const getAppoinmentsData = (payload, type = "templete") => {
       return false;
 
     }
+  };
+}
+
+
+export function fetchUsersByRole(
+  roleId,
+  deptId,
+  navigation = null
+) {
+  return async (dispatch) => {
+
+    let usersListResult = await serverCall(
+      endPoints.USERS_ROLE + "?roleId=" + roleId + "&deptId=" + deptId + "",
+      requestMethod.GET,
+      {},
+      navigation
+    );
+    console.log("usersListResult..", usersListResult);
+    if (usersListResult.success) {
+      dispatch(setUsersByRoleDataInStore(usersListResult.data));
+    } else {
+      dispatch(setUsersByRoleErrorDataInStore(result));
+    }
+
+  };
+}
+
+
+export function fetchCancelReasons(navigation = null) {
+  return async (dispatch) => {
+
+    const url = endPoints.CANCEL_REASONS + "?searchParam=" + "code_type" + "&valueParam=" + "INTXN_STATUS_REASON" + "";
+    console.log("cancelReasonsList url..", url);
+
+
+    let cancelReasonsListResult = await serverCall(
+      url,
+      requestMethod.GET,
+      {},
+      navigation
+    );
+
+    console.log("cancelReasonsListResult..", cancelReasonsListResult.data);
+    if (cancelReasonsListResult.success) {
+      dispatch(setCancelReasonsDataInStore(cancelReasonsListResult.data));
+    } else {
+      dispatch(setCancelReasonsErrorDataInStore(cancelReasonsListResult));
+    }
+
+  };
+}
+
+
+export function updateInteraction(
+  interactionId,
+  userId,
+  deptId,
+  roleId,
+  status,
+  remarks
+) {
+  return async (dispatch) => {
+    let url = endPoints.INTERACTION_UPDATE + interactionId;
+
+    let params = {
+      userId,
+      deptId,
+      roleId,
+      status,
+      remarks
+    };
+    let result = await serverCall(url, requestMethod.PUT, params);
+    console.log("updateInteraction result..", result);
+
+    if (result.success) {
+      Toast.show({
+        type: "bctSuccess",
+        text1: "" + result.message,
+      });
+      // dispatch(setStatusDataInStore(result.data.data));
+    } else {
+      Toast.show({
+        type: "bctError",
+        text1: "" + result.message,
+      });
+      // dispatch(setStatusErrorDataInStore(result));
+    }
+
+  };
+}
+
+
+// export function fetchStatus(entityId, entity) {
+//   return async (dispatch) => {
+
+//     const url = endPoints.STATUS_LIST_API + "?entityId=" + entityId + "&entity=" + entity + "";
+//     console.log("fetchStatus called..", url);
+//     let statusListResult = await serverCall(
+//       url,
+//       requestMethod.GET,
+//       {},
+//       navigation
+//     );
+//     console.log("fetchStatus response..", statusListResult);
+
+//     if (statusListResult.success) {
+//       dispatch(setStatusDataInStore(statusListResult.data));
+//     } else {
+//       dispatch(setStatusErrorDataInStore(statusListResult));
+//     }
+
+//   };
+// }
+
+
+export function fetchStatus(
+  entityId,
+  entity,
+  navigation = null
+) {
+  return async (dispatch) => {
+
+    const url = endPoints.STATUS_LIST_API + "?entityId=" + entityId + "&entity=" + entity + "";
+    console.log("fetchStatus called..", url);
+    let statusListResult = await serverCall(
+      url,
+      requestMethod.GET,
+      {},
+      navigation
+    );
+    console.log("fetchStatus response....", statusListResult.data.data.entities[0].status);
+
+    if (statusListResult.success) {
+      // Toast.show({
+      //   type: "bctSuccess",
+      //   text1: "" + statusListResult.message,
+      // });
+      dispatch(setStatusDataInStore(statusListResult.data.data));
+    } else {
+      // Toast.show({
+      //   type: "bctError",
+      //   text1: "" + statusListResult.message,
+      // });
+      dispatch(setStatusErrorDataInStore(statusListResult));
+    }
+
   };
 }

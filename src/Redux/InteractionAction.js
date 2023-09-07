@@ -38,11 +38,19 @@ export const INTERACTION_SEARCH_DETAILS_FAILURE =
 export const CREATE_FOLLOWUP = "CREATE_FOLLOWUP";
 export const CREATE_FOLLOWUP_FAILURE = "CREATE_FOLLOWUP_FAILURE";
 export const INTERACTION_ASSIGN_SELF = "INTERACTION_ASSIGN_SELF";
+export const INTERACTION_USERS_BY_ROLE = "INTERACTION_USERS_BY_ROLE";
+export const INTERACTION_USERS_BY_ROLE_FAILURE = "INTERACTION_USERS_BY_ROLE_FAILURE";
 export const INTERACTION_ASSIGN_SELF_FAILURE =
   "INTERACTION_ASSIGN_SELF_FAILURE";
 export const INTERACTION_KNEWLEGE_HISTORY =
   "INTERACTION_KNEWLEGE_HISTORY";
 
+export const STATUS_DATA = "STATUS_DATA";
+export const STATUS_DATA_FAILURE = "STATUS_DATA_FAILURE";
+
+
+export const CANCEL_REASONS_DATA = "CANCEL_REASONS_DATA";
+export const CANCEL_REASONS_DATA_FAILURE = "CANCEL_REASONS_DATA_FAILURE";
 
 
 
@@ -139,6 +147,8 @@ export function setFollowupErrorDataInStore(data) {
   return { type: CREATE_FOLLOWUP_FAILURE, data };
 }
 
+
+
 export function setAssignInteractionToSelfDataInStore(data) {
   return { type: INTERACTION_ASSIGN_SELF, data };
 }
@@ -146,6 +156,39 @@ export function setAssignInteractionToSelfDataInStore(data) {
 export function setAssignInteractionToSelfErrorDataInStore(data) {
   return { type: INTERACTION_ASSIGN_SELF_FAILURE, data };
 }
+
+
+
+export function setUsersByRoleDataInStore(data) {
+  return { type: INTERACTION_USERS_BY_ROLE, data };
+}
+
+export function setUsersByRoleErrorDataInStore(data) {
+  return { type: INTERACTION_USERS_BY_ROLE_FAILURE, data };
+}
+
+
+
+export function setCancelReasonsDataInStore(data) {
+  return { type: CANCEL_REASONS_DATA, data };
+}
+
+export function setCancelReasonsErrorDataInStore(data) {
+  return { type: CANCEL_REASONS_DATA_FAILURE, data };
+}
+
+
+
+
+export function setStatusDataInStore(data) {
+  return { type: STATUS_DATA, data };
+}
+
+export function setStatusErrorDataInStore(data) {
+  return { type: STATUS_DATA_FAILURE, data };
+}
+
+
 
 export function intractionKnowlegeHistoryReset() {
   return { type: INTERACTION_KNEWLEGE_HISTORY_RESET };

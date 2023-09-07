@@ -54,6 +54,9 @@ export const HomeScreen = ({ navigation }) => {
   ]);
   //set appoinment 
   useEffect(() => {
+    // const userDetails = await getUserId();
+    // console.log("userDetails..", userDetails);
+
     const appoinments = get(appoinmentListRed, 'appointmentDashboardData', [])
     if (appoinments.length > 0) {
       const result = appoinments.map(item => {

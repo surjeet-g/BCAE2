@@ -51,6 +51,8 @@ export function verifyLoginData(navigation, params) {
           navigation
         );
 
+        console.log("login result..", result);
+
         if (result.success) {
           if (result.data?.data?.anotherSession) {
             dispatch(setShowSecondLoginAlert(result));
