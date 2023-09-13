@@ -7,13 +7,13 @@ const SERVER_TYE = "stage"
 
 
 
-// Recently using url
-export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
+
+// export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
 
 // export const BASE_URL = "https://bcae-test.comquest-brunei.com:1443/dtWorks/comquest/"
 
-
-
+// Recently using url
+export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
 
 // Demo url
 // export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
@@ -57,7 +57,7 @@ export const endPoints = {
   INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment/mobile',
   SEACH_CUSTOMERS: "api/customer/get-customer",
   INTERACTION_ADD: "api/interaction/create",
-  INTERACTION_UPDATE: "api/interaction/update",
+  INTERACTION_UPDATE: "api/interaction/update/",
   INTERACTION_WORKFLOW: "api/workflow/resolution",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
   INTELIGENCE: "api/intelligence-corner/based-on-interaction",
@@ -73,6 +73,7 @@ export const endPoints = {
   INTERACTION_ASSIGN_SELF: "api/interaction/assignSelf/",
   FOLLOWUP: "api/complaint",
   USER_LOGIN: "api/auth/login",
+  USER_ROLE_SWITCH: "api/auth/session/",
   GET_REGISTER_FORM_DATA: "api/master/lookup",
   INTERACTION_LIST_API: "api/interaction/search",
   STATUS_LIST_API: "api/workflow/get-status",
@@ -84,6 +85,7 @@ export const endPoints = {
   CHECK_OTP: "api/auth/verify-otp/",
   FORGOT_PASSWORD: "api/auth/send-forgot-password",
   PROFILE_DETAILS: "api/customer/",
+  SWITCH_ROLE: "api/users/switch-user/",
   UPDATE_MOBILE_USER: "api/customer/",
   UPDATE_BUSINESS_USER: "api/users/update/",
   REGISTER: "api/customer/register",
@@ -123,6 +125,20 @@ export const endPoints = {
   UPDATE_ACCOUNT_API: "api/accounts/update/",
   UPDATE_CUSTOMER_STATUS_API: "api/customer/update-status",
   CREATE_ORDER_API: "api/order/create",
+  DASHBOARD_HELPDESK_SUMMARY: "api/helpdesk/summary",
+  DASHBOARD_HELPDESK_SUPPORT_TTK_PENDING: "api/helpdesk/support-tkt-pending",
+  DASHBOARD_HELPDESK_MONTHLY_TREND: "api/helpdesk/monthly-trend",
+  DASHBOARD_HELPDESK_BY_STATUS: "api/helpdesk/helpdesk-by-status",
+  DASHBOARD_HELPDESK_BY_STATUS: "api/helpdesk/helpdesk-by-status",
+  DASHBOARD_HELPDESK_BY_AGING: "api/helpdesk/open-helpdesk-by-aging",
+  DASHBOARD_HELPDESK_BY_SEVERITY: "api/helpdesk/helpdesk-by-severity",
+  DASHBOARD_HELPDESK_PROJECT_WISE: "api/helpdesk/project-wise",
+  DASHBOARD_HELPDESK_AGENT_WISE: "api/helpdesk/agent-wise",
+
+
+
+
+
 };
 
 export const requestMethod = {

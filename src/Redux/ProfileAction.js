@@ -8,7 +8,10 @@ export const PROFILE_ERROR = "PROFILE_ERROR";
 export const PROFILE_SEARCH_ERROR = "PROFILE_SEARCH_ERROR";
 
 export const PROFILE_SEARCH_DATA_RESET = "PROFILE_SEARCH_DATA_RESET";
-
+export const PROFILE_ROLES_DATA = "PROFILE_ROLES_DATA";
+export const PROFILE_ROLES_ERROR_DATA = "PROFILE_ROLES_ERROR_DATA";
+export const PROFILE_SWITCHED_DATA = "PROFILE_SWITCHED_DATA";
+export const PROFILE_SWITCHED_ERROR_DATA = "PROFILE_SWITCHED_ERROR_DATA";
 export const PROFILE_RESET = "PROFILE_RESET";
 export const PROFILE_SET_FORM = "PROFILE_SET_FORM";
 export const SET_USER_SEARCH = "SET_USER_SEARCH";
@@ -87,5 +90,24 @@ export function setUserSearch(data) {
   return async (dispatch) => {
     dispatch({ type: SET_USER_SEARCH, data });
   };
+}
 
+
+
+export function setProfileRolesDataInStore(data) {
+  return { type: PROFILE_ROLES_DATA, data };
+}
+
+export function setProfileRolesErrorDataInStore(data) {
+  return { type: PROFILE_ROLES_ERROR_DATA, data };
+}
+
+
+
+export function setProfileSwitchedDataInStore(data) {
+  return { type: PROFILE_SWITCHED_DATA, data };
+}
+
+export function setProfileSwitchedErrorDataInStore(data) {
+  return { type: PROFILE_SWITCHED_ERROR_DATA, data };
 }

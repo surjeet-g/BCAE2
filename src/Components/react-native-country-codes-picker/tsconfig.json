@@ -3,5 +3,11 @@
     "baseUrl": "src/"
     //other config...
   },
-  "include": ["src"]
+  "typeRoots": [
+    "../node_modules/@types",
+    "../@types"
+  ],
+  "include": [
+    "src"
+  ]
 }

@@ -80,6 +80,16 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.ACCESS_TOKEN, accessTokenData);
               await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
               await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
+
+
+
+              await saveDataToDB(storageKeys.CURRENT_ROLE_DESC, result.data?.data?.currRoleDesc);
+              await saveDataToDB(storageKeys.CURRENT_ROLE_ID, result.data?.data?.currRoleId);
+              await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, result.data?.data?.currDeptDesc);
+              await saveDataToDB(storageKeys.CURRENT_DEPT_ID, result.data?.data?.currDeptId);
+
+
+
               let profileResult = {};
 
               let params = {};

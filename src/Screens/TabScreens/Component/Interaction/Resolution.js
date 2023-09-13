@@ -1,10 +1,15 @@
 import get from "lodash.get";
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
+import { TouchableHighlight } from "react-native-gesture-handler";
 import { Divider, Text } from 'react-native-paper';
+import { SafeAreaView } from "react-native-safe-area-context";
+import SignatureCapture from "react-native-signature-capture";
 import { Rows, Table, TableWrapper } from 'react-native-table-component';
 import { ClearSpace } from '../../../../Components/ClearSpace';
+import { CustomButton } from "../../../../Components/CustomButton";
 import { CustomInput } from "../../../../Components/CustomInput";
+import { color } from "../../../../Utilities/Constants/Constant";
 import { strings } from '../../../../Utilities/Language/index';
 import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
@@ -17,6 +22,17 @@ export const HandleResolution = ({
     customerUuid = "",
     navigation
 }) => {
+
+    const [signature, setSignature] = useState("");
+
+    // const [isSelected, setSelection] = useState(false);
+    // const [selIndex, setSelIndex] = useState();
+
+    // const [inputText, setInputText] = useState({});
+    // const [inputTextId, setInputTextId] = new Map([[key=0, value=""]]);
+
+    var inputText = new Map([[key = "", value = ""]]);
+
     const [remarks, setRemarks] = useState("")
     console.log('HandleResolution : customerUuid', customerUuid)
 
@@ -120,6 +136,7 @@ export const HandleResolution = ({
         console.log('>>resolutionDetails', resolutionDetails)
 
         switch (element) {
+
             case "YES_NO_BUTTON":
                 if (attribute.length == 0) {
                     console.log('yes no button attribute data is empty',)
@@ -179,6 +196,8 @@ export const HandleResolution = ({
                         <ClearSpace size={2} />
                     </>
                 )
+
+
             case "COLLECT_REMARKS":
                 return (
                     <>
@@ -209,13 +228,303 @@ export const HandleResolution = ({
                         }} />
                     </>
                 )
+
+
+            case "COLLECT_INPUT":
+
+                const flowId = get(resolutionDetails, 'flwId', '')
+                const conversationID = get(resolutionDetails, 'conversationUid', '')
+
+                // _signaturePadError = (error) => {
+                //     console.error(error);
+                // };
+
+                // _signaturePadChange = ({ base64DataUrl }) => {
+                //     console.log("Got new signature: " + base64DataUrl);
+                // };
+
+                const sign = createRef();
+
+                const saveSign = () => {
+                    sign.current.saveImage();
+                };
+
+                const resetSign = () => {
+                    sign.current.resetImage();
+                };
+
+                const _onSaveEvent = (result) => {
+                    //result.encoded - for the base64 encoded png
+                    //result.pathName - for the file path name
+                    alert('Signature Captured Successfully');
+                    console.log("sign captured...", result.encoded);
+                    setSignature(result.encoded)
+                };
+
+                const _onDragEvent = () => {
+                    // This callback will be called when the user enters signature
+                    console.log('dragged');
+                };
+
+
+                return (
+                    <>
+                        <View style={styles.column_space_arround_evenly}>
+
+                            {resolutionDetails.metaAttributes?.map(item => {
+
+                                return (
+                                    <View>
+                                        {
+                                            item.fieldSet?.map(fieldSetItem => {
+
+                                                if (fieldSetItem.fieldType == "textarea") {
+                                                    return (
+                                                        <View>
+                                                            <CustomInput
+                                                                style={{
+                                                                    backgroundColor: "transparent"
+                                                                }}
+                                                                onChangeText={(text) => { inputText.set(fieldSetItem.id, text) }}
+                                                                value={inputText.get(fieldSetItem.id)}
+                                                                multiline={true}
+                                                                inputType={fieldSetItem.inputType}
+                                                                caption={fieldSetItem.title}
+                                                                placeHolder={fieldSetItem.placeHolder}
+                                                            />
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                        </View>
+
+                                                    )
+                                                }
+
+
+                                                if (fieldSetItem.fieldType == "sigature") {
+                                                    return (
+                                                        <SafeAreaView style={styles.signContainer}>
+                                                            <View style={styles.signContainer}>
+                                                                <Text style={styles.titleStyle}>
+                                                                    Signature:
+                                                                </Text>
+                                                                <SignatureCapture
+                                                                    style={styles.signature}
+                                                                    ref={sign}
+                                                                    onSaveEvent={_onSaveEvent}
+                                                                    onDragEvent={_onDragEvent}
+                                                                    showNativeButtons={false}
+                                                                    showTitleLabel={false}
+                                                                    viewMode={'portrait'}
+                                                                />
+
+                                                                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                                                                    <TouchableHighlight
+                                                                        style={styles.buttonStyle}
+                                                                        onPress={() => {
+                                                                            saveSign();
+                                                                        }}>
+                                                                        <Text>Save</Text>
+                                                                    </TouchableHighlight>
+
+                                                                    <TouchableHighlight
+                                                                        style={styles.buttonStyle}
+                                                                        onPress={() => {
+                                                                            resetSign();
+                                                                        }}>
+                                                                        <Text>Reset</Text>
+                                                                    </TouchableHighlight>
+                                                                </View>
+
+                                                            </View>
+                                                        </SafeAreaView>
+                                                    )
+                                                }
+
+
+                                                if (fieldSetItem.fieldType == "button") {
+                                                    return (
+                                                        <View style={{ flex: 1 }}>
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                            <CustomButton
+                                                                label={fieldSetItem.placeHolder}
+                                                                onPress={async () => {
+                                                                    let params = {
+                                                                        flowId: flowId,
+                                                                        conversationUid: conversationID,
+                                                                        "data": {
+                                                                            "source": "knowledgeBase",
+                                                                            "inputType": "FORMDATA",
+                                                                            "inputValue": {
+                                                                                "d01": inputText.get("01"),
+                                                                                "d02": inputText.get("02"),
+                                                                                "d11": inputText.get("11"),
+                                                                                "d12": inputText.get("12"),
+                                                                                "d21": inputText.get("21"),
+                                                                                "d22": inputText.get("22"),
+                                                                                "d31": inputText.get("31"),
+                                                                                "d32": inputText.get("32"),
+                                                                                "d41": inputText.get("41"),
+                                                                                "d42": inputText.get("42"),
+                                                                                "d51": inputText.get("51"),
+                                                                                "d52": inputText.get("52"),
+                                                                                "comments": inputText.get("comments"),
+                                                                                "signature": signature
+                                                                            },
+                                                                            resolutionData: resolutionDetails
+                                                                        }
+                                                                    };
+
+                                                                    console.log("submit params...", params);
+
+                                                                    popupAction(params)
+
+                                                                }}
+                                                            />
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                        </View>
+                                                    )
+                                                }
+
+
+                                                return (
+
+                                                    <View>
+
+                                                        {
+                                                            fieldSetItem.columns?.map(item => {
+
+                                                                return (
+                                                                    <View>
+
+                                                                        {
+                                                                            item.column_headers?.map((columnItem, idx1) => {
+
+                                                                                const id = columnItem.id;
+                                                                                const sortOrder = columnItem.sortOrder;
+                                                                                const required = columnItem.required;
+                                                                                const titleVal = columnItem.title;
+                                                                                const fieldType = columnItem.fieldType;
+                                                                                const inputTypeVal = columnItem.inputType;
+                                                                                const placeHolderVal = columnItem.placeHolder;
+
+                                                                                return (
+                                                                                    <View>
+
+                                                                                        {
+                                                                                            fieldSetItem.headers?.map((rowItem, idx2) => {
+
+                                                                                                if (idx2 != 0) {
+
+                                                                                                    if (fieldType == "textbox") {
+
+                                                                                                        // console.log("title..", title + "( " + rowItem.title + " )" + idx1 + "," + idx2);
+
+                                                                                                        return (
+
+                                                                                                            <View style={{ marginTop: 10, marginBottom: 10 }}>
+
+                                                                                                                {/* <Text style={styles.label}>{idx1 + "," + idx2}</Text> */}
+
+                                                                                                                <CustomInput
+                                                                                                                    style={{
+                                                                                                                        backgroundColor: "transparent"
+                                                                                                                    }}
+                                                                                                                    onChangeText={(text) => {
+                                                                                                                        inputText.set(idx1 + "" + idx2, text)
+                                                                                                                        // setInputText([idx1 + "" + idx2]: text)
+                                                                                                                        // setInputTextId(idx1 + "" + idx2)
+                                                                                                                        // setInputTextId(idx1 + "" + idx2)
+                                                                                                                    }}
+                                                                                                                    value={inputText.get(idx1 + "" + idx2)}
+
+
+
+                                                                                                                    inputType={inputTypeVal}
+                                                                                                                    caption={titleVal + " ( " + rowItem.title + " )"}
+                                                                                                                    placeHolder={placeHolderVal}
+                                                                                                                />
+
+
+                                                                                                            </View>
+
+                                                                                                        )
+
+                                                                                                    }
+                                                                                                }
+
+                                                                                            })
+                                                                                        }
+
+                                                                                    </View>)
+
+                                                                            })
+                                                                        }
+
+                                                                    </View>)
+                                                            })
+                                                        }
+
+
+
+
+
+
+
+
+
+
+
+
+                                                    </View>)
+                                            })
+                                        }
+                                    </View>
+                                )
+                            })}
+
+                        </View>
+                        <ClearSpace size={2} />
+
+                        {/* <View style={{ flex: 1 }}>
+                            <CustomButton label={"Submit"} />
+                        </View>
+                        <ClearSpace size={2} /> */}
+
+                    </>
+                )
+
+            // case "COLLECT_INPUT":
+            //     return (
+            //         <>
+            //             <View style={{ flex: 1 }}>
+            //                 <SignaturePad
+            //                     onError={this._signaturePadError}
+            //                     onChange={this._signaturePadChange}
+            //                     style={{ flex: 1, backgroundColor: 'white' }} />
+            //             </View>
+            //             <ClearSpace size={2} />
+            //         </>
+            //     )
+
             default:
-                return (<Text>sdfsdf</Text>)
+                return (
+                    <>
+                        {/* <View style={{ flex: 1 }}>
+                            <SignaturePad
+                                onError={this._signaturePadError}
+                                onChange={this._signaturePadChange}
+                                style={{ flex: 1, backgroundColor: 'white' }} />
+                        </View>
+                        <ClearSpace size={2} /> */}
+                    </>
+                )
+
                 return null
 
         }
 
     }
+
+
     const flowId = get(resolutionDetails, 'flwId', '')
     const conversationID = get(resolutionDetails, 'conversationUid', '')
     const requestId = get(resolutionDetails, 'requestId', '')
@@ -295,12 +604,60 @@ export const HandleResolution = ({
 }
 
 const styles = StyleSheet.create({
+    signContainer: {
+        flex: 1, padding: 8, backgroundColor: color.BCAE_OFF_WHITE,
+    },
+    titleStyle: {
+        margin: 10,
+    },
+    signature: {
+        width: 285,
+        height: 140,
+        flex: 1,
+        borderColor: '#00000',
+        borderWidth: 1,
+    },
+    buttonStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 120,
+        height: 50,
+        backgroundColor: '#eeeeee',
+        margin: 10,
+    },
+    newContainer: {
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'center',
+    },
+
+    checkboxContainer: {
+        flexDirection: 'row',
+        marginBottom: 5,
+    },
+
+    checkbox: {
+        alignSelf: 'center',
+    },
+
+    label: {
+        margin: 8,
+    },
+
+    column_space_arround_evenly: {
+        marginTop: 4,
+        flexDirection: "column",
+    },
+
+
+
     bottomContainer: {
         paddingHorizontal: 10,
         flexDirection: "row"
     },
     container: {
-        flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff',
+        flex: 1, padding: 16, paddingTop: 10, backgroundColor: "white",
 
     },
     head: { height: 40, backgroundColor: '#f1f8ff' },

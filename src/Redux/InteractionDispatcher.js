@@ -59,7 +59,7 @@ export function fetchInteractionAction(type = "", params = {},
         console.log('b..............')
 
         interactionResult = await serverCall(
-          `${endPoints.INTERACTION_FETCH}?page=0&limit=4`,
+          `${endPoints.INTERACTION_FETCH}?page=0&limit=200`,
           requestMethod.POST,
           {
             searchParams: {
@@ -408,9 +408,10 @@ export function getWorkFlowForInteractionID(interactionId, navigation = null) {
 */
 export function getFollowupForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
-    let url =
-      endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
+    let url = endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
+    console.log("follow up url..", url);
     let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    console.log("follow up result..", result);
     if (result.success) {
       dispatch(setInteractionsFollowupDataInStore(result.data.data));
     } else {
@@ -430,7 +431,10 @@ export function getFollowupForInteractionID(interactionId, navigation = null) {
 export function getInteractionDetailsForID(interactionId, navigation = null) {
   return async (dispatch) => {
     console.log("interactionL ID", interactionId)
-    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
+    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=200";
+    // let url = endPoints.INTERACTION_FETCH + "";
+
+
     let params = {
       searchParams: {
         interactionId: Number(interactionId)
@@ -449,7 +453,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
 export function getInteractionDetailsSearch(params, navigation = null) {
   return async (dispatch) => {
     console.log("interaction search begins..", params)
-    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=1";
+    let url = endPoints.INTERACTION_FETCH + "?page=0&limit=200";
     console.log("interaction search url..", url)
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     console.log("interaction search result..", result)
@@ -519,7 +523,7 @@ export function assignInteractionToSelf(
         console.log("self assign success..", result)
         Toast.show({
           type: "bctSuccess",
-          text1: "" + result.message,
+          text1: "" + result.data.message,
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
       } else {
@@ -685,7 +689,7 @@ export function fetchCancelReasons(navigation = null) {
 export function updateInteraction(
   interactionId,
   userId,
-  deptId,
+  departmentId,
   roleId,
   status,
   remarks
@@ -695,7 +699,7 @@ export function updateInteraction(
 
     let params = {
       userId,
-      deptId,
+      departmentId,
       roleId,
       status,
       remarks
@@ -706,7 +710,7 @@ export function updateInteraction(
     if (result.success) {
       Toast.show({
         type: "bctSuccess",
-        text1: "" + result.message,
+        text1: "" + result.data.message,
       });
       // dispatch(setStatusDataInStore(result.data.data));
     } else {

@@ -48,6 +48,7 @@ import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
 import InteractionSearch from "../Screens/TabScreens/InteractionSearch";
 import InteractionSearchResult from "../Screens/TabScreens/InteractionSearchResult";
+import SwitchRole from "../Screens/TabScreens/SwitchRole";
 import { TermNdCondition } from "../Screens/TermNdConidtions/TermNdCondition";
 import { mockAnnouncementList } from "../Utilities/Constants/Constant";
 import { ICON_STYLE, navBar } from "../Utilities/Style/navBar";
@@ -68,6 +69,7 @@ const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
 export const STACK_INTERACTION_SEARCH = "InteractionSearch";
+export const STACK_SWITCH_ROLE = "SwitchRole";
 export const STACK_INTERACTION_SEARCH_RESULT = "InteractionSearchResult";
 const STACK_FOLLOWUP = "Followup";
 const STACK_WORKFLOW_HISTORY = "WorkflowHistory";
@@ -269,6 +271,24 @@ function MyStack() {
           name="Splash"
           component={Splash}
         />
+
+
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Switch Role",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+            },
+          })}
+          name={STACK_SWITCH_ROLE}
+          component={SwitchRole}
+        />
+
 
         <Stack.Screen
           options={({ navigation }) => ({

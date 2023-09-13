@@ -97,7 +97,7 @@ const Splash = ({ route, navigation }) => {
           />
         </View>
 
-        <View style={{ alignItems: "center", marginTop: 350 }}>
+        <View style={{ alignItems: "center", marginTop: 300 }}>
           <Text style={styles.highlightText}>
             Digital{"\n"}Transformation{"\n"}Works
           </Text>

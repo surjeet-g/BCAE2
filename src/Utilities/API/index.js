@@ -27,12 +27,15 @@ export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
     // Internet Check and response error
     let net = await networkAvailable();
+    console.log("A..........", net);
+
     TDLog(
       "Server API Call index.js BEFORE internet check :====>",
       url + "====>" + method + "=====>" + JSON.stringify(data)
     );
     TDLog("Server API Call index.js BEFORE internet check  net:====>", net);
     if (!net) {
+      console.log("not net..........",);
       let requestObject = {};
       resolve({
         success: false,
@@ -42,8 +45,10 @@ export const serverCall = async (url, method, data, navigation = null) =>
         requestObject,
       });
     } else {
+      console.log("getting token..........");
       getDataFromDB(storageKeys.ACCESS_TOKEN)
         .then(function (token) {
+          console.log("token..........", token);
           return token;
         })
         .then(function (token) {
@@ -51,6 +56,8 @@ export const serverCall = async (url, method, data, navigation = null) =>
             "Server API Call index.js fetch accessToken :",
             JSON.stringify(token)
           );
+
+          console.log("token string..........", JSON.stringify(token));
 
           let baseURL;
           if (DEBUG_BUILD) {
@@ -73,6 +80,7 @@ export const serverCall = async (url, method, data, navigation = null) =>
               authorization: token.accessToken ? token.accessToken : "",
             };
           } else {
+            console.log("TENANT_ID string..........", TENANT_ID);
             headers = {
               "Content-Type": "application/json",
               "x-tenant-id": TENANT_ID,
@@ -88,6 +96,8 @@ export const serverCall = async (url, method, data, navigation = null) =>
               headers,
             };
           } else {
+            console.log("baseURL string..........", baseURL);
+
             requestObject = {
               url,
               method,
@@ -105,6 +115,8 @@ export const serverCall = async (url, method, data, navigation = null) =>
           axios
             .request(requestObject)
             .then(async (response) => {
+
+
               TDLog(
                 "serverCall",
                 "BCAE APPLICATION SERVER CALL AFTER SUCCESS SERVER CALL URL : " +
@@ -124,6 +136,8 @@ export const serverCall = async (url, method, data, navigation = null) =>
                   requestObject,
                 });
               } else {
+                console.log("status not 200..........");
+
                 resolve({
                   success: false,
                   data: {},
@@ -137,6 +151,10 @@ export const serverCall = async (url, method, data, navigation = null) =>
               }
             })
             .catch(async (error) => {
+
+              console.log("catch.........." + error);
+
+
               // TDLog(
               //   "Server API Call index.js AFTER SERVER CALL ERROR :",
               //   JSON.stringify(error.response)

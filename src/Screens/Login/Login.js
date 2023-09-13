@@ -13,7 +13,6 @@ import CustomSwitch from "react-native-custom-switch-new";
 import { KeyboardAwareView } from "react-native-keyboard-aware-view";
 import { Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
 import { CustomInput } from "../../Components/CustomInput";
@@ -288,7 +287,7 @@ export const Login = ({ navigation }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <HeaderTitle header="Let us know," subHeader="Who you are?" />
+      <HeaderTitle header="Let us know dtWorks," subHeader="Who you are?" />
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -528,7 +527,7 @@ export const Login = ({ navigation }) => {
                   style={{
                     textAlign: "center",
                     alignSelf: "center",
-                    marginVertical: spacing.HEIGHT_10,
+                    marginVertical: 5,
                     color: "#BF873A",
                     fontWeight: 700,
                     fontSize: fontSizes.FONT_20,
@@ -547,7 +546,7 @@ export const Login = ({ navigation }) => {
               <View
                 style={{
                   alignSelf: "center",
-                  marginVertical: 10,
+                  marginVertical: 5,
                 }}
               >
                 <Pressable
@@ -567,7 +566,7 @@ export const Login = ({ navigation }) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
-                  marginVertical: 10,
+                  marginVertical: 5,
                 }}
               >
                 <Text style={styles.noAccText}>{strings.dont_account}</Text>
@@ -581,7 +580,7 @@ export const Login = ({ navigation }) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
-                  marginVertical: 10,
+                  marginVertical: 5,
                 }}
               >
                 <Text style={styles.noAccText}>Customer Onboarding?</Text>
@@ -591,7 +590,6 @@ export const Login = ({ navigation }) => {
                   <Text style={styles.rgisterText}> Customer Onboarding</Text>
                 </Pressable>
               </View>
-              <ClearSpace size={2} />
             </View>
 
             {!login.initLogin &&
@@ -622,7 +620,7 @@ export const Login = ({ navigation }) => {
           </ScrollView>
 
           <KeyboardAvoidingView style={{ flex: -75 }}>
-            <StickyFooter>
+            <StickyFooter style={{ marginBottom: 10 }}>
               {/* Login View */}
               {/* <View> */}
               <CustomButton
@@ -668,18 +666,7 @@ export const Login = ({ navigation }) => {
                 >
                   Terms & Conditions of Use
                 </Text>
-                <Text
-                  style={{
-                    fontSize: fontSizes.FONT_14,
-                    textAlign: "center",
-                    fontWeight: 600,
-                    color: "#000000",
-                    marginTop: 5,
-                  }}
-                >
-                  {" "}
-                  &{" "}
-                </Text>
+
                 <Text
                   style={{
                     fontSize: fontSizes.FONT_14,

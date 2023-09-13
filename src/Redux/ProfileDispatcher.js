@@ -1,12 +1,3 @@
-import {
-  initProfile,
-  setProfileData,
-  setProfileError, setSearchProfileData,
-  setSearchProfileDataError,
-  setServiceData,
-  setUserSelectedProfile
-} from "./ProfileAction";
-
 import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
@@ -16,6 +7,15 @@ import {
   getUserId,
   getUserType
 } from "../Utilities/UserManagement/userInfo";
+import {
+  initProfile,
+  setProfileData,
+  setProfileError, setProfileRolesDataInStore, setProfileRolesErrorDataInStore, setProfileSwitchedDataInStore, setProfileSwitchedErrorDataInStore, setSearchProfileData,
+  setSearchProfileDataError,
+  setServiceData,
+  setUserSelectedProfile
+} from "./ProfileAction";
+
 
 // export var parsedCustServiceList = [];
 
@@ -204,5 +204,76 @@ export function updateProfileData(obj, navigation, isCustomer) {
       dispatch(setProfileError([]));
       return false;
     }
+  };
+}
+
+
+export function fetchProfileRoles(navigation = null) {
+  return async (dispatch) => {
+
+    const url = endPoints.SWITCH_ROLE;
+    console.log("fetchProfileRoles url..", url);
+
+
+    let fetchProfileRolesResult = await serverCall(
+      url,
+      requestMethod.GET,
+      {},
+      navigation
+    );
+
+    console.log("fetchProfileRolesResult..", fetchProfileRolesResult.data);
+    if (fetchProfileRolesResult.success) {
+      dispatch(setProfileRolesDataInStore(fetchProfileRolesResult.data));
+    } else {
+      dispatch(setProfileRolesErrorDataInStore(fetchProfileRolesResult));
+    }
+
+  };
+}
+
+
+export function switchUserRole(
+  userId,
+  currDept,
+  currDeptDesc,
+  currDeptId,
+  currRole,
+  currRoleDesc,
+  currRoleId,
+  navigation
+) {
+  return async (dispatch) => {
+
+    let url = endPoints.USER_ROLE_SWITCH + userId;
+    console.log("switchUserRole url..", url);
+
+    let params = {
+      currDept,
+      currDeptDesc,
+      currDeptId,
+      currRole,
+      currRoleDesc,
+      currRoleId
+    };
+    let result = await serverCall(url, requestMethod.PUT, params);
+    console.log("switchUserRole result..", result);
+
+    if (result.success) {
+      Toast.show({
+        type: "bctSuccess",
+        text1: "" + result.data.message,
+      });
+      dispatch(setProfileSwitchedDataInStore(result.data));
+      // RNRestart.Restart();
+      navigation.navigate("HomeScreen")
+    } else {
+      Toast.show({
+        type: "bctError",
+        text1: "" + result.message,
+      });
+      dispatch(setProfileSwitchedErrorDataInStore(result));
+    }
+
   };
 }

@@ -18,6 +18,7 @@ import CustomBottomBar from "./CustomBottomBar";
 import get from "lodash.get";
 import { Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingAnimation from "../Components/LoadingAnimation";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
@@ -77,6 +78,7 @@ const BottomBarNavigation = () => {
     headerRight: () => {
       return (
         <View style={navBar.navRightCon}>
+
           <Pressable
             onPress={() => navigation.navigate("Notification")}
             style={navBar.roundIcon}
@@ -86,7 +88,18 @@ const BottomBarNavigation = () => {
               style={{ width: 35, height: 35 }}
             />
           </Pressable>
+
           <View style={navBar.divider} />
+
+          <Pressable
+            onPress={() => navigation.navigate("SwitchRole")}
+            style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+          >
+            <Icon name="account-switch" size={28} color={Colors.BLACK} />
+          </Pressable>
+
+          <View style={navBar.divider} />
+
           <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
@@ -96,6 +109,7 @@ const BottomBarNavigation = () => {
               style={navBar.roundIcon}
             />
           </Pressable>
+
         </View>
       );
     },

@@ -199,7 +199,6 @@ export const ProductListing = ({ navigation, route }) => {
     return (
         <View>
             <CustomButton
-
                 label="Close"
                 onPress={() => {
                     alert("sdfsd")

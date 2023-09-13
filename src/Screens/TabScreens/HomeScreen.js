@@ -3,7 +3,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  FlatList,
   Image,
   Pressable,
   ScrollView,
@@ -14,10 +13,11 @@ import {
   View
 } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { useTheme } from "react-native-paper";
+import { Card, Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
-import { getAppointmentDashboardData } from "../../Redux/AppointmentDashboardDispatcher";
+import { BarChartItems } from "../../Components/charts/BarChartItems";
+import { getAppointmentDashboardData, getHelpdeskSummary } from "../../Redux/AppointmentDashboardDispatcher";
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getOrderListData } from "../../Redux/OrderListDispatcher";
@@ -36,6 +36,7 @@ var { height, width } = Dimensions.get("screen");
  * @namespace HomeScreen  
  */
 export const HomeScreen = ({ navigation }) => {
+  console.log("HomeScreen UI..");
 
   const { colors, fonts, roundness } = useTheme();
   let customerAccount = useSelector((state) => state.customerAccount);
@@ -46,12 +47,64 @@ export const HomeScreen = ({ navigation }) => {
   const [marked, setMarkedDate] = useState(["2023-07-07"])
   let orderList = useSelector((state) => state.orderList);
   const [showIn, setShowIndex] = useState(0)
+
   const dispatch = useDispatch([
     getCustomerAccountData,
     getInteractionListData,
     getOrderListData,
-    getAppointmentDashboardData
+    getAppointmentDashboardData,
+    getHelpdeskSummary
   ]);
+
+
+  useEffect(() => {
+
+    let params = {
+      // fromDate,
+      // toDate,
+      // project,
+      type: "COUNT",
+      // priority,
+      // currUser,
+      // status
+    };
+
+    async function fetchDashboardAPI() {
+      dispatch(getHelpdeskSummary(params))
+      console.log("getHelpdeskSummary result UI..", appoinmentListRed.helpdeskSummaryData);
+    }
+
+
+    fetchDashboardAPI();
+  }, []);
+
+
+
+
+  //   posT(properties.HELPDESK_API + '/summary', { ...searchParams, type: 'COUNT' })
+  //     .then((response) => {
+  //       setSummaryCounts(response?.data)
+  //       const result = response?.data.reduce((acc, obj) => {
+  //         const existingObj = acc.find(item => item.oHelpdeskType === obj.oHelpdeskType);
+  //         if (existingObj) {
+  //           existingObj.oCnt += obj.oCnt;
+  //         } else {
+  //           acc.push({ oHelpdeskType: obj.oHelpdeskType, oCnt: obj.oCnt, oHelpdeskTypeCode: obj?.oHelpdeskTypeCode });
+  //         }
+  //         return acc;
+  //       }, []);
+  //       setSummaryCounts(result)
+  //     })
+  //     .catch(error => {
+  //       console.error(error);
+  //     });
+  // }, [isRefresh, searchParams, isParentRefresh]);
+
+
+
+
+
+
   //set appoinment 
   useEffect(() => {
     // const userDetails = await getUserId();
@@ -433,8 +486,28 @@ export const HomeScreen = ({ navigation }) => {
           source={require("../../Assets/icons/floating_whatsapp.png")}
         />
       </Pressable>
+
+
       <ScrollView style={{ flex: 1 }}>
-        <View style={styles.container}>
+
+
+
+        <RenderInformative data={appoinmentListRed.helpdeskSummaryData} />
+        {/* <RenderCharts /> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {/* <View style={styles.container}>
           <Text
             style={{
               color: "#2B2B2B",
@@ -461,8 +534,8 @@ export const HomeScreen = ({ navigation }) => {
               )}
               keyExtractor={(item, index) => index}
             />
-          </View>
-          <Text
+          </View> */}
+        {/* <Text
             style={{
               color: "#2B2B2B",
               fontSize: 16,
@@ -480,8 +553,8 @@ export const HomeScreen = ({ navigation }) => {
                 console.log(`Date selected: ${day.dateString}`)
               }
             />
-          </View>
-          <Text
+          </View> */}
+        {/* <Text
             style={{
               color: "#2B2B2B",
               fontSize: 16,
@@ -509,7 +582,7 @@ export const HomeScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <ClearSpace size={20} />
+        <ClearSpace size={20} /> */}
       </ScrollView>
     </View>
   );
@@ -765,6 +838,317 @@ export const CustomCalendar = (props) => {
     />
   );
 };
+
+const RenderCharts = () => {
+
+  return (
+    <>
+
+      <div className="col-md-4">
+        <div className="cmmn-skeleton">
+          <div className="card-body">
+            <div className="skel-dashboard-title-base">
+              <span className="skel-header-title"> Helpdesk Summary </span>
+              <div className="skel-dashboards-icons">
+                <span>
+                  <i className="material-icons" onClick={() => setIsRefresh(!isRefresh)}>refresh</i>
+                </span>
+                {/* <span>
+                                  <i className="material-icons"> filter_alt </i>
+                              </span> */}
+              </div>
+            </div>
+            <hr className="cmmn-hline" />
+          </div>
+          <div className="card-body py-0">
+            <div className="row">
+              {console.log('summaryCount------->', summaryCount)}
+              {summaryCount?.map((ele) => <div className="col-4">
+                <div className="text-center">
+                  <p className="mb-2 text-truncate"> {ele?.oHelpdeskType} </p>
+                  <h4 className="text-dark cursor-pointer" onClick={() => showDetails(ele?.oHelpdeskTypeCode)}> {ele?.oCnt} </h4>
+                </div>
+              </div>)}
+              <div className="col-12 text-center">
+                <div className="skel-graph-sect mt-4">
+                  <div id="chartzz">
+                    <Chart data={{ chartData: summaryCounts }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Modal show={show} backdrop="static" keyboard={false} onHide={handleClose} style={modalStyle}>
+          <Modal.Header>
+            <b>Summary Wise Helpdesk Details</b>
+            <button type="button" className="close mr-2" keyboard={false} onClick={handleClose}>
+              <span aria-hidden="true">×</span>
+            </button>
+          </Modal.Header>
+          <Modal.Body>
+            <DynamicTable
+              listKey={"Assigned"}
+              row={filteredSummaryData}
+              rowCount={filteredSummaryData?.length}
+              header={StatusWiseColumns}
+              fixedHeader={true}
+              itemsPerPage={perPage}
+              isScroll={true}
+              isTableFirstRender={tableRef}
+              backendCurrentPage={currentPage}
+              handler={{
+                handleCellRender: handleCellRender,
+                handlePageSelect: handlePageSelect,
+                handleItemPerPage: setPerPage,
+                handleCurrentPage: setCurrentPage,
+                handleFilters: setFilters
+              }}
+            />
+          </Modal.Body>
+        </Modal>
+      </div>
+
+
+    </>
+  );
+};
+
+
+
+
+const RenderInformative = (props) => {
+
+  const data = [
+    {
+      name: "New",
+      population: 25,
+      color: "#58D68D",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Assigned",
+      population: 25,
+      color: "#F4D03F",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Re Assigned",
+      population: 35,
+      color: "#F1948A",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "In progress",
+      population: 25,
+      color: "#8E44AD",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Cancelled",
+      population: 25,
+      color: "#3498DB",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Rejected",
+      population: 35,
+      color: "#45B39D",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Closed",
+      population: 35,
+      color: "#AED6F1",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    }
+  ];
+
+
+  const data2 = [
+    {
+      name: "Appeals",
+      population: 25,
+      color: "#58D68D",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "General",
+      population: 25,
+      color: "#F4D03F",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Grievance",
+      population: 35,
+      color: "#F1948A",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Interest",
+      population: 25,
+      color: "#8E44AD",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Purchase",
+      population: 25,
+      color: "#3498DB",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Recommendation",
+      population: 35,
+      color: "#45B39D",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Request",
+      population: 35,
+      color: "#AED6F1",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    }
+  ];
+
+
+  return (
+    <>
+
+
+      {/* <View style={{ margin: 10, elevation: 10 }}> */}
+
+      {/* <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+
+        <Text style={{ padding: 5, fontWeight: "900" }}>Overview</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <ClearSpace size={4} />
+
+        <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+          <Card style={{ width: 150, backgroundColor: "#2471A3", padding: 10, elevation: 10, margin: 7 }}>
+            <Text style={{ padding: 5, color: "#FFFFFF" }}>Total Interaction</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>125</Text>
+          </Card>
+
+          <Card style={{ width: 150, backgroundColor: "#85C1E9", padding: 10, elevation: 10, margin: 7 }}>
+            <Text style={{ padding: 5, color: "#FFFFFF" }}>Open Interaction</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>45</Text>
+          </Card>
+        </View>
+
+        <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+          <Card style={{ width: 150, backgroundColor: "#F7DC6F", padding: 10, elevation: 10, margin: 7 }}>
+            <Text style={{ padding: 5, color: "#FFFFFF" }}>Work in progress</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>55</Text>
+          </Card>
+
+          <Card style={{ width: 150, backgroundColor: "#DC7633", padding: 10, elevation: 10, margin: 7 }}>
+            <Text style={{ padding: 5, color: "#FFFFFF" }}>Closed Interaction</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>25</Text>
+          </Card>
+        </View>
+
+        <ClearSpace size={4} />
+      </Card> */}
+
+      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <ClearSpace />
+        <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk Summary</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <ClearSpace size={4} />
+
+        <View style={{ backgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
+          <Card style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+            <Text style={{ padding: 5, color: "#000000" }}>Clarification</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#000000" }}>125</Text>
+          </Card>
+
+          <Card style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+            <Text style={{ padding: 5, color: "#000000" }}>Incident</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#000000" }}>45</Text>
+          </Card>
+
+          <Card style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+            <Text style={{ padding: 5, color: "#000000" }}>Service Request</Text>
+            <Text style={{ padding: 5, fontWeight: "900", color: "#000000" }}>45</Text>
+          </Card>
+        </View>
+
+        <BarChartItems data={props.data} />
+        {/* <Text style={{ padding: 5, alignSelf: "center" }}>By Ageing</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <BarChartItems />
+        <Text style={{ padding: 5, alignSelf: "center" }}>Follow-up by months</Text> */}
+        <ClearSpace />
+      </Card>
+
+
+      {/* <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <ClearSpace />
+        <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Status Vs Interaction by Type</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <ClearSpace size={4} />
+        <PieCharts data={data} />
+        <Text style={{ padding: 5, alignSelf: "center" }}>By Status</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <PieCharts data={data2} />
+        <Text style={{ padding: 5, alignSelf: "center" }}>By Type</Text>
+        <ClearSpace />
+      </Card> */}
+
+      <View style={{ backgroundColor: "transparent", padding: 45 }}>
+
+      </View>
+
+
+
+      {/* <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <ClearSpace />
+        <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Priority</Text>
+        <ClearSpace />
+        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <ClearSpace size={4} />
+        <BarChartItems />
+        <ClearSpace />
+      </Card>
+
+
+
+      <ClearSpace size={4} />
+      <Text style={styles.caption}>Reports by Appointment</Text>
+      <ClearSpace size={4} />
+      <PieCharts />
+      <ClearSpace size={4} />
+      <Text style={styles.caption}>Average customer age</Text>
+      <ClearSpace size={4} />
+      <LineCharts />
+      <ClearSpace size={4} />
+      <Text style={styles.caption}>Average customer age</Text>
+      <ClearSpace size={4} /> */}
+      {/* <ProgressBarCharts /> */}
+      {/* </View> */}
+    </>
+  );
+};
+
 
 const styles = StyleSheet.create({
   container: {

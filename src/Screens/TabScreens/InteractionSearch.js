@@ -237,6 +237,8 @@ const InteractionSearch = ({ navigation }) => {
 
                     <View style={{ flex: 1 }}>
                         <CustomButton
+                            isDisabled={false}
+                            // loading={loaderAdd}
                             label={strings.clear}
                             onPress={() => {
                                 setInteractionNo("")

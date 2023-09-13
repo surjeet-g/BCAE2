@@ -64,7 +64,7 @@ import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from 
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import theme from "../../Utilities/themeConfig";
-import { getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userInfo";
+import { getCustomerID, getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 
@@ -634,20 +634,27 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     console.log("intreaction data", item)
                     presetInteractionFormData(item)
 
+                    console.log("1............")
+
                     //auto and clear search text
                     setautoSuggestionList(false);
+                    console.log("2............")
                     const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-
+                    console.log("3............")
                     //store selected result in cache
-                    await setBottombartitle(typeOfAccrodin.knowlegde.title);
+                    await setBottombartitle(typeOfAccrodin?.knowlegde?.title);
+                    console.log("4............")
                     setLoader(true)
+
+                    console.log("5............")
+                    console.log("cust id rec....", "" + await getCustomerID())
 
                     const { response, actionType } = await dispatchInteraction(
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
                         requestId: parseInt(item.requestId),
-                        moduleName: "KnowledgeBaseMobileApp"
-
+                        moduleName: "KnowledgeBaseMobileApp",
+                        customerId: "" + await getCustomerID()
                       })
                     );
                     console.log("intreaction data response    ", response)
@@ -1173,7 +1180,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
                         requestId: parseInt(ite.requestId),
-                        moduleName: "KnowledgeBaseMobileApp"
+                        moduleName: "KnowledgeBaseMobileApp",
+                        customerId: "" + await getCustomerID()
 
                       })
                     );
@@ -1307,7 +1315,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           customerUuid={get(profileReducer, `${activeData}.customerUuid`, '')}
           popupAction={async (params) => {
             setLoader(true)
-            console.log("htting popupAction", params)
+            console.log("hitting popupAction", params)
             await dispatchInteraction(
               fetchInteractionAction(typeOfAccrodin.workflow.value, params, true)
             );
@@ -1842,36 +1850,76 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   if (logg) console.log('create complienta :input', input)
                   const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
                   console.log("profile info", profileInfo)
-                  const params = {
-                    customerId: customerID,
 
-                    // statement: input.statement.value,
-                    // statementId: input.statementId.value,
-                    //problem cause
-                    // problemCause: input.problemCause.value?.code,
-                    interactionCategory:
-                      input.interactionCategory.value?.code,
-                    serviceCategory: input.serviceCategory.value?.code,
-                    interactionType: input.interactionType.value?.code,
-                    serviceType: input.serviceType.value?.code,
-                    channel: "MOBILEAPP",
-                    priorityCode: input.priorityCode.value?.code,
-                    contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
-                    remarks: input.remarks.value,
-                    statement: get(activeState, 'requestStatement', ''),
-                    statementId: get(activeState, 'requestId', ''),
-                    appointAddress: {
-                      address1: profileInfo.address1,
-                      address2: profileInfo.address2,
-                      address3: profileInfo.address3,
-                      city: profileInfo.city,
-                      state: profileInfo.state,
-                      district: profileInfo.district,
-                      postcode: profileInfo.postcode,
-                      country: profileInfo.country,
-                    }
-                  };
-                  console.log("params", params)
+
+                  var params = {}
+
+                  if (appoimentPopUp) {
+                    params = {
+                      customerId: customerID,
+
+                      // statement: input.statement.value,
+                      // statementId: input.statementId.value,
+                      //problem cause
+                      // problemCause: input.problemCause.value?.code,
+                      interactionCategory:
+                        input.interactionCategory.value?.code,
+                      serviceCategory: input.serviceCategory.value?.code,
+                      interactionType: input.interactionType.value?.code,
+                      serviceType: input.serviceType.value?.code,
+                      channel: "MOBILEAPP",
+                      priorityCode: input.priorityCode.value?.code,
+                      contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
+                      remarks: input.remarks.value,
+                      statement: get(activeState, 'requestStatement', ''),
+                      statementId: get(activeState, 'requestId', ''),
+                      appointAddress: {
+                        address1: profileInfo.address1,
+                        address2: profileInfo.address2,
+                        address3: profileInfo.address3,
+                        city: profileInfo.city,
+                        state: profileInfo.state,
+                        district: profileInfo.district,
+                        postcode: profileInfo.postcode,
+                        country: profileInfo.country,
+                      }
+                    };
+                  }
+                  else {
+                    params = {
+                      customerId: customerID,
+
+                      // statement: input.statement.value,
+                      // statementId: input.statementId.value,
+                      //problem cause
+                      // problemCause: input.problemCause.value?.code,
+                      interactionCategory:
+                        input.interactionCategory.value?.code,
+                      serviceCategory: input.serviceCategory.value?.code,
+                      interactionType: input.interactionType.value?.code,
+                      serviceType: input.serviceType.value?.code,
+                      channel: "MOBILEAPP",
+                      priorityCode: input.priorityCode.value?.code,
+                      contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
+                      remarks: input.remarks.value,
+                      statement: get(activeState, 'requestStatement', ''),
+                      statementId: get(activeState, 'requestId', ''),
+                      // appointAddress: {
+                      //   address1: profileInfo.address1,
+                      //   address2: profileInfo.address2,
+                      //   address3: profileInfo.address3,
+                      //   city: profileInfo.city,
+                      //   state: profileInfo.state,
+                      //   district: profileInfo.district,
+                      //   postcode: profileInfo.postcode,
+                      //   country: profileInfo.country,
+                      // }
+                    };
+                  }
+
+
+
+                  console.log("final params", params)
 
                   const templeAPIPayload = {
                     mapCategory: "TMC_INTERACTION",

@@ -19,6 +19,8 @@ import {
   MASTER_DATA_CONSTANT,
   getMasterData
 } from "../../Redux/masterDataDispatcher";
+import { getDataFromDB } from "../../Storage/token";
+import { storageKeys } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
 import AttachmentItem from "./../../Components/AttachmentItem";
@@ -39,9 +41,17 @@ import {
 } from "./../../Redux/InteractionDispatcher";
 import {
   USERTYPE,
+  getUserId,
   getUserType
 } from "./../../Utilities/UserManagement/userInfo";
 const InteractionDetails = (props) => {
+
+  var showSelfAssign = false
+  var showReassign = false
+  var showReassignToSelf = false
+  var showFollowUp = false
+  var showEdit = false
+
   const { route, navigation } = props;
   let { interactionSearchParams } = route.params
   // let { interactionID } = route.params
@@ -82,6 +92,12 @@ const InteractionDetails = (props) => {
 
   const [enteredRemarks, setRemarks] = useState("")
 
+  const [currUserId, setCurrUserId] = useState("");
+  const [currRoleId, setCurrRoleId] = useState("");
+  const [currDeptId, setCurrDeptId] = useState("");
+  const [intRoleId, setIntRoleId] = useState("");
+  const [intDeptId, setIntDeptId] = useState("");
+
 
   const resetFollup = () => {
     setSource("")
@@ -110,15 +126,22 @@ const InteractionDetails = (props) => {
   const {
     InteractionDetailsData,
     InteractionWorkFlowData,
-    InteractionFollowupData,
+    interactionFollowupData,
     interactionUsersByRoleData,
     statusData,
     interactionCancelReasonsData
     // rolesData
   } = interactionReducer;
 
+
   // Calling API to get interaction details & workflow/followup data
-  useEffect(async () => {
+  useEffect(() => {
+    console.log("inside use effect", interactionID.interactionSearchParams.intxnId)
+
+    setCurrUserId(getUserId())
+    setCurrRoleId(getDataFromDB(storageKeys.CURRENT_ROLE_ID))
+    setCurrDeptId(getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+
     //fetch order list or enble button
     // dispatch(getOrderListData(navigation, 1, 0));
     console.log("interactionL firt", interactionID.interactionSearchParams.intxnId)
@@ -129,11 +152,17 @@ const InteractionDetails = (props) => {
     dispatch(getWorkFlowForInteractionID(interactionID.interactionSearchParams.intxnNo));
     console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
 
-    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnId));
+    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnNo));
+    console.log("InteractionFollowupData..", interactionReducer.interactionFollowupData)
 
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
 
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
+
+
+    setIntRoleId(interactionID.interactionSearchParams.currentRole.description.roleId)
+    setIntDeptId(interactionID.interactionSearchParams.currentDepartment.description.unitId)
+
 
     dispatch(
       fetchUsersByRole(interactionID.interactionSearchParams.currentRole.description.roleId, interactionID.interactionSearchParams.currentDepartment.description.unitId, navigation)
@@ -167,10 +196,9 @@ const InteractionDetails = (props) => {
 
     // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "SELF"))
 
-
-    let userType = await getUserType();
+    let userType = getUserType();
     setUserType(userType);
-  }, [interactionID]);
+  }, []);
 
   console.log('>>order details', orderReducer)
 
@@ -484,7 +512,7 @@ const InteractionDetails = (props) => {
             {/*Follow up View */}
             <DetailInfoItem
               title={"Follow Up"}
-              value={InteractionFollowupData.length}
+              value={interactionReducer?.interactionFollowupData?.length}
               flex={1}
               onPress={() => {
                 // if (InteractionFollowupData.length > 0)
@@ -507,6 +535,7 @@ const InteractionDetails = (props) => {
       </View>
     );
   };
+
 
   const PopUpMenuItem = (props) => {
     const { title, modalIndex } = props;
@@ -557,7 +586,24 @@ const InteractionDetails = (props) => {
     );
   };
 
+  const showHideMenu = () => {
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+      showSelfAssign = true
+    }
+
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+      showReassign = true
+    }
+
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+      showReassignToSelf = true
+    }
+  }
+
   const PopUpMenu = (props) => {
+
+    showHideMenu()
+
     return (
       <View
         style={{
@@ -583,8 +629,8 @@ const InteractionDetails = (props) => {
 
         ) : (
 
-
           <View>
+
             {/* Follow up */}
             <PopUpMenuItem title={"Add followup"} modalIndex={1} />
             <PopUpMenuDivider />
@@ -609,6 +655,7 @@ const InteractionDetails = (props) => {
             <PopUpMenuItem title={"Cancel"} modalIndex={6} />
 
           </View>
+
         )}
       </View>
     );

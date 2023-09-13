@@ -116,7 +116,7 @@ const Register = ({ navigation, props }) => {
       source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
-      <HeaderTitle header="New to BCAE?" subHeader="Create your account" />
+      <HeaderTitle header="New to dtWorks?" subHeader="Create your account" />
       {registerForm.initRegisterForm ? (
         <FullPageLoder bgColor={color.DISABLED_GREY} loderColor={color.WHITE} />
       ) : (

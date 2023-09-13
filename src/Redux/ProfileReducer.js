@@ -5,12 +5,16 @@ import {
   PROFILE_ERROR,
   PROFILE_INIT,
   PROFILE_RESET,
+  PROFILE_ROLES_DATA,
+  PROFILE_ROLES_ERROR_DATA,
   PROFILE_SEARCH_DATA,
   PROFILE_SEARCH_DATA_RESET,
   PROFILE_SEARCH_ERROR,
   PROFILE_SEARCH_INIT, PROFILE_SET_EMPTY, PROFILE_SET_FORM,
   PROFILE_SET_USER_SELECTED_PROFILE,
   PROFILE_SET_USER_SELECTED_RESET,
+  PROFILE_SWITCHED_DATA,
+  PROFILE_SWITCHED_ERROR_DATA,
   SERVICE_DATA,
   SET_USER_SEARCH
 } from "./ProfileAction";
@@ -24,6 +28,9 @@ const mySavedProfileInitialState = {
   profileSearchError: false,
   savedProfileData: {},
   profileSearchData: {},
+  profileRolesData: {},
+  profileSwitchedData: {},
+  profileSwitchedErrorData: {},
   serviceData: {},
   IsSearchEmpty: false,
   formData: {
@@ -154,6 +161,39 @@ const ProfileReducer = (state = mySavedProfileInitialState, action) => {
         ...state,
         userSelectedProfileDetails: {},
       };
+
+
+
+
+    case PROFILE_ROLES_DATA:
+      return {
+        ...state,
+        profileRolesData: action.data,
+      };
+
+    case PROFILE_ROLES_ERROR_DATA:
+      return {
+        ...state,
+        profileRolesErrorData: action.data,
+      };
+
+
+    case PROFILE_SWITCHED_DATA:
+      return {
+        ...state,
+        profileSwitchedData: action.data,
+        profileSwitchedErrorData: {}
+      };
+
+    case PROFILE_SWITCHED_ERROR_DATA:
+      return {
+        ...state,
+        profileSwitchedErrorData: action.data,
+        profileSwitchedData: {}
+      };
+
+
+
     default:
       return state;
   }
