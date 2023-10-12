@@ -23,8 +23,13 @@ export const networkAvailable = () =>
     )
   );
 let accessTokenTemp = "";
+
 export const serverCall = async (url, method, data, navigation = null) =>
   new Promise(async (resolve, reject) => {
+    console.log("url..", url);
+    console.log("method..", method);
+    console.log("data..", data);
+
     // Internet Check and response error
     let net = await networkAvailable();
     console.log("A..........", net);

@@ -12,19 +12,120 @@ import {
   initAppointmentDashboardData,
   setAppointmentDashboardData,
   setAppointmentDashboardError,
+  setChannelWiseData,
+  setChannelWiseDataError,
+  setCustomerWiseData,
+  setCustomerWiseDataError,
+  setDepartmentInteractionsData,
+  setDepartmentInteractionsDataError,
+  setDepartmentVsRolesInteractionsData,
+  setDepartmentVsRolesInteractionsDataError,
   setHelpdeskAgentWiseData,
   setHelpdeskAgentWiseDataError,
   setHelpdeskByAgeingData,
   setHelpdeskByAgeingDataError,
   setHelpdeskBySeverityData,
   setHelpdeskBySeverityDataError,
+  setHelpdeskBySeverityDataErrorLive,
+  setHelpdeskBySeverityDataLive,
+  setHelpdeskByStatusData,
+  setHelpdeskByStatusDataError,
+  setHelpdeskByStatusListData,
+  setHelpdeskByStatusListDataError,
+  setHelpdeskByStatusListDataErrorLive,
+  setHelpdeskByStatusListDataLive,
+  setHelpdeskByTypeDataErrorLive,
+  setHelpdeskByTypeDataLive,
   setHelpdeskProjectWiseData,
   setHelpdeskProjectWiseDataError,
+  setHelpdeskProjectWiseDataErrorLive,
+  setHelpdeskProjectWiseDataLive,
+  setHelpdeskSummaryClarificationData,
+  setHelpdeskSummaryClarificationDataError,
   setHelpdeskSummaryData,
   setHelpdeskSummaryDataError,
+  setHelpdeskSummaryIncidentData,
+  setHelpdeskSummaryIncidentDataError,
+  setHelpdeskSummaryServiceRequestData,
+  setHelpdeskSummaryServiceRequestDataError,
+  setHelpdeskSummaryUnclassifiedData,
+  setHelpdeskSummaryUnclassifiedDataError,
+  setInteractionAgentWiseData,
+  setInteractionAgentWiseDataError,
+  setInteractionAgentWiseListData,
+  setInteractionAgentWiseListDataError,
+  setInteractionAvgWiseData,
+  setInteractionAvgWiseDataError,
+  setInteractionByAgeingData,
+  setInteractionByAgeingDataError,
+  setInteractionByAgeingFiveDaysData,
+  setInteractionByAgeingFiveDaysDataError,
+  setInteractionByAgeingMoreFiveDaysData,
+  setInteractionByAgeingMoreFiveDaysDataError,
+  setInteractionByAgeingThreeDaysData,
+  setInteractionByAgeingThreeDaysDataError,
+  setInteractionByCategoryData,
+  setInteractionByCategoryDataError,
+  setInteractionByFollowupsData,
+  setInteractionByFollowupsDataError,
+  setInteractionByFollowupsFiveDaysData,
+  setInteractionByFollowupsFiveDaysDataError,
+  setInteractionByFollowupsMoreFiveDaysData,
+  setInteractionByFollowupsMoreFiveDaysDataError,
+  setInteractionByFollowupsThreeDaysData,
+  setInteractionByFollowupsThreeDaysDataError,
+  setInteractionByLivePriorityData,
+  setInteractionByLivePriorityDataError,
+  setInteractionByPriorityData,
+  setInteractionByPriorityDataError,
+  setInteractionByPriorityHighData,
+  setInteractionByPriorityHighDataError,
+  setInteractionByPriorityLowData,
+  setInteractionByPriorityLowDataError,
+  setInteractionByPriorityMediumData,
+  setInteractionByPriorityMediumDataError,
+  setInteractionByPriorityStatusWiseData,
+  setInteractionByPriorityStatusWiseListData,
+  setInteractionByPriorityStatusWiseListDataError,
+  setInteractionByServiceCategoryData,
+  setInteractionByServiceCategoryDataError,
+  setInteractionByServiceTypeData,
+  setInteractionByServiceTypeDataError,
+  setInteractionByTypeData,
+  setInteractionByTypeDataError,
+  setInteractionProjectWiseData,
+  setInteractionProjectWiseDataError,
+  setInteractionProjectWiseListData,
+  setInteractionProjectWiseListDataError,
+  setInteractionsByStatusListData,
+  setInteractionsByStatusListDataError,
+  setInteractionsByStatusListDataErrorTwo,
+  setInteractionsByStatusListDataTwo,
+  setInteractionsByStatusLiveListData,
+  setInteractionsByStatusLiveListDataError,
+  setLiveCustomerWiseData,
+  setLiveCustomerWiseDataError,
+  setLiveInteractionsByStatusData,
+  setLiveInteractionsByStatusDataError,
+  setLiveProjectWiseData,
+  setLiveProjectWiseDataError,
+  setLocationWiseData,
+  setLocationWiseDataError,
+  setManagersListData,
+  setManagersListDataError,
   setMonthlyTrendData,
   setMonthlyTrendDataError,
+  setNpsCsatChampData,
+  setNpsCsatChampDataError,
+  setResMttrWaitingData,
+  setResMttrWaitingDataError,
+  setStatementWiseData,
+  setStatementWiseDataError,
+  setStatusWiseCountData,
+  setStatusWiseCountDataError,
   setSupportTtkPendingData,
+  setSupportTtkPendingDataCounts,
+  setSupportTtkPendingDataCountsError,
   setSupportTtkPendingDataError
 } from "./AppointmentDashboardAction";
 
@@ -61,6 +162,7 @@ export const getAppointmentDashboardData = (navigation = null) => {
 };
 
 
+
 export function getHelpdeskSummary(params) {
   return async (dispatch) => {
 
@@ -82,13 +184,98 @@ export function getHelpdeskSummary(params) {
 }
 
 
+export function getHelpdeskSummaryClarification(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
+    console.log("getHelpdeskSummaryClarification url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskSummaryClarification result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskSummaryClarification result success..", result);
+      dispatch(setHelpdeskSummaryClarificationData(result.data));
+    } else {
+      console.log("getHelpdeskSummaryClarification result failed..", result);
+      dispatch(setHelpdeskSummaryClarificationDataError(result));
+    }
+
+  };
+}
+
+
+export function getHelpdeskSummaryIncident(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
+    console.log("getHelpdeskSummaryIncident url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskSummaryIncident result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskSummaryIncident result success..", result);
+      dispatch(setHelpdeskSummaryIncidentData(result.data));
+    } else {
+      console.log("getHelpdeskSummaryIncident result failed..", result);
+      dispatch(setHelpdeskSummaryIncidentDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getHelpdeskSummaryServiceRequest(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
+    console.log("getHelpdeskSummaryServiceRequest url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskSummaryServiceRequest result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskSummaryServiceRequest result success..", result);
+      dispatch(setHelpdeskSummaryServiceRequestData(result.data));
+    } else {
+      console.log("getHelpdeskSummaryServiceRequest result failed..", result);
+      dispatch(setHelpdeskSummaryServiceRequestDataError(result));
+    }
+
+  };
+}
+
+
+export function getHelpdeskSummaryUnclassified(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
+    console.log("getHelpdeskSummaryUnclassified url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskSummaryUnclassified result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskSummaryUnclassified result success..", result);
+      dispatch(setHelpdeskSummaryUnclassifiedData(result.data));
+    } else {
+      console.log("getHelpdeskSummaryUnclassified result failed..", result);
+      dispatch(setHelpdeskSummaryUnclassifiedDataError(result));
+    }
+
+  };
+}
+
+
 export function getSupportTtkPending(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUPPORT_TTK_PENDING;
     console.log("getSupportTtkPending url..", url);
 
-    let result = await serverCall(url, requestMethod.POST, params);
+    let result = await serverCall(url, requestMethod.POST, {});
     console.log("getSupportTtkPending result.xxx.", result);
 
     if (result.success) {
@@ -103,10 +290,13 @@ export function getSupportTtkPending(params) {
         }
       });
       console.log("getSupportTtkPending result success.---pendingTktsCounts---.", pendingTktsCounts);
-      dispatch(setSupportTtkPendingData(pendingTktsCounts));
+      dispatch(setSupportTtkPendingDataCounts(pendingTktsCounts));
+      dispatch(setSupportTtkPendingData(result?.data?.data));
     } else {
       console.log("getSupportTtkPending result failed..", result);
+      dispatch(setSupportTtkPendingDataCountsError(result));
       dispatch(setSupportTtkPendingDataError(result));
+
     }
 
   };
@@ -165,6 +355,7 @@ export function getHelpdeskByStatus(params) {
 
     let url = endPoints.DASHBOARD_HELPDESK_BY_STATUS;
     console.log("getHelpdeskByStatus url..", url);
+    console.log("getHelpdeskByStatus params..", params);
 
     let result = await serverCall(url, requestMethod.POST, params);
     console.log("getHelpdeskByStatus result..", result);
@@ -175,6 +366,72 @@ export function getHelpdeskByStatus(params) {
     } else {
       console.log("getHelpdeskByStatus result failed..", result);
       dispatch(setHelpdeskByStatusDataError(result));
+    }
+
+  };
+}
+
+
+export async function getHelpdeskByStatusList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_BY_STATUS;
+    console.log("getHelpdeskByStatusList url..", url);
+    console.log("getHelpdeskByStatusList params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskByStatusList result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskByStatusList result success..", result);
+      dispatch(setHelpdeskByStatusListData(result.data));
+    } else {
+      console.log("getHelpdeskByStatusList result failed..", result);
+      dispatch(setHelpdeskByStatusListDataError(result));
+    }
+
+  };
+}
+
+
+export function getHelpdeskByStatusListLive(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_BY_STATUS;
+    console.log("getHelpdeskByStatusListLive url..", url);
+    console.log("getHelpdeskByStatusListLive params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskByStatusListLive result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskByStatusListLive result success..", result);
+      dispatch(setHelpdeskByStatusListDataLive(result.data));
+    } else {
+      console.log("getHelpdeskByStatusList result failed..", result);
+      dispatch(setHelpdeskByStatusListDataErrorLive(result));
+    }
+
+  };
+}
+
+
+export function getHelpdeskByTypeLive(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_BY_TYPE;
+    console.log("getHelpdeskByTypeLive url..", url);
+    console.log("getHelpdeskByTypeLive params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskByTypeLive result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskByTypeLive result success..", result);
+      dispatch(setHelpdeskByTypeDataLive(result.data));
+    } else {
+      console.log("getHelpdeskByTypeLive result failed..", result);
+      dispatch(setHelpdeskByTypeDataErrorLive(result));
     }
 
   };
@@ -223,6 +480,27 @@ export function getHelpdeskBySeverity(params) {
 }
 
 
+export function getHelpdeskBySeverityLive(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_BY_SEVERITY;
+    console.log("getHelpdeskBySeverityLive url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskBySeverityLive result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskBySeverityLive result success..", result);
+      dispatch(setHelpdeskBySeverityDataLive(result.data));
+    } else {
+      console.log("getHelpdeskBySeverityLive result failed..", result);
+      dispatch(setHelpdeskBySeverityDataErrorLive(result));
+    }
+
+  };
+}
+
+
 export function getHelpdeskProjectWise(params) {
   return async (dispatch) => {
 
@@ -238,6 +516,26 @@ export function getHelpdeskProjectWise(params) {
     } else {
       console.log("getHelpdeskProjectWise result failed..", result);
       dispatch(setHelpdeskProjectWiseDataError(result));
+    }
+
+  };
+}
+
+export function getHelpdeskProjectWiseLive(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_PROJECT_WISE;
+    console.log("getHelpdeskProjectWiseLive url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskProjectWiseLive result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskProjectWiseLive result success..", result);
+      dispatch(setHelpdeskProjectWiseDataLive(result.data));
+    } else {
+      console.log("getHelpdeskProjectWiseLive result failed..", result);
+      dispatch(setHelpdeskProjectWiseDataErrorLive(result));
     }
 
   };
@@ -263,3 +561,903 @@ export function getHelpdeskAgentWise(params) {
 
   };
 }
+
+
+
+
+export function getStatementWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_STATEMENT_WISE;
+    console.log("getStatementWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getStatementWise result..", result);
+
+    if (result.success) {
+      console.log("getStatementWise result success..", result);
+      dispatch(setStatementWiseData(result.data));
+    } else {
+      console.log("getStatementWise result failed..", result);
+      dispatch(setStatementWiseDataError(result));
+    }
+
+  };
+}
+
+
+export function getStatusWiseCount(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_STATUS_COUNT;
+    console.log("getStatusWiseCount url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getStatusWiseCount result..", result);
+
+    if (result.success) {
+      console.log("getStatusWiseCount result success..", result);
+      dispatch(setStatusWiseCountData(result.data));
+    } else {
+      console.log("getStatusWiseCount result failed..", result);
+      dispatch(setStatusWiseCountDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getChannelWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_CHANNEL_WISE;
+    console.log("getChannelWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getChannelWise result..", result);
+
+    if (result.success) {
+      console.log("getChannelWise result success..", result);
+      dispatch(setChannelWiseData(result.data));
+    } else {
+      console.log("getChannelWise result failed..", result);
+      dispatch(setChannelWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getCustomerWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_CUSTOMER_WISE;
+    console.log("getCustomerWise url..", url);
+    console.log("getCustomerWise params..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getCustomerWise result..", result);
+
+    if (result.success) {
+      console.log("getCustomerWise result success..", result);
+      dispatch(setCustomerWiseData(result.data));
+    } else {
+      console.log("getCustomerWise result failed..", result);
+      dispatch(setCustomerWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getLiveCustomerWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_CUSTOMER_WISE;
+    console.log("getLiveCustomerWise url..", url);
+    console.log("getLiveCustomerWise params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getLiveCustomerWise result..", result);
+
+    if (result.success) {
+      console.log("getLiveCustomerWise result success..", result);
+      dispatch(setLiveCustomerWiseData(result.data));
+    } else {
+      console.log("getLiveCustomerWise result failed..", result);
+      dispatch(setLiveCustomerWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getLiveProjectWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_PROJECT_WISE;
+    console.log("getLiveProjectWise url..", url);
+    console.log("getLiveProjectWise params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getLiveProjectWise result..", result);
+
+    if (result.success) {
+      console.log("getLiveProjectWise result success..", result);
+      dispatch(setLiveProjectWiseData(result.data));
+    } else {
+      console.log("getLiveProjectWise result failed..", result);
+      dispatch(setLiveProjectWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getLocationWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LOCATION_WISE;
+    console.log("getLocationWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getLocationWise result..", result);
+
+    if (result.success) {
+      console.log("getLocationWise result success..", result);
+      dispatch(setLocationWiseData(result.data));
+    } else {
+      console.log("getLocationWise result failed..", result);
+      dispatch(setLocationWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getDepartmentInteractions(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_DEPARTMENT;
+    console.log("getDepartmentInteractions url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getDepartmentInteractions result..", result);
+
+    if (result.success) {
+      console.log("getDepartmentInteractions result success..", result);
+      dispatch(setDepartmentInteractionsData(result.data));
+    } else {
+      console.log("getDepartmentInteractions result failed..", result);
+      dispatch(setDepartmentInteractionsDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getDepartmentVsRolesInteractions(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_DEPARTMENT_VS_ROLES;
+    console.log("getDepartmentVsRolesInteractions url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getDepartmentVsRolesInteractions result..", result);
+
+    if (result.success) {
+      console.log("getDepartmentVsRolesInteractions result success..", result);
+      dispatch(setDepartmentVsRolesInteractionsData(result.data));
+    } else {
+      console.log("getDepartmentVsRolesInteractions result failed..", result);
+      dispatch(setDepartmentVsRolesInteractionsDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getNpsCsatChamp(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_NPS_CSAT_CHAMP;
+    console.log("getNpsCsatChamp url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getNpsCsatChamp result..", result);
+
+    if (result.success) {
+      console.log("getNpsCsatChamp result success..", result);
+      dispatch(setNpsCsatChampData(result.data));
+    } else {
+      console.log("getNpsCsatChamp result failed..", result);
+      dispatch(setNpsCsatChampDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getResMttrWaiting(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_RES_MTTR_WAITING;
+    console.log("getResMttrWaiting url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getResMttrWaiting result..", result);
+
+    if (result.success) {
+      console.log("getResMttrWaiting result success..", result);
+      dispatch(setResMttrWaitingData(result.data));
+    } else {
+      console.log("getResMttrWaiting result failed..", result);
+      dispatch(setResMttrWaitingDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getLiveInteractionsByStatus(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS;
+    console.log("getLiveInteractionsByStatus url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getLiveInteractionsByStatus result..", result);
+
+    if (result.success) {
+      console.log("getLiveInteractionsByStatus result success..", result);
+      dispatch(setLiveInteractionsByStatusData(result.data));
+    } else {
+      console.log("getLiveInteractionsByStatus result failed..", result);
+      dispatch(setLiveInteractionsByStatusDataError(result));
+    }
+
+  };
+}
+
+
+export function getInteractionsByStatusList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS_LIST;
+    console.log("getInteractionsByStatusList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionsByStatusList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionsByStatusList result success..", result);
+      dispatch(setInteractionsByStatusListData(result.data));
+    } else {
+      console.log("getInteractionsByStatusList result failed..", result);
+      dispatch(setInteractionsByStatusListDataError(result));
+    }
+
+  };
+}
+
+export function getInteractionsByStatusLiveList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS_LIST;
+    console.log("getInteractionsByStatusLiveList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionsByStatusLiveList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionsByStatusLiveList result success..", result);
+      dispatch(setInteractionsByStatusLiveListData(result.data));
+    } else {
+      console.log("getInteractionsByStatusLiveList result failed..", result);
+      dispatch(setInteractionsByStatusLiveListDataError(result));
+    }
+
+  };
+}
+
+
+export function getInteractionsByLiveStatusListTwo(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS;
+    console.log("getInteractionsByLiveStatusListTwo url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionsByLiveStatusListTwo result..", result);
+
+    if (result.success) {
+      console.log("getInteractionsByLiveStatusListTwo result success..", result);
+      dispatch(setInteractionsByStatusListDataTwo(result.data));
+    } else {
+      console.log("getInteractionsByLiveStatusListTwo result failed..", result);
+      dispatch(setInteractionsByStatusListDataErrorTwo(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionAvgWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_AVG_WISE;
+    console.log("getInteractionAvgWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionAvgWise result..", result);
+
+    if (result.success) {
+      console.log("getInteractionAvgWise result success..", result);
+      dispatch(setInteractionAvgWiseData(result.data));
+    } else {
+      console.log("getInteractionAvgWise result failed..", result);
+      dispatch(setInteractionAvgWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByPriorityStatusWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY_STATUS_WISE;
+    console.log("getInteractionByPriorityStatusWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriorityStatusWise result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriorityStatusWise result success..", result);
+      dispatch(setInteractionByPriorityStatusWiseData(result.data));
+    } else {
+      console.log("getInteractionByPriorityStatusWise result failed..", result);
+      dispatch(setInteractionByPriorityStatusWiseListDataError(result));
+    }
+
+  };
+}
+
+export function getInteractionByPriorityStatusWiseList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY_STATUS_WISE_LIST;
+    console.log("getInteractionByPriorityStatusWiseList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriorityStatusWiseList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriorityStatusWiseList result success..", result);
+      dispatch(setInteractionByPriorityStatusWiseListData(result.data));
+    } else {
+      console.log("getInteractionByPriorityStatusWiseList result failed..", result);
+      dispatch(setInteractionByPriorityStatusWiseListDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getManagersList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_GET_MANAGERS_LIST;
+    console.log("getManagersList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getManagersList result..", result);
+
+    if (result.success) {
+      console.log("getManagersList result success..", result);
+      dispatch(setManagersListData(result.data));
+    } else {
+      console.log("getManagersList result failed..", result);
+      dispatch(setManagersListDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByLivePriority(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY;
+    console.log("getLiveInteractionByPriority url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getLiveInteractionByPriority result..", result);
+
+    if (result.success) {
+      console.log("getLiveInteractionByPriority result success..", result);
+      dispatch(setInteractionByLivePriorityData(result.data));
+    } else {
+      console.log("getLiveInteractionByPriority result failed..", result);
+      dispatch(setInteractionByLivePriorityDataError(result));
+    }
+
+  };
+}
+
+
+export function getInteractionByPriority(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY;
+    console.log("getInteractionByPriority url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriority result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriority result success..", result);
+      dispatch(setInteractionByPriorityData(result.data));
+    } else {
+      console.log("getInteractionByPriority result failed..", result);
+      dispatch(setInteractionByPriorityDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByPriorityHigh(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY;
+    console.log("getInteractionByPriorityHigh url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriorityHigh result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriorityHigh result success..", result);
+      dispatch(setInteractionByPriorityHighData(result.data));
+    } else {
+      console.log("getInteractionByPriorityHigh result failed..", result);
+      dispatch(setInteractionByPriorityHighDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByPriorityLow(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY;
+    console.log("getInteractionByPriorityLow url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriorityLow result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriorityLow result success..", result);
+      dispatch(setInteractionByPriorityLowData(result.data));
+    } else {
+      console.log("getInteractionByPriorityLow result failed..", result);
+      dispatch(setInteractionByPriorityLowDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByPriorityMedium(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_PRIORITY;
+    console.log("getInteractionByPriorityMedium url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByPriorityMedium result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByPriorityMedium result success..", result);
+      dispatch(setInteractionByPriorityMediumData(result.data));
+    } else {
+      console.log("getInteractionByPriorityMedium result failed..", result);
+      dispatch(setInteractionByPriorityMediumDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByAgeing(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_AGEING;
+    console.log("getInteractionByAgeing url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByAgeing result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByAgeing result success..", result);
+      dispatch(setInteractionByAgeingData(result.data));
+    } else {
+      console.log("getInteractionByAgeing result failed..", result);
+      dispatch(setInteractionByAgeingDataError(result));
+    }
+
+  };
+}
+
+export async function getInteractionByAgeingThreeDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_AGEING;
+    console.log("getInteractionByAgeing 3 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByAgeing 3 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByAgeing 3 result success..", result);
+      dispatch(setInteractionByAgeingThreeDaysData(result.data));
+    } else {
+      console.log("getInteractionByAgeing 3 result failed..", result);
+      dispatch(setInteractionByAgeingThreeDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByAgeingFiveDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_AGEING;
+    console.log("getInteractionByAgeing 5 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByAgeing 5 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByAgeing 5 result success..", result);
+      dispatch(setInteractionByAgeingFiveDaysData(result.data));
+    } else {
+      console.log("getInteractionByAgeing 5 result failed..", result);
+      dispatch(setInteractionByAgeingFiveDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByAgeingMoreFiveDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_AGEING;
+    console.log("getInteractionByAgeing more 5 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByAgeing more 5 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByAgeing more 5 result success..", result);
+      dispatch(setInteractionByAgeingMoreFiveDaysData(result.data));
+    } else {
+      console.log("getInteractionByAgeing more 5 result failed..", result);
+      dispatch(setInteractionByAgeingMoreFiveDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByFollowups(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_FOLLOWUPS;
+    console.log("getInteractionByFollowups url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByFollowups result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByFollowups result success..", result);
+      dispatch(setInteractionByFollowupsData(result.data));
+    } else {
+      console.log("getInteractionByFollowups result failed..", result);
+      dispatch(setInteractionByFollowupsDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByFollowupsThreeDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_FOLLOWUPS;
+    console.log("getInteractionByFollowups 3 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByFollowups 3 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByFollowups 3 result success..", result);
+      dispatch(setInteractionByFollowupsThreeDaysData(result.data));
+    } else {
+      console.log("getInteractionByFollowups 3 result failed..", result);
+      dispatch(setInteractionByFollowupsThreeDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByFollowupsFiveDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_FOLLOWUPS;
+    console.log("getInteractionByFollowups 5 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByFollowups 5 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByFollowups 5 result success..", result);
+      dispatch(setInteractionByFollowupsFiveDaysData(result.data));
+    } else {
+      console.log("getInteractionByFollowups 5 result failed..", result);
+      dispatch(setInteractionByFollowupsFiveDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionByFollowupsMoreFiveDays(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_BY_FOLLOWUPS;
+    console.log("getInteractionByFollowups more 5 url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByFollowups more 5 result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByFollowups more 5 result success..", result);
+      dispatch(setInteractionByFollowupsMoreFiveDaysData(result.data));
+    } else {
+      console.log("getInteractionByFollowups more 5 result failed..", result);
+      dispatch(setInteractionByFollowupsMoreFiveDaysDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByCategory(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_CATEGORY;
+    console.log("getInteractionByCategory url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByCategory result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByCategory result success..", result);
+      dispatch(setInteractionByCategoryData(result.data));
+    } else {
+      console.log("getInteractionByCategory result failed..", result);
+      dispatch(setInteractionByCategoryDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByType(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_TYPE;
+    console.log("getInteractionByType url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByType result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByType result success..", result);
+      dispatch(setInteractionByTypeData(result.data));
+    } else {
+      console.log("getInteractionByType result failed..", result);
+      dispatch(setInteractionByTypeDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByServiceCategory(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_SERVICE_CATEGORY;
+    console.log("getInteractionByServiceCategory url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByServiceCategory result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByServiceCategory result success..", result);
+      dispatch(setInteractionByServiceCategoryData(result.data));
+    } else {
+      console.log("getInteractionByServiceCategory result failed..", result);
+      dispatch(setInteractionByServiceCategoryDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionByServiceType(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_SERVICE_TYPE;
+    console.log("getInteractionByServiceType url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByServiceType result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByServiceType result success..", result);
+      dispatch(setInteractionByServiceTypeData(result.data));
+    } else {
+      console.log("getInteractionByServiceType result failed..", result);
+      dispatch(setInteractionByServiceTypeDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionProjectWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_PROJECT_WISE_COUNT;
+    console.log("getInteractionProjectWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionProjectWise result..", result);
+
+    if (result.success) {
+      console.log("getInteractionProjectWise result success..", result);
+      dispatch(setInteractionProjectWiseData(result.data));
+    } else {
+      console.log("getInteractionProjectWise result failed..", result);
+      dispatch(setInteractionProjectWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+
+
+export async function getInteractionProjectWiseList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_PROJECT_WISE_LIST;
+    console.log("getInteractionProjectWiseList url..", url);
+    console.log("getInteractionProjectWiseList params..", params);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionProjectWiseList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionProjectWiseList result success..", result);
+      dispatch(setInteractionProjectWiseListData(result.data));
+    } else {
+      console.log("getInteractionProjectWiseList result failed..", result);
+      dispatch(setInteractionProjectWiseListDataError(result));
+    }
+
+  };
+}
+
+
+
+export function getInteractionAgentWise(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_AGENT_WISE_COUNT;
+    console.log("getInteractionAgentWise url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionAgentWise result..", result);
+
+    if (result.success) {
+      console.log("getInteractionAgentWise result success..", result);
+      dispatch(setInteractionAgentWiseData(result.data));
+    } else {
+      console.log("getInteractionAgentWise result failed..", result);
+      dispatch(setInteractionAgentWiseDataError(result));
+    }
+
+  };
+}
+
+
+
+export async function getInteractionAgentWiseList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_AGENT_WISE_LIST;
+    console.log("getInteractionAgentWiseList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionAgentWiseList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionAgentWiseList result success..", result);
+      dispatch(setInteractionAgentWiseListData(result.data));
+    } else {
+      console.log("getInteractionAgentWiseList result failed..", result);
+      dispatch(setInteractionAgentWiseListDataError(result));
+    }
+
+  };
+}
+
+
+// export function getInteractionAgentWise(params) {
+//   return async (dispatch) => {
+
+//     let url = endPoints.DASHBOARD_HELPDESK_AGENT_WISE;
+//     console.log("getHelpdeskAgentWise url..", url);
+
+//     let result = await serverCall(url, requestMethod.POST, params);
+//     console.log("getHelpdeskAgentWise result..", result);
+
+//     if (result.success) {
+//       console.log("getHelpdeskAgentWise result success..", result);
+//       dispatch(setHelpdeskAgentWiseData(result.data));
+//     } else {
+//       console.log("getHelpdeskAgentWise result failed..", result);
+//       dispatch(setHelpdeskAgentWiseDataError(result));
+//     }
+
+//   };
+// }
+
+

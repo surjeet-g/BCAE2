@@ -8,7 +8,6 @@ import { navBar } from "../Utilities/Style/navBar";
 // import Announcement from "../Screens/TabScreens/Announcement";
 // import AddTickets from "../Screens/TabScreens/AddTickets";
 // import MyTicketsStack from "./MyTicketsStack";
-import { DrawerActions } from "@react-navigation/native";
 
 import { Image, Platform, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -39,6 +38,7 @@ const BottomBarNavigation = () => {
   const dispatch2 = useDispatch([fetchMyProfileData]);
   const [loader, setLoader] = useState(true);
   const profileRed = useSelector((state) => state.profile);
+
 
   useEffect(() => {
     async function fetchMyAPI() {
@@ -75,11 +75,22 @@ const BottomBarNavigation = () => {
       ...{ color: "white", fontWeight: "700" },
     },
 
+
     headerRight: () => {
       return (
         <View style={navBar.navRightCon}>
+          {/* <Pressable
+            onPress={() => {
+            
+              // navigation.navigate("BottomBar")
 
-          <Pressable
+            }}
+            style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+          >
+            <Icon name="home-switch" size={28} color={Colors.BLACK} />
+          </Pressable> */}
+
+          {/* <Pressable
             onPress={() => navigation.navigate("Notification")}
             style={navBar.roundIcon}
           >
@@ -87,7 +98,7 @@ const BottomBarNavigation = () => {
               source={require("../Assets/icons/home_bell.png")}
               style={{ width: 35, height: 35 }}
             />
-          </Pressable>
+          </Pressable> */}
 
           <View style={navBar.divider} />
 
@@ -114,21 +125,25 @@ const BottomBarNavigation = () => {
       );
     },
 
-    headerLeft: () => (
-      <Pressable
-        onPress={() => {
-          navigation.dispatch(DrawerActions.openDrawer());
-        }}
-        style={{ marginLeft: 5 }}
-      >
-        <Icon name="menu" size={25} color={color.WHITE} />
-      </Pressable>
-    ),
+    // headerLeft: () => (
+    //   <Pressable
+    //     onPress={() => {
+    //       navigation.dispatch(DrawerActions.openDrawer());
+    //     }}
+    //     style={{ marginLeft: 5 }}
+    //   >
+    //     <Icon name="menu" size={25} color={color.WHITE} />
+    //   </Pressable>
+    // ),
   });
+
+
 
   return (
     <>
       {loader && <LoadingAnimation title="Fetch data...Please wait" />}
+
+
       <BottomTab.Navigator
         tabBar={(props) => <CustomBottomBar {...props} />}
         initialRouteName="HomeScreen"
@@ -152,7 +167,7 @@ const BottomBarNavigation = () => {
             headerRight: () => {
               return (
                 <View style={navBar.navRightCon}>
-                  <Pressable
+                  {/* <Pressable
                     onPress={() => {
                       // alert("ToDo - Navigate to Notifications Screen")
                     }}
@@ -162,7 +177,8 @@ const BottomBarNavigation = () => {
                       source={require("../Assets/icons/home_bell.png")}
                       style={{ width: 35, height: 35 }}
                     />
-                  </Pressable>
+                  </Pressable> */}
+
                   <View style={navBar.divider} />
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
@@ -188,7 +204,7 @@ const BottomBarNavigation = () => {
             headerRight: () => {
               return (
                 <View style={navBar.navRightCon}>
-                  <Pressable
+                  {/* <Pressable
                     onPress={() => {
 
                       // alert("ToDo - Navigate to Notifications Screen")
@@ -200,7 +216,8 @@ const BottomBarNavigation = () => {
                       source={require("../Assets/icons/home_bell.png")}
                       style={{ width: 35, height: 35 }}
                     />
-                  </Pressable>
+                  </Pressable> */}
+
                   <View style={navBar.divider} />
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image
@@ -226,7 +243,7 @@ const BottomBarNavigation = () => {
             headerRight: () => {
               return (
                 <View style={navBar.navRightCon}>
-                  <Pressable
+                  {/* <Pressable
                     onPress={() => {
                       // alert("ToDo - Navigate to Notifications Screen")
                     }
@@ -237,7 +254,8 @@ const BottomBarNavigation = () => {
                       source={require("../Assets/icons/home_bell.png")}
                       style={{ width: 35, height: 35 }}
                     />
-                  </Pressable>
+                  </Pressable> */}
+
                   <View style={navBar.divider} />
                   <Pressable onPress={() => navigation.navigate("Profile")}>
                     <Image

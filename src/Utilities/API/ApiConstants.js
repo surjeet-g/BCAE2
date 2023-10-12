@@ -12,11 +12,15 @@ const SERVER_TYE = "stage"
 
 // export const BASE_URL = "https://bcae-test.comquest-brunei.com:1443/dtWorks/comquest/"
 
-// Recently using url
-export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
 
-// Demo url
-// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
+
+
+
+
+
+
+
+
 
 
 
@@ -38,13 +42,42 @@ console.log('SERVER_TYE---->', SERVER_TYE)
 // Recently using tenant id
 // export const TENANT_ID = (SERVER_TYE == "stage") ? "a89d6593-3aa8-437b-9629-9fcbaa201da8" : "a89d6593-3aa8-437b-9629-9fcbaa201da4";
 
+
+
+// ----------------------------------------------------------------------------------------------------------------------------
+
+// Helpdesk 2.0 url
+export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
+
+// Telecom url
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
+
+// Demo url
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
+
+
+
 // Helpdesk 2.0 tenant id
-export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
+export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201d/c9";
+
+// Malaysia tenant id
+// export const TENANT_ID = "d2ba51d3-370b-4e93-a4f1-27ef0274a693";
+
+// Telecom tenant id
+// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
 
 // Demo tenant id
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
 
+
+// --------------------------------------------------------------------------------------------------------------------------
+
 console.log('TENANT_ID---->', TENANT_ID)
+
+
+
+
+
 export const endPoints = {
   MASTER_CONFIG: "api/master/get-app-config",
   TERM_ND_CONDITION: "api/master/template/get-terms-conditions?entityType=APPLICATION&serviceType=ALL",
@@ -125,6 +158,7 @@ export const endPoints = {
   UPDATE_ACCOUNT_API: "api/accounts/update/",
   UPDATE_CUSTOMER_STATUS_API: "api/customer/update-status",
   CREATE_ORDER_API: "api/order/create",
+
   DASHBOARD_HELPDESK_SUMMARY: "api/helpdesk/summary",
   DASHBOARD_HELPDESK_SUPPORT_TTK_PENDING: "api/helpdesk/support-tkt-pending",
   DASHBOARD_HELPDESK_MONTHLY_TREND: "api/helpdesk/monthly-trend",
@@ -134,6 +168,56 @@ export const endPoints = {
   DASHBOARD_HELPDESK_BY_SEVERITY: "api/helpdesk/helpdesk-by-severity",
   DASHBOARD_HELPDESK_PROJECT_WISE: "api/helpdesk/project-wise",
   DASHBOARD_HELPDESK_AGENT_WISE: "api/helpdesk/agent-wise",
+  DASHBOARD_HELPDESK_BY_TYPE: "api/helpdesk/helpdesk-by-type",
+
+
+  DASHBOARD_INTERACTION_STATEMENT_WISE: "api/interaction/statement-wise",
+  DASHBOARD_INTERACTION_CHANNEL_WISE: "api/interaction/channel-wise",
+  DASHBOARD_INTERACTION_CUSTOMER_WISE: "api/interaction/customer-wise",
+  DASHBOARD_INTERACTION_LIVE_CUSTOMER_WISE: "api/interaction/live-customer-wise",
+  DASHBOARD_INTERACTION_LIVE_PROJECT_WISE: "api/interaction/live-project-wise",
+  DASHBOARD_INTERACTION_LOCATION_WISE: "api/interaction/location-wise",
+  DASHBOARD_INTERACTION_DEPARTMENT: "api/interaction/dept-interactions",
+  DASHBOARD_INTERACTION_DEPARTMENT_VS_ROLES: "api/interaction/dept-vs-roles-interactions",
+  DASHBOARD_INTERACTION_NPS_CSAT_CHAMP: "api/interaction/nps-csat-champ",
+  DASHBOARD_INTERACTION_RES_MTTR_WAITING: "api/interaction/res-mttr-waiting",
+  DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS: "api/interaction/live-interactions-by-status",
+  DASHBOARD_INTERACTION_LIVE_INT_BY_STATUS_LIST: "api/interaction/by-status/list",
+  DASHBOARD_INTERACTION_BY_STATUS_COUNT: "api/interaction/by-status/count",
+  DASHBOARD_INTERACTION_AVG_WISE: "api/interaction/interaction-avg-wise",
+  DASHBOARD_INTERACTION_BY_PRIORITY_STATUS_WISE: "api/interaction/interaction-by-priority-status-wise",
+  DASHBOARD_INTERACTION_BY_PRIORITY_STATUS_WISE_LIST: "api/interaction/interaction-by-priority-status-wise-list",
+  DASHBOARD_INTERACTION_GET_MANAGERS_LIST: "api/users/get-managerlist",
+  DASHBOARD_INTERACTION_BY_PRIORITY: "api/interaction/by-priority",
+  DASHBOARD_INTERACTION_BY_AGEING: "api/interaction/by-ageing",
+  DASHBOARD_INTERACTION_BY_FOLLOWUPS: "api/interaction/by-followups",
+  DASHBOARD_INTERACTION_CATEGORY: "api/interaction/interaction/category/cnt",
+  DASHBOARD_INTERACTION_TYPE: "api/interaction/interaction/type/cnt",
+  DASHBOARD_INTERACTION_SERVICE_CATEGORY: "api/interaction/service/category/cnt",
+  DASHBOARD_INTERACTION_SERVICE_TYPE: "api/interaction/service/type/cnt",
+  DASHBOARD_INTERACTION_PROJECT_WISE_COUNT: "api/interaction/project-wise/count",
+  DASHBOARD_INTERACTION_PROJECT_WISE_LIST: "api/interaction/project-wise/list",
+  DASHBOARD_INTERACTION_AGENT_WISE_COUNT: "api/interaction/agent-wise/count",
+  DASHBOARD_INTERACTION_AGENT_WISE_LIST: "api/interaction/agent-wise/list"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

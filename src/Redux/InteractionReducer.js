@@ -288,7 +288,7 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
     case STATUS_DATA:
       return {
         ...state,
-        statusData: action.data.entities[0],
+        statusData: action.data.entities,
 
         // rolesData: action.data.entities[0].roles.map(item => {
         //   return { description: item.roleDesc, code: item.roles.roleId }

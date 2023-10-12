@@ -2,13 +2,12 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Card, Text } from "react-native-paper";
-import RNRestart from "react-native-restart/src";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
 import { fetchProfileRoles, switchUserRole } from "../../Redux/ProfileDispatcher";
-import { getDataFromDB, saveDataToDB } from "../../Storage/token";
+import { getDataFromDB } from "../../Storage/token";
 import { color, fontSizes, spacing, storageKeys } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { navBar } from "../../Utilities/Style/navBar";
@@ -22,7 +21,12 @@ var { height, width } = Dimensions.get("screen");
 */
 const SwitchRole = ({ navigation }) => {
 
+    console.log("SwitchRole rendereing...")
+
+
     let profileReducer = useSelector((state) => state.profile);
+
+    var [userSwitched, setUserSwitched] = useState(false);
 
     const [selDeptName, setSelDeptName] = useState("");
     const [selDeptDesc, setSelDeptDesc] = useState("");
@@ -61,9 +65,10 @@ const SwitchRole = ({ navigation }) => {
 
     useEffect(async () => {
 
-        console.log("current role...", await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
-        console.log("current dept...", await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
-
+        console.log("role desc..." + await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
+        console.log("dept desc..." + await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
+        console.log("role id..." + await getDataFromDB(storageKeys.CURRENT_ROLE_ID));
+        console.log("dept id..." + await getDataFromDB(storageKeys.CURRENT_DEPT_ID));
 
         setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
         setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
@@ -174,44 +179,47 @@ const SwitchRole = ({ navigation }) => {
                             onPress={async () => {
 
                                 dispatch(
-                                    switchUserRole(
-                                        selUserId,
-                                        selDeptName,
-                                        selDeptDesc,
-                                        selDeptVal,
-                                        selRoleName,
-                                        selRoleDesc,
-                                        selRoleVal,
-                                        navigation
-                                    )
+                                    switchUserRole(data = {
+                                        setUserSwitched: setUserSwitched,
+                                        userSwitched: userSwitched,
+                                        userId: selUserId,
+                                        currDept: selDeptName,
+                                        currDeptDesc: selDeptDesc,
+                                        currDeptId: selDeptVal,
+                                        currRole: selRoleName,
+                                        currRoleDesc: selRoleDesc,
+                                        currRoleId: selRoleVal,
+                                        navigation: navigation
+                                    })
                                 )
 
                                 console.log("profileSwitchedData...", profileReducer.profileSwitchedData);
 
-                                if (profileReducer.profileSwitchedData.status == 200) {
-                                    console.log("selRoleDesc..." + selRoleDesc);
-                                    console.log("selDeptDesc..." + selDeptDesc);
-                                    console.log("selRoleVal..." + selRoleVal);
-                                    console.log("selDeptVal..." + selDeptVal);
+                                // if (profileReducer.profileSwitchedData.status == 200) {
+                                // console.log("selRoleDesc..." + selRoleDesc);
+                                // console.log("selDeptDesc..." + selDeptDesc);
+                                // console.log("selRoleVal..." + selRoleVal);
+                                // console.log("selDeptVal..." + selDeptVal);
 
-                                    await saveDataToDB(storageKeys.CURRENT_ROLE_DESC, selRoleDesc);
-                                    await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, selDeptDesc);
-                                    await saveDataToDB(storageKeys.CURRENT_ROLE_ID, selRoleVal);
-                                    await saveDataToDB(storageKeys.CURRENT_DEPT_ID, selDeptVal);
+                                // await saveDataToDB(storageKeys.CURRENT_ROLE_DESC, selRoleDesc);
+                                // await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, selDeptDesc);
+                                // await saveDataToDB(storageKeys.CURRENT_ROLE_ID, selRoleVal);
+                                // await saveDataToDB(storageKeys.CURRENT_DEPT_ID, selDeptVal);
 
-                                    console.log("role..." + await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
-                                    console.log("dept..." + await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
+                                // console.log("role..." + await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
+                                // console.log("dept..." + await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
 
-                                    setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
-                                    setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
+                                // setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
+                                // setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
 
-                                    RNRestart.restart();
-                                }
+                                // RNRestart.restart();
+                            }
 
                                 // console.log("profileSwitchedData..", profileReducer.profileSwitchedData == {});
                                 // console.log("profileSwitchedErrorData..", profileReducer.profileSwitchedErrorData == {});
                                 // navigation.navigate("HomeScreen")
-                            }}
+                                // }
+                            }
                         />
                     </View>
 

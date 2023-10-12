@@ -1,6 +1,8 @@
 import Toast from "react-native-toast-message";
 import { serverCall } from "..//Utilities/API";
+import { saveDataToDB } from "../Storage/token";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
+import { storageKeys } from "../Utilities/Constants/Constant";
 import {
   USERTYPE,
   getCustomerUUID,
@@ -233,20 +235,16 @@ export function fetchProfileRoles(navigation = null) {
 }
 
 
-export function switchUserRole(
-  userId,
-  currDept,
-  currDeptDesc,
-  currDeptId,
-  currRole,
-  currRoleDesc,
-  currRoleId,
-  navigation
-) {
+export function switchUserRole(props) {
   return async (dispatch) => {
 
+    console.log("switchUserRole props..", props);
+    console.log("switchUserRole url..", url)
+
+    const { currDept, currDeptDesc, currDeptId, currRole, currRoleDesc,
+      currRoleId, userId } = props
+
     let url = endPoints.USER_ROLE_SWITCH + userId;
-    console.log("switchUserRole url..", url);
 
     let params = {
       currDept,
@@ -256,17 +254,29 @@ export function switchUserRole(
       currRoleDesc,
       currRoleId
     };
+
+    console.log("switchUserRole params..", params);
+
     let result = await serverCall(url, requestMethod.PUT, params);
-    console.log("switchUserRole result..", result);
+    // console.log("switchUserRole1 result..", props.setUserSwitched);
+    // console.log("switchUserRole2 result..", props.userSwitched);
 
     if (result.success) {
+      await saveDataToDB(storageKeys.CURRENT_ROLE_DESC, currRoleDesc);
+      await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, currDeptDesc);
+      await saveDataToDB(storageKeys.CURRENT_ROLE_ID, currRoleId);
+      await saveDataToDB(storageKeys.CURRENT_DEPT_ID, currDeptId);
+
       Toast.show({
         type: "bctSuccess",
         text1: "" + result.data.message,
       });
+
+      props.setUserSwitched(!props.userSwitched)
+
       dispatch(setProfileSwitchedDataInStore(result.data));
       // RNRestart.Restart();
-      navigation.navigate("HomeScreen")
+      props.navigation.navigate("BottomBar")
     } else {
       Toast.show({
         type: "bctError",

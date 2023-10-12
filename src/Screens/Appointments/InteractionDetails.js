@@ -9,7 +9,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  unstable_batchedUpdates
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +37,7 @@ import {
   fetchUsersByRole,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
+  getInteractionDetailsSearch,
   getWorkFlowForInteractionID,
   updateInteraction
 } from "./../../Redux/InteractionDispatcher";
@@ -44,26 +46,58 @@ import {
   getUserId,
   getUserType
 } from "./../../Utilities/UserManagement/userInfo";
+
 const InteractionDetails = (props) => {
 
   var showSelfAssign = false
   var showReassign = false
   var showReassignToSelf = false
-  var showFollowUp = false
+  var showFollowUp = true
   var showEdit = false
-
+  var showCancel = false
   const { route, navigation } = props;
   let { interactionSearchParams } = route.params
-  // let { interactionID } = route.params
-  let interactionID = interactionSearchParams
-  console.log("interactionID received..", interactionID.interactionSearchParams);
+  const [actionCompleted, setActionCompleted] = useState(false);
+  var [showBottomModal, setShowBottomModal] = useState(false);
+  var [interactionID, setInteractionDetails] = useState({});
+  var [_deptData, setDeptData] = useState([]);
+  var [_roleData, setRoleData] = useState([]);
 
 
+  interactionID = interactionSearchParams
+
+  useEffect(() => {
+    let params = {
+      searchParams: {
+        interactionNumber: interactionID.interactionSearchParams.intxnNo,
+      }
+    }
+    console.log("search params refresh..", params)
+    dispatch(getInteractionDetailsSearch(params, navigation))
+    console.log("search data refresh..", interactionReducer.interactionSearchData[0])
+    setInteractionDetails(interactionReducer.interactionSearchData[0])
+
+    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnNo));
+    console.log("InteractionFollowupData..", interactionReducer.interactionFollowupData)
+
+    dispatch(getWorkFlowForInteractionID(interactionID.interactionSearchParams.intxnNo));
+    console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
+
+  }, [showBottomModal]);
+
+  // useEffect(() => {
+  //   console.log("calling expected use effect..");
+  //   dispatch(
+  //     fetchUsersByRole(selRoleCode, selDeptCode, navigation)
+  //   )
+  //   console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
+  // }, [roleCodeAction]);
 
   // let interactionID = parseInt(167)
   const { colors } = useTheme();
+
   const [showPopupMenu, setShowPopupMenu] = useState(false);
-  const [showBottomModal, setShowBottomModal] = useState(false);
+
   const [modalIndex, setModalIndex] = useState(1);
   const [userType, setUserType] = useState("");
   const [formPriority, setFormPriority] = useState({});
@@ -83,6 +117,7 @@ const InteractionDetails = (props) => {
 
   const [selRoleDesc, setRoleDesc] = useState("")
   const [selRoleCode, setRoleCode] = useState("")
+  const [roleCodeAction, setRoleCodeAction] = useState(false)
 
   const [selDeptDesc, setDeptDesc] = useState("")
   const [selDeptCode, setDeptCode] = useState("")
@@ -95,8 +130,10 @@ const InteractionDetails = (props) => {
   const [currUserId, setCurrUserId] = useState("");
   const [currRoleId, setCurrRoleId] = useState("");
   const [currDeptId, setCurrDeptId] = useState("");
+  const [intUserId, setIntUserId] = useState("");
   const [intRoleId, setIntRoleId] = useState("");
   const [intDeptId, setIntDeptId] = useState("");
+  const [intStatus, setIntStatus] = useState("");
 
 
   const resetFollup = () => {
@@ -123,6 +160,9 @@ const InteractionDetails = (props) => {
   let interactionReducer = useSelector((state) => state.interaction);
   let orderReducer = useSelector((state) => state.orderList);
 
+
+
+
   const {
     InteractionDetailsData,
     InteractionWorkFlowData,
@@ -134,13 +174,18 @@ const InteractionDetails = (props) => {
   } = interactionReducer;
 
 
-  // Calling API to get interaction details & workflow/followup data
-  useEffect(() => {
-    console.log("inside use effect", interactionID.interactionSearchParams.intxnId)
 
-    setCurrUserId(getUserId())
-    setCurrRoleId(getDataFromDB(storageKeys.CURRENT_ROLE_ID))
-    setCurrDeptId(getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+
+  // Calling API to get interaction details & workflow/followup data
+  useEffect(async () => {
+
+    setCurrUserId(await getUserId())
+    setCurrRoleId(await getDataFromDB(storageKeys.CURRENT_ROLE_ID))
+    setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+
+    console.log("inside old use effect", interactionID.interactionSearchParams)
+
+
 
     //fetch order list or enble button
     // dispatch(getOrderListData(navigation, 1, 0));
@@ -157,11 +202,10 @@ const InteractionDetails = (props) => {
 
     const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
 
+
     dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
 
 
-    setIntRoleId(interactionID.interactionSearchParams.currentRole.description.roleId)
-    setIntDeptId(interactionID.interactionSearchParams.currentDepartment.description.unitId)
 
 
     dispatch(
@@ -179,7 +223,6 @@ const InteractionDetails = (props) => {
       fetchCancelReasons()
     )
     console.log("interactionCancelReasonsData got..", interactionReducer.interactionCancelReasonsData);
-
 
 
 
@@ -550,9 +593,11 @@ const InteractionDetails = (props) => {
           justifyContent: "space-between",
         }}
         onPress={() => {
-          setShowPopupMenu(!showPopupMenu);
-          setShowBottomModal(true);
-          setModalIndex(modalIndex);
+          unstable_batchedUpdates(() => {
+            setShowPopupMenu(!showPopupMenu);
+            setShowBottomModal(true);
+            setModalIndex(modalIndex);
+          })
         }}
       >
         <Text
@@ -586,23 +631,88 @@ const InteractionDetails = (props) => {
     );
   };
 
+
+
   const showHideMenu = () => {
-    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+
+    setIntUserId(interactionReducer.interactionSearchData[0].currentUser.code)
+    setIntRoleId(interactionReducer.interactionSearchData[0].currentRole.description.roleId)
+    setIntDeptId(interactionReducer.interactionSearchData[0].currentDepartment.description.unitId)
+    setIntStatus(interactionReducer.interactionSearchData[0].intxnStatus.code)
+
+    console.log("currRoleId..", currRoleId)
+    console.log("intRoleId..", intRoleId)
+    console.log("currDeptId..", currDeptId)
+    console.log("intDeptId..", intDeptId)
+    console.log("currUserId..", currUserId)
+    console.log("intUserId..", intUserId)
+
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId) && (!(currUserId == intUserId))
+      && (!(intStatus == "CLOSED")) && (!(intStatus == "CANCELLED"))) {
+      console.log("1..........")
       showSelfAssign = true
     }
 
-    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId) && (!(intUserId == ""))
+      && (currUserId == intUserId) && (!(intStatus == "CLOSED"))
+      && (!(intStatus == "CANCELLED"))) {
+      console.log("2..........")
       showReassign = true
+      showSelfAssign = false
+      // showFollowUp = false
     }
 
-    if ((currRoleId == intRoleId) && (currDeptId == intDeptId)) {
+
+    if ((currRoleId == intRoleId) && (currDeptId == intDeptId) && (!(intUserId == null))
+      && (!(intUserId == "")) && (!(currUserId == intUserId))
+      && (!(intStatus == "CLOSED")) && (!(intStatus == "CANCELLED"))) {
+      console.log("3..........")
       showReassignToSelf = true
     }
+
+    if (((currRoleId == intRoleId)) && ((currDeptId == intDeptId)) && ((!(intUserId == "")) && (!(intUserId == null)))
+      && (!(currUserId == intUserId)) && (!(intStatus == "CLOSED")) && (!(intStatus == "CANCELLED"))) {
+      console.log("4..........")
+      // showFollowUp = true
+      showSelfAssign = false
+      showReassign = false
+    }
+
+
+
+    if ((!(currRoleId == intRoleId)) && ((!(intUserId == "")) && (!(intUserId == null)) && (currUserId == intUserId))) {
+      console.log("5..........")
+      showSelfAssign = false
+      // showFollowUp = true
+      showReassign = false
+    }
+
+    if (((currRoleId == intRoleId)) && ((currDeptId == intDeptId)) && ((currUserId == intUserId)) && (!(intStatus == "CLOSED")) && (!(intStatus == "CANCELLED"))) {
+      showFollowUp = false
+    }
+
+
+    if (!(intStatus == "CANCELLED") && ((intStatus == "NEW"))) {
+      console.log("6..........")
+      showCancel = true
+    }
+
+    if (((currRoleId == intRoleId)) && ((currDeptId == intDeptId)) && (currUserId == intUserId)) {
+      console.log("7..........")
+      showEdit = true
+    }
+
   }
 
   const PopUpMenu = (props) => {
 
     showHideMenu()
+
+    console.log("showFollowUp..", showFollowUp)
+    console.log("showSelfAssign..", showSelfAssign)
+    console.log("showReassign..", showReassign)
+    console.log("showReassignToSelf..", showReassignToSelf)
+    console.log("showEdit..", showEdit)
 
     return (
       <View
@@ -632,27 +742,38 @@ const InteractionDetails = (props) => {
           <View>
 
             {/* Follow up */}
-            <PopUpMenuItem title={"Add followup"} modalIndex={1} />
-            <PopUpMenuDivider />
+            {showFollowUp && (
+              <PopUpMenuItem title={"Add followup"} modalIndex={1} />)}
+            {showFollowUp && (
+              <PopUpMenuDivider />)}
 
             {/* Assign to self */}
-            <PopUpMenuItem title={"Assign to self"} modalIndex={2} />
-            <PopUpMenuDivider />
+            {showSelfAssign && (
+              <PopUpMenuItem title={"Assign to self"} modalIndex={2} />)}
+            {showSelfAssign && (
+              <PopUpMenuDivider />)}
 
             {/* Re-assign */}
-            <PopUpMenuItem title={"Re-Assign"} modalIndex={3} />
-            <PopUpMenuDivider />
+            {showReassign && (
+              <PopUpMenuItem title={"Re-Assign"} modalIndex={3} />)}
+            {showReassign && (
+              <PopUpMenuDivider />)}
 
             {/* Re-assign to self*/}
-            <PopUpMenuItem title={"Re-Assign To Self"} modalIndex={4} />
-            <PopUpMenuDivider />
+            {showReassignToSelf && (
+              <PopUpMenuItem title={"Re-Assign To Self"} modalIndex={4} />)}
+            {showReassignToSelf && (
+              <PopUpMenuDivider />)}
 
             {/* Edit */}
-            <PopUpMenuItem title={"Edit"} modalIndex={5} />
-            <PopUpMenuDivider />
+            {showEdit && (
+              <PopUpMenuItem title={"Edit"} modalIndex={5} />)}
+            {showEdit && (
+              <PopUpMenuDivider />)}
 
             {/* Cancel */}
-            <PopUpMenuItem title={"Cancel"} modalIndex={6} />
+            {showCancel && (
+              <PopUpMenuItem title={"Cancel"} modalIndex={6} />)}
 
           </View>
 
@@ -671,7 +792,7 @@ const InteractionDetails = (props) => {
         open={showBottomModal}
         setOpen={setShowBottomModal}
         title={"Add Follow up"}
-        subtitle={`You have ${InteractionFollowupData.length} follow up`}
+        subtitle={`You have ${interactionReducer.interactionFollowupData?.length} follow up`}
       >
         <KeyboardAvoidingView>
           <View style={{ paddingHorizontal: 10 }}>
@@ -730,15 +851,19 @@ const InteractionDetails = (props) => {
                     setFollowupLoader(true)
                     const intId = interactionID.interactionSearchParams.intxnNo
                     console.log("intId..", intId);
-                    await dispatch(
+                    dispatch(
                       createFollowupForInteractionID(
+                        setShowBottomModal = { setShowBottomModal },
                         interactionID.interactionSearchParams.intxnNo,
                         { formPriority, formSource, formRemarks },
                         navigation
                       )
                     );
+
+                    // refreshMenus()
                     setFollowupLoader(false)
                     resetFollup()
+                    // setShowBottomModal(false)
                   }}
                 />
               </View>
@@ -752,6 +877,13 @@ const InteractionDetails = (props) => {
   const editModal = () => {
     console.log("status received2..", statusData);
 
+    var _statusData = statusData.map(item => {
+      return { description: item.status[0].description, code: item.status[0].code }
+    })
+
+
+
+
     return (
       <FooterModel
         open={showBottomModal}
@@ -763,10 +895,35 @@ const InteractionDetails = (props) => {
           <View style={{ paddingVertical: 10 }}>
             <CustomDropDownFullWidth
               selectedValue={selStatusDesc}
-              data={statusData.status}
+              data={_statusData}
               onChangeText={(text) => {
-                setStatusDesc(text.description),
-                  setStatusCode(text.code)
+                var deptArr = []
+                var roleArr = []
+
+                statusData.map(item => {
+                  if (text.code == item.status[0].code) {
+                    deptArr.push({ description: item.entity[0].unitDesc, code: item.entity[0].unitId })
+                    roleArr.push({ description: item.roles[0].roleDesc, code: item.roles[0].roleId })
+                  }
+                })
+
+                // deptArr.map(item => {
+                //   setDeptDesc(item.description),
+                //   setDeptCode(item.code)
+                // })
+
+                // roleArr.map(item => {
+                //   setRoleDesc(item.description),
+                //   setRoleCode(item.code)
+                // })
+
+                unstable_batchedUpdates(() => {
+                  setDeptData(deptArr)
+                  setRoleData(roleArr)
+
+                  setStatusDesc(text.description),
+                    setStatusCode(text.code)
+                })
               }}
               value={selStatusCode}
               caption={strings.status}
@@ -776,15 +933,10 @@ const InteractionDetails = (props) => {
           </View>
 
 
-
           <View style={{ paddingVertical: 10 }}>
             <CustomDropDownFullWidth
               selectedValue={selDeptDesc}
-              data={
-                statusData.entity.map(item => {
-                  return { description: item.unitDesc, code: item.unitId }
-                })
-              }
+              data={_deptData}
               onChangeText={(text) => {
                 setDeptDesc(text.description),
                   setDeptCode(text.code)
@@ -793,29 +945,28 @@ const InteractionDetails = (props) => {
               caption={strings.selectDepId}
               placeHolder={"Select " + strings.selectDepId}
             />
-            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
           </View>
-
 
 
 
           <View style={{ paddingVertical: 10 }}>
             <CustomDropDownFullWidth
               selectedValue={selRoleDesc}
-              data={
-                statusData.roles.map(item => {
-                  return { description: item.roleDesc, code: item.roleId }
-                })
-              }
+              data={_roleData}
               onChangeText={(text) => {
                 setRoleDesc(text.description),
                   setRoleCode(text.code)
+                // setRoleCodeAction(!roleCodeAction)
+
+                dispatch(
+                  fetchUsersByRole(text.code, selDeptCode, navigation)
+                )
+                console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
               }}
               value={selRoleCode}
               caption={strings.role}
               placeHolder={"Select " + strings.role}
             />
-            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
           </View>
 
 
@@ -865,6 +1016,7 @@ const InteractionDetails = (props) => {
               <CustomButton label={strings.submit} onPress={() => {
                 dispatch(
                   updateInteraction(
+                    setShowBottomModal = { setShowBottomModal },
                     interactionID.interactionSearchParams.intxnNo,
                     usersCode,
                     selDeptCode,
@@ -873,7 +1025,10 @@ const InteractionDetails = (props) => {
                     enteredRemarks
                   )
                 )
-                setShowBottomModal(false)
+
+                // refreshMenus()
+                // setShowBottomModal(false)
+
               }} />
             </View>
 
@@ -897,7 +1052,7 @@ const InteractionDetails = (props) => {
             variant="labelMedium"
             style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
           >
-            Are You Sure Want To Re Assign To Self ?
+            Are You Sure Want To Assign To Self ?
           </Text>
 
           {/* Bottom Button View */}
@@ -917,9 +1072,11 @@ const InteractionDetails = (props) => {
             </View>
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
-                // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
-                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "", "SELF"))
-                setShowBottomModal(false)
+                // await submit();
+                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "", "SELF"))
+
+                // setShowBottomModal(false)
+
               }} />
             </View>
           </View>
@@ -927,6 +1084,15 @@ const InteractionDetails = (props) => {
       </FooterModel>
     );
   };
+
+
+
+  const submit = async () => {
+
+    const status = dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "", "SELF", setShowBottomModal))
+    console.log("api status...", status)
+
+  }
 
 
   const ReAssignModal = () => {
@@ -972,8 +1138,9 @@ const InteractionDetails = (props) => {
             </View>
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
-                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + usersCode, "REASSIGN"))
-                setShowBottomModal(false)
+                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "" + usersCode, "REASSIGN"))
+                // refreshMenus()
+                // setShowBottomModal(false)
               }} />
             </View>
           </View>
@@ -1016,8 +1183,9 @@ const InteractionDetails = (props) => {
             </View>
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
-                dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
-                setShowBottomModal(false)
+                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
+                // refreshMenus()
+                // setShowBottomModal(false)
               }} />
             </View>
           </View>
@@ -1077,9 +1245,10 @@ const InteractionDetails = (props) => {
                 // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
                 // dispatch(cancelInteraction(cancelReasonCode))
                 dispatch(
-                  cancelInteraction(cancelReasonCode, interactionID.interactionSearchParams.intxnNo)
+                  cancelInteraction(setShowBottomModal = { setShowBottomModal }, cancelReasonCode, interactionID.interactionSearchParams.intxnNo)
                 )
-                setShowBottomModal(false)
+                // refreshMenus()
+                // setShowBottomModal(false)
               }} />
             </View>
           </View>

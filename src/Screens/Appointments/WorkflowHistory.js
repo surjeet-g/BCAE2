@@ -10,6 +10,8 @@ const WorkflowHistory = (props) => {
   let interactionReducer = useSelector((state) => state.interaction);
   const { InteractionWorkFlowData } = interactionReducer;
 
+  console.log("InteractionWorkFlowData........", InteractionWorkFlowData)
+
   const PlaceHolderText = ({ text = "Workflow", top, right }) => {
     return (
       <Text

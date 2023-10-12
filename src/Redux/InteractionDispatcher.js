@@ -468,12 +468,15 @@ export function getInteractionDetailsSearch(params, navigation = null) {
 }
 
 export function createFollowupForInteractionID(
+  props,
   interactionId,
   param,
   navigation = null
 ) {
+
   return async (dispatch) => {
     let url = endPoints.INSERTFOLLOWUP;
+    console.log("props123.......", props)
     console.log("createFollowupForInteractionID url..", url);
     let params = {
       interactionNumber: "" + interactionId,
@@ -485,12 +488,14 @@ export function createFollowupForInteractionID(
     let result = await serverCall(url, requestMethod.POST, params, navigation);
     console.log("$$$-createFollowupForInteractionID-result", result);
 
+
     if (result.success) {
       Toast.show({
         type: "bctSuccess",
         text1: result?.data?.message,
       });
       dispatch(setFollowupDataInStore(result.data.data));
+      props.setShowBottomModal(false)
       return true
     } else {
       Toast.show({
@@ -504,11 +509,14 @@ export function createFollowupForInteractionID(
 }
 
 export function assignInteractionToSelf(
+  props,
   interactionId,
   userId,
   type
 ) {
   return async (dispatch) => {
+
+
 
     let url = endPoints.INTERACTION_ASSIGN_SELF + interactionId;
 
@@ -521,11 +529,15 @@ export function assignInteractionToSelf(
 
       if (result.success) {
         console.log("self assign success..", result)
+
+        props.setShowBottomModal(false)
         Toast.show({
           type: "bctSuccess",
           text1: "" + result.data.message,
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
+
+
       } else {
         console.log("self assign failure..", result)
         Toast.show({
@@ -541,20 +553,26 @@ export function assignInteractionToSelf(
         type
       };
       let result = await serverCall(url, requestMethod.PUT, params);
-      console.log("re assign success..", result)
+      console.log("re assign success..", props)
+      console.log("props321.......", props)
+
+
 
       if (result.success) {
+        props.setShowBottomModal(false)
         Toast.show({
           type: "bctSuccess",
           text1: "" + result.message,
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
+
       } else {
         Toast.show({
           type: "bctError",
           text1: "" + result.message,
         });
         dispatch(setAssignInteractionToSelfErrorDataInStore(result));
+        // props.setShowBottomModal(false)
       }
     }
 
@@ -565,6 +583,7 @@ export function assignInteractionToSelf(
 
 
 export function cancelInteraction(
+  props,
   cancelReason,
   interactionId
 ) {
@@ -572,6 +591,7 @@ export function cancelInteraction(
 
     let url = endPoints.CANCEL_INTERACTION + interactionId;
     console.log("cancel int url..", url)
+    console.log("cancel props..", props)
 
     let params = {
       cancelReason
@@ -586,6 +606,7 @@ export function cancelInteraction(
         text1: "" + result.message,
       });
       // dispatch(setAssignInteractionToSelfDataInStore(result));
+      props.setShowBottomModal(false)
     } else {
       console.log("cancel int failure..", result)
       Toast.show({
@@ -687,6 +708,7 @@ export function fetchCancelReasons(navigation = null) {
 
 
 export function updateInteraction(
+  props,
   interactionId,
   userId,
   departmentId,
@@ -706,6 +728,7 @@ export function updateInteraction(
     };
     let result = await serverCall(url, requestMethod.PUT, params);
     console.log("updateInteraction result..", result);
+    console.log("update props.....", props)
 
     if (result.success) {
       Toast.show({
@@ -713,6 +736,8 @@ export function updateInteraction(
         text1: "" + result.data.message,
       });
       // dispatch(setStatusDataInStore(result.data.data));
+      console.log("updateInteraction result success..", result);
+      props.setShowBottomModal(false)
     } else {
       Toast.show({
         type: "bctError",
@@ -763,7 +788,7 @@ export function fetchStatus(
       {},
       navigation
     );
-    console.log("fetchStatus response....", statusListResult.data.data.entities[0].status);
+    console.log("fetchStatus response....", statusListResult.data.data.entities.status);
 
     if (statusListResult.success) {
       // Toast.show({

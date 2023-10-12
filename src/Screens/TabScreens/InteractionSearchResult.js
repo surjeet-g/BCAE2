@@ -50,11 +50,10 @@ const InteractionSearchResult = ({ route, navigation }) => {
 
 
     useEffect(async () => {
-        dispatch(getInteractionDetailsSearch(interactionSearchParams, navigation));
+        dispatch(await getInteractionDetailsSearch(interactionSearchParams, navigation));
         console.log("search data..", interactionReducer.interactionSearchData[0]);
 
     }, []);
-
 
 
 

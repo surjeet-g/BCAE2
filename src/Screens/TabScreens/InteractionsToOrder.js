@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-
+import get from "lodash.get";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -10,30 +10,20 @@ import {
   StyleSheet, Switch, TextInput,
   View
 } from "react-native";
-
 import { Chip, List, Text, useTheme } from "react-native-paper";
 import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { useDispatch, useSelector } from "react-redux";
+import { CheckGroupbox } from "../../Components/CheckGroupbox";
+import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
-import { styles as modalStyle } from "../../Components/InteractionSuccess";
-import {
-  color,
-  DEFAULT_PROFILE_IMAGE,
-  fontSizes,
-  INPUT_TYPE,
-  spacing
-} from "../../Utilities/Constants/Constant";
-
-import { strings } from "../../Utilities/Language";
-import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
-import { CustomInput } from "./../../Components/CustomInput";
-var { height, width } = Dimensions.get("screen");
-
-import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js";
-
-import { userNavigationIcon } from '../../Components/UserSearch';
+import { FooterModel } from "../../Components/FooterModel";
+import { ImagePicker } from "../../Components/ImagePicker";
+import { InteractionFailed } from "../../Components/InteractionFailed";
+import { InteractionSuccess, styles as modalStyle } from "../../Components/InteractionSuccess";
+import LoadingAnimation from "../../Components/LoadingAnimation";
+import { RenderUserSelectResult, userNavigationIcon } from '../../Components/UserSearch';
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import {
   setInteractionFormField,
   setInteractionReset
@@ -41,42 +31,40 @@ import {
 import {
   addInteractionAction,
   fetchInteractionAction,
+  getAppoinmentsData,
   updateInteractionAction
 } from "../../Redux/InteractionDispatcher";
-
-import get from "lodash.get";
-import { ClearSpace } from "../../Components/ClearSpace";
-import { FooterModel } from "../../Components/FooterModel";
-import { ImagePicker } from "../../Components/ImagePicker";
-import { InteractionFailed } from "../../Components/InteractionFailed";
-import { InteractionSuccess } from "../../Components/InteractionSuccess";
-import LoadingAnimation from "../../Components/LoadingAnimation";
-
-import { RenderUserSelectResult } from "../../Components/UserSearch";
-import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
-import {
-  getMasterData,
-  MASTER_DATA_CONSTANT
-} from "../../Redux/masterDataDispatcher";
-import { setProfileReset, setUserSearch } from "../../Redux/ProfileAction";
+import { getKnowledgeSearchData } from "../../Redux/KnowledgeSearchDispatcher.js";
+import { setProfileReset, setServiceData, setUserSearch } from "../../Redux/ProfileAction";
 import { fetchMyProfileData, fetchSavedProfileDataByUser, seachCustomers } from "../../Redux/ProfileDispatcher";
+import {
+  MASTER_DATA_CONSTANT,
+  getMasterData
+} from "../../Redux/masterDataDispatcher";
+import { getDataFromDB } from "../../Storage/token";
+import { endPoints } from '../../Utilities/API/ApiConstants';
+import {
+  DEFAULT_PROFILE_IMAGE,
+  INPUT_TYPE,
+  color,
+  fontSizes,
+  spacing,
+  storageKeys
+} from "../../Utilities/Constants/Constant";
+import { strings } from "../../Utilities/Language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
+import { USERTYPE, getCustomerID, getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 import theme from "../../Utilities/themeConfig";
-import { getCustomerID, getCustomerUUID, USERTYPE } from "../../Utilities/UserManagement/userInfo";
 import { handleMultipleContact } from "../../Utilities/utils";
-import { showErrorMessage } from "../Register/components/RegisterPersonal";
-
-import { CheckGroupbox } from "../../Components/CheckGroupbox";
-import { getAppoinmentsData } from "../../Redux/InteractionDispatcher";
-import { endPoints } from '../../Utilities/API/ApiConstants';
 import { APICall } from "../CreateCustomer/util";
+import { showErrorMessage } from "../Register/components/RegisterPersonal";
+import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
+import { CustomInput } from "./../../Components/CustomInput";
 import AppointmentPop from "./Component/Interaction/AppoinmentPop";
 import { HandleResolution } from "./Component/Interaction/Resolution";
-
-// export const [parsedCustServiceList, setParsedCustServiceList] = useState([]);
-
+var { height, width } = Dimensions.get("screen");
 
 export const typeOfAccrodin = {
   category: { value: "category", title: "Top 10 Category" },
@@ -88,6 +76,7 @@ export const typeOfAccrodin = {
   resolved: { value: "Resolved", title: "Resolution Corner" },
   workflow: { value: "workflow", title: "workflow Corner" },
 };
+
 const INTELIGENCE_STATUS = {
   CREATE_INTERACTION: "CREATE_INTERACTION",
   CREATE_INTERACTION_AUTO: "CREATE_INTERACTION_AUTO",
@@ -95,6 +84,7 @@ const INTELIGENCE_STATUS = {
   PRODUCT_WITH_SINGLE_ITEM: "PRODUCT_WITH_SINGLE_ITEM",
   RESOVLED: "RESOLVED"
 }
+
 /**
  * Customer/User can able to create their interactions and also provides smart assistance.
  * user can able to search statement 
@@ -102,6 +92,14 @@ const INTELIGENCE_STATUS = {
  */
 const InteractionsToOrder = ({ route, navigation }) => {
 
+  console.log("rendering InteractionsToOrder..")
+  var role = ""
+  const [formDataArray, setFormDataArray] = useState({});
+  const handleNextForm = (formData) => { setFormDataArray(prevArray => ({ ...prevArray, ...formData })) };
+  const [obj, setObj] = useState({})
+  const handleSetObj = useCallback((newObj) => {
+    setObj(newObj);
+  }, [setObj]);
   const [appoinmentFormData, setAppoinmentFormData] = useState()
   //to do empty
   // const [createInteractionType, setCreateInteractionType] = useState("")
@@ -114,7 +112,6 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [loader, setLoader] = useState(true);
   //attachment
   const [fileAttachments, setFileAttachments] = useState([]);
-
   const [resultLoader, setresultLoader] = useState(false);
   //to store active interaction object
   const [activeInteraction, setActiveInteraction] = useState("");
@@ -126,11 +123,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
   //bottom model enble or not
   const [openBottomModal, setOpenBottomModal] = useState(true);
   const [openBottomModalChatBoard, setOpenBottomModalChatBot] = useState(false);
-
   const [knowledgeSearchText, setKnowledgeSearchText] = useState("");
   //attachment
   const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
-
   const [bottomBarTitle, setBottombartitle] = useState("");
 
   const interactionResponseScreen = {
@@ -139,11 +134,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
     EMPTY_CUSTOMER: "EMPTY_CUSTOMER",
     NONE: "NONE",
   };
+
   const [enableSuccessScreen, setEnableSuccessScreen] = useState(
     interactionResponseScreen.NONE
   );
-
-
   const [modelProfileServiceModel, setProfileSeriveModal] = useState(false);
   const [intereactionAddResponse, setInteractionResponse] = useState({});
   const [appoimentPopUp, setAppoinmentPopup] = useState(false)
@@ -155,8 +149,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [userType, setUserType] = useState(userTypeParams);
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
-  //console.log("usertype", userType)
   const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
+
   /**
   * Reset state values. This will hanlde reset the state values 
   * @memberOf Interaction
@@ -179,6 +173,24 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setKnowledgeSearchText("");
     setOpenBottomModal(false);
     setBottombartitle("");
+  };
+
+  const [temp, setTemp] = useState();
+  const handleInputChangeNew = (text, fieldSetItem, formMetaAttributes) => {
+    setTemp(prevValues => ({
+      ...prevValues,
+      [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+      [fieldSetItem?.id]: text
+    }));
+  }
+
+  const handleInputChange = (text, fieldSetItem, formMetaAttributes) => {
+    console.log('text---->', text)
+    // setObj(obj => ({
+    //   ...obj,
+    //   [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+    //   [fieldSetItem?.id]: text
+    // }));
   };
 
   const headerRightForNav = () => {
@@ -239,6 +251,27 @@ const InteractionsToOrder = ({ route, navigation }) => {
     resetKnowSearch,
     getAppoinmentsData
   ]);
+
+
+  useEffect(async () => {
+
+    role = "" + await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
+    console.log("current role id..", role)
+    // const userId = await getUserId();
+    // console.log("current userId..", userId)
+
+    // if (role == "24") {
+
+    //   const status = await props.profileDispatch(
+    //     fetchSavedProfileDataByUser(
+    //       userId
+    //     )
+    //   );
+
+    //   setUserSeachEnable(false)
+    //   setSearchOpen(false)
+    // }
+  }, []);
 
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
@@ -580,6 +613,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
         </View>
       );
     } else {
+
+
+
       return (
         <View style={{ flex: 1 }}>
           <FlatList
@@ -611,6 +647,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     // borderRadius: 3,
                   }}
                   onPress={async () => {
+
+                    setFormDataArray({})
+
                     setsearchStandaloneModel(true)
                     setKnowledgeSearchText(false);
 
@@ -648,13 +687,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                     console.log("5............")
                     console.log("cust id rec....", "" + await getCustomerID())
+                    console.log("active data...", get(profileReducer, `${activeData}.customerUuid`, ''))
 
                     const { response, actionType } = await dispatchInteraction(
+
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
                         requestId: parseInt(item.requestId),
                         moduleName: "KnowledgeBaseMobileApp",
-                        customerId: "" + await getCustomerID()
+                        customerId: "" + get(profileReducer, `${activeData}.customerId`, '')
                       })
                     );
                     console.log("intreaction data response    ", response)
@@ -854,12 +895,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
     console.log("profile", profileReducer)
     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
     console.log("profile active ", activeData)
-    const addr = get(profileReducer, `${activeData}.customerAddress`, []);
-    // const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
-    // const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
 
-    const mobilePath = "customerContact[0].mobileNo"
-    const emailPath = "customerContact[0].emailId"
+    const addr = get(profileReducer, `${activeData}.customerAddress`, []);
+    const mobilePath = userType == USERTYPE.CUSTOMER ? "customerContact[0].mobileNo" : "contactNo"
+    const emailPath = userType == USERTYPE.CUSTOMER ? "customerContact[0].emailId" : "email"
+
+    // const mobilePath = "customerContact[0].mobileNo"
+    // const emailPath = "customerContact[0].emailId"
 
     const customerCategoryPath = userType == USERTYPE.CUSTOMER ? "customerCatDesc.description" : "customerCatDesc.description"
     const customerStatusPath = userType == USERTYPE.CUSTOMER ? "statusDesc.description" : "statusDesc.description"
@@ -873,6 +915,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
     return (
+
       <ImageBackground
         source={require("../../Assets/icons/login_card_background.png")}
         // resizeMode="contain"
@@ -890,6 +933,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           borderWidth: 3,
         }}
       >
+        {console.log("inside render profile..", userType)}
         <View style={{ flexDirection: "column" }}>
           <View style={{ flexDirection: "row-reverse" }}>
 
@@ -988,7 +1032,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
 
-        {console.log("sel cust uuid..", get(profileReducer, 'userSelectedProfileDetails', ''))}
+        {console.log("sel cust uuid..", get(profileReducer, 'savedProfileData', ''))}
 
 
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, }}>
@@ -1310,8 +1354,28 @@ const InteractionsToOrder = ({ route, navigation }) => {
       const activeData = get(profileReducer, 'userSelectedProfileDetails.customerUuid', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
       console.log('a2.........')
       // console.log('resolution RenderBottomChatBoard resolved', suggestionList)
+
+
+
+      // useEffect(() => {
+      //   console.log(obj, "from interaction to order");
+      // }, [obj]);
+
       return (
         <HandleResolution
+          formDataArray={formDataArray}
+          setFormDataArray={setFormDataArray}
+          handleNextForm={handleNextForm}
+          // obj={obj}
+          setObj={handleSetObj}
+          data={{
+            obj
+          }}
+          // handler={{
+          //   setObj
+          // }}
+          // inputText={inputText}
+          handleInputChange={handleInputChange}
           customerUuid={get(profileReducer, `${activeData}.customerUuid`, '')}
           popupAction={async (params) => {
             setLoader(true)
@@ -1328,10 +1392,12 @@ const InteractionsToOrder = ({ route, navigation }) => {
       );
 
     }
-    console.log('a3.........' + interactionList)
-    console.log('a5.........' + suggestionList)
+
 
     const interactionList = get(interactionReducer, 'InteractionData', [])
+
+    console.log('a3.........' + interactionList)
+    console.log('a5.........' + suggestionList)
 
     return (
       <HandleMultipleCaseInChatBoard
@@ -1447,70 +1513,82 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
         </View>
       }
-      {
-        userType == USERTYPE.USER &&
-        useMemo(() => {
-          return userNavigationIcon({
-            navigation,
-            setOpenBottomModal: setOpenBottomModal,
-            setSearchOpen: setSearchOpen,
-            setEnableSuccessScreens: () => {
-              //to do when user search is empty
-              {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
-            },
-            setLoader,
-            profileDispatch,
-            headerRightForNav,
-            headerTitle: "Interaction",
-            profileSearchData: get(profileReducer, "profileSearchData", [])
-          });
-        }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType])
 
-      }
       {
-        userType == USERTYPE.USER &&
-        useMemo(() => {
-          return (
-            <RenderUserSelectResult
-              profileSearchData={get(profileReducer, "profileSearchData", [])}
-              setLoader={setLoader}
-              setUserSeachEnable={setUserSeachEnable}
-              SearchModelisOpen={SearchModelisOpen}
-              setSearchOpen={setSearchOpen}
-              profileDispatch={profileDispatch}
-              headerRightForNav={headerRightForNav}
-              headerTitle={"Interaction"}
-              navigation={navigation}
-            />
-          );
-        }, [
-          userType,
-          profileReducer,
-          setLoader,
-          setUserType,
-          profileDispatch,
-          navigation,
-          userSeachEnable,
-          headerRightForNav,
-        ])
+
+        ((userType == USERTYPE.USER) &&
+          useMemo(() => {
+            return userNavigationIcon({
+              navigation,
+              setOpenBottomModal: setOpenBottomModal,
+              setSearchOpen: setSearchOpen,
+              setEnableSuccessScreens: () => {
+                //to do when user search is empty
+                {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
+              },
+              setLoader,
+              profileDispatch,
+              headerRightForNav,
+              headerTitle: "Interaction",
+              profileSearchData: get(profileReducer, "profileSearchData", [])
+            });
+          }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
+          ))
       }
+
+      {
+        ((userType == USERTYPE.USER) &&
+          useMemo(() => {
+            return (
+              <RenderUserSelectResult
+                profileSearchData={get(profileReducer, "profileSearchData", [])}
+                setLoader={setLoader}
+                setUserSeachEnable={setUserSeachEnable}
+                SearchModelisOpen={SearchModelisOpen}
+                setSearchOpen={setSearchOpen}
+                profileDispatch={profileDispatch}
+                headerRightForNav={headerRightForNav}
+                headerTitle={"Interaction"}
+                navigation={navigation}
+              />
+            );
+          }, [
+            userType,
+            profileReducer,
+            setLoader,
+            setUserType,
+            profileDispatch,
+            navigation,
+            userSeachEnable,
+            headerRightForNav,
+          ]))
+      }
+
       {appoimentPopUp && <AppointmentPop
         appointList={appointList}
         formData={appoinmentFormData}
         locationList={locationList}
         setAppoinmentPopup={setAppoinmentPopup}
       />}
+
       {
         loader && (
           <LoadingAnimation title="while we are creating Interaction." />
         )
       }
+
       {
         interactionReducer.initInteraction && (
           <LoadingAnimation title="fetch data" />
         )
       }
+
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+        {console.log("isModelOpen...", isModelOpen)}
+        {console.log("userSeachEnable...", userSeachEnable)}
+
+
         <View
           style={{
             ...styles.container,
@@ -1518,6 +1596,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             opacity: isModelOpen ? userSeachEnable ? 0 : 0.3 : 1,
           }}
         >
+          {console.log("opacity...", isModelOpen ? userSeachEnable ? 0 : 0.3 : 1)}
 
           {/* profile card */}
           {renderProfileTab}

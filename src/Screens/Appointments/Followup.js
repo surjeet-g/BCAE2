@@ -1,12 +1,13 @@
-import React from "react";
-import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 const Followup = (props) => {
   const { route, navigation } = props;
   let interactionReducer = useSelector((state) => state.interaction);
-  const { InteractionFollowupData } = interactionReducer;
+  const { interactionFollowupData } = interactionReducer;
+  console.log("InteractionFollowupData2....", interactionFollowupData)
 
   const PlaceHolderText = ({ text = "Followup", top, right }) => {
     return (
@@ -36,7 +37,7 @@ const Followup = (props) => {
           source={require("../../Assets/icons/ic_eclipse_orange_border.png")}
           style={{ width: 30, height: 30 }}
         />
-        {InteractionFollowupData.map((item, index) => (
+        {interactionFollowupData.map((item, index) => (
           <View
             key={item.intxnId}
             style={{ width: "100%", alignItems: "center" }}
@@ -81,48 +82,44 @@ const Followup = (props) => {
               </Text>
 
               {/* Row 1 */}
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                {/* Priority View */}
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
                 <FollowupItem
-                  title={"Priority"}
-                  value={item?.priorityCodeDesc?.description}
-                />
+                  title={"From Department / Role"}
+                  value={item?.fromEntityName.unitDesc + " - " + item?.fromRoleName.roleDesc} />
               </View>
 
               {/* Row 2 */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 20,
-                }}
-              >
-                {/* Source View */}
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
                 <FollowupItem
-                  title={"Source"}
-                  value={item?.channelDesc?.description}
-                />
-
-                {/* Remark View */}
-                <FollowupItem title={"Remark"} value={item?.remarks} />
+                  title={"To Department / Role"}
+                  value={item?.toEntityName.unitDesc + " - " + item?.toRoleName.roleDesc} />
               </View>
 
               {/* Row 3 */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 20,
-                }}
-              >
-                {/* Comments View */}
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
+                <FollowupItem
+                  title={"User"}
+                  value={item?.flwCreatedby.flwCreatedBy} />
+                <FollowupItem
+                  title={"Status"}
+                  value={item?.statusDescription.description} />
+              </View>
+
+              {/* Row 4 */}
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
+                <FollowupItem
+                  title={"Action Performed"}
+                  value={item?.flowActionDesc.description} />
+              </View>
+
+              {/* Row 5 */}
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
                 <FollowupItem
                   title={"Comments"}
-                  value={item?.intxnDetails?.intxnDescription}
-                />
+                  value={item?.remarks} />
               </View>
+
+
             </View>
           </View>
         ))}
@@ -168,7 +165,7 @@ const Followup = (props) => {
     <View style={styles.container}>
       <ScrollView nestedScrollEnabled={true}>
         {/* FollowupUI View */}
-        {InteractionFollowupData?.length > 0 ? (
+        {interactionFollowupData?.length > 0 ? (
           <FollowupUI />
         ) : (
           <Text

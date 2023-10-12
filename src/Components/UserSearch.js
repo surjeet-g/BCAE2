@@ -190,6 +190,7 @@ export const RenderUserSelectResult = (props) => {
                     )
                   );
 
+                  item.customerNo
                   console.log("customerUuid..", item.customerUuid)
 
                   if (status) {
