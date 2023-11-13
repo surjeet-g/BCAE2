@@ -81,8 +81,11 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.TOKEN_EXPIRY, tokenExpiresAt);
               await saveDataToDB(storageKeys.USERTYPE, userTypeInResponse);
 
+              console.log("customer id saving...", result?.data?.data?.user?.customerId)
+              console.log("customerUuid id saving...", result?.data?.data?.user?.customerUuid)
 
-
+              await saveDataToDB(storageKeys.CUSTOMER_UUID, result?.data?.data?.user?.customerUuid);
+              await saveDataToDB(storageKeys.CUSTOMER_ID, result?.data?.data?.user?.customerId);
               await saveDataToDB(storageKeys.CURRENT_ROLE_DESC, result.data?.data?.currRoleDesc);
               await saveDataToDB(storageKeys.CURRENT_ROLE_ID, result.data?.data?.currRoleId);
               await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, result.data?.data?.currDeptDesc);

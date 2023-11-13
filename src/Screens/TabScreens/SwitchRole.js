@@ -63,24 +63,25 @@ const SwitchRole = ({ navigation }) => {
 
     }, []);
 
-    useEffect(async () => {
+    useEffect(() => {
+        async function getData() {
+            console.log("role desc..." + await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
+            console.log("dept desc..." + await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
+            console.log("role id..." + await getDataFromDB(storageKeys.CURRENT_ROLE_ID));
+            console.log("dept id..." + await getDataFromDB(storageKeys.CURRENT_DEPT_ID));
 
-        console.log("role desc..." + await getDataFromDB(storageKeys.CURRENT_ROLE_DESC));
-        console.log("dept desc..." + await getDataFromDB(storageKeys.CURRENT_DEPT_DESC));
-        console.log("role id..." + await getDataFromDB(storageKeys.CURRENT_ROLE_ID));
-        console.log("dept id..." + await getDataFromDB(storageKeys.CURRENT_DEPT_ID));
+            setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
+            setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
 
-        setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
-        setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
+            dispatch(
+                fetchProfileRoles()
+            )
+            console.log("profileRolesData got..", profileReducer.profileRolesData);
 
-        dispatch(
-            fetchProfileRoles()
-        )
-        console.log("profileRolesData got..", profileReducer.profileRolesData);
-
-        setUserId(await getUserId())
-        console.log("userId got..", selUserId);
-
+            setUserId(await getUserId())
+            console.log("userId got..", selUserId);
+        }
+        getData()
     }, [])
 
 

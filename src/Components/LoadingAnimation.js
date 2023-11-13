@@ -13,12 +13,12 @@ export default function LoadingAnimation({ title = "" }) {
 
   return (
     <View style={{
-      position: "absolute", top: 1, height: height, width: width,
+      marginTop: -40, position: "absolute", top: 1, height: height, width: width,
       backgroundColor: "white", opacity: .8, zIndex: 99999999999999
     }}>
       <View style={{ justifyContent: "center", alignItems: "center", flex: 1, }}>
         <Image source={require("../Assets/icons/processing.gif")} />
-        <Text variant="labelLarge">Please wait</Text>
+        <Text variant="labelLarge">Loading..</Text>
         <ClearSpace size={3} />
         <Text variant="labelMedium">{title}</Text>
       </View>

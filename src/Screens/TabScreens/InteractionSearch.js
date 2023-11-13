@@ -72,9 +72,12 @@ const InteractionSearch = ({ navigation }) => {
     }, [showPopupMenu]);
 
 
-    useEffect(async () => {
-        const { INTXN_TYPE } = MASTER_DATA_CONSTANT;
-        dispatch(getMasterData(`${INTXN_TYPE}`));
+    useEffect(() => {
+        async function getData() {
+            const { INTXN_TYPE } = MASTER_DATA_CONSTANT;
+            dispatch(getMasterData(`${INTXN_TYPE}`));
+        }
+        getData()
     }, [])
 
     const onInteractionNoChange = (textStr) => {
@@ -239,7 +242,7 @@ const InteractionSearch = ({ navigation }) => {
                         <CustomButton
                             isDisabled={false}
                             // loading={loaderAdd}
-                            label={strings.clear}
+                            label={strings.close}
                             onPress={() => {
                                 setInteractionNo("")
                                 setCustomerName("")

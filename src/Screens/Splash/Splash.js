@@ -4,7 +4,6 @@ import { Text, useTheme } from "react-native-paper";
 import { StickyFooter } from "../../Components/StickyFooter";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
-import { strings } from "../../Utilities/Language";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
 import { commonStyle } from '../../Utilities/Style/commonStyle';
@@ -118,7 +117,7 @@ const Splash = ({ route, navigation }) => {
                 backgroundColor: color.WHITE, alignContent: "center"
               }}
             >
-              {strings.version}
+              1.0.6
             </Text>
           </View>
 

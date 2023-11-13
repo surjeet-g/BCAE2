@@ -1,5 +1,5 @@
-import { View, Image, Pressable } from "react-native";
 import React from "react";
+import { Image, Pressable, View } from "react-native";
 
 const AttachmentItem = (props) => {
   const { item, onDeleteClicked, showDeleteIcon = false, index } = props;
@@ -10,8 +10,8 @@ const AttachmentItem = (props) => {
         borderWidth: 1,
         borderColor: "#AEB3BE",
         margin: 5,
-        width: 70,
-        height: 70,
+        width: 55,
+        height: 55,
         flexDirection: "row",
       }}
     >
@@ -20,8 +20,8 @@ const AttachmentItem = (props) => {
           source={require("../Assets/icons/ic_pdf.png")}
           style={{
             flex: 1,
-            height: 70,
-            width: 70,
+            height: 55,
+            width: 55,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",
@@ -32,8 +32,8 @@ const AttachmentItem = (props) => {
           source={require("../Assets/icons/ic_word.png")}
           style={{
             flex: 1,
-            height: 70,
-            width: 70,
+            height: 55,
+            width: 55,
             borderRadius: 6,
             borderWidth: 1,
             borderColor: "#AEB3BE",

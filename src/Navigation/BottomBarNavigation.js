@@ -1,57 +1,44 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
-import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
-import { UserHomeScreen } from "../Screens/TabScreens/UserHomeScreen";
-import { navBar } from "../Utilities/Style/navBar";
-// import Chat from "../Screens/TabScreens/Chat";
-// import Announcement from "../Screens/TabScreens/Announcement";
-// import AddTickets from "../Screens/TabScreens/AddTickets";
-// import MyTicketsStack from "./MyTicketsStack";
-
-import { Image, Platform, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import CustomBottomBar from "./CustomBottomBar";
-// import CreateEnquiry from "../Screens/TabScreens/CreateEnquiry";
-// import CreateComplaint from "../Screens/TabScreens/CreateComplaint";
 import get from "lodash.get";
-import { Pressable } from "react-native";
+import React, { useEffect } from "react";
+import { Image, Platform, Pressable, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingAnimation from "../Components/LoadingAnimation";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
+import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
+import { UserHomeScreen } from "../Screens/TabScreens/UserHomeScreen";
 import { DEFAULT_PROFILE_IMAGE, color } from "../Utilities/Constants/Constant";
+import { navBar } from "../Utilities/Style/navBar";
 import { USERTYPE } from "../Utilities/UserManagement/userInfo";
 import { Appointment } from "./../Screens/Appointments/Appointment";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
+import CustomBottomBar from "./CustomBottomBar";
 
 const BottomTab = createBottomTabNavigator();
-const initialRoutByPlat =
-  Platform.OS === "android" ? "HomeScreen" : "HomeScreen";
-
+const initialRoutByPlat = Platform.OS === "android" ? "HomeScreen" : "HomeScreen";
 const Drawer = createDrawerNavigator();
 
 const BottomBarNavigation = () => {
+
   // const [profile, setProfile] = useState(null);
   const dispatch2 = useDispatch([fetchMyProfileData]);
-  const [loader, setLoader] = useState(true);
+  // const [loader, setLoader] = useState(true);
   const profileRed = useSelector((state) => state.profile);
-
 
   useEffect(() => {
     async function fetchMyAPI() {
       await dispatch2(fetchMyProfileData());
-      setLoader(false);
+      // setLoader(false);
       // if (res.status) {
       //   console.log('data', res)
       //   setProfile(res.data.profilePicture);
       // }
-
       // console.warn("useeffect", profile?.savedProfileData);
     }
-
     fetchMyAPI();
   }, []);
 
@@ -68,7 +55,7 @@ const BottomBarNavigation = () => {
     headerShown: true,
     headerStyle: {
       ...fonts.titleLarge,
-      backgroundColor: "#4C5A81",
+      backgroundColor: "#1B4F72",
     },
     headerTitleStyle: {
       ...fonts.titleMedium,
@@ -141,7 +128,7 @@ const BottomBarNavigation = () => {
 
   return (
     <>
-      {loader && <LoadingAnimation title="Fetch data...Please wait" />}
+      {/* {loader && <LoadingAnimation title="Fetch data...Please wait" />} */}
 
 
       <BottomTab.Navigator

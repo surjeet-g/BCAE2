@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 // import { Button } from "../Components/Button";
 import { useSelector } from "react-redux";
 import {
@@ -10,6 +10,8 @@ import {
 } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 import { getUserType } from "../Utilities/UserManagement/userInfo";
+
+var { height, width } = Dimensions.get("screen");
 
 const CustomBottomBar = ({ state, descriptors, navigation }) => {
   let profile = useSelector((state) => state.profile);
@@ -113,7 +115,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             borderColor: "transparent",
             borderWidth: state.index === 0 ? 3 : 0,
             borderTopColor:
-              state.index === 0 ? color.BCAE_PRIMARY : "transparent",
+              state.index === 0 ? "#9C8FC4" : "transparent",
           }}
         >
           <Image
@@ -152,6 +154,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             {strings.search}
           </Text>
         </Pressable>
+
         {/* button */}
         <Pressable
           onPress={() => openModal()}
@@ -261,14 +264,14 @@ const styles = StyleSheet.create({
     height: spacing.WIDTH_20,
   },
   selectedText: {
-    color: color.BCAE_PRIMARY,
+    color: "#9C8FC4",
     fontSize: fontSizes.FONT_10,
     fontWeight: "500",
     marginTop: 5,
     lineHeight: spacing.WIDTH_14,
   },
   selectedLogo: {
-    tintColor: color.BCAE_PRIMARY,
+    tintColor: "#9C8FC4",
     width: spacing.WIDTH_20,
     height: spacing.WIDTH_20,
   },

@@ -49,10 +49,12 @@ const InteractionSearchResult = ({ route, navigation }) => {
     }, [showPopupMenu]);
 
 
-    useEffect(async () => {
-        dispatch(await getInteractionDetailsSearch(interactionSearchParams, navigation));
-        console.log("search data..", interactionReducer.interactionSearchData[0]);
-
+    useEffect(() => {
+        async function getData() {
+            await dispatch(await getInteractionDetailsSearch(interactionSearchParams, navigation));
+            console.log("search data..", interactionReducer.interactionSearchData[0]);
+        }
+        getData()
     }, []);
 
 
@@ -60,15 +62,14 @@ const InteractionSearchResult = ({ route, navigation }) => {
     const renderItem = ({ item }) => (
         <Pressable
             style={{
-                borderRadius: 6,
-                borderWidth: 0,
-                borderColor: "#AEB3BE",
-                padding: 0,
-                marginTop: 15,
-                marginLeft: 15,
-                marginRight: 15,
                 justifyContent: "center",
                 alignItems: "center",
+                alignContent: "center",
+                marginTop: 20,
+                padding: 10,
+                backgroundColor: "#FFF",
+                borderRadius: 10,
+                elevation: 5
             }}
 
 
@@ -112,59 +113,57 @@ const Item = ({ body }) => {
 
         <View style={{
             flexDirection: "column",
-            margin: 5,
-            padding: 10,
-            backgroundColor: "#FFF",
-            borderRadius: 10,
-            elevation: 5,
+            marginLeft: 10,
+            padding: 0,
+            backgroundColor: "#FFF"
         }}>
 
 
             <View style={{ flexDirection: "row", margin: 5 }}>
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.interaction_number}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.intxnNo}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.interaction_number}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.intxnNo}</Text>
                 </View>
 
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.intractionType}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.intxnType.description}</Text>
-                </View>
-            </View>
-
-            <View style={{ flexDirection: "row", margin: 5 }}>
-                <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.status}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.intxnStatus.description}</Text>
-                </View>
-
-                <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.customer_name}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.customerDetails.firstName} {body.customerDetails.lastName}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.intractionType}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.intxnType.description}</Text>
                 </View>
             </View>
 
             <View style={{ flexDirection: "row", margin: 5 }}>
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.serviceType}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.serviceType.description}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.status}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.intxnStatus.description}</Text>
                 </View>
 
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.assigned}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{""}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.customer_name}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.customerDetails.firstName} {body.customerDetails.lastName}</Text>
                 </View>
             </View>
 
             <View style={{ flexDirection: "row", margin: 5 }}>
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.created_date}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{moment(body.createdAt).format("DD MMM YYYY HH:MM:SS")}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.serviceType}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.serviceType.description}</Text>
                 </View>
 
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: "normal" }}>{strings.created_by}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{body.createdBy.firstName} {body.createdBy.lastName}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.assigned}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{""}</Text>
+                </View>
+            </View>
+
+            <View style={{ flexDirection: "row", margin: 5 }}>
+                <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.created_date}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{moment(body.createdAt).format("DD MMM YYYY HH:MM:SS")}</Text>
+                </View>
+
+                <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.created_by}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.createdBy.firstName} {body.createdBy.lastName}</Text>
                 </View>
             </View>
 

@@ -2,12 +2,20 @@ import {
   APPOINTMENT_DASHBOARD_DATA,
   APPOINTMENT_DASHBOARD_ERROR,
   APPOINTMENT_DASHBOARD_INIT,
+  APPOINTMENT_EVENTS_DATA,
+  APPOINTMENT_EVENTS_ERROR_DATA,
+  APPOINTMENT_REMINDERS_DATA,
+  APPOINTMENT_REMINDERS_ERROR_DATA,
+  CLOSED_APPOINTMENTS_DATA,
+  CLOSED_APPOINTMENTS_ERROR_DATA,
   HELPDESK_AGENT_WISE_DATA,
   HELPDESK_AGENT_WISE_DATA_ERROR,
   HELPDESK_BY_AGEING_DATA,
   HELPDESK_BY_AGEING_DATA_ERROR,
   HELPDESK_BY_SEVERITY_DATA,
   HELPDESK_BY_SEVERITY_DATA_ERROR,
+  HELPDESK_BY_SEVERITY_LIST_DATA,
+  HELPDESK_BY_SEVERITY_LIST_DATA_ERROR,
   HELPDESK_BY_STATUS_DATA,
   HELPDESK_BY_STATUS_DATA_ERROR,
   HELPDESK_BY_STATUS_LIST_DATA,
@@ -30,6 +38,8 @@ import {
   HELPDESK_SUMMARY_SERVICE_REQUEST_DATA_ERROR,
   HELPDESK_SUMMARY_UNCLASSIFIED_DATA,
   HELPDESK_SUMMARY_UNCLASSIFIED_DATA_ERROR,
+  HOURLY_TICKETS_DATA,
+  HOURLY_TICKETS_ERROR_DATA,
   INTERACTION_AGENT_WISE_DATA,
   INTERACTION_AGENT_WISE_DATA_ERROR,
   INTERACTION_AGENT_WISE_LIST_DATA,
@@ -98,6 +108,8 @@ import {
   INTERACTION_BY_STATUS_WISE_COUNT_DATA_ERROR,
   INTERACTION_BY_TYPE_DATA,
   INTERACTION_BY_TYPE_DATA_ERROR,
+  INTERACTION_BY_TYPE_LIST_DATA,
+  INTERACTION_BY_TYPE_LIST_DATA_ERROR,
   INTERACTION_LIVE_BY_STATUS,
   INTERACTION_LIVE_BY_STATUS_ERROR,
   INTERACTION_LIVE_BY_STATUS_LIST,
@@ -112,10 +124,42 @@ import {
   INTERACTION_PROJECT_WISE_LIST_DATA_ERROR,
   MONTHLY_TREND_DATA,
   MONTHLY_TREND_DATA_ERROR,
+  OPERATIONAL_APPOINTMENT_OVERVIEW_DATA,
+  OPERATIONAL_APPOINTMENT_OVERVIEW_ERROR_DATA,
+  OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_DATA,
+  OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTIONS_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTIONS_ERROR_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_ERROR_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_DATA,
+  OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_ERROR_DATA,
+  OPERATIONAL_ASSIGNED_TO_ME_DATA,
+  OPERATIONAL_ASSIGNED_TO_ME_ERROR_DATA,
+  OPERATIONAL_INTXN_PERFORMANCE_GRAPH_DATA,
+  OPERATIONAL_INTXN_PERFORMANCE_GRAPH_ERROR_DATA,
+  OPERATIONAL_POOLED_INTERACTIONS_DATA,
+  OPERATIONAL_POOLED_INTERACTIONS_ERROR_DATA,
+  OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_DATA,
+  OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_ERROR_DATA,
+  OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_DATA,
+  OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA,
+  OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_DATA,
+  OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_ERROR_DATA,
+  OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_DATA,
+  OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_ERROR_DATA,
+  OPERATIONAL_TEAM_POOLED_INTERACTIONS_DATA,
+  OPERATIONAL_TEAM_POOLED_INTERACTIONS_ERROR_DATA,
+  OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA,
+  OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA,
   SUPPORT_TTK_PENDING_DATA,
   SUPPORT_TTK_PENDING_DATA_COUNTS,
   SUPPORT_TTK_PENDING_DATA_COUNTS_ERROR,
-  SUPPORT_TTK_PENDING_DATA_ERROR
+  SUPPORT_TTK_PENDING_DATA_ERROR,
+  TYPE_BASED_APPOINTMENTS_DATA,
+  TYPE_BASED_APPOINTMENTS_ERROR_DATA,
+  UPCOMING_APPOINTMENTS_DATA,
+  UPCOMING_APPOINTMENTS_ERROR_DATA
 } from "./AppointmentDashboardAction";
 
 const appointmentDashboardInitialState = {
@@ -150,6 +194,8 @@ const appointmentDashboardInitialState = {
   helpdeskByAgeingDataError: {},
   helpdeskBySeverityData: {},
   helpdeskBySeverityDataError: {},
+  helpdeskBySeverityListData: {},
+  helpdeskBySeverityListDataError: {},
   helpdeskProjectWiseData: {},
   helpdeskProjectWiseDataError: {},
   helpdeskAgentWiseData: {},
@@ -223,6 +269,8 @@ const appointmentDashboardInitialState = {
   interactionByCategoryDataError: {},
   interactionByTypeData: {},
   interactionByTypeDataError: {},
+  interactionByTypeListData: {},
+  interactionByTypeListDataError: {},
   interactionByServiceCategoryData: {},
   interactionByServiceCategoryDataError: {},
   interactionByServiceTypeData: {},
@@ -234,7 +282,47 @@ const appointmentDashboardInitialState = {
   interactionByAgentWiseData: {},
   interactionByAgentWiseDataError: {},
   interactionByAgentWiseListData: {},
-  interactionByAgentWiseListDataError: {}
+  interactionByAgentWiseListDataError: {},
+  operationalAssignedToMeData: {},
+  operationalAssignedToMeErrorData: {},
+  operationalAppointmentOverviewData: {},
+  operationalAppointmentOverviewErrorData: {},
+  operationalTeamAppointmentOverviewData: {},
+  operationalTeamAppointmentOverviewErrorData: {},
+  operationalPooledInteractionsData: {},
+  operationalPooledInteractionsErrorData: {},
+  operationalTeamPooledInteractionsData: {},
+  operationalTeamPooledInteractionsErrorData: {},
+  operationalAssignedInteractionsData: {},
+  operationalAssignedInteractionsErrorData: {},
+  operationalTeamAssignedInteractionsData: {},
+  operationalTeamAssignedInteractionsErrorData: {},
+  operationalInteractionHistoryGraphData: {},
+  operationalInteractionHistoryGraphErrorData: {},
+  operationalInteractionHistoryGraphTeamData: {},
+  operationalInteractionHistoryGraphTeamErrorData: {},
+  operationalAssignedAppointmentsGraphData: {},
+  operationalAssignedAppointmentsGraphErrorData: {},
+  operationalTeamAssignedAppointmentsGraphData: {},
+  operationalTeamAssignedAppointmentsGraphErrorData: {},
+  operationalIntxnPerformanceGraphData: {},
+  operationalIntxnPerformanceGraphErrorData: {},
+  operationalTopFivePerformanceData: {},
+  operationalTopFivePerformanceErrorData: {},
+  operationalTeamCategoryPerformanceData: {},
+  operationalTeamCategoryPerformanceErrorData: {},
+  hourlyTicketsData: [],
+  hourlyTicketsErrorData: {},
+  upcomingAppointmentsData: {},
+  upcomingAppointmentsErrorData: {},
+  closedAppointmentsData: {},
+  closedAppointmentsErrorData: {},
+  appointmentsEventsData: {},
+  appointmentsEventsErrorData: {},
+  appointmentsRemindersData: {},
+  appointmentsRemindersErrorData: {},
+  typeBasedAppointmentData: {},
+  typeBasedAppointmentErrorData: {},
 };
 
 const AppointmentDashboardReducer = (
@@ -461,6 +549,20 @@ const AppointmentDashboardReducer = (
       return {
         ...state,
         helpdeskBySeverityDataError: action.data,
+      };
+
+
+
+    case HELPDESK_BY_SEVERITY_LIST_DATA:
+      return {
+        ...state,
+        helpdeskBySeverityListData: action.data,
+      };
+
+    case HELPDESK_BY_SEVERITY_LIST_DATA_ERROR:
+      return {
+        ...state,
+        helpdeskBySeverityListDataError: action.data,
       };
 
 
@@ -985,6 +1087,20 @@ const AppointmentDashboardReducer = (
 
 
 
+    case INTERACTION_BY_TYPE_LIST_DATA:
+      return {
+        ...state,
+        interactionByTypeListData: action.data,
+      };
+
+    case INTERACTION_BY_TYPE_LIST_DATA_ERROR:
+      return {
+        ...state,
+        interactionByTypeListDataError: action.data,
+      };
+
+
+
     case INTERACTION_BY_SERVICE_CATEGORY_DATA:
       return {
         ...state,
@@ -1065,6 +1181,285 @@ const AppointmentDashboardReducer = (
       return {
         ...state,
         interactionByServiceTypeDataError: action.data,
+      };
+
+
+    case OPERATIONAL_ASSIGNED_TO_ME_DATA:
+      return {
+        ...state,
+        operationalAssignedToMeData: action.data,
+      };
+
+    case OPERATIONAL_ASSIGNED_TO_ME_ERROR_DATA:
+      return {
+        ...state,
+        operationalAssignedToMeErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_APPOINTMENT_OVERVIEW_DATA:
+      return {
+        ...state,
+        operationalAppointmentOverviewData: action.data,
+      };
+
+    case OPERATIONAL_APPOINTMENT_OVERVIEW_ERROR_DATA:
+      return {
+        ...state,
+        operationalAppointmentOverviewErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_DATA:
+      return {
+        ...state,
+        operationalTeamAppointmentOverviewData: action.data,
+      };
+
+    case OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_ERROR_DATA:
+      return {
+        ...state,
+        operationalTeamAppointmentOverviewErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_POOLED_INTERACTIONS_DATA:
+      return {
+        ...state,
+        operationalPooledInteractionsData: action.data,
+      };
+
+    case OPERATIONAL_POOLED_INTERACTIONS_ERROR_DATA:
+      return {
+        ...state,
+        operationalPooledInteractionsErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TEAM_POOLED_INTERACTIONS_DATA:
+      return {
+        ...state,
+        operationalTeamPooledInteractionsData: action.data,
+      };
+
+    case OPERATIONAL_TEAM_POOLED_INTERACTIONS_ERROR_DATA:
+      return {
+        ...state,
+        operationalTeamPooledInteractionsErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_ASSIGNED_INTERACTIONS_DATA:
+      return {
+        ...state,
+        operationalAssignedInteractionsData: action.data,
+      };
+
+    case OPERATIONAL_ASSIGNED_INTERACTIONS_ERROR_DATA:
+      return {
+        ...state,
+        operationalAssignedInteractionsErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_DATA:
+      return {
+        ...state,
+        operationalTeamAssignedInteractionsData: action.data,
+      };
+
+    case OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_ERROR_DATA:
+      return {
+        ...state,
+        operationalTeamAssignedInteractionsErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_DATA:
+      return {
+        ...state,
+        operationalInteractionHistoryGraphData: action.data,
+      };
+
+    case OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_ERROR_DATA:
+      return {
+        ...state,
+        operationalInteractionHistoryGraphErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_DATA:
+      return {
+        ...state,
+        operationalInteractionHistoryGraphTeamData: action.data,
+      };
+
+    case OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_ERROR_DATA:
+      return {
+        ...state,
+        operationalInteractionHistoryGraphTeamErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_DATA:
+      return {
+        ...state,
+        operationalAssignedAppointmentsGraphData: action.data,
+      };
+
+    case OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA:
+      return {
+        ...state,
+        operationalAssignedAppointmentsGraphErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_DATA:
+      return {
+        ...state,
+        operationalTeamAssignedAppointmentsGraphData: action.data,
+      };
+
+    case OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA:
+      return {
+        ...state,
+        operationalTeamAssignedAppointmentsGraphErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_INTXN_PERFORMANCE_GRAPH_DATA:
+      return {
+        ...state,
+        operationalIntxnPerformanceGraphData: action.data,
+      };
+
+    case OPERATIONAL_INTXN_PERFORMANCE_GRAPH_ERROR_DATA:
+      return {
+        ...state,
+        operationalIntxnPerformanceGraphErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA:
+      return {
+        ...state,
+        operationalTopFivePerformanceData: action.data,
+      };
+
+    case OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA:
+      return {
+        ...state,
+        operationalTopFivePerformanceErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA:
+      return {
+        ...state,
+        operationalTopFivePerformanceData: action.data,
+      };
+
+    case OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA:
+      return {
+        ...state,
+        operationalTopFivePerformanceErrorData: action.data,
+      };
+
+
+    case OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_DATA:
+      return {
+        ...state,
+        operationalTeamCategoryPerformanceData: action.data,
+      };
+
+    case OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_ERROR_DATA:
+      return {
+        ...state,
+        operationalTeamCategoryPerformanceErrorData: action.data,
+      };
+
+
+
+    case HOURLY_TICKETS_DATA:
+      return {
+        ...state,
+        hourlyTicketsData: action.data,
+      };
+
+    case HOURLY_TICKETS_ERROR_DATA:
+      return {
+        ...state,
+        hourlyTicketsErrorData: action.data,
+      };
+
+
+
+    case UPCOMING_APPOINTMENTS_DATA:
+      return {
+        ...state,
+        upcomingAppointmentsData: action.data,
+      };
+
+    case UPCOMING_APPOINTMENTS_ERROR_DATA:
+      return {
+        ...state,
+        upcomingAppointmentsErrorData: action.data,
+      };
+
+
+
+    case CLOSED_APPOINTMENTS_DATA:
+      return {
+        ...state,
+        closedAppointmentsData: action.data,
+      };
+
+    case CLOSED_APPOINTMENTS_ERROR_DATA:
+      return {
+        ...state,
+        closedAppointmentsErrorData: action.data,
+      };
+
+
+
+    case APPOINTMENT_EVENTS_DATA:
+      return {
+        ...state,
+        appointmentsEventsData: action.data,
+      };
+
+    case APPOINTMENT_EVENTS_ERROR_DATA:
+      return {
+        ...state,
+        appointmentsEventsErrorData: action.data,
+      };
+
+
+
+    case APPOINTMENT_REMINDERS_DATA:
+      return {
+        ...state,
+        appointmentsRemindersData: action.data,
+      };
+
+    case APPOINTMENT_REMINDERS_ERROR_DATA:
+      return {
+        ...state,
+        appointmentsRemindersErrorData: action.data,
+      };
+
+
+
+    case TYPE_BASED_APPOINTMENTS_DATA:
+      return {
+        ...state,
+        typeBasedAppointmentData: action.data,
+      };
+
+    case TYPE_BASED_APPOINTMENTS_ERROR_DATA:
+      return {
+        ...state,
+        typeBasedAppointmentErrorData: action.data,
       };
 
 

@@ -2,9 +2,11 @@ import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   Image,
   KeyboardAvoidingView,
+  PermissionsAndroid,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,7 +16,9 @@ import {
 } from "react-native";
 import { Divider, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import RNFetchBlob from "rn-fetch-blob";
 import { CustomButton } from "../../Components/CustomButton";
+import LoadingAnimation from "../../Components/LoadingAnimation";
 import { getOrderListData } from '../../Redux/OrderListDispatcher';
 import {
   MASTER_DATA_CONSTANT,
@@ -32,9 +36,11 @@ import {
   assignInteractionToSelf,
   cancelInteraction,
   createFollowupForInteractionID,
+  downloadattachment,
   fetchCancelReasons,
   fetchStatus,
   fetchUsersByRole,
+  getAttachmentList,
   getFollowupForInteractionID,
   getInteractionDetailsForID,
   getInteractionDetailsSearch,
@@ -46,6 +52,8 @@ import {
   getUserId,
   getUserType
 } from "./../../Utilities/UserManagement/userInfo";
+
+var { height, width } = Dimensions.get("screen");
 
 const InteractionDetails = (props) => {
 
@@ -62,71 +70,54 @@ const InteractionDetails = (props) => {
   var [interactionID, setInteractionDetails] = useState({});
   var [_deptData, setDeptData] = useState([]);
   var [_roleData, setRoleData] = useState([]);
+  var [responseFlag, setResponseFlag] = useState(false);
+  const [loader, setLoader] = useState(true);
 
-
+  console.log("props received...", props)
   interactionID = interactionSearchParams
 
   useEffect(() => {
-    let params = {
-      searchParams: {
-        interactionNumber: interactionID.interactionSearchParams.intxnNo,
+    async function refresh() {
+      setLoader(true)
+      let params = {
+        searchParams: {
+          interactionNumber: interactionID?.interactionSearchParams?.intxnNo,
+        }
       }
+      await dispatch(await getInteractionDetailsSearch(params, navigation))
+      setInteractionDetails(interactionReducer?.interactionSearchData?.[0])
+
+      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      console.log("InteractionFollowupData..", interactionReducer?.interactionFollowupData)
+
+      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
+      setLoader(false)
     }
-    console.log("search params refresh..", params)
-    dispatch(getInteractionDetailsSearch(params, navigation))
-    console.log("search data refresh..", interactionReducer.interactionSearchData[0])
-    setInteractionDetails(interactionReducer.interactionSearchData[0])
+    refresh()
+  }, [responseFlag]);
 
-    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnNo));
-    console.log("InteractionFollowupData..", interactionReducer.interactionFollowupData)
-
-    dispatch(getWorkFlowForInteractionID(interactionID.interactionSearchParams.intxnNo));
-    console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
-
-  }, [showBottomModal]);
-
-  // useEffect(() => {
-  //   console.log("calling expected use effect..");
-  //   dispatch(
-  //     fetchUsersByRole(selRoleCode, selDeptCode, navigation)
-  //   )
-  //   console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
-  // }, [roleCodeAction]);
-
-  // let interactionID = parseInt(167)
   const { colors } = useTheme();
-
   const [showPopupMenu, setShowPopupMenu] = useState(false);
-
   const [modalIndex, setModalIndex] = useState(1);
   const [userType, setUserType] = useState("");
   const [formPriority, setFormPriority] = useState({});
   const [formSource, setSource] = useState({});
   const [formRemarks, setFormRemarks] = useState("");
-
   const [followupLoader, setFollowupLoader] = useState(false)
-
   const [usersByRollList, setusersByRollList] = useState([])
-  // var usersByRollList = []
-
   const [usersDesc, setUsersDesc] = useState("")
   const [usersCode, setUsersCode] = useState("")
-
   const [cancelReasonDesc, setCancelReasonDesc] = useState("")
   const [cancelReasonCode, setCancelReasonCode] = useState("")
-
   const [selRoleDesc, setRoleDesc] = useState("")
   const [selRoleCode, setRoleCode] = useState("")
   const [roleCodeAction, setRoleCodeAction] = useState(false)
-
   const [selDeptDesc, setDeptDesc] = useState("")
   const [selDeptCode, setDeptCode] = useState("")
-
   const [selStatusDesc, setStatusDesc] = useState("")
   const [selStatusCode, setStatusCode] = useState("")
-
   const [enteredRemarks, setRemarks] = useState("")
-
   const [currUserId, setCurrUserId] = useState("");
   const [currRoleId, setCurrRoleId] = useState("");
   const [currDeptId, setCurrDeptId] = useState("");
@@ -134,7 +125,6 @@ const InteractionDetails = (props) => {
   const [intRoleId, setIntRoleId] = useState("");
   const [intDeptId, setIntDeptId] = useState("");
   const [intStatus, setIntStatus] = useState("");
-
 
   const resetFollup = () => {
     setSource("")
@@ -153,15 +143,13 @@ const InteractionDetails = (props) => {
     fetchUsersByRole,
     fetchStatus,
     fetchCancelReasons,
-    cancelInteraction
+    cancelInteraction,
+    getAttachmentList
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
   let interactionReducer = useSelector((state) => state.interaction);
   let orderReducer = useSelector((state) => state.orderList);
-
-
-
 
   const {
     InteractionDetailsData,
@@ -174,74 +162,66 @@ const InteractionDetails = (props) => {
   } = interactionReducer;
 
 
-
-
   // Calling API to get interaction details & workflow/followup data
-  useEffect(async () => {
+  useEffect(() => {
+    async function getData() {
+      setLoader(true)
+      setCurrUserId(await getUserId())
+      setCurrRoleId(await getDataFromDB(storageKeys.CURRENT_ROLE_ID))
+      setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
 
-    setCurrUserId(await getUserId())
-    setCurrRoleId(await getDataFromDB(storageKeys.CURRENT_ROLE_ID))
-    setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+      let params = {
+        searchParams: {
+          interactionNumber: interactionID?.interactionSearchParams?.intxnNo,
+        }
+      }
+      await dispatch(await getInteractionDetailsSearch(params, navigation))
+      setInteractionDetails(interactionReducer?.interactionSearchData?.[0])
 
-    console.log("inside old use effect", interactionID.interactionSearchParams)
+      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      console.log("InteractionFollowupData..", interactionReducer?.interactionFollowupData)
 
+      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
 
+      await dispatch(await getInteractionDetailsForID(interactionReducer?.interactionSearchData?.[0].intxnId, navigation));
+      console.log("InteractionDetailsData..", InteractionDetailsData)
 
-    //fetch order list or enble button
-    // dispatch(getOrderListData(navigation, 1, 0));
-    console.log("interactionL firt", interactionID.interactionSearchParams.intxnId)
+      //fetch order list or enble button
+      // dispatch(getOrderListData(navigation, 1, 0));
+      // console.log("interactionL firt", interactionReducer?.interactionSearchData?.[0].intxnId)
 
-    dispatch(getInteractionDetailsForID(interactionID.interactionSearchParams.intxnId, navigation));
-    console.log("InteractionDetailsData..", InteractionDetailsData)
+      const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
+      dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
 
-    dispatch(getWorkFlowForInteractionID(interactionID.interactionSearchParams.intxnNo));
-    console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
+      await dispatch(await fetchUsersByRole(interactionReducer?.interactionSearchData?.[0].currentRole.description.roleId, interactionID.interactionSearchParams.currentDepartment.description.unitId, navigation))
+      console.log("interactionUsersByRoleData got..", interactionReducer.interactionUsersByRoleData);
 
-    dispatch(getFollowupForInteractionID(interactionID.interactionSearchParams.intxnNo));
-    console.log("InteractionFollowupData..", interactionReducer.interactionFollowupData)
+      await dispatch(await fetchStatus(interactionID.interactionSearchParams.intxnUuid, "INTERACTION"))
 
-    const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
+      await dispatch(await fetchCancelReasons())
+      console.log("interactionCancelReasonsData got..", interactionReducer.interactionCancelReasonsData);
 
+      // if (interactionReducer.interactionUsersByRoleData.data.length > 0) {
+      //   const parsedata = interactionReducer.interactionUsersByRoleData.data.map(item => {
+      //     return { description: item.firstName, code: item.userId }
+      //   });
+      //   setusersByRollList(parsedata)
+      // }
+      // console.log("usersByRollList got..", usersByRollList);
+      // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "SELF"))
 
-    dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
+      let userType = getUserType();
+      setUserType(userType);
 
-
-
-
-    dispatch(
-      fetchUsersByRole(interactionID.interactionSearchParams.currentRole.description.roleId, interactionID.interactionSearchParams.currentDepartment.description.unitId, navigation)
-    )
-    console.log("interactionUsersByRoleData got..", interactionReducer.interactionUsersByRoleData);
-
-
-    dispatch(
-      fetchStatus(interactionID.interactionSearchParams.intxnUuid, "INTERACTION")
-    )
-
-
-    dispatch(
-      fetchCancelReasons()
-    )
-    console.log("interactionCancelReasonsData got..", interactionReducer.interactionCancelReasonsData);
-
-
-
-    // if (interactionReducer.interactionUsersByRoleData.data.length > 0) {
-    //   const parsedata = interactionReducer.interactionUsersByRoleData.data.map(item => {
-    //     return { description: item.firstName, code: item.userId }
-    //   });
-    //   setusersByRollList(parsedata)
-    // }
-
-    // console.log("usersByRollList got..", usersByRollList);
-
-
-
-    // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "SELF"))
-
-    let userType = getUserType();
-    setUserType(userType);
+      await dispatch(await getAttachmentList(interactionReducer?.interactionSearchData?.[0].intxnUuid))
+      console.log("getAttachmentList got..", interactionReducer.intxnAttachmentData);
+      setLoader(false)
+    }
+    getData()
   }, []);
+
+
 
   console.log('>>order details', orderReducer)
 
@@ -263,11 +243,11 @@ const InteractionDetails = (props) => {
       },
     });
   }, [showPopupMenu]);
+
   const handleMutiContactPer = (data) => {
     const len = get(data, 'length', 0)
     if (len == 0) return ""
     let final = []
-
     data.map(item => {
       final.push(`${item.description}`)
       return;
@@ -275,8 +255,7 @@ const InteractionDetails = (props) => {
     return final.join(`,\n`)
   }
 
-
-  const HorizontalFlatListItem = (props) => {
+  const AttachmentFlatListItem = (props) => {
     const { item, index } = props;
     return (
       <View
@@ -293,7 +272,7 @@ const InteractionDetails = (props) => {
           <View style={{ flexDirection: "row", flex: 1 }}>
             <Text
               variant="bodyMedium"
-              numberOfLines={2}
+              numberOfLines={1}
               style={{
                 fontWeight: 700,
                 fontSize: 16,
@@ -303,13 +282,83 @@ const InteractionDetails = (props) => {
                 marginRight: 5,
               }}
             >
+              {item.fileName}
+            </Text>
+          </View>
+          {/* View More view */}
+          <Pressable
+            onPress={async () => {
+              await dispatch(await downloadattachment(item.attachmentUuid))
+              console.log("download attachment got..", interactionReducer.intxnDownloadAttachmentData);
+              if (interactionReducer.intxnDownloadAttachmentData == {}) {
+                console.log("image not downloaded yet...")
+              }
+              else {
+                checkPermission(item.fileName)
+              }
+            }}
+          >
+
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: 400,
+                  fontSize: 14,
+                  color: "#EFA848",
+                }}
+              >
+                Download
+              </Text>
+
+            </View>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+
+
+  const HorizontalFlatListItem = (props) => {
+    const { item, index } = props;
+    return (
+      <View
+        style={{
+          alignContent: "center",
+          flexDirection: "row",
+          flex: 1,
+          margin: 5,
+          padding: 20,
+          backgroundColor: "#FFF",
+          borderRadius: 10,
+          elevation: 5,
+        }}
+      >
+        <View style={{ flexDirection: "column", flex: 1 }}>
+          {/* Title & Image View */}
+          <View>
+            <Text
+              variant="bodyMedium"
+              numberOfLines={2}
+              style={{
+                fontWeight: 500,
+                fontSize: 16,
+                width: 300,
+                color: colors.secondary,
+                flex: 2,
+                marginRight: 5,
+              }}
+            >
               {item.title || "No Name"}
             </Text>
 
-            <Image
-              source={require("../../Assets/icons/frequent_interaction.png")}
-              style={{ width: 50, height: 50, flex: 1 }}
-            />
+
           </View>
           {/* View More view */}
           <Pressable
@@ -333,8 +382,7 @@ const InteractionDetails = (props) => {
             <View
               style={{
                 flexDirection: "row",
-                marginTop: 30,
-                justifyContent: "space-between",
+                marginTop: 5
               }}
             >
               <Text
@@ -345,15 +393,23 @@ const InteractionDetails = (props) => {
                   color: "#EFA848",
                 }}
               >
-                View More
+                View
               </Text>
               <Image
                 source={require("../../Assets/icons/ic_right_arrow.png")}
-                style={{ marginLeft: 10, tintColor: "#EFA848" }}
+                style={{ marginTop: 2, marginLeft: 10, tintColor: "#EFA848" }}
               />
             </View>
           </Pressable>
         </View>
+
+        <View style={{ marginLeft: 140, flexDirection: "column", flex: 1 }}>
+          <Image
+            source={require("../../Assets/icons/frequent_interaction.png")}
+            style={{ width: 50, height: 50, flex: 1 }}
+          />
+        </View>
+
       </View>
     );
   };
@@ -394,8 +450,8 @@ const InteractionDetails = (props) => {
           <Text
             variant="bodySmall"
             style={{
-              fontWeight: 600,
-              fontSize: 16,
+              fontWeight: 500,
+              fontSize: 14,
               color: "#202223",
               marginTop: 5,
             }}
@@ -504,7 +560,10 @@ const InteractionDetails = (props) => {
               )}
               flex={2}
             />
+          </View>
 
+          {/* Row 2*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* Service Type View */}
             <DetailInfoItem
               title={"Service type"}
@@ -792,31 +851,36 @@ const InteractionDetails = (props) => {
         open={showBottomModal}
         setOpen={setShowBottomModal}
         title={"Add Follow up"}
-        subtitle={`You have ${interactionReducer.interactionFollowupData?.length} follow up`}
+        subtitle={`You have ${interactionReducer?.interactionFollowupData?.length} follow up`}
       >
         <KeyboardAvoidingView>
           <View style={{ paddingHorizontal: 10 }}>
-            <CustomDropDownFullWidth
-              selectedValue={get(formPriority, "description", "")}
-              data={priorityList}
-              onChangeText={(text) => {
-                setFormPriority(text);
-              }}
-              value={get(formPriority, "code", "")}
-              caption={strings.priority}
-              placeHolder={"Select " + strings.priority}
-            />
 
-            <CustomDropDownFullWidth
-              selectedValue={get(formSource, "description", "")}
-              data={sourceList}
-              onChangeText={(text) => {
-                setSource(text);
-              }}
-              value={get(formSource, "code", "")}
-              caption={strings.source}
-              placeHolder={"Select " + strings.user}
-            />
+            {priorityList.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={get(formPriority, "description", "")}
+                data={priorityList}
+                onChangeText={(text) => {
+                  setFormPriority(text);
+                }}
+                value={get(formPriority, "code", "")}
+                caption={strings.priority}
+                placeHolder={"Select " + strings.priority}
+              />
+            )}
+
+            {sourceList.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={get(formSource, "description", "")}
+                data={sourceList}
+                onChangeText={(text) => {
+                  setSource(text);
+                }}
+                value={get(formSource, "code", "")}
+                caption={strings.source}
+                placeHolder={"Select " + strings.user}
+              />
+            )}
 
             <CustomInput
               value={formRemarks}
@@ -853,10 +917,12 @@ const InteractionDetails = (props) => {
                     console.log("intId..", intId);
                     dispatch(
                       createFollowupForInteractionID(
-                        setShowBottomModal = { setShowBottomModal },
                         interactionID.interactionSearchParams.intxnNo,
                         { formPriority, formSource, formRemarks },
-                        navigation
+                        navigation,
+                        setShowBottomModal = { setShowBottomModal },
+                        setResponseFlag = { setResponseFlag },
+                        responseFlag
                       )
                     );
 
@@ -875,14 +941,13 @@ const InteractionDetails = (props) => {
   };
 
   const editModal = () => {
-    console.log("status received2..", statusData);
-
-    var _statusData = statusData.map(item => {
-      return { description: item.status[0].description, code: item.status[0].code }
+    var _statusData = []
+    console.log("statusData...", statusData)
+    interactionReducer?.statusData?.map(item => {
+      item.status?.map(item2 => {
+        _statusData.push({ description: item2?.description, code: item2?.code })
+      })
     })
-
-
-
 
     return (
       <FooterModel
@@ -893,98 +958,108 @@ const InteractionDetails = (props) => {
         <View style={{ paddingHorizontal: 10 }}>
 
           <View style={{ paddingVertical: 10 }}>
-            <CustomDropDownFullWidth
-              selectedValue={selStatusDesc}
-              data={_statusData}
-              onChangeText={(text) => {
-                var deptArr = []
-                var roleArr = []
 
-                statusData.map(item => {
-                  if (text.code == item.status[0].code) {
-                    deptArr.push({ description: item.entity[0].unitDesc, code: item.entity[0].unitId })
-                    roleArr.push({ description: item.roles[0].roleDesc, code: item.roles[0].roleId })
-                  }
-                })
+            {_statusData.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={selStatusDesc}
+                data={_statusData}
+                onChangeText={(text) => {
+                  var deptArr = []
+                  var roleArr = []
 
-                // deptArr.map(item => {
-                //   setDeptDesc(item.description),
-                //   setDeptCode(item.code)
-                // })
+                  interactionReducer?.statusData?.map(item => {
+                    item?.status?.map(item2 => {
+                      if (text.code == item2?.code) {
+                        item?.entity?.map(item3 => {
+                          deptArr.push({ description: item3?.unitDesc, code: item3?.unitId })
+                        })
 
-                // roleArr.map(item => {
-                //   setRoleDesc(item.description),
-                //   setRoleCode(item.code)
-                // })
+                        item?.roles?.map(item4 => {
+                          roleArr.push({ description: item4.roleDesc, code: item4.roleId })
+                        })
+                      }
+                    })
+                  })
 
-                unstable_batchedUpdates(() => {
-                  setDeptData(deptArr)
-                  setRoleData(roleArr)
+                  // statusData.map(item => {
+                  //   if (text.code == item.status[0].code) {
+                  //     deptArr.push({ description: item.entity[0].unitDesc, code: item.entity[0].unitId })
+                  //     roleArr.push({ description: item.roles[0].roleDesc, code: item.roles[0].roleId })
+                  //   }
+                  // })
 
-                  setStatusDesc(text.description),
-                    setStatusCode(text.code)
-                })
-              }}
-              value={selStatusCode}
-              caption={strings.status}
-              placeHolder={"Select " + strings.status}
-            />
-            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+                  unstable_batchedUpdates(() => {
+                    setDeptData(deptArr)
+                    setRoleData(roleArr)
+                    setStatusDesc(text.description),
+                      setStatusCode(text.code)
+                  })
+                }}
+                value={selStatusCode}
+                caption={strings.status}
+                placeHolder={"Select " + strings.status}
+              />
+            )}
           </View>
-
 
           <View style={{ paddingVertical: 10 }}>
-            <CustomDropDownFullWidth
-              selectedValue={selDeptDesc}
-              data={_deptData}
-              onChangeText={(text) => {
-                setDeptDesc(text.description),
-                  setDeptCode(text.code)
-              }}
-              value={selDeptCode}
-              caption={strings.selectDepId}
-              placeHolder={"Select " + strings.selectDepId}
-            />
+            {_deptData.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={selDeptDesc}
+                data={_deptData}
+                onChangeText={(text) => {
+                  unstable_batchedUpdates(() => {
+                    setDeptDesc(text.description),
+                      setDeptCode(text.code)
+                  })
+                }}
+                value={selDeptCode}
+                caption={strings.selectDepId}
+                placeHolder={"Select " + strings.selectDepId}
+              />
+            )}
           </View>
-
-
 
           <View style={{ paddingVertical: 10 }}>
-            <CustomDropDownFullWidth
-              selectedValue={selRoleDesc}
-              data={_roleData}
-              onChangeText={(text) => {
-                setRoleDesc(text.description),
-                  setRoleCode(text.code)
-                // setRoleCodeAction(!roleCodeAction)
-
-                dispatch(
-                  fetchUsersByRole(text.code, selDeptCode, navigation)
-                )
-                console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
-              }}
-              value={selRoleCode}
-              caption={strings.role}
-              placeHolder={"Select " + strings.role}
-            />
+            {_roleData.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={selRoleDesc}
+                data={_roleData}
+                onChangeText={(text) => {
+                  unstable_batchedUpdates(() => {
+                    setRoleDesc(text.description),
+                      setRoleCode(text.code)
+                    // setRoleCodeAction(!roleCodeAction)
+                  })
+                  dispatch(
+                    fetchUsersByRole(text.code, selDeptCode, navigation)
+                  )
+                  console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
+                }}
+                value={selRoleCode}
+                caption={strings.role}
+                placeHolder={"Select " + strings.role}
+              />
+            )}
           </View>
-
 
           <View style={{ paddingVertical: 10 }}>
-            <CustomDropDownFullWidth
-              selectedValue={usersDesc}
-              data={interactionReducer.interactionUsersByRoleData}
-              onChangeText={(text) => {
-                setUsersDesc(text.description),
-                  setUsersCode(text.code)
-              }}
-              value={usersCode}
-              caption={strings.user}
-              placeHolder={"Select " + strings.user}
-            />
-            {/* {interactionType.error && showErrorMessage(interactionType.error)} */}
+            {interactionReducer?.interactionUsersByRoleData?.length > 0 && (
+              <CustomDropDownFullWidth
+                selectedValue={usersDesc}
+                data={interactionReducer?.interactionUsersByRoleData}
+                onChangeText={(text) => {
+                  unstable_batchedUpdates(() => {
+                    setUsersDesc(text.description),
+                      setUsersCode(text.code)
+                  })
+                }}
+                value={usersCode}
+                caption={strings.user}
+                placeHolder={"Select " + strings.user}
+              />
+            )}
           </View>
-
 
           <CustomInput
             value={enteredRemarks}
@@ -1016,19 +1091,17 @@ const InteractionDetails = (props) => {
               <CustomButton label={strings.submit} onPress={() => {
                 dispatch(
                   updateInteraction(
-                    setShowBottomModal = { setShowBottomModal },
                     interactionID.interactionSearchParams.intxnNo,
                     usersCode,
                     selDeptCode,
                     selRoleCode,
                     selStatusCode,
-                    enteredRemarks
+                    enteredRemarks,
+                    setShowBottomModal = { setShowBottomModal },
+                    setResponseFlag = { setResponseFlag },
+                    responseFlag
                   )
                 )
-
-                // refreshMenus()
-                // setShowBottomModal(false)
-
               }} />
             </View>
 
@@ -1073,7 +1146,14 @@ const InteractionDetails = (props) => {
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
                 // await submit();
-                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "", "SELF"))
+                dispatch(assignInteractionToSelf(
+                  interactionReducer?.interactionSearchData?.[0]?.intxnNo,
+                  "",
+                  "SELF",
+                  setShowBottomModal = { setShowBottomModal },
+                  setResponseFlag = { setResponseFlag },
+                  responseFlag
+                ))
 
                 // setShowBottomModal(false)
 
@@ -1084,16 +1164,6 @@ const InteractionDetails = (props) => {
       </FooterModel>
     );
   };
-
-
-
-  const submit = async () => {
-
-    const status = dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "", "SELF", setShowBottomModal))
-    console.log("api status...", status)
-
-  }
-
 
   const ReAssignModal = () => {
     return (
@@ -1107,7 +1177,7 @@ const InteractionDetails = (props) => {
           <View style={{ paddingVertical: 10 }}>
             <CustomDropDownFullWidth
               selectedValue={usersDesc}
-              data={interactionReducer.interactionUsersByRoleData}
+              data={interactionReducer?.interactionUsersByRoleData}
               onChangeText={(text) => {
                 setUsersDesc(text.description),
                   setUsersCode(text.code)
@@ -1138,7 +1208,14 @@ const InteractionDetails = (props) => {
             </View>
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
-                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "" + usersCode, "REASSIGN"))
+                dispatch(assignInteractionToSelf(
+                  interactionReducer?.interactionSearchData?.[0]?.intxnNo,
+                  "" + usersCode,
+                  "REASSIGN",
+                  setShowBottomModal = { setShowBottomModal },
+                  setResponseFlag = { setResponseFlag },
+                  responseFlag
+                ))
                 // refreshMenus()
                 // setShowBottomModal(false)
               }} />
@@ -1183,7 +1260,14 @@ const InteractionDetails = (props) => {
             </View>
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
-                dispatch(assignInteractionToSelf(setShowBottomModal = { setShowBottomModal }, interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
+                dispatch(assignInteractionToSelf(
+                  interactionID.interactionSearchParams.intxnNo,
+                  "" + "",
+                  "REASSIGN_TO_SELF",
+                  setShowBottomModal = { setShowBottomModal },
+                  setResponseFlag = { setResponseFlag },
+                  responseFlag
+                ))
                 // refreshMenus()
                 // setShowBottomModal(false)
               }} />
@@ -1245,7 +1329,12 @@ const InteractionDetails = (props) => {
                 // dispatch(assignInteractionToSelf(interactionID.interactionSearchParams.intxnNo, "" + "", "REASSIGN_TO_SELF"))
                 // dispatch(cancelInteraction(cancelReasonCode))
                 dispatch(
-                  cancelInteraction(setShowBottomModal = { setShowBottomModal }, cancelReasonCode, interactionID.interactionSearchParams.intxnNo)
+                  cancelInteraction(
+                    cancelReasonCode,
+                    interactionID.interactionSearchParams.intxnNo,
+                    setShowBottomModal = { setShowBottomModal },
+                    setResponseFlag = { setResponseFlag },
+                    responseFlag)
                 )
                 // refreshMenus()
                 // setShowBottomModal(false)
@@ -1266,8 +1355,98 @@ const InteractionDetails = (props) => {
 
 
 
+  const checkPermission = async (fileName) => {
+    console.log("inside checkPermission...")
+
+    // Function to check the platform
+    // If Platform is Android then check for permissions.
+
+    if (Platform.OS === 'ios') {
+      downloadFile();
+    } else {
+      console.log("inside android...")
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message:
+              'Application needs access to your storage to download File',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Start downloading
+          downloadFile(fileName);
+          console.log('Storage Permission Granted.');
+        } else {
+          // If permission denied then show alert
+          Alert.alert('Error', 'Storage Permission Not Granted');
+        }
+      } catch (err) {
+        // To handle permission related exception
+        console.log("++++" + err);
+      }
+    }
+  };
+
+
+  const downloadFile = (fileName) => {
+
+    console.log("inside downloadFile...")
+
+    // Get today's date to add the time suffix in filename
+    let date = new Date();
+
+    // File URL which we want to download
+    let FILE_URL = interactionReducer.intxnDownloadAttachmentData.url;
+
+    // Function to get extention of the file url
+    // let file_ext = getFileExtention(fileName);
+
+    let file_ext = fileName.split(".");
+    file_ext = '.' + file_ext[1];
+
+    // config: To get response by passing the downloading related options
+    // fs: Root directory path to download
+    const { config, fs } = RNFetchBlob;
+    let RootDir = fs.dirs.PictureDir;
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        path:
+          RootDir +
+          '/dtworks/file_' +
+          Math.floor(date.getTime() + date.getSeconds() / 2) +
+          file_ext,
+        description: 'downloading file...',
+        notification: true,
+        // useDownloadManager works with Android only
+        useDownloadManager: true,
+      },
+    };
+    config(options)
+      .fetch('GET', FILE_URL)
+      .then(res => {
+        // Alert after successful downloading
+        console.log('res -> ', JSON.stringify(res));
+        alert('File Downloaded Successfully.');
+      });
+  };
+
+
+  const getFileExtention = fileUrl => {
+    // To get the file extension
+    return /[.]/.exec(fileUrl) ?
+      /[^.]+$/.exec(fileUrl) : undefined;
+  };
+
+
+
   return (
     <View style={styles.container}>
+
+      {loader && <LoadingAnimation />}
+
       {showPopupMenu && <PopUpMenu />}
 
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
@@ -1280,7 +1459,7 @@ const InteractionDetails = (props) => {
             showsHorizontalScrollIndicator={false}
             data={[
               // { title: `Appointment${"\n"}Details` },
-              { title: `Workflow${"\n"}History` },
+              { title: `Workflow History` },
             ]}
             renderItem={({ item, index }) => (
               <HorizontalFlatListItem item={item} index={index} />
@@ -1296,6 +1475,36 @@ const InteractionDetails = (props) => {
             />
           </View>
         }
+
+        <Text
+          variant="bodyMedium"
+          numberOfLines={1}
+          style={{
+            fontWeight: 700,
+            fontSize: 16,
+            width: 100,
+            color: colors.secondary,
+            flex: 2,
+            marginTop: 20,
+            marginLeft: 10,
+          }}
+        >
+          Attachments
+        </Text>
+        {interactionReducer.intxnAttachmentData.length > 0 && (
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <FlatList
+              initialNumToRender={1}
+              showsHorizontalScrollIndicator={false}
+              data={interactionReducer.intxnAttachmentData}
+              renderItem={({ item, index }) => (
+                <AttachmentFlatListItem item={item} index={index} />
+              )}
+              keyExtractor={(item, index) => index}
+            />
+          </View>
+        )}
+
       </ScrollView>
 
       {showBottomModal && modalIndex === 1 && AddFollowUpModal()}

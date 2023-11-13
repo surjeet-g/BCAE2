@@ -40,7 +40,7 @@ export const CheckGroupbox = ({ data, label, setValues, values }) => {
           ...commonStyle.row_start_center,
           la: "flex-start",
           flexWrap: "wrap",
-          marginLeft: 12,
+          marginLeft: 7,
         }}
       >
         {data.map((item, index) => (
@@ -68,7 +68,7 @@ export const CheckGroupbox = ({ data, label, setValues, values }) => {
             />
             <Text
               variant="labelMedium"
-              style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
+              style={{ margin: 5, alignSelf: "baseline", fontSize: 13 }}
             >
               {item.description}
             </Text>

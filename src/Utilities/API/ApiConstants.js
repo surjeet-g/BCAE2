@@ -47,24 +47,30 @@ console.log('SERVER_TYE---->', SERVER_TYE)
 // ----------------------------------------------------------------------------------------------------------------------------
 
 // Helpdesk 2.0 url
-export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
+// export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
 
 // Telecom url
-// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
+// Internal
+export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
+// External
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks/"
 
-// Demo url
-// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int"
+
 
 
 
 // Helpdesk 2.0 tenant id
-export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201d/c9";
+// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
 
 // Malaysia tenant id
 // export const TENANT_ID = "d2ba51d3-370b-4e93-a4f1-27ef0274a693";
 
 // Telecom tenant id
+// Internal
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
+// External
+export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da4";
+
 
 // Demo tenant id
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
@@ -90,6 +96,9 @@ export const endPoints = {
   INTERACTION_AVALABLE_APPOINMENT: 'api/master/available-appointment/mobile',
   SEACH_CUSTOMERS: "api/customer/get-customer",
   INTERACTION_ADD: "api/interaction/create",
+  UPLOAD_INTERACTION_ATTACHMENT: 'api/common/upload-files/storage?entityType=INTERACTION',
+  INTXN_ATTACHMENT_LIST: 'api/common/attachment/',
+  DOWNLOAD_INTXN_ATTACHMENT: 'api/common/download-files/',
   INTERACTION_UPDATE: "api/interaction/update/",
   INTERACTION_WORKFLOW: "api/workflow/resolution",
   KNOWLEDGE_SEARCH_STATEMENT: "api/knowledge-Base/get-knowledge-base",
@@ -169,6 +178,7 @@ export const endPoints = {
   DASHBOARD_HELPDESK_PROJECT_WISE: "api/helpdesk/project-wise",
   DASHBOARD_HELPDESK_AGENT_WISE: "api/helpdesk/agent-wise",
   DASHBOARD_HELPDESK_BY_TYPE: "api/helpdesk/helpdesk-by-type",
+  DASHBOARD_HELPDESK_HOURLY_TICKETS: "api/helpdesk/hourly-tkts",
 
 
   DASHBOARD_INTERACTION_STATEMENT_WISE: "api/interaction/statement-wise",
@@ -193,13 +203,41 @@ export const endPoints = {
   DASHBOARD_INTERACTION_BY_FOLLOWUPS: "api/interaction/by-followups",
   DASHBOARD_INTERACTION_CATEGORY: "api/interaction/interaction/category/cnt",
   DASHBOARD_INTERACTION_TYPE: "api/interaction/interaction/type/cnt",
+  DASHBOARD_INTERACTION_TYPE_LIST: "api/interaction/interaction/type/list",
   DASHBOARD_INTERACTION_SERVICE_CATEGORY: "api/interaction/service/category/cnt",
   DASHBOARD_INTERACTION_SERVICE_TYPE: "api/interaction/service/type/cnt",
   DASHBOARD_INTERACTION_PROJECT_WISE_COUNT: "api/interaction/project-wise/count",
   DASHBOARD_INTERACTION_PROJECT_WISE_LIST: "api/interaction/project-wise/list",
   DASHBOARD_INTERACTION_AGENT_WISE_COUNT: "api/interaction/agent-wise/count",
-  DASHBOARD_INTERACTION_AGENT_WISE_LIST: "api/interaction/agent-wise/list"
+  DASHBOARD_INTERACTION_AGENT_WISE_LIST: "api/interaction/agent-wise/list",
 
+  DASHBOARD_OPERATIONAL_ASSIGNED_TO_ME: "api/interaction/get-assigned-to-me-tickets",
+  DASHBOARD_OPERATIONAL_APPOINTMENT_OVERVIEW: "api/interaction/get-appointment-overview",
+  DASHBOARD_OPERATIONAL_POOLED_INTERACTIONS: "api/interaction/get-pooled-interactions",
+  DASHBOARD_OPERATIONAL_TEAM_POOLED_INTERACTIONS: "api/interaction/get-team-pooled-interactions",
+  DASHBOARD_OPERATIONAL_ASSIGNED_INTERACTIONS: "api/interaction/get-assigned-interactions",
+  DASHBOARD_OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS: "api/interaction/get-team-assigned-interactions",
+  DASHBOARD_OPERATIONAL_INTERACTION_HISTORY_GRAPH: "api/interaction/interaction-history-graph",
+  DASHBOARD_OPERATIONAL_INTERACTION_HISTORY_GRAPH_TEAM: "api/interaction/interaction-history-graph-team",
+  DASHBOARD_OPERATIONAL_ASSIGNED_APPOINTMENTS: "api/interaction/get-assigned-appoinments",
+  DASHBOARD_OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS: "api/interaction/get-team-assigned-appoinments",
+  DASHBOARD_OPERATIONAL_INTXN_CATEGORY_PERFORMANCE: "api/interaction/get-interaction-category-performance",
+  DASHBOARD_OPERATIONAL_INTXN_TOP_FIVE_PERFORMANCE: "api/interaction/get-topfive-performer",
+  DASHBOARD_OPERATIONAL_INTXN_TOP_FIVE_PERFORMANCE_CHAT: "api/interaction/get-topfive-performer-chat",
+  DASHBOARD_OPERATIONAL_TEAM_CATEGORY_PERFORMANCE: "api/interaction/get-team-category-performance",
+
+
+  DASHBOARD_APPOINTMENT_GET_UPCOMING: "api/appointment/get-upcoming-appoinments?page=0&limit=500&valueParam=AS_SCHED",
+  DASHBOARD_APPOINTMENT_GET_CLOSED: "api/appointment/get-closed-appoinments?page=0&limit=500&valueParam=AS_COMP_SUCCESS,AS_COMP_UNSUCCESS",
+  DASHBOARD_APPOINTMENT_GET_EVENTS: "api/appointment/get-appoinment-events",
+  DASHBOARD_APPOINTMENT_GET_REMINDER: "api/appointment/get-appoinments-reminder",
+  DASHBOARD_APPOINTMENT_GET_APP_BASED_ON_TYPE: "api/appointment/get-based-on-type",
+
+
+
+
+  EVENT_HALLS_API: "api/appointment/get-halls",
+  EVENT_HALLS_AVAILABILITY_API: "api/appointment/get-hall-slots-availability"
 
 
 

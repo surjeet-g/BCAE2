@@ -14,6 +14,8 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch } from "react-redux";
+import { uploadInteractionAttachment } from "../Redux/InteractionDispatcher";
 import { spacing } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 import AttachmentItem from "./AttachmentItem";
@@ -32,8 +34,10 @@ export const ImagePicker = ({
   attachmentModalVisible,
   setAttachmentModalVisible,
   fileAttachments,
-  setFileAttachments,
+  setFileAttachments
 }) => {
+  const dispatch = useDispatch([uploadInteractionAttachment]);
+
   const launchImageLibrary1 = () => {
     let options = {
       storageOptions: {
@@ -74,7 +78,20 @@ export const ImagePicker = ({
             text1: "Technical Issue",
           });
         } else {
-          if (response?.assets[0]?.fileSize < 5000000) {
+          if (response?.assets[0]?.fileSize < 20980000) {
+
+            let _data = {
+              from: "MAIL",
+              size: response?.assets[0]?.fileSize,
+              uri: response?.assets[0]?.uri,
+              mimetype: response?.assets[0]?.type,
+              name: response?.assets[0]?.fileName,
+              content: response?.assets[0]?.base64
+            }
+
+            uploadAttachment(_data)
+
+
             setFileAttachments([
               ...fileAttachments,
               {
@@ -85,6 +102,7 @@ export const ImagePicker = ({
                 base64: response?.assets[0]?.base64,
               },
             ]);
+
           } else {
             Toast.show({
               type: "bctError",
@@ -133,6 +151,19 @@ export const ImagePicker = ({
       // console.warn(err);
     }
   };
+
+  const uploadAttachment = async (attachmentData) => {
+    console.log("uploadAttachment...")
+
+
+    // const data = new FormData();
+    // data.append('file_to_upload', attachmentData);
+    // console.log("data value...", data)
+    // const resImgUpload = await APICallForMuti(endPoints.UPLOAD_INTERACTION_ATTACHMENT, data, "")
+    // console.log("resImgUpload value...", resImgUpload)
+
+    dispatch(uploadInteractionAttachment(attachmentData));
+  }
 
   const onDeleteClicked = (index) => {
     Alert.alert(
@@ -304,6 +335,8 @@ export const ImagePicker = ({
     return (
       <Pressable
         style={{
+          height: 55,
+          width: 55,
           borderRadius: 6,
           borderWidth: 1,
           borderColor: "#AEB3BE",
@@ -322,11 +355,11 @@ export const ImagePicker = ({
   return (
     <View>
       <View style={{}}>
-        <Text style={{ fontSize: 16, fontWeight: 400, color: "#000000" }}>
+        <Text style={{ marginLeft: 5, marginTop: 10, fontSize: 16, fontWeight: 400, color: "#000000" }}>
           Attachment
         </Text>
-        <Text style={{ fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
-          (Maximum 5 files can be attached with max file size of 5MB each)
+        <Text style={{ marginLeft: 10, fontSize: 11, fontWeight: 400, color: "#AEB3BE" }}>
+          (Maximum 5 files can be attached with max file size of 20MB each)
         </Text>
         <FlatList
           horizontal

@@ -12,8 +12,16 @@ import {
   initAppointmentDashboardData,
   setAppointmentDashboardData,
   setAppointmentDashboardError,
+  setAppointmentEventsData,
+  setAppointmentEventsErrorData,
+  setAppointmentRemindersData,
+  setAppointmentRemindersErrorData,
+  setAssignedAppointmentsGraphData,
+  setAssignedAppointmentsGraphErrorData,
   setChannelWiseData,
   setChannelWiseDataError,
+  setClosedAppointmentsData,
+  setClosedAppointmentsErrorData,
   setCustomerWiseData,
   setCustomerWiseDataError,
   setDepartmentInteractionsData,
@@ -28,6 +36,8 @@ import {
   setHelpdeskBySeverityDataError,
   setHelpdeskBySeverityDataErrorLive,
   setHelpdeskBySeverityDataLive,
+  setHelpdeskBySeverityListData,
+  setHelpdeskBySeverityListDataError,
   setHelpdeskByStatusData,
   setHelpdeskByStatusDataError,
   setHelpdeskByStatusListData,
@@ -50,6 +60,8 @@ import {
   setHelpdeskSummaryServiceRequestDataError,
   setHelpdeskSummaryUnclassifiedData,
   setHelpdeskSummaryUnclassifiedDataError,
+  setHourlyTicketsData,
+  setHourlyTicketsErrorData,
   setInteractionAgentWiseData,
   setInteractionAgentWiseDataError,
   setInteractionAgentWiseListData,
@@ -93,6 +105,8 @@ import {
   setInteractionByServiceTypeDataError,
   setInteractionByTypeData,
   setInteractionByTypeDataError,
+  setInteractionByTypeListData,
+  setInteractionByTypeListDataError,
   setInteractionProjectWiseData,
   setInteractionProjectWiseDataError,
   setInteractionProjectWiseListData,
@@ -103,6 +117,8 @@ import {
   setInteractionsByStatusListDataTwo,
   setInteractionsByStatusLiveListData,
   setInteractionsByStatusLiveListDataError,
+  setIntxnPerformanceGraphData,
+  setIntxnPerformanceGraphErrorData,
   setLiveCustomerWiseData,
   setLiveCustomerWiseDataError,
   setLiveInteractionsByStatusData,
@@ -117,6 +133,24 @@ import {
   setMonthlyTrendDataError,
   setNpsCsatChampData,
   setNpsCsatChampDataError,
+  setOperationalAppointmentOverviewData,
+  setOperationalAppointmentOverviewErrorData,
+  setOperationalAssignedInteractionsData,
+  setOperationalAssignedInteractionsErrorData,
+  setOperationalAssignedToMeData,
+  setOperationalAssignedToMeErrorData,
+  setOperationalInteractionHistoryGraphData,
+  setOperationalInteractionHistoryGraphErrorData,
+  setOperationalInteractionHistoryGraphTeamData,
+  setOperationalInteractionHistoryGraphTeamErrorData,
+  setOperationalPooledInteractionsData,
+  setOperationalPooledInteractionsErrorData,
+  setOperationalTeamAppointmentOverviewData,
+  setOperationalTeamAppointmentOverviewErrorData,
+  setOperationalTeamAssignedInteractionsData,
+  setOperationalTeamAssignedInteractionsErrorData,
+  setOperationalTeamPooledInteractionsData,
+  setOperationalTeamPooledInteractionsErrorData,
   setResMttrWaitingData,
   setResMttrWaitingDataError,
   setStatementWiseData,
@@ -126,7 +160,19 @@ import {
   setSupportTtkPendingData,
   setSupportTtkPendingDataCounts,
   setSupportTtkPendingDataCountsError,
-  setSupportTtkPendingDataError
+  setSupportTtkPendingDataError,
+  setTeamAssignedAppointmentsGraphData,
+  setTeamAssignedAppointmentsGraphErrorData,
+  setTeamCategoryPerformanceData,
+  setTeamCategoryPerformanceErrorData,
+  setTopFivePerformanceChatData,
+  setTopFivePerformanceChatErrorData,
+  setTopFivePerformanceData,
+  setTopFivePerformanceErrorData,
+  setTypeBasedAppData,
+  setTypeBasedAppErrorData,
+  setUpcomingAppointmentsData,
+  setUpcomingAppointmentsErrorData
 } from "./AppointmentDashboardAction";
 
 
@@ -160,6 +206,28 @@ export const getAppointmentDashboardData = (navigation = null) => {
     }
   };
 };
+
+
+
+export function getHelpdeskHourlyTickets() {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_HOURLY_TICKETS;
+    console.log("getHelpdeskHourlyTickets url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, {});
+    console.log("getHelpdeskHourlyTickets result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskHourlyTickets result success..", result);
+      dispatch(setHourlyTicketsData(result.data));
+    } else {
+      console.log("getHelpdeskHourlyTickets result failed..", result);
+      dispatch(setHourlyTicketsErrorData(result));
+    }
+
+  };
+}
 
 
 
@@ -248,7 +316,7 @@ export function getHelpdeskSummaryServiceRequest(params) {
 }
 
 
-export function getHelpdeskSummaryUnclassified(params) {
+export async function getHelpdeskSummaryUnclassified(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
@@ -459,7 +527,7 @@ export function getHelpdeskByAgeing(params) {
 }
 
 
-export function getHelpdeskBySeverity(params) {
+export async function getHelpdeskBySeverity(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_BY_SEVERITY;
@@ -474,6 +542,26 @@ export function getHelpdeskBySeverity(params) {
     } else {
       console.log("getHelpdeskBySeverity result failed..", result);
       dispatch(setHelpdeskBySeverityDataError(result));
+    }
+
+  };
+}
+
+export async function getHelpdeskBySeverityList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_HELPDESK_BY_SEVERITY;
+    console.log("getHelpdeskBySeverityList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getHelpdeskBySeverityList result..", result);
+
+    if (result.success) {
+      console.log("getHelpdeskBySeverityList result success..", result);
+      dispatch(setHelpdeskBySeverityListData(result.data));
+    } else {
+      console.log("getHelpdeskBySeverityList result failed..", result);
+      dispatch(setHelpdeskBySeverityListDataError(result));
     }
 
   };
@@ -630,7 +718,7 @@ export function getChannelWise(params) {
 
 
 
-export function getCustomerWise(params) {
+export async function getCustomerWise(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_INTERACTION_CUSTOMER_WISE;
@@ -743,7 +831,7 @@ export function getDepartmentInteractions(params) {
 
 
 
-export function getDepartmentVsRolesInteractions(params) {
+export async function getDepartmentVsRolesInteractions(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_INTERACTION_DEPARTMENT_VS_ROLES;
@@ -1305,6 +1393,27 @@ export function getInteractionByType(params) {
 }
 
 
+export function getInteractionByTypeList(params) {
+  return async (dispatch) => {
+
+    let url = endPoints.DASHBOARD_INTERACTION_TYPE_LIST;
+    console.log("getInteractionByTypeList url..", url);
+
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionByTypeList result..", result);
+
+    if (result.success) {
+      console.log("getInteractionByTypeList result success..", result);
+      dispatch(setInteractionByTypeListData(result.data));
+    } else {
+      console.log("getInteractionByTypeList result failed..", result);
+      dispatch(setInteractionByTypeListDataError(result));
+    }
+
+  };
+}
+
+
 
 export function getInteractionByServiceCategory(params) {
   return async (dispatch) => {
@@ -1461,3 +1570,383 @@ export async function getInteractionAgentWiseList(params) {
 // }
 
 
+export async function getOperationalAssignedToMe(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_ASSIGNED_TO_ME;
+    console.log("getOperationalAssignedToMe url..", url);
+    console.log("getOperationalAssignedToMe params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalAssignedToMe result..", result);
+    if (result.success) {
+      console.log("getOperationalAssignedToMe result success..", result);
+      dispatch(setOperationalAssignedToMeData(result.data));
+    } else {
+      console.log("getOperationalAssignedToMe result failed..", result);
+      dispatch(setOperationalAssignedToMeErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalAppointmentOverview(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_APPOINTMENT_OVERVIEW;
+    console.log("getOperationalAppointmentOverview url..", url);
+    console.log("getOperationalAppointmentOverview params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalAppointmentOverview result..", result);
+    if (result.success) {
+      console.log("getOperationalAppointmentOverview result success..", result);
+      dispatch(setOperationalAppointmentOverviewData(result.data));
+    } else {
+      console.log("getOperationalAppointmentOverview result failed..", result);
+      dispatch(setOperationalAppointmentOverviewErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalTeamAppointmentOverview(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_APPOINTMENT_OVERVIEW;
+    console.log("getOperationalTeamAppointmentOverview url..", url);
+    console.log("getOperationalTeamAppointmentOverview params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalTeamAppointmentOverview result..", result);
+    if (result.success) {
+      console.log("getOperationalTeamAppointmentOverview result success..", result);
+      dispatch(setOperationalTeamAppointmentOverviewData(result.data));
+    } else {
+      console.log("getOperationalTeamAppointmentOverview result failed..", result);
+      dispatch(setOperationalTeamAppointmentOverviewErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalPooledInteractions(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_POOLED_INTERACTIONS;
+    console.log("getOperationalPooledInteractions url..", url);
+    console.log("getOperationalPooledInteractions params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalPooledInteractions result..", result);
+    if (result.success) {
+      console.log("getOperationalPooledInteractions result success..", result);
+      dispatch(setOperationalPooledInteractionsData(result.data));
+    } else {
+      console.log("getOperationalPooledInteractions result failed..", result);
+      dispatch(setOperationalPooledInteractionsErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalTeamPooledInteractions(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_TEAM_POOLED_INTERACTIONS;
+    console.log("getOperationalTeamPooledInteractions url..", url);
+    console.log("getOperationalTeamPooledInteractions params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalTeamPooledInteractions result..", result);
+    if (result.success) {
+      console.log("getOperationalTeamPooledInteractions result success..", result);
+      dispatch(setOperationalTeamPooledInteractionsData(result.data));
+    } else {
+      console.log("getOperationalTeamPooledInteractions result failed..", result);
+      dispatch(setOperationalTeamPooledInteractionsErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalAssignedInteractions(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_ASSIGNED_INTERACTIONS;
+    console.log("getOperationalAssignedInteractions url..", url);
+    console.log("getOperationalAssignedInteractions params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalAssignedInteractions result..", result);
+    if (result.success) {
+      console.log("getOperationalAssignedInteractions result success..", result);
+      dispatch(setOperationalAssignedInteractionsData(result.data));
+    } else {
+      console.log("getOperationalAssignedInteractions result failed..", result);
+      dispatch(setOperationalAssignedInteractionsErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalTeamAssignedInteractions(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS;
+    console.log("getOperationalTeamAssignedInteractions url..", url);
+    console.log("getOperationalTeamAssignedInteractions params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalTeamAssignedInteractions result..", result);
+    if (result.success) {
+      console.log("getOperationalTeamAssignedInteractions result success..", result);
+      dispatch(setOperationalTeamAssignedInteractionsData(result.data));
+    } else {
+      console.log("getOperationalTeamAssignedInteractions result failed..", result);
+      dispatch(setOperationalTeamAssignedInteractionsErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalInteractionHistoryGraph(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_INTERACTION_HISTORY_GRAPH;
+    console.log("getOperationalInteractionHistoryGraph url..", url);
+    console.log("getOperationalInteractionHistoryGraph params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalInteractionHistoryGraph result..", result);
+    if (result.success) {
+      console.log("getOperationalInteractionHistoryGraph result success..", result);
+      dispatch(setOperationalInteractionHistoryGraphData(result.data));
+    } else {
+      console.log("getOperationalInteractionHistoryGraph result failed..", result);
+      dispatch(setOperationalInteractionHistoryGraphErrorData(result));
+    }
+  };
+}
+
+
+export async function getOperationalInteractionHistoryGraphTeam(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_INTERACTION_HISTORY_GRAPH_TEAM;
+    console.log("getOperationalInteractionHistoryGraphTeam url..", url);
+    console.log("getOperationalInteractionHistoryGraphTeam params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getOperationalInteractionHistoryGraphTeam result..", result);
+    if (result.success) {
+      console.log("getOperationalInteractionHistoryGraphTeam result success..", result);
+      dispatch(setOperationalInteractionHistoryGraphTeamData(result.data));
+    } else {
+      console.log("getOperationalInteractionHistoryGraphTeam result failed..", result);
+      dispatch(setOperationalInteractionHistoryGraphTeamErrorData(result));
+    }
+  };
+}
+
+
+export async function getAssignedAppointments(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_ASSIGNED_APPOINTMENTS;
+    console.log("getAssignedAppointments url..", url);
+    console.log("getAssignedAppointments params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getAssignedAppointments result..", result);
+    if (result.success) {
+      console.log("getAssignedAppointments result success..", result);
+      dispatch(setAssignedAppointmentsGraphData(result.data));
+    } else {
+      console.log("getAssignedAppointments result failed..", result);
+      dispatch(setAssignedAppointmentsGraphErrorData(result));
+    }
+  };
+}
+
+
+export async function getTeamAssignedAppointments(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS;
+    console.log("getTeamAssignedAppointments url..", url);
+    console.log("getTeamAssignedAppointments params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getTeamAssignedAppointments result..", result);
+    if (result.success) {
+      console.log("getTeamAssignedAppointments result success..", result);
+      dispatch(setTeamAssignedAppointmentsGraphData(result.data));
+    } else {
+      console.log("getTeamAssignedAppointments result failed..", result);
+      dispatch(setTeamAssignedAppointmentsGraphErrorData(result));
+    }
+  };
+}
+
+
+export async function getInteractionPerformance(_params, _type) {
+  return async (dispatch) => {
+    let params = { searchParams: _params, type: _type }
+    let url = endPoints.DASHBOARD_OPERATIONAL_INTXN_CATEGORY_PERFORMANCE;
+    console.log("getInteractionPerformance url..", url);
+    console.log("getInteractionPerformance params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getInteractionPerformance result..", result);
+    if (result.success) {
+      console.log("getInteractionPerformance result success..", result);
+      dispatch(setIntxnPerformanceGraphData(result.data));
+    } else {
+      console.log("getInteractionPerformance result failed..", result);
+      dispatch(setIntxnPerformanceGraphErrorData(result));
+    }
+  };
+}
+
+
+export async function getTopFivePerformanceActivityTeam(_params, _type) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_INTXN_TOP_FIVE_PERFORMANCE;
+    console.log("getTopFivePerformanceActivityTeam url..", url);
+    console.log("getTopFivePerformanceActivityTeam params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getTopFivePerformanceActivityTeam result..", result);
+    if (result.success) {
+      console.log("getTopFivePerformanceActivityTeam result success..", result);
+      dispatch(setTopFivePerformanceData(result.data));
+    } else {
+      console.log("getTopFivePerformanceActivityTeam result failed..", result);
+      dispatch(setTopFivePerformanceErrorData(result));
+    }
+  };
+}
+
+
+export async function getTopFivePerformanceChat(_params, _type) {
+  return async (dispatch) => {
+    let params = { searchParams: _params, type: _type }
+    let url = endPoints.DASHBOARD_OPERATIONAL_INTXN_TOP_FIVE_PERFORMANCE_CHAT;
+    console.log("getTopFivePerformanceChat url..", url);
+    console.log("getTopFivePerformanceChat params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getTopFivePerformanceChat result..", result);
+    if (result.success) {
+      console.log("getTopFivePerformanceChat result success..", result);
+      dispatch(setTopFivePerformanceChatData(result.data));
+    } else {
+      console.log("getTopFivePerformanceChat result failed..", result);
+      dispatch(setTopFivePerformanceChatErrorData(result));
+    }
+  };
+}
+
+
+export async function getTeamCategoryPerformance(_params) {
+  return async (dispatch) => {
+    let params = { searchParams: _params }
+    let url = endPoints.DASHBOARD_OPERATIONAL_TEAM_CATEGORY_PERFORMANCE;
+    console.log("getTeamCategoryPerformance url..", url);
+    console.log("getTeamCategoryPerformance params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getTeamCategoryPerformance result..", result);
+    if (result.success) {
+      console.log("getTeamCategoryPerformance result success..", result);
+      dispatch(setTeamCategoryPerformanceData(result.data));
+    } else {
+      console.log("getTeamCategoryPerformance result failed..", result);
+      dispatch(setTeamCategoryPerformanceErrorData(result));
+    }
+  };
+}
+
+
+export async function getUpcomingAppointments() {
+  return async (dispatch) => {
+    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_UPCOMING;
+    console.log("getUpcomingAppointments url..", url);
+    console.log("getUpcomingAppointments params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getUpcomingAppointments result..", result);
+    if (result.success) {
+      console.log("getUpcomingAppointments result success..", result);
+      dispatch(setUpcomingAppointmentsData(result.data));
+    } else {
+      console.log("getUpcomingAppointments result failed..", result);
+      dispatch(setUpcomingAppointmentsErrorData(result));
+    }
+  };
+}
+
+
+
+export async function getClosedAppointments() {
+  return async (dispatch) => {
+    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_CLOSED;
+    console.log("getClosedAppointments url..", url);
+    console.log("getClosedAppointments params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getClosedAppointments result..", result);
+    if (result.success) {
+      console.log("getClosedAppointments result success..", result);
+      dispatch(setClosedAppointmentsData(result.data));
+    } else {
+      console.log("getClosedAppointments result failed..", result);
+      dispatch(setClosedAppointmentsErrorData(result));
+    }
+  };
+}
+
+
+
+export async function getAppointmentEvents() {
+  return async (dispatch) => {
+    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_EVENTS;
+    console.log("getAppointmentEvents url..", url);
+    console.log("getAppointmentEvents params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getAppointmentEvents result..", result);
+    if (result.success) {
+      console.log("getAppointmentEvents result success..", result);
+      dispatch(setAppointmentEventsData(result.data));
+    } else {
+      console.log("getAppointmentEvents result failed..", result);
+      dispatch(setAppointmentEventsErrorData(result));
+    }
+  };
+}
+
+
+
+export async function getAppointmentReminder() {
+  return async (dispatch) => {
+    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_REMINDER;
+    console.log("getAppointmentReminder url..", url);
+    console.log("getAppointmentReminder params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getAppointmentReminder result..", result);
+    if (result.success) {
+      console.log("getAppointmentReminder result success..", result);
+      dispatch(setAppointmentRemindersData(result.data));
+    } else {
+      console.log("getAppointmentReminder result failed..", result);
+      dispatch(setAppointmentRemindersErrorData(result));
+    }
+  };
+}
+
+
+export async function getAppointmentsBasedOnType(params) {
+  return async (dispatch) => {
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_APP_BASED_ON_TYPE;
+    console.log("getAppointmentsBasedOnType url..", url);
+    console.log("getAppointmentsBasedOnType params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getAppointmentsBasedOnType result..", result);
+    if (result.success) {
+      console.log("getAppointmentsBasedOnType result success..", result);
+      dispatch(setTypeBasedAppData(result.data));
+    } else {
+      console.log("getAppointmentsBasedOnType result failed..", result);
+      dispatch(setTypeBasedAppErrorData(result));
+    }
+  };
+}

@@ -49,6 +49,22 @@ export const STATUS_DATA = "STATUS_DATA";
 export const STATUS_DATA_FAILURE = "STATUS_DATA_FAILURE";
 
 
+export const INTXN_ATTACHMENT_DATA = "INTXN_ATTACHMENT_DATA";
+export const INTXN_ATTACHMENT_ERROR_DATA = "INTXN_ATTACHMENT_ERROR_DATA";
+
+
+export const INTXN_DOWNLOAD_ATTACHMENT_DATA = "INTXN_DOWNLOAD_ATTACHMENT_DATA";
+export const INTXN_DOWNLOAD_ATTACHMENT_ERROR_DATA = "INTXN_DOWNLOAD_ATTACHMENT_ERROR_DATA";
+
+
+export const MEETING_HALLS_DATA = "MEETING_HALLS_DATA";
+export const MEETING_HALLS_ERROR_DATA = "MEETING_HALLS_ERROR_DATA";
+
+
+export const MEETING_HALL_EVENTS_DATA = "MEETING_HALL_EVENTS_DATA";
+export const MEETING_HALL_EVENTS_ERROR_DATA = "MEETING_HALL_EVENTS_ERROR_DATA";
+
+
 export const CANCEL_REASONS_DATA = "CANCEL_REASONS_DATA";
 export const CANCEL_REASONS_DATA_FAILURE = "CANCEL_REASONS_DATA_FAILURE";
 
@@ -186,6 +202,46 @@ export function setStatusDataInStore(data) {
 
 export function setStatusErrorDataInStore(data) {
   return { type: STATUS_DATA_FAILURE, data };
+}
+
+
+
+export function setIntxnDetAttachmentDataInStore(data) {
+  return { type: INTXN_ATTACHMENT_DATA, data };
+}
+
+export function setIntxnDetAttachmentErrorDataInStore(data) {
+  return { type: INTXN_ATTACHMENT_ERROR_DATA, data };
+}
+
+
+
+export function setDowloadAttachmentDataInStore(data) {
+  return { type: INTXN_DOWNLOAD_ATTACHMENT_DATA, data };
+}
+
+export function setDowloadAttachmentErrorDataInStore(data) {
+  return { type: INTXN_DOWNLOAD_ATTACHMENT_ERROR_DATA, data };
+}
+
+
+
+export function setMeetingHallsDataInStore(data) {
+  return { type: MEETING_HALLS_DATA, data };
+}
+
+export function setMeetingHallsErrorDataInStore(data) {
+  return { type: MEETING_HALLS_ERROR_DATA, data };
+}
+
+
+
+export function setMeetingHallEventsDataInStore(data) {
+  return { type: MEETING_HALL_EVENTS_DATA, data };
+}
+
+export function setMeetingHallEventsErrorDataInStore(data) {
+  return { type: MEETING_HALL_EVENTS_ERROR_DATA, data };
 }
 
 

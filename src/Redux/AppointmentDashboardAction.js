@@ -3,8 +3,56 @@ export const APPOINTMENT_DASHBOARD_DATA = "APPOINTMENT_DASHBOARD_DATA";
 export const APPOINTMENT_DASHBOARD_ERROR = "APPOINTMENT_DASHBOARD_ERROR";
 
 
+export const OPERATIONAL_ASSIGNED_TO_ME_DATA = "OPERATIONAL_ASSIGNED_TO_ME_DATA";
+export const OPERATIONAL_ASSIGNED_TO_ME_ERROR_DATA = "OPERATIONAL_ASSIGNED_TO_ME_ERROR_DATA";
+
+export const OPERATIONAL_APPOINTMENT_OVERVIEW_DATA = "OPERATIONAL_APPOINTMENT_OVERVIEW_DATA";
+export const OPERATIONAL_APPOINTMENT_OVERVIEW_ERROR_DATA = "OPERATIONAL_APPOINTMENT_OVERVIEW_ERROR_DATA";
+
+export const OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_DATA = "OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_DATA";
+export const OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_ERROR_DATA = "OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_ERROR_DATA";
+
+export const OPERATIONAL_POOLED_INTERACTIONS_DATA = "OPERATIONAL_POOLED_INTERACTIONS_DATA";
+export const OPERATIONAL_POOLED_INTERACTIONS_ERROR_DATA = "OPERATIONAL_POOLED_INTERACTIONS_ERROR_DATA";
+
+export const OPERATIONAL_TEAM_POOLED_INTERACTIONS_DATA = "OPERATIONAL_TEAM_POOLED_INTERACTIONS_DATA";
+export const OPERATIONAL_TEAM_POOLED_INTERACTIONS_ERROR_DATA = "OPERATIONAL_TEAM_POOLED_INTERACTIONS_ERROR_DATA";
+
+export const OPERATIONAL_ASSIGNED_INTERACTIONS_DATA = "OPERATIONAL_ASSIGNED_INTERACTIONS_DATA";
+export const OPERATIONAL_ASSIGNED_INTERACTIONS_ERROR_DATA = "OPERATIONAL_ASSIGNED_INTERACTIONS_ERROR_DATA";
+
+export const OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_DATA = "OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_DATA";
+export const OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_ERROR_DATA = "OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_ERROR_DATA";
+
+export const OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_DATA = "OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_DATA";
+export const OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_ERROR_DATA = "OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_ERROR_DATA";
+
+export const OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_DATA = "OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_DATA";
+export const OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_ERROR_DATA = "OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_ERROR_DATA";
+
+export const OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_DATA = "OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_DATA";
+export const OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA = "OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA";
+
+export const OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_DATA = "OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_DATA";
+export const OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA = "OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA";
+
+export const OPERATIONAL_INTXN_PERFORMANCE_GRAPH_DATA = "OPERATIONAL_INTXN_PERFORMANCE_GRAPH_DATA";
+export const OPERATIONAL_INTXN_PERFORMANCE_GRAPH_ERROR_DATA = "OPERATIONAL_INTXN_PERFORMANCE_GRAPH_ERROR_DATA";
+
+export const OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA = "OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA";
+export const OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA = "OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA";
+
+export const OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_DATA = "OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_DATA";
+export const OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_ERROR_DATA = "OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_ERROR_DATA";
+
+export const OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_DATA = "OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_DATA";
+export const OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_ERROR_DATA = "OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_ERROR_DATA";
+
 export const HELPDESK_SUMMARY_DATA = "HELPDESK_SUMMARY_DATA";
 export const HELPDESK_SUMMARY_DATA_ERROR = "HELPDESK_SUMMARY_DATA_ERROR";
+
+export const HOURLY_TICKETS_DATA = "HOURLY_TICKETS_DATA";
+export const HOURLY_TICKETS_ERROR_DATA = "HOURLY_TICKETS_ERROR_DATA";
 
 export const HELPDESK_SUMMARY_CLARIFICATION_DATA = "HELPDESK_SUMMARY_CLARIFICATION_DATA";
 export const HELPDESK_SUMMARY_CLARIFICATION_DATA_ERROR = "HELPDESK_SUMMARY_CLARIFICATION_DATA_ERROR";
@@ -49,6 +97,10 @@ export const HELPDESK_BY_AGEING_DATA_ERROR = "HELPDESK_BY_AGEING_DATA_ERROR";
 
 export const HELPDESK_BY_SEVERITY_DATA = "HELPDESK_BY_SEVERITY_DATA";
 export const HELPDESK_BY_SEVERITY_DATA_ERROR = "HELPDESK_BY_SEVERITY_DATA_ERROR";
+
+
+export const HELPDESK_BY_SEVERITY_LIST_DATA = "HELPDESK_BY_SEVERITY_LIST_DATA";
+export const HELPDESK_BY_SEVERITY_LIST_DATA_ERROR = "HELPDESK_BY_SEVERITY_LIST_DATA_ERROR";
 
 
 export const HELPDESK_BY_SEVERITY_DATA_LIVE = "HELPDESK_BY_SEVERITY_DATA_LIVE";
@@ -170,6 +222,10 @@ export const INTERACTION_BY_CATEGORY_DATA_ERROR = "INTERACTION_BY_CATEGORY_DATA_
 export const INTERACTION_BY_TYPE_DATA = "INTERACTION_BY_TYPE_DATA";
 export const INTERACTION_BY_TYPE_DATA_ERROR = "INTERACTION_BY_TYPE_DATA_ERROR";
 
+export const INTERACTION_BY_TYPE_LIST_DATA = "INTERACTION_BY_TYPE_LIST_DATA";
+export const INTERACTION_BY_TYPE_LIST_DATA_ERROR = "INTERACTION_BY_TYPE_LIST_DATA_ERROR";
+
+
 export const INTERACTION_BY_SERVICE_CATEGORY_DATA = "INTERACTION_BY_SERVICE_CATEGORY_DATA";
 export const INTERACTION_BY_SERVICE_CATEGORY_DATA_ERROR = "INTERACTION_BY_SERVICE_CATEGORY_DATA_ERROR";
 
@@ -187,6 +243,26 @@ export const INTERACTION_AGENT_WISE_DATA_ERROR = "INTERACTION_AGENT_WISE_DATA_ER
 
 export const INTERACTION_AGENT_WISE_LIST_DATA = "INTERACTION_AGENT_WISE_LIST_DATA";
 export const INTERACTION_AGENT_WISE_LIST_DATA_ERROR = "INTERACTION_AGENT_WISE_LIST_DATA_ERROR"
+
+
+export const UPCOMING_APPOINTMENTS_DATA = "UPCOMING_APPOINTMENTS_DATA";
+export const UPCOMING_APPOINTMENTS_ERROR_DATA = "UPCOMING_APPOINTMENTS_ERROR_DATA";
+
+export const TYPE_BASED_APPOINTMENTS_DATA = "TYPE_BASED_APPOINTMENTS_DATA";
+export const TYPE_BASED_APPOINTMENTS_ERROR_DATA = "TYPE_BASED_APPOINTMENTS_ERROR_DATA";
+
+
+export const CLOSED_APPOINTMENTS_DATA = "CLOSED_APPOINTMENTS_DATA";
+export const CLOSED_APPOINTMENTS_ERROR_DATA = "CLOSED_APPOINTMENTS_ERROR_DATA";
+
+
+export const APPOINTMENT_EVENTS_DATA = "APPOINTMENT_EVENTS_DATA";
+export const APPOINTMENT_EVENTS_ERROR_DATA = "APPOINTMENT_EVENTS_ERROR_DATA";
+
+
+export const APPOINTMENT_REMINDERS_DATA = "APPOINTMENT_REMINDERS_DATA";
+export const APPOINTMENT_REMINDERS_ERROR_DATA = "APPOINTMENT_REMINDERS_ERROR_DATA";
+
 
 
 
@@ -212,6 +288,198 @@ export const setHelpdeskSummaryData = (data) => {
 
 export const setHelpdeskSummaryDataError = (data) => {
   return { type: HELPDESK_SUMMARY_DATA_ERROR, data };
+};
+
+
+export const setHourlyTicketsData = (data) => {
+  return { type: HOURLY_TICKETS_DATA, data };
+};
+
+export const setHourlyTicketsErrorData = (data) => {
+  return { type: HOURLY_TICKETS_ERROR_DATA, data };
+};
+
+
+export const setOperationalAssignedToMeData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_TO_ME_DATA, data };
+};
+
+export const setOperationalAssignedToMeErrorData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_TO_ME_ERROR_DATA, data };
+};
+
+
+export const setOperationalAppointmentOverviewData = (data) => {
+  return { type: OPERATIONAL_APPOINTMENT_OVERVIEW_DATA, data };
+};
+
+export const setOperationalAppointmentOverviewErrorData = (data) => {
+  return { type: OPERATIONAL_APPOINTMENT_OVERVIEW_ERROR_DATA, data };
+};
+
+
+export const setOperationalTeamAppointmentOverviewData = (data) => {
+  return { type: OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_DATA, data };
+};
+
+export const setOperationalTeamAppointmentOverviewErrorData = (data) => {
+  return { type: OPERATIONAL_TEAM_APPOINTMENT_OVERVIEW_ERROR_DATA, data };
+};
+
+
+export const setOperationalPooledInteractionsData = (data) => {
+  return { type: OPERATIONAL_POOLED_INTERACTIONS_DATA, data };
+};
+
+export const setOperationalPooledInteractionsErrorData = (data) => {
+  return { type: OPERATIONAL_POOLED_INTERACTIONS_ERROR_DATA, data };
+};
+
+
+export const setOperationalTeamPooledInteractionsData = (data) => {
+  return { type: OPERATIONAL_TEAM_POOLED_INTERACTIONS_DATA, data };
+};
+
+export const setOperationalTeamPooledInteractionsErrorData = (data) => {
+  return { type: OPERATIONAL_TEAM_POOLED_INTERACTIONS_ERROR_DATA, data };
+};
+
+
+export const setOperationalAssignedInteractionsData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTIONS_DATA, data };
+};
+
+export const setOperationalAssignedInteractionsErrorData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTIONS_ERROR_DATA, data };
+};
+
+
+export const setOperationalTeamAssignedInteractionsData = (data) => {
+  return { type: OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_DATA, data };
+};
+
+export const setOperationalTeamAssignedInteractionsErrorData = (data) => {
+  return { type: OPERATIONAL_TEAM_ASSIGNED_INTERACTIONS_ERROR_DATA, data };
+};
+
+
+export const setOperationalInteractionHistoryGraphData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_DATA, data };
+};
+
+export const setOperationalInteractionHistoryGraphErrorData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_ERROR_DATA, data };
+};
+
+
+export const setOperationalInteractionHistoryGraphTeamData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_DATA, data };
+};
+
+export const setOperationalInteractionHistoryGraphTeamErrorData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_INTERACTION_HISTORY_GRAPH_TEAM_ERROR_DATA, data };
+};
+
+
+export const setAssignedAppointmentsGraphData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_DATA, data };
+};
+
+export const setAssignedAppointmentsGraphErrorData = (data) => {
+  return { type: OPERATIONAL_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA, data };
+};
+
+
+
+export const setUpcomingAppointmentsData = (data) => {
+  return { type: UPCOMING_APPOINTMENTS_DATA, data };
+};
+
+export const setUpcomingAppointmentsErrorData = (data) => {
+  return { type: UPCOMING_APPOINTMENTS_ERROR_DATA, data };
+};
+
+
+export const setTypeBasedAppData = (data) => {
+  return { type: TYPE_BASED_APPOINTMENTS_DATA, data };
+};
+
+export const setTypeBasedAppErrorData = (data) => {
+  return { type: TYPE_BASED_APPOINTMENTS_ERROR_DATA, data };
+};
+
+
+
+export const setClosedAppointmentsData = (data) => {
+  return { type: CLOSED_APPOINTMENTS_DATA, data };
+};
+
+export const setClosedAppointmentsErrorData = (data) => {
+  return { type: CLOSED_APPOINTMENTS_ERROR_DATA, data };
+};
+
+
+export const setAppointmentEventsData = (data) => {
+  return { type: APPOINTMENT_EVENTS_DATA, data };
+};
+
+export const setAppointmentEventsErrorData = (data) => {
+  return { type: APPOINTMENT_EVENTS_ERROR_DATA, data };
+};
+
+
+export const setAppointmentRemindersData = (data) => {
+  return { type: APPOINTMENT_REMINDERS_DATA, data };
+};
+
+export const setAppointmentRemindersErrorData = (data) => {
+  return { type: APPOINTMENT_REMINDERS_ERROR_DATA, data };
+};
+
+
+
+export const setTeamAssignedAppointmentsGraphData = (data) => {
+  return { type: OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_DATA, data };
+};
+
+export const setTeamAssignedAppointmentsGraphErrorData = (data) => {
+  return { type: OPERATIONAL_TEAM_ASSIGNED_APPOINTMENTS_GRAPH_ERROR_DATA, data };
+};
+
+
+export const setIntxnPerformanceGraphData = (data) => {
+  return { type: OPERATIONAL_INTXN_PERFORMANCE_GRAPH_DATA, data };
+};
+
+export const setIntxnPerformanceGraphErrorData = (data) => {
+  return { type: OPERATIONAL_INTXN_PERFORMANCE_GRAPH_ERROR_DATA, data };
+};
+
+
+export const setTopFivePerformanceData = (data) => {
+  return { type: OPERATIONAL_TOP_FIVE_PERFORMANCE_DATA, data };
+};
+
+export const setTopFivePerformanceErrorData = (data) => {
+  return { type: OPERATIONAL_TOP_FIVE_PERFORMANCE_ERROR_DATA, data };
+};
+
+
+export const setTopFivePerformanceChatData = (data) => {
+  return { type: OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_DATA, data };
+};
+
+export const setTopFivePerformanceChatErrorData = (data) => {
+  return { type: OPERATIONAL_TOP_FIVE_PERFORMANCE_CHAT_ERROR_DATA, data };
+};
+
+
+export const setTeamCategoryPerformanceData = (data) => {
+  return { type: OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_DATA, data };
+};
+
+export const setTeamCategoryPerformanceErrorData = (data) => {
+  return { type: OPERATIONAL_TEAM_CATEGORY_PERFORMANCE_ERROR_DATA, data };
 };
 
 
@@ -339,6 +607,16 @@ export const setHelpdeskBySeverityData = (data) => {
 
 export const setHelpdeskBySeverityDataError = (data) => {
   return { type: HELPDESK_BY_SEVERITY_DATA_ERROR, data };
+};
+
+
+
+export const setHelpdeskBySeverityListData = (data) => {
+  return { type: HELPDESK_BY_SEVERITY_LIST_DATA, data };
+};
+
+export const setHelpdeskBySeverityListDataError = (data) => {
+  return { type: HELPDESK_BY_SEVERITY_LIST_DATA_ERROR, data };
 };
 
 
@@ -719,6 +997,16 @@ export const setInteractionByTypeData = (data) => {
 
 export const setInteractionByTypeDataError = (data) => {
   return { type: INTERACTION_BY_TYPE_DATA_ERROR, data };
+};
+
+
+
+export const setInteractionByTypeListData = (data) => {
+  return { type: INTERACTION_BY_TYPE_LIST_DATA, data };
+};
+
+export const setInteractionByTypeListDataError = (data) => {
+  return { type: INTERACTION_BY_TYPE_LIST_DATA_ERROR, data };
 };
 
 

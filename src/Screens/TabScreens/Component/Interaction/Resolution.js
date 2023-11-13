@@ -1,16 +1,20 @@
 import _ from 'lodash';
 import get from "lodash.get";
-import React, { createRef, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import moment from 'moment';
+import React, { createRef, useEffect, useState } from "react";
+import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import EventCalendar from 'react-native-events-calendar';
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Checkbox, DataTable, Divider, RadioButton, Text } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import SignatureCapture from "react-native-signature-capture";
 import { Rows, Table, TableWrapper } from 'react-native-table-component';
+import { useDispatch, useSelector } from 'react-redux';
 import { ClearSpace } from '../../../../Components/ClearSpace';
 import { CustomButton } from "../../../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "../../../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "../../../../Components/CustomInput";
+import { getHallEvents } from '../../../../Redux/InteractionDispatcher';
 import { color } from "../../../../Utilities/Constants/Constant";
 import { strings } from '../../../../Utilities/Language/index';
 import { commonStyle } from '../../../../Utilities/Style/commonStyle';
@@ -35,7 +39,36 @@ export const HandleResolution = ({
     navigation
 }) => {
 
+    const { interactionReducer } = useSelector(
+        (state) => {
+            return {
+                interactionReducer: state.interaction
+            };
+        }
+    );
+
+
+    const dispatchInteraction = useDispatch([
+        getHallEvents
+    ]);
+
+    // const [hallsEnable, setHallsEnable] = useState(false);
+
+    // useEffect(async () => {
+    //     interactionReducer.meetingHallsData?.map((elementItem, elementIdx) => {
+    //         if (checkedItem.get("" + elementIdx)) {
+    //             dispatchInteraction(getHallEvents(elementItem.code))
+    //             console.log("meeting hall events data...", interactionReducer.meetingHallEventsData)
+    //         }
+    //     })
+    // }, []);
+
+
+
+
     const [gridInputText, setGridInputText] = useState(new Map());
+
+
 
     console.log("formDataArray..", formDataArray)
     // console.log("handler..", handler)
@@ -82,6 +115,7 @@ export const HandleResolution = ({
 
     const RenderSend = ({ title = "", type = "", description = "" }) => {
         console.log('enter rendersend', type, description)
+
         if (type == "string") {
             return (
                 <View style={{}}>
@@ -89,11 +123,15 @@ export const HandleResolution = ({
                     <ClearSpace size={2} />
                 </View>
             )
-            //todo navigate to product listing page
-        } else if (type == "object" && description == "PRODUCT PURCHASE") {
-            console.log('RenderSend:',)
-            return (<Text>TOdo</Text>)
         }
+
+        else if (type == "object" && description == "PRODUCT PURCHASE") {
+            console.log('RenderSend:')
+            return (
+                <Text>TOdo</Text>
+            )
+        }
+
         else if (type == "object" && description == "ORDER_DETAILS") {
             console.log('RenderSend:ORDER_DETAILS title', title)
             const orderDetail = [
@@ -103,9 +141,6 @@ export const HandleResolution = ({
                 ['Customer Contact No', get(title, 'customerDetails.customerContact[0].contactNo', '')]
             ]
             const productDetails = get(title, 'childOrder[0].orderProductDtls', [])
-
-
-
             return (
                 <View style={styles.container}>
 
@@ -160,12 +195,50 @@ export const HandleResolution = ({
                 </View>
             )
         }
+
+        else if (type == "object" && description == "LIST") {
+            console.log("holiday calendar...")
+            const headersData = ["Date", "Day", "Holiday"]
+            return (
+                <>
+                    <DataTable style={styles.containers}>
+
+                        <DataTable.Header style={styles.tableHeader}>
+                            {headersData?.map((header, headerIndex) => (
+                                <DataTable.Title>
+                                    <View style={{ marginLeft: -5, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ fontWeight: 500, width: 75, marginLeft: 0 }}>{header}</Text>
+                                    </View>
+                                </DataTable.Title>
+                            ))}
+                        </DataTable.Header>
+
+                        {title?.length > 0 && (
+                            title?.map((rows, rowsIndex) => (
+                                <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
+                                    <View style={{ marginLeft: -5, backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ width: 75, marginLeft: 0 }}>{rows.holidayDate}</Text>
+                                    </View>
+                                    <View style={{ backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ width: 90, marginLeft: 0 }}>{rows.holidayDayNameDesc.description}</Text>
+                                    </View>
+                                    <View style={{ backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ width: 110, marginLeft: 0 }}>{rows.holidayDescription}</Text>
+                                    </View>
+                                </DataTable.Row>
+                            )))}
+
+                    </DataTable>
+                </>
+            )
+        }
+
         else {
             return null
         }
     }
 
-    const RenderCollectInput = ({ message }) => {
+    const RenderCollectInput = ({ description, message }) => {
         const element = get(message, 'element', '');
         const formMetaAttributes = get(message, 'formMetaAttributes', []);
         const attribute = get(message, 'attributes', []);
@@ -173,14 +246,14 @@ export const HandleResolution = ({
         const conversationID = get(resolutionDetails, 'conversationUid', '')
         const requestId = get(resolutionDetails, 'requestId', '')
 
-        // console.log('message..', message)
-        // console.log('element..', element)
-        // console.log('formMetaAttributes..', formMetaAttributes)
-        // console.log('attribute..', attribute)
-        // console.log('flowId..', flowId)
-        // console.log('conversationID..', conversationID)
-        // console.log('requestId..', requestId)
-        // console.log('>>resolutionDetails', resolutionDetails)
+        console.log('message..', message)
+        console.log('element..', element)
+        console.log('formMetaAttributes..', formMetaAttributes)
+        console.log('attribute..', attribute)
+        console.log('flowId..', flowId)
+        console.log('conversationID..', conversationID)
+        console.log('requestId..', requestId)
+        console.log('>>resolutionDetails', resolutionDetails)
 
         const [formDataState, setFormDataState] = useState({});
         const [values, setValues] = useState([]);
@@ -692,288 +765,471 @@ export const HandleResolution = ({
                     </>
                 )
 
-            // case "COLLECT_INPUT":
-            //     return (
-            //         <>
-            //             <View style={{ flex: 1 }}>
-            //                 <SignaturePad
-            //                     onError={this._signaturePadError}
-            //                     onChange={this._signaturePadChange}
-            //                     style={{ flex: 1, backgroundColor: 'white' }} />
-            //             </View>
-            //             <ClearSpace size={2} />
-            //         </>
-            //     )
-
 
             default:
-                const [checked, setChecked] = useState(false);
                 const [radioChecked, setRadioChecked] = useState(false);
-                const [dropDownDesc, setDropDownDesc] = useState("");
-                const [dropDownCode, setDropDownCode] = useState("");
-
-                const handleOnChangeButtom = async () => {
-                    // obj = {}
-                    // getPreviousParams()
-                    // await delay(10000);
-                    // const params = await getDataFromDB("PREVIOUS_PARAMS")
-                    // console.log("got from db..", params.data.inputValue)
-                    // obj = params.data.inputValue
-                    // // setPrevInputVal(params.data.inputValue)
-                    // console.log("obj3...", obj)
-                    // console.log("retrieved obj..", obj)
-
-                    // formMetaAttributes?.forEach((item) => {
-                    //     item?.fieldSet?.forEach((item1) => {
-                    //         if (!(item1.fieldType == "button")) {
-                    //             if ((item1.fieldType == "project") || (item1.fieldType == "radio") || (item1.fieldType == "checkbox")) {
-                    //                 setObj(obj => ({
-
-                    //                     ...obj,
-                    //                     [item1.id + "_formAttributes"]: formMetaAttributes,
-                    //                     [item1.id]: checkedItemArr
-
-                    //                 }));
-                    //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: checkedItemArr })
-                    //             }
 
 
-                    //             else {
-                    //                 setObj(obj => ({
 
-                    //                     ...obj,
-                    //                     [item1.id + "_formAttributes"]: formMetaAttributes,
-                    //                     [item1.id]: inputText.get(item1.id)
 
-                    //                 }));
-                    //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: inputText.get(item1.id) })
-                    //             }
-                    //         }
-                    //     })
-                    // })
-                    // console.log('obj...', obj)
+                if (description == "MEETING_HALL_CALENDAR") {
+                    var selSlotIds = []
+
+                    console.log("inside meeting calendar...", interactionReducer.meetingHallsData)
+                    // setHallsEnable(!hallsEnable)
+
+
+
+                    //get the size of device
+                    let { width } = Dimensions.get('window');
+
+
+
+
+                    // const [events, setEvents] = useState(interactionReducer.meetingHallEventsData)
+                    // {
+                    //     start: '2020-01-01 00:00:00',
+                    //     end: '2020-01-01 02:00:00',
+                    //     title: 'New Year Party',
+                    //     summary: 'xyz Location',
+                    // },
+                    // {
+                    //     start: '2020-01-01 01:00:00',
+                    //     end: '2020-01-01 02:00:00',
+                    //     title: 'New Year Wishes',
+                    //     summary: 'Call to every one',
+                    // },
+                    // {
+                    //     start: '2020-01-02 00:30:00',
+                    //     end: '2020-01-02 01:30:00',
+                    //     title: 'Parag Birthday Party',
+                    //     summary: 'Call him',
+                    // },
+                    // {
+                    //     start: '2020-01-03 01:30:00',
+                    //     end: '2020-01-03 02:20:00',
+                    //     title: 'My Birthday Party',
+                    //     summary: 'Lets Enjoy',
+                    // },
+                    // {
+                    //     start: '2020-02-04 04:10:00',
+                    //     end: '2020-02-04 04:40:00',
+                    //     title: 'Engg Expo 2020',
+                    //     summary: 'Expoo Vanue not confirm',
+                    // },
+                    // ]);
+
+                    // console.log("inside meeting events...", events)
+
+                    const eventClicked = (event) => {
+                        //On Click of event showing alert from here
+                        var jsonObj = event
+                        var startStr = jsonObj.start
+                        var endStr = jsonObj.end
+                        alert(startStr + " - " + endStr);
+                        var alreadyExists = false
+                        selSlotIds.forEach((item, idx) => {
+                            if (jsonObj.extendedProps.slotId == item) {
+                                alreadyExists = true
+                            }
+                        })
+                        if (alreadyExists) {
+                            selSlotIds.pop(jsonObj.extendedProps.slotId)
+                        }
+                        else {
+                            selSlotIds.push(jsonObj.extendedProps.slotId)
+                        }
+                    };
+
+
+                    useEffect(() => {
+                        async function getHallEvents() {
+                            interactionReducer.meetingHallsData?.map((elementItem, elementIdx) => {
+                                if (checkedItem.get("" + elementIdx)) {
+                                    dispatchInteraction(getHallEvents(elementItem.code))
+                                    console.log("meeting hall events data...", interactionReducer.meetingHallEventsData)
+                                }
+                            })
+                        }
+                        getHallEvents()
+                    }, [radioChecked]);
+
+                    return (
+                        <View>
+                            <View>
+                                {interactionReducer.meetingHallsData.map((elementItem, elementIdx) => {
+
+                                    var check = checkedItem.get("" + elementIdx)
+                                    console.log("checked item...", elementItem.description + " / " + checkedItem.get("" + elementIdx))
+                                    console.log("compare..", interactionReducer?.meetingHallEventsData?.requestObject?.data?.workType + " / " + elementItem.code)
+                                    if (interactionReducer?.meetingHallEventsData?.requestObject?.data?.workType == elementItem.code) {
+                                        check = true
+                                    }
+
+
+                                    return (
+                                        <View style={{ flexDirection: "row" }}>
+                                            <RadioButton
+                                                status={check ? "checked" : "unchecked"}
+                                                onPress={() => {
+                                                    checkedItem = new Map([["", false]]);
+                                                    checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
+                                                    console.log("changed meeting value..", checkedItem.get("" + elementIdx))
+                                                    // setEvents(interactionReducer.meetingHallEventsData)
+                                                    setRadioChecked(!radioChecked)
+                                                    // setEvents(interactionReducer.meetingHallEventsData)
+                                                    // checkedItemArr = []
+                                                    // if (checkedItem.get("" + elementIdx)) {
+                                                    //     checkedItemArr.push(elementItem.code)
+                                                    // }
+                                                    // else {
+                                                    //     checkedItemArr.pop(elementItem.code)
+                                                    // }
+
+                                                    // handleInputChange(fieldSetItem.id, checkedItemArr)
+                                                }}
+                                            />
+
+                                            <Text style={{ alignSelf: "center" }}>{elementItem.description}</Text>
+                                        </View>
+                                    )
+
+                                })
+                                }
+                            </View>
+
+                            <SafeAreaView style={styles.eventContainer}>
+                                <View style={styles.eventContainer}>
+                                    <EventCalendar
+                                        eventTapped={eventClicked}
+                                        // Function on event press
+                                        events={interactionReducer?.meetingHallEventsData?.data?.data}
+                                        // Passing the Array of event
+                                        width={width - 30}
+                                        // Container width
+                                        size={60}
+                                        // number of date will render before and after initDate
+                                        // (default is 30 will render 30 day before initDate
+                                        // and 29 day after initDate)
+                                        initDate={moment(new Date()).format("YYYY-MM-DD")}
+                                        // Show initial date (default is today)
+                                        scrollToFirst
+                                    // Scroll to first event of the day (default true)
+                                    />
+                                </View>
+                            </SafeAreaView>
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <CustomButton
+                                    label="Cancel"
+                                    onPress={async () => {
+                                        let params = {
+                                            flowId: flowId,
+                                            conversationUid: conversationID,
+                                            data: {
+                                                source: "knowledgeBase",
+                                                bookingStatus: "CANCEL",
+                                                inputType: "MESSAGE",
+                                                inputValue: { ...formDataArray, description: "CANCEL" },
+                                                selectedSlotIds: selSlotIds,
+                                                resolutionData: resolutionDetails
+                                            }
+                                        }
+                                        popupAction(params)
+                                    }} />
+                                <CustomButton
+                                    label="Proceed"
+                                    onPress={async () => {
+                                        let params = {
+                                            flowId: flowId,
+                                            conversationUid: conversationID,
+                                            data: {
+                                                source: "knowledgeBase",
+                                                bookingStatus: "PROCEED",
+                                                inputType: "MESSAGE",
+                                                inputValue: { ...formDataArray, description: "PROCEED" },
+                                                selectedSlotIds: selSlotIds,
+                                                resolutionData: resolutionDetails
+                                            }
+                                        }
+                                        popupAction(params)
+                                    }} />
+                            </View>
+                        </View>
+                    );
                 }
 
-                const [inputValue, setInputValue] = useState('');
-                const [inputText, setInputText] = useState(new Map());
-                // let inputText = new Map([["", ""]]);
-
-                const handleTextChange = _.debounce((text, fieldSetItem, formMetaAttributes) => {
-                    // Your logic here
-                    // inputText.set(fieldSetItem.id, text)
-
-                    console.log("inputText val..", inputText)
-
-                    setInputText
-                        (
-                            prevInputText => {
-                                console.log("prevInputText..", prevInputText)
-                                const newInputText = new Map(prevInputText);
-                                newInputText.set(fieldSetItem.id, text);
-                                return newInputText;
-                            });
-
-                    // setObj({
-                    //     ...obj,
-                    //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                    //     [fieldSetItem?.id]: text
-                    // });
-
-                    setObj(prevState => ({ ...prevState, [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes, [fieldSetItem?.id]: text }));
-
-                }, 300);
+                else {
 
 
-                console.log("formMetaAttributes...", formMetaAttributes)
+                    const [checked, setChecked] = useState(false);
+                    const [radioChecked, setRadioChecked] = useState(false);
+                    const [dropDownDesc, setDropDownDesc] = useState("");
+                    const [dropDownCode, setDropDownCode] = useState("");
+
+                    const handleOnChangeButtom = async () => {
+                        // obj = {}
+                        // getPreviousParams()
+                        // await delay(10000);
+                        // const params = await getDataFromDB("PREVIOUS_PARAMS")
+                        // console.log("got from db..", params.data.inputValue)
+                        // obj = params.data.inputValue
+                        // // setPrevInputVal(params.data.inputValue)
+                        // console.log("obj3...", obj)
+                        // console.log("retrieved obj..", obj)
+
+                        // formMetaAttributes?.forEach((item) => {
+                        //     item?.fieldSet?.forEach((item1) => {
+                        //         if (!(item1.fieldType == "button")) {
+                        //             if ((item1.fieldType == "project") || (item1.fieldType == "radio") || (item1.fieldType == "checkbox")) {
+                        //                 setObj(obj => ({
+
+                        //                     ...obj,
+                        //                     [item1.id + "_formAttributes"]: formMetaAttributes,
+                        //                     [item1.id]: checkedItemArr
+
+                        //                 }));
+                        //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: checkedItemArr })
+                        //             }
 
 
-                return (
-                    <>
-                        <View style={styles.column_space_arround_evenly}>
-                            {formMetaAttributes?.map(item => {
-                                return (
-                                    <View>
-                                        {item.fieldSet?.map((fieldSetItem, fieldSetIndex) => {
+                        //             else {
+                        //                 setObj(obj => ({
 
-                                            // var currentId = ""
-                                            // if(fieldSetIndex == 0) {
-                                            //     currentId = fieldSetItem.id
-                                            // }
+                        //                     ...obj,
+                        //                     [item1.id + "_formAttributes"]: formMetaAttributes,
+                        //                     [item1.id]: inputText.get(item1.id)
 
+                        //                 }));
+                        //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: inputText.get(item1.id) })
+                        //             }
+                        //         }
+                        //     })
+                        // })
+                        // console.log('obj...', obj)
+                    }
 
+                    const [inputValue, setInputValue] = useState('');
+                    const [inputText, setInputText] = useState(new Map());
+                    // let inputText = new Map([["", ""]]);
 
+                    const handleTextChange = _.debounce((text, fieldSetItem, formMetaAttributes) => {
+                        // Your logic here
+                        // inputText.set(fieldSetItem.id, text)
 
+                        console.log("inputText val..", inputText)
 
-                                            if (((fieldSetItem.fieldType == "checkbox")) && (fieldSetItem.taskContextPrefix == true)) {
-                                                return (
-                                                    <View>
+                        setInputText
+                            (
+                                prevInputText => {
+                                    console.log("prevInputText..", prevInputText)
+                                    const newInputText = new Map(prevInputText);
+                                    newInputText.set(fieldSetItem.id, text);
+                                    return newInputText;
+                                });
 
-                                                        {!(element == "") && (element?.map((elementItem, elementIdx) => {
-                                                            return (
-                                                                <View style={{ flexDirection: "row" }}>
-                                                                    <Checkbox
-                                                                        status={checkedItem.get("" + elementIdx) ? "checked" : "unchecked"}
-                                                                        onPress={() => {
+                        // setObj({
+                        //     ...obj,
+                        //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                        //     [fieldSetItem?.id]: text
+                        // });
 
-                                                                            setChecked(checked ? false : true)
-                                                                            checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
-                                                                            if (checkedItem.get("" + elementIdx)) {
-                                                                                checkedItemArr.push(elementItem)
+                        setObj(prevState => ({ ...prevState, [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes, [fieldSetItem?.id]: text }));
 
-
-                                                                            }
-                                                                            else {
-                                                                                checkedItemArr.pop(elementItem)
-                                                                            }
-
-
-                                                                            // setObj(obj => ({
-
-                                                                            //     ...obj,
-                                                                            //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                                                                            //     [fieldSetItem?.id]: checkedItemArr
-
-                                                                            // }));
+                    }, 300);
 
 
-                                                                            handleInputChange(fieldSetItem.id, checkedItemArr)
+                    console.log("formMetaAttributes...", formMetaAttributes)
 
 
+                    return (
+                        <>
+                            <View style={styles.column_space_arround_evenly}>
+                                {formMetaAttributes?.map(item => {
+                                    return (
+                                        <View>
+                                            {item.fieldSet?.map((fieldSetItem, fieldSetIndex) => {
 
-                                                                        }}
-                                                                        style={styles.checkbox}
-                                                                    />
-
-                                                                    {fieldSetItem.fieldType == "checkbox" && (
-                                                                        <Text style={{ alignSelf: "center" }}>{elementItem.value}</Text>)}
-
-                                                                    {fieldSetItem.fieldType == "selectbox" && (
-                                                                        <Text style={{ alignSelf: "center" }}>{elementItem.description}</Text>)}
-                                                                </View>
-                                                            )
-                                                        }))
-                                                        }
-
-                                                    </View>
-                                                )
-                                            }
+                                                // var currentId = ""
+                                                // if(fieldSetIndex == 0) {
+                                                //     currentId = fieldSetItem.id
+                                                // }
 
 
 
 
 
-                                            if ((fieldSetItem.fieldType == "selectbox") && (fieldSetItem.taskContextPrefix == true)) {
+                                                if (((fieldSetItem.fieldType == "checkbox")) && (fieldSetItem.taskContextPrefix == true)) {
+                                                    return (
+                                                        <View>
 
-                                                var arr = []
-                                                if (!(element == "")) {
-                                                    arr = element?.map(item => {
-                                                        return { description: item.description, code: item.code }
-                                                    })
-                                                }
+                                                            {!(element == "") && (element?.map((elementItem, elementIdx) => {
+                                                                return (
+                                                                    <View style={{ flexDirection: "row" }}>
+                                                                        <Checkbox
+                                                                            status={checkedItem.get("" + elementIdx) ? "checked" : "unchecked"}
+                                                                            onPress={() => {
 
-                                                return (
-                                                    <View>
-
-                                                        <View style={{ flexDirection: "column" }}>
-
-                                                            <Text>{fieldSetItem.title}</Text>
-
-                                                            <CustomDropDownFullWidth
-                                                                selectedValue={dropDownDesc}
-                                                                data={arr}
-                                                                onChangeText={(text) => {
-                                                                    setDropDownDesc(text.description)
-                                                                    setDropDownCode(text.code)
-                                                                    inputText.set("remarks", dropDownCode)
-
-                                                                    handleInputChange(fieldSetItem.id, dropDownCode)
+                                                                                setChecked(checked ? false : true)
+                                                                                checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
+                                                                                if (checkedItem.get("" + elementIdx)) {
+                                                                                    checkedItemArr.push(elementItem)
 
 
-                                                                    // setObj(obj => ({
+                                                                                }
+                                                                                else {
+                                                                                    checkedItemArr.pop(elementItem)
+                                                                                }
 
-                                                                    //     ...obj,
-                                                                    //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                                                                    //     [fieldSetItem?.id]: dropDownCode
 
-                                                                    // }));
-                                                                }}
-                                                                value={dropDownCode}
-                                                                caption={arr.description}
-                                                                placeHolder={arr.description}
-                                                            />
+                                                                                // setObj(obj => ({
+
+                                                                                //     ...obj,
+                                                                                //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                                                                                //     [fieldSetItem?.id]: checkedItemArr
+
+                                                                                // }));
+
+
+                                                                                handleInputChange(fieldSetItem.id, checkedItemArr)
+
+
+
+                                                                            }}
+                                                                            style={styles.checkbox}
+                                                                        />
+
+                                                                        {fieldSetItem.fieldType == "checkbox" && (
+                                                                            <Text style={{ alignSelf: "center" }}>{elementItem.value}</Text>)}
+
+                                                                        {fieldSetItem.fieldType == "selectbox" && (
+                                                                            <Text style={{ alignSelf: "center" }}>{elementItem.description}</Text>)}
+                                                                    </View>
+                                                                )
+                                                            }))
+                                                            }
 
                                                         </View>
-
-                                                    </View>
-                                                )
-                                            }
+                                                    )
+                                                }
 
 
 
 
-                                            if ((fieldSetItem.fieldType == "radio") && (fieldSetItem.taskContextPrefix == true)) {
-                                                return (
-                                                    <View>
 
-                                                        {!(element == "") && (element?.map((elementItem, elementIdx) => {
-                                                            // checkedItem.set('' + elementIdx, false)
+                                                if ((fieldSetItem.fieldType == "selectbox") && (fieldSetItem.taskContextPrefix == true)) {
 
-                                                            console.log("elementItem...", checkedItem.get("" + elementIdx))
+                                                    var arr = []
+                                                    if (!(element == "")) {
+                                                        arr = element?.map(item => {
+                                                            return { description: item.description, code: item.code }
+                                                        })
+                                                    }
 
-                                                            return (
-                                                                <View style={{ flexDirection: "row" }}>
-                                                                    <RadioButton
-                                                                        status={checkedItem.get("" + elementIdx) ? "checked" : "unchecked"}
-                                                                        onPress={() => {
-                                                                            setRadioChecked(radioChecked ? false : true)
+                                                    return (
+                                                        <View>
 
+                                                            <View style={{ flexDirection: "column" }}>
 
-                                                                            console.log("sel radio value..", checkedItem.get("" + elementIdx))
-                                                                            checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
-                                                                            console.log("changed value..", checkedItem.get("" + elementIdx))
+                                                                <Text>{fieldSetItem.title}</Text>
 
-                                                                            if (checkedItem.get("" + elementIdx)) {
-                                                                                checkedItemArr.push(elementItem)
-                                                                            }
-                                                                            else {
-                                                                                checkedItemArr.pop(elementItem)
-                                                                            }
+                                                                <CustomDropDownFullWidth
+                                                                    selectedValue={dropDownDesc}
+                                                                    data={arr}
+                                                                    onChangeText={(text) => {
+                                                                        setDropDownDesc(text.description)
+                                                                        setDropDownCode(text.code)
+                                                                        inputText.set("remarks", text.code)
 
+                                                                        handleInputChange(fieldSetItem.id, text.code)
 
 
-                                                                            // setObj(obj => ({
+                                                                        // setObj(obj => ({
 
-                                                                            //     ...obj,
-                                                                            //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                                                                            //     [fieldSetItem?.id]: checkedItemArr
+                                                                        //     ...obj,
+                                                                        //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                                                                        //     [fieldSetItem?.id]: dropDownCode
 
-                                                                            // }));
+                                                                        // }));
+                                                                    }}
+                                                                    value={dropDownCode}
+                                                                    caption={arr.description}
+                                                                    placeHolder={arr.description}
+                                                                />
 
+                                                            </View>
 
-
-                                                                            handleInputChange(fieldSetItem.id, checkedItemArr)
-                                                                        }}
-                                                                    />
-
-                                                                    <Text style={{ alignSelf: "center" }}>{elementItem.value}</Text>
-                                                                </View>
-                                                            )
-                                                        }))
-                                                        }
-
-                                                    </View>
-                                                )
-                                            }
+                                                        </View>
+                                                    )
+                                                }
 
 
 
 
-                                            if (fieldSetItem.fieldType == "textField") {
-                                                return (
-                                                    // <Textfield data={{ fieldSetItem, formMetaAttributes, inputText, obj, temp }} handlers={{ handleInputChange, setTemp }} />
+                                                if ((fieldSetItem.fieldType == "radio") && (fieldSetItem.taskContextPrefix == true)) {
+                                                    return (
+                                                        <View>
 
-                                                    <View>
-                                                        {/* <CustomInput
+                                                            {!(element == "") && (element?.map((elementItem, elementIdx) => {
+                                                                // checkedItem.set('' + elementIdx, false)
+
+                                                                console.log("elementItem...", checkedItem.get("" + elementIdx))
+
+                                                                return (
+                                                                    <View style={{ flexDirection: "row" }}>
+                                                                        <RadioButton
+                                                                            status={checkedItem.get("" + elementIdx) ? "checked" : "unchecked"}
+                                                                            onPress={() => {
+                                                                                setRadioChecked(radioChecked ? false : true)
+
+                                                                                checkedItem = new Map([["", false]]);
+                                                                                console.log("sel radio value..", checkedItem.get("" + elementIdx))
+                                                                                checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
+                                                                                console.log("changed value..", checkedItem.get("" + elementIdx))
+
+                                                                                checkedItemArr = []
+                                                                                if (checkedItem.get("" + elementIdx)) {
+                                                                                    checkedItemArr.push(elementItem)
+                                                                                }
+                                                                                else {
+                                                                                    checkedItemArr.pop(elementItem)
+                                                                                }
+
+
+
+                                                                                // setObj(obj => ({
+
+                                                                                //     ...obj,
+                                                                                //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                                                                                //     [fieldSetItem?.id]: checkedItemArr
+
+                                                                                // }));
+
+
+
+                                                                                handleInputChange(fieldSetItem.id, checkedItemArr)
+                                                                            }}
+                                                                        />
+
+                                                                        <Text style={{ alignSelf: "center" }}>{elementItem.value}</Text>
+                                                                    </View>
+                                                                )
+                                                            }))
+                                                            }
+
+                                                        </View>
+                                                    )
+                                                }
+
+
+
+
+                                                if (fieldSetItem.fieldType == "textField") {
+                                                    return (
+                                                        // <Textfield data={{ fieldSetItem, formMetaAttributes, inputText, obj, temp }} handlers={{ handleInputChange, setTemp }} />
+
+                                                        <View>
+                                                            {/* <CustomInput
                                                             id={fieldSetItem.id}
                                                             style={{
                                                                 backgroundColor: "transparent"
@@ -998,24 +1254,24 @@ export const HandleResolution = ({
                                                         /> */}
 
 
-                                                        <CustomInput
-                                                            id={fieldSetItem.id}
-                                                            style={{
-                                                                backgroundColor: "transparent"
-                                                            }}
-                                                            // onChangeText={handleTextChange}
-                                                            onChangeText={(e) =>
-                                                                handleInputChange(fieldSetItem.id, e)
-                                                            }
-                                                            // value={fieldSetItem.id ? obj[fieldSetItem.id] : ""}
-                                                            value={formDataState[fieldSetItem.id]}
-                                                            inputType={fieldSetItem.inputType}
-                                                            caption={fieldSetItem.title}
-                                                            placeHolder={fieldSetItem.placeHolder}
-                                                        />
+                                                            <CustomInput
+                                                                id={fieldSetItem.id}
+                                                                style={{
+                                                                    backgroundColor: "transparent"
+                                                                }}
+                                                                // onChangeText={handleTextChange}
+                                                                onChangeText={(e) =>
+                                                                    handleInputChange(fieldSetItem.id, e)
+                                                                }
+                                                                // value={fieldSetItem.id ? obj[fieldSetItem.id] : ""}
+                                                                value={formDataState[fieldSetItem.id]}
+                                                                inputType={fieldSetItem.inputType}
+                                                                caption={fieldSetItem.title}
+                                                                placeHolder={fieldSetItem.placeHolder}
+                                                            />
 
 
-                                                        {/* <input
+                                                            {/* <input
 
                                                             type={fieldSetItem.inputType}
 
@@ -1027,235 +1283,235 @@ export const HandleResolution = ({
 
                                                         /> */}
 
-                                                        {/* {console.log("inputText.get(fieldSetItem.id)", obj[fieldSetItem.id])} */}
-                                                        {/* {console.log("inputText..", inputText)} */}
-                                                        <ClearSpace size={2}></ClearSpace>
-                                                    </View >
+                                                            {/* {console.log("inputText.get(fieldSetItem.id)", obj[fieldSetItem.id])} */}
+                                                            {/* {console.log("inputText..", inputText)} */}
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                        </View >
 
-                                                )
-                                            }
+                                                    )
+                                                }
 
 
 
 
 
-                                            if (fieldSetItem.fieldType == "textarea") {
-                                                return (
-                                                    <View>
-                                                        <CustomInput
-                                                            style={{
-                                                                backgroundColor: "transparent"
-                                                            }}
-                                                            onChangeText={(text) => {
-                                                                // inputText.set(fieldSetItem.id, text)
+                                                if (fieldSetItem.fieldType == "textarea") {
+                                                    return (
+                                                        <View>
+                                                            <CustomInput
+                                                                style={{
+                                                                    backgroundColor: "transparent"
+                                                                }}
+                                                                onChangeText={(text) => {
+                                                                    // inputText.set(fieldSetItem.id, text)
 
-                                                                // setObj(obj => ({
+                                                                    // setObj(obj => ({
 
-                                                                //     ...obj,
-                                                                //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                                                                //     [fieldSetItem?.id]: text
+                                                                    //     ...obj,
+                                                                    //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                                                                    //     [fieldSetItem?.id]: text
 
-                                                                // }));
+                                                                    // }));
 
-                                                                handleInputChange(fieldSetItem.id, text)
-
-                                                            }}
-                                                            value={formDataState[fieldSetItem.id]}
-                                                            multiline={true}
-                                                            inputType={fieldSetItem.inputType}
-                                                            caption={fieldSetItem.title}
-                                                            placeHolder={fieldSetItem.placeHolder}
-                                                        />
-                                                        <ClearSpace size={2}></ClearSpace>
-                                                    </View>
-
-                                                )
-                                            }
-
-
-
-
-                                            if (fieldSetItem.fieldType == "button") {
-
-
-                                                return (
-                                                    <View style={{ flex: 1 }}>
-                                                        <ClearSpace size={2}></ClearSpace>
-                                                        <CustomButton
-                                                            label={fieldSetItem.placeHolder}
-                                                            onPress={async () => {
-                                                                console.log("formDataState onpress..", formDataState)
-                                                                handleButtonSubmit()
-
-                                                                // handleOnChangeButtom()
-
-                                                                // async () => {
-
-                                                                // getPreviousParams()
-
-                                                                // console.log("fieldSet?..", formMetaAttributes)
-
-                                                                // formMetaAttributes?.forEach(async (item1, idx) => {
-                                                                //     item1?.fieldSet?.forEach(async (item2, idx) => {
-                                                                //         // if ((item2.fieldType == "button")) {                                           
-
-                                                                //         // setCurrInputVal([...currInputVal, {
-                                                                //         //     [item2.id + "_formAttributes"]: formMetaAttributes,
-                                                                //         //     [item2.id]: checkedItemArr
-                                                                //         // }])
-
-                                                                //         console.log('------x-------->', {
-                                                                //             [item2.id + "_formAttributes"]: formMetaAttributes,
-                                                                //             [item2.id]: checkedItemArr
-                                                                //         })
-                                                                //         // }
-                                                                //     })
-                                                                // })
-
-
-                                                                // const unique = new Set(formDataArray);
-
-                                                                // const uniqueData = [...unique];
-
-
-                                                                // const jsonStr = JSON.stringify(formDataArray, null, '\t').slice(1, -1)
-                                                                console.log("jsonStr1--->", formDataArray, formDataState)
-
-                                                                // var newString = jsonStr.indexOf('[') == 0 ? jsonStr.substring(1) : jsonStr;
-                                                                // newString = jsonStr.indexOf(']') == jsonStr.length - 1 ? jsonStr.substring(jsonStr.length - 1) : jsonStr;
-                                                                // console.log("jsonStr2--->", newString)
-
-
-                                                                // console.log("jsonStr3--->", JSON.parse(newString))
-
-
-                                                                // formDataArray.forEach((item, index) => {  
-                                                                //     modifiedData[`formData${index}`] = { ...item };     
-                                                                // });
-
-                                                                // console.log("jsonStr2--->", formDataArray.forEach((item, index) => {
-                                                                //     modifiedData[`formData${index}`] = { ...item };
-                                                                // }))
-
-                                                                var valObj = {}
-                                                                if (values.length > 0) {
-                                                                    valObj = { ["GRID"]: values }
-                                                                    values = []
-                                                                }
-
-
-
-
-                                                                let params = {
-                                                                    flowId: flowId,
-                                                                    conversationUid: conversationID,
-                                                                    "data": {
-                                                                        "source": "knowledgeBase",
-                                                                        "inputType": "FORMDATA",
-                                                                        // "inputValue": formDataArray.map(m => ({ ...m })),
-
-                                                                        // json = JSON.parse(twice_json)               // => '{"orderId":"123"}'
-                                                                        // obj = JSON.parse(json)  
-
-
-
-                                                                        "inputValue": { ...formDataArray, ...formDataState, ...valObj },
-
-
-                                                                        // "project_formAttributes": formMetaAttributes,
-                                                                        // "project": checkedItemArr,
-
-                                                                        // "radio_formAttributes": formMetaAttributes,
-                                                                        // "radio": checkedItemArr,
-
-                                                                        // "Department_formAttributes": formMetaAttributes,
-                                                                        // "Department": inputText.get("Department"),
-
-                                                                        // "role_formAttributes": formMetaAttributes,
-                                                                        // "role": inputText.get("role"),
-
-                                                                        // "remarks": inputText.get("remarks")
-
-                                                                        // },
-                                                                        "resolutionData": resolutionDetails
-                                                                    }
-                                                                };
-
-
-
-                                                                console.log("save data..", params)
-
-                                                                // await saveDataToDB("PREVIOUS_PARAMS", params);
-
-                                                                console.log("submit params...", JSON.stringify(params));
-
-                                                                popupAction(params)
-
-                                                            }
-                                                            }
-                                                        />
-                                                        <ClearSpace size={2}></ClearSpace>
-                                                    </View>
-                                                )
-
-                                            }
-
-
-                                            console.log("fieldSetItem grid..", fieldSetItem)
-
-                                            if (fieldSetItem?.fieldType === 'grid') {
-
-                                                console.log("inside grid..")
-
-                                                return (
-                                                    <>
-                                                        <DataTable style={styles.containers}>
-                                                            <DataTable.Header style={styles.tableHeader}>
-                                                                {fieldSetItem?.headers.map((header, headerIndex) => (
-                                                                    <DataTable.Title>{header.title}</DataTable.Title>
-                                                                ))}
-
-                                                            </DataTable.Header>
-
-                                                            {values?.length > 0 &&
-
-                                                                values?.map((rows, rowsIndex) => (
-                                                                    <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
-
-                                                                        {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
-
-                                                                    </DataTable.Row>
-                                                                ))}
-
-
-                                                        </DataTable>
-
-                                                        {fieldSetItem.rows?.length > 0 && (
-
-
-                                                            <CustomButton
-                                                                label="Add Row"
-
-                                                                onPress={() => {
-
-                                                                    handleAddRows(fieldSetItem?.headers);
+                                                                    handleInputChange(fieldSetItem.id, text)
 
                                                                 }}
-
-
+                                                                value={formDataState[fieldSetItem.id]}
+                                                                multiline={true}
+                                                                inputType={fieldSetItem.inputType}
+                                                                caption={fieldSetItem.title}
+                                                                placeHolder={fieldSetItem.placeHolder}
                                                             />
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                        </View>
+
+                                                    )
+                                                }
 
 
 
-                                                        )}
 
-                                                        <ScrollView>
-
-                                                            <View style={styles.table}>
+                                                if (fieldSetItem.fieldType == "button") {
 
 
+                                                    return (
+                                                        <View style={{ flex: 1 }}>
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                            <CustomButton
+                                                                label={fieldSetItem.placeHolder}
+                                                                onPress={async () => {
+                                                                    console.log("formDataState onpress..", formDataState)
+                                                                    handleButtonSubmit()
 
-                                                                {/* {fieldSetItem.columns?.[0]?.column_headers?.map((rows, rowsIndex) => (
+                                                                    // handleOnChangeButtom()
+
+                                                                    // async () => {
+
+                                                                    // getPreviousParams()
+
+                                                                    // console.log("fieldSet?..", formMetaAttributes)
+
+                                                                    // formMetaAttributes?.forEach(async (item1, idx) => {
+                                                                    //     item1?.fieldSet?.forEach(async (item2, idx) => {
+                                                                    //         // if ((item2.fieldType == "button")) {                                           
+
+                                                                    //         // setCurrInputVal([...currInputVal, {
+                                                                    //         //     [item2.id + "_formAttributes"]: formMetaAttributes,
+                                                                    //         //     [item2.id]: checkedItemArr
+                                                                    //         // }])
+
+                                                                    //         console.log('------x-------->', {
+                                                                    //             [item2.id + "_formAttributes"]: formMetaAttributes,
+                                                                    //             [item2.id]: checkedItemArr
+                                                                    //         })
+                                                                    //         // }
+                                                                    //     })
+                                                                    // })
+
+
+                                                                    // const unique = new Set(formDataArray);
+
+                                                                    // const uniqueData = [...unique];
+
+
+                                                                    // const jsonStr = JSON.stringify(formDataArray, null, '\t').slice(1, -1)
+                                                                    console.log("jsonStr1--->", formDataArray, formDataState)
+
+                                                                    // var newString = jsonStr.indexOf('[') == 0 ? jsonStr.substring(1) : jsonStr;
+                                                                    // newString = jsonStr.indexOf(']') == jsonStr.length - 1 ? jsonStr.substring(jsonStr.length - 1) : jsonStr;
+                                                                    // console.log("jsonStr2--->", newString)
+
+
+                                                                    // console.log("jsonStr3--->", JSON.parse(newString))
+
+
+                                                                    // formDataArray.forEach((item, index) => {  
+                                                                    //     modifiedData[`formData${index}`] = { ...item };     
+                                                                    // });
+
+                                                                    // console.log("jsonStr2--->", formDataArray.forEach((item, index) => {
+                                                                    //     modifiedData[`formData${index}`] = { ...item };
+                                                                    // }))
+
+                                                                    var valObj = {}
+                                                                    if (values.length > 0) {
+                                                                        valObj = { ["GRID"]: values }
+                                                                        values = []
+                                                                    }
+
+
+
+
+                                                                    let params = {
+                                                                        flowId: flowId,
+                                                                        conversationUid: conversationID,
+                                                                        "data": {
+                                                                            "source": "knowledgeBase",
+                                                                            "inputType": "FORMDATA",
+                                                                            // "inputValue": formDataArray.map(m => ({ ...m })),
+
+                                                                            // json = JSON.parse(twice_json)               // => '{"orderId":"123"}'
+                                                                            // obj = JSON.parse(json)  
+
+
+
+                                                                            "inputValue": { ...formDataArray, ...formDataState, ...valObj },
+
+
+                                                                            // "project_formAttributes": formMetaAttributes,
+                                                                            // "project": checkedItemArr,
+
+                                                                            // "radio_formAttributes": formMetaAttributes,
+                                                                            // "radio": checkedItemArr,
+
+                                                                            // "Department_formAttributes": formMetaAttributes,
+                                                                            // "Department": inputText.get("Department"),
+
+                                                                            // "role_formAttributes": formMetaAttributes,
+                                                                            // "role": inputText.get("role"),
+
+                                                                            // "remarks": inputText.get("remarks")
+
+                                                                            // },
+                                                                            "resolutionData": resolutionDetails
+                                                                        }
+                                                                    };
+
+
+
+                                                                    console.log("save data..", params)
+
+                                                                    // await saveDataToDB("PREVIOUS_PARAMS", params);
+
+                                                                    console.log("submit params...", JSON.stringify(params));
+
+                                                                    popupAction(params)
+
+                                                                }
+                                                                }
+                                                            />
+                                                            <ClearSpace size={2}></ClearSpace>
+                                                        </View>
+                                                    )
+
+                                                }
+
+
+                                                console.log("fieldSetItem grid..", fieldSetItem)
+
+                                                if (fieldSetItem?.fieldType === 'grid') {
+
+                                                    console.log("inside grid..")
+
+                                                    return (
+                                                        <>
+                                                            <DataTable style={styles.containers}>
+                                                                <DataTable.Header style={styles.tableHeader}>
+                                                                    {fieldSetItem?.headers.map((header, headerIndex) => (
+                                                                        <DataTable.Title>{header.title}</DataTable.Title>
+                                                                    ))}
+
+                                                                </DataTable.Header>
+
+                                                                {values?.length > 0 &&
+
+                                                                    values?.map((rows, rowsIndex) => (
+                                                                        <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
+
+                                                                            {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+
+                                                                        </DataTable.Row>
+                                                                    ))}
+
+
+                                                            </DataTable>
+
+                                                            {fieldSetItem.rows?.length > 0 && (
+
+
+                                                                <CustomButton
+                                                                    label="Add Row"
+
+                                                                    onPress={() => {
+
+                                                                        handleAddRows(fieldSetItem?.headers);
+
+                                                                    }}
+
+
+                                                                />
+
+
+
+                                                            )}
+
+                                                            <ScrollView>
+
+                                                                <View style={styles.table}>
+
+
+
+                                                                    {/* {fieldSetItem.columns?.[0]?.column_headers?.map((rows, rowsIndex) => (
 
                                                                     <View key={rowsIndex} style={styles.row} id={'r' + rowsIndex}>
 
@@ -1283,34 +1539,35 @@ export const HandleResolution = ({
 
 
 
-                                                            </View>
+                                                                </View>
 
-                                                        </ScrollView>
-                                                    </>
-                                                );
+                                                            </ScrollView>
+                                                        </>
+                                                    );
+
+                                                }
+
+
+
+
+
+                                            })
+
+
+
+
 
                                             }
+                                        </View>
+                                    )
+                                })}
+                            </View>
+                        </>
+                    )
 
+                    return null
 
-
-
-
-                                        })
-
-
-
-
-
-                                        }
-                                    </View>
-                                )
-                            })}
-                        </View>
-                    </>
-                )
-
-                return null
-
+                }
         }
 
     }
@@ -1372,7 +1629,7 @@ export const HandleResolution = ({
 
                             case "COLLECTINPUT":
                                 console.log('HandleResolution:COLLECTINPUT', message)
-                                return <RenderCollectInput message={message} />
+                                return <RenderCollectInput description={description} message={message} />
 
 
                             case "WORKFLOWEND":
@@ -1484,6 +1741,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, padding: 16, paddingTop: 10, backgroundColor: "white",
 
+    },
+    eventContainer: {
+        marginTop: 10,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     head: { height: 40, backgroundColor: '#f1f8ff' },
     wrapper: { flexDirection: 'row' },

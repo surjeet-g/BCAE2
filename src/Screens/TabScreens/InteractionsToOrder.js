@@ -22,7 +22,7 @@ import { ImagePicker } from "../../Components/ImagePicker";
 import { InteractionFailed } from "../../Components/InteractionFailed";
 import { InteractionSuccess, styles as modalStyle } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
-import { RenderUserSelectResult, userNavigationIcon } from '../../Components/UserSearch';
+import { RenderUserSelectResult } from '../../Components/UserSearch';
 import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import {
   setInteractionFormField,
@@ -32,6 +32,7 @@ import {
   addInteractionAction,
   fetchInteractionAction,
   getAppoinmentsData,
+  getHalls,
   updateInteractionAction
 } from "../../Redux/InteractionDispatcher";
 import { resetKnowSearch } from "../../Redux/KnowledgeSearchAction";
@@ -94,6 +95,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
   console.log("rendering InteractionsToOrder..")
   var role = ""
+
   const [formDataArray, setFormDataArray] = useState({});
   const handleNextForm = (formData) => { setFormDataArray(prevArray => ({ ...prevArray, ...formData })) };
   const [obj, setObj] = useState({})
@@ -149,7 +151,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const [userType, setUserType] = useState(userTypeParams);
   let interactionRedux = useSelector((state) => state.interaction);
   let knowledgeSearchStore = useSelector((state) => state.knowledgeSearch);
-  const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
+
+
+
+  // const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
+  // For telecom
+  const [userSeachEnable, setUserSeachEnable] = useState(false);
+
+
 
   /**
   * Reset state values. This will hanlde reset the state values 
@@ -249,28 +258,41 @@ const InteractionsToOrder = ({ route, navigation }) => {
     updateInteractionAction,
     addInteractionAction,
     resetKnowSearch,
-    getAppoinmentsData
+    getAppoinmentsData,
+    getHalls
   ]);
 
 
-  useEffect(async () => {
 
-    role = "" + await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
-    console.log("current role id..", role)
-    // const userId = await getUserId();
-    // console.log("current userId..", userId)
 
-    // if (role == "24") {
 
-    //   const status = await props.profileDispatch(
-    //     fetchSavedProfileDataByUser(
-    //       userId
-    //     )
-    //   );
+  useEffect(() => {
+    async function getData() {
+      role = "" + await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
+      console.log("current role id..", role)
 
-    //   setUserSeachEnable(false)
-    //   setSearchOpen(false)
-    // }
+
+      console.log(obj, "getting halls3..");
+      await dispatchInteraction(await getHalls())
+      console.log("meeting halls data2...", interactionReducer.meetingHallsData)
+
+      // const userId = await getUserId();
+      // console.log("current userId..", userId)
+
+      // if (role == "24") {
+
+      //   const status = await props.profileDispatch(
+      //     fetchSavedProfileDataByUser(
+      //       userId
+      //     )
+      //   );
+
+      // For telecom
+      setUserSeachEnable(false)
+      setSearchOpen(false)
+      // }
+    }
+    getData()
   }, []);
 
   useEffect(() => {
@@ -301,6 +323,36 @@ const InteractionsToOrder = ({ route, navigation }) => {
   // }, [profileReducer.IsSearchEmpty])
 
 
+
+  // useEffect(async () => {
+  //   const flowId = get(get(interactionReducer, "InteractionData", []), 'flwId', '')
+  //   const conversationID = get(get(interactionReducer, "InteractionData", []), 'conversationUid', '')
+  //   const requestId = get(get(interactionReducer, "InteractionData", []), 'requestId', '')
+
+  //   const { response, actionType } = await dispatchInteraction(
+  //     fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
+  //       {
+  //         flowId: flowId, 
+  //         conversationUid: conversationID,
+  //         requestId: requestId,
+
+  //       }
+
+
+  //       moduleName: "KnowledgeBaseMobileApp",
+  //       customerId: "" + get(profileReducer, `${activeData}.customerId`, '')
+  //     })
+  //   );
+
+  //   // console.log("intreaction data response    ", response)
+  //   // setLoader(false)
+
+  //   // const status = await handleInteligenceResponse(response, item, actionType)
+  //   // console.log('response', status)
+
+  //   console.log("call resolution use case called...")
+
+  // }, [callResolution]);
 
 
   useEffect(() => {
@@ -337,6 +389,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           `${INTXN_TYPE},${SERVICE_TYPE},${INTXN_CAUSE},${CONTACT_TYPE},${PRIORITY},${PROD_SUB_TYPE},${INTXN_CATEGORY},${APPOINT_TYPE},${TICKET_CHANNEL},${LOCATION},${CONTACT_PREFERENCE}`
         )
       );
+
 
 
     }
@@ -555,6 +608,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
       return false
     }
   }
+
   const searchWordCustomiz = (text) => {
     try {
       if (text.length == 0) return text
@@ -655,21 +709,22 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
                     //open form model
                     setautoSuggestionList(false);
-                    Keyboard.dismiss();
+                    Keyboard?.dismiss();
                     setKnowledgeSearchText(item?.requestStatement);
                     setActiveState({
                       requestId: item.requestId,
                       requestStatement: item.requestStatement
                     })
+
                     //check if smart assistance not enable then going this normal way
                     if (!isEnabledsmartAssist) {
                       presetInteractionFormData(item)
                       setBottombartitle("Create Interaction")
-
                       setautoSuggestionList(false);
                       setOpenBottomModal(true)
                       return;
                     }
+
                     console.log("intreaction data", item)
                     presetInteractionFormData(item)
 
@@ -685,17 +740,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     console.log("4............")
                     setLoader(true)
 
-                    console.log("5............")
+                    console.log("5A............", await getDataFromDB(storageKeys.CUSTOMER_ID))
+                    console.log("5B............", await getDataFromDB(storageKeys.CUSTOMER_UUID))
+
                     console.log("cust id rec....", "" + await getCustomerID())
                     console.log("active data...", get(profileReducer, `${activeData}.customerUuid`, ''))
 
                     const { response, actionType } = await dispatchInteraction(
 
                       fetchInteractionAction(typeOfAccrodin.knowlegde.value, {
-                        customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
+                        customerUuid: await getDataFromDB(storageKeys.CUSTOMER_UUID),
                         requestId: parseInt(item.requestId),
                         moduleName: "KnowledgeBaseMobileApp",
-                        customerId: "" + get(profileReducer, `${activeData}.customerId`, '')
+                        customerId: await getDataFromDB(storageKeys.CUSTOMER_ID)
                       })
                     );
                     console.log("intreaction data response    ", response)
@@ -1175,6 +1232,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
     setService,
     activeService,
   ]);
+
+
   // console.log('new profile ', profileReducer.userSelectedProfileDetails)
   const {
     statement,
@@ -1465,9 +1524,16 @@ const InteractionsToOrder = ({ route, navigation }) => {
               await resetStateData("setInteractionResponse");
               console.log("hiting", intereactionAddResponse)
 
+              // navigation.navigate(STACK_INTERACTION_DETAILS, {
+              //   interactionID: intereactionAddResponse,
+              // });
+
+              let params = {
+                interactionSearchParams: intereactionAddResponse
+              }
               navigation.navigate(STACK_INTERACTION_DETAILS, {
-                interactionID: intereactionAddResponse?.intxnId,
-              });
+                interactionSearchParams: params
+              })
             }}
             cancelHandler={async () => {
               await resetStateData("setInteractionResponse");
@@ -1516,24 +1582,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
       {
 
-        ((userType == USERTYPE.USER) &&
-          useMemo(() => {
-            return userNavigationIcon({
-              navigation,
-              setOpenBottomModal: setOpenBottomModal,
-              setSearchOpen: setSearchOpen,
-              setEnableSuccessScreens: () => {
-                //to do when user search is empty
-                {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
-              },
-              setLoader,
-              profileDispatch,
-              headerRightForNav,
-              headerTitle: "Interaction",
-              profileSearchData: get(profileReducer, "profileSearchData", [])
-            });
-          }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
-          ))
+        // For telecom
+        // ((userType == USERTYPE.USER) &&
+        // useMemo(() => {
+        //   return userNavigationIcon({
+        //     navigation,
+        //     setOpenBottomModal: setOpenBottomModal,
+        //     setSearchOpen: setSearchOpen,
+        //     setEnableSuccessScreens: () => {
+        //       //to do when user search is empty
+        //       {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
+        //     },
+        //     setLoader,
+        //     profileDispatch,
+        //     headerRightForNav,
+        //     headerTitle: "Interaction",
+        //     profileSearchData: get(profileReducer, "profileSearchData", [])
+        //   });
+        // }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
+        //   // )
+        // )
       }
 
       {
@@ -1589,6 +1657,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
         {console.log("userSeachEnable...", userSeachEnable)}
 
 
+
+
         <View
           style={{
             ...styles.container,
@@ -1616,7 +1686,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 setsearchStandaloneModel(true);
                 //open form model
                 setautoSuggestionList(false);
-                Keyboard.dismiss();
+                Keyboard?.dismiss();
                 resetCreateInterationForm()
               }}
               value={isEnabledsmartAssist}
@@ -1643,8 +1713,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   setsearchStandaloneModel(true);
                   //open form model
                   setautoSuggestionList(false);
-                  Keyboard.dismiss();
-                  resetCreateInterationForm()
+                  //Keyboard?.dismiss();
+                  // resetCreateInterationForm()
                 }}
               >
                 <Icon
@@ -1833,6 +1903,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               </>
             }
             <CustomInput
+              style={{ marginTop: 30 }}
               value={get(remarks, "value", "")}
               caption={strings.remarks}
               placeHolder={strings.remarks}

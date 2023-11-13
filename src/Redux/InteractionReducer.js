@@ -19,6 +19,14 @@ import {
   INTERACTION_SET_FORM,
   INTERACTION_USERS_BY_ROLE,
   INTERACTION_USERS_BY_ROLE_FAILURE,
+  INTXN_ATTACHMENT_DATA,
+  INTXN_ATTACHMENT_ERROR_DATA,
+  INTXN_DOWNLOAD_ATTACHMENT_DATA,
+  INTXN_DOWNLOAD_ATTACHMENT_ERROR_DATA,
+  MEETING_HALLS_DATA,
+  MEETING_HALLS_ERROR_DATA,
+  MEETING_HALL_EVENTS_DATA,
+  MEETING_HALL_EVENTS_ERROR_DATA,
   STATUS_DATA,
   STATUS_DATA_FAILURE
 } from "./InteractionAction";
@@ -37,6 +45,10 @@ const InteractionInitialState = {
   interactionSearchData: [],
   interactionUsersByRoleData: [],
   interactionUsersByRoleErrorData: [],
+  intxnAttachmentData: [],
+  intxnAttachmentErrorData: [],
+  intxnDownloadAttachmentData: {},
+  intxnDownloadAttachmentErrorData: {},
   interactionSearchErrorData: {},
   interactionFollowupErrorData: {},
   interactionCancelReasonsData: [],
@@ -134,6 +146,10 @@ const InteractionInitialState = {
   followupErrorData: {},
   interactionSelfAssignData: {},
   interactionSelfAssignErrorData: {},
+  meetingHallsData: [],
+  meetingHallsErrorData: {},
+  meetingHallEventsData: [],
+  meetingHallEventsErrorData: {},
   statusData: [],
   // rolesData: [],
   statusErrorData: {}
@@ -363,6 +379,31 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       };
 
 
+    case INTXN_ATTACHMENT_DATA:
+      return {
+        ...state,
+        intxnAttachmentData: action.data,
+      };
+    case INTXN_ATTACHMENT_ERROR_DATA:
+      return {
+        ...state,
+        intxnAttachmentErrorData: action.data,
+      };
+
+
+
+    case INTXN_DOWNLOAD_ATTACHMENT_DATA:
+      return {
+        ...state,
+        intxnDownloadAttachmentData: action.data,
+      };
+    case INTXN_DOWNLOAD_ATTACHMENT_ERROR_DATA:
+      return {
+        ...state,
+        intxnDownloadAttachmentErrorData: action.data,
+      };
+
+
 
     case CANCEL_REASONS_DATA:
       return {
@@ -409,6 +450,34 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
         ...state,
         interactionSelfAssignData: {},
         interactionSelfAssignErrorData: action.data
+      };
+
+
+
+    case MEETING_HALLS_DATA:
+      return {
+        ...state,
+        meetingHallsData: action.data,
+      };
+
+    case MEETING_HALLS_ERROR_DATA:
+      return {
+        ...state,
+        meetingHallsErrorData: action.data
+      };
+
+
+
+    case MEETING_HALL_EVENTS_DATA:
+      return {
+        ...state,
+        meetingHallEventsData: action.data,
+      };
+
+    case MEETING_HALL_EVENTS_ERROR_DATA:
+      return {
+        ...state,
+        meetingHallEventsErrorData: action.data
       };
 
 

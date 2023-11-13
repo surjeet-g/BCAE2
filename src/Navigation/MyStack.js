@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import {
   FlatList,
   Image,
+  Keyboard,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -43,6 +45,7 @@ import RegisterSuccess from "../Screens/Register/RegisterSuccess";
 import InteractionsToOrder from "../Screens/TabScreens/InteractionsToOrder";
 
 
+import OrderDetails from "../Screens/Appointments/OrderDetails";
 import Chat from "../Screens/Chat/Chat";
 import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
@@ -68,6 +71,7 @@ export const STACK_VIEW_ORDER = "ViewOrder";
 const STACK_VERIFY_LOGIN_OTP = "VerifyLoginOTP";
 const STACK_INTERACTION = "InteractionsToOrder";
 export const STACK_INTERACTION_DETAILS = "InteractionDetails";
+export const STACK_ORDER_DETAILS = "OrderDetails";
 export const STACK_INTERACTION_SEARCH = "InteractionSearch";
 export const STACK_SWITCH_ROLE = "SwitchRole";
 export const STACK_INTERACTION_SEARCH_RESULT = "InteractionSearchResult";
@@ -101,6 +105,7 @@ function MyStack() {
     <NavigationContainer>
       {/* Register with u */}
       <Stack.Navigator
+        keyboardHandlingEnabled={false}
         initialRouteName={"Splash"}
         screenOptions={() => ({
           headerTransparent: true,
@@ -135,6 +140,11 @@ function MyStack() {
       >
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -151,6 +161,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...options,
             ...{
@@ -177,6 +192,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...options,
             ...{
@@ -194,6 +214,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -210,6 +235,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             title: "",
           }}
@@ -217,6 +247,11 @@ function MyStack() {
           component={RegisterSuccess}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={() => ({
             ...options,
             ...{
@@ -234,6 +269,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           name="Changepassword"
           component={ResetPassword}
           options={{
@@ -248,17 +288,32 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: false }}
           name="BottomBar"
           component={BottomBarNavigation}
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: true }}
           name="ConfirmForgotPassword"
           component={ConfirmForgotPassword}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           component={ResetPassword}
           options={{
             headerShown: true,
@@ -267,6 +322,11 @@ function MyStack() {
           name="ResetPassword"
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: false }}
           name="Splash"
           component={Splash}
@@ -274,6 +334,11 @@ function MyStack() {
 
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -291,6 +356,11 @@ function MyStack() {
 
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -307,6 +377,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -325,11 +400,21 @@ function MyStack() {
 
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: false }}
           name="ForgotUserInfo"
           component={ForgotUserinfo}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             headerShown: true,
             title: "Login",
@@ -340,6 +425,11 @@ function MyStack() {
           component={Login}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             headerShown: true,
             title: "Login",
@@ -350,6 +440,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             headerShown: true,
             title: "Forgot Password",
@@ -359,6 +454,11 @@ function MyStack() {
           component={ForgotPassword}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             headerShown: true,
             title: "Forgot Password",
@@ -368,11 +468,21 @@ function MyStack() {
           component={TermNdCondition}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: true, title: "Registration", headerRight: null }}
           name="Register with us"
           component={Register}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...options,
             ...{
@@ -393,6 +503,11 @@ function MyStack() {
           component={AddLocation}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={() => ({
             ...options,
             ...{
@@ -411,12 +526,22 @@ function MyStack() {
 
         {/* forgot password verify step */}
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{ headerShown: false }}
           name="VerifyForgotUserInfo"
           component={VerifyForgotUserInfo}
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={{
             headerShown: true,
             title: "Announcements",
@@ -426,6 +551,11 @@ function MyStack() {
         />
 
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -441,6 +571,11 @@ function MyStack() {
           component={InteractionsToOrder}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -457,6 +592,11 @@ function MyStack() {
           component={ProductListing}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -473,6 +613,11 @@ function MyStack() {
           component={ViewOrder}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -489,6 +634,11 @@ function MyStack() {
           component={AppointmentDetails}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -503,7 +653,34 @@ function MyStack() {
           name={STACK_INTERACTION_DETAILS}
           component={InteractionDetails}
         />
+
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Order Details",
+              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+            },
+          })}
+          name={STACK_ORDER_DETAILS}
+          component={OrderDetails}
+        />
+
+        <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -520,6 +697,11 @@ function MyStack() {
           component={Followup}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -536,6 +718,11 @@ function MyStack() {
           component={WorkflowHistory}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...{
               headerTintColor: "#fff",
@@ -552,6 +739,11 @@ function MyStack() {
           component={CreateCustomer}
         />
         <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
           options={({ navigation }) => ({
             ...options,
             ...{

@@ -49,7 +49,7 @@ const WorkflowHistory = (props) => {
               <View style={{ flexDirection: "row" }}>
                 <Image
                   source={require("../../Assets/icons/ic_veritical_line.png")}
-                  style={{ height: 100 }}
+                  style={{ height: 50 }}
                 />
                 {/* <PlaceHolderText
                   text={`Workflow ${index + 1}`}
@@ -65,6 +65,11 @@ const WorkflowHistory = (props) => {
                   backgroundColor: "#fff",
                   padding: 10,
                   width: "100%",
+                  margin: 5,
+                  padding: 20,
+                  backgroundColor: "#FFF",
+                  borderRadius: 10,
+                  elevation: 5
                 }}
               >
                 {/* Date & Time View */}
@@ -79,7 +84,7 @@ const WorkflowHistory = (props) => {
                     color: "white",
                     bottom: 30,
                     fontWeight: 600,
-                    fontSize: 16,
+                    fontSize: 14,
                   }}
                 >
                   {moment(item?.intxnCreatedDate).format(
@@ -208,10 +213,10 @@ const WorkflowHistory = (props) => {
         <Text
           variant="bodySmall"
           style={{
-            fontWeight: 600,
-            fontSize: 16,
+            fontWeight: 500,
+            fontSize: 14,
             color: "#202223",
-            marginTop: 5,
+            marginTop: 0,
           }}
         >
           {value}

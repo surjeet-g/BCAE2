@@ -6,13 +6,21 @@ import {
   setAssignInteractionToSelfErrorDataInStore,
   setCancelReasonsDataInStore,
   setCancelReasonsErrorDataInStore,
+  setDowloadAttachmentDataInStore,
+  setDowloadAttachmentErrorDataInStore,
   setFollowupDataInStore,
   setFollowupErrorDataInStore, setgetAppoinmentsData, setInteractionData,
   setInteractionError, setInteractionsDetailsDataInStore,
   setInteractionsDetailsErrorDataInStore, setInteractionsFollowupDataInStore,
   setInteractionsFollowupErrorDataInStore, setInteractionsSearchDataInStore, setInteractionsSearchErrorDataInStore, setInteractionsWorkFlowDataInStore,
   setInteractionsWorkFlowErrorDataInStore,
+  setIntxnDetAttachmentDataInStore,
+  setIntxnDetAttachmentErrorDataInStore,
   setknowledgeHistory,
+  setMeetingHallEventsDataInStore,
+  setMeetingHallEventsErrorDataInStore,
+  setMeetingHallsDataInStore,
+  setMeetingHallsErrorDataInStore,
   setStatusDataInStore,
   setStatusErrorDataInStore,
   setUsersByRoleDataInStore,
@@ -23,8 +31,11 @@ import { serverCall } from "..//Utilities/API";
 import { endPoints, requestMethod } from "../Utilities/API/ApiConstants";
 
 import get from "lodash.get";
+import { unstable_batchedUpdates } from "react-native";
 import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
+import { getDataFromDB } from "../Storage/token";
+import { storageKeys } from "../Utilities/Constants/Constant";
 import {
   getCustomerID
 } from "../Utilities/UserManagement/userInfo";
@@ -382,7 +393,7 @@ const validateFormData = async (formData, dispatch) => {
 * @param  {Object} navigation handle section timeout
 * @returns {Object} Dispatcher to reducer
 */
-export function getWorkFlowForInteractionID(interactionId, navigation = null) {
+export async function getWorkFlowForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
     let url = endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=false";
     console.log("workflow interaction request..", url);
@@ -406,7 +417,7 @@ export function getWorkFlowForInteractionID(interactionId, navigation = null) {
 * @param  {Object} navigation handle section timeout
 * @returns {Object} Dispatcher to reducer
 */
-export function getFollowupForInteractionID(interactionId, navigation = null) {
+export async function getFollowupForInteractionID(interactionId, navigation = null) {
   return async (dispatch) => {
     let url = endPoints.INTERACTION_GET_WORKFLOW + interactionId + "?getFollowUp=true";
     console.log("follow up url..", url);
@@ -428,7 +439,7 @@ export function getFollowupForInteractionID(interactionId, navigation = null) {
 * @param  {Object} navigation handle section timeout
 * @returns {Object} Dispatcher to reducer
 */
-export function getInteractionDetailsForID(interactionId, navigation = null) {
+export async function getInteractionDetailsForID(interactionId, navigation = null) {
   return async (dispatch) => {
     console.log("interactionL ID", interactionId)
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=200";
@@ -450,7 +461,7 @@ export function getInteractionDetailsForID(interactionId, navigation = null) {
   };
 }
 
-export function getInteractionDetailsSearch(params, navigation = null) {
+export async function getInteractionDetailsSearch(params, navigation = null) {
   return async (dispatch) => {
     console.log("interaction search begins..", params)
     let url = endPoints.INTERACTION_FETCH + "?page=0&limit=200";
@@ -468,15 +479,18 @@ export function getInteractionDetailsSearch(params, navigation = null) {
 }
 
 export function createFollowupForInteractionID(
-  props,
   interactionId,
   param,
-  navigation = null
+  navigation = null,
+  props1,
+  props2,
+  responseFlag
 ) {
 
   return async (dispatch) => {
     let url = endPoints.INSERTFOLLOWUP;
-    console.log("props123.......", props)
+    console.log("props1.......", props1)
+    console.log("props2.......", props2)
     console.log("createFollowupForInteractionID url..", url);
     let params = {
       interactionNumber: "" + interactionId,
@@ -495,7 +509,8 @@ export function createFollowupForInteractionID(
         text1: result?.data?.message,
       });
       dispatch(setFollowupDataInStore(result.data.data));
-      props.setShowBottomModal(false)
+      props1.setShowBottomModal(false)
+      props2.setResponseFlag(!responseFlag)
       return true
     } else {
       Toast.show({
@@ -509,35 +524,30 @@ export function createFollowupForInteractionID(
 }
 
 export function assignInteractionToSelf(
-  props,
   interactionId,
   userId,
-  type
+  type,
+  props1,
+  props2,
+  responseFlag
 ) {
   return async (dispatch) => {
-
-
-
     let url = endPoints.INTERACTION_ASSIGN_SELF + interactionId;
-
     if (userId == "") {
       let params = {
         type
       };
       let result = await serverCall(url, requestMethod.PUT, params);
       console.log("self assign result..", result)
-
       if (result.success) {
         console.log("self assign success..", result)
-
-        props.setShowBottomModal(false)
         Toast.show({
           type: "bctSuccess",
           text1: "" + result.data.message,
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
-
-
+        props1.setShowBottomModal(false)
+        props2.setRespFlag(!responseFlag)
       } else {
         console.log("self assign failure..", result)
         Toast.show({
@@ -553,72 +563,60 @@ export function assignInteractionToSelf(
         type
       };
       let result = await serverCall(url, requestMethod.PUT, params);
-      console.log("re assign success..", props)
-      console.log("props321.......", props)
-
-
-
       if (result.success) {
-        props.setShowBottomModal(false)
         Toast.show({
           type: "bctSuccess",
           text1: "" + result.message,
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
-
+        props1.setShowBottomModal(false)
+        props2.setRespFlag(!responseFlag)
       } else {
         Toast.show({
           type: "bctError",
           text1: "" + result.message,
         });
         dispatch(setAssignInteractionToSelfErrorDataInStore(result));
-        // props.setShowBottomModal(false)
       }
     }
-
   };
 }
 
-
-
-
 export function cancelInteraction(
-  props,
   cancelReason,
-  interactionId
+  interactionId,
+  props1,
+  props2,
+  responseFlag
 ) {
   return async (dispatch) => {
-
     let url = endPoints.CANCEL_INTERACTION + interactionId;
     console.log("cancel int url..", url)
-    console.log("cancel props..", props)
-
+    console.log("cancel props1..", props1)
+    console.log("cancel props2..", props2)
+    console.log("cancel responseFlag..", responseFlag)
     let params = {
       cancelReason
     };
     let result = await serverCall(url, requestMethod.PUT, params);
     console.log("cancel int result..", result)
-
     if (result.success) {
       console.log("cancel int success..", result)
       Toast.show({
         type: "bctSuccess",
-        text1: "" + result.message,
+        text1: "" + result.data.message,
       });
-      // dispatch(setAssignInteractionToSelfDataInStore(result));
-      props.setShowBottomModal(false)
+      props1.setShowBottomModal(false)
+      props2.setRespFlag(!responseFlag)
     } else {
       console.log("cancel int failure..", result)
       Toast.show({
         type: "bctError",
         text1: "" + result.message,
       });
-      // dispatch(setAssignInteractionToSelfErrorDataInStore(result));
     }
-
   };
 }
-
 
 /**
 * Reducer Dispatch
@@ -658,7 +656,7 @@ export const getAppoinmentsData = (payload, type = "templete") => {
 }
 
 
-export function fetchUsersByRole(
+export async function fetchUsersByRole(
   roleId,
   deptId,
   navigation = null
@@ -682,7 +680,7 @@ export function fetchUsersByRole(
 }
 
 
-export function fetchCancelReasons(navigation = null) {
+export async function fetchCancelReasons(navigation = null) {
   return async (dispatch) => {
 
     const url = endPoints.CANCEL_REASONS + "?searchParam=" + "code_type" + "&valueParam=" + "INTXN_STATUS_REASON" + "";
@@ -708,13 +706,15 @@ export function fetchCancelReasons(navigation = null) {
 
 
 export function updateInteraction(
-  props,
   interactionId,
   userId,
   departmentId,
   roleId,
   status,
-  remarks
+  remarks,
+  props1,
+  props2,
+  responseFlag
 ) {
   return async (dispatch) => {
     let url = endPoints.INTERACTION_UPDATE + interactionId;
@@ -728,7 +728,9 @@ export function updateInteraction(
     };
     let result = await serverCall(url, requestMethod.PUT, params);
     console.log("updateInteraction result..", result);
-    console.log("update props.....", props)
+    console.log("update responseFlag.....", responseFlag)
+    console.log("update setResponseFlag.....", setResponseFlag)
+    console.log("update setShowBottomModal.....", setShowBottomModal)
 
     if (result.success) {
       Toast.show({
@@ -737,7 +739,10 @@ export function updateInteraction(
       });
       // dispatch(setStatusDataInStore(result.data.data));
       console.log("updateInteraction result success..", result);
-      props.setShowBottomModal(false)
+      unstable_batchedUpdates(() => {
+        props1.setShowBottomModal(false)
+        props2.setRespFlag(!responseFlag)
+      })
     } else {
       Toast.show({
         type: "bctError",
@@ -773,7 +778,7 @@ export function updateInteraction(
 // }
 
 
-export function fetchStatus(
+export async function fetchStatus(
   entityId,
   entity,
   navigation = null
@@ -804,5 +809,105 @@ export function fetchStatus(
       dispatch(setStatusErrorDataInStore(statusListResult));
     }
 
+  };
+}
+
+
+
+export function uploadInteractionAttachment(data) {
+  return async (dispatch) => {
+    console.log("from data...", data)
+    let url = endPoints.UPLOAD_INTERACTION_ATTACHMENT;
+    let result = await serverCall(url, requestMethod.POST, data, null);
+    console.log("attachment result...", result)
+    if (result.success) {
+      Toast.show({ type: "bctSuccess", text1: "Attachment Uploaded Successfully" });
+    } else {
+      Toast.show({ type: "bctError", text1: "Something went wrong" });
+    }
+  };
+}
+
+
+
+export async function getAttachmentList(data, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.INTXN_ATTACHMENT_LIST + data;
+    console.log("getAttachmentList request..", url);
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    console.log("getAttachmentList response..", result);
+    if (result.success) {
+      dispatch(setIntxnDetAttachmentDataInStore(result.data.data));
+    } else {
+      dispatch(setIntxnDetAttachmentErrorDataInStore(result.data));
+    }
+  };
+}
+
+
+export async function downloadattachment(data, navigation = null) {
+  return async (dispatch) => {
+    let url = endPoints.DOWNLOAD_INTXN_ATTACHMENT + data;
+    console.log("downloadattachment request..", url);
+    let result = await serverCall(url, requestMethod.GET, {}, navigation);
+    console.log("downloadattachment response..", result);
+    if (result.success) {
+      dispatch(setDowloadAttachmentDataInStore(result.data.data));
+      // Toast.show({ type: "bctSuccess", text1: "Attachment Downloaded Successfully" });
+    } else {
+      dispatch(setDowloadAttachmentErrorDataInStore(result.data));
+      // Toast.show({ type: "bctError", text1: "Something went wrong" });
+    }
+  };
+}
+
+
+
+// export function getMeetingHalls() {
+//   return async (dispatch) => {
+//     console.log("getMeetingHalls data1...")
+//     // const customerID = await getCustomerID();
+//     // console.log("getMeetingHalls data...", customerID)
+//     let url = endPoints.EVENT_HALLS_API;
+//     let result = await serverCall(url, requestMethod.POST, { customerId: getCustomerID() }, null);
+//     console.log("getMeetingHalls result...", result)
+//     if (result.success) {
+//       dispatch(setMeetingHallsDataInStore(result.data.data));
+//     } else {
+//       dispatch(setMeetingHallsErrorDataInStore(result.data));
+//     }
+//   };
+// }
+
+
+export async function getHalls() {
+  console.log("getMeetingHalls data0...")
+  return async (dispatch) => {
+    console.log("getMeetingHalls data1...", await getDataFromDB(storageKeys.CUSTOMER_ID))
+    let url = endPoints.EVENT_HALLS_API;
+    let result = await serverCall(url, requestMethod.POST, { customerId: "" + await getDataFromDB(storageKeys.CUSTOMER_ID) }, null);
+    console.log("getMeetingHalls result...", result)
+    if (result.success) {
+      dispatch(setMeetingHallsDataInStore(result.data.data));
+    } else {
+      dispatch(setMeetingHallsErrorDataInStore(result.data));
+    }
+  };
+}
+
+
+
+export function getHallEvents(_workType) {
+  console.log("getHallEvents data0...")
+  return async (dispatch) => {
+    console.log("getHallEvents data1...", await getDataFromDB(storageKeys.CUSTOMER_ID))
+    let url = endPoints.EVENT_HALLS_AVAILABILITY_API;
+    let result = await serverCall(url, requestMethod.POST, { customerId: "" + await getDataFromDB(storageKeys.CUSTOMER_ID), workType: _workType }, null);
+    console.log("getHallEvents result...", result)
+    if (result.success) {
+      dispatch(setMeetingHallEventsDataInStore(result));
+    } else {
+      dispatch(setMeetingHallEventsErrorDataInStore(result.data));
+    }
   };
 }
