@@ -991,6 +991,7 @@ export const RegisterExistingUser = React.memo(({ navigation }) => {
           <>
             <View>
               <Button
+                buttonColor={"#4a5996"}
                 label={strings.register}
                 isDisabled={isButtomDiable}
                 onPress={submit}

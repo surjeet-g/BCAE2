@@ -4,6 +4,7 @@ import { Dimensions, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingAnimation from "../../Components/LoadingAnimation";
 import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
 import { getInteractionDetailsSearch } from "../../Redux/InteractionDispatcher";
 import { strings } from "../../Utilities/Language";
@@ -16,6 +17,8 @@ var { height, width } = Dimensions.get("screen");
 * @namespace InteractionSearchResult
 */
 const InteractionSearchResult = ({ route, navigation }) => {
+
+    const [loader, setLoader] = useState(true);
 
     let { interactionSearchParams } = route.params
     // let params = parseInt(interactionSearchParams)
@@ -51,8 +54,10 @@ const InteractionSearchResult = ({ route, navigation }) => {
 
     useEffect(() => {
         async function getData() {
+            setLoader(true)
             await dispatch(await getInteractionDetailsSearch(interactionSearchParams, navigation));
             console.log("search data..", interactionReducer.interactionSearchData[0]);
+            setLoader(false)
         }
         getData()
     }, []);
@@ -94,6 +99,8 @@ const InteractionSearchResult = ({ route, navigation }) => {
 
     return (
         <View style={{ flex: 1, marginTop: 50, marginLeft: 15, marginRight: 15 }}>
+            {loader && <LoadingAnimation />}
+
             <FlatList
                 contentContainerStyle={{
                     flexGrow: 1,
@@ -138,7 +145,7 @@ const Item = ({ body }) => {
                 </View>
 
                 <View style={{ flexDirection: "column", width: 150, marginHorizontal: 10 }}>
-                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.customer_name}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "normal" }}>{strings.employee}</Text>
                     <Text style={{ fontSize: 13, fontWeight: "bold" }}>{body.customerDetails.firstName} {body.customerDetails.lastName}</Text>
                 </View>
             </View>

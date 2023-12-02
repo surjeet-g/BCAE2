@@ -286,6 +286,12 @@ export const storageKeys = {
   CURRENT_DEPT_DESC: "CURRENT_DEPT_DESC",
   CURRENT_DEPT_ID: "CURRENT_DEPT_ID",
   CURRENT_USER_ID: "CURRENT_USER_ID",
+
+  DASHBOARD: "Dashboard",
+  INTERACTION_DASHBOARD: "Interaction Dashboard",
+  APPOINTMENT_DASHBOARD: "Appointment Dashboard",
+  HELPDESK_DASHBOARD: "Helpdesk Dashboard",
+  OPERATIONAL_DASHBOARD: "Operational Dashboard"
 };
 
 export function validateEmail(text) {

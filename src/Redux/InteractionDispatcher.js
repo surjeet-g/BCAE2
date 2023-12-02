@@ -4,6 +4,8 @@ import {
   initInteraction, intractionKnowlegeHistoryRemoveUserInputTypes,
   setAssignInteractionToSelfDataInStore,
   setAssignInteractionToSelfErrorDataInStore,
+  setAttachmentEntityDataInStore,
+  setAttachmentEntityErrorDataInStore,
   setCancelReasonsDataInStore,
   setCancelReasonsErrorDataInStore,
   setDowloadAttachmentDataInStore,
@@ -21,6 +23,8 @@ import {
   setMeetingHallEventsErrorDataInStore,
   setMeetingHallsDataInStore,
   setMeetingHallsErrorDataInStore,
+  setSourceDataInStore,
+  setSourceErrorDataInStore,
   setStatusDataInStore,
   setStatusErrorDataInStore,
   setUsersByRoleDataInStore,
@@ -547,7 +551,7 @@ export function assignInteractionToSelf(
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
         props1.setShowBottomModal(false)
-        props2.setRespFlag(!responseFlag)
+        props2.setResponseFlag(!responseFlag)
       } else {
         console.log("self assign failure..", result)
         Toast.show({
@@ -570,7 +574,7 @@ export function assignInteractionToSelf(
         });
         dispatch(setAssignInteractionToSelfDataInStore(result));
         props1.setShowBottomModal(false)
-        props2.setRespFlag(!responseFlag)
+        props2.setResponseFlag(!responseFlag)
       } else {
         Toast.show({
           type: "bctError",
@@ -607,7 +611,7 @@ export function cancelInteraction(
         text1: "" + result.data.message,
       });
       props1.setShowBottomModal(false)
-      props2.setRespFlag(!responseFlag)
+      props2.setResponseFlag(!responseFlag)
     } else {
       console.log("cancel int failure..", result)
       Toast.show({
@@ -729,8 +733,8 @@ export function updateInteraction(
     let result = await serverCall(url, requestMethod.PUT, params);
     console.log("updateInteraction result..", result);
     console.log("update responseFlag.....", responseFlag)
-    console.log("update setResponseFlag.....", setResponseFlag)
-    console.log("update setShowBottomModal.....", setShowBottomModal)
+    console.log("update setResponseFlag.....", props2.setResponseFlag)
+    console.log("update setShowBottomModal.....", props1.setShowBottomModal)
 
     if (result.success) {
       Toast.show({
@@ -741,7 +745,7 @@ export function updateInteraction(
       console.log("updateInteraction result success..", result);
       unstable_batchedUpdates(() => {
         props1.setShowBottomModal(false)
-        props2.setRespFlag(!responseFlag)
+        props2.setResponseFlag(!responseFlag)
       })
     } else {
       Toast.show({
@@ -776,6 +780,21 @@ export function updateInteraction(
 
 //   };
 // }
+
+
+export async function fetchSource(navigation = null) {
+  return async (dispatch) => {
+    const url = endPoints.SOURCE_DATA;
+    console.log("fetchSource url..", url);
+    let sourceResult = await serverCall(url, requestMethod.GET, {}, navigation);
+    console.log("sourceResult....", sourceResult);
+    if (sourceResult.success) {
+      dispatch(setSourceDataInStore(sourceResult.data.data));
+    } else {
+      dispatch(setSourceErrorDataInStore(sourceResult));
+    }
+  };
+}
 
 
 export async function fetchStatus(
@@ -814,7 +833,7 @@ export async function fetchStatus(
 
 
 
-export function uploadInteractionAttachment(data) {
+export async function uploadInteractionAttachment(data) {
   return async (dispatch) => {
     console.log("from data...", data)
     let url = endPoints.UPLOAD_INTERACTION_ATTACHMENT;
@@ -822,8 +841,10 @@ export function uploadInteractionAttachment(data) {
     console.log("attachment result...", result)
     if (result.success) {
       Toast.show({ type: "bctSuccess", text1: "Attachment Uploaded Successfully" });
+      dispatch(setAttachmentEntityDataInStore(result.data.data));
     } else {
       Toast.show({ type: "bctError", text1: "Something went wrong" });
+      dispatch(setAttachmentEntityErrorDataInStore(result.data));
     }
   };
 }

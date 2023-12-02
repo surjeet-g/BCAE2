@@ -23,6 +23,7 @@ export const FooterModel = ({
   children,
   title = "",
   subtitle = "",
+  disableCloseBut
 }) => {
   if (!open) return null;
   return (
@@ -92,14 +93,19 @@ export const FooterModel = ({
               {title}
             </Text>
 
-            <Icon
-              onPress={() => {
-                setOpen(false);
-              }}
-              name="close-circle"
-              size={25}
-              color={"#000"}
-            />
+            {disableCloseBut === undefined && (
+              <Icon
+                onPress={() => {
+                  setOpen(false);
+                }}
+                name="close-circle"
+                size={25}
+                color={"#000"}
+              />
+            )}
+
+
+
           </View>
           <View
             style={{

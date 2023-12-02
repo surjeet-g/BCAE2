@@ -951,6 +951,7 @@ const Header = (props, { IsShowBell }) => {
                   />
                 ) : (
                   <Button
+                    buttonColor={"#4a5996"}
                     type={buttonType.PRIMARY}
                     size={buttonSize.LARGE}
                     disabled={

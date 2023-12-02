@@ -180,7 +180,7 @@ const SwitchRole = ({ navigation }) => {
                             onPress={async () => {
 
                                 dispatch(
-                                    switchUserRole(data = {
+                                    await switchUserRole(data = {
                                         setUserSwitched: setUserSwitched,
                                         userSwitched: userSwitched,
                                         userId: selUserId,
@@ -193,6 +193,7 @@ const SwitchRole = ({ navigation }) => {
                                         navigation: navigation
                                     })
                                 )
+
 
                                 console.log("profileSwitchedData...", profileReducer.profileSwitchedData);
 

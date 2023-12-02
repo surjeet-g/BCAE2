@@ -5,20 +5,23 @@ import React, { createRef, useEffect, useState } from "react";
 import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
 import EventCalendar from 'react-native-events-calendar';
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Checkbox, DataTable, Divider, RadioButton, Text } from 'react-native-paper';
+import { Card, Checkbox, DataTable, Divider, RadioButton, Text } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import SignatureCapture from "react-native-signature-capture";
 import { Rows, Table, TableWrapper } from 'react-native-table-component';
+import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 import { ClearSpace } from '../../../../Components/ClearSpace';
 import { CustomButton } from "../../../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "../../../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "../../../../Components/CustomInput";
+import { CustomInputSmall } from '../../../../Components/CustomInputSmall';
 import { getHallEvents } from '../../../../Redux/InteractionDispatcher';
 import { color } from "../../../../Utilities/Constants/Constant";
 import { strings } from '../../../../Utilities/Language/index';
 import { commonStyle } from '../../../../Utilities/Style/commonStyle';
 import { SmallButton } from './SmallButton';
+
 
 
 export const HandleResolution = ({
@@ -38,6 +41,17 @@ export const HandleResolution = ({
     customerUuid = "",
     navigation
 }) => {
+    console.log('az.........')
+    var idList = []
+    var currentId = ""
+
+    console.log('ax.........')
+
+    var gridInputText = new Map([["", ""]]);
+
+    console.log('ac.........')
+
+    const { width, height } = Dimensions.get("window");
 
     const { interactionReducer } = useSelector(
         (state) => {
@@ -46,6 +60,8 @@ export const HandleResolution = ({
             };
         }
     );
+
+    console.log('av.........')
 
 
     const dispatchInteraction = useDispatch([
@@ -66,7 +82,7 @@ export const HandleResolution = ({
 
 
 
-    const [gridInputText, setGridInputText] = useState(new Map());
+    // const [gridInputText, setGridInputText] = useState(new Map());
 
 
 
@@ -117,9 +133,62 @@ export const HandleResolution = ({
         console.log('enter rendersend', type, description)
 
         if (type == "string") {
+            console.log("html text....", title)
+
+            // Replacing all html tags to new line
+            const regex = /(<([^>]+)>)/gi;
+            var htmlContent = title.replace(regex, '\n')
+
+
+            // var htmlContent = title.split('<br/>')[0]
+            // title.split('<br/>')[1]
+
+            // var htmlContent = title.replace(/[<>]/g, '')
+            // .replace('br', '\n')
+
+
+
+            // .replace('r', '')
+
+            // const source = {
+            //     html: title
+            // };
+
+
             return (
-                <View style={{}}>
-                    <Text>{title}</Text>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+
+
+                    {/* <meta name="viewport" content="width=device-width, initial-scale=1"></meta> */}
+
+                    {/* <WebView
+                        source={{ html: '<html><body><p>This is a static HTML source!</p></body></html>' }}
+                    /> */}
+
+
+                    {/* <RenderHtml
+                        contentWidth={width}
+                        source={source}
+                    /> */}
+
+                    {/* <HTMLView
+                        value={title}
+                        stylesheet={styles.htmlContent}
+                    /> */}
+
+                    {/* <WebView
+                        source={{ html: title }}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        scalesPageToFit={true}
+                        scrollEnabled={true}
+                        automaticallyAdjustContentInsets={false}
+                        startInLoadingState={true}
+                        originWhitelist={['*']}
+                        androidLayerType={'hardware'}
+                    /> */}
+
+                    <Text>{htmlContent}</Text>
                     <ClearSpace size={2} />
                 </View>
             )
@@ -203,7 +272,7 @@ export const HandleResolution = ({
                 <>
                     <DataTable style={styles.containers}>
 
-                        <DataTable.Header style={styles.tableHeader}>
+                        {/* <DataTable.Header style={styles.tableHeader}>
                             {headersData?.map((header, headerIndex) => (
                                 <DataTable.Title>
                                     <View style={{ marginLeft: -5, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
@@ -211,18 +280,21 @@ export const HandleResolution = ({
                                     </View>
                                 </DataTable.Title>
                             ))}
-                        </DataTable.Header>
+                        </DataTable.Header> */}
 
                         {title?.length > 0 && (
                             title?.map((rows, rowsIndex) => (
                                 <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
-                                    <View style={{ marginLeft: -5, backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                    <View style={{ backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ fontWeight: 500, width: 75, marginLeft: 0 }}>{headersData[0]}</Text>
                                         <Text style={{ width: 75, marginLeft: 0 }}>{rows.holidayDate}</Text>
                                     </View>
                                     <View style={{ backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ fontWeight: 500, width: 75, marginLeft: 0 }}>{headersData[1]}</Text>
                                         <Text style={{ width: 90, marginLeft: 0 }}>{rows.holidayDayNameDesc.description}</Text>
                                     </View>
                                     <View style={{ backgroundColor: color.BCAE_OFF_WHITE, padding: 5, flexDirection: "column", marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                                        <Text style={{ fontWeight: 500, width: 75, marginLeft: 0 }}>{headersData[2]}</Text>
                                         <Text style={{ width: 110, marginLeft: 0 }}>{rows.holidayDescription}</Text>
                                     </View>
                                 </DataTable.Row>
@@ -256,7 +328,7 @@ export const HandleResolution = ({
         console.log('>>resolutionDetails', resolutionDetails)
 
         const [formDataState, setFormDataState] = useState({});
-        const [values, setValues] = useState([]);
+        var [values, setValues] = useState([]);
 
         const handleButtonSubmit = () => {
             console.log("values..", values)
@@ -316,26 +388,33 @@ export const HandleResolution = ({
 
 
         const customerRowsRenderer = (header, rowsIndex, formDetails, rest) => {
+
+
             let elements = [];
-
-
-
             elements = header.map((h, index) => {
                 // let id = h?.id + rowsIndex + index
+
+                console.log("id......", h?.id)
+                console.log("title......", h?.title)
+                console.log("grid input text render......", gridInputText.get(h?.id))
+
                 return (
                     <DataTable.Cell>
-                        {/* <View key={index} style={styles.cell}> */}
-                        <CustomInput
-                            value={gridInputText.get(h?.id)}
-                            required={rest?.required || false}
-                            editable={!isFormDisabled}
-                            onChangeText={(text) => {
-                                console.log("text entered..", text)
-                                gridInputText.set(h?.id, text)
-                                handleRowsOnChange(text, h.id, rowsIndex)
-                            }}
-                        />
-                        {/* </View> */}
+                        <View key={index} style={styles.cell}>
+
+                            <Text style={{ marginTop: -10, color: "#000000", textAlign: 'left', padding: 0, fontWeight: "300" }}>{h.title}</Text>
+
+                            <CustomInputSmall
+                                value={gridInputText.get(h?.id)}
+                                required={rest?.required || false}
+                                editable={!isFormDisabled}
+                                onChangeText={(text) => {
+                                    console.log("text entered..", text)
+                                    gridInputText.set(h?.id, text)
+                                    handleRowsOnChange(text, h.id, rowsIndex)
+                                }}
+                            />
+                        </View>
                     </DataTable.Cell>
                 );
             });
@@ -360,11 +439,34 @@ export const HandleResolution = ({
             setValues([...values, { ...rowAttributes }])
         }
 
+        const handleRemoveRow = (index) => {
+            console.log("values2....", values)
 
+            setValues(prevValues => (
+                // Filter out the item with the matching index
+                prevValues.filter((values, i) => i !== index)
+            ));
+
+
+
+            // values = values.splice(index, 1);
+            // console.log("values3....", values)
+            // const updatedValues = values;
+            // var updatedValues = [...values];
+            // console.log("before updatedValues....", updatedValues)
+            // updatedValues = updatedValues.splice(index, 1);
+            // console.log("after updatedValues....", updatedValues)
+            // setValues(updatedValues);
+        };
 
         const [isSelected, setSelection] = useState(false);
 
+
+
+
         switch (element) {
+
+
 
             case "YES_NO_BUTTON":
                 if (attribute.length == 0) {
@@ -409,7 +511,7 @@ export const HandleResolution = ({
                                                                     source: "knowledgeBase",
                                                                     inputType: "MESSAGE",
                                                                     inputValue: { ...formDataArray, description: buttonType },
-                                                                    // inputValue: { buttonType },
+                                                                    // inputValue: buttonType,
                                                                     resolutionData: resolutionDetails
                                                                 },
                                                                 requestId: requestId,
@@ -472,7 +574,6 @@ export const HandleResolution = ({
                                 },
                                 requestId: requestId,
                                 customerUuid: customerUuid
-
                             }
 
                             popupAction(params)
@@ -482,17 +583,6 @@ export const HandleResolution = ({
 
 
             case "COLLECT_INPUT":
-                console.log("inside collect input...");
-
-
-                // const flowId = get(resolutionDetails, 'flwId', '')
-                // const conversationID = get(resolutionDetails, 'conversationUid', '')
-
-                console.log("flowId inside collect input...", flowId);
-                console.log("conversationID inside collect input...", conversationID);
-
-
-
                 const sign = createRef();
 
                 const saveSign = () => {
@@ -504,11 +594,10 @@ export const HandleResolution = ({
                 };
 
                 const _onSaveEvent = (result) => {
-                    //result.encoded - for the base64 encoded png
-                    //result.pathName - for the file path name
-                    alert('Signature Captured Successfully');
-                    console.log("sign captured...", result.encoded);
-                    setSignature(result.encoded)
+                    alert('Signature Captured Successfully..');
+                    handleInputChange(currentId, result.encoded)
+                    // setSignature(result.encoded)
+
                 };
 
                 const _onDragEvent = () => {
@@ -516,44 +605,45 @@ export const HandleResolution = ({
                     console.log('dragged');
                 };
 
-
-
-
                 console.log("formMetaAttributes collect input...", resolutionDetails.formMetaAttributes);
-
+                idList = []
 
                 return (
                     <>
                         <View style={styles.column_space_arround_evenly}>
-
                             {resolutionDetails.metaAttributes?.map(item => {
-
                                 return (
                                     <View>
                                         {
                                             item.fieldSet?.map(fieldSetItem => {
+                                                console.log("id list..." + fieldSetItem.id)
+
+                                                if ((!(fieldSetItem.id === undefined)) && (!(fieldSetItem.fieldType == "button"))) {
+                                                    idList.push(fieldSetItem.id)
+                                                }
 
                                                 if (fieldSetItem.fieldType == "textarea") {
                                                     return (
-                                                        <View>
+                                                        <View style={{ marginTop: 30 }}>
                                                             <CustomInput
                                                                 style={{
                                                                     backgroundColor: "transparent"
                                                                 }}
                                                                 onChangeText={(text) => {
-                                                                    inputText.set(fieldSetItem.id, text)
+                                                                    // inputText.set(fieldSetItem.id, text)
 
+                                                                    // setObj(obj => ({
 
-                                                                    setObj(obj => ({
+                                                                    //     ...obj,
+                                                                    //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
+                                                                    //     [fieldSetItem?.id]: text
 
-                                                                        ...obj,
-                                                                        [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                                                                        [fieldSetItem?.id]: text
+                                                                    // }));
 
-                                                                    }));
+                                                                    handleInputChange(fieldSetItem.id, text)
 
                                                                 }}
-                                                                value={inputText.get(fieldSetItem.id)}
+                                                                value={formDataState[fieldSetItem.id]}
                                                                 multiline={true}
                                                                 inputType={fieldSetItem.inputType}
                                                                 caption={fieldSetItem.title}
@@ -565,10 +655,10 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
-
                                                 if (fieldSetItem.fieldType == "sigature") {
+                                                    currentId = fieldSetItem.id
                                                     return (
-                                                        <SafeAreaView style={styles.signContainer}>
+                                                        <SafeAreaView style={{ marginTop: 10, flex: 1, padding: 8, backgroundColor: color.BCAE_OFF_WHITE }}>
                                                             <View style={styles.signContainer}>
                                                                 <Text style={styles.titleStyle}>
                                                                     Signature:
@@ -606,7 +696,6 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
-
                                                 if (fieldSetItem.fieldType == "button") {
                                                     return (
                                                         <View style={{ flex: 1 }}>
@@ -614,54 +703,150 @@ export const HandleResolution = ({
                                                             <CustomButton
                                                                 label={fieldSetItem.placeHolder}
                                                                 onPress={async () => {
-                                                                    let params = {
-                                                                        flowId: flowId,
-                                                                        conversationUid: conversationID,
-                                                                        "data": {
-                                                                            "source": "knowledgeBase",
-                                                                            "inputType": "FORMDATA",
-                                                                            "inputValue": {
-                                                                                "d01": inputText.get("01"),
-                                                                                "d02": inputText.get("02"),
-                                                                                "d11": inputText.get("11"),
-                                                                                "d12": inputText.get("12"),
-                                                                                "d21": inputText.get("21"),
-                                                                                "d22": inputText.get("22"),
-                                                                                "d31": inputText.get("31"),
-                                                                                "d32": inputText.get("32"),
-                                                                                "d41": inputText.get("41"),
-                                                                                "d42": inputText.get("42"),
-                                                                                "d51": inputText.get("51"),
-                                                                                "d52": inputText.get("52"),
-                                                                                "comments": inputText.get("comments"),
-                                                                                "signature": signature
-                                                                            },
-                                                                            resolutionData: resolutionDetails
+                                                                    var proceed = true
+                                                                    idList?.every((item, idx) => {
+                                                                        console.log("id check...", item + " / " + formDataState[item])
+                                                                        if ((formDataState[item] === "") || (formDataState[item] === undefined)) {
+                                                                            Toast.show({
+                                                                                type: "bctError",
+                                                                                text1: strings.please_enter + " " + item,
+                                                                            });
+                                                                            proceed = false
+                                                                            return false
                                                                         }
-                                                                    };
+                                                                        return true
+                                                                    })
 
-                                                                    console.log("submit params...", params);
+                                                                    console.log("formDataArray--->", formDataArray)
+                                                                    console.log("formDataState--->", formDataState)
 
-                                                                    popupAction(params)
+                                                                    if (Object.keys(formDataArray).length === 0 && Object.keys(formDataState).length === 0) {
+                                                                        Toast.show({
+                                                                            type: "bctError",
+                                                                            text1: strings.pls_fill_the_form,
+                                                                        });
+                                                                    }
 
-                                                                }}
+                                                                    else if (proceed) {
+                                                                        console.log("formDataState onpress..", formDataState)
+                                                                        handleButtonSubmit()
+                                                                        console.log("jsonStr1--->", formDataArray, formDataState)
+
+                                                                        var valObj = {}
+                                                                        if (values.length > 0) {
+                                                                            valObj = { ["GRID"]: values }
+                                                                            values = []
+                                                                        }
+
+                                                                        let params = {
+                                                                            flowId: flowId,
+                                                                            conversationUid: conversationID,
+                                                                            "data": {
+                                                                                "source": "knowledgeBase",
+                                                                                "inputType": "FORMDATA",
+                                                                                "inputValue": { ...formDataArray, ...formDataState, ...valObj },
+                                                                                "resolutionData": resolutionDetails,
+                                                                            }
+                                                                        };
+
+                                                                        console.log("save data..", params)
+                                                                        console.log("submit params...", JSON.stringify(params));
+                                                                        popupAction(params)
+                                                                    }
+                                                                }
+
+                                                                }
                                                             />
                                                             <ClearSpace size={2}></ClearSpace>
                                                         </View>
                                                     )
                                                 }
 
+                                                if (fieldSetItem?.fieldType === 'grid') {
+                                                    console.log("inside grid..")
+
+                                                    useEffect(() => {
+                                                        async function getEvents() {
+                                                            handleAddRows(fieldSetItem?.headers);
+                                                        }
+                                                        getEvents()
+                                                    }, []);
+
+                                                    gridInputText = new Map([["", ""]]);
+
+                                                    console.log("values4....", values)
+
+                                                    return (
+                                                        <>
+                                                            <DataTable style={{ padding: 0 }}>
+                                                                {/* <DataTable.Header style={styles.tableHeader}>
+                                                                    {fieldSetItem?.headers.map((header, headerIndex) => (
+                                                                        <DataTable.Title>{header.title}</DataTable.Title>
+                                                                    ))}
+                                                                </DataTable.Header> */}
+
+
+                                                                {values?.length > 0 &&
+                                                                    values?.map((rows, rowsIndex) => (
+                                                                        <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+                                                                            {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+
+                                                                            {/* <Pressable
+                                                                                onPress={() => handleRemoveRow(rowsIndex)}
+                                                                                style={{
+                                                                                    marginRight: 10,
+                                                                                    alignSelf: 'flex-end',
+                                                                                    marginTop: 0,
+                                                                                    marginBottom: 10,
+                                                                                    backgroundColor: "#4a5996",
+                                                                                    width: 50
+                                                                                }}
+                                                                            >
+                                                                                <Icon name="close" size={19} color={Colors.BLACK} />
+                                                                            </Pressable> */}
+
+                                                                            {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                                                                                onPress={() => {
+                                                                                    console.log("delete click rowsIndex.....", rowsIndex)
+                                                                                    handleRemoveRow(rowsIndex)
+                                                                                }}>
+                                                                                <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                                                                            </Card> */}
+                                                                        </DataTable.Row>
+                                                                    ))}
+                                                            </DataTable>
+
+                                                            {fieldSetItem.rows?.length > 0 && (
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                                                    <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                                                                        onPress={() => {
+                                                                            handleAddRows(fieldSetItem?.headers);
+                                                                        }}>
+                                                                        <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Add</Text>
+                                                                    </Card>
+
+
+
+
+                                                                    {/* <CustomButton
+                                                                        label="Add Row"
+                                                                        onPress={() => {
+                                                                            handleAddRows(fieldSetItem?.headers);
+                                                                        }}
+                                                                    /> */}
+                                                                </View>
+                                                            )}
+
+                                                        </>
+                                                    );
+                                                }
 
                                                 return (
-
                                                     <View>
-
                                                         {
                                                             fieldSetItem.columns?.map(item => {
-
                                                                 return (
                                                                     <View>
-
                                                                         {
                                                                             item.column_headers?.map((columnItem, idx1) => {
 
@@ -675,102 +860,56 @@ export const HandleResolution = ({
 
                                                                                 return (
                                                                                     <View>
-
                                                                                         {
                                                                                             fieldSetItem.headers?.map((rowItem, idx2) => {
-
                                                                                                 if (idx2 != 0) {
-
                                                                                                     if (fieldType == "textbox") {
-
-                                                                                                        // console.log("title..", title + "( " + rowItem.title + " )" + idx1 + "," + idx2);
-
                                                                                                         return (
-
                                                                                                             <View style={{ marginTop: 10, marginBottom: 10 }}>
-
-                                                                                                                {/* <Text style={styles.label}>{idx1 + "," + idx2}</Text> */}
-
                                                                                                                 <CustomInput
                                                                                                                     style={{
                                                                                                                         backgroundColor: "transparent"
                                                                                                                     }}
                                                                                                                     onChangeText={(text) => {
                                                                                                                         inputText.set(idx1 + "" + idx2, text)
-                                                                                                                        // setInputText([idx1 + "" + idx2]: text)
-                                                                                                                        // setInputTextId(idx1 + "" + idx2)
-                                                                                                                        // setInputTextId(idx1 + "" + idx2)
-
-
 
                                                                                                                         setObj(obj => ({
-
                                                                                                                             ...obj,
                                                                                                                             [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
                                                                                                                             [fieldSetItem?.id]: text
-
                                                                                                                         }));
                                                                                                                     }}
                                                                                                                     value={inputText.get(idx1 + "" + idx2)}
-
-
-
                                                                                                                     inputType={inputTypeVal}
                                                                                                                     caption={titleVal + " ( " + rowItem.title + " )"}
                                                                                                                     placeHolder={placeHolderVal}
                                                                                                                 />
-
-
                                                                                                             </View>
-
                                                                                                         )
-
                                                                                                     }
                                                                                                 }
-
                                                                                             })
                                                                                         }
-
                                                                                     </View>)
-
                                                                             })
                                                                         }
-
                                                                     </View>)
                                                             })
                                                         }
-
-
-
-
-
-
-
-
-
-
-
-
                                                     </View>)
                                             })
                                         }
                                     </View>
                                 )
                             })}
-
                         </View>
                         <ClearSpace size={2} />
-
-
                     </>
                 )
 
-
             default:
+                console.log("inside default..........")
                 const [radioChecked, setRadioChecked] = useState(false);
-
-
-
 
                 if (description == "MEETING_HALL_CALENDAR") {
                     var selSlotIds = []
@@ -843,7 +982,7 @@ export const HandleResolution = ({
 
 
                     useEffect(() => {
-                        async function getHallEvents() {
+                        async function getEvents() {
                             interactionReducer.meetingHallsData?.map((elementItem, elementIdx) => {
                                 if (checkedItem.get("" + elementIdx)) {
                                     dispatchInteraction(getHallEvents(elementItem.code))
@@ -851,7 +990,7 @@ export const HandleResolution = ({
                                 }
                             })
                         }
-                        getHallEvents()
+                        getEvents()
                     }, [radioChecked]);
 
                     return (
@@ -865,6 +1004,12 @@ export const HandleResolution = ({
                                     if (interactionReducer?.meetingHallEventsData?.requestObject?.data?.workType == elementItem.code) {
                                         check = true
                                     }
+                                    else {
+                                        // Toast.show({
+                                        //     type: "bctError",
+                                        //     text1: "No slots event found",
+                                        // });
+                                    }
 
 
                                     return (
@@ -872,11 +1017,15 @@ export const HandleResolution = ({
                                             <RadioButton
                                                 status={check ? "checked" : "unchecked"}
                                                 onPress={() => {
+                                                    console.log("a...........")
                                                     checkedItem = new Map([["", false]]);
+                                                    console.log("b...........")
                                                     checkedItem.set("" + elementIdx, !checkedItem.get("" + elementIdx))
-                                                    console.log("changed meeting value..", checkedItem.get("" + elementIdx))
+                                                    console.log("c...........")
+                                                    // console.log("changed meeting value..", checkedItem.get("" + elementIdx))
                                                     // setEvents(interactionReducer.meetingHallEventsData)
                                                     setRadioChecked(!radioChecked)
+                                                    console.log("d...........")
                                                     // setEvents(interactionReducer.meetingHallEventsData)
                                                     // checkedItemArr = []
                                                     // if (checkedItem.get("" + elementIdx)) {
@@ -890,7 +1039,7 @@ export const HandleResolution = ({
                                                 }}
                                             />
 
-                                            <Text style={{ alignSelf: "center" }}>{elementItem.description}</Text>
+                                            <Text style={{ alignSelf: "center" }}>{elementItem?.description}</Text>
                                         </View>
                                     )
 
@@ -919,7 +1068,7 @@ export const HandleResolution = ({
                                 </View>
                             </SafeAreaView>
 
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
                                 <CustomButton
                                     label="Cancel"
                                     onPress={async () => {
@@ -940,85 +1089,43 @@ export const HandleResolution = ({
                                 <CustomButton
                                     label="Proceed"
                                     onPress={async () => {
-                                        let params = {
-                                            flowId: flowId,
-                                            conversationUid: conversationID,
-                                            data: {
-                                                source: "knowledgeBase",
-                                                bookingStatus: "PROCEED",
-                                                inputType: "MESSAGE",
-                                                inputValue: { ...formDataArray, description: "PROCEED" },
-                                                selectedSlotIds: selSlotIds,
-                                                resolutionData: resolutionDetails
+                                        if (selSlotIds?.length > 0) {
+                                            let params = {
+                                                flowId: flowId,
+                                                conversationUid: conversationID,
+                                                data: {
+                                                    source: "knowledgeBase",
+                                                    bookingStatus: "PROCEED",
+                                                    inputType: "MESSAGE",
+                                                    inputValue: { ...formDataArray, description: "PROCEED" },
+                                                    selectedSlotIds: selSlotIds,
+                                                    resolutionData: resolutionDetails
+                                                }
                                             }
+                                            popupAction(params)
                                         }
-                                        popupAction(params)
+                                        else {
+                                            console.log("selSlotIds == 0")
+                                            Toast.show({
+                                                type: "bctError",
+                                                text1: "Please Select a Slot to Proceed Further",
+                                            });
+                                        }
                                     }} />
                             </View>
                         </View>
                     );
                 }
-
                 else {
-
-
                     const [checked, setChecked] = useState(false);
                     const [radioChecked, setRadioChecked] = useState(false);
                     const [dropDownDesc, setDropDownDesc] = useState("");
                     const [dropDownCode, setDropDownCode] = useState("");
-
-                    const handleOnChangeButtom = async () => {
-                        // obj = {}
-                        // getPreviousParams()
-                        // await delay(10000);
-                        // const params = await getDataFromDB("PREVIOUS_PARAMS")
-                        // console.log("got from db..", params.data.inputValue)
-                        // obj = params.data.inputValue
-                        // // setPrevInputVal(params.data.inputValue)
-                        // console.log("obj3...", obj)
-                        // console.log("retrieved obj..", obj)
-
-                        // formMetaAttributes?.forEach((item) => {
-                        //     item?.fieldSet?.forEach((item1) => {
-                        //         if (!(item1.fieldType == "button")) {
-                        //             if ((item1.fieldType == "project") || (item1.fieldType == "radio") || (item1.fieldType == "checkbox")) {
-                        //                 setObj(obj => ({
-
-                        //                     ...obj,
-                        //                     [item1.id + "_formAttributes"]: formMetaAttributes,
-                        //                     [item1.id]: checkedItemArr
-
-                        //                 }));
-                        //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: checkedItemArr })
-                        //             }
-
-
-                        //             else {
-                        //                 setObj(obj => ({
-
-                        //                     ...obj,
-                        //                     [item1.id + "_formAttributes"]: formMetaAttributes,
-                        //                     [item1.id]: inputText.get(item1.id)
-
-                        //                 }));
-                        //                 // setObj({ ...obj, [item1.id + "_formAttributes"]: formMetaAttributes, [item1.id]: inputText.get(item1.id) })
-                        //             }
-                        //         }
-                        //     })
-                        // })
-                        // console.log('obj...', obj)
-                    }
-
                     const [inputValue, setInputValue] = useState('');
                     const [inputText, setInputText] = useState(new Map());
-                    // let inputText = new Map([["", ""]]);
 
                     const handleTextChange = _.debounce((text, fieldSetItem, formMetaAttributes) => {
-                        // Your logic here
-                        // inputText.set(fieldSetItem.id, text)
-
                         console.log("inputText val..", inputText)
-
                         setInputText
                             (
                                 prevInputText => {
@@ -1027,20 +1134,10 @@ export const HandleResolution = ({
                                     newInputText.set(fieldSetItem.id, text);
                                     return newInputText;
                                 });
-
-                        // setObj({
-                        //     ...obj,
-                        //     [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes,
-                        //     [fieldSetItem?.id]: text
-                        // });
-
                         setObj(prevState => ({ ...prevState, [fieldSetItem?.id + "_formAttributes"]: formMetaAttributes, [fieldSetItem?.id]: text }));
-
                     }, 300);
 
-
                     console.log("formMetaAttributes...", formMetaAttributes)
-
 
                     return (
                         <>
@@ -1049,15 +1146,6 @@ export const HandleResolution = ({
                                     return (
                                         <View>
                                             {item.fieldSet?.map((fieldSetItem, fieldSetIndex) => {
-
-                                                // var currentId = ""
-                                                // if(fieldSetIndex == 0) {
-                                                //     currentId = fieldSetItem.id
-                                                // }
-
-
-
-
 
                                                 if (((fieldSetItem.fieldType == "checkbox")) && (fieldSetItem.taskContextPrefix == true)) {
                                                     return (
@@ -1113,10 +1201,6 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
-
-
-
-
                                                 if ((fieldSetItem.fieldType == "selectbox") && (fieldSetItem.taskContextPrefix == true)) {
 
                                                     var arr = []
@@ -1162,9 +1246,6 @@ export const HandleResolution = ({
                                                         </View>
                                                     )
                                                 }
-
-
-
 
                                                 if ((fieldSetItem.fieldType == "radio") && (fieldSetItem.taskContextPrefix == true)) {
                                                     return (
@@ -1220,9 +1301,6 @@ export const HandleResolution = ({
                                                         </View>
                                                     )
                                                 }
-
-
-
 
                                                 if (fieldSetItem.fieldType == "textField") {
                                                     return (
@@ -1291,10 +1369,6 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
-
-
-
-
                                                 if (fieldSetItem.fieldType == "textarea") {
                                                     return (
                                                         <View>
@@ -1328,150 +1402,75 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
-
-
-
                                                 if (fieldSetItem.fieldType == "button") {
-
-
                                                     return (
                                                         <View style={{ flex: 1 }}>
                                                             <ClearSpace size={2}></ClearSpace>
                                                             <CustomButton
                                                                 label={fieldSetItem.placeHolder}
                                                                 onPress={async () => {
-                                                                    console.log("formDataState onpress..", formDataState)
-                                                                    handleButtonSubmit()
-
-                                                                    // handleOnChangeButtom()
-
-                                                                    // async () => {
-
-                                                                    // getPreviousParams()
-
-                                                                    // console.log("fieldSet?..", formMetaAttributes)
-
-                                                                    // formMetaAttributes?.forEach(async (item1, idx) => {
-                                                                    //     item1?.fieldSet?.forEach(async (item2, idx) => {
-                                                                    //         // if ((item2.fieldType == "button")) {                                           
-
-                                                                    //         // setCurrInputVal([...currInputVal, {
-                                                                    //         //     [item2.id + "_formAttributes"]: formMetaAttributes,
-                                                                    //         //     [item2.id]: checkedItemArr
-                                                                    //         // }])
-
-                                                                    //         console.log('------x-------->', {
-                                                                    //             [item2.id + "_formAttributes"]: formMetaAttributes,
-                                                                    //             [item2.id]: checkedItemArr
-                                                                    //         })
-                                                                    //         // }
-                                                                    //     })
-                                                                    // })
-
-
-                                                                    // const unique = new Set(formDataArray);
-
-                                                                    // const uniqueData = [...unique];
-
-
-                                                                    // const jsonStr = JSON.stringify(formDataArray, null, '\t').slice(1, -1)
-                                                                    console.log("jsonStr1--->", formDataArray, formDataState)
-
-                                                                    // var newString = jsonStr.indexOf('[') == 0 ? jsonStr.substring(1) : jsonStr;
-                                                                    // newString = jsonStr.indexOf(']') == jsonStr.length - 1 ? jsonStr.substring(jsonStr.length - 1) : jsonStr;
-                                                                    // console.log("jsonStr2--->", newString)
-
-
-                                                                    // console.log("jsonStr3--->", JSON.parse(newString))
-
-
-                                                                    // formDataArray.forEach((item, index) => {  
-                                                                    //     modifiedData[`formData${index}`] = { ...item };     
-                                                                    // });
-
-                                                                    // console.log("jsonStr2--->", formDataArray.forEach((item, index) => {
-                                                                    //     modifiedData[`formData${index}`] = { ...item };
-                                                                    // }))
-
-                                                                    var valObj = {}
-                                                                    if (values.length > 0) {
-                                                                        valObj = { ["GRID"]: values }
-                                                                        values = []
+                                                                    if (formDataArray == {} || formDataState == {}) {
+                                                                        Toast.show({
+                                                                            type: "bctError",
+                                                                            text1: strings.pls_fill_the_form,
+                                                                        });
                                                                     }
+                                                                    else {
+                                                                        console.log("formDataState onpress..", formDataState)
+                                                                        handleButtonSubmit()
+                                                                        console.log("jsonStr1--->", formDataArray, formDataState)
 
-
-
-
-                                                                    let params = {
-                                                                        flowId: flowId,
-                                                                        conversationUid: conversationID,
-                                                                        "data": {
-                                                                            "source": "knowledgeBase",
-                                                                            "inputType": "FORMDATA",
-                                                                            // "inputValue": formDataArray.map(m => ({ ...m })),
-
-                                                                            // json = JSON.parse(twice_json)               // => '{"orderId":"123"}'
-                                                                            // obj = JSON.parse(json)  
-
-
-
-                                                                            "inputValue": { ...formDataArray, ...formDataState, ...valObj },
-
-
-                                                                            // "project_formAttributes": formMetaAttributes,
-                                                                            // "project": checkedItemArr,
-
-                                                                            // "radio_formAttributes": formMetaAttributes,
-                                                                            // "radio": checkedItemArr,
-
-                                                                            // "Department_formAttributes": formMetaAttributes,
-                                                                            // "Department": inputText.get("Department"),
-
-                                                                            // "role_formAttributes": formMetaAttributes,
-                                                                            // "role": inputText.get("role"),
-
-                                                                            // "remarks": inputText.get("remarks")
-
-                                                                            // },
-                                                                            "resolutionData": resolutionDetails
+                                                                        var valObj = {}
+                                                                        if (values.length > 0) {
+                                                                            valObj = { ["GRID"]: values }
+                                                                            values = []
                                                                         }
-                                                                    };
 
+                                                                        let params = {
+                                                                            flowId: flowId,
+                                                                            conversationUid: conversationID,
+                                                                            "data": {
+                                                                                "source": "knowledgeBase",
+                                                                                "inputType": "FORMDATA",
+                                                                                "inputValue": { ...formDataArray, ...formDataState, ...valObj },
+                                                                                "resolutionData": resolutionDetails
+                                                                            }
+                                                                        };
 
-
-                                                                    console.log("save data..", params)
-
-                                                                    // await saveDataToDB("PREVIOUS_PARAMS", params);
-
-                                                                    console.log("submit params...", JSON.stringify(params));
-
-                                                                    popupAction(params)
-
+                                                                        console.log("save data..", params)
+                                                                        console.log("submit params...", JSON.stringify(params));
+                                                                        popupAction(params)
+                                                                    }
                                                                 }
                                                                 }
                                                             />
                                                             <ClearSpace size={2}></ClearSpace>
                                                         </View>
                                                     )
-
                                                 }
 
-
                                                 console.log("fieldSetItem grid..", fieldSetItem)
-
                                                 if (fieldSetItem?.fieldType === 'grid') {
 
                                                     console.log("inside grid..")
+                                                    useEffect(() => {
+                                                        async function getEvents() {
+                                                            handleAddRows(fieldSetItem?.headers);
+                                                        }
+                                                        getEvents()
+                                                    }, []);
+
+                                                    gridInputText = new Map([["", ""]]);
 
                                                     return (
                                                         <>
                                                             <DataTable style={styles.containers}>
-                                                                <DataTable.Header style={styles.tableHeader}>
+                                                                {/* <DataTable.Header style={styles.tableHeader}>
                                                                     {fieldSetItem?.headers.map((header, headerIndex) => (
                                                                         <DataTable.Title>{header.title}</DataTable.Title>
                                                                     ))}
 
-                                                                </DataTable.Header>
+                                                                </DataTable.Header> */}
 
                                                                 {values?.length > 0 &&
 
@@ -1547,16 +1546,7 @@ export const HandleResolution = ({
 
                                                 }
 
-
-
-
-
                                             })
-
-
-
-
-
                                             }
                                         </View>
                                     )
@@ -1564,12 +1554,9 @@ export const HandleResolution = ({
                             </View>
                         </>
                     )
-
                     return null
-
                 }
         }
-
     }
 
 
@@ -1653,8 +1640,6 @@ export const HandleResolution = ({
 
 }
 
-
-
 const styles = StyleSheet.create({
     containers: {
         padding: 5,
@@ -1687,7 +1672,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     signContainer: {
-        flex: 1, padding: 8, backgroundColor: color.BCAE_OFF_WHITE,
+        flex: 1, padding: 8, backgroundColor: color.BCAE_OFF_WHITE, alignSelf: 'center'
     },
     titleStyle: {
         margin: 10,
@@ -1752,5 +1737,10 @@ const styles = StyleSheet.create({
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: '#f6f8fa' },
     row: { height: 40 },
-    text: { textAlign: 'center' }
+    text: { textAlign: 'center' },
+
+    htmlContent: {
+        fontWeight: '300',
+        color: '#FF3366', // make links coloured pink
+    },
 })

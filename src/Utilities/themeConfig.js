@@ -16,7 +16,7 @@ const theme = {
   roundness: 3, //
   colors: {
     ...DefaultTheme.colors,
-    primary: "#9C8FC4",
+    primary: "#4a5996",
     inversePrimary: "#DBDBDB",
     onPrimaryContainer: "#88a5da",
     secondary: "#23374e",

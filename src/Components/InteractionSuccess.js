@@ -54,6 +54,7 @@ export const styles = StyleSheet.create({
 
   },
   interactionText: {
+    color: "#000000",
     textAlign: "center",
     marginTop: 30,
   },

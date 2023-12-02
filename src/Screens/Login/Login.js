@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
+  Image,
   ImageBackground,
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  unstable_batchedUpdates
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CustomSwitch from "react-native-custom-switch-new";
@@ -18,7 +21,6 @@ import { CustomErrorText } from "../../Components/CustomErrorText";
 import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
 import { Toast } from "../../Components/Toast";
-import { ToggleButton } from "../../Components/ToggleButton";
 import { STACK_CREATE_CUSTOMER } from "../../Navigation/MyStack";
 import {
   color,
@@ -36,7 +38,6 @@ import {
   getPhoneNumberLength
 } from "../../Utilities/utils";
 import { StickyFooter } from "./../../Components/StickyFooter";
-import { HeaderTitle } from "./../../Components/headerTitle";
 import {
   callLogoutAndLogin,
   resetLogin,
@@ -55,7 +56,14 @@ const OTP = "otp";
  * Login : Handle Login Business and Customer login
  * @namespace Login  
  */
+
+
+const { width, height } = Dimensions.get("window");
+
 export const Login = ({ navigation }) => {
+
+
+
   useEffect(() => {
     const willFocusSubscription = navigation.addListener("focus", () => {
       requestUserPermission();
@@ -64,10 +72,16 @@ export const Login = ({ navigation }) => {
     return willFocusSubscription;
   }, []);
 
-  const [userType, setUserType] = useState(CONSUMER); // BUSINESS or CONSUMER
+  // Login flow changes
+  const [userType, setUserType] = useState(BUSINESS); // BUSINESS or CONSUMER
+
   const [loginMode, setLoginMode] = useState(EMAIL); // EMAIL or MOBILE
   const [loginType, setLoginType] = useState(PASSWORD); // PASSWORD or OTP
-  const [isRegisterFirstSelected, setFirstSelected] = useState(false);
+
+  // Login flow changes
+  const [isRegisterFirstSelected, setFirstSelected] = useState(true);
+
+
   // const [username, setUsername] = useState("aher.dipak@bahwancybertek.com");
   // const [password, setPassword] = useState("Test@123");
   // const [username, setUsername] = useState("skavi7060@gmail.com");
@@ -112,12 +126,14 @@ export const Login = ({ navigation }) => {
   * @memberOf Login
   */
   const onSelectBusinessUserType = () => {
-    setFirstSelected(true);
-    setUserType(BUSINESS);
-    setUsernameError("");
-    setPasswordError("");
-    setNumberError("");
-    dispatch(resetLogin());
+    unstable_batchedUpdates(() => {
+      setFirstSelected(true);
+      setUserType(BUSINESS);
+      setUsernameError("");
+      setPasswordError("");
+      setNumberError("");
+      dispatch(resetLogin());
+    })
     // navigation.navigate("Register with us")
   };
 
@@ -183,7 +199,19 @@ export const Login = ({ navigation }) => {
   */
 
   const submitWithEmail = (loginType) => {
-    setLoginType(loginType);
+
+    // Login flow changes
+    unstable_batchedUpdates(() => {
+      setFirstSelected(true);
+      setUserType(BUSINESS);
+      setUsernameError("");
+      setPasswordError("");
+      setNumberError("");
+      dispatch(resetLogin());
+      setLoginType(loginType);
+    })
+
+
     if (username.includes("@")) {
       if (username === "") {
         setUsernameError(strings.emailValidError);
@@ -264,6 +292,7 @@ export const Login = ({ navigation }) => {
     }
   };
 
+
   const submitWithMobileOTP = (loginType) => {
     setLoginType(loginType);
     if (number.length !== numberMaxLength) {
@@ -281,13 +310,82 @@ export const Login = ({ navigation }) => {
     }
   };
 
+
+
+  const ShowSecondLoginAlertDialog = (login) => {
+    return (
+      <View style={{
+        padding: 5,
+        borderRadius: 10, elevation: 10, marginBottom: 70,
+        marginTop: 170, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, width: width - 70,
+        backgroundColor: "white", zIndex: 99999999999999
+      }}>
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 5,
+            margin: 10,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 22, color: "#000000" }}>Login Error</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, color: "#000000" }}>
+            {login?.secondLoginAlertInfo?.data?.message}
+          </Text>
+
+          <View style={{ alignSelf: "center", flexDirection: "row" }}>
+            <CustomButton
+              style={{ width: 60 }}
+              label={"Cancel"}
+              onPress={() => dispatch(resetShowSecondLoginAlert())}
+            />
+
+            <CustomButton
+              style={{ width: 60 }}
+              label={"Ok"}
+              onPress={() =>
+                dispatch(
+                  callLogoutAndLogin(
+                    login?.secondLoginAlertInfo?.data?.data?.userId,
+                    navigation,
+                    params
+                  )
+                )
+              }
+            />
+          </View>
+
+        </View>
+      </View>
+    )
+  };
+
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../../Assets/icons/bg_others.png")}
+      source={require("../../Assets/icons/splash_bg.png")}
       resizeMode="cover"
     >
-      <HeaderTitle header="Let us know dtWorks," subHeader="Who you are?" />
+
+      <View style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <Image
+          source={require("../../Assets/icons/logo_new.png")}
+          // resizeMode="cover"
+          style={{
+            marginTop: 15,
+            padding: 60,
+            // flex: 1,
+            width: 300,
+            height: 100
+          }}
+        />
+      </View>
+
+      {/* <HeaderTitle header="Let us know dtWorks," subHeader="Who you are?" /> */}
       <KeyboardAwareView animated={false}>
         <View
           style={{
@@ -307,11 +405,11 @@ export const Login = ({ navigation }) => {
               }}
             >
               {/* Toggle Button View */}
-              <View>
-                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+              {/* <View> */}
+              {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
                   {strings.check_usertype}
                 </Text> */}
-                <ToggleButton
+              {/* <ToggleButton
                   isFirstSelected={isRegisterFirstSelected}
                   label={{
                     first: BUSINESS,
@@ -332,7 +430,7 @@ export const Login = ({ navigation }) => {
                   onPressFirst={onSelectBusinessUserType}
                   onPressSecond={onSelectConsumerUserType}
                 ></ToggleButton>
-              </View>
+              </View> */}
 
 
               {/* Radio Button View */}
@@ -340,28 +438,27 @@ export const Login = ({ navigation }) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "flex-end",
-                  marginTop: 20,
-                  marginBottom: -20,
+                  marginTop: 10
                 }}
               >
                 <CustomSwitch
-                  buttonWidth={25}
-                  buttonPadding={5}
-                  switchWidth={90}
+                  buttonWidth={20}
+                  buttonPadding={10}
+                  switchWidth={120}
                   startOnLeft={isEmailLoginMode}
                   onSwitch={onToggleSwitch}
                   onSwitchReverse={onToggleSwitch}
-                  buttonColor={"#5B5372"}
-                  switchBackgroundColor={"#F2EFFF"}
+                  buttonColor={"#4a5996"}
+                  switchBackgroundColor={"#EBEDEF"}
                   switchLeftText={"Email"}
                   switchLeftTextStyle={{
-                    color: "#4B3694",
+                    color: "#4a5996",
                     fontSize: 14,
                     fontWeight: 600,
                   }}
                   switchRightText={"Mobile"}
                   switchRightTextStyle={{
-                    color: "#4B3694",
+                    color: "#4a5996",
                     fontSize: 14,
                     fontWeight: 600,
                   }}
@@ -636,6 +733,7 @@ export const Login = ({ navigation }) => {
                       : false
                 }
                 onPress={() => {
+                  // onSelectBusinessUserType()
                   loginMode === EMAIL
                     ? submitWithEmail(PASSWORD)
                     : submitWithMobile(PASSWORD);
@@ -648,7 +746,7 @@ export const Login = ({ navigation }) => {
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
                   fontWeight: 400,
-                  marginTop: 10,
+                  marginTop: 0,
                 }}
               >
                 By continuing, I accept and agree to Dtworks
@@ -686,7 +784,7 @@ export const Login = ({ navigation }) => {
                   fontSize: fontSizes.FONT_12,
                   textAlign: "center",
                   fontWeight: 400,
-                  marginTop: 10,
+                  marginTop: 5,
                 }}
               >
                 © {new Date().getFullYear()} Dtworks. All rights reserved.
@@ -696,7 +794,14 @@ export const Login = ({ navigation }) => {
 
         </View>
       </KeyboardAwareView>
+
+
       {/* Modal for showing the second login alert */}
+      {/* {login?.showSecondLoginAlert && (ShowSecondLoginAlertDialog(login))} */}
+
+
+      {/* {login?.showSecondLoginAlert && (showSecondLoginAlert(login?.secondLoginAlertInfo?.data?.message))} */}
+
       <Modal
         visible={login?.showSecondLoginAlert}
         dismissable={false}
@@ -710,31 +815,43 @@ export const Login = ({ navigation }) => {
             borderRadius: 10,
           }}
         >
-          <Text style={{ fontSize: 22 }}>Login Error</Text>
-          <Text style={{ marginTop: 10, fontSize: 18 }}>
+          <Text style={{ fontSize: 22, color: "#000000" }}>Login Error</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, color: "#000000" }}>
             {login?.secondLoginAlertInfo?.data?.message}
           </Text>
-          <CustomButton
-            label={"Ok"}
-            onPress={() =>
-              dispatch(
-                callLogoutAndLogin(
-                  login?.secondLoginAlertInfo?.data?.data?.userId,
-                  navigation,
-                  params
+
+          <View style={{ alignSelf: "center", flexDirection: "row" }}>
+            <CustomButton
+              style={{ width: 60 }}
+              label={"Cancel"}
+              onPress={() => dispatch(resetShowSecondLoginAlert())}
+            />
+
+            <CustomButton
+              style={{ width: 60 }}
+              label={"Ok"}
+              onPress={() =>
+                dispatch(
+                  callLogoutAndLogin(
+                    login?.secondLoginAlertInfo?.data?.data?.userId,
+                    navigation,
+                    params
+                  )
                 )
-              )
-            }
-          />
-          <CustomButton
-            label={"Cancel"}
-            onPress={() => dispatch(resetShowSecondLoginAlert())}
-          />
+              }
+            />
+          </View>
+
         </View>
       </Modal>
+
     </ImageBackground>
   );
+
 };
+
+
+
 
 const styles = StyleSheet.create({
   container: {

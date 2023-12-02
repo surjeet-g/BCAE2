@@ -46,8 +46,16 @@ console.log('SERVER_TYE---->', SERVER_TYE)
 
 // ----------------------------------------------------------------------------------------------------------------------------
 
-// Helpdesk 2.0 url
+// Helpdesk 2.0 production details
+// export const BASE_URL = "https://dtworks-prod.comquest-brunei.com:19443/comquest/api/"
+// export const TENANT_ID = "e67e7c76-a6b3-4eff-8ea6-1b3c7b9316df";
+
+// Helpdesk 2.0 staging url
 // export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
+
+
+
+
 
 // Telecom url
 // Internal
@@ -62,14 +70,24 @@ export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-i
 // Helpdesk 2.0 tenant id
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201dc9";
 
-// Malaysia tenant id
+// External helpdesk demo tenant id
 // export const TENANT_ID = "d2ba51d3-370b-4e93-a4f1-27ef0274a693";
+
+// Comquest tenant id
+// export const TENANT_ID = "2da69f8d-c52c-4a18-93d3-e2d4eb69d0f2";
+
+
+// Comquest demo tenant id
+export const TENANT_ID = "844ed6d4-4735-477c-b1a3-ad168ac952f9";
+
+
+
 
 // Telecom tenant id
 // Internal
 // export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da1";
 // External
-export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da4";
+// export const TENANT_ID = "a89d6593-3aa8-437b-9629-9fcbaa201da4";
 
 
 // Demo tenant id
@@ -147,6 +165,7 @@ export const endPoints = {
   ADDRESS_LOOKUP_REGISTRATION: "api/master/address-lookup",
   DOCUMENT_SCAN: "api/common/scan-document",
   USERS_SEARCH: "api/users/search/",
+  SOURCE_DATA: "api/master/lookup?searchParam=code_type&valueParam=TICKET_SOURCE",
   USERS_ROLE: "api/users/by-role",
   CANCEL_REASONS: "api/master/lookup",
   CANCEL_INTERACTION: "api/interaction/cancel/",
@@ -232,6 +251,7 @@ export const endPoints = {
   DASHBOARD_APPOINTMENT_GET_EVENTS: "api/appointment/get-appoinment-events",
   DASHBOARD_APPOINTMENT_GET_REMINDER: "api/appointment/get-appoinments-reminder",
   DASHBOARD_APPOINTMENT_GET_APP_BASED_ON_TYPE: "api/appointment/get-based-on-type",
+  DASHBOARD_APPOINTMENT_GET_PERFORMANCE: "api/appointment/get-performance",
 
 
 

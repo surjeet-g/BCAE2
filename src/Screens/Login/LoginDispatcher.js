@@ -91,6 +91,21 @@ export function verifyLoginData(navigation, params) {
               await saveDataToDB(storageKeys.CURRENT_DEPT_DESC, result.data?.data?.currDeptDesc);
               await saveDataToDB(storageKeys.CURRENT_DEPT_ID, result.data?.data?.currDeptId);
 
+              await saveDataToDB(storageKeys.INTERACTION_DASHBOARD, result.data?.data?.currDeptId);
+              await saveDataToDB(storageKeys.CURRENT_DEPT_ID, result.data?.data?.currDeptId);
+              await saveDataToDB(storageKeys.CURRENT_DEPT_ID, result.data?.data?.currDeptId);
+              await saveDataToDB(storageKeys.CURRENT_DEPT_ID, result.data?.data?.currDeptId);
+
+
+
+              result.data?.data?.permissions?.map((item, idx) => {
+                console.log("dashboard data1......", item)
+                item?.Dashboard?.map((item2, idx) => {
+                  console.log("dashboard data3......", item2?.screenName + " / " + item2?.accessType)
+                  saveDataToDB(item2?.screenName, item2?.accessType);
+                })
+              })
+
 
 
               let profileResult = {};

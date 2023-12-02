@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import Header from "../../TabScreens/Component/Header";
+import React, { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
+import { CustomInput } from "../../../Components/CustomInput";
+import { userRegister } from "../../../Redux/RegisterDispatcher";
 import {
-  spacing,
-  color,
-  validatePassword,
   DEBUG_BUILD,
-  STAGE_TERMS,
+  PROD_PRIVACY,
   PROD_TERMS,
   STAGE_PRIVACY,
-  PROD_PRIVACY,
+  STAGE_TERMS,
+  color,
+  spacing,
+  validatePassword,
 } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
 import { showErrorMessage } from "./RegisterPersonal";
-import { userRegister } from "../../../Redux/RegisterDispatcher";
-import { CustomInput } from "../../../Components/CustomInput";
 
 export const SetPasswordScreen = ({ navigation, route }) => {
   // const {
@@ -205,6 +204,7 @@ export const SetPasswordScreen = ({ navigation, route }) => {
         onPress={submit}
         mode="contained"
         loading={loader}
+        buttonColor={"#4a5996"}
       >
         REGISTER
       </Button>

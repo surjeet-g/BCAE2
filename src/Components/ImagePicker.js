@@ -14,8 +14,9 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { uploadInteractionAttachment } from "../Redux/InteractionDispatcher";
+import { getDataFromDB, saveDataToDB } from "../Storage/token";
 import { spacing } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 import AttachmentItem from "./AttachmentItem";
@@ -37,6 +38,14 @@ export const ImagePicker = ({
   setFileAttachments
 }) => {
   const dispatch = useDispatch([uploadInteractionAttachment]);
+
+  const { interactionReducer } = useSelector(
+    (state) => {
+      return {
+        interactionReducer: state.interaction,
+      };
+    }
+  );
 
   const launchImageLibrary1 = () => {
     let options = {
@@ -153,16 +162,19 @@ export const ImagePicker = ({
   };
 
   const uploadAttachment = async (attachmentData) => {
-    console.log("uploadAttachment...")
+    // console.log("uploadAttachment1...")
+    // console.log("uploadAttachment2..." + await getDataFromDB("ATTACHMENTS"))
 
+    dispatch(await uploadInteractionAttachment(attachmentData))
 
-    // const data = new FormData();
-    // data.append('file_to_upload', attachmentData);
-    // console.log("data value...", data)
-    // const resImgUpload = await APICallForMuti(endPoints.UPLOAD_INTERACTION_ATTACHMENT, data, "")
-    // console.log("resImgUpload value...", resImgUpload)
-
-    dispatch(uploadInteractionAttachment(attachmentData));
+    if (interactionReducer?.attachedEntityData?.entityId !== undefined) {
+      if (await getDataFromDB("ATTACHMENTS") !== "") {
+        await saveDataToDB("ATTACHMENTS", await getDataFromDB("ATTACHMENTS") + "~" + interactionReducer?.attachedEntityData?.entityId);
+      }
+      else {
+        await saveDataToDB("ATTACHMENTS", interactionReducer?.attachedEntityData?.entityId);
+      }
+    }
   }
 
   const onDeleteClicked = (index) => {

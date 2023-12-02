@@ -164,8 +164,8 @@ const InteractionSearch = ({ navigation }) => {
                         value={customerName}
                         keyboardType="text"
                         maxLength={customerNameMaxLength}
-                        caption={strings.customer_name}
-                        placeHolder={strings.enter_customer_name}
+                        caption={strings.employee}
+                        placeHolder={strings.enter_employee}
                         onChangeText={(text) => {
                             text = text.replace(/[^A-Za-z]/g, '')
                             // text = text.replace(/^[A-Za-z]+$/, '')

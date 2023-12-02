@@ -2,6 +2,8 @@ import get from "lodash.get";
 import { INPUT_TYPE } from "../Utilities/Constants/Constant";
 
 import {
+  ATTACHED_ENTITY_DATA,
+  ATTACHED_ENTITY_DATA_ERROR,
   CANCEL_REASONS_DATA,
   CANCEL_REASONS_DATA_FAILURE,
   CREATE_FOLLOWUP,
@@ -27,6 +29,8 @@ import {
   MEETING_HALLS_ERROR_DATA,
   MEETING_HALL_EVENTS_DATA,
   MEETING_HALL_EVENTS_ERROR_DATA,
+  SOURCE_DATA,
+  SOURCE_DATA_FAILURE,
   STATUS_DATA,
   STATUS_DATA_FAILURE
 } from "./InteractionAction";
@@ -152,7 +156,11 @@ const InteractionInitialState = {
   meetingHallEventsErrorData: {},
   statusData: [],
   // rolesData: [],
-  statusErrorData: {}
+  statusErrorData: {},
+  sourceData: {},
+  sourceErrorData: {},
+  attachedEntityData: {},
+  attachedEntityErrorData: {}
 };
 
 const InteractionReducer = (state = InteractionInitialState, action) => {
@@ -317,6 +325,37 @@ const InteractionReducer = (state = InteractionInitialState, action) => {
       return {
         ...state,
         statusErrorData: action.data,
+      };
+
+
+
+
+
+
+    case SOURCE_DATA:
+      return {
+        ...state,
+        sourceData: action.data,
+      };
+
+    case SOURCE_DATA_FAILURE:
+      return {
+        ...state,
+        sourceErrorData: action.data,
+      };
+
+
+
+    case ATTACHED_ENTITY_DATA:
+      return {
+        ...state,
+        attachedEntityData: action.data,
+      };
+
+    case ATTACHED_ENTITY_DATA_ERROR:
+      return {
+        ...state,
+        attachedEntityErrorData: action.data,
       };
 
 

@@ -235,7 +235,7 @@ export function fetchProfileRoles(navigation = null) {
 }
 
 
-export function switchUserRole(props) {
+export async function switchUserRole(props) {
   return async (dispatch) => {
 
     console.log("switchUserRole props..", props);
@@ -274,8 +274,20 @@ export function switchUserRole(props) {
 
       props.setUserSwitched(!props.userSwitched)
 
+      console.log("switchUserRole result..", result.data);
+
+      result.data?.data?.permissions?.map((item, idx) => {
+        console.log("dashboard data4......", item)
+        item?.Dashboard?.map((item2, idx) => {
+          console.log("dashboard data5......", item2?.screenName + " / " + item2?.accessType)
+          saveDataToDB(item2?.screenName, item2?.accessType);
+        })
+      })
+
       dispatch(setProfileSwitchedDataInStore(result.data));
       // RNRestart.Restart();
+
+      console.log("switchUserRole result completed..");
       props.navigation.navigate("BottomBar")
     } else {
       Toast.show({

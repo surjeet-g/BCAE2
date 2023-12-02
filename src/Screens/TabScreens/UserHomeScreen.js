@@ -1,6 +1,6 @@
 import get from "lodash.get";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -15,9 +15,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Card, Divider, Text, TextInput } from "react-native-paper";
 import PieChart from "react-native-pie-chart";
 // import { color } from "react-native-reanimated";
+import { useIsFocused } from "@react-navigation/native";
+import { Image } from "react-native";
 import EventCalendar from "react-native-events-calendar";
+import MapView, {
+  Marker
+} from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image } from "react-native-svg";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,9 +30,11 @@ import { CustomButton } from "../../Components/CustomButton";
 import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
 import { CustomInput } from "../../Components/CustomInput";
 import LoadingAnimation from "../../Components/LoadingAnimation";
+import TreeMap from "../../Components/charts/TreeMap";
 import { STACK_INTERACTION_DETAILS, STACK_ORDER_DETAILS } from "../../Navigation/MyStack";
 import {
   getAppointmentEvents,
+  getAppointmentPerformance,
   getAppointmentsBasedOnType,
   getAssignedAppointments,
   getChannelWise,
@@ -119,9 +125,39 @@ const TAB_INTERACTIVE = true;
 const TAB_INFORMATIVE = false;
 
 
+
+
+
+
 export const UserHomeScreen = (props) => {
 
   console.log("UserHomeScreen rendering..");
+
+  const isFocused = useIsFocused();
+
+
+  const { width, height } = Dimensions.get("window");
+  const ASPECT_RATIO = width / height;
+
+  const mapRef = useRef(null);
+  const latitudeDelta = 0.0922;
+  const longitudeDelta = latitudeDelta * ASPECT_RATIO;
+
+  const animateToCurrentLocation = () => {
+    // console.log("locationCurrent===>" + currentLatitude + "===>" + currentLongitude);
+    setIsCurrentLocation(true);
+    mapRef.current.animateToRegion(
+      {
+        latitude: 12.950446,
+        longitude: 80.2392171,
+        latitudeDelta: latitudeDelta,
+        longitudeDelta: longitudeDelta,
+      },
+      1000
+    );
+    // getLocationAddress(currentLatitude, currentLongitude);
+  };
+
 
   const [loader, setLoader] = useState(true);
   const [projCode, setProjCode] = useState("");
@@ -167,7 +203,7 @@ export const UserHomeScreen = (props) => {
   const [operationalFilterOn, setOperationalFilterOn] = useState(false);
   const [operationalFilterReq, setOperationalFilterReq] = useState({});
 
-  const [showAppointmentDashboard, setShowAppointmentDashboard] = useState(true);
+  const [showAppointmentDashboard, setShowAppointmentDashboard] = useState(false);
   const [appointmentDetDialogVisible, setAppointmentDetDialogVisible] = React.useState(false);
   const [appointmentDialogData, setAppointmentDialogData] = useState([]);
   const [appointmentFilterDialogVisible, setAppointmentFilterDialogVisible] = React.useState(false);
@@ -247,6 +283,82 @@ export const UserHomeScreen = (props) => {
   const [selAppTypeCode, setSelAppTypeCode] = useState("");
   const [selAppTypeDesc, setSelAppTypeDesc] = useState("");
 
+  const [selUpcAppTypeCode, setSelUpcAppTypeCode] = useState("");
+  const [selUpcAppTypeDesc, setSelUpcAppTypeDesc] = useState("");
+
+  const [selClosedAppTypeCode, setSelClosedAppTypeCode] = useState("");
+  const [selClosedAppTypeDesc, setSelClosedAppTypeDesc] = useState("");
+
+  const [showHelpdeskMenu, setShowHelpdeskMenu] = useState(false);
+  const [showInteractionMenu, setShowInteractionMenu] = useState(false);
+  const [showOperationalMenu, setShowOperationalMenu] = useState(false);
+  const [showAppointmentMenu, setShowAppointmentMenu] = useState(false);
+
+
+
+  useEffect(() => {
+    async function getData() {
+      var helpdesk = "", interaction = "", operational = "", appointment = ""
+
+      helpdesk = await getDataFromDB(storageKeys.HELPDESK_DASHBOARD)
+      interaction = await getDataFromDB(storageKeys.INTERACTION_DASHBOARD)
+      operational = await getDataFromDB(storageKeys.OPERATIONAL_DASHBOARD)
+      appointment = await getDataFromDB(storageKeys.APPOINTMENT_DASHBOARD)
+
+      console.log("helpdesk..", helpdesk)
+      console.log("interaction..", interaction)
+      console.log("operational..", operational)
+      console.log("appointment..", appointment)
+
+      unstable_batchedUpdates(() => {
+        if (appointment == "allow") {
+          setShowAppointmentMenu(true)
+
+          setShowHelpdeskDashboard(false)
+          setShowInteractionDashboard(false)
+          setShowOperationalDashboard(false)
+          setShowAppointmentDashboard(true)
+        } else {
+          setShowAppointmentMenu(false)
+        }
+
+        if (operational == "allow") {
+          setShowOperationalMenu(true)
+
+          setShowHelpdeskDashboard(false)
+          setShowInteractionDashboard(false)
+          setShowOperationalDashboard(true)
+          setShowAppointmentDashboard(false)
+        } else {
+          setShowOperationalMenu(false)
+        }
+
+        if (interaction == "allow") {
+          setShowInteractionMenu(true)
+
+          setShowHelpdeskDashboard(false)
+          setShowInteractionDashboard(true)
+          setShowOperationalDashboard(false)
+          setShowAppointmentDashboard(false)
+        } else {
+          setShowInteractionMenu(false)
+        }
+
+        if (helpdesk == "allow") {
+          setShowHelpdeskMenu(true)
+
+          setShowHelpdeskDashboard(true)
+          setShowInteractionDashboard(false)
+          setShowOperationalDashboard(false)
+          setShowAppointmentDashboard(false)
+        } else {
+          setShowHelpdeskMenu(false)
+        }
+      })
+    }
+    getData()
+  }, [isFocused])
+
   dispatch = useDispatch([
     // ---------------------------------------------Interaction methods-------------------------------------------------------------
     getStatusWiseCount,
@@ -309,6 +421,7 @@ export const UserHomeScreen = (props) => {
     getClosedAppointments,
     getAppointmentEvents,
     getAppointmentsBasedOnType,
+    getAppointmentPerformance,
     // ---------------------------------------------Appointment methods-------------------------------------------------------------
 
 
@@ -329,9 +442,627 @@ export const UserHomeScreen = (props) => {
     // ---------------------------------------------Helpdesk methods-------------------------------------------------------------
   ]);
 
+
+  // // All api
+  // useEffect(() => {
+  //   async function getData() {
+  //     console.log("helpdeskFilterOn rendering..", helpdeskFilterOn);
+  //     setLoader(true)
+
+  //     // ---------------------------------request params----------------------------------------------------------------
+
+  //     var params = {}
+  //     if (intxnFilterOn) {
+  //       params = { searchParams: intxnFilterReq }
+  //     }
+  //     else if (helpdeskFilterOn) {
+  //       params = helpdeskFilterReq
+  //     }
+  //     else {
+  //       params = { type: "COUNT" };
+  //     }
+  //     console.log("params..", params)
+
+  //     // ---------------------------------------------Interaction requests start-------------------------------------------------------------
+
+  //     if (showInteractionDashboard) {
+
+  //       // ---------------------------------------------Interaction live requests start-------------------------------------------------------------
+
+  //       if (interactionLiveStream) {
+  //         var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
+  //         var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+
+  //         var liveProjectParams = { fromDate: fromDateVal, toDate: toDateVal }
+  //         dispatch(getLiveProjectWise(liveProjectParams))
+  //         console.log("getLiveProjectWise result UI..", intDashRed.liveProjectWiseData);
+
+  //         var liveCustParams = { searchParams: { fromDate: fromDateVal, toDate: toDateVal, categoryType: "Internal", category: "LIST" } }
+  //         dispatch(getLiveCustomerWise(liveCustParams))
+  //         console.log("getLiveCustomerWise result UI..", intDashRed.liveCustomerWiseData);
+
+  //         var livePriorityParams = { searchParams: { fromDate: fromDateVal, toDate: toDateVal, category: "LIST" } }
+  //         dispatch(getInteractionByLivePriority(livePriorityParams))
+  //         console.log("getInteractionByLivePriority result UI..", intDashRed.interactionByLivePriorityData);
+
+  //         var liveOverviewParams = { fromDate: fromDateVal, toDate: toDateVal }
+  //         dispatch(getInteractionsByLiveStatusListTwo(liveOverviewParams))
+  //         console.log("getInteractionsByLiveStatusListTwo result UI..", intDashRed.interactionsByStatusListDataTwo);
+
+  //         var liveStatusParams = { fromDate: fromDateVal, toDate: toDateVal }
+  //         dispatch(getInteractionsByStatusLiveList(liveStatusParams))
+  //         console.log("getInteractionsByStatusLiveList result UI..", intDashRed.interactionsByStatusLiveListData);
+  //       }
+
+  //       // ---------------------------------------------Interaction live requests end-------------------------------------------------------------
+
+  //       dispatch(getStatusWiseCount({ searchParams: {} }))
+  //       console.log("getStatusWiseCount result UI..", intDashRed.statusWiseCountData);
+
+  //       dispatch(getStatementWise({ category: "STATEMENT" }))
+  //       console.log("getStatementWise result UI..", intDashRed.statementWiseData);
+
+  //       dispatch(getChannelWise(params))
+  //       console.log("getChannelWise result UI..", intDashRed.channelWiseData);
+
+  //       await dispatch(await getCustomerWise(
+  //         {
+  //           "searchParams": {
+  //             "category": "COUNT",
+  //             "fromDate": new Date()
+  //           }
+  //         }
+  //       ))
+  //       console.log("getCustomerWise result UI..", intDashRed.customerWiseData);
+
+  //       dispatch(getLocationWise(params))
+  //       console.log("getLocationWise result UI..", intDashRed.locationWiseData);
+
+  //       dispatch(getDepartmentInteractions(params))
+  //       console.log("getDepartmentInteractions result UI..", intDashRed.departmentInteractionsData);
+
+
+
+  //       dispatch(getNpsCsatChamp(params))
+  //       console.log("getNpsCsatChamp result UI..", intDashRed.npsCsatChampData);
+
+  //       dispatch(getResMttrWaiting(params))
+  //       console.log("getResMttrWaiting result UI..", intDashRed.resMttrWaitingData);
+
+  //       dispatch(getLiveInteractionsByStatus(params))
+  //       console.log("getLiveInteractionsByStatus result UI..", intDashRed.liveInteractionsByStatusData);
+
+  //       dispatch(getInteractionsByStatusList(params))
+  //       console.log("getInteractionsByStatusList result UI..", intDashRed.interactionsByStatusListData);
+
+  //       dispatch(getInteractionAvgWise(params))
+  //       console.log("getInteractionAvgWise result UI..", intDashRed.interactionAvgWiseData);
+
+  //       await dispatch(await getInteractionByPriorityStatusWise({ searchParams: {} }))
+  //       console.log("getInteractionByPriorityStatusWise result UI..", intDashRed.interactionByPriorityStatusWiseData);
+
+  //       dispatch(getInteractionByPriorityStatusWiseList(params))
+  //       console.log("getInteractionByPriorityStatusWiseList result UI..", intDashRed.interactionByPriorityStatusWiseListData);
+
+  //       // dispatch(getManagersList(params))
+  //       // console.log("getManagersList result UI..", intDashRed.managersListData);
+
+  //       dispatch(getInteractionByPriority(params))
+  //       console.log("getInteractionByPriority result UI..", intDashRed.interactionByPriorityData);
+
+  //       dispatch(getInteractionByAgeing(params))
+  //       console.log("getInteractionByAgeing result UI..", intDashRed.interactionByAgeingData);
+
+  //       dispatch(getInteractionByFollowups(params))
+  //       console.log("getInteractionByFollowups result UI..", intDashRed.interactionByFollowupsData);
+
+  //       dispatch(getInteractionByCategory(params))
+  //       console.log("getInteractionByCategory result UI..", intDashRed.interactionByCategoryData);
+
+  //       dispatch(getInteractionByType(params))
+  //       console.log("getInteractionByType result UI..", intDashRed.interactionByTypeData);
+
+  //       dispatch(getInteractionByTypeList(params))
+  //       console.log("getInteractionByTypeList result UI..", intDashRed.interactionByTypeListData);
+
+  //       dispatch(getInteractionByServiceCategory(params))
+  //       console.log("getInteractionByServiceCategory result UI..", intDashRed.interactionByServiceCategoryData);
+
+  //       dispatch(getInteractionByServiceType(params))
+  //       console.log("getInteractionByServiceType result UI..", intDashRed.interactionByServiceTypeData);
+
+  //       dispatch(getInteractionProjectWise(params))
+  //       console.log("getInteractionProjectWise count result UI..", intDashRed.interactionByProjectWiseData);
+
+  //       dispatch(getInteractionAgentWise(params))
+  //       console.log("getInteractionAgentWise result UI..", intDashRed.interactionByAgentWiseData);
+
+  //       await dispatch(await getInteractionByPriorityStatusWise({ searchParams: { category: "ALL" } }))
+  //       console.log("getInteractionByPriorityStatusWise ALL UI..", intDashRed.interactionByPriorityStatusWiseData);
+
+  //       setLoader(false)
+  //     }
+
+  //     // ---------------------------------------------Interaction requests end-------------------------------------------------------------
+
+
+  //     // ---------------------------------------------Operational requests start-------------------------------------------------------------
+
+  //     if (showOperationalDashboard) {
+  //       var assignedToMeParams, appointmentOverviewParams, teamAppointmentOverviewParams, pooledInteractionParams,
+  //         teamPooledInteractionParams, assignedInteractionParams, teamAssignedInteractionParams, interactionHistoryGraphParams,
+  //         interactionHistoryGraphTeamParams, assignedAppointmentGraphParams, teamAssignedAppointmentGraphParams
+
+  //       if (operationalFilterOn) {
+  //         assignedToMeParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "entityType": "all",
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0,
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         assignedToMeParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "entityType": "all",
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       await dispatch(await getOperationalAssignedToMe(assignedToMeParams))
+  //       console.log("getOperationalAssignedToMe result UI..", intDashRed?.operationalAssignedToMeData);
+
+  //       if (operationalFilterOn) {
+  //         appointmentOverviewParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "type": "Me",
+  //           "fromDate": new Date(),
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         appointmentOverviewParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "type": "Me",
+  //           "fromDate": new Date()
+  //         }
+  //       }
+  //       await dispatch(await getOperationalAppointmentOverview(appointmentOverviewParams))
+  //       console.log("getOperationalAppointmentOverview result UI..", intDashRed?.operationalAppointmentOverviewData);
+
+  //       if (operationalFilterOn) {
+  //         teamAppointmentOverviewParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "type": "My Team",
+  //           "fromDate": new Date()
+  //         }
+  //       }
+  //       else {
+  //         teamAppointmentOverviewParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "type": "My Team",
+  //           "fromDate": new Date()
+  //         }
+  //       }
+  //       await dispatch(await getOperationalTeamAppointmentOverview(teamAppointmentOverviewParams))
+  //       console.log("getOperationalTeamAppointmentOverview result UI..", intDashRed?.operationalTeamAppointmentOverviewData);
+
+  //       if (operationalFilterOn) {
+  //         pooledInteractionParams = {
+  //           ...operationalFilterReq,
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       else {
+  //         pooledInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       await dispatch(await getOperationalPooledInteractions(pooledInteractionParams))
+  //       console.log("getOperationalPooledInteractions result UI..", intDashRed?.operationalPooledInteractionsData);
+
+  //       if (operationalFilterOn) {
+  //         teamPooledInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0,
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         teamPooledInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       await dispatch(await getOperationalTeamPooledInteractions(teamPooledInteractionParams))
+  //       console.log("getOperationalTeamPooledInteractions result UI..", intDashRed?.operationalTeamPooledInteractionsData);
+
+  //       if (operationalFilterOn) {
+  //         assignedInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0,
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         assignedInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       await dispatch(await getOperationalAssignedInteractions(assignedInteractionParams))
+  //       console.log("getOperationalAssignedInteractions result UI..", intDashRed?.operationalAssignedInteractionsData);
+
+  //       if (operationalFilterOn) {
+  //         teamAssignedInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0,
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         teamAssignedInteractionParams = {
+  //           "userId": await getUserId(),
+  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+  //           "limit": 500,
+  //           "page": 0
+  //         }
+  //       }
+  //       await dispatch(await getOperationalTeamAssignedInteractions(teamAssignedInteractionParams))
+  //       console.log("getOperationalTeamAssignedInteractions result UI..", intDashRed?.operationalTeamAssignedInteractionsData);
+
+  //       if (operationalFilterOn) {
+  //         interactionHistoryGraphParams = {
+  //           "userId": await getUserId(),
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         interactionHistoryGraphParams = {
+  //           "userId": await getUserId(),
+  //         }
+  //       }
+  //       await dispatch(await getOperationalInteractionHistoryGraph(interactionHistoryGraphParams))
+  //       console.log("getOperationalInteractionHistoryGraph result UI..", intDashRed?.operationalInteractionHistoryGraphData);
+
+  //       if (operationalFilterOn) {
+  //         interactionHistoryGraphTeamParams = {
+  //           "userId": await getUserId(),
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         interactionHistoryGraphTeamParams = {
+  //           "userId": await getUserId(),
+  //         }
+  //       }
+  //       await dispatch(await getOperationalInteractionHistoryGraphTeam(interactionHistoryGraphTeamParams))
+  //       console.log("getOperationalInteractionHistoryGraphTeam result UI..", intDashRed?.operationalInteractionHistoryGraphTeamData);
+
+  //       if (operationalFilterOn) {
+  //         assignedAppointmentGraphParams = {
+  //           "userId": await getUserId(),
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         assignedAppointmentGraphParams = {
+  //           "userId": await getUserId(),
+  //         }
+  //       }
+  //       await dispatch(await getAssignedAppointments(assignedAppointmentGraphParams))
+  //       console.log("getAssignedAppointments result UI..", intDashRed?.operationalAssignedAppointmentsGraphData);
+
+  //       if (operationalFilterOn) {
+  //         teamAssignedAppointmentGraphParams = {
+  //           "userId": await getUserId(),
+  //           ...operationalFilterReq
+  //         }
+  //       }
+  //       else {
+  //         teamAssignedAppointmentGraphParams = {
+  //           "userId": await getUserId(),
+  //         }
+  //       }
+  //       await dispatch(await getTeamAssignedAppointments(teamAssignedAppointmentGraphParams))
+  //       console.log("getTeamAssignedAppointments result UI..", intDashRed?.operationalTeamAssignedAppointmentsGraphData);
+
+  //       dispatch(getInteractionByServiceCategory(params))
+  //       console.log("getInteractionByServiceCategory result UI..", intDashRed.interactionByServiceCategoryData);
+
+  //       dispatch(getInteractionByServiceType(params))
+  //       console.log("getInteractionByServiceType result UI..", intDashRed.interactionByServiceTypeData);
+
+  //       setLoader(false)
+  //     }
+
+  //     // ---------------------------------------------Operational requests end-------------------------------------------------------------
+
+
+
+  //     // ---------------------------------------------Appointment requests start-------------------------------------------------------------
+
+  //     if (showAppointmentDashboard) {
+  //       var params = {}
+  //       if (appointmentFilterOn) {
+  //         var searchParams = {
+  //           ...appointmentFilterReq
+  //         }
+  //         params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"), searchParams }
+  //       }
+  //       else {
+  //         params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+  //       }
+
+  //       await dispatch(await getUpcomingAppointments(params))
+  //       console.log("getUpcomingAppointments result UI..", intDashRed?.upcomingAppointmentsData);
+
+  //       await dispatch(await getClosedAppointments(params))
+  //       console.log("getClosedAppointments result UI..", intDashRed?.closedAppointmentsData);
+
+  //       await dispatch(await getAppointmentEvents(params))
+  //       console.log("getAppointmentEvents result UI..", intDashRed?.appointmentsEventsData);
+
+  //       await dispatch(await getAppointmentPerformance(params))
+  //       console.log("getAppointmentPerformance result UI..", intDashRed?.appPerformanceData);
+
+  //       setLoader(false)
+  //     }
+
+  //     // ---------------------------------------------Appointment requests end-------------------------------------------------------------
+
+
+
+  //     // ---------------------------------------------Helpdesk requests start-------------------------------------------------------------
+
+  //     if (showHelpdeskDashboard) {
+
+  //       // ---------------------------------------------Helpdesk live requests start-------------------------------------------------------------
+
+  //       if (helpdeskLiveStream) {
+  //         var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
+  //         var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+
+  //         var liveHelpdeskProjectWiseParams = { fromDate: fromDateVal, toDate: toDateVal }
+  //         dispatch(getHelpdeskProjectWiseLive(liveHelpdeskProjectWiseParams))
+  //         console.log("getHelpdeskProjectWiseLive result UI2..", intDashRed.helpdeskProjectWiseDataLive);
+
+  //         var liveHelpdeskStatusParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+  //         dispatch(getHelpdeskByStatusListLive(liveHelpdeskStatusParams))
+  //         console.log("getHelpdeskByStatusListLive result UI2..", intDashRed.helpdeskByStatusListDataLive);
+
+  //         var liveHelpdeskByTypeDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+  //         dispatch(getHelpdeskByTypeLive(liveHelpdeskByTypeDataParams))
+  //         console.log("getHelpdeskByTypeLive result UI2..", intDashRed.helpdeskByTypeDataLive);
+
+  //         var liveHelpdeskBySeverityDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+  //         dispatch(getHelpdeskBySeverityLive(liveHelpdeskBySeverityDataParams))
+  //         console.log("getHelpdeskBySeverityLive result UI2..", intDashRed.helpdeskBySeverityDataLive);
+  //       }
+
+  //       // ---------------------------------------------Helpdesk live requests end-------------------------------------------------------------
+
+  //       dispatch(getHelpdeskSummary(params))
+  //       console.log("getHelpdeskSummary result UI2..", intDashRed?.helpdeskSummaryData);
+
+  //       dispatch(getHelpdeskHourlyTickets())
+  //       console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.helpdeskSummaryData);
+
+  //       dispatch(getSupportTtkPending(params))
+  //       console.log("getSupportTtkPending count result UI3..", intDashRed?.supportTtkPendingCountsData);
+  //       console.log("getSupportTtkPending result UI4..", intDashRed?.supportTtkPendingData);
+
+  //       dispatch(getMonthlyTrend())
+  //       console.log("getMonthlyTrend result UI2..", intDashRed.supportMonthlyTrendData);
+
+  //       dispatch(getHelpdeskByStatus(params))
+  //       console.log("getHelpdeskByStatus result UI2..", intDashRed.helpdeskByStatusData);
+
+  //       dispatch(getHelpdeskByAgeing(params))
+  //       console.log("getHelpdeskByAgeing result UI2..", intDashRed.helpdeskByAgeingData);
+
+  //       await dispatch(await getHelpdeskBySeverity(params))
+  //       console.log("getHelpdeskBySeverity result UI2..", intDashRed.helpdeskBySeverityData);
+
+  //       dispatch(getHelpdeskProjectWise(params))
+  //       console.log("getHelpdeskProjectWise result UI2..", intDashRed.helpdeskProjectWiseData);
+
+  //       dispatch(getHelpdeskAgentWise(params))
+  //       console.log("getHelpdeskAgentWise result UI2..", intDashRed.helpdeskAgentWiseData);
+
+  //       let params1 = {
+  //         helpdeskType: "CLARIFICATION",
+  //         type: "LIST"
+  //       };
+  //       dispatch(getHelpdeskSummaryClarification(params1))
+  //       console.log("getHelpdeskSummaryClarification result UI..", intDashRed?.helpdeskSummaryClarificationData);
+
+  //       let params02 = {
+  //         helpdeskType: "INCIDENT",
+  //         type: "LIST"
+  //       };
+  //       dispatch(getHelpdeskSummaryIncident(params02))
+  //       console.log("getHelpdeskSummaryIncident result UI..", intDashRed?.helpdeskSummaryIncidentData);
+
+  //       let params3 = {
+  //         helpdeskType: "SERVICEREQUEST",
+  //         type: "LIST"
+  //       };
+  //       dispatch(getHelpdeskSummaryServiceRequest(params3))
+  //       console.log("getHelpdeskSummaryServiceRequest result UI..", intDashRed?.helpdeskSummaryServiceRequestData);
+
+  //       let params4 = {
+  //         helpdeskType: null,
+  //         type: "LIST"
+  //       };
+
+  //       await dispatch(await getHelpdeskSummaryUnclassified(params4))
+  //       console.log("getHelpdeskSummaryUnclassified result UI..", intDashRed?.helpdeskSummaryUnclassifiedData);
+
+  //       setLoader(false)
+  //     }
+
+  //     // ---------------------------------------------Helpdesk Requests end-------------------------------------------------------------
+  //   }
+  //   getData()
+  // }, [showHelpdeskDashboard, showInteractionDashboard, showOperationalDashboard, showAppointmentDashboard, helpdeskFilterOn, intxnFilterOn, operationalFilterOn, appointmentFilterOn]);
+
+
+  // Helpdesk api
   useEffect(() => {
     async function getData() {
-      console.log("helpdeskFilterOn rendering..", helpdeskFilterOn);
+      setLoader(true)
+
+      // ---------------------------------request params----------------------------------------------------------------
+
+      var params = {}
+      if (intxnFilterOn) {
+        params = { searchParams: intxnFilterReq }
+      }
+      else if (helpdeskFilterOn) {
+        params = helpdeskFilterReq
+      }
+      else {
+        params = { type: "COUNT" };
+      }
+      console.log("params..", params)
+
+
+      // ---------------------------------------------Helpdesk requests start-------------------------------------------------------------
+
+      if (showHelpdeskDashboard) {
+
+        // ---------------------------------------------Helpdesk live requests start-------------------------------------------------------------
+
+        if (helpdeskLiveStream) {
+          var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
+          var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+
+          var liveHelpdeskProjectWiseParams = { fromDate: fromDateVal, toDate: toDateVal }
+          dispatch(getHelpdeskProjectWiseLive(liveHelpdeskProjectWiseParams))
+          console.log("getHelpdeskProjectWiseLive result UI2..", intDashRed.helpdeskProjectWiseDataLive);
+
+          var liveHelpdeskStatusParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+          dispatch(getHelpdeskByStatusListLive(liveHelpdeskStatusParams))
+          console.log("getHelpdeskByStatusListLive result UI2..", intDashRed.helpdeskByStatusListDataLive);
+
+          var liveHelpdeskByTypeDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+          dispatch(getHelpdeskByTypeLive(liveHelpdeskByTypeDataParams))
+          console.log("getHelpdeskByTypeLive result UI2..", intDashRed.helpdeskByTypeDataLive);
+
+          var liveHelpdeskBySeverityDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
+          dispatch(getHelpdeskBySeverityLive(liveHelpdeskBySeverityDataParams))
+          console.log("getHelpdeskBySeverityLive result UI2..", intDashRed.helpdeskBySeverityDataLive);
+        }
+
+        // ---------------------------------------------Helpdesk live requests end-------------------------------------------------------------
+
+        dispatch(getHelpdeskSummary(params))
+        console.log("getHelpdeskSummary result UI2..", intDashRed?.helpdeskSummaryData);
+
+        dispatch(getHelpdeskHourlyTickets())
+        console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.helpdeskSummaryData);
+
+        dispatch(getSupportTtkPending(params))
+        console.log("getSupportTtkPending count result UI3..", intDashRed?.supportTtkPendingCountsData);
+        console.log("getSupportTtkPending result UI4..", intDashRed?.supportTtkPendingData);
+
+        dispatch(getMonthlyTrend())
+        console.log("getMonthlyTrend result UI2..", intDashRed.supportMonthlyTrendData);
+
+        dispatch(getHelpdeskByStatus(params))
+        console.log("getHelpdeskByStatus result UI2..", intDashRed.helpdeskByStatusData);
+
+        dispatch(getHelpdeskByAgeing(params))
+        console.log("getHelpdeskByAgeing result UI2..", intDashRed.helpdeskByAgeingData);
+
+        await dispatch(await getHelpdeskBySeverity(params))
+        console.log("getHelpdeskBySeverity result UI2..", intDashRed.helpdeskBySeverityData);
+
+        dispatch(getHelpdeskProjectWise(params))
+        console.log("getHelpdeskProjectWise result UI2..", intDashRed.helpdeskProjectWiseData);
+
+        dispatch(getHelpdeskAgentWise(params))
+        console.log("getHelpdeskAgentWise result UI2..", intDashRed.helpdeskAgentWiseData);
+
+        let params1 = {
+          helpdeskType: "CLARIFICATION",
+          type: "LIST"
+        };
+        dispatch(getHelpdeskSummaryClarification(params1))
+        console.log("getHelpdeskSummaryClarification result UI..", intDashRed?.helpdeskSummaryClarificationData);
+
+        let params02 = {
+          helpdeskType: "INCIDENT",
+          type: "LIST"
+        };
+        dispatch(getHelpdeskSummaryIncident(params02))
+        console.log("getHelpdeskSummaryIncident result UI..", intDashRed?.helpdeskSummaryIncidentData);
+
+        let params3 = {
+          helpdeskType: "SERVICEREQUEST",
+          type: "LIST"
+        };
+        dispatch(getHelpdeskSummaryServiceRequest(params3))
+        console.log("getHelpdeskSummaryServiceRequest result UI..", intDashRed?.helpdeskSummaryServiceRequestData);
+
+        let params4 = {
+          helpdeskType: null,
+          type: "LIST"
+        };
+
+        await dispatch(await getHelpdeskSummaryUnclassified(params4))
+        console.log("getHelpdeskSummaryUnclassified result UI..", intDashRed?.helpdeskSummaryUnclassifiedData);
+
+        setLoader(false)
+      }
+
+      // ---------------------------------------------Helpdesk Requests end-------------------------------------------------------------
+    }
+    getData()
+  }, [showHelpdeskDashboard, helpdeskFilterOn]);
+
+
+  // Interaction api  
+  useEffect(() => {
+    async function getData() {
       setLoader(true)
 
       // ---------------------------------request params----------------------------------------------------------------
@@ -406,8 +1137,6 @@ export const UserHomeScreen = (props) => {
         dispatch(getDepartmentInteractions(params))
         console.log("getDepartmentInteractions result UI..", intDashRed.departmentInteractionsData);
 
-
-
         dispatch(getNpsCsatChamp(params))
         console.log("getNpsCsatChamp result UI..", intDashRed.npsCsatChampData);
 
@@ -469,7 +1198,29 @@ export const UserHomeScreen = (props) => {
       }
 
       // ---------------------------------------------Interaction requests end-------------------------------------------------------------
+    }
+    getData()
+  }, [showInteractionDashboard, intxnFilterOn]);
 
+
+  // Operational api 
+  useEffect(() => {
+    async function getData() {
+      setLoader(true)
+
+      // ---------------------------------request params----------------------------------------------------------------
+
+      var params = {}
+      if (intxnFilterOn) {
+        params = { searchParams: intxnFilterReq }
+      }
+      else if (helpdeskFilterOn) {
+        params = helpdeskFilterReq
+      }
+      else {
+        params = { type: "COUNT" };
+      }
+      console.log("params..", params)
 
       // ---------------------------------------------Operational requests start-------------------------------------------------------------
 
@@ -700,121 +1451,65 @@ export const UserHomeScreen = (props) => {
 
       // ---------------------------------------------Operational requests end-------------------------------------------------------------
 
+    }
+    getData()
+  }, [showOperationalDashboard, operationalFilterOn]);
 
+
+  // Appointment api 
+  useEffect(() => {
+    async function getData() {
+      setLoader(true)
+
+      // ---------------------------------request params----------------------------------------------------------------
+
+      var params = {}
+      if (intxnFilterOn) {
+        params = { searchParams: intxnFilterReq }
+      }
+      else if (helpdeskFilterOn) {
+        params = helpdeskFilterReq
+      }
+      else {
+        params = { type: "COUNT" };
+      }
+      console.log("params..", params)
 
       // ---------------------------------------------Appointment requests start-------------------------------------------------------------
 
       if (showAppointmentDashboard) {
+        var params = {}
+        if (appointmentFilterOn) {
+          var searchParams = {
+            ...appointmentFilterReq
+          }
+          params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"), searchParams }
+        }
+        else {
+          params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+        }
 
-        await dispatch(await getUpcomingAppointments())
-        console.log("getUpcomingAppointments result UI..", intDashRed.upcomingAppointmentsData);
+        await dispatch(await getUpcomingAppointments(params))
+        console.log("getUpcomingAppointments result UI..", intDashRed?.upcomingAppointmentsData);
 
-        await dispatch(await getClosedAppointments())
-        console.log("getClosedAppointments result UI..", intDashRed.closedAppointmentsData);
+        await dispatch(await getClosedAppointments(params))
+        console.log("getClosedAppointments result UI..", intDashRed?.closedAppointmentsData);
 
-        await dispatch(await getAppointmentEvents())
-        console.log("getAppointmentEvents result UI..", intDashRed.appointmentsEventsData);
+        await dispatch(await getAppointmentEvents(params))
+        console.log("getAppointmentEvents result UI..", intDashRed?.appointmentsEventsData);
+
+        await dispatch(await getAppointmentPerformance(params))
+        console.log("getAppointmentPerformance result UI..", intDashRed?.appPerformanceData);
 
         setLoader(false)
       }
 
       // ---------------------------------------------Appointment requests end-------------------------------------------------------------
 
-
-
-      // ---------------------------------------------Helpdesk requests start-------------------------------------------------------------
-
-      if (showHelpdeskDashboard) {
-
-        // ---------------------------------------------Helpdesk live requests start-------------------------------------------------------------
-
-        if (helpdeskLiveStream) {
-          var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
-          var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
-
-          var liveHelpdeskProjectWiseParams = { fromDate: fromDateVal, toDate: toDateVal }
-          dispatch(getHelpdeskProjectWiseLive(liveHelpdeskProjectWiseParams))
-          console.log("getHelpdeskProjectWiseLive result UI2..", intDashRed.helpdeskProjectWiseDataLive);
-
-          var liveHelpdeskStatusParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-          dispatch(getHelpdeskByStatusListLive(liveHelpdeskStatusParams))
-          console.log("getHelpdeskByStatusListLive result UI2..", intDashRed.helpdeskByStatusListDataLive);
-
-          var liveHelpdeskByTypeDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-          dispatch(getHelpdeskByTypeLive(liveHelpdeskByTypeDataParams))
-          console.log("getHelpdeskByTypeLive result UI2..", intDashRed.helpdeskByTypeDataLive);
-
-          var liveHelpdeskBySeverityDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-          dispatch(getHelpdeskBySeverityLive(liveHelpdeskBySeverityDataParams))
-          console.log("getHelpdeskBySeverityLive result UI2..", intDashRed.helpdeskBySeverityDataLive);
-        }
-
-        // ---------------------------------------------Helpdesk live requests end-------------------------------------------------------------
-
-        dispatch(getHelpdeskSummary(params))
-        console.log("getHelpdeskSummary result UI2..", intDashRed?.helpdeskSummaryData);
-
-        dispatch(getHelpdeskHourlyTickets())
-        console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.helpdeskSummaryData);
-
-        dispatch(getSupportTtkPending(params))
-        console.log("getSupportTtkPending count result UI3..", intDashRed?.supportTtkPendingCountsData);
-        console.log("getSupportTtkPending result UI4..", intDashRed?.supportTtkPendingData);
-
-        dispatch(getMonthlyTrend())
-        console.log("getMonthlyTrend result UI2..", intDashRed.supportMonthlyTrendData);
-
-        dispatch(getHelpdeskByStatus(params))
-        console.log("getHelpdeskByStatus result UI2..", intDashRed.helpdeskByStatusData);
-
-        dispatch(getHelpdeskByAgeing(params))
-        console.log("getHelpdeskByAgeing result UI2..", intDashRed.helpdeskByAgeingData);
-
-        await dispatch(await getHelpdeskBySeverity(params))
-        console.log("getHelpdeskBySeverity result UI2..", intDashRed.helpdeskBySeverityData);
-
-        dispatch(getHelpdeskProjectWise(params))
-        console.log("getHelpdeskProjectWise result UI2..", intDashRed.helpdeskProjectWiseData);
-
-        dispatch(getHelpdeskAgentWise(params))
-        console.log("getHelpdeskAgentWise result UI2..", intDashRed.helpdeskAgentWiseData);
-
-        let params1 = {
-          helpdeskType: "CLARIFICATION",
-          type: "LIST"
-        };
-        dispatch(getHelpdeskSummaryClarification(params1))
-        console.log("getHelpdeskSummaryClarification result UI..", intDashRed?.helpdeskSummaryClarificationData);
-
-        let params02 = {
-          helpdeskType: "INCIDENT",
-          type: "LIST"
-        };
-        dispatch(getHelpdeskSummaryIncident(params02))
-        console.log("getHelpdeskSummaryIncident result UI..", intDashRed?.helpdeskSummaryIncidentData);
-
-        let params3 = {
-          helpdeskType: "SERVICEREQUEST",
-          type: "LIST"
-        };
-        dispatch(getHelpdeskSummaryServiceRequest(params3))
-        console.log("getHelpdeskSummaryServiceRequest result UI..", intDashRed?.helpdeskSummaryServiceRequestData);
-
-        let params4 = {
-          helpdeskType: null,
-          type: "LIST"
-        };
-
-        await dispatch(await getHelpdeskSummaryUnclassified(params4))
-        console.log("getHelpdeskSummaryUnclassified result UI..", intDashRed?.helpdeskSummaryUnclassifiedData);
-
-        setLoader(false)
-      }
-
-      // ---------------------------------------------Helpdesk Requests end-------------------------------------------------------------
     }
     getData()
-  }, [showHelpdeskDashboard, showInteractionDashboard, showOperationalDashboard, showAppointmentDashboard, helpdeskFilterOn, intxnFilterOn, operationalFilterOn]);
+  }, [showAppointmentDashboard, appointmentFilterOn]);
+
 
 
   useEffect(() => {
@@ -830,6 +1525,50 @@ export const UserHomeScreen = (props) => {
     }
     getData()
   }, [selAppTypeCode])
+
+
+  useEffect(() => {
+    async function getData() {
+      var params = {}
+      if (selUpcAppTypeCode == "ALL") {
+        params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+      }
+      else {
+        params = {
+          "date": moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"),
+          "filterParams": {
+            "tran_category_type": selUpcAppTypeCode
+          },
+          "searchParams": {}
+        }
+      }
+      await dispatch(await getUpcomingAppointments(params))
+      console.log("getUpcomingAppointments intxn order result UI..", intDashRed.upcomingAppointmentsData);
+    }
+    getData()
+  }, [selUpcAppTypeCode])
+
+
+  useEffect(() => {
+    async function getData() {
+      var params = {}
+      if (selClosedAppTypeCode == "ALL") {
+        params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
+      }
+      else {
+        params = {
+          "date": moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"),
+          "filterParams": {
+            "tran_category_type": selClosedAppTypeCode
+          },
+          "searchParams": {}
+        }
+      }
+      await dispatch(await getClosedAppointments(params))
+      console.log("getClosedAppointments intxn order result UI..", intDashRed.closedAppointmentsData);
+    }
+    getData()
+  }, [selClosedAppTypeCode])
 
 
   useEffect(() => {
@@ -1433,77 +2172,96 @@ export const UserHomeScreen = (props) => {
   const ShowDashboardDialog = () => {
     return (
       <View style={{
-        borderRadius: 10, elevation: 10,
-        marginTop: 120, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 450, width: width - 90,
-        backgroundColor: "#FFF", opacity: 1, zIndex: 99999999999999
+        padding: 20,
+        borderRadius: 10, elevation: 10, marginBottom: 70,
+        marginTop: 170, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, width: width - 70,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
-        <View style={{ justifyContent: "center", alignItems: "center", flex: 1, }}>
 
-          <Text style={{ fontSize: 15, fontWeight: 500 }}>Switch Dashboard</Text>
+        <View style={{
+          flex: 1, padding: 20,
+          borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+          marginTop: -1, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Switch Dashboard</Text>
+        </View>
 
-          <Card style={{ width: width - 150, marginTop: 20, backgroundColor: "#21618C", padding: 0 }}>
-            <Text
-              onPress={() => {
-                unstable_batchedUpdates(() => {
-                  setShowHelpdeskDashboard(true)
-                  setShowInteractionDashboard(false)
-                  setShowOperationalDashboard(false)
-                  setShowAppointmentDashboard(false)
-                  setOpenDashboardPopUp(false)
-                })
-              }}
-              style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Helpdesk Dashboard</Text>
-          </Card>
+        <View style={{ marginTop: 60, flexDirection: "column" }}>
 
-          <Card style={{ width: width - 150, backgroundColor: "#21618C", padding: 0, marginTop: 10 }}>
-            <Text
-              onPress={() => {
-                unstable_batchedUpdates(() => {
-                  setShowInteractionDashboard(true)
-                  setShowHelpdeskDashboard(false)
-                  setShowOperationalDashboard(false)
-                  setShowAppointmentDashboard(false)
-                  setOpenDashboardPopUp(false)
-                })
-              }}
-              style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Interaction Dashboard</Text>
-          </Card>
+          {showHelpdeskMenu && (
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0 }}>
+              <Text
+                onPress={() => {
+                  unstable_batchedUpdates(() => {
+                    setShowHelpdeskDashboard(true)
+                    setShowInteractionDashboard(false)
+                    setShowOperationalDashboard(false)
+                    setShowAppointmentDashboard(false)
+                    setOpenDashboardPopUp(false)
+                  })
+                }}
+                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Helpdesk Dashboard</Text>
+            </Card>
+          )}
 
-          <Card style={{ width: width - 150, backgroundColor: "#21618C", padding: 0, marginTop: 10 }}>
-            <Text
-              onPress={() => {
-                unstable_batchedUpdates(() => {
-                  setShowHelpdeskDashboard(false)
-                  setShowInteractionDashboard(false)
-                  setShowOperationalDashboard(true)
-                  setShowAppointmentDashboard(false)
-                  setOpenDashboardPopUp(false)
-                  // setAssignToMeData(props.data?.rows)
-                  setShowAssignedToMe(true)
-                  setSelectedTab0("ME")
-                  setSelectedTab1("INTXN")
-                  setSelectedTab2("ASGN_TO_ME")
-                })
-              }}
-              style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Operational Dashboard</Text>
-          </Card>
+          {showInteractionMenu && (
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+              <Text
+                onPress={() => {
+                  unstable_batchedUpdates(() => {
+                    setShowInteractionDashboard(true)
+                    setShowHelpdeskDashboard(false)
+                    setShowOperationalDashboard(false)
+                    setShowAppointmentDashboard(false)
+                    setOpenDashboardPopUp(false)
+                  })
+                }}
+                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Interaction Dashboard</Text>
+            </Card>
+          )}
 
-          <Card style={{ width: width - 150, backgroundColor: "#21618C", padding: 0, marginTop: 10 }}>
-            <Text
-              onPress={() => {
-                unstable_batchedUpdates(() => {
-                  setShowHelpdeskDashboard(false)
-                  setShowOperationalDashboard(false)
-                  setShowInteractionDashboard(false)
-                  setShowAppointmentDashboard(true)
-                  setOpenDashboardPopUp(false)
-                })
-              }}
-              style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Appointment Dashboard</Text>
-          </Card>
+          {showOperationalMenu && (
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+              <Text
+                onPress={() => {
+                  unstable_batchedUpdates(() => {
+                    setShowHelpdeskDashboard(false)
+                    setShowInteractionDashboard(false)
+                    setShowOperationalDashboard(true)
+                    setShowAppointmentDashboard(false)
+                    setOpenDashboardPopUp(false)
+                    // setAssignToMeData(props.data?.rows)
+                    setShowAssignedToMe(true)
+                    setSelectedTab0("ME")
+                    setSelectedTab1("INTXN")
+                    setSelectedTab2("ASGN_TO_ME")
+                  })
+                }}
+                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Operational Dashboard</Text>
+            </Card>
+          )}
+
+          {showAppointmentMenu && (
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+              <Text
+                onPress={() => {
+                  unstable_batchedUpdates(() => {
+                    setShowHelpdeskDashboard(false)
+                    setShowOperationalDashboard(false)
+                    setShowInteractionDashboard(false)
+                    setShowAppointmentDashboard(true)
+                    setOpenDashboardPopUp(false)
+                  })
+                }}
+                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Appointment Dashboard</Text>
+            </Card>
+          )}
 
         </View>
+
       </View>
     )
   };
@@ -1515,16 +2273,27 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 20, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 250, width: width - 20,
-        backgroundColor: "#FFF", opacity: .9, zIndex: 99999999999999
+        marginTop: 50, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 180, width: width - 40,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
+
+        <View style={{
+          flex: 1, padding: 8,
+          borderRadius: 0, elevation: 10, justifyContent: "center",
+          marginTop: -1, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ alignSelf: "center", color: "#FFF", width: 220, fontSize: 14, fontWeight: "900" }}>{dialogHeading}</Text>
+        </View>
+
         <View style={{ justifyContent: "center", alignItems: "center" }}>
 
-          <Text style={{ fontStyle: "italic", textAlign: "center", padding: 15, fontWeight: "900" }}>{dialogHeading}</Text>
+          {/* <Text style={{ fontStyle: "italic", textAlign: "center", padding: 15, fontWeight: "900" }}>{dialogHeading}</Text> */}
 
           <FlatList
-            style={{ height: height - 360, backgroundColor: Colors.BCAE_OFF_WHITE }}
+            style={{ marginTop: 50, height: height - 300, backgroundColor: Colors.BCAE_OFF_WHITE }}
             contentContainerStyle={{
               flexGrow: 1,
             }}
@@ -1533,14 +2302,23 @@ export const UserHomeScreen = (props) => {
             keyExtractor={item => item}
           />
 
-          <Card style={{ margin: 10, backgroundColor: "#FFF", width: width - 200 }}
+          <Card style={{ margin: 10, backgroundColor: "#4a5996", width: width - 200 }}
             onPress={() => {
               console.log("Done button click..")
               setHelpdeskDetDialogVisible(false)
             }}>
-            <Text style={{ backgroundColor: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>{strings.close}</Text>
+            <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>{strings.close}</Text>
           </Card>
 
+          {/* <View style={{ flexDirection: "row", marginTop: 5, marginBottom: 10 }}> */}
+          {/* <CustomButton
+            style={{ height: 200 }}
+            label={"Close"} onPress={() => {
+              console.log("Done button click..")
+              setHelpdeskDetDialogVisible(false)
+            }}
+          /> */}
+          {/* </View> */}
         </View>
       </View>
     )
@@ -1553,16 +2331,25 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 20, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 250, width: width - 20,
-        backgroundColor: "#FFF", opacity: .9, zIndex: 99999999999999
+        marginTop: 50, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 250, width: width - 40,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
+
+        <View style={{
+          flex: 1, padding: 8,
+          borderRadius: 0, elevation: 10, justifyContent: "center",
+          marginTop: -1, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ marginLeft: 20, alignSelf: "center", color: "#FFF", width: width - 40, fontSize: 14, fontWeight: "900" }}>{dialogHeading}</Text>
+        </View>
+
         <View style={{ justifyContent: "center", alignItems: "center" }}>
 
-          <Text style={{ fontStyle: "italic", textAlign: "center", padding: 15, fontWeight: "900" }}>{dialogHeading}</Text>
-
           <FlatList
-            style={{ height: height - 360, backgroundColor: Colors.BCAE_OFF_WHITE }}
+            style={{ marginTop: 50, height: height - 365, backgroundColor: Colors.BCAE_OFF_WHITE }}
             contentContainerStyle={{
               flexGrow: 1,
             }}
@@ -1571,12 +2358,12 @@ export const UserHomeScreen = (props) => {
             keyExtractor={item => item}
           />
 
-          <Card style={{ margin: 10, backgroundColor: "#FFF", width: width - 200 }}
+          <Card style={{ margin: 10, backgroundColor: "#4a5996", width: width - 200 }}
             onPress={() => {
               console.log("Done button click..")
               setIntxnDetDialogVisible(false)
             }}>
-            <Text style={{ backgroundColor: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>{strings.close}</Text>
+            <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>{strings.close}</Text>
           </Card>
 
         </View>
@@ -1613,18 +2400,25 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 10, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 250, width: width - 20,
-        backgroundColor: "#FFF", opacity: .9, zIndex: 99999999999999
+        marginTop: 100, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
 
-          {/* <Dialog style={{ marginTop: -40, height: 550 }} visible={helpdeskFilterDialogVisible} >
-            <Dialog.Content> */}
+        <View style={{
+          flex: 1, padding: 20,
+          borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+          marginTop: 0, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
+        </View>
 
+        <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomInput
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
@@ -1641,7 +2435,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -1657,7 +2450,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 5 }}>
               <CustomInput
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
@@ -1674,7 +2467,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -1690,7 +2482,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={helpdeskFilterReq?.project?.[0]?.label}
                 data={projectArr}
@@ -1703,12 +2495,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={projCode}
-                caption={"By Project"}
+                caption={"Project"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={helpdeskFilterReq?.status?.[0]?.label}
                 data={statusArr}
@@ -1721,12 +2513,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={statusCode}
-                caption={"By Status"}
+                caption={"Status"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={helpdeskFilterReq?.severity?.[0]?.label}
                 data={severityArr}
@@ -1739,14 +2531,14 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={channelCode}
-                caption={"By Channel"}
+                caption={"Channel"}
                 placeHolder={"Select"}
               />
             </View>
 
             <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
               <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                style={{ height: 200 }}
                 label={"Cancel"} onPress={() => {
                   // if (!helpdeskFilterReq == {}) {
                   setHelpdeskFilterReq({})
@@ -1761,7 +2553,7 @@ export const UserHomeScreen = (props) => {
               />
 
               <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                style={{ height: 200 }}
                 label={"Filter"} onPress={() => {
 
                   var currDate = moment(new Date()).format("YYYY-MM-DD")
@@ -1794,18 +2586,7 @@ export const UserHomeScreen = (props) => {
               />
 
             </View>
-
           </ScrollView>
-
-          {/* </Dialog.Content> */}
-          {/* <Dialog.Actions>
-                <Button onPress={() => {
-                  console.log("Done button click..")
-                  setVisible(false)
-                }}>Back</Button>
-              </Dialog.Actions> */}
-          {/* </Dialog> */}
-
         </View>
       </View>
     )
@@ -1894,18 +2675,24 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 10, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 250, width: width - 20,
-        backgroundColor: "#FFF", opacity: .9, zIndex: 99999999999999
+        marginTop: 100, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
 
-          {/* <Dialog style={{ marginTop: -40, height: 550 }} visible={intxnFilterDialogVisible} >
-            <Dialog.Content> */}
+        <View style={{
+          flex: 1, padding: 20,
+          borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+          marginTop: 0, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
+        </View>
 
+        <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
-
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomInput
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
@@ -1922,7 +2709,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -1938,7 +2724,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 5 }}>
               <CustomInput
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
@@ -1955,7 +2741,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -1971,7 +2756,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.project?.[0]?.label}
                 data={projectArr}
@@ -1984,12 +2769,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={projCode}
-                caption={"By Project"}
+                caption={"Project"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.ageing?.[0]?.label}
                 data={ageingArr}
@@ -2029,12 +2814,12 @@ export const UserHomeScreen = (props) => {
 
                 }}
                 value={projCode}
-                caption={"By Ageing"}
+                caption={"Ageing"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.status?.[0]?.label}
                 data={statusArr}
@@ -2047,12 +2832,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={statusCode}
-                caption={"By Status"}
+                caption={"Status"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.channel?.[0]?.label}
                 data={channelArr}
@@ -2065,12 +2850,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={channelCode}
-                caption={"By Channel"}
+                caption={"Channel"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.priority?.[0]?.label}
                 data={priorityArr}
@@ -2083,12 +2868,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={priorityCode}
-                caption={"By Priority"}
+                caption={"Priority"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.userId?.[0]?.label}
                 data={userArr}
@@ -2101,12 +2886,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={userCode}
-                caption={"By User"}
+                caption={"User"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.intxnCat?.[0]?.label}
                 data={intCategoryArr}
@@ -2119,12 +2904,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={intCatCode}
-                caption={"By Interaction Category"}
+                caption={"Interaction Category"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.intxnType?.[0]?.label}
                 data={intTypeArr}
@@ -2137,12 +2922,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={intTypeCode}
-                caption={"By Interaction Type"}
+                caption={"Interaction Type"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.serviceCat?.[0]?.label}
                 data={serviceCategoryArr}
@@ -2155,12 +2940,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={serviceCatCode}
-                caption={"By Service Category"}
+                caption={"Service Category"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={intxnFilterReq?.serviceType?.[0]?.label}
                 data={serviceTypeArr}
@@ -2173,7 +2958,7 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={serviceTypeCode}
-                caption={"By Service Type"}
+                caption={"Service Type"}
                 placeHolder={"Select"}
               />
             </View>
@@ -2266,16 +3051,25 @@ export const UserHomeScreen = (props) => {
 
     return (
       <View style={{
-        borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 10, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 250, width: width - 20,
-        backgroundColor: "#FFF", opacity: .9, zIndex: 99999999999999
+        borderRadius: 10, elevation: 10, marginBottom: 100,
+        marginTop: 170, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
 
+        <View style={{
+          flex: 1, padding: 20,
+          borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+          marginTop: -1, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
+        </View>
+
+        <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
-
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomInput
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
@@ -2292,7 +3086,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -2308,7 +3101,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 5 }}>
               <CustomInput
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
@@ -2325,7 +3118,6 @@ export const UserHomeScreen = (props) => {
                   />
                 }
               />
-
               <DatePicker
                 modal
                 mode="date"
@@ -2341,7 +3133,7 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={operationalFilterReq?.serviceCat?.[0]?.label}
                 data={serviceCategoryArr}
@@ -2354,12 +3146,12 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={serviceCatCode}
-                caption={"By Service Category"}
+                caption={"Service Category"}
                 placeHolder={"Select"}
               />
             </View>
 
-            <View style={{ paddingVertical: 10 }}>
+            <View style={{ paddingVertical: 2 }}>
               <CustomDropDownFullWidth
                 selectedValue={operationalFilterReq?.serviceType?.[0]?.label}
                 data={serviceTypeArr}
@@ -2372,7 +3164,7 @@ export const UserHomeScreen = (props) => {
                   })
                 }}
                 value={serviceTypeCode}
-                caption={"By Service Type"}
+                caption={"Service Type"}
                 placeHolder={"Select"}
               />
             </View>
@@ -2425,20 +3217,151 @@ export const UserHomeScreen = (props) => {
 
                 }}
               />
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    )
+  };
 
+
+  const ShowAppointmentFiltersDialog = () => {
+
+    return (
+      <View style={{
+        borderRadius: 10, elevation: 10, marginBottom: 100,
+        marginTop: 180, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, width: width - 70,
+        backgroundColor: "#F0F3F4", zIndex: 99999999999999
+      }}>
+
+        <View style={{
+          flex: 1, padding: 20,
+          borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+          marginTop: 0, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
+        </View>
+
+        <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
+          <ScrollView>
+            <View style={{ paddingVertical: 2 }}>
+              <CustomInput
+                value={moment(selFromDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={"From Date"}
+                onFocus={() => setOpenFromDatePicker(true)}
+                placeHolder={""}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpenFromDatePicker(true)}
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+              />
+              <DatePicker
+                modal
+                mode="date"
+                open={openFromDatePicker}
+                onCancel={() => setOpenFromDatePicker(false)}
+                date={selFromDate}
+                onConfirm={(params) => {
+                  unstable_batchedUpdates(() => {
+                    setSelFromDate(params)
+                    setOpenFromDatePicker(false);
+                  })
+                }}
+              />
             </View>
 
+            <View style={{ paddingVertical: 5 }}>
+              <CustomInput
+                value={moment(selToDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={"To Date"}
+                onFocus={() => setOpenToDatePicker(true)}
+                placeHolder={""}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpenToDatePicker(true)}
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+              />
+              <DatePicker
+                modal
+                mode="date"
+                open={openToDatePicker}
+                onCancel={() => setOpenToDatePicker(false)}
+                date={selToDate}
+                onConfirm={(params) => {
+                  unstable_batchedUpdates(() => {
+                    setSelToDate(params)
+                    setOpenToDatePicker(false);
+                  })
+                }}
+              />
+            </View>
+
+            <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
+              <CustomButton
+                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                label={"Cancel"} onPress={() => {
+                  // if (!helpdeskFilterReq == {}) {
+                  setAppointmentFilterReq({})
+                  unstable_batchedUpdates(() => {
+                    setAppointmentFilterDialogVisible(false)
+                    setAppointmentFilterOn(false)
+                    // setIntxnFilterDialogVisible(false)
+                    // setIntxnFilterOn(false)
+                  })
+                  // }
+                }}
+              />
+
+              <CustomButton
+                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                label={"Filter"} onPress={() => {
+
+                  var currDate = moment(new Date()).format("YYYY-MM-DD")
+                  var from = moment(selFromDate).format("YYYY-MM-DD")
+                  var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                  var to = moment(selToDate).format("YYYY-MM-DD")
+                  var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                  var dateArr = [fromRange, toRange]
+
+                  // if (!(currDate == from)) {
+                  // setHelpdeskFilterReq({
+                  //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                  // })
+                  // }
+
+                  setAppointmentFilterReq({
+                    ...appointmentFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                  })
+
+                  console.log("appointmentFilterReq..", appointmentFilterReq)
+
+                  // unstable_batchedUpdates(() => {
+                  setAppointmentFilterOn(true)
+                  setAppointmentFilterDialogVisible(false)
+                  // setIntxnFilterDialogVisible(false)
+                  // setIntxnFilterOn(false)
+                  // })
+
+                }}
+              />
+
+            </View>
           </ScrollView>
-
-          {/* </Dialog.Content> */}
-          {/* <Dialog.Actions>
-                <Button onPress={() => {
-                  console.log("Done button click..")
-                  setVisible(false)
-                }}>Back</Button>
-              </Dialog.Actions> */}
-          {/* </Dialog> */}
-
         </View>
       </View>
     )
@@ -2787,7 +3710,7 @@ export const UserHomeScreen = (props) => {
                   setDialogData(arrTotal)
                   setIntxnDetDialogVisible(true)
                 }}
-                style={{ width: 150, backgroundColor: "#21618C", padding: 10, elevation: 10, margin: 7 }}>
+                style={{ width: 150, backgroundColor: "#4a5996", padding: 10, elevation: 10, margin: 7 }}>
 
                 <Text style={{ padding: 5, color: "#FFFFFF" }}>Total Interaction</Text>
 
@@ -3606,11 +4529,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={async () => {
 
@@ -3852,11 +4775,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={async () => {
 
@@ -4171,11 +5094,11 @@ export const UserHomeScreen = (props) => {
 
     var statusWiseMap = new Map("", 0)
     props?.data?.liveInteractionsByStatusData?.data?.rows?.map(item => {
-      if (statusWiseMap.has(item.currStatusDesc.description)) {
-        statusWiseMap.set(item.currStatusDesc.description, statusWiseMap.get(item.currStatusDesc.description) + 1)
+      if (statusWiseMap.has(item?.currStatusDesc?.description)) {
+        statusWiseMap.set(item?.currStatusDesc?.description, statusWiseMap.get(item?.currStatusDesc?.description) + 1)
       }
       else {
-        statusWiseMap.set(item.currStatusDesc.description, 1)
+        statusWiseMap.set(item?.currStatusDesc?.description, 1)
       }
     })
 
@@ -4253,11 +5176,11 @@ export const UserHomeScreen = (props) => {
               return (
                 <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                   <View style={{ flexDirection: "row", margin: 0 }}>
-                    <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                       <Text style={{ fontWeight: "normal" }}>{item.name}</Text>
                     </View>
 
-                    <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                       <Text
                         onPress={async () => {
                           var statusDialogData = []
@@ -4401,11 +5324,11 @@ export const UserHomeScreen = (props) => {
               return (
                 <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                   <View style={{ flexDirection: "row", margin: 0 }}>
-                    <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                       <Text style={{ fontWeight: "normal" }}>{item.name}</Text>
                     </View>
 
-                    <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                       <Text
                         onPress={async () => {
                           var typeDialogData = []
@@ -4590,7 +5513,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 120, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 170, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -4778,7 +5701,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 120, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 170, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -4949,7 +5872,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 120, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 180, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -5113,7 +6036,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 132, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -5277,7 +6200,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 138, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -5442,7 +6365,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 132, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -5607,7 +6530,7 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 138, marginLeft: 15, marginRight: 15 }}>
           <FlatList
             contentContainerStyle={{
               flexGrow: 1,
@@ -5867,7 +6790,7 @@ export const UserHomeScreen = (props) => {
       <>
         <Card style={{
           backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10,
-          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 50
+          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 105
         }}>
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Interactions Corner</Text>
@@ -6209,7 +7132,7 @@ export const UserHomeScreen = (props) => {
       <>
         <Card style={{
           backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10,
-          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 50
+          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 105
         }}>
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Interactions Corner</Text>
@@ -7031,37 +7954,45 @@ export const UserHomeScreen = (props) => {
 
     console.log("RenderOverallAppointmentsData...", props?.data)
 
-    const successCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      item.status == "AS_COMP_SUCCESS").length
+    var successCount = 0, successProbSolvingCount = 0, successFulfillCount = 0, unSuccessCount = 0,
+      unSuccessProbSolvingCount = 0, unSuccessFulfillCount = 0, upcomingCount = 0, closedCount = 0
 
-    const successProbSolvingCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      (item.status == "AS_COMP_SUCCESS") && (item.tran_category_type == "INTERACTION")).length
+    if (!(props?.data?.closedAppointmentsData?.data?.rows === undefined)) {
+      successCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        item.status == "AS_COMP_SUCCESS").length
 
-    const successFulfillCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      (item.status == "AS_COMP_SUCCESS") && (item.tran_category_type == "ORDER")).length
+      successProbSolvingCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        (item.status == "AS_COMP_SUCCESS") && (item.tran_category_type == "INTERACTION")).length
 
-    const unSuccessCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      item.status == "AS_COMP_UNSUCCESS").length
+      successFulfillCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        (item.status == "AS_COMP_SUCCESS") && (item.tran_category_type == "ORDER")).length
 
-    const unSuccessProbSolvingCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      (item.status == "AS_COMP_UNSUCCESS") && (item.tran_category_type == "INTERACTION")).length
+      unSuccessCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        item.status == "AS_COMP_UNSUCCESS").length
 
-    const unSuccessFulfillCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
-      (item.status == "AS_COMP_UNSUCCESS") && (item.tran_category_type == "ORDER")).length
+      unSuccessProbSolvingCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        (item.status == "AS_COMP_UNSUCCESS") && (item.tran_category_type == "INTERACTION")).length
 
-    console.log("successCount...", successCount)
-    console.log("successProbSolvingCount...", successProbSolvingCount)
-    console.log("successFulfillCount...", successFulfillCount)
-    console.log("unSuccessCount...", unSuccessCount)
-    console.log("unSuccessProbSolvingCount...", unSuccessProbSolvingCount)
-    console.log("unSuccessFulfillCount...", unSuccessFulfillCount)
+      unSuccessFulfillCount = props?.data?.closedAppointmentsData?.data?.rows?.filter((item, index) =>
+        (item.status == "AS_COMP_UNSUCCESS") && (item.tran_category_type == "ORDER")).length
+    }
+
+    if (!(props?.data?.upcomingAppointmentsData?.data?.count === undefined)) {
+      upcomingCount = props?.data?.upcomingAppointmentsData?.data?.count
+    }
+
+    if (!(props?.data?.closedAppointmentsData?.data?.count === undefined)) {
+      closedCount = props?.data?.closedAppointmentsData?.data?.count
+    }
+
+    var totalCount = upcomingCount + closedCount
 
     return (
       <>
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 90,
+          marginTop: 132,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -7074,18 +8005,18 @@ export const UserHomeScreen = (props) => {
               onPress={() => {
 
               }}
-              style={{ width: (width / 2) - 30, backgroundColor: "#E59866", padding: 10, elevation: 10, margin: 7 }}>
+              style={{ width: (width / 2) - 30, backgroundColor: "#EB984E", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Total Appointments</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {props?.data?.upcomingAppointmentsData?.data?.count + props?.data?.closedAppointmentsData?.data?.count} </Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {totalCount} </Text>
             </Card>
 
             <Card
               onPress={() => {
 
               }}
-              style={{ width: (width / 2) - 30, backgroundColor: "#BB8FCE", padding: 10, elevation: 10, margin: 7 }}>
+              style={{ width: (width / 2) - 30, backgroundColor: "#AF7AC5", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Upcoming Appointments</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {props?.data?.upcomingAppointmentsData?.data?.count} </Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {upcomingCount} </Text>
             </Card>
           </View>
 
@@ -7103,9 +8034,9 @@ export const UserHomeScreen = (props) => {
               onPress={() => {
 
               }}
-              style={{ width: (width / 2) - 30, backgroundColor: "#CD6155", padding: 10, elevation: 10, margin: 7 }}>
+              style={{ width: (width / 2) - 30, backgroundColor: "#C0392B", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Completed Appointments</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {props?.data?.closedAppointmentsData?.data?.count} </Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}> {closedCount} </Text>
             </Card>
           </View>
 
@@ -7114,7 +8045,7 @@ export const UserHomeScreen = (props) => {
               onPress={() => {
 
               }}
-              style={{ width: width - 40, backgroundColor: "#45B39D", padding: 10, elevation: 10, margin: 7 }}>
+              style={{ width: width - 40, backgroundColor: "#17A589", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Successfull Appointments</Text>
               <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{successCount}</Text>
 
@@ -7140,7 +8071,7 @@ export const UserHomeScreen = (props) => {
               onPress={() => {
 
               }}
-              style={{ width: width - 40, backgroundColor: "#EC7063", padding: 10, elevation: 10, margin: 7 }}>
+              style={{ width: width - 40, backgroundColor: "#CB4335", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Un-Successfull Appointments</Text>
               <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{unSuccessCount}</Text>
 
@@ -7198,7 +8129,7 @@ export const UserHomeScreen = (props) => {
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 90,
+          marginTop: 132,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -7235,6 +8166,12 @@ export const UserHomeScreen = (props) => {
   const RenderUpcomingAppointmentsData = (props) => {
 
     console.log("RenderUpcomingAppointmentsData...", props.data)
+
+    const dropDownArr = [
+      { code: "ALL", description: "All" },
+      { code: "INTERACTION", description: "Interaction" },
+      { code: "ORDER", description: "Order" }
+    ]
 
     const renderItem = ({ item }) => (
       <Pressable
@@ -7379,7 +8316,23 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 123, marginLeft: 15, marginRight: 15 }}>
+          <View style={{ paddingVertical: 5 }}>
+            <CustomDropDownFullWidth
+              selectedValue={selUpcAppTypeDesc}
+              data={dropDownArr}
+              onChangeText={(text) => {
+                unstable_batchedUpdates(() => {
+                  setSelUpcAppTypeCode(text.code)
+                  setSelUpcAppTypeDesc(text.description)
+                })
+              }}
+              value={selUpcAppTypeCode}
+              caption={"Appointment Type"}
+              placeHolder={"Select Appointment Type"}
+            />
+          </View>
+
           {props?.data?.data?.rows.length > 0 && (
             <FlatList
               contentContainerStyle={{
@@ -7400,6 +8353,12 @@ export const UserHomeScreen = (props) => {
   const RenderClosedAppointmentsData = (props) => {
 
     console.log("RenderClosedAppointmentsData...", props.data)
+
+    const dropDownArr = [
+      { code: "ALL", description: "All" },
+      { code: "INTERACTION", description: "Interaction" },
+      { code: "ORDER", description: "Order" }
+    ]
 
     const renderItem = ({ item }) => (
       <Pressable
@@ -7558,7 +8517,23 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <View style={{ flex: 1, marginTop: 80, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ flex: 1, marginTop: 123, marginLeft: 15, marginRight: 15 }}>
+          <View style={{ paddingVertical: 5 }}>
+            <CustomDropDownFullWidth
+              selectedValue={selClosedAppTypeDesc}
+              data={dropDownArr}
+              onChangeText={(text) => {
+                unstable_batchedUpdates(() => {
+                  setSelClosedAppTypeCode(text.code)
+                  setSelClosedAppTypeDesc(text.description)
+                })
+              }}
+              value={selClosedAppTypeCode}
+              caption={"Appointment Type"}
+              placeHolder={"Select Appointment Type"}
+            />
+          </View>
+
           {props?.data?.data?.rows?.length > 0 && (
             <FlatList
               contentContainerStyle={{
@@ -7577,14 +8552,18 @@ export const UserHomeScreen = (props) => {
 
   const RenderOverallInfoAppointmentsData = (props) => {
 
-    console.log("RenderOverallInfoAppointmentsData...", props?.data)
+    const schdVsComp = Math.round((props?.data?.data?.completed.length / props?.data?.data?.scheduled.length) * 100)
+    const compVsSucc = Math.round((props?.data?.data?.success.length / props?.data?.data?.completed.length) * 100)
+    const compVsUnsucc = Math.round((props?.data?.data?.unsuccess.length / props?.data?.data?.completed.length) * 100)
+    const schdVsCanc = Math.round((props?.data?.data?.cancelled.length / props?.data?.data?.scheduled.length) * 100)
+    const schdVsUpc = Math.round((props?.data?.data?.upcoming.length / props?.data?.data?.scheduled.length) * 100)
 
     return (
       <>
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 90,
+          marginTop: 132,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -7599,7 +8578,7 @@ export const UserHomeScreen = (props) => {
               }}
               style={{ width: (width / 2) - 30, backgroundColor: "#F5B041", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Scheduled VS Completed</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>30%</Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{schdVsComp}%</Text>
             </Card>
 
             <Card
@@ -7608,7 +8587,7 @@ export const UserHomeScreen = (props) => {
               }}
               style={{ width: (width / 2) - 30, backgroundColor: "#1ABC9C", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Completed VS Successfull</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>60%</Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{compVsSucc}%</Text>
             </Card>
           </View>
 
@@ -7619,7 +8598,7 @@ export const UserHomeScreen = (props) => {
               }}
               style={{ width: (width / 2) - 30, backgroundColor: "#2E86C1", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Completed VS UnSuccessfull</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>30%</Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{compVsUnsucc}%</Text>
             </Card>
 
             <Card
@@ -7628,7 +8607,7 @@ export const UserHomeScreen = (props) => {
               }}
               style={{ width: (width / 2) - 30, backgroundColor: "#5D6D7E", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Scheduled VS Cancelled</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>50%</Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{schdVsCanc}%</Text>
             </Card>
           </View>
 
@@ -7639,7 +8618,7 @@ export const UserHomeScreen = (props) => {
               }}
               style={{ width: (width / 2) - 30, backgroundColor: "#CD6155", padding: 10, elevation: 10, margin: 7 }}>
               <Text style={{ padding: 5, color: "#FFFFFF" }}>Scheduled VS Upcoming</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>60%</Text>
+              <Text style={{ padding: 5, fontWeight: "900", color: "#FFFFFF" }}>{schdVsUpc}%</Text>
             </Card>
           </View>
 
@@ -7673,20 +8652,72 @@ export const UserHomeScreen = (props) => {
       }
     })
 
+    let data = {
+      "name": "Root",
+      "children": [{
+        "name": "Santa Catarina",
+        "children": [{
+          "name": "Tromp"
+        }, {
+          "name": "Thompson"
+        }, {
+          "name": "Ryan"
+        }]
+      }, {
+        "name": "Acre",
+        "children": [{
+          "name": "Dicki"
+        }, {
+          "name": "Armstrong"
+        }, {
+          "name": "Nitzsche"
+        }]
+      }]
+    }
+
+    let options = {
+      margin: {
+        top: 20,
+        left: 50,
+        right: 80,
+        bottom: 20
+      },
+      width: 200,
+      height: 200,
+      fill: "#2980B9",
+      stroke: "#3E90F0",
+      r: 2,
+      animate: {
+        type: 'oneByOne',
+        duration: 200,
+        fillTransition: 3
+      },
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 8,
+        fontWeight: true,
+        fill: '#34495E'
+      }
+    }
+
+
+    const sampleData = [10, 20, 30];
+
+
     return (
       <>
-        <View style={{
+        {/* <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 90,
+          marginTop: 132,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
           elevation: 10,
           borderRadius: 10,
           backgroundColor: "#FFF"
-        }}>
-          <View style={{ paddingVertical: 10 }}>
+        }}> */}
+        {/* <View style={{ paddingVertical: 10 }}>
             <CustomDropDownFullWidth
               selectedValue={selAppTypeDesc}
               data={dataArr}
@@ -7700,23 +8731,228 @@ export const UserHomeScreen = (props) => {
               caption={"Appointment Type"}
               placeHolder={"Select Appointment Type"}
             />
-          </View>
+          </View> */}
 
-          <View style={{ alignSelf: "center", backgroundColor: "transparent", flexDirection: "row" }}>
-            {/* {props?.data?.typeBasedAppointmentData?.data?.map((item, idx) => {
-              return ( */}
-            <Card
-              onPress={() => {
+        {/* <View>
+            <Tree data={data} options={options} />
+          </View> */}
 
+        <View style={{
+          display: 'block', width: 700, paddingLeft: 30
+        }}>
+          <TreeMap data={sampleData} />
+        </View>
+
+        {/* <View style={{
+            display: 'block', width: 700, paddingLeft: 30
+          }}>
+            <TreemapChart height={300} name="TreemapChart" data={sampleData} />
+          </View> */}
+
+
+        {/* <TreeMapComponent
+            height="350px"
+            dataSource={[
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Brazil',
+                Count: 25,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Colombia',
+                Count: 12,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Argentina',
+                Count: 9,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Ecuador',
+                Count: 7,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Chile',
+                Count: 6,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Peru',
+                Count: 3,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Venezuela',
+                Count: 3,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Bolivia',
+                Count: 2,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Paraguay',
+                Count: 2,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Uruguay',
+                Count: 2,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Falkland Islands',
+                Count: 1,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'French Guiana',
+                Count: 1,
+                Brand: 'Ford',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Guyana',
+                Count: 1,
+                Brand: 'Maruti',
+              },
+              {
+                Title: 'State wise International Airport count in South America',
+                State: 'Suriname',
+                Count: 1,
+                Brand: 'Ford',
+              },
+            ]}
+            weightValuePath="Count"
+            equalColorValuePath="Brand"
+            leafItemSettings={{
+              labelPath: 'State',
+              colorMapping: [
+                {
+                  value: 'Ford',
+                  color: '#634D6F',
+                },
+                {
+                  value: 'Maruti',
+                  color: '#B34D6D',
+                },
+              ],
+            }}
+          ></TreeMapComponent> */}
+
+        {/* </View> */}
+      </>
+    );
+  };
+
+
+  const RenderLocationBasedAppointment = (props) => {
+
+    // console.log("RenderLocationBasedAppointment...", props?.data?.typeBasedAppointmentData)
+
+    return (
+      <>
+        <View style={{
+          flex: 1,
+          flexDirection: "column",
+          marginTop: 132,
+          marginLeft: 10,
+          marginRight: 10,
+          padding: 10,
+          elevation: 10,
+          borderRadius: 10,
+          backgroundColor: "#FFF"
+        }}>
+
+          <SafeAreaView style={styles.container}>
+            <MapView
+              showsUserLocation={true}
+              provider={"google"}
+              ref={mapRef}
+              style={styles.map}
+              onMapReady={animateToCurrentLocation}
+              initialRegion={{
+                latitude: "12.950446",
+                longitude: "80.2392171",
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta,
               }}
-              style={{ width: (width / 2) - 30, backgroundColor: "#3498DB", padding: 10, elevation: 10, margin: 7 }}>
-              <Text style={{ padding: 5, color: "#FFFFFF" }}>Customer Visit : {custVisitCount}</Text>
-              <Text style={{ padding: 5, color: "#FFFFFF" }}>Scheduled : {scheduledCount}</Text>
-              <Text style={{ padding: 5, color: "#FFFFFF" }}>Success : {successCount}</Text>
-            </Card>
-            {/* )
-            })} */}
-          </View>
+              onPress={(e) => {
+                // console.log(e.nativeEvent.coordinate);
+                // setMapOnLatitude(e.nativeEvent.coordinate.latitude);
+                // setMapOnLongitude(e.nativeEvent.coordinate.longitude);
+                // getLocationAddress(
+                //   e.nativeEvent.coordinate.latitude,
+                //   e.nativeEvent.coordinate.longitude
+                // );
+              }}
+            >
+              <Marker
+                coordinate={{
+                  latitude: "12.950446",
+                  longitude: "80.2392171",
+                }}
+                title={"Location on map"}
+              >
+                <View>
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={require("../../Assets/icons/ic_overlay_highlighted.png")}
+                  />
+                </View>
+
+                {/* <Callout style={styles.ticketItem}>
+                  <Text style={[{ color: colors.primary }, styles.description]}>
+                    {geoAddress}
+                  </Text>
+                </Callout> */}
+              </Marker>
+
+              {/* <Marker
+                coordinate={{
+                  latitude: currentLatitude,
+                  longitude: currentLongitude,
+                }}
+                //coordinate={{latitude: 4.931796, longitude: 114.836504}}
+                title={geoAddress}
+              >
+                <View>
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={require("../../Assets/icons/ic_gps.png")}
+                  />
+                </View>
+
+                <Callout style={styles.ticketItem}>
+                  <Text style={[styles.textBase, styles.description]}>
+                    {geoAddress}
+                  </Text>
+                </Callout>
+              </Marker>
+              <Circle
+                center={{ latitude: currentLatitude, longitude: currentLongitude }}
+                radius={200}
+                strokeColor="#4F6D7A"
+                strokeWidth={2}
+              />*/}
+            </MapView>
+          </SafeAreaView>
+
         </View>
       </>
     );
@@ -7724,6 +8960,186 @@ export const UserHomeScreen = (props) => {
 
 
   // ---------------------------------------Helpdesk methods start-----------------------------------------------------------------
+
+  const RenderDashboardTitle = (props) => {
+    console.log("RenderDashboardTitle...", props.data)
+    return (
+      <>
+        <View style={{
+          marginTop: -2,
+          flex: 1, padding: 10,
+          borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center",
+          position: "absolute", top: 1, height: height / 17, width: width - 0, backgroundColor: "#FFF",
+          opacity: 1, zIndex: 99999999999999, flexDirection: "row"
+        }}>
+          <Text style={{ width: (width / 2) + 20, fontSize: 15, fontWeight: "900" }}>{props.data}</Text>
+
+          <View style={{ marginLeft: 0, alignSelf: "center", flexDirection: "row" }}>
+
+            {showOperationalDashboard && (
+              <Pressable
+                onPress={() => {
+
+                }}
+                style={{
+                  marginLeft: 10,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#FFF",
+                  alignItems: "center",
+                  height: 35, //any of height
+                  width: 35, //any of width
+                  borderRadius: 20   // it will be height/2
+                }}
+              >
+                <Icon
+                  name="dip-switch"
+                  size={27}
+                  color={"#FFF"}
+                />
+              </Pressable>
+            )}
+
+            {showAppointmentDashboard && (
+              <Pressable
+                onPress={() => {
+
+                }}
+                style={{
+                  marginLeft: 10,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#FFF",
+                  alignItems: "center",
+                  height: 35, //any of height
+                  width: 35, //any of width
+                  borderRadius: 20   // it will be height/2
+                }}
+              >
+                <Icon
+                  name="dip-switch"
+                  size={27}
+                  color={"#FFF"}
+                />
+              </Pressable>
+            )}
+
+            {!showOperationalDashboard && !showAppointmentDashboard && (
+              <Pressable
+                onPress={() => {
+                  if (showHelpdeskDashboard) {
+                    setHelpdeskLiveStream(!helpdeskLiveStream)
+                  }
+
+                  if (showInteractionDashboard) {
+                    setInteractionLiveStream(!interactionLiveStream)
+                  }
+                }}
+                style={{
+                  marginLeft: 10,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#4a5996",
+                  alignItems: "center",
+                  height: 35, //any of height
+                  width: 35, //any of width
+                  borderRadius: 20   // it will be height/2
+                }}
+              >
+                <Icon
+                  name="dip-switch"
+                  size={27}
+                  color={"#FFF"}
+                />
+              </Pressable>
+            )}
+
+            <Pressable
+              onPress={() => {
+                if (showHelpdeskDashboard) {
+                  if (helpdeskFilterDialogVisible) {
+                    setHelpdeskFilterDialogVisible(false)
+                  } else {
+                    setHelpdeskFilterDialogVisible(true)
+                  }
+                }
+
+                if (showInteractionDashboard) {
+                  if (intxnFilterDialogVisible) {
+                    setIntxnFilterDialogVisible(false)
+                  } else {
+                    setIntxnFilterDialogVisible(true)
+                  }
+                }
+
+                if (showOperationalDashboard) {
+                  if (operationalFilterDialogVisible) {
+                    setOperationalFilterDialogVisible(false)
+                  } else {
+                    setOperationalFilterDialogVisible(true)
+                  }
+                }
+
+                if (showAppointmentDashboard) {
+                  if (appointmentFilterDialogVisible) {
+                    setAppointmentFilterDialogVisible(false)
+                  } else {
+                    setAppointmentFilterDialogVisible(true)
+                  }
+                }
+              }}
+              style={{
+                marginLeft: 10,
+                alignSelf: "center",
+                justifyContent: "center",
+                backgroundColor: "#4a5996",
+                alignItems: "center",
+                height: 35, //any of height
+                width: 35, //any of width
+                borderRadius: 20   // it will be height/2
+              }}
+            >
+              <Icon
+                name="filter"
+                size={27}
+                color={"#FFF"}
+              />
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                if (openDashboardPopUp) {
+                  setOpenDashboardPopUp(false)
+                } else {
+                  setOpenDashboardPopUp(true)
+                }
+              }}
+              style={{
+                marginLeft: 10,
+                alignSelf: "center",
+                justifyContent: "center",
+                backgroundColor: "#4a5996",
+                alignItems: "center",
+                height: 35, //any of height
+                width: 35, //any of width
+                borderRadius: 20   // it will be height/2
+              }}
+            >
+              <Icon
+                name="home-switch"
+                size={27}
+                color={"#FFF"}
+              />
+            </Pressable>
+
+          </View>
+
+          {/* <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider> */}
+        </View >
+      </>
+    );
+  };
+
 
   const RenderHelpdeskSummaryData = (props) => {
 
@@ -7768,16 +9184,19 @@ export const UserHomeScreen = (props) => {
       return respData
     })
 
-    console.log('xAxisData------>', xAxisData)
-    console.log('statuses------>', statuses)
-    console.log('series------>', series)
+    console.log('xAxisData2------>', xAxisData)
+    console.log('statuses2------>', statuses)
+    console.log('series2------>', series)
 
     const data = {
-      labels: xAxisData,
+      labels: [],
       legend: statuses,
       data: series,
-      barColors: ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+      barColors: ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E",
+        "#16A085", "#A93226", "#2C3E50", "#F4D03F"]
     };
+
+    console.log('data2------>', data)
 
     if (get(data, 'data.length', 0) == 0) return null
     const legend = get(data, 'legend', []);
@@ -7850,12 +9269,12 @@ export const UserHomeScreen = (props) => {
             hideLegend={true}
             chartConfig={{
               //bar width
-              barPercentage: 1.3,
+              barPercentage: 0.7,
               barRadius: 2,
               backgroundColor: "white",
               backgroundGradientFrom: "white",
               backgroundGradientTo: "white",
-              decimalPlaces: 0, // optional, defaults to 2dp
+              decimalPlaces: 1, // optional, defaults to 2dp
               //horizontal line indicator
               color: (opacity = 1) => `white`,
               labelColor: (opacity = 1) => `black`,
@@ -7871,7 +9290,7 @@ export const UserHomeScreen = (props) => {
             verticalLabelRotation={90}
           />
 
-          <View style={{ backgroundColor: "white", padding: 5, paddingTop: 15, alignSelf: 'center' }}>
+          <View style={{ backgroundColor: "white", padding: 0, marginLeft: 15, marginBottom: 15, marginTop: -20 }}>
             <View style={{
               width: 200,
               flexDirection: "column",
@@ -7919,8 +9338,8 @@ export const UserHomeScreen = (props) => {
       console.log("countData...", countData)
       console.log("valData...", valData)
 
-      const coloursArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
-        '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
+      const coloursArr = ['#16A085', '#EC7063', '#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
+        '#F4D03F', '#F39C12', '#DC7633', '#5DADE2', '#9A7D0A', '#EC7063', '#EDBB99']
 
 
       var data = []
@@ -7947,8 +9366,9 @@ export const UserHomeScreen = (props) => {
         series.push(countData[item])
       })
 
-      const colorsArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
-        '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
+      const colorsArr = ['#EB984E', '#3498DB', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9',
+        '#3498DB', '#16A085',
+        '#F4D03F', '#F39C12', '#5DADE2', '#34495E']
       var colours = []
       series.forEach((item, idx) => {
         colours.push(colorsArr[idx])
@@ -7997,20 +9417,19 @@ export const UserHomeScreen = (props) => {
               </ScrollView>
             </View>
 
-            <ClearSpace size={8} />
+            <ClearSpace size={4} />
 
-            <View style={{ alignItems: "center", alignContent: "center", marginTop: 5, flexDirection: "row" }}>
+            <View style={{ marginTop: 0, flexDirection: "column" }}>
 
               {series.length > 0 && (
-                <PieChart style={{ marginTop: 0 }} widthAndHeight={widthAndHeight} series={series} sliceColor={colours} />
+                <PieChart style={{ marginTop: 0, alignSelf: "center" }} widthAndHeight={widthAndHeight} series={series} sliceColor={colours} />
               )}
 
-              <View style={{ marginLeft: 10, marginTop: 0, flexDirection: "column" }}>
+              <View style={{ marginLeft: 20, marginTop: 0, flexDirection: "column" }}>
                 {data?.map((item, idx) => {
                   return (
                     <View style={{
-                      width: 100,
-                      alignSelf: "flex-end",
+                      width: 400,
                       marginTop: 0,
                     }}>
                       <View style={{
@@ -8428,11 +9847,11 @@ export const UserHomeScreen = (props) => {
 
           })}
 
-          <View style={{ marginLeft: 20, flexDirection: "row" }}>
+          <View style={{ marginLeft: 0, flexDirection: "column" }}>
             <View style={{ flex: 1 }}>
               {series.length > 0 && (
                 <PieChart
-                  style={{ marginTop: 0 }}
+                  style={{ marginTop: 0, alignSelf: "center" }}
                   widthAndHeight={widthAndHeight}
                   series={series}
                   sliceColor={sliceColor}
@@ -8443,10 +9862,9 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{
-              alignSelf: "center",
-              alignItems: "center",
+              marginLeft: 20,
               flex: 1,
-              width: 200,
+              width: 400,
               flexDirection: "column",
             }}>
 
@@ -8472,8 +9890,6 @@ export const UserHomeScreen = (props) => {
 
                 return (
                   <View style={{
-                    width: 100,
-                    alignSelf: "flex-end",
                     marginTop: 10,
                   }}>
                     <View style={{
@@ -8776,8 +10192,8 @@ export const UserHomeScreen = (props) => {
 
           <ClearSpace size={4} />
 
-          <View style={{ marginLeft: 20, flexDirection: "row" }}>
-            <View style={{ flex: 1, marginLeft: 30, width: 175, alignItems: 'center' }}>
+          <View style={{ marginLeft: 20, flexDirection: "column" }}>
+            <View style={{ flex: 1, alignSelf: "center" }}>
               {series.length > 0 && (
                 <PieChart
                   widthAndHeight={widthAndHeight}
@@ -8790,9 +10206,9 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{
-              alignSelf: "center",
+              marginLeft: 0,
               flex: 1,
-              width: 200,
+              width: 400,
               flexDirection: "column",
             }}>
 
@@ -8801,7 +10217,6 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{
                     width: 100,
-                    alignSelf: "flex-end",
                     marginTop: 10,
                   }}>
                     <View style={{
@@ -8952,11 +10367,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={() => {
                             // setProject(project)
@@ -8999,19 +10414,19 @@ export const UserHomeScreen = (props) => {
       var exists = false
 
       projDescArr.forEach(item2 => {
-        if (item2 === item.assignedAgentDetails.firstName + " " + item.assignedAgentDetails.lastName) {
+        if (item2 === item?.assignedAgentDetails?.firstName + " " + item?.assignedAgentDetails?.lastName) {
           exists = true
         }
       })
 
 
       if (!exists) {
-        projDescArr.push(item.assignedAgentDetails.firstName + " " + item.assignedAgentDetails.lastName)
-        projectCount.set(item.assignedAgentDetails.firstName + " " + item.assignedAgentDetails.lastName, 1)
+        projDescArr.push(item?.assignedAgentDetails?.firstName + " " + item?.assignedAgentDetails?.lastName)
+        projectCount.set(item?.assignedAgentDetails?.firstName + " " + item?.assignedAgentDetails?.lastName, 1)
       }
       else {
-        const count = projectCount.get(item.assignedAgentDetails.firstName + " " + item.assignedAgentDetails.lastName) + 1
-        projectCount.set(item.assignedAgentDetails.firstName + " " + item.assignedAgentDetails.lastName, count)
+        const count = projectCount.get(item?.assignedAgentDetails?.firstName + " " + item?.assignedAgentDetails?.lastName) + 1
+        projectCount.set(item?.assignedAgentDetails?.firstName + " " + item?.assignedAgentDetails?.lastName, count)
       }
 
       // }
@@ -9047,18 +10462,18 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={() => {
                             // setProject(project)
                             var dataArr = []
                             props?.data?.data?.rows?.map(agentItem => {
 
-                              if (agentItem.assignedAgentDetails.firstName + " " + agentItem.assignedAgentDetails.lastName == item.name) {
+                              if (agentItem?.assignedAgentDetails?.firstName + " " + agentItem?.assignedAgentDetails?.lastName == item?.name) {
                                 dataArr.push(agentItem)
                               }
                             })
@@ -9184,7 +10599,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab0 == "ME") {
     meTextWeight = 800
     meTxtColor = "#FFFFFF"
-    meBgColor = "#21618C"
+    meBgColor = "#4a5996"
   } else {
     meTextWeight = 200
     meTxtColor = "#000000"
@@ -9197,7 +10612,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab0 == "MY_TEAM") {
     myTeamTextWeight = 800
     myTeamTxtColor = "#FFFFFF"
-    myTeamBgColor = "#21618C"
+    myTeamBgColor = "#4a5996"
   } else {
     myTeamTextWeight = 200
     myTeamTxtColor = "#000000"
@@ -9210,7 +10625,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab1 == "INTXN") {
     intTextWeight = 800
     intTxtColor = "#FFFFFF"
-    intBgColor = "#21618C"
+    intBgColor = "#4a5996"
   } else {
     intTextWeight = 200
     intTxtColor = "#000000"
@@ -9223,7 +10638,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab1 == "INFO") {
     infTextWeight = 800
     infTxtColor = "#FFFFFF"
-    infBgColor = "#21618C"
+    infBgColor = "#4a5996"
   } else {
     infTextWeight = 200
     infTxtColor = "#000000"
@@ -9236,7 +10651,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab2 == "ASGN_TO_ME") {
     atmTextWeight = 800
     atmTxtColor = "#FFFFFF"
-    atmBgColor = "#21618C"
+    atmBgColor = "#4a5996"
   } else {
     atmTextWeight = 200
     atmTxtColor = "#000000"
@@ -9249,7 +10664,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab2 == "UPC_APP") {
     uaTextWeight = 800
     uaTxtColor = "#FFFFFF"
-    uaBgColor = "#21618C"
+    uaBgColor = "#4a5996"
   } else {
     uaTextWeight = 200
     uaTxtColor = "#000000"
@@ -9262,7 +10677,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab2 == "POOL_INTXN") {
     piTextWeight = 800
     piTxtColor = "#FFFFFF"
-    piBgColor = "#21618C"
+    piBgColor = "#4a5996"
   } else {
     piTextWeight = 200
     piTxtColor = "#000000"
@@ -9275,7 +10690,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab2 == "ASGN_INTXN") {
     aiTextWeight = 800
     aiTxtColor = "#FFFFFF"
-    aiBgColor = "#21618C"
+    aiBgColor = "#4a5996"
   } else {
     aiTextWeight = 200
     aiTxtColor = "#000000"
@@ -9288,7 +10703,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab3 == "TOT_INTXN") {
     tiTextWeight = 800
     tiTxtColor = "#FFFFFF"
-    tiBgColor = "#21618C"
+    tiBgColor = "#4a5996"
   } else {
     tiTextWeight = 200
     tiTxtColor = "#000000"
@@ -9301,7 +10716,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab3 == "0_3_D") {
     zeroThreeTextWeight = 800
     zeroThreeTxtColor = "#FFFFFF"
-    zeroThreeBgColor = "#21618C"
+    zeroThreeBgColor = "#4a5996"
   } else {
     zeroThreeTextWeight = 200
     zeroThreeTxtColor = "#000000"
@@ -9314,7 +10729,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab3 == "3_5_D") {
     threeFiveTextWeight = 800
     threeFiveTxtColor = "#FFFFFF"
-    threeFiveBgColor = "#21618C"
+    threeFiveBgColor = "#4a5996"
   } else {
     threeFiveTextWeight = 200
     threeFiveTxtColor = "#000000"
@@ -9327,7 +10742,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab3 == "MORE_5_D") {
     moreFiveTextWeight = 800
     moreFiveTxtColor = "#FFFFFF"
-    moreFiveBgColor = "#21618C"
+    moreFiveBgColor = "#4a5996"
   } else {
     moreFiveTextWeight = 200
     moreFiveTxtColor = "#000000"
@@ -9340,7 +10755,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab4 == "AUD_CNF") {
     acTextWeight = 800
     acTxtColor = "#FFFFFF"
-    acBgColor = "#21618C"
+    acBgColor = "#4a5996"
   } else {
     acTextWeight = 200
     acTxtColor = "#000000"
@@ -9353,7 +10768,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab4 == "VID_CNF") {
     vcTextWeight = 800
     vcTxtColor = "#FFFFFF"
-    vcBgColor = "#21618C"
+    vcBgColor = "#4a5996"
   } else {
     vcTextWeight = 200
     vcTxtColor = "#000000"
@@ -9366,7 +10781,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab4 == "CUST_VISIT") {
     cvTextWeight = 800
     cvTxtColor = "#FFFFFF"
-    cvBgColor = "#21618C"
+    cvBgColor = "#4a5996"
   } else {
     cvTextWeight = 200
     cvTxtColor = "#000000"
@@ -9379,7 +10794,7 @@ export const UserHomeScreen = (props) => {
   if (selectedTab4 == "BUS_VISIT") {
     bvTextWeight = 800
     bvTxtColor = "#FFFFFF"
-    bvBgColor = "#21618C"
+    bvBgColor = "#4a5996"
   } else {
     bvTextWeight = 200
     bvTxtColor = "#000000"
@@ -9394,7 +10809,7 @@ export const UserHomeScreen = (props) => {
   if (selectedAppTab1 == "INTXN") {
     intAppTextWeight = 800
     intAppTxtColor = "#FFFFFF"
-    intAppBgColor = "#21618C"
+    intAppBgColor = "#4a5996"
   } else {
     intAppTextWeight = 200
     intAppTxtColor = "#000000"
@@ -9407,7 +10822,7 @@ export const UserHomeScreen = (props) => {
   if (selectedAppTab1 == "INFO") {
     infAppTextWeight = 800
     infAppTxtColor = "#FFFFFF"
-    infAppBgColor = "#21618C"
+    infAppBgColor = "#4a5996"
   } else {
     infAppTextWeight = 200
     infAppTxtColor = "#000000"
@@ -9420,7 +10835,7 @@ export const UserHomeScreen = (props) => {
   if (showOverallAppointments) {
     appOverviewTextWeight = 800
     appOverviewTxtColor = "#FFFFFF"
-    appOverviewBgColor = "#21618C"
+    appOverviewBgColor = "#4a5996"
   } else {
     appOverviewTextWeight = 200
     appOverviewTxtColor = "#000000"
@@ -9433,7 +10848,7 @@ export const UserHomeScreen = (props) => {
   if (showCalendarAppointments) {
     appCalendarTextWeight = 800
     appCalendarTxtColor = "#FFFFFF"
-    appCalendarBgColor = "#21618C"
+    appCalendarBgColor = "#4a5996"
   } else {
     appCalendarTextWeight = 200
     appCalendarTxtColor = "#000000"
@@ -9446,7 +10861,7 @@ export const UserHomeScreen = (props) => {
   if (showUpcomingAppointments) {
     appUpcomingTextWeight = 800
     appUpcomingTxtColor = "#FFFFFF"
-    appUpcomingBgColor = "#21618C"
+    appUpcomingBgColor = "#4a5996"
   } else {
     appUpcomingTextWeight = 200
     appUpcomingTxtColor = "#000000"
@@ -9459,7 +10874,7 @@ export const UserHomeScreen = (props) => {
   if (showClosedAppointments) {
     appClosedTextWeight = 800
     appClosedTxtColor = "#FFFFFF"
-    appClosedBgColor = "#21618C"
+    appClosedBgColor = "#4a5996"
   } else {
     appClosedTextWeight = 200
     appClosedTxtColor = "#000000"
@@ -9472,7 +10887,7 @@ export const UserHomeScreen = (props) => {
   if (showOverallInfoApp) {
     infoOverallTextWeight = 800
     infoOverallTxtColor = "#FFFFFF"
-    infoOverallBgColor = "#21618C"
+    infoOverallBgColor = "#4a5996"
   } else {
     infoOverallTextWeight = 200
     infoOverallTxtColor = "#000000"
@@ -9485,7 +10900,7 @@ export const UserHomeScreen = (props) => {
   if (showBasedAppType) {
     infoBasedAppTypeTextWeight = 800
     infoBasedAppTypeTxtColor = "#FFFFFF"
-    infoBasedAppTypeBgColor = "#21618C"
+    infoBasedAppTypeBgColor = "#4a5996"
   } else {
     infoBasedAppTypeTextWeight = 200
     infoBasedAppTypeTxtColor = "#000000"
@@ -9498,12 +10913,14 @@ export const UserHomeScreen = (props) => {
   if (showBasedLocHistory) {
     infoBasedLocHistoryTextWeight = 800
     infoBasedLocHistoryTxtColor = "#FFFFFF"
-    infoBasedLocHistoryBgColor = "#21618C"
+    infoBasedLocHistoryBgColor = "#4a5996"
   } else {
     infoBasedLocHistoryTextWeight = 200
     infoBasedLocHistoryTxtColor = "#000000"
     infoBasedLocHistoryBgColor = "#EAEDED"
   }
+
+
 
   return (
     <View style={styles.container}>
@@ -9515,8 +10932,9 @@ export const UserHomeScreen = (props) => {
       {helpdeskFilterDialogVisible && (<ShowHelpdeskFiltersDialog />)}
       {intxnFilterDialogVisible && (<ShowIntxnFiltersDialog />)}
       {operationalFilterDialogVisible && (<ShowOperationalFiltersDialog />)}
+      {appointmentFilterDialogVisible && (<ShowAppointmentFiltersDialog />)}
 
-      {!showOperationalDashboard && !showAppointmentDashboard && (
+      {/* {!showOperationalDashboard && !showAppointmentDashboard && (
         <Pressable
           onPress={() => {
             if (showHelpdeskDashboard) {
@@ -9536,7 +10954,7 @@ export const UserHomeScreen = (props) => {
             flex: 1,
             elevation: 999,
             zIndex: 99999999,
-            backgroundColor: "#9C8FC4",
+            backgroundColor: "#4a5996",
             height: 50, //any of height
             width: 50, //any of width
             justifyContent: "center",
@@ -9551,9 +10969,9 @@ export const UserHomeScreen = (props) => {
             color={"#FFF"}
           />
         </Pressable>
-      )}
+      )} */}
 
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           if (showHelpdeskDashboard) {
             if (helpdeskFilterDialogVisible) {
@@ -9579,6 +10997,14 @@ export const UserHomeScreen = (props) => {
             }
           }
 
+          if (showAppointmentDashboard) {
+            if (appointmentFilterDialogVisible) {
+              setAppointmentFilterDialogVisible(false)
+            } else {
+              setAppointmentFilterDialogVisible(true)
+            }
+          }
+
         }}
         style={{
           position: "absolute",
@@ -9589,7 +11015,7 @@ export const UserHomeScreen = (props) => {
           flex: 1,
           elevation: 999,
           zIndex: 99999999,
-          backgroundColor: "#9C8FC4",
+          backgroundColor: "#4a5996",
           height: 50, //any of height
           width: 50, //any of width
           justifyContent: "center",
@@ -9603,9 +11029,9 @@ export const UserHomeScreen = (props) => {
           size={35}
           color={"#FFF"}
         />
-      </Pressable>
+      </Pressable> */}
 
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           if (openDashboardPopUp) {
             setOpenDashboardPopUp(false)
@@ -9617,12 +11043,12 @@ export const UserHomeScreen = (props) => {
           position: "absolute",
           marginRight: 5,
           marginBottom: 0,
-          bottom: height * 0.1,
+          bottom: height * 0.10,
           right: 20,
           flex: 1,
           elevation: 999,
           zIndex: 99999999,
-          backgroundColor: "#9C8FC4",
+          backgroundColor: "#4a5996",
           height: 50, //any of height
           width: 50, //any of width
           justifyContent: "center",
@@ -9636,20 +11062,25 @@ export const UserHomeScreen = (props) => {
           size={35}
           color={"#FFF"}
         />
-      </Pressable>
+      </Pressable> */}
+
+      {showHelpdeskDashboard && (<RenderDashboardTitle data={"Helpdesk Dashboard"} />)}
+      {showInteractionDashboard && (<RenderDashboardTitle data={"Interaction Dashboard"} />)}
+      {showOperationalDashboard && (<RenderDashboardTitle data={"Operational Dashboard"} />)}
+      {showAppointmentDashboard && (<RenderDashboardTitle data={"Appointment Dashboard"} />)}
 
       {showOperationalDashboard && (
         <>
           <View style={{
-            flex: 1, paddingTop: 0, paddingBottom: 0, margin: 3,
-            borderRadius: 0, elevation: 10,
+            flex: 1, paddingTop: 0, paddingBottom: 0, marginLeft: 3, marginRight: 3,
+            borderRadius: 0, elevation: 10, marginBottom: 3, marginTop: 44,
             borderWidth: 0, alignSelf: "center",
             position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
             zIndex: 99999999999999, flexDirection: "row"
           }}>
             <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
               <View style={{ alignSelf: "center", width: width - 0, flexDirection: "row" }}>
-                <View style={{ width: (width / 4) - 5, backgroundColor: meBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 0, marginRight: 0, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: meBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: meTxtColor, alignSelf: "center", fontWeight: meTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       unstable_batchedUpdates(() => {
@@ -9663,7 +11094,7 @@ export const UserHomeScreen = (props) => {
                     }}>Me</Text>
                 </View>
 
-                <View style={{ width: (width / 4) - 5, backgroundColor: myTeamBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: myTeamBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: myTeamTxtColor, alignSelf: "center", fontWeight: myTeamTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       unstable_batchedUpdates(() => {
@@ -9677,14 +11108,14 @@ export const UserHomeScreen = (props) => {
                     }}>My Team</Text>
                 </View>
 
-                <View style={{ width: (width / 4) - 5, backgroundColor: intBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: intBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: intTxtColor, alignSelf: "center", fontWeight: intTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       setSelectedTab1("INTXN")
                     }}>Interactive</Text>
                 </View>
 
-                <View style={{ width: (width / 3) - 20, backgroundColor: infBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: infBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: infTxtColor, alignSelf: "center", fontWeight: infTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       unstable_batchedUpdates(() => {
@@ -9706,16 +11137,16 @@ export const UserHomeScreen = (props) => {
         selectedTab1 == "INTXN" && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 84,
               borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
-              marginTop: 43, borderWidth: 0, alignSelf: "center",
+              borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
               opacity: 1, zIndex: 99999999999999, flexDirection: "row"
             }}>
               {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
               <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
                 {selectedTab0 == "ME" && (
-                  <View style={{ backgroundColor: atmBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 0, marginRight: 0, marginTop: 2, marginBottom: 2 }}>
+                  <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: atmBgColor, elevation: 10, padding: 10 }}>
                     <Text style={{ color: atmTxtColor, alignSelf: "center", fontWeight: atmTextWeight, fontSize: 12 }}
                       onPress={async () => {
                         let assignedToMeParams = {
@@ -9741,7 +11172,7 @@ export const UserHomeScreen = (props) => {
                   </View>
                 )}
 
-                <View style={{ backgroundColor: uaBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: uaBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: uaTxtColor, alignSelf: "center", fontWeight: uaTextWeight, fontSize: 12 }}
                     onPress={() => {
                       unstable_batchedUpdates(() => {
@@ -9755,7 +11186,7 @@ export const UserHomeScreen = (props) => {
                     }}>Upcoming Appointments</Text>
                 </View>
 
-                <View style={{ backgroundColor: piBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: piBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: piTxtColor, alignSelf: "center", fontWeight: piTextWeight, fontSize: 12 }}
                     onPress={() => {
                       unstable_batchedUpdates(() => {
@@ -9768,7 +11199,7 @@ export const UserHomeScreen = (props) => {
                     }}>Pooled Interactions</Text>
                 </View>
 
-                <View style={{ backgroundColor: aiBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: aiBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: aiTxtColor, alignSelf: "center", fontWeight: aiTextWeight, fontSize: 12 }}
                     onPress={() => {
                       unstable_batchedUpdates(() => {
@@ -9793,7 +11224,7 @@ export const UserHomeScreen = (props) => {
         showAssignedToMe && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 83,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 124,
               borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
               borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -9802,7 +11233,7 @@ export const UserHomeScreen = (props) => {
               {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
               <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                <View style={{ backgroundColor: tiBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 0, marginRight: 0, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: tiBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: tiTxtColor, alignSelf: "center", fontWeight: tiTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       let assignedToMeParams = {
@@ -9820,7 +11251,7 @@ export const UserHomeScreen = (props) => {
                     }}>Total Interaction</Text>
                 </View>
 
-                <View style={{ backgroundColor: zeroThreeBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: zeroThreeBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: zeroThreeTxtColor, alignSelf: "center", fontWeight: zeroThreeTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var toDate = new Date();
@@ -9844,7 +11275,7 @@ export const UserHomeScreen = (props) => {
                     }}>0 to 3 Days</Text>
                 </View>
 
-                <View style={{ backgroundColor: threeFiveBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: threeFiveBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: threeFiveTxtColor, alignSelf: "center", fontWeight: threeFiveTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       toDate = new Date(new Date().setDate(currDate.getDate() - 3));
@@ -9868,7 +11299,7 @@ export const UserHomeScreen = (props) => {
                     }}>3 to 5 Days</Text>
                 </View>
 
-                <View style={{ backgroundColor: moreFiveBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: moreFiveBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: moreFiveTxtColor, alignSelf: "center", fontWeight: moreFiveTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       toDate = new Date(new Date().setDate(currDate.getDate() - 5));
@@ -9902,7 +11333,7 @@ export const UserHomeScreen = (props) => {
         showAppointments && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 80,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 124,
               borderRadius: 0, elevation: 10,
               borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -9911,7 +11342,7 @@ export const UserHomeScreen = (props) => {
               {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
               <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                <View style={{ backgroundColor: acBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 0, marginRight: 0, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ backgroundColor: acBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: acTxtColor, alignSelf: "center", fontWeight: acTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var appointmentDataArr = []
@@ -9926,7 +11357,7 @@ export const UserHomeScreen = (props) => {
                     }}>Audio Conference</Text>
                 </View>
 
-                <View style={{ backgroundColor: vcBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ backgroundColor: vcBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: vcTxtColor, alignSelf: "center", fontWeight: vcTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var appointmentDataArr = []
@@ -9941,7 +11372,7 @@ export const UserHomeScreen = (props) => {
                     }}>Video Conference</Text>
                 </View>
 
-                <View style={{ backgroundColor: cvBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ backgroundColor: cvBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: cvTxtColor, alignSelf: "center", fontWeight: cvTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var appointmentDataArr = []
@@ -9956,7 +11387,7 @@ export const UserHomeScreen = (props) => {
                     }}>Customer Visit</Text>
                 </View>
 
-                <View style={{ backgroundColor: bvBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 2, marginBottom: 2 }}>
+                <View style={{ backgroundColor: bvBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: bvTxtColor, alignSelf: "center", fontWeight: bvTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var appointmentDataArr = []
@@ -9976,26 +11407,25 @@ export const UserHomeScreen = (props) => {
           </>
         )}
 
+
       {showAppointmentDashboard && (
         <View style={{
-          flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 2,
-          borderRadius: 0, elevation: 10,
-          borderWidth: 0, alignSelf: "center",
+          flex: 1, borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center", marginTop: 44,
           position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
           zIndex: 99999999999999, flexDirection: "row"
         }}>
+
           {showAppointmentDashboard && (
             <>
               <View style={{
-                flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 0,
-                borderRadius: 0, elevation: 10,
+                flex: 1, borderRadius: 0, elevation: 10, marginTop: 0,
                 borderWidth: 0, alignSelf: "center",
-                position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
+                position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: "#FFF",
                 zIndex: 99999999999999, flexDirection: "row"
               }}>
                 <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                  <View style={{ width: (width / 2) - 5, backgroundColor: intAppBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                  <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 2), backgroundColor: intAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
                     <Text style={{ color: intAppTxtColor, alignSelf: "center", fontWeight: intAppTextWeight, fontSize: 12 }}
                       onPress={async () => {
                         unstable_batchedUpdates(() => {
@@ -10006,7 +11436,7 @@ export const UserHomeScreen = (props) => {
                       }}>Interactive View</Text>
                   </View>
 
-                  <View style={{ width: (width / 2) - 5, backgroundColor: infAppBgColor, borderRadius: 10, elevation: 10, padding: 10, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                  <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 2), backgroundColor: infAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
                     <Text style={{ color: infAppTxtColor, alignSelf: "center", fontWeight: infAppTextWeight, fontSize: 12 }}
                       onPress={async () => {
                         unstable_batchedUpdates(() => {
@@ -10018,6 +11448,7 @@ export const UserHomeScreen = (props) => {
                   </View>
 
                 </ScrollView>
+
               </View>
             </>
           )}
@@ -10026,7 +11457,7 @@ export const UserHomeScreen = (props) => {
             showIntxnAppTab && (
               <>
                 <View style={{
-                  flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 45,
+                  flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
                   borderRadius: 0, elevation: 10,
                   borderWidth: 0, alignSelf: "center",
                   position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -10034,7 +11465,7 @@ export const UserHomeScreen = (props) => {
                 }}>
                   <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                    <View style={{ width: width / 4, backgroundColor: appOverviewBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appOverviewBgColor, borderRadius: 0, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: appOverviewTxtColor, alignSelf: "center", fontWeight: appOverviewTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10046,7 +11477,7 @@ export const UserHomeScreen = (props) => {
                         }}>Overview</Text>
                     </View>
 
-                    <View style={{ width: width / 4, backgroundColor: appCalendarBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appCalendarBgColor, borderRadius: 0, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: appCalendarTxtColor, alignSelf: "center", fontWeight: appCalendarTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10058,7 +11489,7 @@ export const UserHomeScreen = (props) => {
                         }}>Calendar</Text>
                     </View>
 
-                    <View style={{ width: width / 4, backgroundColor: appUpcomingBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appUpcomingBgColor, borderRadius: 0, elevation: 10, padding: 0 }}>
                       <Text style={{ marginTop: 10, color: appUpcomingTxtColor, alignSelf: "center", fontWeight: appUpcomingTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10070,7 +11501,7 @@ export const UserHomeScreen = (props) => {
                         }}>Upcoming</Text>
                     </View>
 
-                    <View style={{ width: width / 4, backgroundColor: appClosedBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appClosedBgColor, borderRadius: 0, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: appClosedTxtColor, alignSelf: "center", fontWeight: appClosedTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10090,8 +11521,8 @@ export const UserHomeScreen = (props) => {
           {showAppointmentDashboard && selectedAppTab1 == "INFO" &&
             showInfoAppTab && (
               <>
-                <View style={{
-                  flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 45,
+                {/* <View style={{
+                  flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
                   borderRadius: 0, elevation: 10,
                   borderWidth: 0, alignSelf: "center",
                   position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -10099,7 +11530,7 @@ export const UserHomeScreen = (props) => {
                 }}>
                   <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                    <View style={{ width: width / 3, backgroundColor: infoOverallBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoOverallBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoOverallTxtColor, alignSelf: "center", fontWeight: infoOverallTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10110,7 +11541,7 @@ export const UserHomeScreen = (props) => {
                         }}>Overview</Text>
                     </View>
 
-                    <View style={{ width: width / 3, backgroundColor: infoBasedAppTypeBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedAppTypeBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoBasedAppTypeTxtColor, alignSelf: "center", fontWeight: infoBasedAppTypeTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10121,7 +11552,7 @@ export const UserHomeScreen = (props) => {
                         }}>Type Based</Text>
                     </View>
 
-                    <View style={{ width: width / 3, backgroundColor: infoBasedLocHistoryBgColor, borderRadius: 10, elevation: 10, padding: 0, marginLeft: 2, marginRight: 2, marginTop: 0, marginBottom: 2 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedLocHistoryBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoBasedLocHistoryTxtColor, alignSelf: "center", fontWeight: infoBasedLocHistoryTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -10133,23 +11564,27 @@ export const UserHomeScreen = (props) => {
                     </View>
 
                   </ScrollView>
-                </View>
+                </View> */}
               </>
             )}
 
         </View>
       )}
+
+
       {/* {(!openDashboardPopUp && !helpdeskFilterDialogVisible && !intxnFilterDialogVisible && !helpdeskDetDialogVisible && !intxnDetDialogVisible) && ( */}
       <ScrollView style={{ backgroundColor: Colors.BCAE_OFF_WHITE }}>
         <>
           {showInteractionDashboard && (
             (interactionLiveStream) && (
               <>
-                <RenderOverviewLiveData data={intDashRed} />
-                {/* <RenderStatusLiveData data={intDashRed} /> */}
-                <RenderInteractionByLivePriorityData data={intDashRed} />
-                <RenderLiveProjectWiseInteraction data={intDashRed} />
-                <RenderLiveAgentWiseInteraction data={intDashRed} />
+                <View style={{ marginTop: 50 }}>
+                  <RenderOverviewLiveData data={intDashRed} />
+                  {/* <RenderStatusLiveData data={intDashRed} /> */}
+                  <RenderInteractionByLivePriorityData data={intDashRed} />
+                  <RenderLiveProjectWiseInteraction data={intDashRed} />
+                  <RenderLiveAgentWiseInteraction data={intDashRed} />
+                </View>
               </>
             )
           )}
@@ -10158,22 +11593,24 @@ export const UserHomeScreen = (props) => {
             (!interactionLiveStream) && (
               <>
                 {/* <RenderLocationWiseData /> */}
-                <RenderOverviewData data={intDashRed} />
-                <RenderInteractionByAgeingMonthsData data={intDashRed} />
-                <RenderMttrResWaitTimeData data={intDashRed} />
-                <RenderInteractionByStatusTypeData data={intDashRed} />
-                <RenderInteractionByPriorityData data={intDashRed} />
-                <RenderTopFiveInteractionCategoryData data={intDashRed} />
-                <RenderTopFiveInteractionTypeData data={intDashRed} />
-                <RenderTopFiveServiceCategoryData data={intDashRed} />
-                <RenderTopFiveServiceTypeData data={intDashRed} />
-                <RenderProjectWiseInteraction data={intDashRed} />
-                <RenderAgentWiseInteraction data={intDashRed} />
-                <RenderCustomerWiseInteraction data={intDashRed} />
-                <RenderNpsCsatChampData data={intDashRed} />
-                <RenderTopFiveInteractionStatement data={intDashRed} />
-                <RenderTopFiveInteractionChannelData data={intDashRed} />
-                <RenderDepartmentWiseInteractionData data={intDashRed} />
+                <View style={{ marginTop: 50 }}>
+                  <RenderOverviewData data={intDashRed} />
+                  <RenderInteractionByAgeingMonthsData data={intDashRed} />
+                  <RenderMttrResWaitTimeData data={intDashRed} />
+                  <RenderInteractionByStatusTypeData data={intDashRed} />
+                  <RenderInteractionByPriorityData data={intDashRed} />
+                  <RenderTopFiveInteractionCategoryData data={intDashRed} />
+                  <RenderTopFiveInteractionTypeData data={intDashRed} />
+                  <RenderTopFiveServiceCategoryData data={intDashRed} />
+                  <RenderTopFiveServiceTypeData data={intDashRed} />
+                  <RenderProjectWiseInteraction data={intDashRed} />
+                  <RenderAgentWiseInteraction data={intDashRed} />
+                  <RenderCustomerWiseInteraction data={intDashRed} />
+                  <RenderNpsCsatChampData data={intDashRed} />
+                  <RenderTopFiveInteractionStatement data={intDashRed} />
+                  <RenderTopFiveInteractionChannelData data={intDashRed} />
+                  <RenderDepartmentWiseInteractionData data={intDashRed} />
+                </View>
               </>
             )
           )}
@@ -10181,15 +11618,19 @@ export const UserHomeScreen = (props) => {
           {showHelpdeskDashboard && (
             (!helpdeskLiveStream) && (
               <>
-                <RenderHelpdeskSummaryData data={intDashRed?.helpdeskSummaryData} />
-                <RenderMonthlyDailyTrends data={intDashRed?.supportMonthlyTrendData} />
-                <RenderSupportTicketPendingData data={intDashRed} />
-                <RenderHelpdeskByAgeing data={intDashRed?.helpdeskByAgeingData} />
-                <RenderProjectWiseOpenHelpdesk data={intDashRed.helpdeskProjectWiseData} />
-                <RenderHelpdeskByStatus data={intDashRed?.helpdeskByStatusData} />
-                <RenderHelpdeskBySeverity data={intDashRed?.helpdeskBySeverityData} />
-                <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} />
-                <RenderAgentWiseHelpdesk data={intDashRed?.helpdeskAgentWiseData} />
+                <View style={{ marginTop: 50 }}>
+                  <RenderHelpdeskSummaryData data={intDashRed?.helpdeskSummaryData} />
+                  <RenderMonthlyDailyTrends data={intDashRed?.supportMonthlyTrendData} />
+                  <RenderSupportTicketPendingData data={intDashRed} />
+                  <RenderHelpdeskByAgeing data={intDashRed?.helpdeskByAgeingData} />
+                  <RenderProjectWiseOpenHelpdesk data={intDashRed.helpdeskProjectWiseData} />
+                  <RenderHelpdeskByStatus data={intDashRed?.helpdeskByStatusData} />
+                  <RenderHelpdeskBySeverity data={intDashRed?.helpdeskBySeverityData} />
+                  {intDashRed?.hourlyTicketsData?.length > 0 && (
+                    <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} />
+                  )}
+                  <RenderAgentWiseHelpdesk data={intDashRed?.helpdeskAgentWiseData} />
+                </View>
               </>
             )
           )}
@@ -10197,10 +11638,12 @@ export const UserHomeScreen = (props) => {
           {showHelpdeskDashboard && (
             (helpdeskLiveStream) && (
               <>
-                <RenderHelpdeskProjectWiseDataLive data={intDashRed} />
-                <RenderHelpdeskByStatusDataLive data={intDashRed} />
-                <RenderHelpdeskByTypeDataLive data={intDashRed} />
-                <RenderHelpdeskBySeverityDataLive data={intDashRed} />
+                <View style={{ marginTop: 50 }}>
+                  <RenderHelpdeskProjectWiseDataLive data={intDashRed} />
+                  <RenderHelpdeskByStatusDataLive data={intDashRed} />
+                  <RenderHelpdeskByTypeDataLive data={intDashRed} />
+                  <RenderHelpdeskBySeverityDataLive data={intDashRed} />
+                </View>
               </>
             )
           )}
@@ -10267,9 +11710,9 @@ export const UserHomeScreen = (props) => {
           {showAppointmentDashboard && (
             selectedAppTab1 == "INFO" && (
               <>
-                {showOverallInfoApp && (<RenderOverallInfoAppointmentsData data={intDashRed} />)}
-                {showBasedAppType && (<RenderBasedOnAppType data={intDashRed} />)}
-                {/* {showUpcomingAppointments && (<RenderUpcomingAppointmentsData data={intDashRed?.upcomingAppointmentsData} />)} */}
+                {showOverallInfoApp && (<RenderOverallInfoAppointmentsData data={intDashRed.appPerformanceData} />)}
+                {/* {showBasedAppType && (<RenderBasedOnAppType data={intDashRed} />)}
+                {showBasedLocHistory && (<RenderLocationBasedAppointment data={intDashRed} />)} */}
               </>
             )
           )}
@@ -12136,35 +13579,35 @@ const groupBy = (items, key) => items.reduce(
   {},
 );
 
-const navBar = StyleSheet.create({
-  navRightCon: {
-    flexDirection: "row",
-    marginRight: 15
-  },
-  divider: {
-    width: 10,
-    height: 1,
-  },
-  roundIcon: {
-    width: 35,
-    height: 35,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 26,
-    borderWidth: 0.5,
-    borderColor: "#fff",
-  },
-  roundIconColored: {
-    width: 26,
-    height: 26,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 26,
-    borderWidth: 0.5,
-    borderColor: "#fff",
-    marginRight: 12,
-  },
-});
+// const navBar = StyleSheet.create({
+//   navRightCon: {
+//     flexDirection: "row",
+//     marginRight: 15
+//   },
+//   divider: {
+//     width: 10,
+//     height: 1,
+//   },
+//   roundIcon: {
+//     width: 35,
+//     height: 35,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     borderRadius: 26,
+//     borderWidth: 0.5,
+//     borderColor: "#fff",
+//   },
+//   roundIconColored: {
+//     width: 26,
+//     height: 26,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     borderRadius: 26,
+//     borderWidth: 0.5,
+//     borderColor: "#fff",
+//     marginRight: 12,
+//   },
+// });
 
 
 const styles = StyleSheet.create({
@@ -12269,5 +13712,15 @@ const styles = StyleSheet.create({
     width: 44, //any of width
     justifyContent: "center",
     borderRadius: 22   // it will be height/2
+  },
+  mapContainer: {
+    flex: 1,
+  },
+  // map: {
+  //   width: '100%',
+  //   height: '100%',
+  // },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   }
 });

@@ -1,34 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
+import React, { useState } from "react";
 import DatePicker from "react-native-date-picker";
+import { useDispatch, useSelector } from "react-redux";
 
+import moment from "moment";
 import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  SafeAreaView,
   Alert,
   Dimensions,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import {
-  spacing,
-  color,
-  fontSizes,
-  buttonSize,
-  validateNumber,
-  validateEmail,
-  TDLog,
   DEBUG_BUILD,
-  STAGE_TERMS,
+  PROD_PRIVACY,
   PROD_TERMS,
   STAGE_PRIVACY,
-  PROD_PRIVACY,
+  STAGE_TERMS,
+  color,
+  fontSizes,
+  spacing
 } from "../../Utilities/Constants/Constant";
-import moment from "moment";
 
 import {
   fetchRegisterFormData,
@@ -37,12 +32,11 @@ import {
   userRegister,
 } from "./RegisterDispatcher";
 
-import { Button, Divider, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 
 import { strings } from "../../Utilities/Language/index";
 
 import Header from "../TabScreens/Component/Header";
-import { CustomActivityIndicator } from "../../Components/CustomActivityIndicator";
 import { setOtpFormData } from "./RegisterAction";
 
 const STEP_INITIAL_SCREEN = 1;
@@ -259,11 +253,13 @@ const Register = ({ navigation, props }) => {
           disabled={customerID == ""}
           mode="contained"
           onPress={customerIdSubmit}
+          buttonColor={"#4a5996"}
         >
           CONFIRM
         </Button>
         <View style={{ height: 23 }} />
         <Button
+          buttonColor={"#4a5996"}
           mode="text"
           onPress={() => {
             setStep(STEP_FORM);
@@ -320,6 +316,7 @@ const Register = ({ navigation, props }) => {
         </View>
         <View style={{ height: 23 }} />
         <Button
+          buttonColor={"#4a5996"}
           disabled={mobileOTP == "" || emailOTP == ""}
           mode="contained"
           onPress={verifyOTPWithCustomerId}
@@ -420,6 +417,7 @@ const Register = ({ navigation, props }) => {
           {emailError !== "" && showErrorMessage(emailError)}
           <View style={{ height: 23 }} />
           <Button
+            buttonColor={"#4a5996"}
             disabled={mobileNo == "" || email == "" || dob == ""}
             mode="contained"
             onPress={confirmUserInfoWIthoutCustomerID}
@@ -577,6 +575,7 @@ const Register = ({ navigation, props }) => {
                   </Text>
                 </Pressable>
                 <Button
+                  buttonColor={"#4a5996"}
                   disabled={
                     password == "" ||
                     confirmPassword == "" ||

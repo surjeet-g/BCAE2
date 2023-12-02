@@ -252,6 +252,10 @@ export const TYPE_BASED_APPOINTMENTS_DATA = "TYPE_BASED_APPOINTMENTS_DATA";
 export const TYPE_BASED_APPOINTMENTS_ERROR_DATA = "TYPE_BASED_APPOINTMENTS_ERROR_DATA";
 
 
+export const APPOINTMENT_PERFORMANCE_DATA = "APPOINTMENT_PERFORMANCE_DATA";
+export const APPOINTMENT_PERFORMANCE_ERROR_DATA = "APPOINTMENT_PERFORMANCE_ERROR_DATA";
+
+
 export const CLOSED_APPOINTMENTS_DATA = "CLOSED_APPOINTMENTS_DATA";
 export const CLOSED_APPOINTMENTS_ERROR_DATA = "CLOSED_APPOINTMENTS_ERROR_DATA";
 
@@ -406,6 +410,15 @@ export const setTypeBasedAppData = (data) => {
 
 export const setTypeBasedAppErrorData = (data) => {
   return { type: TYPE_BASED_APPOINTMENTS_ERROR_DATA, data };
+};
+
+
+export const setAppPerformanceData = (data) => {
+  return { type: APPOINTMENT_PERFORMANCE_DATA, data };
+};
+
+export const setAppPerformanceErrorData = (data) => {
+  return { type: APPOINTMENT_PERFORMANCE_ERROR_DATA, data };
 };
 
 

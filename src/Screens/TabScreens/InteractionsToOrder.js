@@ -1,6 +1,8 @@
+import { useFocusEffect } from "@react-navigation/native";
 import get from "lodash.get";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
+  BackHandler,
   Dimensions,
   FlatList,
   Image,
@@ -8,7 +10,8 @@ import {
   Keyboard, Pressable,
   ScrollView,
   StyleSheet, Switch, TextInput,
-  View
+  View,
+  unstable_batchedUpdates
 } from "react-native";
 import { Chip, List, Text, useTheme } from "react-native-paper";
 import Toast from 'react-native-toast-message';
@@ -43,6 +46,7 @@ import {
   MASTER_DATA_CONSTANT,
   getMasterData
 } from "../../Redux/masterDataDispatcher";
+import { clearAttachmentData } from "../../Storage/DB.js";
 import { getDataFromDB } from "../../Storage/token";
 import { endPoints } from '../../Utilities/API/ApiConstants';
 import {
@@ -58,7 +62,6 @@ import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
 import { USERTYPE, getCustomerID, getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 import theme from "../../Utilities/themeConfig";
-import { handleMultipleContact } from "../../Utilities/utils";
 import { APICall } from "../CreateCustomer/util";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
 import { CustomDropDownFullWidth } from "./../../Components/CustomDropDownFullWidth";
@@ -160,6 +163,44 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Do Whatever you want to do on back button click
+        // Return true to stop default back navigaton
+        // Return false to keep default back navigaton
+
+        if (openBottomModal) {
+          unstable_batchedUpdates(() => {
+            setOpenBottomModal(false);
+            setKnowledgeSearchText("");
+            dispatchInteraction(setInteractionReset());
+          })
+          console.log("inside if..")
+          return true;
+        }
+        else {
+          console.log("inside else..")
+          return false;
+        }
+
+        // setOpenBottomModal(!openBottomModal)
+
+      };
+
+      BackHandler.addEventListener(
+        'hardwareBackPress', onBackPress
+      );
+
+      return () =>
+        BackHandler.removeEventListener(
+          'hardwareBackPress', onBackPress
+        );
+    }, [])
+  );
+
+
+
   /**
   * Reset state values. This will hanlde reset the state values 
   * @memberOf Interaction
@@ -202,36 +243,35 @@ const InteractionsToOrder = ({ route, navigation }) => {
     // }));
   };
 
+
   const headerRightForNav = () => {
     return (
       <View style={navBar.navRightCon}>
-        <Pressable
-          onPress={() => {
-            resetCreateInterationForm(),
+        {!isEnabledsmartAssist && (
+          <Pressable
+            onPress={async () => {
+              console.log("knowledgeSearchText...", knowledgeSearchText)
+              await clearAttachmentData()
+              if (knowledgeSearchText == "") {
+                resetCreateInterationForm()
+              }
               setOpenBottomModal(true)
-          }}
-          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
-        >
-          <Icon name="plus" size={28} color={colors.BLACK} />
-        </Pressable>
-
-        {/* <Pressable
-          onPress={() => {
-            navigation.navigate(STACK_INTERACTION_SEARCH)
-          }}
-          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
-        >
-          <Icon name={"clipboard-search"} size={28} color={colors.BLACK} />
-        </Pressable> */}
+            }}
+            style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+          >
+            <Icon name="plus" size={28} color={"#4a5996"} />
+          </Pressable>
+        )}
       </View>
     );
   };
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: headerRightForNav,
-    });
-  }, []);
+
+  // useLayoutEffect(() => {
+  navigation.setOptions({
+    headerRight: headerRightForNav,
+  });
+  // }, []);
 
   /**
   * Reset Reducer data this function handles exception error of old data
@@ -947,7 +987,18 @@ const InteractionsToOrder = ({ route, navigation }) => {
   }, []);
 
 
+
   const renderProfileTab = useMemo(() => {
+
+    // var custId = ""
+    // load()
+    // load()
+
+    // async function load() {
+    //   var custId = "" + await getDataFromDB(storageKeys.CUSTOMER_ID)
+    //   console.log("custId rec3..", custId)
+    //   return custId
+    // }
 
     console.log("profile", profileReducer)
     const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
@@ -965,10 +1016,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
     const customerCategory = get(profileReducer, `${activeData}.${customerCategoryPath}`, "")
     const customerStatus = get(profileReducer, `${activeData}.${customerStatusPath}`, "")
 
-    console.log("cutomer cat", customerCategory, customerStatus)
+
+
+
+    // console.log("cutomer cat", customerCategory, customerStatus, custId)
 
     const serviceData = get(profileReducer, "serviceData", [])
     console.log("serviceData..", serviceData)
+
+
 
 
     return (
@@ -981,7 +1037,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
           zIndex: 999,
           paddingLeft: 20,
           paddingRight: 20,
-          paddingBottom: 20,
+          paddingBottom: 30,
           backgroundColor: "#ffff",
           borderRadius: 16,
           elevation: 1,
@@ -1046,7 +1102,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 style={{ height: 60, width: 60 }}
               />
             </View>
-            <View style={{ flexDirection: "column", marginLeft: 10 }}>
+            <View style={{ flexDirection: "column", marginLeft: 20 }}>
               <Text
                 variant="bodyMedium"
                 style={{
@@ -1057,44 +1113,60 @@ const InteractionsToOrder = ({ route, navigation }) => {
                 {get(profileReducer, `${activeData}.firstName`, "")}{" "}
                 {get(profileReducer, `${activeData}.lastName`, "")}
               </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: "400",
-                  color: colors.textColor,
-                }}
-              >
-                Customer Id : {get(profileReducer, `${activeData}.customerNo`, "")}
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{
-                  fontWeight: "400",
-                  color: colors.textColor,
-                }}
-              >
 
+
+              {/* <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: "400",
+                  color: colors.textColor,
+                }}
+              >
+                Customer Id : {load()}
+              </Text> */}
+
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: "400",
+                  color: colors.textColor,
+                }}
+              >
                 {get(
                   profileReducer,
                   `${activeData}.${emailPath}`,
                   ""
                 )}
               </Text>
+
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: "400",
+                  color: colors.textColor,
+                }}
+              >
+                {get(
+                  profileReducer,
+                  `${activeData}.${mobilePath}`,
+                  ""
+                )}
+              </Text>
             </View>
           </View>
         </View>
-        <View style={{ marginTop: 10, backgroundColor: colors.textColor }}>
+        {/* <View style={{ marginTop: 10, backgroundColor: colors.textColor }}>
           <Image source={require("../../Assets/icons/line.png")} />
-        </View>
+        </View> */}
 
 
 
         {console.log("sel cust uuid..", get(profileReducer, 'savedProfileData', ''))}
 
 
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, }}>
+        {/* <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, }}> */}
 
-          <View style={{ flexDirection: "row", alignItems: "center", minWidth: 140 }}>
+        {/* <View style={{ flexDirection: "row", alignItems: "center", minWidth: 140 }}>
             <Image
               source={require("../../Assets/icons/interaction_contact.png")}
               style={{ width: 45, height: 45 }} />
@@ -1137,7 +1209,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               {handleMultipleContact(addr)}
             </Text>
           </View>
-        </View>
+        </View> */}
 
 
 
@@ -1755,7 +1827,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
       <FooterModel
         open={openBottomModal}
         setOpen={setOpenBottomModal}
-        title={bottomBarTitle}>
+        title={bottomBarTitle}
+        disableCloseBut={true}>
         <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
 
 
@@ -1973,8 +2046,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
               <CustomButton
                 label={strings.cancel}
                 onPress={() => {
-                  setOpenBottomModal(false);
-                  dispatchInteraction(setInteractionReset());
+                  unstable_batchedUpdates(() => {
+                    setOpenBottomModal(false);
+                    setKnowledgeSearchText("");
+                    dispatchInteraction(setInteractionReset());
+                  })
                 }}
               />
             </View>
@@ -1992,7 +2068,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const logg = true
                   if (logg) console.log('create complienta :entered', interactionRedux)
                   const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                  const customerID = get(profileReducer, `${activeData}.customerId`, "");
+                  // const customerID = get(profileReducer, `${activeData}.customerId`, "");
+                  const customerID = await getDataFromDB(storageKeys.CUSTOMER_ID);
                   if (customerID == "") console.log("cusomter id is empty");
 
 
@@ -2000,6 +2077,13 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   if (logg) console.log('create complienta :input', input)
                   const profileInfo = get(profileReducer, `${activeData}.customerAddress[0]`, "");
                   console.log("profile info", profileInfo)
+
+
+                  var attachments = await getDataFromDB("ATTACHMENTS")
+                  var _attachments = attachments.split("~")
+
+                  console.log("retrive attachments1.." + attachments)
+                  console.log("retrive attachments2.." + _attachments)
 
 
                   var params = {}
@@ -2038,7 +2122,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   else {
                     params = {
                       customerId: customerID,
-
+                      attachments: _attachments,
                       // statement: input.statement.value,
                       // statementId: input.statementId.value,
                       //problem cause

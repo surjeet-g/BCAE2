@@ -706,6 +706,8 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
     buttonEnableDiable();
   };
 
+  console.log("genderList....", genderList)
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 12 }}>
@@ -1217,6 +1219,7 @@ export const RegisterPersonal = React.memo(({ navigation }) => {
           <>
             <View>
               <Button
+                buttonColor={"#4a5996"}
                 label={strings.register}
                 isDisabled={isButtomDiable}
                 onPress={submit}

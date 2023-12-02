@@ -175,6 +175,7 @@ const Followup = (props) => {
               padding: 20,
               textAlign: "center",
               alignSelf: "center",
+              color: "#000000"
             }}
           >
             No Followup data available for this Interaction

@@ -8,6 +8,7 @@ export const saveData = async (key, data, isString = false) => {
     throw err;
   }
 };
+
 export const clearAllData = async () => {
   const keys = await AsyncStorage.getAllKeys()
   console.log('remove', keys)
@@ -15,6 +16,15 @@ export const clearAllData = async () => {
   console.log('remove result', result)
   return true;
 }
+
+export const clearAttachmentData = async () => {
+  // const keys = await AsyncStorage.get()
+  console.log('remove attachments')
+  const result = await AsyncStorage.removeItem("ATTACHMENTS")
+  console.log('remove ATTACHMENT result', result)
+  return true;
+}
+
 export const getData = async (key, isString = false) => {
   try {
     const data = await AsyncStorage.getItem(key);

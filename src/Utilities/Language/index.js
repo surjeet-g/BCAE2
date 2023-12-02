@@ -3,10 +3,12 @@ import LocalizedStrings from "react-native-localization";
 export let strings = new LocalizedStrings({
   "en-US": {
     building_name: "Building Name/Others*",
+    employee: "Employee",
     street: "Street*",
     state: "State*",
     customer_name: "Customer Name",
     enter_customer_name: "Enter Customer Name",
+    enter_employee: "Enter Employee",
     previous: "Previous",
     save: "Save",
     notification_settings_updated: "Notification settings updated!!",
@@ -195,6 +197,7 @@ export let strings = new LocalizedStrings({
     are_you_sure_delete_account:
       "Are you sure you want to delete your user account",
     please_enter_title: "Please enter a title.",
+    please_enter: "Please enter",
     session_expired: "Your session is expired. Please login again.",
     service: "Service",
     privaceyError:
@@ -216,6 +219,7 @@ export let strings = new LocalizedStrings({
     max_number_of_file: "Maximum number of files attached",
     max_file_size: "Maximum file size limit reached!!",
     max_per_file_size: "Maximum size of each file should be 20 MB",
+    pls_fill_the_form: "Please fill the form to submit",
     current_location: "CURRENT LOCATION",
     location_on_map: "LOCATION ON MAP",
     please_try_later: "Please try later.",
@@ -346,10 +350,12 @@ export let strings = new LocalizedStrings({
   },
   en: {
     building_name: "Building Name/Others*",
+    employee: "Employee",
     street: "Street*",
     state: "State*",
     customer_name: "Customer Name",
     enter_customer_name: "Enter Customer Name",
+    enter_employee: "Enter Employee",
     previous: "Previous",
     save: "Save",
     notification_settings_updated: "Notification settings updated!!",
@@ -539,6 +545,7 @@ export let strings = new LocalizedStrings({
     are_you_sure_delete_account:
       "Are you sure you want to delete your user account",
     please_enter_title: "Please enter a title.",
+    please_enter: "Please enter",
     session_expired: "Your session is expired. Please login again.",
     service: "Service",
     privaceyError:
@@ -560,6 +567,7 @@ export let strings = new LocalizedStrings({
     max_number_of_file: "Maximum number of files attached",
     max_file_size: "Maximum file size limit reached!!",
     max_per_file_size: "Maximum size of each file should be 20 MB",
+    pls_fill_the_form: "Please fill the form to submit",
     current_location: "CURRENT LOCATION",
     location_on_map: "LOCATION ON MAP",
     please_try_later: "Please try later.",
@@ -689,10 +697,12 @@ export let strings = new LocalizedStrings({
 
   ml: {
     building_name: "Building Name/Others*",
+    employee: "Employee",
     street: "Street*",
     state: "State*",
     customer_name: "Nama Pelanggan",
     enter_customer_name: "Enter Customer Name",
+    enter_employee: "Enter Employee",
     previous: "Sebelumnya",
     save: "Jimat",
     notification_settings_updated: "Tetapan pemberitahuan dikemas kini!!",
@@ -884,6 +894,7 @@ export let strings = new LocalizedStrings({
     are_you_sure_delete_account:
       "Adakah anda pasti mahu memadamkan akaun pengguna anda",
     please_enter_title: "Sila masukkan tajuk.",
+    please_enter: "Please enter",
     session_expired: "Sesi anda telah tamat tempoh. Sila log masuk semula.",
     service: "Perkhidmatan",
     privaceyError:
@@ -905,6 +916,7 @@ export let strings = new LocalizedStrings({
     max_number_of_file: "Bilangan maksimum fail dilampirkan",
     max_file_size: "Had saiz fail maksimum dicapai!!",
     max_per_file_size: "Saiz maksimum setiap fail hendaklah 20 MB",
+    pls_fill_the_form: "Please fill the form submit",
     current_location: "LOKASI SEKARANG",
     location_on_map: "LOKASI PADA PETA",
     please_try_later: "Sila cuba kemudian.",

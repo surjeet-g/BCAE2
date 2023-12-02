@@ -1,29 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
   Image,
-  Pressable,
   ScrollView,
-  Keyboard,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
 import {
-  spacing,
-  fontSizes,
   color,
-  buttonType,
-  buttonSize,
-  validateEmail,
-  validatePassword,
+  fontSizes,
+  spacing
 } from "../../Utilities/Constants/Constant";
-import { strings } from "../../Utilities/Language";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
+import { Grid, Row } from "react-native-easy-grid";
 import { Button, Checkbox, Divider } from "react-native-paper";
 import Header from "../TabScreens/Component/Header";
-import { Col, Grid, Row } from "react-native-easy-grid";
 
 const ForgotUserinfo = ({ navigation, props }) => {
   const dispatch = useDispatch([]);
@@ -124,6 +117,7 @@ const ForgotUserinfo = ({ navigation, props }) => {
             disabled={Object.keys(selectedList).every(
               (key) => selectedList[key] == false
             )}
+            buttonColor={"#4a5996"}
             onPress={handleSubmit}
           >
             SUBMIT

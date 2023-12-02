@@ -8,7 +8,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   TouchableOpacity,
   View
 } from "react-native";
@@ -76,7 +75,7 @@ export const ViewProfile = ({ navigation }) => {
           }}
           style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
         >
-          <Icon name={"account-edit"} size={30} color={colors.BLACK} />
+          <Icon name={"account-edit"} size={30} color={"#4a5996"} />
         </Pressable>
       </View>
     );
@@ -298,6 +297,7 @@ export const ViewProfile = ({ navigation }) => {
           </View>
         </View>
 
+
         <ClearSpace size={0} />
         <Pressable
           onPress={() => {
@@ -314,7 +314,6 @@ export const ViewProfile = ({ navigation }) => {
             color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
-
           <Text
             variant="bodyMedium"
             style={{
@@ -336,16 +335,17 @@ export const ViewProfile = ({ navigation }) => {
             </Text>
           </Text>
         </Pressable>
-        <Divider />
+        {/* <Divider /> */}
         <ClearSpace size={0} />
-        <Pressable onPress={() => showLanguageModal()} style={styles.listItem}>
+
+
+        {/* <Pressable onPress={() => showLanguageModal()} style={styles.listItem}>
           <Icon
             name="google-translate"
             size={ICON}
             color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
-
           <Text
             variant="bodyMedium"
             style={{
@@ -366,7 +366,9 @@ export const ViewProfile = ({ navigation }) => {
               {strings.selected_language}: {selectedLanguage}
             </Text>
           </Text>
-        </Pressable>
+        </Pressable> */}
+
+
         <Divider />
         {userType == USERTYPE.CUSTOMER &&
 
@@ -407,7 +409,10 @@ export const ViewProfile = ({ navigation }) => {
           </Pressable>
         }
         <Divider />
-        <View
+
+
+
+        {/* <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -426,7 +431,6 @@ export const ViewProfile = ({ navigation }) => {
               color={colors.profile_enabled}
               style={{ marginRight: 14 }}
             />
-
             <Text
               variant="bodyMedium"
               style={{
@@ -459,20 +463,20 @@ export const ViewProfile = ({ navigation }) => {
             value={isNotiEnabled}
           />
         </View>
-        <Divider />
-        <Pressable onPress={onFaqPressed} style={styles.listItem}>
+        <Divider /> */}
+
+
+        {/* <Pressable onPress={onFaqPressed} style={styles.listItem}>
           <Icon
             name="bank-check"
             size={ICON}
             color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
-
           <Text
             variant="bodyMedium"
             style={{
               fontWeight: "600",
-
               color: colors.secondary,
             }}
           >
@@ -490,8 +494,11 @@ export const ViewProfile = ({ navigation }) => {
             </Text>
           </Text>
         </Pressable>
-        <Divider />
-        <Pressable
+        <Divider /> */}
+
+
+
+        {/* <Pressable
           // onPress={() => setShowAnnouncementModal(true)}
           style={styles.listItem}
         >
@@ -501,7 +508,6 @@ export const ViewProfile = ({ navigation }) => {
             color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
-
           <Text
             variant="bodyMedium"
             style={{
@@ -524,15 +530,16 @@ export const ViewProfile = ({ navigation }) => {
             </Text>
           </Text>
         </Pressable>
-        <Divider />
-        <Pressable onPress={onDeletePressed} style={styles.listItem}>
+        <Divider /> */}
+
+
+        {/* <Pressable onPress={onDeletePressed} style={styles.listItem}>
           <Icon
             name="delete-outline"
             size={ICON}
             color={colors.profile_enabled}
             style={{ marginRight: 14 }}
           />
-
           <Text
             variant="bodyMedium"
             style={{
@@ -554,12 +561,14 @@ export const ViewProfile = ({ navigation }) => {
               {strings.delete_your_account}
             </Text>
           </Text>
-        </Pressable>
+        </Pressable> */}
 
         <ClearSpace size={0} />
 
+
         <Button
           style={{
+            marginTop: 50,
             padding: 2,
             borderRadius: 21,
             width: "70%",
@@ -568,7 +577,7 @@ export const ViewProfile = ({ navigation }) => {
           icon="logout"
           mode="contained"
           // color={"white"}
-          buttonColor={"#4C5A81"}
+          buttonColor={"#4a5996"}
           onPress={async () => {
             Alert.alert(strings.attention, strings.are_you_sure_logout, [
               {

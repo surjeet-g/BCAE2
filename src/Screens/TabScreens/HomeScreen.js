@@ -21,9 +21,10 @@ import { getAppointmentDashboardData, getHelpdeskSummary } from "../../Redux/App
 import { getCustomerAccountData } from "../../Redux/CustomerAccountDispatcher";
 import { getInteractionListData } from "../../Redux/InteractionListDispatcher";
 import { getOrderListData } from "../../Redux/OrderListDispatcher";
-import { DATE_FORMAT } from "../../Utilities/Constants/Constant";
+import { DATE_FORMAT, SUPPORT_NUM } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
+import { openWhatsApp } from "../../Utilities/utils";
 
 var { height, width } = Dimensions.get("screen");
 

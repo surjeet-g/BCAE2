@@ -110,12 +110,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: "20%",
+            width: "40%",
             // backgroundColor: "red",
             borderColor: "transparent",
             borderWidth: state.index === 0 ? 3 : 0,
             borderTopColor:
-              state.index === 0 ? "#9C8FC4" : "transparent",
+              state.index === 0 ? "#4a5996" : "transparent",
           }}
         >
           <Image
@@ -129,6 +129,30 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           </Text>
         </Pressable>
 
+
+
+        {/* button */}
+        <Pressable
+          // onPress={() => openModal()}
+          onPress={() => onNavClickButton("InteractionsToOrder")}
+          style={{
+            marginTop: spacing.HEIGHT_2,
+            marginBottom: spacing.HEIGHT_2,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "20%",
+          }}
+        >
+          <View>
+            <Image
+              style={styles.addLogo}
+              source={require("../Assets/icons/add_ic_2.png")}
+            />
+          </View>
+          {/* <Text style={styles.upperText}>{strings.announcement}</Text> */}
+        </Pressable>
+
         <Pressable
           onPress={() => onNavClick("Search")}
           style={{
@@ -137,7 +161,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: "20%",
+            width: "40%",
             borderColor: "transparent",
             borderWidth: state.index === 1 ? 3 : 0,
             borderTopColor:
@@ -155,28 +179,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           </Text>
         </Pressable>
 
-        {/* button */}
-        <Pressable
-          onPress={() => openModal()}
-          style={{
-            marginTop: spacing.HEIGHT_2,
-            marginBottom: spacing.HEIGHT_2,
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "20%",
-          }}
-        >
-          <View>
-            <Image
-              style={styles.addLogo}
-              source={require("../Assets/icons/ic_more.png")}
-            />
-          </View>
-          {/* <Text style={styles.upperText}>{strings.announcement}</Text> */}
-        </Pressable>
-
-        <Pressable
+        {/* <Pressable
           onPress={() => onNavClick("Chat")}
           style={{
             marginTop: spacing.HEIGHT_2,
@@ -200,12 +203,11 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             adjustsFontSizeToFit
             style={state.index === 2 ? styles.selectedText : styles.upperText}
           >
-            {/* {strings.offers} */}
             Chat
           </Text>
-        </Pressable>
+        </Pressable> */}
 
-        <Pressable
+        {/* <Pressable
           onPress={() => onNavClick("Help")}
           style={{
             marginTop: spacing.HEIGHT_2,
@@ -229,7 +231,9 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           >
             {strings.help}
           </Text>
-        </Pressable>
+        </Pressable> */}
+
+
       </View>
     </Pressable>
   );
@@ -264,20 +268,23 @@ const styles = StyleSheet.create({
     height: spacing.WIDTH_20,
   },
   selectedText: {
-    color: "#9C8FC4",
+    color: "#4a5996",
     fontSize: fontSizes.FONT_10,
     fontWeight: "500",
     marginTop: 5,
     lineHeight: spacing.WIDTH_14,
   },
   selectedLogo: {
-    tintColor: "#9C8FC4",
+    tintColor: "#4a5996",
     width: spacing.WIDTH_20,
     height: spacing.WIDTH_20,
   },
   addLogo: {
-    width: 60,
-    height: 60,
+    padding: 18,
+    backgroundColor: "#4a5996",
+    tintColor: "#FFFFFF",
+    width: 30,
+    height: 30,
     marginBottom: 60,
     zIndex: 10,
     borderRadius: 30,

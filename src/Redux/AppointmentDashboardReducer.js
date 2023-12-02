@@ -4,6 +4,8 @@ import {
   APPOINTMENT_DASHBOARD_INIT,
   APPOINTMENT_EVENTS_DATA,
   APPOINTMENT_EVENTS_ERROR_DATA,
+  APPOINTMENT_PERFORMANCE_DATA,
+  APPOINTMENT_PERFORMANCE_ERROR_DATA,
   APPOINTMENT_REMINDERS_DATA,
   APPOINTMENT_REMINDERS_ERROR_DATA,
   CLOSED_APPOINTMENTS_DATA,
@@ -323,6 +325,8 @@ const appointmentDashboardInitialState = {
   appointmentsRemindersErrorData: {},
   typeBasedAppointmentData: {},
   typeBasedAppointmentErrorData: {},
+  appPerformanceData: {},
+  appPerformanceErrorData: {},
 };
 
 const AppointmentDashboardReducer = (
@@ -1460,6 +1464,20 @@ const AppointmentDashboardReducer = (
       return {
         ...state,
         typeBasedAppointmentErrorData: action.data,
+      };
+
+
+
+    case APPOINTMENT_PERFORMANCE_DATA:
+      return {
+        ...state,
+        appPerformanceData: action.data,
+      };
+
+    case APPOINTMENT_PERFORMANCE_ERROR_DATA:
+      return {
+        ...state,
+        appPerformanceErrorData: action.data,
       };
 
 

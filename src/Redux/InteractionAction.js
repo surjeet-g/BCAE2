@@ -48,9 +48,16 @@ export const INTERACTION_KNEWLEGE_HISTORY =
 export const STATUS_DATA = "STATUS_DATA";
 export const STATUS_DATA_FAILURE = "STATUS_DATA_FAILURE";
 
+export const SOURCE_DATA = "SOURCE_DATA";
+export const SOURCE_DATA_FAILURE = "SOURCE_DATA_FAILURE";
+
 
 export const INTXN_ATTACHMENT_DATA = "INTXN_ATTACHMENT_DATA";
 export const INTXN_ATTACHMENT_ERROR_DATA = "INTXN_ATTACHMENT_ERROR_DATA";
+
+
+export const ATTACHED_ENTITY_DATA = "ATTACHED_ENTITY_DATA";
+export const ATTACHED_ENTITY_DATA_ERROR = "ATTACHED_ENTITY_DATA_ERROR";
 
 
 export const INTXN_DOWNLOAD_ATTACHMENT_DATA = "INTXN_DOWNLOAD_ATTACHMENT_DATA";
@@ -205,6 +212,15 @@ export function setStatusErrorDataInStore(data) {
 }
 
 
+export function setSourceDataInStore(data) {
+  return { type: SOURCE_DATA, data };
+}
+
+export function setSourceErrorDataInStore(data) {
+  return { type: SOURCE_DATA_FAILURE, data };
+}
+
+
 
 export function setIntxnDetAttachmentDataInStore(data) {
   return { type: INTXN_ATTACHMENT_DATA, data };
@@ -212,6 +228,15 @@ export function setIntxnDetAttachmentDataInStore(data) {
 
 export function setIntxnDetAttachmentErrorDataInStore(data) {
   return { type: INTXN_ATTACHMENT_ERROR_DATA, data };
+}
+
+
+export function setAttachmentEntityDataInStore(data) {
+  return { type: ATTACHED_ENTITY_DATA, data };
+}
+
+export function setAttachmentEntityErrorDataInStore(data) {
+  return { type: ATTACHED_ENTITY_DATA_ERROR, data };
 }
 
 

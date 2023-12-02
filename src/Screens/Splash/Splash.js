@@ -76,7 +76,7 @@ const Splash = ({ route, navigation }) => {
   return (
     <View style={{ backgroundColor: colors.background, flex: 1 }}>
       <ImageBackground
-        source={require("../../Assets/icons/bg.png")}
+        source={require("../../Assets/icons/splash_bg.png")}
         resizeMode="cover"
         style={{
           flex: 1,
@@ -117,7 +117,7 @@ const Splash = ({ route, navigation }) => {
                 backgroundColor: color.WHITE, alignContent: "center"
               }}
             >
-              1.0.6
+              1.0.5
             </Text>
           </View>
 

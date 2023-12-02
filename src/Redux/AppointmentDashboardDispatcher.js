@@ -10,6 +10,8 @@ import {
 } from "../Utilities/UserManagement/userInfo";
 import {
   initAppointmentDashboardData,
+  setAppPerformanceData,
+  setAppPerformanceErrorData,
   setAppointmentDashboardData,
   setAppointmentDashboardError,
   setAppointmentEventsData,
@@ -1855,9 +1857,8 @@ export async function getTeamCategoryPerformance(_params) {
 }
 
 
-export async function getUpcomingAppointments() {
+export async function getUpcomingAppointments(params) {
   return async (dispatch) => {
-    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
     let url = endPoints.DASHBOARD_APPOINTMENT_GET_UPCOMING;
     console.log("getUpcomingAppointments url..", url);
     console.log("getUpcomingAppointments params..", params);
@@ -1875,9 +1876,8 @@ export async function getUpcomingAppointments() {
 
 
 
-export async function getClosedAppointments() {
+export async function getClosedAppointments(params) {
   return async (dispatch) => {
-    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
     let url = endPoints.DASHBOARD_APPOINTMENT_GET_CLOSED;
     console.log("getClosedAppointments url..", url);
     console.log("getClosedAppointments params..", params);
@@ -1895,9 +1895,8 @@ export async function getClosedAppointments() {
 
 
 
-export async function getAppointmentEvents() {
+export async function getAppointmentEvents(params) {
   return async (dispatch) => {
-    let params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
     let url = endPoints.DASHBOARD_APPOINTMENT_GET_EVENTS;
     console.log("getAppointmentEvents url..", url);
     console.log("getAppointmentEvents params..", params);
@@ -1947,6 +1946,25 @@ export async function getAppointmentsBasedOnType(params) {
     } else {
       console.log("getAppointmentsBasedOnType result failed..", result);
       dispatch(setTypeBasedAppErrorData(result));
+    }
+  };
+}
+
+
+
+export async function getAppointmentPerformance(params) {
+  return async (dispatch) => {
+    let url = endPoints.DASHBOARD_APPOINTMENT_GET_PERFORMANCE;
+    console.log("getAppointmentPerformance url..", url);
+    console.log("getAppointmentPerformance params..", params);
+    let result = await serverCall(url, requestMethod.POST, params);
+    console.log("getAppointmentPerformance result..", result);
+    if (result.success) {
+      console.log("getAppointmentPerformance result success..", result);
+      dispatch(setAppPerformanceData(result.data));
+    } else {
+      console.log("getAppointmentPerformance result failed..", result);
+      dispatch(setAppPerformanceErrorData(result));
     }
   };
 }

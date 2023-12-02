@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import { Image, Platform, Pressable, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
@@ -55,7 +54,7 @@ const BottomBarNavigation = () => {
     headerShown: true,
     headerStyle: {
       ...fonts.titleLarge,
-      backgroundColor: "#1B4F72",
+      backgroundColor: "#4a5996",
     },
     headerTitleStyle: {
       ...fonts.titleMedium,
@@ -93,7 +92,7 @@ const BottomBarNavigation = () => {
             onPress={() => navigation.navigate("SwitchRole")}
             style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
           >
-            <Icon name="account-switch" size={28} color={Colors.BLACK} />
+            <Icon name="account-switch" size={28} color={"#4a5996"} />
           </Pressable>
 
           <View style={navBar.divider} />

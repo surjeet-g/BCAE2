@@ -136,6 +136,7 @@ const MobileLoging = (props) => {
             label={strings.reset_password}
             disabled={number == "" ? true : false}
             onPress={submit}
+            buttonColor={"#4a5996"}
           >
             {" "}
             {strings.reset_password}

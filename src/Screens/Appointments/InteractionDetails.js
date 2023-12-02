@@ -38,6 +38,7 @@ import {
   createFollowupForInteractionID,
   downloadattachment,
   fetchCancelReasons,
+  fetchSource,
   fetchStatus,
   fetchUsersByRole,
   getAttachmentList,
@@ -75,6 +76,7 @@ const InteractionDetails = (props) => {
 
   console.log("props received...", props)
   interactionID = interactionSearchParams
+  console.log("interactionID...", interactionID)
 
   useEffect(() => {
     async function refresh() {
@@ -103,6 +105,10 @@ const InteractionDetails = (props) => {
   const [userType, setUserType] = useState("");
   const [formPriority, setFormPriority] = useState({});
   const [formSource, setSource] = useState({});
+
+  const [sourceCode, setSourceCode] = useState("");
+  const [sourceValue, setSourceValue] = useState("");
+
   const [formRemarks, setFormRemarks] = useState("");
   const [followupLoader, setFollowupLoader] = useState(false)
   const [usersByRollList, setusersByRollList] = useState([])
@@ -128,6 +134,8 @@ const InteractionDetails = (props) => {
 
   const resetFollup = () => {
     setSource("")
+    setSourceCode("")
+    setSourceValue("")
     setFormRemarks("")
     setFormPriority("")
   }
@@ -144,7 +152,8 @@ const InteractionDetails = (props) => {
     fetchStatus,
     fetchCancelReasons,
     cancelInteraction,
-    getAttachmentList
+    getAttachmentList,
+    fetchSource
   ]);
 
   let masterReducer = useSelector((state) => state.masterdata);
@@ -169,6 +178,8 @@ const InteractionDetails = (props) => {
       setCurrUserId(await getUserId())
       setCurrRoleId(await getDataFromDB(storageKeys.CURRENT_ROLE_ID))
       setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+
+      console.log("expected useEffect...")
 
       let params = {
         searchParams: {
@@ -198,6 +209,10 @@ const InteractionDetails = (props) => {
       console.log("interactionUsersByRoleData got..", interactionReducer.interactionUsersByRoleData);
 
       await dispatch(await fetchStatus(interactionID.interactionSearchParams.intxnUuid, "INTERACTION"))
+
+      await dispatch(await fetchSource())
+      console.log("fetch source got..", interactionReducer?.sourceData);
+
 
       await dispatch(await fetchCancelReasons())
       console.log("interactionCancelReasonsData got..", interactionReducer.interactionCancelReasonsData);
@@ -507,6 +522,26 @@ const InteractionDetails = (props) => {
 
   const DetailsInfoUIFull = () => {
     console.log("data", InteractionDetailsData)
+
+    var firstName = "", lastName = "", contactType = ""
+    if (interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.firstName !== undefined) {
+      firstName = interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.firstName
+    }
+    if (interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.lastName !== undefined) {
+      lastName = interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.lastName
+    }
+
+
+    InteractionDetailsData?.contactPreference?.map((item, idx) => {
+      if (contactType === "") {
+        contactType = item.description
+      }
+      else {
+        contactType = contactType + " , " + item.description
+      }
+    })
+
+
     return (
       <View
         style={{
@@ -532,12 +567,12 @@ const InteractionDetails = (props) => {
           }}
           numberOfLines={1}
         >
-          Interaction ID: {InteractionDetailsData?.intxnNo}
+          Interaction No.: {InteractionDetailsData?.intxnNo}
         </Text>
 
         <View
           style={{
-            padding: 20,
+            padding: 10
           }}
         >
           {/* Row 1 */}
@@ -550,21 +585,46 @@ const InteractionDetails = (props) => {
             />
           </View>
 
-          {/* Row 2*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Date & Time View */}
+            <DetailInfoItem title={"Current User"}
+              value={firstName
+                + " " + lastName}
+              flex={4} />
+          </View>
+
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <DetailInfoItem title={"Current Department"}
+              value={interactionReducer?.interactionSearchData?.[0]?.currentDepartment?.description?.unitDesc}
+              flex={1} />
+
             <DetailInfoItem
-              title={"Created Date & time"}
-              value={moment(InteractionDetailsData?.createdAt).format(
-                "DD MMM YYYY, hh:mm A"
-              )}
-              flex={2}
+              title={"Current Role"}
+              value={interactionReducer?.interactionSearchData?.[0]?.currentRole?.description?.roleDesc}
+              flex={1}
             />
           </View>
 
-          {/* Row 2*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Service Type View */}
+            <DetailInfoItem
+              title={"Category"}
+              value={InteractionDetailsData?.intxnCategory?.description}
+              flex={1}
+            />
+
+            <DetailInfoItem
+              title={"Type"}
+              value={InteractionDetailsData?.intxnType?.description}
+              flex={1}
+            />
+          </View>
+
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <DetailInfoItem
+              title={"Service Category"}
+              value={InteractionDetailsData?.serviceCategory?.description}
+              flex={1}
+            />
+
             <DetailInfoItem
               title={"Service type"}
               value={InteractionDetailsData?.serviceType?.description}
@@ -572,16 +632,13 @@ const InteractionDetails = (props) => {
             />
           </View>
 
-          {/* Row 3*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Interaction Type View */}
             <DetailInfoItem
-              title={"Interaction Type"}
-              value={InteractionDetailsData?.intxnType?.description}
-              flex={2}
+              title={"Status"}
+              value={interactionReducer?.interactionSearchData?.[0]?.intxnStatus?.description}
+              flex={1}
             />
 
-            {/* Priority View */}
             <DetailInfoItem
               title={"Priority"}
               value={InteractionDetailsData?.intxnPriority?.description}
@@ -589,29 +646,22 @@ const InteractionDetails = (props) => {
             />
           </View>
 
-          {/* Row 4*/}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Problem Statement View */}
+            {/* <DetailInfoItem
+              title={"Created Date"}
+              value={moment(InteractionDetailsData?.createdAt).format(
+                "DD MMM YYYY"
+              )}
+              flex={1}
+            /> */}
             <DetailInfoItem
-              title={"Service Category"}
-              value={InteractionDetailsData?.serviceCategory?.description}
-              flex={2}
-            />
-
-            {/* Status View */}
-            <DetailInfoItem
-              title={"Status"}
-              value={InteractionDetailsData?.intxnStatus?.description}
+              title={"Exp. Completion Date"}
+              value={moment(interactionReducer?.interactionSearchData?.[0]?.edoc).format(
+                "DD MMM YYYY"
+              )}
               flex={1}
             />
-          </View>
 
-          {/* Row 5*/}
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
-            {/* Contact type View */}
-            <DetailInfoItem title={"Contact Type"} value={handleMutiContactPer(InteractionDetailsData?.contactPreference)} flex={2} />
-
-            {/*Follow up View */}
             <DetailInfoItem
               title={"Follow Up"}
               value={interactionReducer?.interactionFollowupData?.length}
@@ -623,7 +673,12 @@ const InteractionDetails = (props) => {
             />
           </View>
 
-          {/* Row 6*/}
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <DetailInfoItem title={"Contact Preference"}
+              value={contactType}
+              flex={1} />
+          </View>
+
           {InteractionDetailsData?.attachments?.length > 0 && (
             <View style={{ flexDirection: "row", marginTop: 20 }}>
               {/* Attachments View */}
@@ -633,6 +688,7 @@ const InteractionDetails = (props) => {
               />
             </View>
           )}
+
         </View>
       </View>
     );
@@ -846,6 +902,10 @@ const InteractionDetails = (props) => {
     const priorityList = get(masterReducer, "masterdataData.PRIORITY", []);
     const sourceList = get(masterReducer, "masterdataData.SOURCE", []);
 
+    var sourceData = interactionReducer?.sourceData?.TICKET_SOURCE?.map(item => {
+      return { description: item.value, code: item.code }
+    })
+
     return (
       <FooterModel
         open={showBottomModal}
@@ -869,12 +929,13 @@ const InteractionDetails = (props) => {
               />
             )}
 
+
             {sourceList.length > 0 && (
               <CustomDropDownFullWidth
                 selectedValue={get(formSource, "description", "")}
-                data={sourceList}
+                data={sourceData}
                 onChangeText={(text) => {
-                  setSource(text);
+                  setSource(text)
                 }}
                 value={get(formSource, "code", "")}
                 caption={strings.source}
@@ -1025,14 +1086,14 @@ const InteractionDetails = (props) => {
               <CustomDropDownFullWidth
                 selectedValue={selRoleDesc}
                 data={_roleData}
-                onChangeText={(text) => {
+                onChangeText={async (text) => {
                   unstable_batchedUpdates(() => {
                     setRoleDesc(text.description),
                       setRoleCode(text.code)
                     // setRoleCodeAction(!roleCodeAction)
                   })
-                  dispatch(
-                    fetchUsersByRole(text.code, selDeptCode, navigation)
+                  await dispatch(
+                    await fetchUsersByRole(text.code, selDeptCode, navigation)
                   )
                   console.log("interactionUsersByRoleData2 got..", interactionReducer.interactionUsersByRoleData);
                 }}

@@ -711,7 +711,7 @@ const EditProfile = ({ navigation, props }) => {
           <View
             style={{
               // height: 150,
-              backgroundColor: "#4C5A81",
+              backgroundColor: "#4a5996",
               marginTop: 70,
               marginLeft: 10,
               marginRight: 10,
@@ -994,7 +994,7 @@ const EditProfile = ({ navigation, props }) => {
           )}
           <StickyFooter>
             <CustomButton
-              style={{ backgroundColor: "#4C5A81" }}
+              style={{ backgroundColor: "#4a5996" }}
               loading={false}
               label={"Update"}
               isDisabled={!isbuttonEnable()}

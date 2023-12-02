@@ -149,7 +149,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Profile",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -171,7 +171,7 @@ function MyStack() {
             ...{
               headerTitle: "Appointment Dashboard",
               headerStyle: {
-                backgroundColor: "#4C5A81",
+                backgroundColor: "#4a5996",
               },
               headerRight: () => {
                 return (
@@ -202,7 +202,7 @@ function MyStack() {
             ...{
               headerTitle: "Notification",
               headerStyle: {
-                backgroundColor: "#4C5A81",
+                backgroundColor: "#4a5996",
               },
               headerRight: () => {
                 return <View></View>;
@@ -223,7 +223,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Edit Profile",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -259,7 +259,7 @@ function MyStack() {
               headerTitle: "Chat",
               headerStyle: {
                 tint: "white",
-                backgroundColor: "#4C5A81",
+                backgroundColor: "#4a5996",
               },
               headerRight: null
             },
@@ -282,7 +282,10 @@ function MyStack() {
               title: "Change password",
               headerRight: () => null,
               headerTitle: "Change password",
-              headerTintColor: colors.inverseSecondary,
+              headerStyle: {
+                tint: "white",
+                backgroundColor: "#4a5996",
+              },
             },
           }}
         />
@@ -343,7 +346,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Switch Role",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -365,7 +368,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interaction Search",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -386,7 +389,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interaction Search",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -494,7 +497,7 @@ function MyStack() {
               },
               headerStyle: {
                 tint: "white",
-                backgroundColor: "#4C5A81",
+                backgroundColor: "#4a5996",
               },
               headerRight: null,
             },
@@ -515,7 +518,7 @@ function MyStack() {
               headerTitle: "Saved Locations",
               headerStyle: {
                 tint: "white",
-                backgroundColor: "#4C5A81",
+                backgroundColor: "#4a5996",
               },
             },
           })}
@@ -560,7 +563,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interactions",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -580,7 +583,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Choose Product",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -601,7 +604,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "View Order",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -622,7 +625,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Appointment Details",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -643,7 +646,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Interaction Details",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -664,7 +667,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Order Details",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -685,7 +688,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Followup History",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -706,7 +709,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Workflow History",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
@@ -727,7 +730,7 @@ function MyStack() {
             ...{
               headerTintColor: "#fff",
               headerTitle: "Create Customer",
-              headerBackgroundContainerStyle: { backgroundColor: "#4C5A81" },
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
               headerTitleStyle: {
                 ...fonts.titleLarge,
                 ...{ color: "#fff", fontWeight: "700" },
