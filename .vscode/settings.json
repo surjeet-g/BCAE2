@@ -9,14 +9,10 @@
         "editor.showUnused": true,
 
           "editor.codeActionsOnSave": {
-
-    "source.fixAll.eslint": true,
-
-      "source.organizeImports": true,
-
-        "source.sortMembers": true
-
-  },
+            "source.fixAll.eslint": "explicit",
+            "source.organizeImports": "explicit",
+            "source.sortMembers": "explicit"
+          },
 
   "eslint.validate": [
 

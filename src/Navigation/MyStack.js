@@ -49,6 +49,7 @@ import OrderDetails from "../Screens/Appointments/OrderDetails";
 import Chat from "../Screens/Chat/Chat";
 import Notification from "../Screens/Notification/Notification";
 import { ProductListing } from "../Screens/TabScreens/Component/Interaction/ProductListing";
+import InteractionForms from "../Screens/TabScreens/InteractionForms";
 import InteractionSearch from "../Screens/TabScreens/InteractionSearch";
 import InteractionSearchResult from "../Screens/TabScreens/InteractionSearchResult";
 import SwitchRole from "../Screens/TabScreens/SwitchRole";
@@ -377,6 +378,27 @@ function MyStack() {
           })}
           name={STACK_INTERACTION_SEARCH}
           component={InteractionSearch}
+        />
+
+        <Stack.Screen
+          listeners={{
+            transitionStart: ({ data: { closing } }) => {
+              closing && Platform.OS === 'android' && Keyboard.dismiss();
+            },
+          }}
+          options={({ navigation }) => ({
+            ...{
+              headerTintColor: "#fff",
+              headerTitle: "Requirement Details",
+              headerBackgroundContainerStyle: { backgroundColor: "#4a5996" },
+              headerTitleStyle: {
+                ...fonts.titleLarge,
+                ...{ color: "#fff", fontWeight: "700" },
+              },
+            },
+          })}
+          name={"InteractionForms"}
+          component={InteractionForms}
         />
 
         <Stack.Screen

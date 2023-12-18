@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">dtWorks</string>
+    <!-- <string name="app_name">dtWorks</string> -->
+     <string name="app_name">dtWorks</string>
 </resources>

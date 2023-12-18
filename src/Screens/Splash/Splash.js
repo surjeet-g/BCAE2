@@ -85,13 +85,14 @@ const Splash = ({ route, navigation }) => {
         <View style={commonStyle.center}>
           <Image
             source={require("../../Assets/icons/logo_new.png")}
+            // source={require("../../Assets/icons/ncrtc_logo.png")}
             // resizeMode="cover"
             style={{
               marginTop: 15,
               padding: 60,
               // flex: 1,
               width: 300,
-              height: 100
+              height: 70
             }}
           />
         </View>
@@ -117,7 +118,7 @@ const Splash = ({ route, navigation }) => {
                 backgroundColor: color.WHITE, alignContent: "center"
               }}
             >
-              1.0.5
+              1.2
             </Text>
           </View>
 
@@ -138,7 +139,7 @@ const Splash = ({ route, navigation }) => {
             variant="labelSmall"
             style={{ textAlign: "center", marginBottom: 30 }}
           >
-            © {new Date().getFullYear()} Dtworks. All rights reserved.
+            © {new Date().getFullYear()} dtWorks. All rights reserved.
           </Text>
         </View>
       </StickyFooter>

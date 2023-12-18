@@ -16,7 +16,6 @@ import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadInteractionAttachment } from "../Redux/InteractionDispatcher";
-import { getDataFromDB, saveDataToDB } from "../Storage/token";
 import { spacing } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 import AttachmentItem from "./AttachmentItem";
@@ -167,14 +166,14 @@ export const ImagePicker = ({
 
     dispatch(await uploadInteractionAttachment(attachmentData))
 
-    if (interactionReducer?.attachedEntityData?.entityId !== undefined) {
-      if (await getDataFromDB("ATTACHMENTS") !== "") {
-        await saveDataToDB("ATTACHMENTS", await getDataFromDB("ATTACHMENTS") + "~" + interactionReducer?.attachedEntityData?.entityId);
-      }
-      else {
-        await saveDataToDB("ATTACHMENTS", interactionReducer?.attachedEntityData?.entityId);
-      }
-    }
+    // if (interactionReducer?.attachedEntityData?.entityId !== undefined) {
+    //   if (await getDataFromDB("ATTACHMENTS") !== "") {
+    //     await saveDataToDB("ATTACHMENTS", await getDataFromDB("ATTACHMENTS") + "~" + interactionReducer?.attachedEntityData?.entityId);
+    //   }
+    //   else {
+    //     await saveDataToDB("ATTACHMENTS", interactionReducer?.attachedEntityData?.entityId);
+    //   }
+    // }
   }
 
   const onDeleteClicked = (index) => {

@@ -109,8 +109,8 @@ import {
   getUpcomingAppointments
 } from "../../Redux/AppointmentDashboardDispatcher";
 import { getInteractionDetailsSearch } from "../../Redux/InteractionDispatcher";
-import { getDataFromDB } from "../../Storage/token";
-import { color, storageKeys } from "../../Utilities/Constants/Constant";
+import { getDataFromDB, saveDataToDB } from "../../Storage/token";
+import { color, constVariables, storageKeys } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
 import { getUserId } from "../../Utilities/UserManagement/userInfo";
 
@@ -132,6 +132,8 @@ const TAB_INFORMATIVE = false;
 export const UserHomeScreen = (props) => {
 
   console.log("UserHomeScreen rendering..");
+
+
 
   const isFocused = useIsFocused();
 
@@ -294,6 +296,21 @@ export const UserHomeScreen = (props) => {
   const [showOperationalMenu, setShowOperationalMenu] = useState(false);
   const [showAppointmentMenu, setShowAppointmentMenu] = useState(false);
 
+  const [currentDashboard, setCurrentDashboard] = useState(constVariables.HELPDESK);
+
+  useEffect(() => {
+    async function getData() {
+      var currDashboard = await getDataFromDB(storageKeys.CURRENT_DASHBOARD)
+      if ((currDashboard == "") || (currDashboard == undefined)) {
+
+      }
+      else {
+        setCurrentDashboard(currDashboard)
+        console.log("currentDashboard....", currentDashboard)
+      }
+    }
+    getData()
+  }, [isFocused])
 
 
   useEffect(() => {
@@ -355,9 +372,40 @@ export const UserHomeScreen = (props) => {
           setShowHelpdeskMenu(false)
         }
       })
+
+
+
+      if (currentDashboard == constVariables.HELPDESK) {
+        setShowHelpdeskDashboard(true)
+        setShowInteractionDashboard(false)
+        setShowOperationalDashboard(false)
+        setShowAppointmentDashboard(false)
+      }
+
+      if (currentDashboard == constVariables.INTERACTION) {
+        setShowHelpdeskDashboard(false)
+        setShowInteractionDashboard(true)
+        setShowOperationalDashboard(false)
+        setShowAppointmentDashboard(false)
+      }
+
+      if (currentDashboard == constVariables.OPERATIONAL) {
+        setShowHelpdeskDashboard(false)
+        setShowInteractionDashboard(false)
+        setShowOperationalDashboard(true)
+        setShowAppointmentDashboard(false)
+      }
+
+      if (currentDashboard == constVariables.APPOINTMENT) {
+        setShowHelpdeskDashboard(false)
+        setShowInteractionDashboard(false)
+        setShowOperationalDashboard(false)
+        setShowAppointmentDashboard(true)
+      }
     }
     getData()
-  }, [isFocused])
+  }, [currentDashboard])
+
 
   dispatch = useDispatch([
     // ---------------------------------------------Interaction methods-------------------------------------------------------------
@@ -994,60 +1042,59 @@ export const UserHomeScreen = (props) => {
 
         // ---------------------------------------------Helpdesk live requests end-------------------------------------------------------------
 
-        dispatch(getHelpdeskSummary(params))
+        await dispatch(await getHelpdeskSummary(params))
         console.log("getHelpdeskSummary result UI2..", intDashRed?.helpdeskSummaryData);
 
-        dispatch(getHelpdeskHourlyTickets())
-        console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.helpdeskSummaryData);
+        await dispatch(await getHelpdeskHourlyTickets())
+        console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.hourlyTicketsData);
 
-        dispatch(getSupportTtkPending(params))
+        await dispatch(await getSupportTtkPending(params))
         console.log("getSupportTtkPending count result UI3..", intDashRed?.supportTtkPendingCountsData);
         console.log("getSupportTtkPending result UI4..", intDashRed?.supportTtkPendingData);
 
-        dispatch(getMonthlyTrend())
+        await dispatch(await getMonthlyTrend())
         console.log("getMonthlyTrend result UI2..", intDashRed.supportMonthlyTrendData);
 
-        dispatch(getHelpdeskByStatus(params))
+        await dispatch(await getHelpdeskByStatus(params))
         console.log("getHelpdeskByStatus result UI2..", intDashRed.helpdeskByStatusData);
 
-        dispatch(getHelpdeskByAgeing(params))
+        await dispatch(await getHelpdeskByAgeing({}))
         console.log("getHelpdeskByAgeing result UI2..", intDashRed.helpdeskByAgeingData);
 
         await dispatch(await getHelpdeskBySeverity(params))
         console.log("getHelpdeskBySeverity result UI2..", intDashRed.helpdeskBySeverityData);
 
-        dispatch(getHelpdeskProjectWise(params))
+        await dispatch(await getHelpdeskProjectWise(params))
         console.log("getHelpdeskProjectWise result UI2..", intDashRed.helpdeskProjectWiseData);
 
-        dispatch(getHelpdeskAgentWise(params))
+        await dispatch(await getHelpdeskAgentWise(params))
         console.log("getHelpdeskAgentWise result UI2..", intDashRed.helpdeskAgentWiseData);
 
         let params1 = {
           helpdeskType: "CLARIFICATION",
           type: "LIST"
         };
-        dispatch(getHelpdeskSummaryClarification(params1))
+        await dispatch(await getHelpdeskSummaryClarification(params1))
         console.log("getHelpdeskSummaryClarification result UI..", intDashRed?.helpdeskSummaryClarificationData);
 
         let params02 = {
           helpdeskType: "INCIDENT",
           type: "LIST"
         };
-        dispatch(getHelpdeskSummaryIncident(params02))
+        await dispatch(await getHelpdeskSummaryIncident(params02))
         console.log("getHelpdeskSummaryIncident result UI..", intDashRed?.helpdeskSummaryIncidentData);
 
         let params3 = {
           helpdeskType: "SERVICEREQUEST",
           type: "LIST"
         };
-        dispatch(getHelpdeskSummaryServiceRequest(params3))
+        await dispatch(await getHelpdeskSummaryServiceRequest(params3))
         console.log("getHelpdeskSummaryServiceRequest result UI..", intDashRed?.helpdeskSummaryServiceRequestData);
 
         let params4 = {
           helpdeskType: null,
           type: "LIST"
         };
-
         await dispatch(await getHelpdeskSummaryUnclassified(params4))
         console.log("getHelpdeskSummaryUnclassified result UI..", intDashRed?.helpdeskSummaryUnclassifiedData);
 
@@ -1056,8 +1103,10 @@ export const UserHomeScreen = (props) => {
 
       // ---------------------------------------------Helpdesk Requests end-------------------------------------------------------------
     }
-    getData()
-  }, [showHelpdeskDashboard, helpdeskFilterOn]);
+    if (currentDashboard == constVariables.HELPDESK) {
+      getData()
+    }
+  }, [showHelpdeskDashboard, helpdeskFilterOn, currentDashboard]);
 
 
   // Interaction api  
@@ -1199,8 +1248,10 @@ export const UserHomeScreen = (props) => {
 
       // ---------------------------------------------Interaction requests end-------------------------------------------------------------
     }
-    getData()
-  }, [showInteractionDashboard, intxnFilterOn]);
+    if (currentDashboard == constVariables.INTERACTION) {
+      getData()
+    }
+  }, [showInteractionDashboard, intxnFilterOn, currentDashboard]);
 
 
   // Operational api 
@@ -1452,8 +1503,11 @@ export const UserHomeScreen = (props) => {
       // ---------------------------------------------Operational requests end-------------------------------------------------------------
 
     }
-    getData()
-  }, [showOperationalDashboard, operationalFilterOn]);
+
+    if (currentDashboard == constVariables.OPERATIONAL) {
+      getData()
+    }
+  }, [showOperationalDashboard, operationalFilterOn, currentDashboard]);
 
 
   // Appointment api 
@@ -1507,8 +1561,11 @@ export const UserHomeScreen = (props) => {
       // ---------------------------------------------Appointment requests end-------------------------------------------------------------
 
     }
-    getData()
-  }, [showAppointmentDashboard, appointmentFilterOn]);
+
+    if (currentDashboard == constVariables.APPOINTMENT) {
+      getData()
+    }
+  }, [showAppointmentDashboard, appointmentFilterOn, currentDashboard]);
 
 
 
@@ -2194,7 +2251,7 @@ export const UserHomeScreen = (props) => {
           {showHelpdeskMenu && (
             <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0 }}>
               <Text
-                onPress={() => {
+                onPress={async () => {
                   unstable_batchedUpdates(() => {
                     setShowHelpdeskDashboard(true)
                     setShowInteractionDashboard(false)
@@ -2202,6 +2259,9 @@ export const UserHomeScreen = (props) => {
                     setShowAppointmentDashboard(false)
                     setOpenDashboardPopUp(false)
                   })
+
+                  await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.HELPDESK)
+                  setCurrentDashboard(constVariables.HELPDESK)
                 }}
                 style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Helpdesk Dashboard</Text>
             </Card>
@@ -2210,7 +2270,7 @@ export const UserHomeScreen = (props) => {
           {showInteractionMenu && (
             <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
               <Text
-                onPress={() => {
+                onPress={async () => {
                   unstable_batchedUpdates(() => {
                     setShowInteractionDashboard(true)
                     setShowHelpdeskDashboard(false)
@@ -2218,6 +2278,9 @@ export const UserHomeScreen = (props) => {
                     setShowAppointmentDashboard(false)
                     setOpenDashboardPopUp(false)
                   })
+
+                  await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.INTERACTION)
+                  setCurrentDashboard(constVariables.INTERACTION)
                 }}
                 style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Interaction Dashboard</Text>
             </Card>
@@ -2226,7 +2289,7 @@ export const UserHomeScreen = (props) => {
           {showOperationalMenu && (
             <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
               <Text
-                onPress={() => {
+                onPress={async () => {
                   unstable_batchedUpdates(() => {
                     setShowHelpdeskDashboard(false)
                     setShowInteractionDashboard(false)
@@ -2239,6 +2302,9 @@ export const UserHomeScreen = (props) => {
                     setSelectedTab1("INTXN")
                     setSelectedTab2("ASGN_TO_ME")
                   })
+
+                  await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.OPERATIONAL)
+                  setCurrentDashboard(constVariables.OPERATIONAL)
                 }}
                 style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Operational Dashboard</Text>
             </Card>
@@ -2247,7 +2313,7 @@ export const UserHomeScreen = (props) => {
           {showAppointmentMenu && (
             <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
               <Text
-                onPress={() => {
+                onPress={async () => {
                   unstable_batchedUpdates(() => {
                     setShowHelpdeskDashboard(false)
                     setShowOperationalDashboard(false)
@@ -2255,6 +2321,9 @@ export const UserHomeScreen = (props) => {
                     setShowAppointmentDashboard(true)
                     setOpenDashboardPopUp(false)
                   })
+
+                  await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.APPOINTMENT)
+                  setCurrentDashboard(constVariables.APPOINTMENT)
                 }}
                 style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Appointment Dashboard</Text>
             </Card>
@@ -2622,7 +2691,7 @@ export const UserHomeScreen = (props) => {
 
 
     var statusArr = intDashRed?.liveInteractionsByStatusData?.data?.rows?.map(item => {
-      return { description: item.currStatusDesc.description, code: item.currStatusDesc.code }
+      return { description: item?.currStatusDesc?.description, code: item.currStatusDesc.code }
     })
     // var statusArr = [...new Set(_statusArr?.map(item => item.description))];
     console.log("statusArr...", statusArr)
@@ -2763,7 +2832,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "project": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2806,7 +2875,7 @@ export const UserHomeScreen = (props) => {
                     setSelToDate(toDate)
                     setIntxnFilterReq({
                       ...intxnFilterReq, "ageing": [{
-                        label: text.description,
+                        label: text?.description,
                         value: text.code
                       }]
                     })
@@ -2826,7 +2895,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "status": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2844,7 +2913,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "channel": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2862,7 +2931,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "priority": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2880,7 +2949,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "userId": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2898,7 +2967,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "intxnCat": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2916,7 +2985,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "intxnType": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2934,7 +3003,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "serviceCat": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -2952,7 +3021,7 @@ export const UserHomeScreen = (props) => {
                 onChangeText={(text) => {
                   setIntxnFilterReq({
                     ...intxnFilterReq, "serviceType": [{
-                      label: text.description,
+                      label: text?.description,
                       value: text.code
                     }]
                   })
@@ -5094,11 +5163,11 @@ export const UserHomeScreen = (props) => {
 
     var statusWiseMap = new Map("", 0)
     props?.data?.liveInteractionsByStatusData?.data?.rows?.map(item => {
-      if (statusWiseMap.has(item?.currStatusDesc?.description)) {
-        statusWiseMap.set(item?.currStatusDesc?.description, statusWiseMap.get(item?.currStatusDesc?.description) + 1)
+      if (statusWiseMap.has(item?.intxnCategoryDesc?.description)) {
+        statusWiseMap.set(item?.intxnCategoryDesc?.description, statusWiseMap.get(item?.intxnCategoryDesc?.description) + 1)
       }
       else {
-        statusWiseMap.set(item?.currStatusDesc?.description, 1)
+        statusWiseMap.set(item?.intxnCategoryDesc?.description, 1)
       }
     })
 
@@ -9210,51 +9279,54 @@ export const UserHomeScreen = (props) => {
           <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
           <ClearSpace size={4} />
 
-          <View style={{ backgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
-            <Card
-              onPress={() => {
-                console.log("clarification data....", intDashRed.helpdeskSummaryClarificationData?.data)
-                dialogHeading = "Summary Wise Helpdesk Details"
-                setHelpdeskDialogData(intDashRed.helpdeskSummaryClarificationData?.data)
-                setHelpdeskDetDialogVisible(true)
-              }}
-              style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-              <Text style={{ padding: 5, color: "#000000", fontSize: 10 }}>Clarification</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryClarificationData?.data?.length}</Text>
-            </Card>
 
-            <Card
-              onPress={() => {
-                dialogHeading = "Summary Wise Helpdesk Details"
-                setHelpdeskDialogData(intDashRed.helpdeskSummaryIncidentData?.data)
-                setHelpdeskDetDialogVisible(true)
-              }}
-              style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-              <Text style={{ padding: 5, color: "#000000", fontSize: 10 }}>Incident</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryIncidentData?.data?.length}</Text>
-            </Card>
+          <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+            <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+              <Card
+                onPress={() => {
+                  console.log("clarification data....", intDashRed.helpdeskSummaryClarificationData?.data)
+                  dialogHeading = "Summary Wise Helpdesk Details"
+                  setHelpdeskDialogData(intDashRed.helpdeskSummaryClarificationData?.data)
+                  setHelpdeskDetDialogVisible(true)
+                }}
+                style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Clarification</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryClarificationData?.data?.length}</Text>
+              </Card>
 
-            <Card
-              onPress={() => {
-                dialogHeading = "Summary Wise Helpdesk Details"
-                setHelpdeskDialogData(intDashRed.helpdeskSummaryServiceRequestData?.data)
-                setHelpdeskDetDialogVisible(true)
-              }}
-              style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-              <Text style={{ padding: 5, color: "#000000", fontSize: 10 }}>Service Request</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryServiceRequestData?.data?.length}</Text>
-            </Card>
+              <Card
+                onPress={() => {
+                  dialogHeading = "Summary Wise Helpdesk Details"
+                  setHelpdeskDialogData(intDashRed.helpdeskSummaryIncidentData?.data)
+                  setHelpdeskDetDialogVisible(true)
+                }}
+                style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
+                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Incident</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryIncidentData?.data?.length}</Text>
+              </Card>
 
-            <Card
-              onPress={() => {
-                dialogHeading = "Summary Wise Helpdesk Details"
-                setHelpdeskDialogData(intDashRed.helpdeskSummaryUnclassifiedData?.data)
-                setHelpdeskDetDialogVisible(true)
-              }}
-              style={{ backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-              <Text style={{ padding: 5, color: "#000000", fontSize: 10 }}>Unclassified</Text>
-              <Text style={{ padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryUnclassifiedData?.data?.length}</Text>
-            </Card>
+              <Card
+                onPress={() => {
+                  dialogHeading = "Summary Wise Helpdesk Details"
+                  setHelpdeskDialogData(intDashRed.helpdeskSummaryServiceRequestData?.data)
+                  setHelpdeskDetDialogVisible(true)
+                }}
+                style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
+                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Service Request</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryServiceRequestData?.data?.length}</Text>
+              </Card>
+
+              <Card
+                onPress={() => {
+                  dialogHeading = "Summary Wise Helpdesk Details"
+                  setHelpdeskDialogData(intDashRed.helpdeskSummaryUnclassifiedData?.data)
+                  setHelpdeskDetDialogVisible(true)
+                }}
+                style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
+                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Unclassified</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryUnclassifiedData?.data?.length}</Text>
+              </Card>
+            </ScrollView>
           </View>
 
 
@@ -9380,13 +9452,13 @@ export const UserHomeScreen = (props) => {
         <>
           <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
             <ClearSpace />
-            <Text style={{ padding: 5, fontWeight: "900" }}>Support Ticket Pending With</Text>
+            <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Pending With</Text>
             <ClearSpace />
             <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
             <ClearSpace size={4} />
 
-            <View style={{ limitbackgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
-              <ScrollView horizontal={true} thick>
+            <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+              <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                 {data.map((item, idx) => {
                   console.log("data item...", item)
                   return (
@@ -9449,6 +9521,10 @@ export const UserHomeScreen = (props) => {
                 })}
               </View>
             </View>
+
+            {series.length == 0 && (
+              <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+            )}
 
             <ClearSpace size={4} />
           </Card>
@@ -9541,7 +9617,7 @@ export const UserHomeScreen = (props) => {
     console.log("wipCountArray.....", wipCountArray)
     console.log("closedCountArray.....", closedCountArray)
 
-    if ((dateArray.length > 0) && (wipCountArray.length > 0) && (closedCountArray.length > 0)) {
+    if (dateArray.length > 0) {
 
       return (
         <>
@@ -9562,23 +9638,27 @@ export const UserHomeScreen = (props) => {
 
               {labelsArr.map((item, idx) => {
                 if (item == "WIP") {
-                  dataSetArr.push(
-                    {
-                      data: wipCountArray,
-                      strokeWidth: 2,
-                      color: (opacity = 1) => colors[idx]
-                    }
-                  )
+                  if (wipCountArray?.length > 0) {
+                    dataSetArr.push(
+                      {
+                        data: wipCountArray,
+                        strokeWidth: 2,
+                        color: (opacity = 1) => colors[idx]
+                      }
+                    )
+                  }
                 }
 
                 if (item == "CLOSED") {
-                  dataSetArr.push(
-                    {
-                      data: closedCountArray,
-                      strokeWidth: 2,
-                      color: (opacity = 1) => colors[idx]
-                    }
-                  )
+                  if (closedCountArray?.length > 0) {
+                    dataSetArr.push(
+                      {
+                        data: closedCountArray,
+                        strokeWidth: 2,
+                        color: (opacity = 1) => colors[idx]
+                      }
+                    )
+                  }
                 }
 
 
@@ -9703,9 +9783,8 @@ export const UserHomeScreen = (props) => {
             </View>
           </ScrollView> */}
 
-
-          <View style={{ limitbackgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
-            <ScrollView horizontal={true}>
+          <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+            <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
               {props?.data?.data?.map((item, idx) => {
                 console.log("oStatus2...", item.oStatus)
                 return (
@@ -9758,7 +9837,7 @@ export const UserHomeScreen = (props) => {
                         setLoader(false)
                         setHelpdeskDetDialogVisible(true)
                       }}
-                      style={{ alignContent: "center", height: 60, width: 80, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+                      style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
                       <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item.oStatus}</Text>
                       <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{item.oCnt}</Text>
                     </Card>
@@ -9910,6 +9989,10 @@ export const UserHomeScreen = (props) => {
             </View>
           </View>
 
+          {series.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+          )}
+
 
           <ClearSpace size={5} />
 
@@ -9947,6 +10030,9 @@ export const UserHomeScreen = (props) => {
 
     const ageCategory = [...new Set(props?.data?.data?.map(item => item.agingCategory))];
 
+
+
+
     return (
       <>
         <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
@@ -9956,11 +10042,8 @@ export const UserHomeScreen = (props) => {
           <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
           <ClearSpace size={4} />
 
-          <View style={{ alignSelf: "center", limitbackgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
-            <ScrollView
-              style={{ alignSelf: "center" }}
-              horizontal={true}
-            >
+          <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+            <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
               {ageCategory.map((item, idx) => {
                 console.log("data item...", item)
                 var count = 0
@@ -10014,7 +10097,7 @@ export const UserHomeScreen = (props) => {
                         setHelpdeskDialogData(dataArr)
                         setHelpdeskDetDialogVisible(true)
                       }}
-                      style={{ alignContent: "center", height: 60, width: 80, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+                      style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
                       <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item}</Text>
                       <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{count}</Text>
                     </Card>
@@ -10024,50 +10107,56 @@ export const UserHomeScreen = (props) => {
             </ScrollView>
           </View>
 
-          <BarChart
-            flatColor={true}
-            withCustomBarColorFromData={true}
-            yAxisInterval={10} // optional, defaults to 1
-            data={{
-              labels: ageCategory,
-              datasets: [
-                {
-                  data: [greaterThanTenDays.length, zeroToThreeDays.length, fourToSevenDays.length, eightToTenDays.length],
-                  colors: [
-                    () => "green",
-                    () => "red",
-                    () => "blue",
-                    () => "yellow",
-                    () => "orange"
-                  ]
+          {ageCategory.length > 0 && (
+            <BarChart
+              flatColor={true}
+              withCustomBarColorFromData={true}
+              yAxisInterval={10} // optional, defaults to 1
+              data={{
+                labels: ageCategory,
+                datasets: [
+                  {
+                    data: [greaterThanTenDays.length, zeroToThreeDays.length, fourToSevenDays.length, eightToTenDays.length],
+                    colors: [
+                      () => "green",
+                      () => "red",
+                      () => "blue",
+                      () => "yellow",
+                      () => "orange"
+                    ]
+                  },
+                  {
+                    data: [1] // min
+                  },
+                  {
+                    data: [10] // max
+                  }
+                ],
+              }}
+              width={Dimensions.get('window').width - 70}
+              height={350}
+              yAxisLabel={''}
+              chartConfig={{
+                backgroundColor: '#FFF',
+                backgroundGradientFrom: '#FFF',
+                backgroundGradientTo: '#FFF',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
                 },
-                {
-                  data: [1] // min
-                },
-                {
-                  data: [10] // max
-                }
-              ],
-            }}
-            width={Dimensions.get('window').width - 70}
-            height={350}
-            yAxisLabel={''}
-            chartConfig={{
-              backgroundColor: '#FFF',
-              backgroundGradientFrom: '#FFF',
-              backgroundGradientTo: '#FFF',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
+              }}
+              style={{
+                marginVertical: 8,
                 borderRadius: 16,
-              },
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-            verticalLabelRotation={30}
-          />
+              }}
+              verticalLabelRotation={30}
+            />
+          )}
+
+          {ageCategory.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+          )}
 
           <ClearSpace size={4} />
         </Card>
@@ -10136,8 +10225,9 @@ export const UserHomeScreen = (props) => {
           <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
           <ClearSpace size={4} />
 
-          <View style={{ limitbackgroundColor: "transparent", flexDirection: "row", alignContent: "center", alignSelf: "center" }}>
-            <ScrollView horizontal={true}>
+
+          <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+            <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
               {severity?.map((item, idx) => {
                 console.log("oStatus2...", item)
                 return (
@@ -10180,7 +10270,7 @@ export const UserHomeScreen = (props) => {
                           setHelpdeskDetDialogVisible(true)
                         }
                       }}
-                      style={{ alignContent: "center", height: 60, width: 80, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
+                      style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
                       <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item}</Text>
                       <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{series[idx]}</Text>
                     </Card>
@@ -10238,6 +10328,10 @@ export const UserHomeScreen = (props) => {
             </View>
           </View>
 
+          {series.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+          )}
+
           <ClearSpace size={4} />
         </Card>
       </>
@@ -10290,6 +10384,10 @@ export const UserHomeScreen = (props) => {
               hidePointsAtIndex={Array.from({ length: dateArray.length }, (v, k) => (k % 2 === 0) ? k : null)}
               verticalLabelRotation={30}
             />
+          )}
+
+          {dataArr.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
           )}
 
           <ClearSpace size={4} />
@@ -10351,7 +10449,7 @@ export const UserHomeScreen = (props) => {
             {array.map(item => {
               var project = ""
               if ((item.name == undefined) || (item.name == null)) {
-                project = "Others"
+                project = "Unclassified"
               }
               else {
                 project = item.name
@@ -10395,6 +10493,11 @@ export const UserHomeScreen = (props) => {
               }
             })}
           </View>
+
+          {props?.data?.data?.rows?.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+          )}
+
           <ClearSpace size={4} />
         </Card>
       </>
@@ -10491,6 +10594,11 @@ export const UserHomeScreen = (props) => {
               }
             })}
           </View>
+
+          {props?.data?.data?.rows?.length == 0 && (
+            <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+          )}
+
           <ClearSpace size={4} />
         </Card>
       </>
@@ -10922,6 +11030,8 @@ export const UserHomeScreen = (props) => {
 
 
 
+
+
   return (
     <View style={styles.container}>
 
@@ -11064,12 +11174,30 @@ export const UserHomeScreen = (props) => {
         />
       </Pressable> */}
 
-      {showHelpdeskDashboard && (<RenderDashboardTitle data={"Helpdesk Dashboard"} />)}
+
+
+      {(currentDashboard == constVariables.HELPDESK) && (
+        <RenderDashboardTitle data={"Helpdesk Dashboard"} />
+      )}
+
+      {(currentDashboard == constVariables.INTERACTION) && (
+        <RenderDashboardTitle data={"Interaction Dashboard"} />
+      )}
+
+      {(currentDashboard == constVariables.OPERATIONAL) && (
+        <RenderDashboardTitle data={"Operational Dashboard"} />
+      )}
+
+      {(currentDashboard == constVariables.APPOINTMENT) && (
+        <RenderDashboardTitle data={"Appointment Dashboard"} />
+      )}
+
+      {/* {showHelpdeskDashboard && (<RenderDashboardTitle data={"Helpdesk Dashboard"} />)}
       {showInteractionDashboard && (<RenderDashboardTitle data={"Interaction Dashboard"} />)}
       {showOperationalDashboard && (<RenderDashboardTitle data={"Operational Dashboard"} />)}
-      {showAppointmentDashboard && (<RenderDashboardTitle data={"Appointment Dashboard"} />)}
+      {showAppointmentDashboard && (<RenderDashboardTitle data={"Appointment Dashboard"} />)} */}
 
-      {showOperationalDashboard && (
+      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
         <>
           <View style={{
             flex: 1, paddingTop: 0, paddingBottom: 0, marginLeft: 3, marginRight: 3,
@@ -11133,7 +11261,7 @@ export const UserHomeScreen = (props) => {
         </>
       )}
 
-      {showOperationalDashboard && (
+      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
         selectedTab1 == "INTXN" && (
           <>
             <View style={{
@@ -11218,7 +11346,7 @@ export const UserHomeScreen = (props) => {
         ))}
 
 
-      {showOperationalDashboard &&
+      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
         selectedTab1 == "INTXN" &&
         selectedTab2 == "ASGN_TO_ME" &&
         showAssignedToMe && (
@@ -11327,7 +11455,7 @@ export const UserHomeScreen = (props) => {
           </>
         )}
 
-      {showOperationalDashboard &&
+      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
         selectedTab1 == "INTXN" &&
         selectedTab2 == "UPC_APP" &&
         showAppointments && (
@@ -11408,7 +11536,7 @@ export const UserHomeScreen = (props) => {
         )}
 
 
-      {showAppointmentDashboard && (
+      {(currentDashboard == constVariables.APPOINTMENT) && showAppointmentDashboard && (
         <View style={{
           flex: 1, borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center", marginTop: 44,
           position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -11575,7 +11703,7 @@ export const UserHomeScreen = (props) => {
       {/* {(!openDashboardPopUp && !helpdeskFilterDialogVisible && !intxnFilterDialogVisible && !helpdeskDetDialogVisible && !intxnDetDialogVisible) && ( */}
       <ScrollView style={{ backgroundColor: Colors.BCAE_OFF_WHITE }}>
         <>
-          {showInteractionDashboard && (
+          {(currentDashboard == constVariables.INTERACTION) && showInteractionDashboard && (
             (interactionLiveStream) && (
               <>
                 <View style={{ marginTop: 50 }}>
@@ -11589,7 +11717,7 @@ export const UserHomeScreen = (props) => {
             )
           )}
 
-          {showInteractionDashboard && (
+          {(currentDashboard == constVariables.INTERACTION) && showInteractionDashboard && (
             (!interactionLiveStream) && (
               <>
                 {/* <RenderLocationWiseData /> */}
@@ -11615,27 +11743,25 @@ export const UserHomeScreen = (props) => {
             )
           )}
 
-          {showHelpdeskDashboard && (
+          {(currentDashboard == constVariables.HELPDESK) && showHelpdeskDashboard && (
             (!helpdeskLiveStream) && (
               <>
                 <View style={{ marginTop: 50 }}>
                   <RenderHelpdeskSummaryData data={intDashRed?.helpdeskSummaryData} />
+                  <RenderHelpdeskByAgeing data={intDashRed?.helpdeskByAgeingData} />
                   <RenderMonthlyDailyTrends data={intDashRed?.supportMonthlyTrendData} />
                   <RenderSupportTicketPendingData data={intDashRed} />
-                  <RenderHelpdeskByAgeing data={intDashRed?.helpdeskByAgeingData} />
-                  <RenderProjectWiseOpenHelpdesk data={intDashRed.helpdeskProjectWiseData} />
                   <RenderHelpdeskByStatus data={intDashRed?.helpdeskByStatusData} />
                   <RenderHelpdeskBySeverity data={intDashRed?.helpdeskBySeverityData} />
-                  {intDashRed?.hourlyTicketsData?.length > 0 && (
-                    <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} />
-                  )}
+                  <RenderProjectWiseOpenHelpdesk data={intDashRed.helpdeskProjectWiseData} />
+                  <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} />
                   <RenderAgentWiseHelpdesk data={intDashRed?.helpdeskAgentWiseData} />
                 </View>
               </>
             )
           )}
 
-          {showHelpdeskDashboard && (
+          {(currentDashboard == constVariables.HELPDESK) && showHelpdeskDashboard && (
             (helpdeskLiveStream) && (
               <>
                 <View style={{ marginTop: 50 }}>
@@ -11654,7 +11780,7 @@ export const UserHomeScreen = (props) => {
           {console.log("b.....", selectedTab1)}
           {console.log("c.....", showAssignedToMe)}
 
-          {showOperationalDashboard && selectedTab1 == "INTXN" &&
+          {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && selectedTab1 == "INTXN" &&
             selectedTab0 == "ME" && (
               <>
                 {showAssignedToMe && (<RenderOperationalAssignedToMeData data={intDashRed?.operationalAssignedToMeData} />)}
@@ -11665,7 +11791,7 @@ export const UserHomeScreen = (props) => {
             )
           }
 
-          {showOperationalDashboard && selectedTab1 == "INTXN" &&
+          {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && selectedTab1 == "INTXN" &&
             selectedTab0 == "MY_TEAM" && (
               <>
                 {showAppointments && (<RenderOperationalTeamAppointmentsData data={intDashRed?.operationalTeamAppointmentOverviewData} />)}
@@ -11675,7 +11801,7 @@ export const UserHomeScreen = (props) => {
             )
           }
 
-          {showOperationalDashboard && selectedTab1 == "INFO" &&
+          {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && selectedTab1 == "INFO" &&
             selectedTab0 == "ME" && (
               <>
                 <RenderOperationalInteractionCorner data={intDashRed?.operationalInteractionHistoryGraphData} />
@@ -11684,8 +11810,7 @@ export const UserHomeScreen = (props) => {
               </>
             )}
 
-
-          {showOperationalDashboard && selectedTab1 == "INFO" &&
+          {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && selectedTab1 == "INFO" &&
             selectedTab0 == "MY_TEAM" && (
               <>
                 <RenderOperationalInteractionCornerTeam data={intDashRed?.operationalInteractionHistoryGraphTeamData} />
@@ -11695,8 +11820,7 @@ export const UserHomeScreen = (props) => {
               </>
             )}
 
-
-          {showAppointmentDashboard && (
+          {(currentDashboard == constVariables.APPOINTMENT) && showAppointmentDashboard && (
             selectedAppTab1 == "INTXN" && (
               <>
                 {showOverallAppointments && (<RenderOverallAppointmentsData data={intDashRed} />)}
@@ -11707,7 +11831,7 @@ export const UserHomeScreen = (props) => {
             )
           )}
 
-          {showAppointmentDashboard && (
+          {(currentDashboard == constVariables.APPOINTMENT) && showAppointmentDashboard && (
             selectedAppTab1 == "INFO" && (
               <>
                 {showOverallInfoApp && (<RenderOverallInfoAppointmentsData data={intDashRed.appPerformanceData} />)}

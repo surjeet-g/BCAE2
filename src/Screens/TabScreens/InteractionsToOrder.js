@@ -1,5 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
+import { Colors } from "chart.js";
 import get from "lodash.get";
+import moment from "moment";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   BackHandler,
@@ -9,11 +11,12 @@ import {
   ImageBackground,
   Keyboard, Pressable,
   ScrollView,
-  StyleSheet, Switch, TextInput,
+  StyleSheet, Switch,
   View,
   unstable_batchedUpdates
 } from "react-native";
-import { Chip, List, Text, useTheme } from "react-native-paper";
+import DatePicker from "react-native-date-picker";
+import { Chip, List, Text, TextInput, useTheme } from "react-native-paper";
 import Toast from 'react-native-toast-message';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,8 +28,8 @@ import { ImagePicker } from "../../Components/ImagePicker";
 import { InteractionFailed } from "../../Components/InteractionFailed";
 import { InteractionSuccess, styles as modalStyle } from "../../Components/InteractionSuccess";
 import LoadingAnimation from "../../Components/LoadingAnimation";
-import { RenderUserSelectResult } from '../../Components/UserSearch';
-import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack";
+import { RenderUserSelectResult, userNavigationIcon } from '../../Components/UserSearch';
+import { STACK_INTERACTION_DETAILS } from "../../Navigation/MyStack.js";
 import {
   setInteractionFormField,
   setInteractionReset
@@ -60,7 +63,7 @@ import {
 import { strings } from "../../Utilities/Language";
 import { commonStyle } from "../../Utilities/Style/commonStyle";
 import { navBar } from "../../Utilities/Style/navBar";
-import { USERTYPE, getCustomerID, getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
+import { USERTYPE, getCustomerUUID } from "../../Utilities/UserManagement/userInfo";
 import theme from "../../Utilities/themeConfig";
 import { APICall } from "../CreateCustomer/util";
 import { showErrorMessage } from "../Register/components/RegisterPersonal";
@@ -95,6 +98,9 @@ const INTELIGENCE_STATUS = {
  * @namespace Interaction  
  */
 const InteractionsToOrder = ({ route, navigation }) => {
+
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [selDate, setSelDate] = useState(new Date());
 
   console.log("rendering InteractionsToOrder..")
   var role = ""
@@ -158,6 +164,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   // const [userSeachEnable, setUserSeachEnable] = useState(userType == USERTYPE.USER);
+
+
   // For telecom
   const [userSeachEnable, setUserSeachEnable] = useState(false);
 
@@ -247,7 +255,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   const headerRightForNav = () => {
     return (
       <View style={navBar.navRightCon}>
-        {!isEnabledsmartAssist && (
+        {(!isEnabledsmartAssist) && (isEnabledsmartAssist) && (
           <Pressable
             onPress={async () => {
               console.log("knowledgeSearchText...", knowledgeSearchText)
@@ -328,8 +336,15 @@ const InteractionsToOrder = ({ route, navigation }) => {
       //   );
 
       // For telecom
-      setUserSeachEnable(false)
-      setSearchOpen(false)
+      if (role == "8") {
+        setUserSeachEnable(false)
+        setSearchOpen(false)
+      }
+      else {
+        setUserSeachEnable(true)
+        setSearchOpen(true)
+      }
+
       // }
     }
     getData()
@@ -535,6 +550,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
    */
 
   const onChangeKnowledgeSearchText = async (text) => {
+
 
     setKnowledgeSearchText(text);
 
@@ -742,6 +758,8 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   }}
                   onPress={async () => {
 
+                    await clearAttachmentData()
+
                     setFormDataArray({})
 
                     setsearchStandaloneModel(true)
@@ -783,8 +801,10 @@ const InteractionsToOrder = ({ route, navigation }) => {
                     console.log("5A............", await getDataFromDB(storageKeys.CUSTOMER_ID))
                     console.log("5B............", await getDataFromDB(storageKeys.CUSTOMER_UUID))
 
-                    console.log("cust id rec....", "" + await getCustomerID())
+                    // console.log("cust id rec....", "" + await getDataFromDB(storageKeys.CUSTOMER_ID);)
                     console.log("active data...", get(profileReducer, `${activeData}.customerUuid`, ''))
+
+                    var custId = "" + await getDataFromDB(storageKeys.CUSTOMER_ID)
 
                     const { response, actionType } = await dispatchInteraction(
 
@@ -792,7 +812,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                         customerUuid: await getDataFromDB(storageKeys.CUSTOMER_UUID),
                         requestId: parseInt(item.requestId),
                         moduleName: "KnowledgeBaseMobileApp",
-                        customerId: await getDataFromDB(storageKeys.CUSTOMER_ID)
+                        customerId: custId
                       })
                     );
                     console.log("intreaction data response    ", response)
@@ -1356,8 +1376,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
                         customerUuid: get(profileReducer, `${activeData}.customerUuid`, ''),
                         requestId: parseInt(ite.requestId),
                         moduleName: "KnowledgeBaseMobileApp",
-                        customerId: "" + await getCustomerID()
-
+                        customerId: "" + await getDataFromDB(storageKeys.CUSTOMER_ID)
                       })
                     );
                     setLoader(false)
@@ -1595,6 +1614,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
             okHandler={async () => {
               await resetStateData("setInteractionResponse");
               console.log("hiting", intereactionAddResponse)
+              // this.props.navigation.pop()
 
               // navigation.navigate(STACK_INTERACTION_DETAILS, {
               //   interactionID: intereactionAddResponse,
@@ -1655,25 +1675,36 @@ const InteractionsToOrder = ({ route, navigation }) => {
       {
 
         // For telecom
-        // ((userType == USERTYPE.USER) &&
-        // useMemo(() => {
-        //   return userNavigationIcon({
-        //     navigation,
-        //     setOpenBottomModal: setOpenBottomModal,
-        //     setSearchOpen: setSearchOpen,
-        //     setEnableSuccessScreens: () => {
-        //       //to do when user search is empty
-        //       {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
-        //     },
-        //     setLoader,
-        //     profileDispatch,
-        //     headerRightForNav,
-        //     headerTitle: "Interaction",
-        //     profileSearchData: get(profileReducer, "profileSearchData", [])
-        //   });
-        // }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
-        //   // )
-        // )
+        ((userType == USERTYPE.USER) && (
+          useMemo(() => {
+            async function getData() {
+              var currRoleId = await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
+              console.log("use memo called...." + currRoleId)
+              if (currRoleId == "8") {
+                console.log("employee role id...")
+              }
+              else {
+                console.log("inside if....")
+                return userNavigationIcon({
+                  navigation,
+                  setOpenBottomModal: setOpenBottomModal,
+                  setSearchOpen: setSearchOpen,
+                  setEnableSuccessScreens: () => {
+                    //to do when user search is empty
+                    {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
+                  },
+                  setLoader,
+                  profileDispatch,
+                  headerRightForNav,
+                  headerTitle: "Interaction",
+                  profileSearchData: get(profileReducer, "profileSearchData", [])
+                });
+              }
+            }
+            getData()
+          }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
+          )
+        ))
       }
 
       {
@@ -1975,6 +2006,41 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
               </>
             }
+
+
+            <View style={{ paddingVertical: 2, marginTop: 10 }}>
+              <CustomInput
+                value={moment(selDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={"Expected Completion Date"}
+                onFocus={() => setOpenDatePicker(true)}
+                placeHolder={""}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setOpenDatePicker(true)}
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+              />
+              <DatePicker
+                modal
+                mode="date"
+                open={openDatePicker}
+                onCancel={() => setOpenDatePicker(false)}
+                date={selDate}
+                onConfirm={(params) => {
+                  unstable_batchedUpdates(() => {
+                    setSelDate(params)
+                    setOpenDatePicker(false);
+                  })
+                }}
+              />
+            </View>
+
+
             <CustomInput
               style={{ marginTop: 30 }}
               value={get(remarks, "value", "")}
@@ -2068,8 +2134,19 @@ const InteractionsToOrder = ({ route, navigation }) => {
                   const logg = true
                   if (logg) console.log('create complienta :entered', interactionRedux)
                   const activeData = get(profileReducer, 'userSelectedProfileDetails.firstName', '') == '' ? "savedProfileData" : "userSelectedProfileDetails";
-                  // const customerID = get(profileReducer, `${activeData}.customerId`, "");
-                  const customerID = await getDataFromDB(storageKeys.CUSTOMER_ID);
+
+
+                  var customerID = ""
+                  var currRoleId = "" + await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
+                  if (currRoleId == "8") {
+                    customerID = await getDataFromDB(storageKeys.CUSTOMER_ID)
+                  }
+                  else {
+                    // for ncrtc
+                    customerID = get(profileReducer, `${activeData}.customerId`, "")
+                  }
+
+
                   if (customerID == "") console.log("cusomter id is empty");
 
 
@@ -2080,7 +2157,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
                   var attachments = await getDataFromDB("ATTACHMENTS")
-                  var _attachments = attachments.split("~")
+                  var _attachments = []
+                  console.log("check special character.." + attachments.includes("~"))
+                  if (attachments.includes("~")) {
+                    _attachments = attachments.split("~")
+                  }
+                  else {
+                    _attachments.push(attachments)
+                  }
 
                   console.log("retrive attachments1.." + attachments)
                   console.log("retrive attachments2.." + _attachments)
@@ -2104,6 +2188,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       channel: "MOBILEAPP",
                       priorityCode: input.priorityCode.value?.code,
                       contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
+                      edoc: moment(selDate).format(
+                        "YYYY-MM-DD"
+                      ),
                       remarks: input.remarks.value,
                       statement: get(activeState, 'requestStatement', ''),
                       statementId: get(activeState, 'requestId', ''),
@@ -2135,6 +2222,9 @@ const InteractionsToOrder = ({ route, navigation }) => {
                       channel: "MOBILEAPP",
                       priorityCode: input.priorityCode.value?.code,
                       contactPreference: input.contactPerference.value.filter(it => it.active == true).map(item => item.code),
+                      edoc: moment(selDate).format(
+                        "YYYY-MM-DD"
+                      ),
                       remarks: input.remarks.value,
                       statement: get(activeState, 'requestStatement', ''),
                       statementId: get(activeState, 'requestId', ''),

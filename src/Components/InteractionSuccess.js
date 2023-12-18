@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     padding: 20,
+    margin: 20,
     borderRadius: 16,
     elevation: 5,
   },

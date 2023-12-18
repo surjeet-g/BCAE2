@@ -1,21 +1,37 @@
 import React, { useState } from "react";
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 // import { Button } from "../Components/Button";
+import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
+import { getDataFromDB } from "../Storage/token";
 import {
   bottomBarHeight,
   color,
   fontSizes,
-  spacing
+  spacing,
+  storageKeys
 } from "../Utilities/Constants/Constant";
 import { strings } from "../Utilities/Language";
 import { getUserType } from "../Utilities/UserManagement/userInfo";
 
 var { height, width } = Dimensions.get("screen");
+// var currDeptDesc = "", currRoleDesc = ""
 
 const CustomBottomBar = ({ state, descriptors, navigation }) => {
   let profile = useSelector((state) => state.profile);
   const [modal, setModal] = useState(false);
+
+  // useEffect(() => {
+  //   async function getData() {
+  //     currDeptDesc = await getDataFromDB(storageKeys.CURRENT_DEPT_DESC)
+  //     currRoleDesc = await getDataFromDB(storageKeys.CURRENT_ROLE_DESC)
+
+  //     console.log("currDeptDesc...", currDeptDesc)
+  //     console.log("currRoleDesc...", currRoleDesc)
+
+  //   }
+  //   getData()
+  // }, [])
 
   const openModal = () => {
     setModal(!modal);
@@ -129,12 +145,57 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           </Text>
         </Pressable>
 
+        {/* {((currDeptDesc == "Brunei Application Support") || (currDeptDesc == "Global Application Support"))
+          && (currRoleDesc == "Back Office") && (
+            <View
+              style={{
+                marginTop: spacing.HEIGHT_2,
+                marginBottom: spacing.HEIGHT_2,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "20%",
+              }}
+            >
+            </View>
+          )} */}
 
 
         {/* button */}
+        {/* {((currDeptDesc !== "Brunei Application Support") && (currDeptDesc !== "Global Application Support"))
+          && (currRoleDesc !== "Back Office") && ( */}
         <Pressable
           // onPress={() => openModal()}
-          onPress={() => onNavClickButton("InteractionsToOrder")}
+          onPress={async () => {
+            var currDeptDesc = await getDataFromDB(storageKeys.CURRENT_DEPT_DESC)
+            var currRoleDesc = await getDataFromDB(storageKeys.CURRENT_ROLE_DESC)
+
+            console.log("currDeptDesc3...", currDeptDesc)
+            console.log("currRoleDesc3...", currRoleDesc)
+
+            if (((currDeptDesc == "Brunei Application Support") || (currDeptDesc == "Global Application Support"))
+              && (currRoleDesc == "Back Office")) {
+              console.log("1........")
+              Toast.show({
+                type: "bctError",
+                text1: strings.create_intxn_not_allowed,
+              });
+            }
+            else if (((currDeptDesc == "CQ Team") || (currDeptDesc == "Admin Operations") ||
+              (currDeptDesc == "HR Operations") || (currDeptDesc == "IT Operations"))
+              && ((currRoleDesc == "Reporting Manager") || (currRoleDesc == "Admin Manager") ||
+                (currRoleDesc == "HR Manager") || (currRoleDesc == "ITOps Manager"))) {
+              console.log("2........")
+              Toast.show({
+                type: "bctError",
+                text1: strings.create_intxn_not_allowed,
+              });
+            }
+            else {
+              console.log("3........")
+              onNavClickButton("InteractionsToOrder")
+            }
+          }}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -152,6 +213,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           </View>
           {/* <Text style={styles.upperText}>{strings.announcement}</Text> */}
         </Pressable>
+        {/* )} */}
 
         <Pressable
           onPress={() => onNavClick("Search")}

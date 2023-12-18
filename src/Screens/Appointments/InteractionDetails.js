@@ -1,7 +1,9 @@
+import { Colors } from "chart.js";
 import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -14,16 +16,21 @@ import {
   View,
   unstable_batchedUpdates
 } from "react-native";
-import { Divider, useTheme } from "react-native-paper";
+import CustomSwitch from "react-native-custom-switch-new";
+import DatePicker from "react-native-date-picker";
+import { Divider, TextInput, useTheme } from "react-native-paper";
+import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
 import { CustomButton } from "../../Components/CustomButton";
+import { ImagePicker } from "../../Components/ImagePicker";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import { getOrderListData } from '../../Redux/OrderListDispatcher';
 import {
   MASTER_DATA_CONSTANT,
   getMasterData
 } from "../../Redux/masterDataDispatcher";
+import { clearAttachmentData } from "../../Storage/DB";
 import { getDataFromDB } from "../../Storage/token";
 import { storageKeys } from "../../Utilities/Constants/Constant";
 import { strings } from "../../Utilities/Language";
@@ -73,6 +80,20 @@ const InteractionDetails = (props) => {
   var [_roleData, setRoleData] = useState([]);
   var [responseFlag, setResponseFlag] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
+  const [fileAttachments, setFileAttachments] = useState([]);
+
+  const [openTechCompDatePicker, setOpenTechCompDatePicker] = useState(false);
+  const [openDepCompDatePicker, setOpenDepCompDatePicker] = useState(false);
+  const [openBiCompDatePicker, setOpenBiCompDatePicker] = useState(false);
+  const [openQaCompDatePicker, setOpenQaCompDatePicker] = useState(false);
+  const [downtimeRequired, setDowntimeRequired] = useState(false);
+  const [selTechCompDate, setSelTechCompDate] = useState(new Date());
+  const [selDepCompDate, setSelDepCompDate] = useState(new Date());
+  const [selBiCompDate, setSelBiCompDate] = useState(new Date());
+  const [selQaCompDate, setSelQaCompDate] = useState(new Date());
+
+  const [openDatePicker, setOpenDatePicker] = useState(false);
 
   console.log("props received...", props)
   interactionID = interactionSearchParams
@@ -89,10 +110,10 @@ const InteractionDetails = (props) => {
       await dispatch(await getInteractionDetailsSearch(params, navigation))
       setInteractionDetails(interactionReducer?.interactionSearchData?.[0])
 
-      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0]?.intxnNo));
       console.log("InteractionFollowupData..", interactionReducer?.interactionFollowupData)
 
-      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0]?.intxnNo));
       console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
       setLoader(false)
     }
@@ -171,6 +192,17 @@ const InteractionDetails = (props) => {
   } = interactionReducer;
 
 
+  // useEffect(() => {
+  //   async function getData() {
+  //     setLoader(true)
+  //     await dispatch(await getAttachmentList(interactionReducer?.interactionSearchData?.[0]?.intxnUuid))
+  //     console.log("getAttachmentList got..", interactionReducer.intxnAttachmentData);
+  //     setLoader(false)
+  //   }
+  //   getData()
+  // }, []);
+
+
   // Calling API to get interaction details & workflow/followup data
   useEffect(() => {
     async function getData() {
@@ -180,6 +212,7 @@ const InteractionDetails = (props) => {
       setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
 
       console.log("expected useEffect...")
+      console.log("curr role id dep id user id..." + await getUserId() + " , " + await getDataFromDB(storageKeys.CURRENT_ROLE_ID) + " , " + await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
 
       let params = {
         searchParams: {
@@ -189,14 +222,17 @@ const InteractionDetails = (props) => {
       await dispatch(await getInteractionDetailsSearch(params, navigation))
       setInteractionDetails(interactionReducer?.interactionSearchData?.[0])
 
-      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      // await dispatch(await getAttachmentList(interactionReducer?.interactionSearchData?.[0]?.intxnUuid))
+      // console.log("getAttachmentList got..", interactionReducer.intxnAttachmentData);
+
+      await dispatch(await getFollowupForInteractionID(interactionReducer?.interactionSearchData?.[0]?.intxnNo));
       console.log("InteractionFollowupData..", interactionReducer?.interactionFollowupData)
 
-      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0].intxnNo));
+      await dispatch(await getWorkFlowForInteractionID(interactionReducer?.interactionSearchData?.[0]?.intxnNo));
       console.log("InteractionWorkFlowData..", InteractionWorkFlowData)
 
-      await dispatch(await getInteractionDetailsForID(interactionReducer?.interactionSearchData?.[0].intxnId, navigation));
-      console.log("InteractionDetailsData..", InteractionDetailsData)
+      await dispatch(await getInteractionDetailsForID(interactionID?.interactionSearchData?.[0]?.intxnId, navigation));
+      console.log("InteractionDetailsData..", interactionReducer?.interactionSearchData?.[0])
 
       //fetch order list or enble button
       // dispatch(getOrderListData(navigation, 1, 0));
@@ -205,7 +241,7 @@ const InteractionDetails = (props) => {
       const { PRIORITY, SOURCE } = MASTER_DATA_CONSTANT;
       dispatch(getMasterData(`${PRIORITY},${SOURCE}`));
 
-      await dispatch(await fetchUsersByRole(interactionReducer?.interactionSearchData?.[0].currentRole.description.roleId, interactionID.interactionSearchParams.currentDepartment.description.unitId, navigation))
+      await dispatch(await fetchUsersByRole(interactionReducer?.interactionSearchData?.[0]?.currentRole?.description?.roleId, interactionID?.interactionSearchParams?.currentDepartment?.description?.unitId, navigation))
       console.log("interactionUsersByRoleData got..", interactionReducer.interactionUsersByRoleData);
 
       await dispatch(await fetchStatus(interactionID.interactionSearchParams.intxnUuid, "INTERACTION"))
@@ -229,8 +265,9 @@ const InteractionDetails = (props) => {
       let userType = getUserType();
       setUserType(userType);
 
-      await dispatch(await getAttachmentList(interactionReducer?.interactionSearchData?.[0].intxnUuid))
-      console.log("getAttachmentList got..", interactionReducer.intxnAttachmentData);
+      // await dispatch(await getAttachmentList(interactionReducer?.interactionSearchData?.[0]?.intxnUuid))
+      // console.log("getAttachmentList got..", interactionReducer.intxnAttachmentData);
+
       setLoader(false)
     }
     getData()
@@ -246,11 +283,20 @@ const InteractionDetails = (props) => {
         return (
           <View>
             <View style={navBar.navRightCon}>
-              <Pressable onPress={() => setShowPopupMenu(!showPopupMenu)}>
+              <Pressable onPress={() => {
+                unstable_batchedUpdates(async () => {
+                  await clearAttachmentData()
+                  setFileAttachments([]);
+                  setShowPopupMenu(!showPopupMenu)
+                })
+              }}>
+
+
                 <Image
                   style={{ margin: 10 }}
                   source={require("../../Assets/icons/ic_more_vertical.png")}
                 />
+
               </Pressable>
             </View>
           </View>
@@ -264,11 +310,24 @@ const InteractionDetails = (props) => {
     if (len == 0) return ""
     let final = []
     data.map(item => {
-      final.push(`${item.description}`)
+      final.push(`${item?.description}`)
       return;
     })
     return final.join(`,\n`)
   }
+
+
+  const [isNoSelected, setisNoSelected] = React.useState(true);
+
+  const onToggleSwitch = () => {
+    if (isNoSelected) {
+      setDowntimeRequired(false)
+    } else {
+      setDowntimeRequired(true)
+    }
+    setisNoSelected(!isNoSelected);
+  };
+
 
   const AttachmentFlatListItem = (props) => {
     const { item, index } = props;
@@ -304,12 +363,17 @@ const InteractionDetails = (props) => {
           <Pressable
             onPress={async () => {
               await dispatch(await downloadattachment(item.attachmentUuid))
-              console.log("download attachment got..", interactionReducer.intxnDownloadAttachmentData);
+              console.log("download attachment got..", interactionReducer?.intxnDownloadAttachmentData);
               if (interactionReducer.intxnDownloadAttachmentData == {}) {
                 console.log("image not downloaded yet...")
               }
               else {
-                checkPermission(item.fileName)
+                if (interactionReducer?.intxnDownloadAttachmentData?.provider == "DATABASE") {
+                  WriteBase64ToFile(interactionReducer?.intxnDownloadAttachmentData?.url)
+                }
+                else {
+                  checkPermission(item?.fileName)
+                }
               }
             }}
           >
@@ -331,8 +395,8 @@ const InteractionDetails = (props) => {
               >
                 Download
               </Text>
-
             </View>
+
           </Pressable>
         </View>
       </View>
@@ -392,6 +456,89 @@ const InteractionDetails = (props) => {
               // } else if (index == 1) {
               navigation.navigate("WorkflowHistory");
               // }
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5
+              }}
+            >
+              <Text
+                variant="bodySmall"
+                style={{
+                  fontWeight: 600,
+                  fontSize: 14,
+                  color: "#EFA848",
+                }}
+              >
+                View
+              </Text>
+              <Image
+                source={require("../../Assets/icons/ic_right_arrow.png")}
+                style={{ marginTop: 2, marginLeft: 10, tintColor: "#EFA848" }}
+              />
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={{ marginLeft: 140, flexDirection: "column", flex: 1 }}>
+          <Image
+            source={require("../../Assets/icons/frequent_interaction.png")}
+            style={{ width: 50, height: 50, flex: 1 }}
+          />
+        </View>
+
+      </View>
+    );
+  };
+
+
+  const HorizontalFlatListItem2 = (props) => {
+    const { item, index } = props;
+    return (
+      <View
+        style={{
+          alignContent: "center",
+          flexDirection: "row",
+          flex: 1,
+          margin: 5,
+          padding: 20,
+          backgroundColor: "#FFF",
+          borderRadius: 10,
+          elevation: 5,
+        }}
+      >
+        <View style={{ flexDirection: "column", flex: 1 }}>
+          {/* Title & Image View */}
+          <View>
+            <Text
+              variant="bodyMedium"
+              numberOfLines={2}
+              style={{
+                fontWeight: 500,
+                fontSize: 16,
+                width: 300,
+                color: colors.secondary,
+                flex: 2,
+                marginRight: 5,
+              }}
+            >
+              {item.title || "No Name"}
+            </Text>
+
+
+          </View>
+          {/* View More view */}
+          <Pressable
+            onPress={() => {
+              let params = {
+                interactionForm: interactionID?.interactionSearchParams?.formDetails
+              }
+              console.log("params sending...", params)
+              navigation.navigate("InteractionForms", {
+                interactionForm: params
+              })
             }}
           >
             <View
@@ -521,9 +668,11 @@ const InteractionDetails = (props) => {
 
 
   const DetailsInfoUIFull = () => {
-    console.log("data", InteractionDetailsData)
+    console.log("data", interactionReducer?.interactionSearchData?.[0])
 
-    var firstName = "", lastName = "", contactType = ""
+    var firstName = "", lastName = "", contactType = "", remarks = "", techCompDate = "", deployDate = "",
+      biCompDate = "", qaCompDate = "", downtimeRequired = "", channel = "", edoc = ""
+
     if (interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.firstName !== undefined) {
       firstName = interactionReducer?.interactionSearchData?.[0]?.currentUser?.description?.firstName
     }
@@ -532,14 +681,60 @@ const InteractionDetails = (props) => {
     }
 
 
-    InteractionDetailsData?.contactPreference?.map((item, idx) => {
+    interactionReducer?.interactionSearchData?.[0]?.contactPreference?.map((item, idx) => {
       if (contactType === "") {
-        contactType = item.description
+        contactType = item?.description
       }
       else {
-        contactType = contactType + " , " + item.description
+        contactType = contactType + " , " + item?.description
       }
     })
+
+    if (interactionReducer?.interactionSearchData?.[0]?.intxnDescription === undefined) {
+
+    }
+    else {
+      remarks = interactionReducer?.interactionSearchData?.[0]?.intxnDescription
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.techCompletionDate !== null) {
+      techCompDate = interactionReducer?.interactionSearchData?.[0]?.techCompletionDate
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.deployementDate !== null) {
+      deployDate = interactionReducer?.interactionSearchData?.[0]?.deployementDate
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.biCompletionDate !== null) {
+      biCompDate = interactionReducer?.interactionSearchData?.[0]?.biCompletionDate
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.qaCompletionDate !== null) {
+      qaCompDate = interactionReducer?.interactionSearchData?.[0]?.qaCompletionDate
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.isDownTimeRequired !== null) {
+      if (interactionReducer?.interactionSearchData?.[0]?.isDownTimeRequired) {
+        downtimeRequired = "Yes"
+      }
+      else {
+        downtimeRequired = "No"
+      }
+    }
+
+    if (interactionReducer?.interactionSearchData?.[0]?.intxnChannel?.description !== null) {
+      channel = interactionReducer?.interactionSearchData?.[0]?.intxnChannel?.description
+    }
+
+    if ((interactionReducer?.interactionSearchData?.[0]?.edoc === undefined)
+      || (interactionReducer?.interactionSearchData?.[0]?.edoc == null)) {
+
+    }
+    else {
+      edoc = moment(interactionReducer?.interactionSearchData?.[0]?.edoc).format("DD MMM YYYY")
+    }
+
+
 
 
     return (
@@ -567,7 +762,7 @@ const InteractionDetails = (props) => {
           }}
           numberOfLines={1}
         >
-          Interaction No.: {InteractionDetailsData?.intxnNo}
+          Interaction No.: {interactionReducer?.interactionSearchData?.[0]?.intxnNo}
         </Text>
 
         <View
@@ -580,7 +775,7 @@ const InteractionDetails = (props) => {
             {/* Statement View */}
             <DetailInfoItem
               title={"Statement"}
-              value={InteractionDetailsData?.requestStatement}
+              value={interactionReducer?.interactionSearchData?.[0]?.requestStatement}
               flex={1}
             />
           </View>
@@ -589,6 +784,10 @@ const InteractionDetails = (props) => {
             <DetailInfoItem title={"Current User"}
               value={firstName
                 + " " + lastName}
+              flex={4} />
+
+            <DetailInfoItem title={"Channel"}
+              value={channel}
               flex={4} />
           </View>
 
@@ -607,13 +806,13 @@ const InteractionDetails = (props) => {
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             <DetailInfoItem
               title={"Category"}
-              value={InteractionDetailsData?.intxnCategory?.description}
+              value={interactionReducer?.interactionSearchData?.[0]?.intxnCategory?.description}
               flex={1}
             />
 
             <DetailInfoItem
               title={"Type"}
-              value={InteractionDetailsData?.intxnType?.description}
+              value={interactionReducer?.interactionSearchData?.[0]?.intxnType?.description}
               flex={1}
             />
           </View>
@@ -621,13 +820,13 @@ const InteractionDetails = (props) => {
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             <DetailInfoItem
               title={"Service Category"}
-              value={InteractionDetailsData?.serviceCategory?.description}
+              value={interactionReducer?.interactionSearchData?.[0]?.serviceCategory?.description}
               flex={1}
             />
 
             <DetailInfoItem
               title={"Service type"}
-              value={InteractionDetailsData?.serviceType?.description}
+              value={interactionReducer?.interactionSearchData?.[0]?.serviceType?.description}
               flex={1}
             />
           </View>
@@ -641,7 +840,7 @@ const InteractionDetails = (props) => {
 
             <DetailInfoItem
               title={"Priority"}
-              value={InteractionDetailsData?.intxnPriority?.description}
+              value={interactionReducer?.interactionSearchData?.[0]?.intxnPriority?.description}
               flex={1}
             />
           </View>
@@ -649,16 +848,14 @@ const InteractionDetails = (props) => {
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {/* <DetailInfoItem
               title={"Created Date"}
-              value={moment(InteractionDetailsData?.createdAt).format(
+              value={moment(interactionReducer?.interactionSearchData?.[0]?.createdAt).format(
                 "DD MMM YYYY"
               )}
               flex={1}
             /> */}
             <DetailInfoItem
               title={"Exp. Completion Date"}
-              value={moment(interactionReducer?.interactionSearchData?.[0]?.edoc).format(
-                "DD MMM YYYY"
-              )}
+              value={edoc}
               flex={1}
             />
 
@@ -673,13 +870,65 @@ const InteractionDetails = (props) => {
             />
           </View>
 
+          {(techCompDate !== "") && (deployDate !== "") && (
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              <DetailInfoItem
+                title={"Tech Completion Date"}
+                value={techCompDate}
+                flex={1}
+              />
+
+              <DetailInfoItem
+                title={"Deployment Date"}
+                value={deployDate}
+                flex={1}
+              />
+            </View>
+          )}
+
+          {(biCompDate !== "") && (qaCompDate !== "") && (
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              <DetailInfoItem
+                title={"BI Completion Date"}
+                value={biCompDate}
+                flex={1}
+              />
+
+              <DetailInfoItem
+                title={"QA Completion Date"}
+                value={qaCompDate}
+                flex={1}
+              />
+            </View>
+          )}
+
+          {(downtimeRequired !== "") && (
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              {downtimeRequired !== "" && (
+                <DetailInfoItem title={"Downtime Required"}
+                  value={downtimeRequired}
+                  flex={1} />)}
+            </View>
+          )}
+
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <DetailInfoItem title={"Contact Preference"}
-              value={contactType}
-              flex={1} />
+            {contactType !== "" && (
+              <DetailInfoItem title={"Contact Preference"}
+                value={contactType}
+                flex={1} />)}
           </View>
 
-          {InteractionDetailsData?.attachments?.length > 0 && (
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            {remarks !== "" && (
+              <DetailInfoItem title={"Remarks"}
+                value={remarks}
+                flex={1} />
+            )}
+          </View>
+
+
+
+          {interactionReducer?.interactionSearchData?.[0]?.attachments?.length > 0 && (
             <View style={{ flexDirection: "row", marginTop: 20 }}>
               {/* Attachments View */}
               <DetailInfoAttachmentItem
@@ -750,10 +999,10 @@ const InteractionDetails = (props) => {
 
   const showHideMenu = () => {
 
-    setIntUserId(interactionReducer.interactionSearchData[0].currentUser.code)
-    setIntRoleId(interactionReducer.interactionSearchData[0].currentRole.description.roleId)
-    setIntDeptId(interactionReducer.interactionSearchData[0].currentDepartment.description.unitId)
-    setIntStatus(interactionReducer.interactionSearchData[0].intxnStatus.code)
+    setIntUserId(interactionReducer?.interactionSearchData[0]?.currentUser?.code)
+    setIntRoleId(interactionReducer?.interactionSearchData[0]?.currentRole?.description?.roleId)
+    setIntDeptId(interactionReducer?.interactionSearchData[0]?.currentDepartment?.description?.unitId)
+    setIntStatus(interactionReducer?.interactionSearchData[0]?.intxnStatus?.code)
 
     console.log("currRoleId..", currRoleId)
     console.log("intRoleId..", intRoleId)
@@ -974,11 +1223,11 @@ const InteractionDetails = (props) => {
                   label={strings.submit}
                   onPress={async () => {
                     setFollowupLoader(true)
-                    const intId = interactionID.interactionSearchParams.intxnNo
+                    const intId = interactionID?.interactionSearchParams?.intxnNo
                     console.log("intId..", intId);
                     dispatch(
                       createFollowupForInteractionID(
-                        interactionID.interactionSearchParams.intxnNo,
+                        interactionID?.interactionSearchParams?.intxnNo,
                         { formPriority, formSource, formRemarks },
                         navigation,
                         setShowBottomModal = { setShowBottomModal },
@@ -1003,12 +1252,21 @@ const InteractionDetails = (props) => {
 
   const editModal = () => {
     var _statusData = []
+    var statusArray = []
     console.log("statusData...", statusData)
-    interactionReducer?.statusData?.map(item => {
-      item.status?.map(item2 => {
-        _statusData.push({ description: item2?.description, code: item2?.code })
+
+    statusData?.map((node) => {
+      node?.status?.map((st) => {
+        statusArray.push(st)
       })
     })
+    _statusData = [...new Map(statusArray.map(item => [item["code"], item])).values()]
+
+    // interactionReducer?.statusData?.map(item => {
+    //   item.status?.map(item2 => {
+    //     _statusData.push({ description: item2?.description, code: item2?.code })
+    //   })
+    // })
 
     return (
       <FooterModel
@@ -1027,20 +1285,42 @@ const InteractionDetails = (props) => {
                 onChangeText={(text) => {
                   var deptArr = []
                   var roleArr = []
+                  var tempDeptArr = []
+                  var tempRoleArr = []
+
+
+                  // let entity = []
+                  // interactionReducer?.statusData?.map((unit) => {
+                  //   // console.log("status content...", unit)
+                  //   for (const property in unit.status) {
+                  //     // console.log("code content...", unit.status[property].code)
+                  //     // console.log("text content...", text)
+                  //     if (unit.status[property].code === text.code) {
+                  //       entity.push(unit)
+                  //       break
+                  //     }
+                  //   }
+                  // })
+
+                  // console.log("entity content...", entity)
+
 
                   interactionReducer?.statusData?.map(item => {
                     item?.status?.map(item2 => {
                       if (text.code == item2?.code) {
                         item?.entity?.map(item3 => {
-                          deptArr.push({ description: item3?.unitDesc, code: item3?.unitId })
+                          tempDeptArr.push({ description: item3?.unitDesc, code: item3?.unitId })
+                          deptArr = tempDeptArr.filter((ele, ind) => ind === tempDeptArr.findIndex(elem => elem.jobid === ele.jobid && elem.id === ele.id))
                         })
 
                         item?.roles?.map(item4 => {
-                          roleArr.push({ description: item4.roleDesc, code: item4.roleId })
+                          tempRoleArr.push({ description: item4.roleDesc, code: item4.roleId })
+                          roleArr = tempRoleArr.filter((ele, ind) => ind === tempRoleArr.findIndex(elem => elem.jobid === ele.jobid && elem.id === ele.id))
                         })
                       }
                     })
                   })
+
 
                   // statusData.map(item => {
                   //   if (text.code == item.status[0].code) {
@@ -1052,8 +1332,8 @@ const InteractionDetails = (props) => {
                   unstable_batchedUpdates(() => {
                     setDeptData(deptArr)
                     setRoleData(roleArr)
-                    setStatusDesc(text.description),
-                      setStatusCode(text.code)
+                    setStatusDesc(text?.description),
+                      setStatusCode(text?.code)
                   })
                 }}
                 value={selStatusCode}
@@ -1070,8 +1350,8 @@ const InteractionDetails = (props) => {
                 data={_deptData}
                 onChangeText={(text) => {
                   unstable_batchedUpdates(() => {
-                    setDeptDesc(text.description),
-                      setDeptCode(text.code)
+                    setDeptDesc(text?.description),
+                      setDeptCode(text?.code)
                   })
                 }}
                 value={selDeptCode}
@@ -1088,8 +1368,8 @@ const InteractionDetails = (props) => {
                 data={_roleData}
                 onChangeText={async (text) => {
                   unstable_batchedUpdates(() => {
-                    setRoleDesc(text.description),
-                      setRoleCode(text.code)
+                    setRoleDesc(text?.description),
+                      setRoleCode(text?.code)
                     // setRoleCodeAction(!roleCodeAction)
                   })
                   await dispatch(
@@ -1111,8 +1391,8 @@ const InteractionDetails = (props) => {
                 data={interactionReducer?.interactionUsersByRoleData}
                 onChangeText={(text) => {
                   unstable_batchedUpdates(() => {
-                    setUsersDesc(text.description),
-                      setUsersCode(text.code)
+                    setUsersDesc(text?.description),
+                      setUsersCode(text?.code)
                   })
                 }}
                 value={usersCode}
@@ -1122,7 +1402,203 @@ const InteractionDetails = (props) => {
             )}
           </View>
 
+          <View style={{ paddingVertical: 2, marginTop: 20 }}>
+            <CustomInput
+              value={moment(selTechCompDate).format(
+                "YYYY-MM-DD"
+              )}
+              caption={"Date of Tech Completion"}
+              onFocus={() => setOpenTechCompDatePicker(true)}
+              placeHolder={""}
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenTechCompDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                  icon={"calendar"}
+                />
+              }
+            />
+            <DatePicker
+              modal
+              mode="date"
+              open={openTechCompDatePicker}
+              onCancel={() => setOpenTechCompDatePicker(false)}
+              date={selTechCompDate}
+              onConfirm={(params) => {
+                unstable_batchedUpdates(() => {
+                  setSelTechCompDate(params)
+                  setOpenTechCompDatePicker(false);
+                })
+              }}
+            />
+          </View>
+
+          <View style={{ paddingVertical: 2, marginTop: 20 }}>
+            <CustomInput
+              value={moment(selDepCompDate).format(
+                "YYYY-MM-DD"
+              )}
+              caption={"Date of Deployment"}
+              onFocus={() => setOpenDepCompDatePicker(true)}
+              placeHolder={""}
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenDepCompDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                  icon={"calendar"}
+                />
+              }
+            />
+            <DatePicker
+              modal
+              mode="date"
+              open={openDepCompDatePicker}
+              onCancel={() => setOpenDepCompDatePicker(false)}
+              date={selDepCompDate}
+              onConfirm={(params) => {
+                unstable_batchedUpdates(() => {
+                  setSelDepCompDate(params)
+                  setOpenDepCompDatePicker(false);
+                })
+              }}
+            />
+          </View>
+
+          <View style={{ paddingVertical: 2, marginTop: 20 }}>
+            <CustomInput
+              value={moment(selBiCompDate).format(
+                "YYYY-MM-DD"
+              )}
+              caption={"BI Completion Date"}
+              onFocus={() => setOpenBiCompDatePicker(true)}
+              placeHolder={""}
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenBiCompDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                  icon={"calendar"}
+                />
+              }
+            />
+            <DatePicker
+              modal
+              mode="date"
+              open={openBiCompDatePicker}
+              onCancel={() => setOpenBiCompDatePicker(false)}
+              date={selBiCompDate}
+              onConfirm={(params) => {
+                unstable_batchedUpdates(() => {
+                  setSelBiCompDate(params)
+                  setOpenBiCompDatePicker(false);
+                })
+              }}
+            />
+          </View>
+
+          <View style={{ paddingVertical: 2, marginTop: 20 }}>
+            <CustomInput
+              value={moment(selQaCompDate).format(
+                "YYYY-MM-DD"
+              )}
+              caption={"QA Completion Date"}
+              onFocus={() => setOpenQaCompDatePicker(true)}
+              placeHolder={""}
+              right={
+                <TextInput.Icon
+                  onPress={() => setOpenQaCompDatePicker(true)}
+                  style={{ width: 23, height: 23 }}
+                  theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                  icon={"calendar"}
+                />
+              }
+            />
+            <DatePicker
+              modal
+              mode="date"
+              open={openQaCompDatePicker}
+              onCancel={() => setOpenQaCompDatePicker(false)}
+              date={selQaCompDate}
+              onConfirm={(params) => {
+                unstable_batchedUpdates(() => {
+                  setSelQaCompDate(params)
+                  setOpenQaCompDatePicker(false);
+                })
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              marginTop: 20
+            }}
+          >
+            <Text style={{ alignSelf: "center", color: "#000", marginRight: 10, marginLeft: 10 }}>
+              Downtime Required
+            </Text>
+
+            <CustomSwitch
+              buttonWidth={20}
+              buttonPadding={10}
+              switchWidth={120}
+              startOnLeft={isNoSelected}
+              onSwitch={onToggleSwitch}
+              onSwitchReverse={onToggleSwitch}
+              buttonColor={"#4a5996"}
+              switchBackgroundColor={"#EBEDEF"}
+              switchLeftText={"No"}
+              switchLeftTextStyle={{
+                color: "#4a5996",
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+              switchRightText={"Yes"}
+              switchRightTextStyle={{
+                color: "#4a5996",
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            />
+          </View>
+
+          {/* <View style={{ paddingVertical: 2, marginTop: 10 }}>
+              <CustomInput
+                value={moment(selDate).format(
+                  "YYYY-MM-DD"
+                )}
+                caption={"Downtime Required"}
+                onFocus={() => setDowntimeRequired(true)}
+                placeHolder={""}
+                right={
+                  <TextInput.Icon
+                    onPress={() => setDowntimeRequired(true)}
+                    style={{ width: 23, height: 23 }}
+                    theme={{ colors: { onSurfaceVariant: Colors.gray } }}
+                    icon={"calendar"}
+                  />
+                }
+              />
+              <DatePicker
+                modal
+                mode="date"
+                open={openDatePicker}
+                onCancel={() => setDowntimeRequired(false)}
+                date={selDate}
+                onConfirm={(params) => {
+                  unstable_batchedUpdates(() => {
+                    setSelDate(params)
+                    setDowntimeRequired(false);
+                  })
+                }}
+              />
+            </View> */}
+
           <CustomInput
+            style={{ marginTop: 30 }}
             value={enteredRemarks}
             caption={strings.remarks}
             placeHolder={strings.remarks}
@@ -1130,6 +1606,13 @@ const InteractionDetails = (props) => {
               setRemarks(text)
             }
             }
+          />
+
+          <ImagePicker
+            attachmentModalVisible={attachmentModalVisible}
+            setAttachmentModalVisible={setAttachmentModalVisible}
+            fileAttachments={fileAttachments}
+            setFileAttachments={setFileAttachments}
           />
 
           {/* Bottom Button View */}
@@ -1149,20 +1632,47 @@ const InteractionDetails = (props) => {
             </View>
 
             <View style={{ flex: 1 }}>
-              <CustomButton label={strings.submit} onPress={() => {
-                dispatch(
-                  updateInteraction(
-                    interactionID.interactionSearchParams.intxnNo,
-                    usersCode,
-                    selDeptCode,
-                    selRoleCode,
-                    selStatusCode,
-                    enteredRemarks,
-                    setShowBottomModal = { setShowBottomModal },
-                    setResponseFlag = { setResponseFlag },
-                    responseFlag
+              <CustomButton label={strings.submit} onPress={async () => {
+                if (enteredRemarks === "") {
+                  // showErrorMessage(strings.pls_enter_remarks)
+                  Toast.show({
+                    type: "bctError",
+                    text1: strings.pls_enter_remarks,
+                  });
+                }
+                else {
+                  var attachments = await getDataFromDB("ATTACHMENTS")
+                  var _attachments = []
+                  if (attachments.includes("~")) {
+                    _attachments = attachments.split("~")
+                  }
+                  else {
+                    _attachments.push(attachments)
+                  }
+
+                  console.log("edit retrive attachments1.." + attachments)
+                  console.log("edit retrive attachments2.." + _attachments)
+
+                  dispatch(
+                    updateInteraction(
+                      interactionID?.interactionSearchParams?.intxnNo,
+                      usersCode,
+                      selDeptCode,
+                      selRoleCode,
+                      selStatusCode,
+                      enteredRemarks,
+                      setShowBottomModal = { setShowBottomModal },
+                      setResponseFlag = { setResponseFlag },
+                      responseFlag,
+                      moment(selTechCompDate).format("YYYY-MM-DD"),
+                      moment(selDepCompDate).format("YYYY-MM-DD"),
+                      moment(selBiCompDate).format("YYYY-MM-DD"),
+                      moment(selQaCompDate).format("YYYY-MM-DD"),
+                      downtimeRequired,
+                      _attachments
+                    )
                   )
-                )
+                }
               }} />
             </View>
 
@@ -1184,9 +1694,9 @@ const InteractionDetails = (props) => {
 
           <Text
             variant="labelMedium"
-            style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
+            style={{ color: "#000000", margin: 10, alignSelf: "baseline", fontSize: 15 }}
           >
-            Are You Sure Want To Assign To Self ?
+            Are sure you want to assign yourself to the interaction ?
           </Text>
 
           {/* Bottom Button View */}
@@ -1240,8 +1750,8 @@ const InteractionDetails = (props) => {
               selectedValue={usersDesc}
               data={interactionReducer?.interactionUsersByRoleData}
               onChangeText={(text) => {
-                setUsersDesc(text.description),
-                  setUsersCode(text.code)
+                setUsersDesc(text?.description),
+                  setUsersCode(text?.code)
               }}
               value={usersCode}
               caption={strings.user}
@@ -1299,7 +1809,7 @@ const InteractionDetails = (props) => {
 
           <Text
             variant="labelMedium"
-            style={{ margin: 10, alignSelf: "baseline", fontSize: 15 }}
+            style={{ color: "#000000", margin: 10, alignSelf: "baseline", fontSize: 15 }}
           >
             Are You Sure Want To Re Assign To Self ?
           </Text>
@@ -1322,7 +1832,7 @@ const InteractionDetails = (props) => {
             <View style={{ flex: 1 }}>
               <CustomButton label={strings.submit} onPress={() => {
                 dispatch(assignInteractionToSelf(
-                  interactionID.interactionSearchParams.intxnNo,
+                  interactionID?.interactionSearchParams?.intxnNo,
                   "" + "",
                   "REASSIGN_TO_SELF",
                   setShowBottomModal = { setShowBottomModal },
@@ -1354,12 +1864,12 @@ const InteractionDetails = (props) => {
               selectedValue={cancelReasonDesc}
               data={
                 interactionReducer.interactionCancelReasonsData.data.INTXN_STATUS_REASON.map(item => {
-                  return { description: item.description, code: item.code }
+                  return { description: item?.description, code: item?.code }
                 })
               }
               onChangeText={(text) => {
-                setCancelReasonDesc(text.description),
-                  setCancelReasonCode(text.code)
+                setCancelReasonDesc(text?.description),
+                  setCancelReasonCode(text?.code)
               }}
               value={cancelReasonCode}
               caption={strings.cancel_reason}
@@ -1392,7 +1902,7 @@ const InteractionDetails = (props) => {
                 dispatch(
                   cancelInteraction(
                     cancelReasonCode,
-                    interactionID.interactionSearchParams.intxnNo,
+                    interactionID?.interactionSearchParams?.intxnNo,
                     setShowBottomModal = { setShowBottomModal },
                     setResponseFlag = { setResponseFlag },
                     responseFlag)
@@ -1455,45 +1965,67 @@ const InteractionDetails = (props) => {
 
     console.log("inside downloadFile...")
 
-    // Get today's date to add the time suffix in filename
-    let date = new Date();
+    console.log("download attachment got2..", interactionReducer.intxnDownloadAttachmentData);
 
-    // File URL which we want to download
-    let FILE_URL = interactionReducer.intxnDownloadAttachmentData.url;
+    if (interactionReducer?.intxnDownloadAttachmentData?.url !== undefined) {
+      // Get today's date to add the time suffix in filename
+      let date = new Date();
 
-    // Function to get extention of the file url
-    // let file_ext = getFileExtention(fileName);
+      console.log("url fetched...", interactionReducer?.intxnDownloadAttachmentData?.url)
 
-    let file_ext = fileName.split(".");
-    file_ext = '.' + file_ext[1];
+      // File URL which we want to download
+      let FILE_URL = interactionReducer?.intxnDownloadAttachmentData?.url;
 
-    // config: To get response by passing the downloading related options
-    // fs: Root directory path to download
-    const { config, fs } = RNFetchBlob;
-    let RootDir = fs.dirs.PictureDir;
-    let options = {
-      fileCache: true,
-      addAndroidDownloads: {
-        path:
-          RootDir +
-          '/dtworks/file_' +
-          Math.floor(date.getTime() + date.getSeconds() / 2) +
-          file_ext,
-        description: 'downloading file...',
-        notification: true,
-        // useDownloadManager works with Android only
-        useDownloadManager: true,
-      },
-    };
-    config(options)
-      .fetch('GET', FILE_URL)
-      .then(res => {
-        // Alert after successful downloading
-        console.log('res -> ', JSON.stringify(res));
-        alert('File Downloaded Successfully.');
-      });
+      console.log("FILE_URL...", FILE_URL)
+
+      // Function to get extention of the file url
+      // let file_ext = getFileExtention(fileName);
+
+      let file_ext = fileName.split(".");
+      file_ext = '.' + file_ext[1];
+
+      // config: To get response by passing the downloading related options
+      // fs: Root directory path to download
+      const { config, fs } = RNFetchBlob;
+      let RootDir = fs.dirs.PictureDir;
+      let options = {
+        fileCache: true,
+        addAndroidDownloads: {
+          path:
+            RootDir +
+            '/dtworks/file_' +
+            Math.floor(date.getTime() + date.getSeconds() / 2) +
+            file_ext,
+          description: 'downloading file...',
+          notification: true,
+          // useDownloadManager works with Android only
+          useDownloadManager: true,
+        },
+      };
+      config(options)
+        .fetch('GET', FILE_URL)
+        .then(res => {
+          // Alert after successful downloading
+          console.log('res -> ', JSON.stringify(res));
+          alert('File Downloaded Successfully.');
+        });
+    }
   };
 
+
+  function WriteBase64ToFile(Base64) {
+    let date = new Date();
+    const { config, fs } = RNFetchBlob;
+    let RootDir = fs.dirs.PictureDir
+    let path = RootDir + '/dtworks/file_' + Math.floor(date.getTime() + date.getSeconds() / 2) + ".png"
+    // let path = dirs.DCIMDir + "PATH/TO/FILE.png"
+    RNFetchBlob.fs.writeFile(path, Base64, 'base64')
+      .then((result) => {
+        // console.log("File has been saved to:" + result)
+        alert("File Downloaded Successfully.");
+      })
+      .catch(error => console.log(err))
+  }
 
   const getFileExtention = fileUrl => {
     // To get the file extension
@@ -1513,8 +2045,25 @@ const InteractionDetails = (props) => {
       <ScrollView style={styles.scrollviewContainer} nestedScrollEnabled={true}>
         {/* Interaction Details View Full Container */}
         <DetailsInfoUIFull />
+
+        {(interactionID?.interactionSearchParams?.formDetails !== null) && (interactionID?.interactionSearchParams?.formDetails !== undefined) && (
+          <View style={{ flexDirection: "column", marginTop: 15 }}>
+            <FlatList
+              initialNumToRender={1}
+              showsHorizontalScrollIndicator={false}
+              data={[
+                { title: `Requirement Details` },
+              ]}
+              renderItem={({ item, index }) => (
+                <HorizontalFlatListItem2 item={item} index={index} />
+              )}
+              keyExtractor={(item, index) => index}
+            />
+          </View>
+        )}
+
         {/* Flatlist Horizontal view */}
-        <View style={{ flexDirection: "row", marginTop: 15 }}>
+        <View style={{ flexDirection: "column", marginTop: 15 }}>
           <FlatList
             initialNumToRender={1}
             showsHorizontalScrollIndicator={false}
@@ -1528,6 +2077,7 @@ const InteractionDetails = (props) => {
             keyExtractor={(item, index) => index}
           />
         </View>
+
         {orderLen != 0 &&
           <View style={{ flex: 1 }}>
             <CustomButton
@@ -1537,22 +2087,25 @@ const InteractionDetails = (props) => {
           </View>
         }
 
-        <Text
-          variant="bodyMedium"
-          numberOfLines={1}
-          style={{
-            fontWeight: 700,
-            fontSize: 16,
-            width: 100,
-            color: colors.secondary,
-            flex: 2,
-            marginTop: 20,
-            marginLeft: 10,
-          }}
-        >
-          Attachments
-        </Text>
-        {interactionReducer.intxnAttachmentData.length > 0 && (
+        {(interactionReducer?.intxnAttachmentData !== undefined) && (interactionReducer?.intxnAttachmentData?.length > 0) && (
+          <Text
+            variant="bodyMedium"
+            numberOfLines={1}
+            style={{
+              fontWeight: 700,
+              fontSize: 16,
+              width: 100,
+              color: colors.secondary,
+              flex: 2,
+              marginTop: 20,
+              marginLeft: 10,
+            }}
+          >
+            Attachments
+          </Text>
+        )}
+
+        {(interactionReducer?.intxnAttachmentData !== undefined) && (interactionReducer?.intxnAttachmentData?.length > 0) && (
           <View style={{ flexDirection: "row", marginTop: 5 }}>
             <FlatList
               initialNumToRender={1}
@@ -1583,6 +2136,8 @@ const InteractionDetails = (props) => {
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

@@ -211,7 +211,7 @@ export const getAppointmentDashboardData = (navigation = null) => {
 
 
 
-export function getHelpdeskHourlyTickets() {
+export async function getHelpdeskHourlyTickets() {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_HOURLY_TICKETS;
@@ -233,7 +233,7 @@ export function getHelpdeskHourlyTickets() {
 
 
 
-export function getHelpdeskSummary(params) {
+export async function getHelpdeskSummary(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
@@ -254,7 +254,7 @@ export function getHelpdeskSummary(params) {
 }
 
 
-export function getHelpdeskSummaryClarification(params) {
+export async function getHelpdeskSummaryClarification(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
@@ -275,7 +275,7 @@ export function getHelpdeskSummaryClarification(params) {
 }
 
 
-export function getHelpdeskSummaryIncident(params) {
+export async function getHelpdeskSummaryIncident(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
@@ -297,7 +297,7 @@ export function getHelpdeskSummaryIncident(params) {
 
 
 
-export function getHelpdeskSummaryServiceRequest(params) {
+export async function getHelpdeskSummaryServiceRequest(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUMMARY;
@@ -339,7 +339,7 @@ export async function getHelpdeskSummaryUnclassified(params) {
 }
 
 
-export function getSupportTtkPending(params) {
+export async function getSupportTtkPending(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_SUPPORT_TTK_PENDING;
@@ -374,7 +374,7 @@ export function getSupportTtkPending(params) {
 
 
 
-export function getMonthlyTrend() {
+export async function getMonthlyTrend() {
   return async (dispatch) => {
 
     var date = new Date();
@@ -420,7 +420,7 @@ export function getMonthlyTrend() {
 
 
 
-export function getHelpdeskByStatus(params) {
+export async function getHelpdeskByStatus(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_BY_STATUS;
@@ -508,7 +508,7 @@ export function getHelpdeskByTypeLive(params) {
 }
 
 
-export function getHelpdeskByAgeing(params) {
+export async function getHelpdeskByAgeing(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_BY_AGING;
@@ -591,7 +591,7 @@ export function getHelpdeskBySeverityLive(params) {
 }
 
 
-export function getHelpdeskProjectWise(params) {
+export async function getHelpdeskProjectWise(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_PROJECT_WISE;
@@ -632,7 +632,7 @@ export function getHelpdeskProjectWiseLive(params) {
 }
 
 
-export function getHelpdeskAgentWise(params) {
+export async function getHelpdeskAgentWise(params) {
   return async (dispatch) => {
 
     let url = endPoints.DASHBOARD_HELPDESK_AGENT_WISE;

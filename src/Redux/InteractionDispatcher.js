@@ -4,8 +4,6 @@ import {
   initInteraction, intractionKnowlegeHistoryRemoveUserInputTypes,
   setAssignInteractionToSelfDataInStore,
   setAssignInteractionToSelfErrorDataInStore,
-  setAttachmentEntityDataInStore,
-  setAttachmentEntityErrorDataInStore,
   setCancelReasonsDataInStore,
   setCancelReasonsErrorDataInStore,
   setDowloadAttachmentDataInStore,
@@ -38,11 +36,8 @@ import get from "lodash.get";
 import { unstable_batchedUpdates } from "react-native";
 import Toast from "react-native-toast-message";
 import { typeOfAccrodin } from "../Screens/TabScreens/InteractionsToOrder";
-import { getDataFromDB } from "../Storage/token";
+import { getDataFromDB, saveDataToDB } from "../Storage/token";
 import { storageKeys } from "../Utilities/Constants/Constant";
-import {
-  getCustomerID
-} from "../Utilities/UserManagement/userInfo";
 
 /**
 * Reducer Dispatch
@@ -66,7 +61,9 @@ export function fetchInteractionAction(type = "", params = {},
       }
 
       // const customerUUID = await getCustomerUUID();
-      const customerID = await getCustomerID();
+      // changed
+      // const customerID = await getCustomerID();
+      var customerID = Number(await getDataFromDB(storageKeys.CUSTOMER_ID))
       let flowId;
 
       let interactionResult;
@@ -474,7 +471,13 @@ export async function getInteractionDetailsSearch(params, navigation = null) {
     console.log("interaction search result..", result)
     if (result.success) {
       console.log("interaction search success..", result.data.data)
-      dispatch(setInteractionsSearchDataInStore(result.data.data));
+
+      let result2 = await dispatch(await getAttachmentList(result?.data?.data?.rows?.[0]?.intxnUuid))
+      // if (result2.success) {
+      //   console.log("getAttachmentList got..", result2?.data?.data);
+      // }
+
+      dispatch(setInteractionsSearchDataInStore(result?.data?.data));
     } else {
       console.log("interaction search failure..")
       dispatch(setInteractionsSearchErrorDataInStore(result));
@@ -667,20 +670,23 @@ export async function fetchUsersByRole(
 ) {
   return async (dispatch) => {
 
-    let usersListResult = await serverCall(
-      endPoints.USERS_ROLE + "?roleId=" + roleId + "&deptId=" + deptId + "",
-      requestMethod.GET,
-      {},
-      navigation
-    );
-    console.log("usersListResult..", usersListResult);
-    if (usersListResult.success) {
-      dispatch(setUsersByRoleDataInStore(usersListResult.data));
-    } else {
-      dispatch(setUsersByRoleErrorDataInStore(result));
-    }
+    if ((roleId !== NaN) && (roleId !== undefined) && (deptId !== NaN) && (deptId !== undefined)) {
 
-  };
+      let usersListResult = await serverCall(
+        endPoints.USERS_ROLE + "?roleId=" + Number(roleId) + "&deptId=" + deptId + "",
+        requestMethod.GET,
+        {},
+        navigation
+      );
+      console.log("usersListResult..", usersListResult);
+      if (usersListResult.success) {
+        dispatch(setUsersByRoleDataInStore(usersListResult.data));
+      } else {
+        dispatch(setUsersByRoleErrorDataInStore(result));
+      }
+
+    };
+  }
 }
 
 
@@ -718,18 +724,47 @@ export function updateInteraction(
   remarks,
   props1,
   props2,
-  responseFlag
+  responseFlag,
+  techCompletionDate,
+  deployementDate,
+  biCompletionDate,
+  qaCompletionDate,
+  isDownTimeRequired,
+  attachments
 ) {
   return async (dispatch) => {
     let url = endPoints.INTERACTION_UPDATE + interactionId;
+    let params = {}
+    if (attachments === undefined) {
+      params = {
+        userId,
+        departmentId,
+        roleId,
+        status,
+        remarks,
+        techCompletionDate,
+        deployementDate,
+        biCompletionDate,
+        qaCompletionDate,
+        isDownTimeRequired
+      };
+    }
+    else {
+      params = {
+        userId,
+        departmentId,
+        roleId,
+        status,
+        remarks,
+        techCompletionDate,
+        deployementDate,
+        biCompletionDate,
+        qaCompletionDate,
+        isDownTimeRequired,
+        attachments
+      };
+    }
 
-    let params = {
-      userId,
-      departmentId,
-      roleId,
-      status,
-      remarks
-    };
     let result = await serverCall(url, requestMethod.PUT, params);
     console.log("updateInteraction result..", result);
     console.log("update responseFlag.....", responseFlag)
@@ -812,7 +847,7 @@ export async function fetchStatus(
       {},
       navigation
     );
-    console.log("fetchStatus response....", statusListResult.data.data.entities.status);
+    console.log("fetchStatus response....", statusListResult.data.data);
 
     if (statusListResult.success) {
       // Toast.show({
@@ -841,10 +876,20 @@ export async function uploadInteractionAttachment(data) {
     console.log("attachment result...", result)
     if (result.success) {
       Toast.show({ type: "bctSuccess", text1: "Attachment Uploaded Successfully" });
-      dispatch(setAttachmentEntityDataInStore(result.data.data));
+
+      if (result?.data?.data?.entityId !== undefined) {
+        if (await getDataFromDB("ATTACHMENTS") !== "") {
+          await saveDataToDB("ATTACHMENTS", await getDataFromDB("ATTACHMENTS") + "~" + result?.data?.data?.entityId);
+        }
+        else {
+          await saveDataToDB("ATTACHMENTS", result?.data?.data?.entityId);
+        }
+      }
+
+      // dispatch(setAttachmentEntityDataInStore(result.data.data));
     } else {
       Toast.show({ type: "bctError", text1: "Something went wrong" });
-      dispatch(setAttachmentEntityErrorDataInStore(result.data));
+      // dispatch(setAttachmentEntityErrorDataInStore(result.data));
     }
   };
 }

@@ -374,13 +374,14 @@ export const Login = ({ navigation }) => {
       }}>
         <Image
           source={require("../../Assets/icons/logo_new.png")}
+          // source={require("../../Assets/icons/ncrtc_logo.png")}
           // resizeMode="cover"
           style={{
             marginTop: 15,
             padding: 60,
             // flex: 1,
             width: 300,
-            height: 100
+            height: 70
           }}
         />
       </View>
@@ -396,7 +397,7 @@ export const Login = ({ navigation }) => {
           <ScrollView nestedScrollEnabled={true}>
             <View
               style={{
-                margin: 10,
+                margin: 30,
                 flex: 1,
                 padding: 20,
                 backgroundColor: "#fff",
@@ -543,6 +544,13 @@ export const Login = ({ navigation }) => {
                         modal: {
                           height: "65%",
                         },
+                        // Country name styles [Text]
+                        countryName: {
+                          color: "#000000"
+                        },
+                        dialCode: {
+                          color: "#000000"
+                        }
                       }}
                     />
                     <CustomInputWithCC
@@ -787,7 +795,7 @@ export const Login = ({ navigation }) => {
                   marginTop: 5,
                 }}
               >
-                © {new Date().getFullYear()} Dtworks. All rights reserved.
+                © {new Date().getFullYear()} dtWorks. All rights reserved.
               </Text>
             </StickyFooter>
           </KeyboardAvoidingView>

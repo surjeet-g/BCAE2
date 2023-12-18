@@ -1,36 +1,19 @@
 const SERVER_TYE = "stage"
 // test "https://bcae-test.comquest-brunei.com:1443/bcae/";
+
 //Staging environment
 
-
 // export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
-
-
-
 
 // export const BASE_URL = (SERVER_TYE == "stage") ? "https://bcae-test.comquest-brunei.com:1443/dtWorks/stage/" : "https://bcae-demo.comquest-brunei.com:9443/dtWorks/"
 
 // export const BASE_URL = "https://bcae-test.comquest-brunei.com:1443/dtWorks/comquest/"
 
-
-
-
-
-
-
-
-
-
-
-
-
 // export const BASE_URL = "https://st-td123.comquest-brunei.com:13443/td123/";
-
 
 // https://bcae-test.comquest-brunei.com:1443/bcae-staging/api/knowledge-base/search-knowledge-base-consumer?q=i%20wan&st=undefined
 
-export const BASE_URL_TENANT =
-  "https://bcae-test.comquest-brunei.com:1443/tenant/";
+export const BASE_URL_TENANT = "https://bcae-test.comquest-brunei.com:1443/tenant/";
 
 export const PROD_BASE_URL = "https://123.comquest-brunei.com/NCC/";
 
@@ -73,12 +56,19 @@ export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-i
 // External helpdesk demo tenant id
 // export const TENANT_ID = "d2ba51d3-370b-4e93-a4f1-27ef0274a693";
 
-// Comquest tenant id
-// export const TENANT_ID = "2da69f8d-c52c-4a18-93d3-e2d4eb69d0f2";
+// Comquest tenant id (currently using in web app)
+export const TENANT_ID = "2da69f8d-c52c-4a18-93d3-e2d4eb69d0f2";
 
 
 // Comquest demo tenant id
-export const TENANT_ID = "844ed6d4-4735-477c-b1a3-ad168ac952f9";
+// export const TENANT_ID = "844ed6d4-4735-477c-b1a3-ad168sac952f9";
+
+
+
+// nrctc tenant id
+// export const TENANT_ID = "f2cd5d2f-39c9-4dcc-acfe-f20190476971";
+
+
 
 
 

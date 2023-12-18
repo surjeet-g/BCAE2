@@ -185,7 +185,7 @@ const InteractionSearch = ({ navigation }) => {
                 <View style={{ paddingVertical: 10 }}>
                     <CustomDropDownFullWidth
                         selectedValue={selInteractionTypeDesc}
-                        data={masterReducer.masterdataData.INTXN_TYPE}
+                        data={masterReducer?.masterdataData?.INTXN_TYPE}
                         onChangeText={(text) => {
                             setSelInteractionTypeDesc(text.description)
                             setSelInteractionTypeVal(text.code)
