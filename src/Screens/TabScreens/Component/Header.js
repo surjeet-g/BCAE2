@@ -27,7 +27,8 @@ import {
 import { CustomActivityIndicator } from "../../../Components/CustomActivityIndicator";
 
 import NetInfo from "@react-native-community/netinfo";
-import { Button, Modal, TextInput } from "react-native-paper";
+import { Colors } from "chart.js";
+import { Button, Icon, Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteNdLogoutUser,
@@ -40,6 +41,7 @@ import {
 import { getDataFromDB, saveDataToDB } from "../../../Storage/token";
 import { storageKeys } from "../../../Utilities/Constants/Constant";
 import { strings } from "../../../Utilities/Language";
+import { navBar } from "../../../Utilities/Style/navBar";
 
 var { height, width } = Dimensions.get("screen");
 const Header = (props, { IsShowBell }) => {
@@ -479,7 +481,7 @@ const Header = (props, { IsShowBell }) => {
               </View> */}
 
 
-              {/* <View style={navBar.navRightCon}>
+              <View style={navBar.navRightCon}>
                 <Pressable
                   onPress={() => {
                     resetCreateInterationForm(),
@@ -487,9 +489,9 @@ const Header = (props, { IsShowBell }) => {
                   }}
                   style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
                 >
-                  <Icon name="plus" size={19} color={colors.BLACK} />
+                  <Icon name="plus" size={19} color={Colors.BLACK} />
                 </Pressable>
-              </View> */}
+              </View>
 
 
             </View>

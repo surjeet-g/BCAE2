@@ -60,7 +60,17 @@ const InteractionForms = (props) => {
     );
 
 
-    var dataArr = interactionForm?.interactionForm?.GRID
+    var dataArr = []
+
+
+    if (!(interactionForm?.interactionForm?.grid === undefined)) {
+        dataArr = interactionForm?.interactionForm?.grid
+    }
+
+    if (!(interactionForm?.interactionForm?.GRID === undefined)) {
+        dataArr = interactionForm?.interactionForm?.GRID
+    }
+
     // console.log("dataArr values..." + dataArr[0].name)
     var comments = interactionForm?.interactionForm?.comments
     var signature = interactionForm?.interactionForm?.signaturePad

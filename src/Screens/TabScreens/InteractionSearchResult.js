@@ -63,7 +63,6 @@ const InteractionSearchResult = ({ route, navigation }) => {
     }, []);
 
 
-
     const renderItem = ({ item }) => (
         <Pressable
             style={{
@@ -96,10 +95,15 @@ const InteractionSearchResult = ({ route, navigation }) => {
         </Pressable>
     );
 
+    console.log("intxn data...", interactionReducer.interactionSearchData)
 
     return (
-        <View style={{ flex: 1, marginTop: 50, marginLeft: 15, marginRight: 15 }}>
+        <View style={{ backgroundColor: "#FFF", flex: 1, marginTop: 50, marginLeft: 15, marginRight: 15 }}>
             {loader && <LoadingAnimation />}
+
+            {interactionReducer.interactionSearchData == undefined && (
+                <Text style={{ color: "#000", alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
+            )}
 
             <FlatList
                 contentContainerStyle={{
@@ -109,6 +113,7 @@ const InteractionSearchResult = ({ route, navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item}
             />
+
         </View>
     );
 };

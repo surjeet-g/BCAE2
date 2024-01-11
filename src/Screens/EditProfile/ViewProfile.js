@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { Button, Divider, Modal, Text, useTheme } from "react-native-paper";
+import { Divider, Modal, Text, useTheme } from "react-native-paper";
 import RNRestart from "react-native-restart";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -60,6 +60,8 @@ export const ViewProfile = ({ navigation }) => {
     dispatch(fetchMyProfileData(navigation));
   }, []);
   const [userType, setUserType] = useState("");
+  const [currRoleDesc, setCurrRoleDesc] = useState("");
+  const [currDeptDesc, setCurrDeptDesc] = useState("");
 
 
 
@@ -75,7 +77,7 @@ export const ViewProfile = ({ navigation }) => {
           }}
           style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginLeft: 10 }}
         >
-          <Icon name={"account-edit"} size={30} color={"#4a5996"} />
+          <Icon name={"account-edit"} size={30} color={"#4c3794"} />
         </Pressable>
       </View>
     );
@@ -259,6 +261,17 @@ export const ViewProfile = ({ navigation }) => {
     //while logout we have to reset the data of first two tab as still it has logout info
     // dispatch(deleteNdLogoutUser(props.navigation, profile?.savedProfileData));
   };
+
+  useEffect(() => {
+    async function getData() {
+      var currDept = await getDataFromDB(storageKeys.CURRENT_ROLE_DESC)
+      var currRole = await getDataFromDB(storageKeys.CURRENT_DEPT_DESC)
+      setCurrRoleDesc(await getDataFromDB(storageKeys.CURRENT_ROLE_DESC))
+      setCurrDeptDesc(await getDataFromDB(storageKeys.CURRENT_DEPT_DESC))
+    }
+    getData()
+  })
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -287,18 +300,32 @@ export const ViewProfile = ({ navigation }) => {
             >
               {userInfo.name}
             </Text>
-            <ClearSpace size={0} />
+            <ClearSpace size={1} />
             <Text
               variant="bodySmall"
               style={{ color: colors.profile_enabled, fontWeight: "500" }}
             >
               {userInfo.email}
             </Text>
+            <ClearSpace size={1} />
+            <Text
+              variant="bodySmall"
+              style={{ color: colors.profile_enabled, fontWeight: "500" }}
+            >
+              {currRoleDesc}
+            </Text>
+            <ClearSpace size={1} />
+            <Text
+              variant="bodySmall"
+              style={{ color: colors.profile_enabled, fontWeight: "500" }}
+            >
+              {currDeptDesc}
+            </Text>
           </View>
         </View>
 
 
-        <ClearSpace size={0} />
+        {/* <ClearSpace size={10} />
         <Pressable
           onPress={() => {
             navigation.navigate("Changepassword", {
@@ -335,8 +362,89 @@ export const ViewProfile = ({ navigation }) => {
             </Text>
           </Text>
         </Pressable>
-        {/* <Divider /> */}
+        <Divider />
         <ClearSpace size={0} />
+
+
+
+        <ClearSpace size={0} />
+        <Pressable
+          onPress={() => {
+            navigation.navigate("SwitchRole", {
+              isChangePassword: true,
+              email: userInfo.email,
+            });
+          }}
+          style={styles.listItem}
+        >
+          <Icon
+            name="account-switch"
+            size={ICON}
+            color={colors.profile_enabled}
+            style={{ marginRight: 14 }}
+          />
+          <Text
+            variant="bodyMedium"
+            style={{
+              fontWeight: "600",
+              color: colors.secondary,
+            }}
+          >
+            Switch User
+            {"\n"}
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "600",
+                color: "gray",
+                lineHeight: 20,
+              }}
+            >
+              Change your Role / Department
+            </Text>
+          </Text>
+        </Pressable>
+        <Divider />
+        <ClearSpace size={0} />
+
+
+        <ClearSpace size={0} />
+        <Pressable
+          onPress={async () => {
+            await saveDataToDB(storageKeys.CHANGE_DASHBOARD, "TRUE")
+            navigation.pop()
+          }}
+          style={styles.listItem}
+        >
+          <Icon
+            name="home-switch"
+            size={ICON}
+            color={colors.profile_enabled}
+            style={{ marginRight: 14 }}
+          />
+          <Text
+            variant="bodyMedium"
+            style={{
+              fontWeight: "600",
+              color: colors.secondary,
+            }}
+          >
+            Switch Dashboard
+            {"\n"}
+            <Text
+              variant="bodySmall"
+              style={{
+                fontWeight: "600",
+                color: "gray",
+                lineHeight: 20,
+              }}
+            >
+              Change your Dashboard in Home Screen
+            </Text>
+          </Text>
+        </Pressable>
+        <Divider />
+        <ClearSpace size={0} /> */}
 
 
         {/* <Pressable onPress={() => showLanguageModal()} style={styles.listItem}>
@@ -566,7 +674,7 @@ export const ViewProfile = ({ navigation }) => {
         <ClearSpace size={0} />
 
 
-        <Button
+        {/* <Button
           style={{
             marginTop: 50,
             padding: 2,
@@ -577,7 +685,7 @@ export const ViewProfile = ({ navigation }) => {
           icon="logout"
           mode="contained"
           // color={"white"}
-          buttonColor={"#4a5996"}
+          buttonColor={"#4c3794"}
           onPress={async () => {
             Alert.alert(strings.attention, strings.are_you_sure_logout, [
               {
@@ -594,7 +702,7 @@ export const ViewProfile = ({ navigation }) => {
           }}
         >
           {strings.logout}
-        </Button>
+        </Button> */}
 
         <ClearSpace size={0} />
       </ScrollView>

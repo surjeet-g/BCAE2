@@ -730,7 +730,8 @@ export function updateInteraction(
   biCompletionDate,
   qaCompletionDate,
   isDownTimeRequired,
-  attachments
+  attachments,
+  navigation
 ) {
   return async (dispatch) => {
     let url = endPoints.INTERACTION_UPDATE + interactionId;
@@ -778,9 +779,11 @@ export function updateInteraction(
       });
       // dispatch(setStatusDataInStore(result.data.data));
       console.log("updateInteraction result success..", result);
-      unstable_batchedUpdates(() => {
+      unstable_batchedUpdates(async () => {
         props1.setShowBottomModal(false)
         props2.setResponseFlag(!responseFlag)
+        // await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.OPERATIONAL)
+        // navigation.pop(1)
       })
     } else {
       Toast.show({

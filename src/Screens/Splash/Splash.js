@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Image, ImageBackground, StyleSheet, View } from "react-native";
+import { Dimensions, Image, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { StickyFooter } from "../../Components/StickyFooter";
 import { getToken } from "../../Storage/token";
 import { color, fontSizes, spacing } from "../../Utilities/Constants/Constant";
 import { changeLanguage } from "../../Utilities/Language/MulitLanguageSupport";
 import { getLanguage } from "../../Utilities/Language/language";
-import { commonStyle } from '../../Utilities/Style/commonStyle';
 var { height, width } = Dimensions.get("screen");
 
 /**
@@ -25,23 +23,9 @@ const Splash = ({ route, navigation }) => {
       setTimeout(() => {
         checkLogin()
       }, 3000)
-
     });
     return willFocusSubscription;
   }, []);
-
-
-
-  // const fetchVersionData = async () => {
-  //   await dispatchVersionCheck(getVersionCheckData(navigation));
-  // };
-
-  // useEffect(() => {
-  //   const willFocusSubscription = navigation.addListener("focus", () => {
-  //     fetchVersionData();
-  //   });
-  //   return willFocusSubscription;
-  // }, []);
 
   const checkLanguage = async () => {
     let language = await getLanguage();
@@ -52,6 +36,7 @@ const Splash = ({ route, navigation }) => {
     }
     setCounter(counter + 1)
   };
+
   /**
   * Check if user is already logged in or not. if logged, navigate to homescreen 
   * @memberOf Splash
@@ -74,75 +59,35 @@ const Splash = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ backgroundColor: colors.background, flex: 1 }}>
-      <ImageBackground
-        source={require("../../Assets/icons/splash_bg.png")}
-        resizeMode="cover"
+    <View style={{ justifyContent: "center", backgroundColor: colors.background, flex: 1 }}>
+
+      <Image
+        source={require("../../Assets/icons/logo_new1.png")}
+        // resizeMode="cover"
         style={{
-          flex: 1,
+          alignSelf: "center",
+          padding: 0,
+          width: 400,
+          height: 100
+          // flex: 1,
         }}
+      />
+
+      <Text
+        variant="labelSmall"
+        style={{ textAlign: "center", marginTop: 20 }}
       >
-        <View style={commonStyle.center}>
-          <Image
-            source={require("../../Assets/icons/logo_new.png")}
-            // source={require("../../Assets/icons/ncrtc_logo.png")}
-            // resizeMode="cover"
-            style={{
-              marginTop: 15,
-              padding: 60,
-              // flex: 1,
-              width: 300,
-              height: 70
-            }}
-          />
-        </View>
+        1.0.0
+      </Text>
 
-        <View style={{ alignItems: "center", marginTop: 300 }}>
-          <Text style={styles.highlightText}>
-            Digital{"\n"}Transformation{"\n"}Works
-          </Text>
-        </View>
-
-      </ImageBackground>
+      {/* <Text
+        variant="labelSmall"
+        style={{ textAlign: "center", marginBottom: 30 }}
+      >
+        © {new Date().getFullYear()} NCRTC. All rights reserved.
+      </Text> */}
 
 
-
-      <StickyFooter isSplash={true}>
-        <View>
-          <View style={{ alignItems: "center", marginBottom: 40 }}>
-            {/* <Text style={styles.highlightText}>
-              Digital Transformation works
-            </Text> */}
-            <Text
-              style={{
-                backgroundColor: color.WHITE, alignContent: "center"
-              }}
-            >
-              1.2
-            </Text>
-          </View>
-
-          {/* <View
-            style={{
-              marginBottom: 10,
-            }}
-          >
-
-            <CustomButton
-              loading={false}
-              label={strings.get_started}
-              isDisabled={false}
-              onPress={checkLogin}
-            />
-          </View> */}
-          <Text
-            variant="labelSmall"
-            style={{ textAlign: "center", marginBottom: 30 }}
-          >
-            © {new Date().getFullYear()} dtWorks. All rights reserved.
-          </Text>
-        </View>
-      </StickyFooter>
     </View>
   );
 };
@@ -171,4 +116,5 @@ const styles = StyleSheet.create({
     lineHeight: spacing.HEIGHT_25 * 2,
   },
 });
+
 export default Splash;

@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import {
   color,
-  spacing,
   fontSizes,
-  buttonSize,
+  spacing
 } from "../Utilities/Constants/Constant";
 
 export const CustomInputWithCC = (props) => {
@@ -21,7 +20,7 @@ export const CustomInputWithCC = (props) => {
         style={{
           marginBottom: 6,
           marginLeft: 8,
-          color: colors.onSurfaceVariant,
+          color: "#FFF",
         }}
       >
         {caption}

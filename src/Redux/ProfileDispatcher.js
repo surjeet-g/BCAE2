@@ -151,10 +151,10 @@ export function seachCustomers(search = "", limit = 5, page = 0) {
       if (search == "" || search.length < 5) {
         dispatch(setSearchProfileData([]));
 
-        Toast.show({
-          type: "bctError",
-          text1: "Please enter minimum 5 characters",
-        });
+        // Toast.show({
+        //   type: "bctError",
+        //   text1: "Please enter minimum 5 characters",
+        // });
       }
       else {
         dispatch(setSearchProfileData(profileResult?.data?.data?.rows));

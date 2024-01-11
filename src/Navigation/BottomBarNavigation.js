@@ -4,15 +4,13 @@ import get from "lodash.get";
 import React, { useEffect } from "react";
 import { Image, Platform, Pressable, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyProfileData } from "../Redux/ProfileDispatcher";
 import { HomeScreen } from "../Screens/TabScreens/HomeScreen";
 import { UserHomeScreen } from "../Screens/TabScreens/UserHomeScreen";
-import { DEFAULT_PROFILE_IMAGE, color } from "../Utilities/Constants/Constant";
+import { DEFAULT_PROFILE_IMAGE } from "../Utilities/Constants/Constant";
 import { navBar } from "../Utilities/Style/navBar";
 import { USERTYPE } from "../Utilities/UserManagement/userInfo";
-import { Appointment } from "./../Screens/Appointments/Appointment";
 import Help from "./../Screens/Help";
 import Offers from "./../Screens/Offers";
 import CustomBottomBar from "./CustomBottomBar";
@@ -54,7 +52,7 @@ const BottomBarNavigation = () => {
     headerShown: true,
     headerStyle: {
       ...fonts.titleLarge,
-      backgroundColor: "#4a5996",
+      backgroundColor: "#4c3794",
     },
     headerTitleStyle: {
       ...fonts.titleMedium,
@@ -88,16 +86,16 @@ const BottomBarNavigation = () => {
 
           <View style={navBar.divider} />
 
-          <Pressable
+          {/* <Pressable
             onPress={() => navigation.navigate("SwitchRole")}
             style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
           >
             <Icon name="account-switch" size={28} color={"#4a5996"} />
-          </Pressable>
+          </Pressable> */}
 
           <View style={navBar.divider} />
 
-          <Pressable onPress={() => navigation.navigate("Profile")}>
+          {/* <Pressable onPress={() => navigation.navigate("Profile")}>
             <Image
               source={{
                 uri: profile || DEFAULT_PROFILE_IMAGE
@@ -105,7 +103,7 @@ const BottomBarNavigation = () => {
               // imageStyle={{ borderRadius: 80 }}
               style={navBar.roundIcon}
             />
-          </Pressable>
+          </Pressable> */}
 
         </View>
       );
@@ -129,7 +127,6 @@ const BottomBarNavigation = () => {
     <>
       {/* {loader && <LoadingAnimation title="Fetch data...Please wait" />} */}
 
-
       <BottomTab.Navigator
         tabBar={(props) => <CustomBottomBar {...props} />}
         initialRouteName="HomeScreen"
@@ -144,43 +141,89 @@ const BottomBarNavigation = () => {
           component={isConsumer ? HomeScreen : UserHomeScreen}
         />
 
+        {/* <BottomTab.Screen
+          options={({ navigation }) => ({
+            ...options(navigation),
+          })}
+          name="Profile"
+          component={ViewProfile}
+        />
+
         <BottomTab.Screen
+          options={({ navigation }) => ({
+            ...options(navigation),
+          })}
+          name="Search"
+          component={InteractionSearch}
+        /> */}
+
+
+        {/* <Pressable
+          onPress={() => onNavClick("Search")}
+          style={{
+            marginTop: spacing.HEIGHT_2,
+            marginBottom: spacing.HEIGHT_2,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "20%",
+            borderColor: "transparent",
+            borderWidth: state.index === 1 ? 3 : 0,
+            borderTopColor:
+              state.index === 1 ? color.WHITE : "transparent",
+          }}
+        >
+          <Image
+            style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
+            source={require("../Assets/icons/search_intxn_icon.png")}
+          />
+          <Text
+            style={state.index === 1 ? styles.selectedText : styles.upperText}
+          >
+            {strings.search}
+          </Text>
+        </Pressable>
+
+
+        <Pressable
+          onPress={() => onNavClick("Settings")}
+          style={{
+            marginTop: spacing.HEIGHT_2,
+            marginBottom: spacing.HEIGHT_2,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "20%",
+            borderColor: "transparent",
+            borderWidth: state.index === 2 ? 3 : 0,
+            borderTopColor:
+              state.index === 2 ? color.BCAE_PRIMARY : "transparent",
+          }}
+        >
+          <Image
+            style={state.index === 2 ? styles.selectedLogo : styles.upperLogo}
+            source={require("../Assets/icons/settings.png")}
+          />
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={state.index === 2 ? styles.selectedText : styles.upperText}
+          >
+            Settings
+          </Text>
+        </Pressable> */}
+
+
+
+
+
+
+        {/* <BottomTab.Screen
           // options={{ headerShown: false }}
           name="Search"
           component={Appointment}
-          options={({ navigation }) => ({
-            ...options,
-            headerRight: () => {
-              return (
-                <View style={navBar.navRightCon}>
-                  {/* <Pressable
-                    onPress={() => {
-                      // alert("ToDo - Navigate to Notifications Screen")
-                    }}
-                    style={navBar.roundIcon}
-                  >
-                    <Image
-                      source={require("../Assets/icons/home_bell.png")}
-                      style={{ width: 35, height: 35 }}
-                    />
-                  </Pressable> */}
+        /> */}
 
-                  <View style={navBar.divider} />
-                  <Pressable onPress={() => navigation.navigate("Profile")}>
-                    <Image
-                      source={{
-                        uri:
-                          profile || DEFAULT_PROFILE_IMAGE,
-                      }}
-                      // imageStyle={{ borderRadius: 80 }}
-                      style={navBar.roundIcon}
-                    />
-                  </Pressable>
-                </View>
-              );
-            },
-          })}
-        />
         <BottomTab.Screen
           // options={{ headerShown: false }}
           name="Offers"
@@ -257,22 +300,39 @@ const BottomBarNavigation = () => {
             },
           })}
         />
+
+
       </BottomTab.Navigator>
     </>
   );
 };
 
-const Root = () => {
-  return (
-    <Drawer.Navigator initialRouteName="BottomApp">
-      <Drawer.Screen
-        name="BottomApp"
-        component={BottomBarNavigation}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Drawer.Navigator>
-  );
-};
-export default Root;
+// const Root = () => {
+//   return (
+//     <Drawer.Navigator initialRouteName="Home">
+//       <Drawer.Screen
+//         name="Home"
+//         component={BottomBarNavigation}
+//         options={{
+//           headerShown: false,
+//         }}
+//       />
+//       {/* <Drawer.Screen
+//         name="Profile"
+//         component={ViewProfile}
+//         options={{
+//           headerShown: true,
+//         }}
+//       />
+//       <Drawer.Screen
+//         name="Switch Role"
+//         component={SwitchRole}
+//         options={{
+//           headerShown: true,
+//         }}
+//       /> */}
+//     </Drawer.Navigator>
+//   );
+// };
+
+export default BottomBarNavigation;

@@ -12,11 +12,12 @@ import {
 import { BarChart, LineChart, ProgressChart, StackedBarChart } from "react-native-chart-kit";
 import DatePicker from "react-native-date-picker";
 import { ScrollView } from "react-native-gesture-handler";
-import { Card, Divider, Text, TextInput } from "react-native-paper";
+import { Card, Divider, Text, TextInput, useTheme } from "react-native-paper";
 import PieChart from "react-native-pie-chart";
 // import { color } from "react-native-reanimated";
 import { useIsFocused } from "@react-navigation/native";
 import { Image } from "react-native";
+import CustomSwitch from "react-native-custom-switch-new";
 import EventCalendar from "react-native-events-calendar";
 import MapView, {
   Marker
@@ -27,8 +28,11 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { ClearSpace } from "../../Components/ClearSpace";
 import { CustomButton } from "../../Components/CustomButton";
+import { CustomButtonMedium } from "../../Components/CustomButtonMedium";
 import { CustomDropDownFullWidth } from "../../Components/CustomDropDownFullWidth";
+import { CustomDropDownMedium } from "../../Components/CustomDropDownMedium";
 import { CustomInput } from "../../Components/CustomInput";
+import { CustomInputMedium } from "../../Components/CustomInputMedium";
 import LoadingAnimation from "../../Components/LoadingAnimation";
 import TreeMap from "../../Components/charts/TreeMap";
 import { STACK_INTERACTION_DETAILS, STACK_ORDER_DETAILS } from "../../Navigation/MyStack";
@@ -128,12 +132,11 @@ const TAB_INFORMATIVE = false;
 
 
 
-
 export const UserHomeScreen = (props) => {
 
   console.log("UserHomeScreen rendering..");
 
-
+  const { colors, fonts, roundness } = useTheme();
 
   const isFocused = useIsFocused();
 
@@ -184,7 +187,7 @@ export const UserHomeScreen = (props) => {
   const { navigation } = props
   const [openDashboardPopUp, setOpenDashboardPopUp] = useState(false);
 
-  const [showHelpdeskDashboard, setShowHelpdeskDashboard] = useState(false);
+  const [showHelpdeskDashboard, setShowHelpdeskDashboard] = useState(true);
   const [helpdeskDetDialogVisible, setHelpdeskDetDialogVisible] = React.useState(false);
   const [helpdeskDialogData, setHelpdeskDialogData] = useState([]);
   const [helpdeskFilterDialogVisible, setHelpdeskFilterDialogVisible] = React.useState(false);
@@ -297,21 +300,36 @@ export const UserHomeScreen = (props) => {
   const [showAppointmentMenu, setShowAppointmentMenu] = useState(false);
 
   const [currentDashboard, setCurrentDashboard] = useState(constVariables.HELPDESK);
+  const [currDeptId, setCurrDeptId] = useState("");
+
+
+  const [isMeMode, setIsMeMode] = React.useState(true);
+  const [isInteractiveMode, setIsInteractiveMode] = React.useState(true);
+
 
   useEffect(() => {
     async function getData() {
-      var currDashboard = await getDataFromDB(storageKeys.CURRENT_DASHBOARD)
-      if ((currDashboard == "") || (currDashboard == undefined)) {
-
+      console.log("use effect focused....")
+      var _currDashboard = await getDataFromDB(storageKeys.CURRENT_DASHBOARD)
+      console.log("currentDashboard....", _currDashboard)
+      if ((_currDashboard == "") || (_currDashboard == undefined)) {
+        console.log("inside if")
       }
       else {
-        setCurrentDashboard(currDashboard)
-        console.log("currentDashboard....", currentDashboard)
+        setCurrentDashboard(_currDashboard)
+        console.log("inside else")
       }
+
+      setCurrDeptId(await getDataFromDB(storageKeys.CURRENT_DEPT_ID))
+
+      if (await getDataFromDB(storageKeys.CHANGE_DASHBOARD) == "TRUE") {
+        await saveDataToDB(storageKeys.CHANGE_DASHBOARD, "FALSE")
+        setOpenDashboardPopUp(true)
+      }
+
     }
     getData()
   }, [isFocused])
-
 
   useEffect(() => {
     async function getData() {
@@ -335,6 +353,8 @@ export const UserHomeScreen = (props) => {
           setShowInteractionDashboard(false)
           setShowOperationalDashboard(false)
           setShowAppointmentDashboard(true)
+
+          // setCurrentDashboard(constVariables.APPOINTMENT)
         } else {
           setShowAppointmentMenu(false)
         }
@@ -346,6 +366,8 @@ export const UserHomeScreen = (props) => {
           setShowInteractionDashboard(false)
           setShowOperationalDashboard(true)
           setShowAppointmentDashboard(false)
+
+          // setCurrentDashboard(constVariables.OPERATIONAL)
         } else {
           setShowOperationalMenu(false)
         }
@@ -357,6 +379,8 @@ export const UserHomeScreen = (props) => {
           setShowInteractionDashboard(true)
           setShowOperationalDashboard(false)
           setShowAppointmentDashboard(false)
+
+          // setCurrentDashboard(constVariables.INTERACTION)
         } else {
           setShowInteractionMenu(false)
         }
@@ -364,10 +388,14 @@ export const UserHomeScreen = (props) => {
         if (helpdesk == "allow") {
           setShowHelpdeskMenu(true)
 
+          console.log("helpdesk true 1...")
+
           setShowHelpdeskDashboard(true)
           setShowInteractionDashboard(false)
           setShowOperationalDashboard(false)
           setShowAppointmentDashboard(false)
+
+          // setCurrentDashboard(constVariables.HELPDESK)
         } else {
           setShowHelpdeskMenu(false)
         }
@@ -376,6 +404,7 @@ export const UserHomeScreen = (props) => {
 
 
       if (currentDashboard == constVariables.HELPDESK) {
+        console.log("helpdesk true 2...")
         setShowHelpdeskDashboard(true)
         setShowInteractionDashboard(false)
         setShowOperationalDashboard(false)
@@ -405,7 +434,6 @@ export const UserHomeScreen = (props) => {
     }
     getData()
   }, [currentDashboard])
-
 
   dispatch = useDispatch([
     // ---------------------------------------------Interaction methods-------------------------------------------------------------
@@ -489,509 +517,6 @@ export const UserHomeScreen = (props) => {
     getHelpdeskBySeverityList
     // ---------------------------------------------Helpdesk methods-------------------------------------------------------------
   ]);
-
-
-  // // All api
-  // useEffect(() => {
-  //   async function getData() {
-  //     console.log("helpdeskFilterOn rendering..", helpdeskFilterOn);
-  //     setLoader(true)
-
-  //     // ---------------------------------request params----------------------------------------------------------------
-
-  //     var params = {}
-  //     if (intxnFilterOn) {
-  //       params = { searchParams: intxnFilterReq }
-  //     }
-  //     else if (helpdeskFilterOn) {
-  //       params = helpdeskFilterReq
-  //     }
-  //     else {
-  //       params = { type: "COUNT" };
-  //     }
-  //     console.log("params..", params)
-
-  //     // ---------------------------------------------Interaction requests start-------------------------------------------------------------
-
-  //     if (showInteractionDashboard) {
-
-  //       // ---------------------------------------------Interaction live requests start-------------------------------------------------------------
-
-  //       if (interactionLiveStream) {
-  //         var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
-  //         var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
-
-  //         var liveProjectParams = { fromDate: fromDateVal, toDate: toDateVal }
-  //         dispatch(getLiveProjectWise(liveProjectParams))
-  //         console.log("getLiveProjectWise result UI..", intDashRed.liveProjectWiseData);
-
-  //         var liveCustParams = { searchParams: { fromDate: fromDateVal, toDate: toDateVal, categoryType: "Internal", category: "LIST" } }
-  //         dispatch(getLiveCustomerWise(liveCustParams))
-  //         console.log("getLiveCustomerWise result UI..", intDashRed.liveCustomerWiseData);
-
-  //         var livePriorityParams = { searchParams: { fromDate: fromDateVal, toDate: toDateVal, category: "LIST" } }
-  //         dispatch(getInteractionByLivePriority(livePriorityParams))
-  //         console.log("getInteractionByLivePriority result UI..", intDashRed.interactionByLivePriorityData);
-
-  //         var liveOverviewParams = { fromDate: fromDateVal, toDate: toDateVal }
-  //         dispatch(getInteractionsByLiveStatusListTwo(liveOverviewParams))
-  //         console.log("getInteractionsByLiveStatusListTwo result UI..", intDashRed.interactionsByStatusListDataTwo);
-
-  //         var liveStatusParams = { fromDate: fromDateVal, toDate: toDateVal }
-  //         dispatch(getInteractionsByStatusLiveList(liveStatusParams))
-  //         console.log("getInteractionsByStatusLiveList result UI..", intDashRed.interactionsByStatusLiveListData);
-  //       }
-
-  //       // ---------------------------------------------Interaction live requests end-------------------------------------------------------------
-
-  //       dispatch(getStatusWiseCount({ searchParams: {} }))
-  //       console.log("getStatusWiseCount result UI..", intDashRed.statusWiseCountData);
-
-  //       dispatch(getStatementWise({ category: "STATEMENT" }))
-  //       console.log("getStatementWise result UI..", intDashRed.statementWiseData);
-
-  //       dispatch(getChannelWise(params))
-  //       console.log("getChannelWise result UI..", intDashRed.channelWiseData);
-
-  //       await dispatch(await getCustomerWise(
-  //         {
-  //           "searchParams": {
-  //             "category": "COUNT",
-  //             "fromDate": new Date()
-  //           }
-  //         }
-  //       ))
-  //       console.log("getCustomerWise result UI..", intDashRed.customerWiseData);
-
-  //       dispatch(getLocationWise(params))
-  //       console.log("getLocationWise result UI..", intDashRed.locationWiseData);
-
-  //       dispatch(getDepartmentInteractions(params))
-  //       console.log("getDepartmentInteractions result UI..", intDashRed.departmentInteractionsData);
-
-
-
-  //       dispatch(getNpsCsatChamp(params))
-  //       console.log("getNpsCsatChamp result UI..", intDashRed.npsCsatChampData);
-
-  //       dispatch(getResMttrWaiting(params))
-  //       console.log("getResMttrWaiting result UI..", intDashRed.resMttrWaitingData);
-
-  //       dispatch(getLiveInteractionsByStatus(params))
-  //       console.log("getLiveInteractionsByStatus result UI..", intDashRed.liveInteractionsByStatusData);
-
-  //       dispatch(getInteractionsByStatusList(params))
-  //       console.log("getInteractionsByStatusList result UI..", intDashRed.interactionsByStatusListData);
-
-  //       dispatch(getInteractionAvgWise(params))
-  //       console.log("getInteractionAvgWise result UI..", intDashRed.interactionAvgWiseData);
-
-  //       await dispatch(await getInteractionByPriorityStatusWise({ searchParams: {} }))
-  //       console.log("getInteractionByPriorityStatusWise result UI..", intDashRed.interactionByPriorityStatusWiseData);
-
-  //       dispatch(getInteractionByPriorityStatusWiseList(params))
-  //       console.log("getInteractionByPriorityStatusWiseList result UI..", intDashRed.interactionByPriorityStatusWiseListData);
-
-  //       // dispatch(getManagersList(params))
-  //       // console.log("getManagersList result UI..", intDashRed.managersListData);
-
-  //       dispatch(getInteractionByPriority(params))
-  //       console.log("getInteractionByPriority result UI..", intDashRed.interactionByPriorityData);
-
-  //       dispatch(getInteractionByAgeing(params))
-  //       console.log("getInteractionByAgeing result UI..", intDashRed.interactionByAgeingData);
-
-  //       dispatch(getInteractionByFollowups(params))
-  //       console.log("getInteractionByFollowups result UI..", intDashRed.interactionByFollowupsData);
-
-  //       dispatch(getInteractionByCategory(params))
-  //       console.log("getInteractionByCategory result UI..", intDashRed.interactionByCategoryData);
-
-  //       dispatch(getInteractionByType(params))
-  //       console.log("getInteractionByType result UI..", intDashRed.interactionByTypeData);
-
-  //       dispatch(getInteractionByTypeList(params))
-  //       console.log("getInteractionByTypeList result UI..", intDashRed.interactionByTypeListData);
-
-  //       dispatch(getInteractionByServiceCategory(params))
-  //       console.log("getInteractionByServiceCategory result UI..", intDashRed.interactionByServiceCategoryData);
-
-  //       dispatch(getInteractionByServiceType(params))
-  //       console.log("getInteractionByServiceType result UI..", intDashRed.interactionByServiceTypeData);
-
-  //       dispatch(getInteractionProjectWise(params))
-  //       console.log("getInteractionProjectWise count result UI..", intDashRed.interactionByProjectWiseData);
-
-  //       dispatch(getInteractionAgentWise(params))
-  //       console.log("getInteractionAgentWise result UI..", intDashRed.interactionByAgentWiseData);
-
-  //       await dispatch(await getInteractionByPriorityStatusWise({ searchParams: { category: "ALL" } }))
-  //       console.log("getInteractionByPriorityStatusWise ALL UI..", intDashRed.interactionByPriorityStatusWiseData);
-
-  //       setLoader(false)
-  //     }
-
-  //     // ---------------------------------------------Interaction requests end-------------------------------------------------------------
-
-
-  //     // ---------------------------------------------Operational requests start-------------------------------------------------------------
-
-  //     if (showOperationalDashboard) {
-  //       var assignedToMeParams, appointmentOverviewParams, teamAppointmentOverviewParams, pooledInteractionParams,
-  //         teamPooledInteractionParams, assignedInteractionParams, teamAssignedInteractionParams, interactionHistoryGraphParams,
-  //         interactionHistoryGraphTeamParams, assignedAppointmentGraphParams, teamAssignedAppointmentGraphParams
-
-  //       if (operationalFilterOn) {
-  //         assignedToMeParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "entityType": "all",
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0,
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         assignedToMeParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "entityType": "all",
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       await dispatch(await getOperationalAssignedToMe(assignedToMeParams))
-  //       console.log("getOperationalAssignedToMe result UI..", intDashRed?.operationalAssignedToMeData);
-
-  //       if (operationalFilterOn) {
-  //         appointmentOverviewParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "type": "Me",
-  //           "fromDate": new Date(),
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         appointmentOverviewParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "type": "Me",
-  //           "fromDate": new Date()
-  //         }
-  //       }
-  //       await dispatch(await getOperationalAppointmentOverview(appointmentOverviewParams))
-  //       console.log("getOperationalAppointmentOverview result UI..", intDashRed?.operationalAppointmentOverviewData);
-
-  //       if (operationalFilterOn) {
-  //         teamAppointmentOverviewParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "type": "My Team",
-  //           "fromDate": new Date()
-  //         }
-  //       }
-  //       else {
-  //         teamAppointmentOverviewParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "type": "My Team",
-  //           "fromDate": new Date()
-  //         }
-  //       }
-  //       await dispatch(await getOperationalTeamAppointmentOverview(teamAppointmentOverviewParams))
-  //       console.log("getOperationalTeamAppointmentOverview result UI..", intDashRed?.operationalTeamAppointmentOverviewData);
-
-  //       if (operationalFilterOn) {
-  //         pooledInteractionParams = {
-  //           ...operationalFilterReq,
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       else {
-  //         pooledInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       await dispatch(await getOperationalPooledInteractions(pooledInteractionParams))
-  //       console.log("getOperationalPooledInteractions result UI..", intDashRed?.operationalPooledInteractionsData);
-
-  //       if (operationalFilterOn) {
-  //         teamPooledInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0,
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         teamPooledInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       await dispatch(await getOperationalTeamPooledInteractions(teamPooledInteractionParams))
-  //       console.log("getOperationalTeamPooledInteractions result UI..", intDashRed?.operationalTeamPooledInteractionsData);
-
-  //       if (operationalFilterOn) {
-  //         assignedInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0,
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         assignedInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       await dispatch(await getOperationalAssignedInteractions(assignedInteractionParams))
-  //       console.log("getOperationalAssignedInteractions result UI..", intDashRed?.operationalAssignedInteractionsData);
-
-  //       if (operationalFilterOn) {
-  //         teamAssignedInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0,
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         teamAssignedInteractionParams = {
-  //           "userId": await getUserId(),
-  //           "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-  //           "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-  //           "limit": 500,
-  //           "page": 0
-  //         }
-  //       }
-  //       await dispatch(await getOperationalTeamAssignedInteractions(teamAssignedInteractionParams))
-  //       console.log("getOperationalTeamAssignedInteractions result UI..", intDashRed?.operationalTeamAssignedInteractionsData);
-
-  //       if (operationalFilterOn) {
-  //         interactionHistoryGraphParams = {
-  //           "userId": await getUserId(),
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         interactionHistoryGraphParams = {
-  //           "userId": await getUserId(),
-  //         }
-  //       }
-  //       await dispatch(await getOperationalInteractionHistoryGraph(interactionHistoryGraphParams))
-  //       console.log("getOperationalInteractionHistoryGraph result UI..", intDashRed?.operationalInteractionHistoryGraphData);
-
-  //       if (operationalFilterOn) {
-  //         interactionHistoryGraphTeamParams = {
-  //           "userId": await getUserId(),
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         interactionHistoryGraphTeamParams = {
-  //           "userId": await getUserId(),
-  //         }
-  //       }
-  //       await dispatch(await getOperationalInteractionHistoryGraphTeam(interactionHistoryGraphTeamParams))
-  //       console.log("getOperationalInteractionHistoryGraphTeam result UI..", intDashRed?.operationalInteractionHistoryGraphTeamData);
-
-  //       if (operationalFilterOn) {
-  //         assignedAppointmentGraphParams = {
-  //           "userId": await getUserId(),
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         assignedAppointmentGraphParams = {
-  //           "userId": await getUserId(),
-  //         }
-  //       }
-  //       await dispatch(await getAssignedAppointments(assignedAppointmentGraphParams))
-  //       console.log("getAssignedAppointments result UI..", intDashRed?.operationalAssignedAppointmentsGraphData);
-
-  //       if (operationalFilterOn) {
-  //         teamAssignedAppointmentGraphParams = {
-  //           "userId": await getUserId(),
-  //           ...operationalFilterReq
-  //         }
-  //       }
-  //       else {
-  //         teamAssignedAppointmentGraphParams = {
-  //           "userId": await getUserId(),
-  //         }
-  //       }
-  //       await dispatch(await getTeamAssignedAppointments(teamAssignedAppointmentGraphParams))
-  //       console.log("getTeamAssignedAppointments result UI..", intDashRed?.operationalTeamAssignedAppointmentsGraphData);
-
-  //       dispatch(getInteractionByServiceCategory(params))
-  //       console.log("getInteractionByServiceCategory result UI..", intDashRed.interactionByServiceCategoryData);
-
-  //       dispatch(getInteractionByServiceType(params))
-  //       console.log("getInteractionByServiceType result UI..", intDashRed.interactionByServiceTypeData);
-
-  //       setLoader(false)
-  //     }
-
-  //     // ---------------------------------------------Operational requests end-------------------------------------------------------------
-
-
-
-  //     // ---------------------------------------------Appointment requests start-------------------------------------------------------------
-
-  //     if (showAppointmentDashboard) {
-  //       var params = {}
-  //       if (appointmentFilterOn) {
-  //         var searchParams = {
-  //           ...appointmentFilterReq
-  //         }
-  //         params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"), searchParams }
-  //       }
-  //       else {
-  //         params = { date: moment(new Date()).format("YYYY-MM-DD'T'HH:mm:ss.SSS'Z'") }
-  //       }
-
-  //       await dispatch(await getUpcomingAppointments(params))
-  //       console.log("getUpcomingAppointments result UI..", intDashRed?.upcomingAppointmentsData);
-
-  //       await dispatch(await getClosedAppointments(params))
-  //       console.log("getClosedAppointments result UI..", intDashRed?.closedAppointmentsData);
-
-  //       await dispatch(await getAppointmentEvents(params))
-  //       console.log("getAppointmentEvents result UI..", intDashRed?.appointmentsEventsData);
-
-  //       await dispatch(await getAppointmentPerformance(params))
-  //       console.log("getAppointmentPerformance result UI..", intDashRed?.appPerformanceData);
-
-  //       setLoader(false)
-  //     }
-
-  //     // ---------------------------------------------Appointment requests end-------------------------------------------------------------
-
-
-
-  //     // ---------------------------------------------Helpdesk requests start-------------------------------------------------------------
-
-  //     if (showHelpdeskDashboard) {
-
-  //       // ---------------------------------------------Helpdesk live requests start-------------------------------------------------------------
-
-  //       if (helpdeskLiveStream) {
-  //         var fromDateVal = moment(new Date()).format("YYYY-MM-DD")
-  //         var toDateVal = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
-
-  //         var liveHelpdeskProjectWiseParams = { fromDate: fromDateVal, toDate: toDateVal }
-  //         dispatch(getHelpdeskProjectWiseLive(liveHelpdeskProjectWiseParams))
-  //         console.log("getHelpdeskProjectWiseLive result UI2..", intDashRed.helpdeskProjectWiseDataLive);
-
-  //         var liveHelpdeskStatusParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-  //         dispatch(getHelpdeskByStatusListLive(liveHelpdeskStatusParams))
-  //         console.log("getHelpdeskByStatusListLive result UI2..", intDashRed.helpdeskByStatusListDataLive);
-
-  //         var liveHelpdeskByTypeDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-  //         dispatch(getHelpdeskByTypeLive(liveHelpdeskByTypeDataParams))
-  //         console.log("getHelpdeskByTypeLive result UI2..", intDashRed.helpdeskByTypeDataLive);
-
-  //         var liveHelpdeskBySeverityDataParams = { fromDate: fromDateVal, toDate: toDateVal, type: "LIST" }
-  //         dispatch(getHelpdeskBySeverityLive(liveHelpdeskBySeverityDataParams))
-  //         console.log("getHelpdeskBySeverityLive result UI2..", intDashRed.helpdeskBySeverityDataLive);
-  //       }
-
-  //       // ---------------------------------------------Helpdesk live requests end-------------------------------------------------------------
-
-  //       dispatch(getHelpdeskSummary(params))
-  //       console.log("getHelpdeskSummary result UI2..", intDashRed?.helpdeskSummaryData);
-
-  //       dispatch(getHelpdeskHourlyTickets())
-  //       console.log("getHelpdeskHourlyTickets result UI2..", intDashRed?.helpdeskSummaryData);
-
-  //       dispatch(getSupportTtkPending(params))
-  //       console.log("getSupportTtkPending count result UI3..", intDashRed?.supportTtkPendingCountsData);
-  //       console.log("getSupportTtkPending result UI4..", intDashRed?.supportTtkPendingData);
-
-  //       dispatch(getMonthlyTrend())
-  //       console.log("getMonthlyTrend result UI2..", intDashRed.supportMonthlyTrendData);
-
-  //       dispatch(getHelpdeskByStatus(params))
-  //       console.log("getHelpdeskByStatus result UI2..", intDashRed.helpdeskByStatusData);
-
-  //       dispatch(getHelpdeskByAgeing(params))
-  //       console.log("getHelpdeskByAgeing result UI2..", intDashRed.helpdeskByAgeingData);
-
-  //       await dispatch(await getHelpdeskBySeverity(params))
-  //       console.log("getHelpdeskBySeverity result UI2..", intDashRed.helpdeskBySeverityData);
-
-  //       dispatch(getHelpdeskProjectWise(params))
-  //       console.log("getHelpdeskProjectWise result UI2..", intDashRed.helpdeskProjectWiseData);
-
-  //       dispatch(getHelpdeskAgentWise(params))
-  //       console.log("getHelpdeskAgentWise result UI2..", intDashRed.helpdeskAgentWiseData);
-
-  //       let params1 = {
-  //         helpdeskType: "CLARIFICATION",
-  //         type: "LIST"
-  //       };
-  //       dispatch(getHelpdeskSummaryClarification(params1))
-  //       console.log("getHelpdeskSummaryClarification result UI..", intDashRed?.helpdeskSummaryClarificationData);
-
-  //       let params02 = {
-  //         helpdeskType: "INCIDENT",
-  //         type: "LIST"
-  //       };
-  //       dispatch(getHelpdeskSummaryIncident(params02))
-  //       console.log("getHelpdeskSummaryIncident result UI..", intDashRed?.helpdeskSummaryIncidentData);
-
-  //       let params3 = {
-  //         helpdeskType: "SERVICEREQUEST",
-  //         type: "LIST"
-  //       };
-  //       dispatch(getHelpdeskSummaryServiceRequest(params3))
-  //       console.log("getHelpdeskSummaryServiceRequest result UI..", intDashRed?.helpdeskSummaryServiceRequestData);
-
-  //       let params4 = {
-  //         helpdeskType: null,
-  //         type: "LIST"
-  //       };
-
-  //       await dispatch(await getHelpdeskSummaryUnclassified(params4))
-  //       console.log("getHelpdeskSummaryUnclassified result UI..", intDashRed?.helpdeskSummaryUnclassifiedData);
-
-  //       setLoader(false)
-  //     }
-
-  //     // ---------------------------------------------Helpdesk Requests end-------------------------------------------------------------
-  //   }
-  //   getData()
-  // }, [showHelpdeskDashboard, showInteractionDashboard, showOperationalDashboard, showAppointmentDashboard, helpdeskFilterOn, intxnFilterOn, operationalFilterOn, appointmentFilterOn]);
-
 
   // Helpdesk api
   useEffect(() => {
@@ -1107,7 +632,6 @@ export const UserHomeScreen = (props) => {
       getData()
     }
   }, [showHelpdeskDashboard, helpdeskFilterOn, currentDashboard]);
-
 
   // Interaction api  
   useEffect(() => {
@@ -1252,7 +776,6 @@ export const UserHomeScreen = (props) => {
       getData()
     }
   }, [showInteractionDashboard, intxnFilterOn, currentDashboard]);
-
 
   // Operational api 
   useEffect(() => {
@@ -1509,7 +1032,6 @@ export const UserHomeScreen = (props) => {
     }
   }, [showOperationalDashboard, operationalFilterOn, currentDashboard]);
 
-
   // Appointment api 
   useEffect(() => {
     async function getData() {
@@ -1567,8 +1089,6 @@ export const UserHomeScreen = (props) => {
     }
   }, [showAppointmentDashboard, appointmentFilterOn, currentDashboard]);
 
-
-
   useEffect(() => {
     async function getData() {
       let params = {
@@ -1582,7 +1102,6 @@ export const UserHomeScreen = (props) => {
     }
     getData()
   }, [selAppTypeCode])
-
 
   useEffect(() => {
     async function getData() {
@@ -1605,7 +1124,6 @@ export const UserHomeScreen = (props) => {
     getData()
   }, [selUpcAppTypeCode])
 
-
   useEffect(() => {
     async function getData() {
       var params = {}
@@ -1626,7 +1144,6 @@ export const UserHomeScreen = (props) => {
     }
     getData()
   }, [selClosedAppTypeCode])
-
 
   useEffect(() => {
     async function getData() {
@@ -1915,7 +1432,6 @@ export const UserHomeScreen = (props) => {
     }
     getData()
   }, [topCategoryPerformanceTeamDesc])
-
 
   const renderItem = ({ item }) => (
     <Pressable
@@ -2231,25 +1747,25 @@ export const UserHomeScreen = (props) => {
       <View style={{
         padding: 20,
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 170, borderWidth: 0, alignSelf: "center",
+        marginTop: 70, borderWidth: 0, alignSelf: "center",
         position: "absolute", top: 1, width: width - 70,
-        backgroundColor: "#F0F3F4", zIndex: 99999999999999
+        backgroundColor: "#F4F6F7", zIndex: 99999999999999
       }}>
 
         <View style={{
           flex: 1, padding: 20,
           borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
           marginTop: -1, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
-          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Switch Dashboard</Text>
+          <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Select Dashboard</Text>
         </View>
 
         <View style={{ marginTop: 60, flexDirection: "column" }}>
 
           {showHelpdeskMenu && (
-            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0 }}>
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#FFF", padding: 0 }}>
               <Text
                 onPress={async () => {
                   unstable_batchedUpdates(() => {
@@ -2258,17 +1774,18 @@ export const UserHomeScreen = (props) => {
                     setShowOperationalDashboard(false)
                     setShowAppointmentDashboard(false)
                     setOpenDashboardPopUp(false)
+                    setCurrentDashboard(constVariables.HELPDESK)
                   })
 
                   await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.HELPDESK)
-                  setCurrentDashboard(constVariables.HELPDESK)
+
                 }}
-                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Helpdesk Dashboard</Text>
+                style={{ color: colors.secondary, textAlign: "center", padding: 15, fontWeight: "500" }}>Helpdesk Dashboard</Text>
             </Card>
           )}
 
           {showInteractionMenu && (
-            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#FFF", padding: 0, marginTop: 10 }}>
               <Text
                 onPress={async () => {
                   unstable_batchedUpdates(() => {
@@ -2277,17 +1794,18 @@ export const UserHomeScreen = (props) => {
                     setShowOperationalDashboard(false)
                     setShowAppointmentDashboard(false)
                     setOpenDashboardPopUp(false)
+                    setCurrentDashboard(constVariables.INTERACTION)
                   })
 
                   await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.INTERACTION)
-                  setCurrentDashboard(constVariables.INTERACTION)
+
                 }}
-                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Interaction Dashboard</Text>
+                style={{ color: colors.secondary, textAlign: "center", padding: 15, fontWeight: "500" }}>Interaction Dashboard</Text>
             </Card>
           )}
 
           {showOperationalMenu && (
-            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#FFF", padding: 0, marginTop: 10 }}>
               <Text
                 onPress={async () => {
                   unstable_batchedUpdates(() => {
@@ -2301,17 +1819,18 @@ export const UserHomeScreen = (props) => {
                     setSelectedTab0("ME")
                     setSelectedTab1("INTXN")
                     setSelectedTab2("ASGN_TO_ME")
+                    setCurrentDashboard(constVariables.OPERATIONAL)
                   })
 
                   await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.OPERATIONAL)
-                  setCurrentDashboard(constVariables.OPERATIONAL)
+
                 }}
-                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Operational Dashboard</Text>
+                style={{ color: colors.secondary, textAlign: "center", padding: 15, fontWeight: "500" }}>Operational Dashboard</Text>
             </Card>
           )}
 
           {showAppointmentMenu && (
-            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#4a5996", padding: 0, marginTop: 10 }}>
+            <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#FFF", padding: 0, marginTop: 10 }}>
               <Text
                 onPress={async () => {
                   unstable_batchedUpdates(() => {
@@ -2320,14 +1839,36 @@ export const UserHomeScreen = (props) => {
                     setShowInteractionDashboard(false)
                     setShowAppointmentDashboard(true)
                     setOpenDashboardPopUp(false)
+                    setCurrentDashboard(constVariables.APPOINTMENT)
                   })
 
                   await saveDataToDB(storageKeys.CURRENT_DASHBOARD, constVariables.APPOINTMENT)
-                  setCurrentDashboard(constVariables.APPOINTMENT)
+
                 }}
-                style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Appointment Dashboard</Text>
+                style={{ color: colors.secondary, textAlign: "center", padding: 15, fontWeight: "500" }}>Appointment Dashboard</Text>
             </Card>
           )}
+
+          {!showHelpdeskMenu && !showInteractionMenu && !showOperationalMenu && !showAppointmentMenu && (
+            <Text
+              onPress={async () => {
+
+              }}
+              style={{ color: colors.secondary, textAlign: "center", padding: 15, fontWeight: "500" }}>No dashboard available for your role</Text>
+          )}
+
+          <Card style={{ alignSelf: "center", width: width - 160, backgroundColor: "#E74C3C", padding: 0, marginTop: 10 }}>
+            <Text
+              onPress={async () => {
+                unstable_batchedUpdates(() => {
+                  setOpenDashboardPopUp(false)
+                })
+
+
+
+              }}
+              style={{ color: "#FFF", textAlign: "center", padding: 15, fontWeight: "500" }}>Close</Text>
+          </Card>
 
         </View>
 
@@ -2351,7 +1892,7 @@ export const UserHomeScreen = (props) => {
           flex: 1, padding: 8,
           borderRadius: 0, elevation: 10, justifyContent: "center",
           marginTop: -1, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4a5996",
+          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ alignSelf: "center", color: "#FFF", width: 220, fontSize: 14, fontWeight: "900" }}>{dialogHeading}</Text>
@@ -2371,7 +1912,7 @@ export const UserHomeScreen = (props) => {
             keyExtractor={item => item}
           />
 
-          <Card style={{ margin: 10, backgroundColor: "#4a5996", width: width - 200 }}
+          <Card style={{ margin: 10, backgroundColor: "#4c3794", width: width - 200 }}
             onPress={() => {
               console.log("Done button click..")
               setHelpdeskDetDialogVisible(false)
@@ -2409,7 +1950,7 @@ export const UserHomeScreen = (props) => {
           flex: 1, padding: 8,
           borderRadius: 0, elevation: 10, justifyContent: "center",
           marginTop: -1, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4a5996",
+          position: "absolute", top: 1, height: 50, width: width - 40, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ marginLeft: 20, alignSelf: "center", color: "#FFF", width: width - 40, fontSize: 14, fontWeight: "900" }}>{dialogHeading}</Text>
@@ -2427,7 +1968,7 @@ export const UserHomeScreen = (props) => {
             keyExtractor={item => item}
           />
 
-          <Card style={{ margin: 10, backgroundColor: "#4a5996", width: width - 200 }}
+          <Card style={{ margin: 10, backgroundColor: "#4c3794", width: width - 200 }}
             onPress={() => {
               console.log("Done button click..")
               setIntxnDetDialogVisible(false)
@@ -2469,16 +2010,16 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 100, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        marginTop: 30, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 200, width: width - 70,
         backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
 
         <View style={{
           flex: 1, padding: 20,
           borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
-          marginTop: 0, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          marginTop: 0, borderWidth: 0, alignSelf: "center", borderTopLeftRadius: 10, borderTopRightRadius: 10,
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
@@ -2488,7 +2029,7 @@ export const UserHomeScreen = (props) => {
           <ScrollView>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -2520,7 +2061,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 5 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -2552,7 +2093,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={helpdeskFilterReq?.project?.[0]?.label}
                 data={projectArr}
                 onChangeText={(text) => {
@@ -2570,7 +2111,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={helpdeskFilterReq?.status?.[0]?.label}
                 data={statusArr}
                 onChangeText={(text) => {
@@ -2588,7 +2129,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={helpdeskFilterReq?.severity?.[0]?.label}
                 data={severityArr}
                 onChangeText={(text) => {
@@ -2606,53 +2147,58 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
-              <CustomButton
-                style={{ height: 200 }}
-                label={"Cancel"} onPress={() => {
-                  // if (!helpdeskFilterReq == {}) {
-                  setHelpdeskFilterReq({})
-                  unstable_batchedUpdates(() => {
+
+              <View>
+                <CustomButtonMedium
+                  style={{ height: 200 }}
+                  label={"Cancel"} onPress={() => {
+                    // if (!helpdeskFilterReq == {}) {
+                    setHelpdeskFilterReq({})
+                    unstable_batchedUpdates(() => {
+                      setHelpdeskFilterDialogVisible(false)
+                      setHelpdeskFilterOn(false)
+                      // setIntxnFilterDialogVisible(false)
+                      // setIntxnFilterOn(false)
+                    })
+                    // }
+                  }}
+                />
+              </View>
+
+              <View style={{ marginLeft: -15 }}>
+                <CustomButtonMedium
+                  style={{ height: 200 }}
+                  label={"Filter"} onPress={() => {
+
+                    var currDate = moment(new Date()).format("YYYY-MM-DD")
+                    var from = moment(selFromDate).format("YYYY-MM-DD")
+                    var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var to = moment(selToDate).format("YYYY-MM-DD")
+                    var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var dateArr = [fromRange, toRange]
+
+                    // if (!(currDate == from)) {
+                    // setHelpdeskFilterReq({
+                    //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                    // })
+                    // }
+
+                    setHelpdeskFilterReq({
+                      ...helpdeskFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
+                    })
+
+                    console.log("helpdeskFilterReq..", helpdeskFilterReq)
+
+                    // unstable_batchedUpdates(() => {
+                    setHelpdeskFilterOn(true)
                     setHelpdeskFilterDialogVisible(false)
-                    setHelpdeskFilterOn(false)
                     // setIntxnFilterDialogVisible(false)
                     // setIntxnFilterOn(false)
-                  })
-                  // }
-                }}
-              />
+                    // })
 
-              <CustomButton
-                style={{ height: 200 }}
-                label={"Filter"} onPress={() => {
-
-                  var currDate = moment(new Date()).format("YYYY-MM-DD")
-                  var from = moment(selFromDate).format("YYYY-MM-DD")
-                  var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var to = moment(selToDate).format("YYYY-MM-DD")
-                  var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var dateArr = [fromRange, toRange]
-
-                  // if (!(currDate == from)) {
-                  // setHelpdeskFilterReq({
-                  //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
-                  // })
-                  // }
-
-                  setHelpdeskFilterReq({
-                    ...helpdeskFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
-                  })
-
-                  console.log("helpdeskFilterReq..", helpdeskFilterReq)
-
-                  // unstable_batchedUpdates(() => {
-                  setHelpdeskFilterOn(true)
-                  setHelpdeskFilterDialogVisible(false)
-                  // setIntxnFilterDialogVisible(false)
-                  // setIntxnFilterOn(false)
-                  // })
-
-                }}
-              />
+                  }}
+                />
+              </View>
 
             </View>
           </ScrollView>
@@ -2744,16 +2290,16 @@ export const UserHomeScreen = (props) => {
     return (
       <View style={{
         borderRadius: 10, elevation: 10, marginBottom: 70,
-        marginTop: 100, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        marginTop: 30, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 200, width: width - 70,
         backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
 
         <View style={{
           flex: 1, padding: 20,
           borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
-          marginTop: 0, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          marginTop: 0, borderWidth: 0, alignSelf: "center", borderTopLeftRadius: 10, borderTopRightRadius: 10,
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
@@ -2762,7 +2308,7 @@ export const UserHomeScreen = (props) => {
         <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
             <View style={{ paddingVertical: 2 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -2793,8 +2339,8 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ paddingVertical: 5 }}>
-              <CustomInput
+            <View style={{ paddingVertical: 0 }}>
+              <CustomInputMedium
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -2826,7 +2372,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.project?.[0]?.label}
                 data={projectArr}
                 onChangeText={(text) => {
@@ -2844,7 +2390,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.ageing?.[0]?.label}
                 data={ageingArr}
                 onChangeText={(text) => {
@@ -2889,7 +2435,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.status?.[0]?.label}
                 data={statusArr}
                 onChangeText={(text) => {
@@ -2907,7 +2453,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.channel?.[0]?.label}
                 data={channelArr}
                 onChangeText={(text) => {
@@ -2925,7 +2471,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.priority?.[0]?.label}
                 data={priorityArr}
                 onChangeText={(text) => {
@@ -2943,7 +2489,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.userId?.[0]?.label}
                 data={userArr}
                 onChangeText={(text) => {
@@ -2961,7 +2507,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.intxnCat?.[0]?.label}
                 data={intCategoryArr}
                 onChangeText={(text) => {
@@ -2979,7 +2525,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.intxnType?.[0]?.label}
                 data={intTypeArr}
                 onChangeText={(text) => {
@@ -2997,7 +2543,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.serviceCat?.[0]?.label}
                 data={serviceCategoryArr}
                 onChangeText={(text) => {
@@ -3015,7 +2561,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={intxnFilterReq?.serviceType?.[0]?.label}
                 data={serviceTypeArr}
                 onChangeText={(text) => {
@@ -3033,60 +2579,62 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Cancel"} onPress={() => {
-                  // if (!intxnFilterReq == {}) {
-                  setIntxnFilterReq({})
-                  unstable_batchedUpdates(() => {
-                    setIntxnFilterDialogVisible(false)
-                    setIntxnFilterOn(false)
-                    // setHelpdeskFilterDialogVisible(false)
-                    // setHelpdeskFilterOn(false)
-                  })
-                  // }
-                }}
-              />
-
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Filter"} onPress={() => {
-
-                  console.log("selFromDate2...", selFromDate)
-                  console.log("selToDate2...", selToDate)
-
-                  var currDate = moment(new Date()).format("YYYY-MM-DD")
-                  var from = moment(selFromDate).format("YYYY-MM-DD")
-                  var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var to = moment(selToDate).format("YYYY-MM-DD")
-                  var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var dateArr = [fromRange, toRange]
-
-                  // if (!(currDate == from)) {
-                  // setHelpdeskFilterReq({
-                  //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
-                  // })
-                  // }
-
-
-
-
-                  console.log("intxnFilterParams1..", intxnFilterReq)
-                  // console.log("intxnFilterParams2..", JSON.stringify(filterParams))
-
-
-                  unstable_batchedUpdates(() => {
-                    setIntxnFilterReq({
-                      ...helpdeskFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
+              <View>
+                <CustomButtonMedium
+                  label={"Cancel"} onPress={() => {
+                    // if (!intxnFilterReq == {}) {
+                    setIntxnFilterReq({})
+                    unstable_batchedUpdates(() => {
+                      setIntxnFilterDialogVisible(false)
+                      setIntxnFilterOn(false)
+                      // setHelpdeskFilterDialogVisible(false)
+                      // setHelpdeskFilterOn(false)
                     })
-                    setIntxnFilterDialogVisible(false)
-                    setIntxnFilterOn(true)
-                    // setHelpdeskFilterDialogVisible(false)
-                    // setHelpdeskFilterOn(false)
-                  })
+                    // }
+                  }}
+                />
+              </View>
 
-                }}
-              />
+              <View style={{ marginLeft: -15 }}>
+                <CustomButtonMedium
+                  label={"Filter"} onPress={() => {
+
+                    console.log("selFromDate2...", selFromDate)
+                    console.log("selToDate2...", selToDate)
+
+                    var currDate = moment(new Date()).format("YYYY-MM-DD")
+                    var from = moment(selFromDate).format("YYYY-MM-DD")
+                    var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var to = moment(selToDate).format("YYYY-MM-DD")
+                    var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var dateArr = [fromRange, toRange]
+
+                    // if (!(currDate == from)) {
+                    // setHelpdeskFilterReq({
+                    //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                    // })
+                    // }
+
+
+
+
+                    console.log("intxnFilterParams1..", intxnFilterReq)
+                    // console.log("intxnFilterParams2..", JSON.stringify(filterParams))
+
+
+                    unstable_batchedUpdates(() => {
+                      setIntxnFilterReq({
+                        ...helpdeskFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
+                      })
+                      setIntxnFilterDialogVisible(false)
+                      setIntxnFilterOn(true)
+                      // setHelpdeskFilterDialogVisible(false)
+                      // setHelpdeskFilterOn(false)
+                    })
+
+                  }}
+                />
+              </View>
             </View>
 
           </ScrollView>
@@ -3105,7 +2653,6 @@ export const UserHomeScreen = (props) => {
     )
   };
 
-
   const ShowOperationalFiltersDialog = () => {
 
     var serviceCategoryArr = intDashRed?.interactionByServiceCategoryData?.data?.rows?.map(item => {
@@ -3120,17 +2667,17 @@ export const UserHomeScreen = (props) => {
 
     return (
       <View style={{
-        borderRadius: 10, elevation: 10, marginBottom: 100,
-        marginTop: 170, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, height: height - 400, width: width - 70,
+        borderRadius: 10, elevation: 10, marginBottom: 70,
+        marginTop: 30, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 200, width: width - 70,
         backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
 
         <View style={{
           flex: 1, padding: 20,
           borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
-          marginTop: -1, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          marginTop: 0, borderWidth: 0, alignSelf: "center", borderTopLeftRadius: 10, borderTopRightRadius: 10,
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
@@ -3138,8 +2685,9 @@ export const UserHomeScreen = (props) => {
 
         <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
+
             <View style={{ paddingVertical: 2 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -3171,7 +2719,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 5 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -3203,7 +2751,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={operationalFilterReq?.serviceCat?.[0]?.label}
                 data={serviceCategoryArr}
                 onChangeText={(text) => {
@@ -3221,7 +2769,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 2 }}>
-              <CustomDropDownFullWidth
+              <CustomDropDownMedium
                 selectedValue={operationalFilterReq?.serviceType?.[0]?.label}
                 data={serviceTypeArr}
                 onChangeText={(text) => {
@@ -3238,54 +2786,57 @@ export const UserHomeScreen = (props) => {
               />
             </View>
 
-            <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Cancel"} onPress={() => {
-                  // if (!helpdeskFilterReq == {}) {
-                  setOperationalFilterReq({})
-                  unstable_batchedUpdates(() => {
+            <View style={{ flexDirection: "row", marginTop: 5, marginBottom: 5 }}>
+              <View>
+                <CustomButtonMedium
+                  style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                  label={"Cancel"} onPress={() => {
+                    // if (!helpdeskFilterReq == {}) {
+                    setOperationalFilterReq({})
+                    unstable_batchedUpdates(() => {
+                      setOperationalFilterDialogVisible(false)
+                      setOperationalFilterOn(false)
+                      // setIntxnFilterDialogVisible(false)
+                      // setIntxnFilterOn(false)
+                    })
+                    // }
+                  }}
+                />
+              </View>
+              <View style={{ marginLeft: -15 }}>
+                <CustomButtonMedium
+                  style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                  label={"Filter"} onPress={() => {
+
+                    var currDate = moment(new Date()).format("YYYY-MM-DD")
+                    var from = moment(selFromDate).format("YYYY-MM-DD")
+                    var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var to = moment(selToDate).format("YYYY-MM-DD")
+                    var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var dateArr = [fromRange, toRange]
+
+                    // if (!(currDate == from)) {
+                    // setHelpdeskFilterReq({
+                    //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                    // })
+                    // }
+
+                    setOperationalFilterReq({
+                      ...operationalFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
+                    })
+
+                    console.log("operationalFilterReq..", operationalFilterReq)
+
+                    // unstable_batchedUpdates(() => {
+                    setOperationalFilterOn(true)
                     setOperationalFilterDialogVisible(false)
-                    setOperationalFilterOn(false)
                     // setIntxnFilterDialogVisible(false)
                     // setIntxnFilterOn(false)
-                  })
-                  // }
-                }}
-              />
+                    // })
 
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Filter"} onPress={() => {
-
-                  var currDate = moment(new Date()).format("YYYY-MM-DD")
-                  var from = moment(selFromDate).format("YYYY-MM-DD")
-                  var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var to = moment(selToDate).format("YYYY-MM-DD")
-                  var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var dateArr = [fromRange, toRange]
-
-                  // if (!(currDate == from)) {
-                  // setHelpdeskFilterReq({
-                  //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
-                  // })
-                  // }
-
-                  setOperationalFilterReq({
-                    ...operationalFilterReq, type: "COUNT", "dateRange": dateArr, fromDate: from, toDate: to
-                  })
-
-                  console.log("operationalFilterReq..", operationalFilterReq)
-
-                  // unstable_batchedUpdates(() => {
-                  setOperationalFilterOn(true)
-                  setOperationalFilterDialogVisible(false)
-                  // setIntxnFilterDialogVisible(false)
-                  // setIntxnFilterOn(false)
-                  // })
-
-                }}
-              />
+                  }}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -3293,22 +2844,21 @@ export const UserHomeScreen = (props) => {
     )
   };
 
-
   const ShowAppointmentFiltersDialog = () => {
 
     return (
       <View style={{
-        borderRadius: 10, elevation: 10, marginBottom: 100,
-        marginTop: 180, borderWidth: 0, alignSelf: "center",
-        position: "absolute", top: 1, width: width - 70,
+        borderRadius: 10, elevation: 10, marginBottom: 70,
+        marginTop: 30, borderWidth: 0, alignSelf: "center",
+        position: "absolute", top: 1, height: height - 200, width: width - 70,
         backgroundColor: "#F0F3F4", zIndex: 99999999999999
       }}>
 
         <View style={{
           flex: 1, padding: 20,
           borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
-          marginTop: 0, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4a5996",
+          marginTop: 0, borderWidth: 0, alignSelf: "center", borderTopLeftRadius: 10, borderTopRightRadius: 10,
+          position: "absolute", top: 1, height: 60, width: width - 70, backgroundColor: "#4c3794",
           zIndex: 99999999999999, flexDirection: "row"
         }}>
           <Text style={{ color: "#FFF", width: 220, fontSize: 16, fontWeight: "900" }}>Filter By</Text>
@@ -3317,7 +2867,7 @@ export const UserHomeScreen = (props) => {
         <View style={{ marginTop: 70, justifyContent: "center", alignItems: "center" }}>
           <ScrollView>
             <View style={{ paddingVertical: 2 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selFromDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -3349,7 +2899,7 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ paddingVertical: 5 }}>
-              <CustomInput
+              <CustomInputMedium
                 value={moment(selToDate).format(
                   "YYYY-MM-DD"
                 )}
@@ -3381,54 +2931,56 @@ export const UserHomeScreen = (props) => {
             </View>
 
             <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Cancel"} onPress={() => {
-                  // if (!helpdeskFilterReq == {}) {
-                  setAppointmentFilterReq({})
-                  unstable_batchedUpdates(() => {
+              <View>
+                <CustomButtonMedium
+                  style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                  label={"Cancel"} onPress={() => {
+                    // if (!helpdeskFilterReq == {}) {
+                    setAppointmentFilterReq({})
+                    unstable_batchedUpdates(() => {
+                      setAppointmentFilterDialogVisible(false)
+                      setAppointmentFilterOn(false)
+                      // setIntxnFilterDialogVisible(false)
+                      // setIntxnFilterOn(false)
+                    })
+                    // }
+                  }}
+                />
+              </View>
+              <View style={{ marginLeft: -15 }}>
+                <CustomButtonMedium
+                  style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
+                  label={"Filter"} onPress={() => {
+
+                    var currDate = moment(new Date()).format("YYYY-MM-DD")
+                    var from = moment(selFromDate).format("YYYY-MM-DD")
+                    var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var to = moment(selToDate).format("YYYY-MM-DD")
+                    var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
+                    var dateArr = [fromRange, toRange]
+
+                    // if (!(currDate == from)) {
+                    // setHelpdeskFilterReq({
+                    //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                    // })
+                    // }
+
+                    setAppointmentFilterReq({
+                      ...appointmentFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
+                    })
+
+                    console.log("appointmentFilterReq..", appointmentFilterReq)
+
+                    // unstable_batchedUpdates(() => {
+                    setAppointmentFilterOn(true)
                     setAppointmentFilterDialogVisible(false)
-                    setAppointmentFilterOn(false)
                     // setIntxnFilterDialogVisible(false)
                     // setIntxnFilterOn(false)
-                  })
-                  // }
-                }}
-              />
+                    // })
 
-              <CustomButton
-                style={{ height: 200, backgroundColor: Colors.BCAE_OFF_WHITE }}
-                label={"Filter"} onPress={() => {
-
-                  var currDate = moment(new Date()).format("YYYY-MM-DD")
-                  var from = moment(selFromDate).format("YYYY-MM-DD")
-                  var fromRange = moment(selFromDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var to = moment(selToDate).format("YYYY-MM-DD")
-                  var toRange = moment(selToDate).format("YYYY-MM-DDTHH:MM:SSSZ")
-                  var dateArr = [fromRange, toRange]
-
-                  // if (!(currDate == from)) {
-                  // setHelpdeskFilterReq({
-                  //   ...helpdeskFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
-                  // })
-                  // }
-
-                  setAppointmentFilterReq({
-                    ...appointmentFilterReq, "dateRange": dateArr, fromDate: from, toDate: to
-                  })
-
-                  console.log("appointmentFilterReq..", appointmentFilterReq)
-
-                  // unstable_batchedUpdates(() => {
-                  setAppointmentFilterOn(true)
-                  setAppointmentFilterDialogVisible(false)
-                  // setIntxnFilterDialogVisible(false)
-                  // setIntxnFilterOn(false)
-                  // })
-
-                }}
-              />
-
+                  }}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -3460,11 +3012,15 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Department Wise Vs Role Wise</Text>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Interaction by Department Wise Vs Role Wise</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={2} />
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Department Wise</Text>
@@ -3764,11 +3320,15 @@ export const UserHomeScreen = (props) => {
 
       return (
         <>
-          <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-            <Text style={{ padding: 5, fontWeight: "900" }}>Overview</Text>
+          <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
             <ClearSpace />
-            <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+            <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+              <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Overview</Text>
+            </View>
+            <ClearSpace />
+
+
+            {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
             <ClearSpace size={4} />
 
 
@@ -3779,7 +3339,7 @@ export const UserHomeScreen = (props) => {
                   setDialogData(arrTotal)
                   setIntxnDetDialogVisible(true)
                 }}
-                style={{ width: 150, backgroundColor: "#4a5996", padding: 10, elevation: 10, margin: 7 }}>
+                style={{ width: 150, backgroundColor: "", padding: 10, elevation: 10, margin: 7 }}>
 
                 <Text style={{ padding: 5, color: "#FFFFFF" }}>Total Interaction</Text>
 
@@ -3826,10 +3386,10 @@ export const UserHomeScreen = (props) => {
             </View>
 
             {/* <ClearSpace size={4} /> */}
-            {/* <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider> */}
+            {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
             <ClearSpace size={4} />
 
-            <Text style={{ padding: 5, color: "#000000" }}>Average Interaction</Text>
+            <Text style={{ padding: 5, color: colors.secondary }}>Average Interaction</Text>
 
             <View style={{ alignSelf: "center", backgroundColor: "transparent", flexDirection: "row" }}>
 
@@ -3840,7 +3400,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>1D</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>1D</Text>
               </Card>
 
               <Card
@@ -3850,7 +3410,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>1W</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>1W</Text>
               </Card>
 
               <Card
@@ -3860,7 +3420,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>1M</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>1M</Text>
               </Card>
 
               <Card
@@ -3870,7 +3430,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>1Y</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>1Y</Text>
               </Card>
 
               <Card
@@ -3880,7 +3440,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>YTD</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>YTD</Text>
               </Card>
 
               <Card
@@ -3890,7 +3450,7 @@ export const UserHomeScreen = (props) => {
                   setPriorityStatusWiseData(intDashRed.interactionByPriorityStatusWiseData)
                 }}
                 style={{ width: 50, height: 30, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>ALL</Text>
+                <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>ALL</Text>
               </Card>
 
             </View>
@@ -4028,11 +3588,15 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Ageing Vs Follow up by Months</Text>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Interaction by Ageing Vs Follow up by Months</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View style={{ alignSelf: "center", backgroundColor: "transparent", flexDirection: "row" }}>
@@ -4054,8 +3618,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>0 to 3</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{threeDaysAgeing}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>0 to 3</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{threeDaysAgeing}</Text>
             </Card>
 
             <Card
@@ -4075,8 +3639,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>3 to 5</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{fiveDaysAgeing}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>3 to 5</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{fiveDaysAgeing}</Text>
             </Card>
 
             <Card
@@ -4096,8 +3660,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}> {'>'} 5</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{moreThanFiveDaysAgeing}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}> {'>'} 5</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{moreThanFiveDaysAgeing}</Text>
             </Card>
           </View>
 
@@ -4147,7 +3711,7 @@ export const UserHomeScreen = (props) => {
 
 
           <ClearSpace size={2} />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={4} />
 
           <View style={{ alignSelf: "center", backgroundColor: "transparent", flexDirection: "row" }}>
@@ -4168,8 +3732,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>0 to 3</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{threeDaysFollowUps}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>0 to 3</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{threeDaysFollowUps}</Text>
             </Card>
 
             <Card
@@ -4189,8 +3753,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}>3 to 5</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{fiveDaysFollowUps}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>3 to 5</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{fiveDaysFollowUps}</Text>
             </Card>
 
             <Card
@@ -4210,8 +3774,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: "#000000" }}> {'>'} 5</Text>
-              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{moreThanFiveDaysFollowUps}</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "400", color: colors.secondary }}> {'>'} 5</Text>
+              <Text style={{ textAlign: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{moreThanFiveDaysFollowUps}</Text>
             </Card>
           </View>
 
@@ -4264,18 +3828,30 @@ export const UserHomeScreen = (props) => {
         </Card>
       </>
     );
-
   };
 
   const RenderInteractionByPriorityData = (props) => {
 
     console.log("priority data...", props?.data?.interactionByPriorityData)
 
+    var highCount = 0, mediumCount = 0, lowCount = 0
     var priorityWiseLabels = []
     var priorityWiseValues = []
     props?.data?.interactionByPriorityData?.data?.rows?.map(item => {
       priorityWiseLabels.push(item.oPriorityDesc)
       priorityWiseValues.push('' + item.oIntxnCount)
+
+      if (item.oPriorityCode == "PRTYHGH") {
+        highCount = item.oIntxnCount
+      }
+
+      if (item.oPriorityCode == "PRTYMED") {
+        mediumCount = item.oIntxnCount
+      }
+
+      if (item.oPriorityCode == "PRTYLOW") {
+        lowCount = item.oIntxnCount
+      }
     })
 
     console.log("priorityWiseLabels data...", priorityWiseLabels)
@@ -4284,11 +3860,15 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Priority</Text>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Interaction by Priority</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
 
@@ -4311,8 +3891,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFFFFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>High</Text>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{priorityWiseValues[0]}</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>High</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{highCount}</Text>
             </Card>
 
             <Card
@@ -4333,8 +3913,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFFFFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>Low</Text>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{priorityWiseValues[1]}</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>Low</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{lowCount}</Text>
             </Card>
 
             <Card
@@ -4355,8 +3935,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 80, height: 50, backgroundColor: "#FFFFFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>Medium</Text>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: "#000000" }}>{priorityWiseValues[2]}</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>Medium</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "900", color: colors.secondary }}>{mediumCount}</Text>
             </Card>
           </View>
 
@@ -4400,7 +3980,6 @@ export const UserHomeScreen = (props) => {
         </Card>
       </>
     );
-
   };
 
   const RenderInteractionByLivePriorityData = (props) => {
@@ -4488,7 +4067,7 @@ export const UserHomeScreen = (props) => {
           <ClearSpace />
           <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Priority</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -4549,7 +4128,6 @@ export const UserHomeScreen = (props) => {
         </Card>
       </>
     );
-
   };
 
   const RenderProjectWiseInteraction = (props) => {
@@ -4570,11 +4148,15 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Project Wise Interaction</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Project Wise Interaction</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -4598,11 +4180,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={async () => {
 
@@ -4646,7 +4228,6 @@ export const UserHomeScreen = (props) => {
         </Card>
       </>
     );
-
   };
 
   const RenderLiveProjectWiseInteraction = (props) => {
@@ -4734,7 +4315,7 @@ export const UserHomeScreen = (props) => {
           <ClearSpace />
           <Text style={{ padding: 5, fontWeight: "900" }}>Project Wise Interaction</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -4797,7 +4378,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderAgentWiseInteraction = (props) => {
 
     var intAgentWiseMap = new Map("", "")
@@ -4816,11 +4396,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Agent Wise Interaction</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Agent Wise Interaction</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -4844,11 +4427,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={async () => {
 
@@ -4977,7 +4560,7 @@ export const UserHomeScreen = (props) => {
           <ClearSpace />
           <Text style={{ padding: 5, fontWeight: "900" }}>Customer Wise Interaction</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -5055,11 +4638,16 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-          <Text style={{ padding: 5, fontWeight: "900" }}>Team wise Interactions</Text>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Team wise Interactions</Text>
+          </View>
+          <ClearSpace />
+
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View style={{ alignSelf: "center", backgroundColor: "transparent", flexDirection: "row" }}>
@@ -5081,8 +4669,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 130, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>Internal Customers</Text>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>{customerWiseValues[0]}</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>Internal Customers</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>{customerWiseValues[0]}</Text>
             </Card>
 
             <Card
@@ -5103,8 +4691,8 @@ export const UserHomeScreen = (props) => {
                 setIntxnDetDialogVisible(true)
               }}
               style={{ width: 130, height: 50, backgroundColor: "#FFF", padding: 0, elevation: 10, margin: 3 }}>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>External Customers</Text>
-              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: "#000000" }}>{customerWiseValues[1]}</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>External Customers</Text>
+              <Text style={{ textAlign: "center", alignContent: "center", padding: 2, fontWeight: "400", color: colors.secondary }}>{customerWiseValues[1]}</Text>
             </Card>
           </View>
 
@@ -5150,25 +4738,17 @@ export const UserHomeScreen = (props) => {
 
   };
 
-
-
-
   const RenderInteractionByStatusTypeData = (props) => {
 
-    console.log("status data...", props?.data?.liveInteractionsByStatusData)
+    console.log("status data...", props?.data?.statusWiseCountData)
     console.log("type data...", props?.data?.interactionByTypeData)
     const colorsArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
       '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
 
 
-    var statusWiseMap = new Map("", 0)
-    props?.data?.liveInteractionsByStatusData?.data?.rows?.map(item => {
-      if (statusWiseMap.has(item?.intxnCategoryDesc?.description)) {
-        statusWiseMap.set(item?.intxnCategoryDesc?.description, statusWiseMap.get(item?.intxnCategoryDesc?.description) + 1)
-      }
-      else {
-        statusWiseMap.set(item?.intxnCategoryDesc?.description, 1)
-      }
+    var statusWiseMap = new Map("", "")
+    props?.data?.statusWiseCountData?.data?.rows?.map(item => {
+      statusWiseMap.set(item.oStatus, item.oIntxnCount)
     })
 
     var statusWiseData = []
@@ -5186,6 +4766,33 @@ export const UserHomeScreen = (props) => {
       )
       series.push(item.value)
     })
+
+
+    // var statusWiseMap = new Map("", 0)
+    // props?.data?.statusWiseCountData?.data?.rows?.map(item => {
+    //   if (statusWiseMap.has(item?.oStatusCode)) {
+    //     statusWiseMap.set(item?.oStatus, oIntxnCount)
+    //   }
+    //   else {
+    //     statusWiseMap.set(item?.oStatusCode, 1)
+    //   }
+    // })
+
+    // var statusWiseData = []
+    // var series = []
+    // const statusWiseArr = Array.from(statusWiseMap, ([name, value]) => ({ name, value }));
+    // statusWiseArr?.forEach((item, idx) => {
+    //   statusWiseData.push(
+    //     {
+    //       name: item.name,
+    //       population: item.value,
+    //       color: colorsArr[idx],
+    //       legendFontColor: "#7F7F7F",
+    //       legendFontSize: 12
+    //     }
+    //   )
+    //   series.push(item.value)
+    // })
 
 
     var intTypeWiseMap = new Map("", "")
@@ -5230,11 +4837,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Status Vs Type</Text>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Interaction by Status Vs Type</Text>
+          </View>
+          <ClearSpace />
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900" }}>By Status</Text>
@@ -5245,11 +4855,11 @@ export const UserHomeScreen = (props) => {
               return (
                 <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                   <View style={{ flexDirection: "row", margin: 0 }}>
-                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                       <Text style={{ fontWeight: "normal" }}>{item.name}</Text>
                     </View>
 
-                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                       <Text
                         onPress={async () => {
                           var statusDialogData = []
@@ -5329,7 +4939,7 @@ export const UserHomeScreen = (props) => {
 
 
           <ClearSpace size={10} />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={2} />
 
           <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900" }}>By Type</Text>
@@ -5393,11 +5003,11 @@ export const UserHomeScreen = (props) => {
               return (
                 <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                   <View style={{ flexDirection: "row", margin: 0 }}>
-                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                       <Text style={{ fontWeight: "normal" }}>{item.name}</Text>
                     </View>
 
-                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                    <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                       <Text
                         onPress={async () => {
                           var typeDialogData = []
@@ -5429,6 +5039,1058 @@ export const UserHomeScreen = (props) => {
     );
 
   };
+
+
+  const RenderMttrResWaitTimeData = (props) => {
+
+    var resolutionTime, mttrTime, waitingTime
+    var resolutionCount, mttrCount, waitingCount
+
+    props?.data?.resMttrWaitingData?.data?.rows?.avgResolutionTimeData?.map(item => {
+      resolutionTime = item.oAvgResolutionTimeInterval
+      resolutionCount = item.oCnt
+    })
+
+    props?.data?.resMttrWaitingData?.data?.rows?.mttrData?.map(item => {
+      mttrTime = item.oMttr
+      mttrCount = item.oCnt
+    })
+
+    props?.data?.resMttrWaitingData?.data?.rows?.avgWaitingData?.map(item => {
+      waitingTime = item.oAvgChatQueueWaitTimeInterval
+      waitingCount = item.oCnt
+    })
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+
+          <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
+            {/* <Image
+              style={{
+                height: 25,
+                width: 25,
+                tintColor: "white",
+                transform: [{ rotate: "90deg" }],
+              }}
+              source={require("../../../Assets/icons/picker_camera.png")} /> */}
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>Avg. Resolution Time</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>{resolutionTime}</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>per last month</Text>
+          </View>
+
+          <ClearSpace size={4} />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          {/* <View style={{ backgroundColor: "transparent", flexDirection: "column" }}> */}
+          {/* <Image
+              style={{
+                height: 25,
+                width: 25,
+                tintColor: "white",
+                transform: [{ rotate: "90deg" }],
+              }}
+              source={require("../../../Assets/icons/picker_camera.png")} /> */}
+          {/* <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>Avg. MTTR</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>{mttrTime}</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>{mttrCount}</Text>
+          </View>
+  
+          <ClearSpace size={4} />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} /> */}
+
+          <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
+            {/* <Image
+              style={{
+                height: 25,
+                width: 25,
+                tintColor: "white",
+                transform: [{ rotate: "90deg" }],
+              }}
+              source={require("../../../Assets/icons/picker_camera.png")} /> */}
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>Avg. Wait Time</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>{waitingTime}</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>per last month</Text>
+          </View>
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+  const RenderNpsCsatChampData = (props) => {
+
+    var npsTime, npsCount
+    var champTime, champCount
+
+    props?.data?.npsCsatChampData?.data?.rows?.champResponseData?.map(item => {
+      champTime = item.oAutomationPercentage
+      champCount = item.oDifference
+    })
+
+    props?.data?.npsCsatChampData?.data?.rows?.npsResponseData?.map(item => {
+      console.log("oNps....", item.oNps)
+      console.log("oPercentage....", item.oPercentage)
+
+      npsTime = item.oNps
+      npsCount = item.oPercentage
+    })
+
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+
+          <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>Net Promoter Score - NPS</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>{npsTime} %</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>per last month</Text>
+          </View>
+
+          <ClearSpace size={4} />
+
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          {/* <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>CSAT</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>90%</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>23</Text>
+          </View>
+  
+          <ClearSpace size={4} />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} /> */}
+
+          <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>Automation Score By Champ</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontWeight: "900" }}>{champTime} %</Text>
+            <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary }}>per last month</Text>
+          </View>
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+
+
+
+
+
+  const RenderHelpdeskProjectWiseDataLive = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+
+    console.log("status data new...", props?.data?.helpdeskProjectWiseDataLive?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.helpdeskProjectWiseDataLive?.data?.rows?.map(item => {
+      dateArray.push(item.createdAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.helpdeskProjectWiseDataLive?.data?.rows?.forEach(item => {
+      const description = item.projectDesc?.description;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.helpdeskProjectWiseDataLive?.data?.rows.map(item => {
+        const createdAt = moment(item.createdAt).format('hh:mm:ss a');
+        const descriptionItem = item.projectDesc?.description;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series proj status wise........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Projects</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 300,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {dataSetArr.length > 0 && (
+              <LineChart
+                data={{
+                  labels: formattedDateArr,
+                  datasets: dataSetArr,
+                }}
+                width={Dimensions.get('window').width - 16}
+                height={250}
+                chartConfig={{
+                  backgroundColor: '#FFF',
+                  backgroundGradientFrom: '#FFF',
+                  backgroundGradientTo: '#FFF',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                style={{
+                  marginLeft: -35,
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+                verticalLabelRotation={30}
+              />
+            )}
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
+
+  const RenderHelpdeskByStatusDataLive = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+
+    console.log("status data new5...", props?.data?.helpdeskByStatusListDataLive?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.helpdeskByStatusListDataLive?.data?.map(item => {
+      dateArray.push(item.oCreatedAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.helpdeskByStatusListDataLive?.data?.forEach(item => {
+      const description = item.oStatus;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    console.log("projectCounts1....", projectCounts)
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.helpdeskByStatusListDataLive?.data?.map(item => {
+        const createdAt = moment(item.oCreatedAt).format('hh:mm:ss a');
+        const descriptionItem = item.oStatus;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series helpdesk status wise........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Status</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 100,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {dataSetArr.length > 0 && (
+              <LineChart
+                data={{
+                  labels: formattedDateArr,
+                  datasets: dataSetArr,
+                }}
+                width={Dimensions.get('window').width - 16}
+                height={250}
+                chartConfig={{
+                  backgroundColor: '#FFF',
+                  backgroundGradientFrom: '#FFF',
+                  backgroundGradientTo: '#FFF',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                style={{
+                  marginLeft: -35,
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+                verticalLabelRotation={30}
+              />
+            )}
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
+
+  const RenderHelpdeskByTypeDataLive = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+
+    console.log("status data new...", props?.data?.helpdeskByTypeDataLive?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.helpdeskByTypeDataLive?.data?.rows?.map(item => {
+      dateArray.push(item.createdAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.helpdeskByTypeDataLive?.data?.rows?.forEach(item => {
+      const description = item.projectDesc?.description;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.helpdeskByTypeDataLive?.data?.rows.map(item => {
+        const createdAt = moment(item.createdAt).format('hh:mm:ss a');
+        const descriptionItem = item.projectDesc?.description;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series proj status wise........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Projects</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 300,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {dataSetArr.length > 0 && (
+              <LineChart
+                data={{
+                  labels: formattedDateArr,
+                  datasets: dataSetArr,
+                }}
+                width={Dimensions.get('window').width - 16}
+                height={250}
+                chartConfig={{
+                  backgroundColor: '#FFF',
+                  backgroundGradientFrom: '#FFF',
+                  backgroundGradientTo: '#FFF',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                style={{
+                  marginLeft: -35,
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+                verticalLabelRotation={30}
+              />
+            )}
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
+
+
+  const RenderHelpdeskBySeverityDataLive = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+
+    console.log("status data new...", props?.data?.helpdeskBySeverityDataLive?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.helpdeskBySeverityDataLive?.data?.rows?.map(item => {
+      dateArray.push(item.createdAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.helpdeskBySeverityDataLive?.data?.rows?.forEach(item => {
+      const description = item.projectDesc?.description;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.helpdeskBySeverityDataLive?.data?.rows.map(item => {
+        const createdAt = moment(item.createdAt).format('hh:mm:ss a');
+        const descriptionItem = item.projectDesc?.description;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series proj status wise........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Severity</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 300,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {dataSetArr.length > 0 && (
+              <LineChart
+                data={{
+                  labels: formattedDateArr,
+                  datasets: dataSetArr,
+                }}
+                width={Dimensions.get('window').width - 16}
+                height={250}
+                chartConfig={{
+                  backgroundColor: '#FFF',
+                  backgroundGradientFrom: '#FFF',
+                  backgroundGradientTo: '#FFF',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                style={{
+                  marginLeft: -35,
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+                verticalLabelRotation={30}
+              />
+            )}
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
+
+  const RenderOverviewLiveData = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
+
+    console.log("status data new...", props?.data?.interactionsByStatusListDataTwo?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.interactionsByStatusListDataTwo?.data?.rows?.map(item => {
+      dateArray.push(item.createdAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.interactionsByStatusListDataTwo?.data?.rows?.forEach(item => {
+      const description = item.currStatusDesc?.description;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.interactionsByStatusListDataTwo?.data?.rows.map(item => {
+        const createdAt = moment(item.createdAt).format('hh:mm:ss a');
+        const descriptionItem = item.currStatusDesc?.description;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series proj status wise........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Overview</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 100,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {dataSetArr.length > 0 && (
+              <LineChart
+                hidePointsAtIndex={Array.from({ length: formattedDateArr.length }, (v, k) => (k % 2 === 0) ? k : null)}
+                data={{
+                  labels: formattedDateArr,
+                  datasets: dataSetArr,
+                }}
+                width={Dimensions.get('window').width - 16}
+                height={250}
+                chartConfig={{
+                  backgroundColor: '#FFF',
+                  backgroundGradientFrom: '#FFF',
+                  backgroundGradientTo: '#FFF',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                style={{
+                  marginLeft: -35,
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+                verticalLabelRotation={30}
+              />
+            )}
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
+
+
+  const RenderStatusLiveData = (props) => {
+
+    var dataSetArr = []
+    var dateArray = []
+    var colors = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
+      '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
+
+    console.log("status data new2...", props?.data?.interactionsByStatusLiveListData?.data)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+    props?.data?.interactionsByStatusLiveListData?.data?.rows?.map(item => {
+      dateArray.push(item.oCreatedAt)
+    })
+
+    dateArray = dateArray.filter((item,
+      index) => dateArray.indexOf(item) === index);
+
+    const sortedDateArray = dateArray.sort(function (dateArray, b) {
+      return new Date(dateArray) - new Date(b)
+    })
+    console.log("sortedDateArray.....", sortedDateArray)
+
+    var formattedDateArr = []
+    sortedDateArray.forEach(item => {
+      formattedDateArr.push(moment(item).format("hh:mm:ss"))
+    })
+    console.log("formattedDateArr.....", formattedDateArr)
+
+    // --------------------------------------------x axis data-------------------------------------------------
+
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    const projectCounts = {};
+    props?.data?.interactionsByStatusLiveListData?.data?.rows?.forEach(item => {
+      const description = item.oStatus;
+      if (projectCounts[description]) {
+        projectCounts[description]++;
+      } else {
+        projectCounts[description] = 1;
+      }
+    });
+
+    const series = Object.keys(projectCounts).map(description => {
+      return {
+        name: description,
+        type: 'line',
+        stack: 'Total',
+        data: [],
+      };
+    });
+
+    let projectCount = 0;
+    series.forEach(serie => {
+      const description = serie.name;
+      const data = props?.data?.interactionsByStatusLiveListData?.data?.rows.map(item => {
+        const createdAt = moment(item.oCreatedAt).format('hh:mm:ss a');
+        const descriptionItem = item.oStatus;
+        if (descriptionItem === description) {
+          projectCount++;
+        } else {
+          projectCount = 0;
+        }
+        return descriptionItem === description ? projectCount : 0;
+      });
+      serie.data = data;
+    });
+    console.log("series proj status wise2........", series)
+
+    series.forEach((serie, idx) => {
+      dataSetArr.push(
+        {
+          data: serie.data,
+          strokeWidth: 2,
+          color: (opacity = 1) => colors[idx]
+        }
+      )
+    })
+
+    // --------------------------------------------y axis data-------------------------------------------------
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Status</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <View styles={{ flexDirection: "column" }}>
+            {series.map((item, idx) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  width: 100,
+                  alignSelf: "center",
+                  marginTop: 10,
+                  marginBottom: 10
+                }}>
+                  <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}>
+                    <View style={{
+                      marginRight: 2,
+                      width: 10, height: 10, borderRadius: 2,
+                      backgroundColor: colors[idx]
+                    }} />
+                    <Text style={{ fontSize: 11 }}>{item.name}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            <LineChart
+              hidePointsAtIndex={Array.from({ length: formattedDateArr.length }, (v, k) => (k % 100 === 0) ? k : null)}
+              data={{
+                labels: formattedDateArr,
+                datasets: dataSetArr,
+              }}
+              width={Dimensions.get('window').width - 16}
+              height={250}
+              chartConfig={{
+                backgroundColor: '#FFF',
+                backgroundGradientFrom: '#FFF',
+                backgroundGradientTo: '#FFF',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              style={{
+                marginLeft: -35,
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+              verticalLabelRotation={30}
+            />
+          </View>
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+  };
+
 
   // ---------------------------------------Interaction methods end-----------------------------------------------------------------
 
@@ -5613,7 +6275,6 @@ export const UserHomeScreen = (props) => {
     return sign + z(secs / 3600 | 0) + ':' + z((secs % 3600) / 60 | 0) + ':' + z(secs % 60);
   }
 
-
   const RenderOperationalAppointmentsData = (props) => {
 
     console.log("RenderOperationalAppointmentsData...", props.data)
@@ -5783,7 +6444,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
 
   const RenderOperationalTeamAppointmentsData = (props) => {
 
@@ -5955,8 +6615,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
-
   const RenderOperationalPooledInteractionsData = (props) => {
 
     console.log("RenderOperationalPooledInteractionsData...", props.data)
@@ -6120,7 +6778,6 @@ export const UserHomeScreen = (props) => {
 
   };
 
-
   const RenderOperationalTeamPooledInteractionsData = (props) => {
 
     console.log("RenderOperationalTeamPooledInteractionsData...", props.data)
@@ -6283,7 +6940,6 @@ export const UserHomeScreen = (props) => {
     );
 
   };
-
 
   const RenderOperationalAssignedInteractionsData = (props) => {
 
@@ -6449,7 +7105,6 @@ export const UserHomeScreen = (props) => {
 
   };
 
-
   const RenderOperationalTeamAssignedInteractionsData = (props) => {
 
     console.log("RenderOperationalTeamAssignedInteractionsData...", props.data)
@@ -6613,7 +7268,6 @@ export const UserHomeScreen = (props) => {
     );
 
   };
-
 
   const RenderOperationalInteractionCorner = (props) => {
 
@@ -6859,12 +7513,12 @@ export const UserHomeScreen = (props) => {
       <>
         <Card style={{
           backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10,
-          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 105
+          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 50
         }}>
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Interactions Corner</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -6955,7 +7609,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
 
   const RenderOperationalInteractionCornerTeam = (props) => {
 
@@ -7201,12 +7854,12 @@ export const UserHomeScreen = (props) => {
       <>
         <Card style={{
           backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10,
-          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 105
+          marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 50
         }}>
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Interactions Corner</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -7297,8 +7950,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
-
 
   const RenderOperationalAppointmentsCorner = (props) => {
 
@@ -7405,7 +8056,7 @@ export const UserHomeScreen = (props) => {
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Appointments Corner</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -7497,7 +8148,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
 
   const RenderOperationalAppointmentsCornerTeam = (props) => {
 
@@ -7604,7 +8254,7 @@ export const UserHomeScreen = (props) => {
 
           <Text style={{ padding: 5, fontWeight: "900" }}>Appointments Corner</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -7697,7 +8347,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderOperationalTopFiveInteractions = (props) => {
     // console.log("RenderOperationalTopFiveInteractions data...", props?.data)
     const colorsArr = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
@@ -7711,7 +8360,7 @@ export const UserHomeScreen = (props) => {
         <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
           <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Interactions</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -7798,7 +8447,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderOperationalTopPerformanceActivityTeam = (props) => {
     const colorsArr = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
     const dropDownArr = [
@@ -7811,7 +8459,7 @@ export const UserHomeScreen = (props) => {
         <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
           <Text style={{ padding: 5, fontWeight: "900" }}>Top Performance Activity</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -7898,8 +8546,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
-
   const RenderOperationalTopCategoryPerformanceTeam = (props) => {
     const colorsArr = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
     const dropDownArr = [
@@ -7913,7 +8559,7 @@ export const UserHomeScreen = (props) => {
         <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
           <Text style={{ padding: 5, fontWeight: "900" }}>Top Category Performance</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
 
           <View style={{ marginTop: -20, paddingVertical: 10 }}>
             <CustomDropDownFullWidth
@@ -8018,7 +8664,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderOverallAppointmentsData = (props) => {
 
     console.log("RenderOverallAppointmentsData...", props?.data)
@@ -8061,7 +8706,7 @@ export const UserHomeScreen = (props) => {
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 132,
+          marginTop: 100,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -8198,7 +8843,7 @@ export const UserHomeScreen = (props) => {
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 132,
+          marginTop: 100,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -8230,7 +8875,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
 
   const RenderUpcomingAppointmentsData = (props) => {
 
@@ -8416,8 +9060,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
-
 
   const RenderClosedAppointmentsData = (props) => {
 
@@ -8618,7 +9260,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderOverallInfoAppointmentsData = (props) => {
 
     const schdVsComp = Math.round((props?.data?.data?.completed.length / props?.data?.data?.scheduled.length) * 100)
@@ -8632,7 +9273,7 @@ export const UserHomeScreen = (props) => {
         <View style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: 132,
+          marginTop: 70,
           marginLeft: 10,
           marginRight: 10,
           padding: 10,
@@ -8695,7 +9336,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   };
-
 
   const RenderBasedOnAppType = (props) => {
 
@@ -8929,7 +9569,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   const RenderLocationBasedAppointment = (props) => {
 
     // console.log("RenderLocationBasedAppointment...", props?.data?.typeBasedAppointmentData)
@@ -9027,7 +9666,6 @@ export const UserHomeScreen = (props) => {
     );
   };
 
-
   // ---------------------------------------Helpdesk methods start-----------------------------------------------------------------
 
   const RenderDashboardTitle = (props) => {
@@ -9037,178 +9675,18 @@ export const UserHomeScreen = (props) => {
         <View style={{
           marginTop: -2,
           flex: 1, padding: 10,
-          borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center",
-          position: "absolute", top: 1, height: height / 17, width: width - 0, backgroundColor: "#FFF",
+          borderRadius: 0, elevation: 10, borderWidth: 0,
+          position: "absolute", top: 1, height: height / 17, width: width, backgroundColor: color.WHITE,
           opacity: 1, zIndex: 99999999999999, flexDirection: "row"
         }}>
-          <Text style={{ width: (width / 2) + 20, fontSize: 15, fontWeight: "900" }}>{props.data}</Text>
-
-          <View style={{ marginLeft: 0, alignSelf: "center", flexDirection: "row" }}>
-
-            {showOperationalDashboard && (
-              <Pressable
-                onPress={() => {
-
-                }}
-                style={{
-                  marginLeft: 10,
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#FFF",
-                  alignItems: "center",
-                  height: 35, //any of height
-                  width: 35, //any of width
-                  borderRadius: 20   // it will be height/2
-                }}
-              >
-                <Icon
-                  name="dip-switch"
-                  size={27}
-                  color={"#FFF"}
-                />
-              </Pressable>
-            )}
-
-            {showAppointmentDashboard && (
-              <Pressable
-                onPress={() => {
-
-                }}
-                style={{
-                  marginLeft: 10,
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#FFF",
-                  alignItems: "center",
-                  height: 35, //any of height
-                  width: 35, //any of width
-                  borderRadius: 20   // it will be height/2
-                }}
-              >
-                <Icon
-                  name="dip-switch"
-                  size={27}
-                  color={"#FFF"}
-                />
-              </Pressable>
-            )}
-
-            {!showOperationalDashboard && !showAppointmentDashboard && (
-              <Pressable
-                onPress={() => {
-                  if (showHelpdeskDashboard) {
-                    setHelpdeskLiveStream(!helpdeskLiveStream)
-                  }
-
-                  if (showInteractionDashboard) {
-                    setInteractionLiveStream(!interactionLiveStream)
-                  }
-                }}
-                style={{
-                  marginLeft: 10,
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#4a5996",
-                  alignItems: "center",
-                  height: 35, //any of height
-                  width: 35, //any of width
-                  borderRadius: 20   // it will be height/2
-                }}
-              >
-                <Icon
-                  name="dip-switch"
-                  size={27}
-                  color={"#FFF"}
-                />
-              </Pressable>
-            )}
-
-            <Pressable
-              onPress={() => {
-                if (showHelpdeskDashboard) {
-                  if (helpdeskFilterDialogVisible) {
-                    setHelpdeskFilterDialogVisible(false)
-                  } else {
-                    setHelpdeskFilterDialogVisible(true)
-                  }
-                }
-
-                if (showInteractionDashboard) {
-                  if (intxnFilterDialogVisible) {
-                    setIntxnFilterDialogVisible(false)
-                  } else {
-                    setIntxnFilterDialogVisible(true)
-                  }
-                }
-
-                if (showOperationalDashboard) {
-                  if (operationalFilterDialogVisible) {
-                    setOperationalFilterDialogVisible(false)
-                  } else {
-                    setOperationalFilterDialogVisible(true)
-                  }
-                }
-
-                if (showAppointmentDashboard) {
-                  if (appointmentFilterDialogVisible) {
-                    setAppointmentFilterDialogVisible(false)
-                  } else {
-                    setAppointmentFilterDialogVisible(true)
-                  }
-                }
-              }}
-              style={{
-                marginLeft: 10,
-                alignSelf: "center",
-                justifyContent: "center",
-                backgroundColor: "#4a5996",
-                alignItems: "center",
-                height: 35, //any of height
-                width: 35, //any of width
-                borderRadius: 20   // it will be height/2
-              }}
-            >
-              <Icon
-                name="filter"
-                size={27}
-                color={"#FFF"}
-              />
-            </Pressable>
-
-            <Pressable
-              onPress={() => {
-                if (openDashboardPopUp) {
-                  setOpenDashboardPopUp(false)
-                } else {
-                  setOpenDashboardPopUp(true)
-                }
-              }}
-              style={{
-                marginLeft: 10,
-                alignSelf: "center",
-                justifyContent: "center",
-                backgroundColor: "#4a5996",
-                alignItems: "center",
-                height: 35, //any of height
-                width: 35, //any of width
-                borderRadius: 20   // it will be height/2
-              }}
-            >
-              <Icon
-                name="home-switch"
-                size={27}
-                color={"#FFF"}
-              />
-            </Pressable>
-
+          <View style={{ alignSelf: "center" }}>
+            <Text style={{ fontSize: 15, fontWeight: "900", color: colors.secondary }}>{props.data}</Text>
           </View>
-
-          {/* <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider> */}
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
         </View >
       </>
     );
   };
-
 
   const RenderHelpdeskSummaryData = (props) => {
 
@@ -9272,11 +9750,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk Summary</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Helpdesk Summary</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
 
@@ -9290,8 +9771,8 @@ export const UserHomeScreen = (props) => {
                   setHelpdeskDetDialogVisible(true)
                 }}
                 style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Clarification</Text>
-                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryClarificationData?.data?.length}</Text>
+                <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>Clarification</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryClarificationData?.data?.length}</Text>
               </Card>
 
               <Card
@@ -9301,8 +9782,8 @@ export const UserHomeScreen = (props) => {
                   setHelpdeskDetDialogVisible(true)
                 }}
                 style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Incident</Text>
-                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryIncidentData?.data?.length}</Text>
+                <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>Incident</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryIncidentData?.data?.length}</Text>
               </Card>
 
               <Card
@@ -9312,8 +9793,8 @@ export const UserHomeScreen = (props) => {
                   setHelpdeskDetDialogVisible(true)
                 }}
                 style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Service Request</Text>
-                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryServiceRequestData?.data?.length}</Text>
+                <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>Service Request</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryServiceRequestData?.data?.length}</Text>
               </Card>
 
               <Card
@@ -9323,8 +9804,8 @@ export const UserHomeScreen = (props) => {
                   setHelpdeskDetDialogVisible(true)
                 }}
                 style={{ height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5, alignSelf: "center" }}>
-                <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>Unclassified</Text>
-                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryUnclassifiedData?.data?.length}</Text>
+                <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>Unclassified</Text>
+                <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{"" + intDashRed.helpdeskSummaryUnclassifiedData?.data?.length}</Text>
               </Card>
             </ScrollView>
           </View>
@@ -9450,11 +9931,14 @@ export const UserHomeScreen = (props) => {
 
       return (
         <>
-          <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
             <ClearSpace />
-            <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Pending With</Text>
+            <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+              <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Helpdesk By Pending With</Text>
+            </View>
             <ClearSpace />
-            <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+            {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
             <ClearSpace size={4} />
 
             <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
@@ -9467,19 +9951,24 @@ export const UserHomeScreen = (props) => {
                         onPress={() => {
                           var dataArr = []
                           valData.forEach((item1, idx) => {
-                            console.log("item1...", item1)
-                            if (item1.project == item.name) {
+                            console.log("comparing names...", item1.project + " == " + item.name)
+                            if (item1.project == null) {
+                              if (item.name == "Unclassified") {
+                                dataArr.push(item1)
+                              }
+                            }
+                            else if (item1.project === item.name) {
                               dataArr.push(item1)
                             }
                           })
                           console.log("dataArr...", dataArr)
-                          dialogHeading = "Project Wise Open Helpdesk Details"
+                          dialogHeading = "Support Tickets Pending with Helpdesk Details"
                           setHelpdeskDialogData(dataArr)
                           setHelpdeskDetDialogVisible(true)
                         }}
                         style={{ alignContent: "center", height: 60, width: 80, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-                        <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item.name === null ? "Unclassified" : item.name}</Text>
-                        <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{item.population}</Text>
+                        <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>{item.name === null ? "Unclassified" : item.name}</Text>
+                        <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{item.population}</Text>
                       </Card>
                     </>
                   )
@@ -9535,7 +10024,7 @@ export const UserHomeScreen = (props) => {
 
   const RenderMonthlyDailyTrends = (props) => {
 
-    var dateArray = [], wipCountArray = [], closedCountArray = [], valuesArr = [];
+    var chartData = [], dateArray = [], wipCountArray = [], closedCountArray = [], valuesArr = [];
 
     // var date = new Date();
     // var startDate = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -9566,6 +10055,29 @@ export const UserHomeScreen = (props) => {
 
     var colors = ["#58D68D", "#3498DB", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
 
+
+    props?.data?.data?.map(item => {
+      chartData.push(item)
+    })
+
+    console.log("chartData......", chartData)
+
+    // Convert date strings to Date objects for proper sorting
+    chartData.sort((a, b) => new Date(a.oDayMonth) - new Date(b.oDayMonth));
+
+    const wipData = chartData.filter(item => item.oStatus === 'WIP').map(item => parseInt(item.oCnt));
+
+    console.log('wipData--------->', wipData)
+    // const closedData = chartData.filter(item => item.oStatus === 'CLOSED').map(item => parseInt(item.oCnt));
+    const allDates = chartData.map(item => item.oDayMonth);
+    const xAxisLabels = [...new Set(allDates)];
+
+    const closedData = xAxisLabels.map(date => {
+      const matchingData = chartData.find(item => item.oDayMonth === date && item.oStatus === 'CLOSED');
+      return matchingData ? parseInt(matchingData.oCnt) : null;
+    })
+
+    console.log('closedData--------->', closedData)
 
     props?.data?.data?.forEach(item => {
       console.log("oCnt...", item.oCnt)
@@ -9621,11 +10133,14 @@ export const UserHomeScreen = (props) => {
 
       return (
         <>
-          <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+          <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
             <ClearSpace />
-            <Text style={{ padding: 5, fontWeight: "900" }}>This Month Daily Trends</Text>
+            <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+              <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>This Month Daily Trends</Text>
+            </View>
             <ClearSpace />
-            <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+            {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
             <ClearSpace size={4} />
 
 
@@ -9641,7 +10156,7 @@ export const UserHomeScreen = (props) => {
                   if (wipCountArray?.length > 0) {
                     dataSetArr.push(
                       {
-                        data: wipCountArray,
+                        data: wipData,
                         strokeWidth: 2,
                         color: (opacity = 1) => colors[idx]
                       }
@@ -9651,9 +10166,10 @@ export const UserHomeScreen = (props) => {
 
                 if (item == "CLOSED") {
                   if (closedCountArray?.length > 0) {
+
                     dataSetArr.push(
                       {
-                        data: closedCountArray,
+                        data: closedData,
                         strokeWidth: 2,
                         color: (opacity = 1) => colors[idx]
                       }
@@ -9682,11 +10198,24 @@ export const UserHomeScreen = (props) => {
               })}
 
             </View>
-
+            {console.log('dataSetArr---------->', dataSetArr)}
             <LineChart
               data={{
                 labels: dateArray,
-                datasets: dataSetArr,
+                datasets: dataSetArr
+
+                // ?.map((ele) => {
+                //   if (ele > 0) {
+                //     return ele
+                //   } else {
+                //     return {
+                //       data: 0,
+                //       strokeWidth: 2,
+                //       color: (opacity = 1) => colors[idx]
+                //     }
+                //   }
+                // })
+                ,
               }}
               width={Dimensions.get('window').width - 25}
               height={230}
@@ -9767,11 +10296,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Status</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Helpdesk By Status</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           {/* <ScrollView style={{ flex: 1 }}>
@@ -9838,8 +10370,8 @@ export const UserHomeScreen = (props) => {
                         setHelpdeskDetDialogVisible(true)
                       }}
                       style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-                      <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item.oStatus}</Text>
-                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{item.oCnt}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>{item.oStatus}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{item.oCnt}</Text>
                     </Card>
                   </>
                 )
@@ -10035,11 +10567,13 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Ageing</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: "#FFF", padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Helpdesk By Ageing</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View style={{ backgroundColor: "transparent", flexDirection: "row" }}>
@@ -10098,8 +10632,8 @@ export const UserHomeScreen = (props) => {
                         setHelpdeskDetDialogVisible(true)
                       }}
                       style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-                      <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item}</Text>
-                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{count}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>{item}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{count}</Text>
                     </Card>
                   </>
                 )
@@ -10159,7 +10693,7 @@ export const UserHomeScreen = (props) => {
           )}
 
           <ClearSpace size={4} />
-        </Card>
+        </Card >
       </>
     );
 
@@ -10208,9 +10742,9 @@ export const UserHomeScreen = (props) => {
       series.push(criticalCount, majorCount, minorCount, unclassifiedCount)
       colorsArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
         '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
-      var colors = []
+      var _colors = []
       series.forEach((item, idx) => {
-        colors.push(colorsArr[idx])
+        _colors.push(colorsArr[idx])
       })
     }
 
@@ -10218,11 +10752,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Severity</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Helpdesk By Severity</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
 
@@ -10271,8 +10808,8 @@ export const UserHomeScreen = (props) => {
                         }
                       }}
                       style={{ alignContent: "center", height: 60, minWidth: 70, backgroundColor: "white", flexDirection: "column", elevation: 10, padding: 5, margin: 5 }}>
-                      <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontSize: 10 }}>{item}</Text>
-                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: "#000000", alignSelf: "center" }}>{series[idx]}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, color: colors.secondary, fontSize: 10 }}>{item}</Text>
+                      <Text style={{ alignSelf: "center", padding: 5, fontWeight: "900", color: colors.secondary, alignSelf: "center" }}>{series[idx]}</Text>
                     </Card>
                   </>
                 )
@@ -10339,16 +10876,18 @@ export const UserHomeScreen = (props) => {
 
   };
 
-
-
   const RenderHourlyTicketsData = (props) => {
+
+    console.log("props.data...", props.data)
 
     var colors = ["#58D68D", "#3498DB", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
 
     var dataArr = []
-    props.data.hourlyTicketsData?.forEach(item => {
+    props?.data?.data?.forEach(item => {
       dataArr.push(item.oTicketCnt)
     })
+
+    console.log("props.data2...", dataArr)
 
     return (
       <>
@@ -10356,10 +10895,10 @@ export const UserHomeScreen = (props) => {
           <ClearSpace />
           <Text style={{ padding: 5, fontWeight: "900" }}>Today Tickets (Hourly)</Text>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
           <ClearSpace size={4} />
 
-          {dataArr.length > 0 && (
+          {dataArr?.length > 0 && (
             <LineChart
               data={{
                 datasets: dataArr,
@@ -10381,12 +10920,11 @@ export const UserHomeScreen = (props) => {
                 marginVertical: 8,
                 borderRadius: 16,
               }}
-              hidePointsAtIndex={Array.from({ length: dateArray.length }, (v, k) => (k % 2 === 0) ? k : null)}
               verticalLabelRotation={30}
             />
           )}
 
-          {dataArr.length == 0 && (
+          {dataArr?.length == 0 && (
             <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
           )}
 
@@ -10395,9 +10933,6 @@ export const UserHomeScreen = (props) => {
       </>
     );
   }
-
-
-
 
   const RenderProjectWiseOpenHelpdesk = (props) => {
 
@@ -10438,11 +10973,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Project Wise Open Helpdesk</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Project Wise Open Helpdesk</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -10465,11 +11003,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 245, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={() => {
                             // setProject(project)
@@ -10494,7 +11032,7 @@ export const UserHomeScreen = (props) => {
             })}
           </View>
 
-          {props?.data?.data?.rows?.length == 0 && (
+          {(array?.length == 0) && (
             <Text style={{ alignSelf: "center", padding: 5, fontWeight: "400" }}>No Data Available</Text>
           )}
 
@@ -10544,11 +11082,14 @@ export const UserHomeScreen = (props) => {
 
     return (
       <>
-        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
           <ClearSpace />
-          <Text style={{ padding: 5, fontWeight: "900" }}>Agent Wise Open Helpdesk</Text>
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Agent Wise Open Helpdesk</Text>
+          </View>
           <ClearSpace />
-          <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
           <ClearSpace size={4} />
 
           <View styles={{ flexDirection: "column" }}>
@@ -10565,11 +11106,11 @@ export const UserHomeScreen = (props) => {
                 return (
                   <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
                     <View style={{ flexDirection: "row", margin: 0 }}>
-                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 270, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginRight: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 245, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text style={{ fontWeight: "normal" }}>{project}</Text>
                       </View>
 
-                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
+                      <View style={{ marginLeft: 1, backgroundColor: "#FBFCFC", padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
                         <Text
                           onPress={() => {
                             // setProject(project)
@@ -10606,7 +11147,7 @@ export const UserHomeScreen = (props) => {
 
   };
 
-  const RenderHelpdeskBySeverity2 = (props) => {
+  const RenderHelpdeskBySeverity2 = async (props) => {
 
     var oCountArr = [], oStatusArr = []
 
@@ -10632,14 +11173,13 @@ export const UserHomeScreen = (props) => {
 
     if ((oStatusArr.length > 0) && (oCountArr.length > 0)) {
 
-
       return (
         <>
           <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
             <ClearSpace />
             <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk By Severity</Text>
             <ClearSpace />
-            <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+            <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
             <ClearSpace size={4} />
 
             <View>
@@ -10698,342 +11238,1083 @@ export const UserHomeScreen = (props) => {
 
   // ---------------------------------------Helpdesk methods end-----------------------------------------------------------------
 
+
+
+  const RenderTopFiveInteractionCategoryData = (props) => {
+
+    console.log("interaction category data...", props?.data?.interactionByCategoryData)
+
+    var intCatWiseLabels = []
+    var intCatWiseValues = []
+    props?.data?.interactionByCategoryData?.data?.rows?.map(item => {
+      intCatWiseLabels.push(item.oCategoryValue)
+      intCatWiseValues.push('' + item.oIntxnCnt)
+    })
+
+    console.log("intCategoryWiseLabels data...", intCatWiseLabels)
+    console.log("intCategoryWiseValues data...", intCatWiseValues)
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Interaction By Category</Text>
+          </View>
+          <ClearSpace />
+
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+          <BarChart
+            flatColor={true}
+            withCustomBarColorFromData={true}
+            yAxisInterval={10} // optional, defaults to 1
+            data={{
+              labels: intCatWiseLabels,
+              datasets: [
+                {
+                  data: intCatWiseValues,
+                  colors: [
+                    () => "green",
+                    () => "red",
+                    () => "blue",
+                    () => "yellow",
+                    () => "orange"
+                  ]
+                },
+                {
+                  data: [1] // min
+                },
+                {
+                  data: [10] // max
+                }
+              ],
+            }}
+            width={Dimensions.get('window').width - 30}
+            height={550}
+            yAxisLabel={''}
+            chartConfig={{
+              backgroundColor: '#FFF',
+              backgroundGradientFrom: '#FFF',
+              backgroundGradientTo: '#FFF',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+            verticalLabelRotation={90}
+          />
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+  const RenderTopFiveInteractionTypeData = (props) => {
+
+    console.log("interaction type data...", props?.data?.interactionByTypeData)
+
+    var intTypeWiseLabels = []
+    var intTypeWiseValues = []
+    props?.data?.interactionByTypeData?.data?.rows?.map(item => {
+      intTypeWiseLabels.push(item.oCategoryValue)
+      intTypeWiseValues.push('' + item.oIntxnCnt)
+    })
+
+    console.log("intTypeWiseLabels data...", intTypeWiseLabels)
+    console.log("intTypeWiseValues data...", intTypeWiseValues)
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Interaction By Type</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+          <BarChart
+            flatColor={true}
+            withCustomBarColorFromData={true}
+            data={{
+              labels: intTypeWiseLabels,
+              datasets: [
+                {
+                  data: intTypeWiseValues,
+                  colors: [
+                    () => "blue",
+                    () => "red",
+                    () => "green"
+                  ]
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 30}
+            height={400}
+            yAxisLabel={''}
+            chartConfig={{
+              backgroundColor: '#FFF',
+              backgroundGradientFrom: '#FFF',
+              backgroundGradientTo: '#FFF',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+            verticalLabelRotation={90}
+          />
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+  const RenderTopFiveServiceCategoryData = (props) => {
+
+    console.log("service category data...", props?.data?.interactionByServiceCategoryData)
+
+    var serviceCategoryWiseLabels = []
+    var serviceCategoryWiseValues = []
+    props?.data?.interactionByServiceCategoryData?.data?.rows?.map(item => {
+      serviceCategoryWiseLabels.push(item.oCategoryValue)
+      serviceCategoryWiseValues.push('' + item.oIntxnCnt)
+    })
+
+    console.log("serviceCategoryWiseLabels data...", serviceCategoryWiseLabels)
+    console.log("serviceCategoryWiseValues data...", serviceCategoryWiseValues)
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Service Category</Text>
+          </View>
+          <ClearSpace />
+
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+          <BarChart
+            flatColor={true}
+            withCustomBarColorFromData={true}
+            data={{
+              labels: serviceCategoryWiseLabels,
+              datasets: [
+                {
+                  data: serviceCategoryWiseValues,
+                  colors: [
+                    () => "blue",
+                    () => "red",
+                    () => "green"
+                  ]
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 30}
+            height={500}
+            yAxisLabel={''}
+            chartConfig={{
+              backgroundColor: '#FFF',
+              backgroundGradientFrom: '#FFF',
+              backgroundGradientTo: '#FFF',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+            verticalLabelRotation={90}
+          />
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+  const RenderTopFiveServiceTypeData = (props) => {
+
+    console.log("service type data...", props?.data?.interactionByServiceTypeData)
+
+    var serviceTypeWiseLabels = []
+    var serviceTypeWiseValues = []
+    props?.data?.interactionByServiceTypeData?.data?.rows?.map(item => {
+      serviceTypeWiseLabels.push(item.oCategoryValue)
+      serviceTypeWiseValues.push('' + item.oIntxnCnt)
+    })
+
+    console.log("serviceTypeWiseLabels data...", serviceTypeWiseLabels)
+    console.log("serviceTypeWiseValues data...", serviceTypeWiseValues)
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Service Type</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+          <BarChart
+            flatColor={true}
+            withCustomBarColorFromData={true}
+            data={{
+              labels: serviceTypeWiseLabels,
+              datasets: [
+                {
+                  data: serviceTypeWiseValues,
+                  colors: [
+                    () => "blue",
+                    () => "red",
+                    () => "green"
+                  ]
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 30}
+            height={650}
+            yAxisLabel={''}
+            chartConfig={{
+              backgroundColor: '#FFF',
+              backgroundGradientFrom: '#FFF',
+              backgroundGradientTo: '#FFF',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+            verticalLabelRotation={90}
+          />
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+
+
+
+
+
+
+
+
+  const RenderInteractionByRolesData = (props) => {
+
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
+
+          <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Roles</Text>
+          <ClearSpace />
+          <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
+          <ClearSpace size={4} />
+
+          <BarChart
+            flatColor={true}
+            withCustomBarColorFromData={true}
+            data={{
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+              ],
+              datasets: [
+                {
+                  data: [20, 45, 28, 80, 99, 43],
+                  colors: [
+                    () => "blue",
+                    () => "red",
+                    () => "green"
+                  ]
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 30}
+            height={650}
+            yAxisLabel={''}
+            chartConfig={{
+              backgroundColor: '#FFF',
+              backgroundGradientFrom: '#FFF',
+              backgroundGradientTo: '#FFF',
+              decimalPlaces: 2,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+            verticalLabelRotation={90}
+          />
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+
+
+
+
+
+  const RenderTopFiveInteractionStatement = (props) => {
+
+    var intStatementWiseMap = new Map("", "")
+
+    var series = []
+    props?.data?.statementWiseData?.data?.rows?.map(item => {
+      intStatementWiseMap.set(item.oCategoryValue, item.oIntxnCnt)
+      series.push(item.oIntxnCnt)
+    })
+
+    const colorsArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
+      '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
+    var colors = []
+    series.forEach((item, idx) => {
+      colors.push(colorsArr[idx])
+    })
+
+    const intStatementWiseArr = Array.from(intStatementWiseMap, ([name, value]) => ({ name, value }));
+
+    console.log("intStatementWiseArr...", intStatementWiseArr)
+
+    var widthAndHeight = 200
+
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Interaction By Statement</Text>
+          </View>
+          <ClearSpace />
+
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+
+
+          {series.length > 0 && (
+            <PieChart
+              style={{ marginTop: 0, alignSelf: "center" }}
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={colors}
+              coverRadius={0.5}
+              coverFill={'#FFF'}
+            />
+          )}
+
+
+          {props?.data?.statementWiseData?.data?.rows?.map((item, idx) => {
+            return (
+              <View style={{
+                width: 300,
+                alignSelf: "flex-start",
+                marginTop: 20,
+                marginLeft: 10
+              }}>
+                <View style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start"
+                }}>
+                  <View style={{
+                    marginRight: 2,
+                    width: 10, height: 10, borderRadius: 2,
+                    backgroundColor: colors[idx]
+                  }} />
+                  <Text style={{ marginLeft: 10, fontSize: 11 }}>{item.oCategoryValue + " - " + item.oIntxnCnt}</Text>
+                </View>
+              </View>
+            )
+          })}
+
+
+          {/* <View styles={{ flexDirection: "column" }}>
+          {intStatementWiseArr.map(item => {
+            const project = item.name
+            const count = item.value
+
+            console.log("count...", count)
+            console.log("project...", project)
+
+            if (!(item.value == 0)) {
+              return (
+                <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
+                   <View style={{ flexDirection: "row", margin: 0 }}>
+                     <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
+                       <Text style={{ fontWeight: "normal" }}>{project}</Text>
+                     </View>
+
+                     <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: .5, borderColor: color.DISABLED_GREY }}>
+                       <Text style={{ alignSelf: "center", ontWeight: "normal" }}>{count}</Text>
+                     </View>
+                   </View>
+                </View>
+              );
+            }
+          })}
+        </View> */}
+
+
+
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
+
+
+  // const footerModal = () => {
+
+
+  //   return (
+  //     <>
+  //       <FooterModel
+  //         open={showBottomModal}
+  //         setOpen={setShowBottomModal}
+  //         title={"Assign To Self"}
+  //       >
+  //         <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
+
+
+
+
+  //         </ScrollView>
+  //       </FooterModel>
+  //     </>
+  //   );
+
+  // };
+
+
+
+  const RenderTopFiveInteractionChannelData = (props) => {
+
+    console.log("channel wise data...", props?.data?.channelWiseData)
+
+    // var channelWiseMap = new Map("", "", "")
+    // props?.data?.channelWiseData?.data?.rows?.map(item => {
+    //   channelWiseMap.set(item.oMonthYear, item.oCategoryValue, item.oIntxnCnt)
+    // })
+
+    // const channelWiseArr = Array.from(channelWiseMap, ([month, channel, count]) => ({ month, channel, count }));
+    // console.log("channelWiseArr...", channelWiseArr)
+
+    const xAxisData = [...new Set(props?.data?.channelWiseData?.data?.rows?.map(item => item.oMonthYear))];
+    const category = [...new Set(props?.data?.channelWiseData?.data?.rows?.map(item => item.oCategoryValue))];
+    const series = xAxisData?.map(xAxisData => {
+      const respData = category?.map(category => {
+        const matchingItem = props?.data?.channelWiseData?.data?.rows?.find(item => item.oCategoryValue === category && item.oMonthYear === xAxisData);
+        return matchingItem ? Number(matchingItem.oIntxnCnt) : 0;
+      });
+      return respData
+    })
+
+
+    console.log("xAxisData...", xAxisData)
+    console.log("statuses...", category)
+    console.log("series...", series)
+
+    const data = {
+      labels: xAxisData,
+      legend: category,
+      data: series,
+      barColors: ["#3498DB", "#58D68D", "#F5B041"]
+    };
+
+
+    return (
+      <>
+        <Card style={{ backgroundColor: "white", padding: 0, paddingTop: 0, elevation: 10, margin: 10 }}>
+          <ClearSpace />
+          <View style={{ borderRadius: 5, marginTop: -5, backgroundColor: color.WHITE, padding: 10, elevation: 10 }}>
+            <Text style={{ color: colors.secondary, padding: 5, fontWeight: "900" }}>Top 5 Interaction By Channel</Text>
+          </View>
+          <ClearSpace />
+
+          {/* <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider> */}
+          <ClearSpace size={4} />
+
+
+          < StackedBarChart
+            data={data}
+            width={300}
+            height={350}
+            strokeWidth={16}
+            radius={20}
+            chartConfig={{
+              backgroundColor: "#FFF",
+              backgroundGradientFrom: "#FFF",
+              backgroundGradientTo: "#FFF",
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(13, 136, 56, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0,0, ${opacity})`,
+              style: {
+                borderRadius: 16
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#218838"
+              }
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16
+            }}
+            hideLegend={false}
+            verticalLabelRotation={90}
+          />
+
+
+          <ClearSpace size={4} />
+        </Card>
+      </>
+    );
+
+  };
+
   var fromDate = "", toDate = ""
   var currDate = new Date();
 
   var meTextWeight = 200
-  var meTxtColor = "#000000"
+  var meTxtColor = colors.secondary
   var meBgColor = "#EAEDED"
   if (selectedTab0 == "ME") {
     meTextWeight = 800
     meTxtColor = "#FFFFFF"
-    meBgColor = "#4a5996"
+    meBgColor = "#4c3794"
   } else {
     meTextWeight = 200
-    meTxtColor = "#000000"
+    meTxtColor = colors.secondary
     meBgColor = "#EAEDED"
   }
 
   var myTeamTextWeight = 200
-  var myTeamTxtColor = "#000000"
+  var myTeamTxtColor = colors.secondary
   var myTeamBgColor = "#EAEDED"
   if (selectedTab0 == "MY_TEAM") {
     myTeamTextWeight = 800
     myTeamTxtColor = "#FFFFFF"
-    myTeamBgColor = "#4a5996"
+    myTeamBgColor = "#4c3794"
   } else {
     myTeamTextWeight = 200
-    myTeamTxtColor = "#000000"
+    myTeamTxtColor = colors.secondary
     myTeamBgColor = "#EAEDED"
   }
 
   var intTextWeight = 200
-  var intTxtColor = "#000000"
+  var intTxtColor = colors.secondary
   var intBgColor = "#EAEDED"
   if (selectedTab1 == "INTXN") {
     intTextWeight = 800
     intTxtColor = "#FFFFFF"
-    intBgColor = "#4a5996"
+    intBgColor = "#4c3794"
   } else {
     intTextWeight = 200
-    intTxtColor = "#000000"
+    intTxtColor = colors.secondary
     intBgColor = "#EAEDED"
   }
 
   var infTextWeight = 200
-  var infTxtColor = "#000000"
+  var infTxtColor = colors.secondary
   var infBgColor = "#EAEDED"
   if (selectedTab1 == "INFO") {
     infTextWeight = 800
     infTxtColor = "#FFFFFF"
-    infBgColor = "#4a5996"
+    infBgColor = "#4c3794"
   } else {
     infTextWeight = 200
-    infTxtColor = "#000000"
+    infTxtColor = colors.secondary
     infBgColor = "#EAEDED"
   }
 
   var atmTextWeight = 200
-  var atmTxtColor = "#000000"
+  var atmTxtColor = colors.secondary
   var atmBgColor = "#EAEDED"
   if (selectedTab2 == "ASGN_TO_ME") {
     atmTextWeight = 800
     atmTxtColor = "#FFFFFF"
-    atmBgColor = "#4a5996"
+    atmBgColor = "#4c3794"
   } else {
     atmTextWeight = 200
-    atmTxtColor = "#000000"
+    atmTxtColor = colors.secondary
     atmBgColor = "#EAEDED"
   }
 
   var uaTextWeight = 200
-  var uaTxtColor = "#000000"
+  var uaTxtColor = colors.secondary
   var uaBgColor = "#EAEDED"
   if (selectedTab2 == "UPC_APP") {
     uaTextWeight = 800
     uaTxtColor = "#FFFFFF"
-    uaBgColor = "#4a5996"
+    uaBgColor = "#4c3794"
   } else {
     uaTextWeight = 200
-    uaTxtColor = "#000000"
+    uaTxtColor = colors.secondary
     uaBgColor = "#EAEDED"
   }
 
   var piTextWeight = 200
-  var piTxtColor = "#000000"
+  var piTxtColor = colors.secondary
   var piBgColor = "#EAEDED"
   if (selectedTab2 == "POOL_INTXN") {
     piTextWeight = 800
     piTxtColor = "#FFFFFF"
-    piBgColor = "#4a5996"
+    piBgColor = "#4c3794"
   } else {
     piTextWeight = 200
-    piTxtColor = "#000000"
+    piTxtColor = colors.secondary
     piBgColor = "#EAEDED"
   }
 
   var aiTextWeight = 200
-  var aiTxtColor = "#000000"
+  var aiTxtColor = colors.secondary
   var aiBgColor = "#EAEDED"
   if (selectedTab2 == "ASGN_INTXN") {
     aiTextWeight = 800
     aiTxtColor = "#FFFFFF"
-    aiBgColor = "#4a5996"
+    aiBgColor = "#4c3794"
   } else {
     aiTextWeight = 200
-    aiTxtColor = "#000000"
+    aiTxtColor = colors.secondary
     aiBgColor = "#EAEDED"
   }
 
   var tiTextWeight = 200
-  var tiTxtColor = "#000000"
+  var tiTxtColor = colors.secondary
   var tiBgColor = "#EAEDED"
   if (selectedTab3 == "TOT_INTXN") {
     tiTextWeight = 800
     tiTxtColor = "#FFFFFF"
-    tiBgColor = "#4a5996"
+    tiBgColor = "#4c3794"
   } else {
     tiTextWeight = 200
-    tiTxtColor = "#000000"
+    tiTxtColor = colors.secondary
     tiBgColor = "#EAEDED"
   }
 
   var zeroThreeTextWeight = 200
-  var zeroThreeTxtColor = "#000000"
+  var zeroThreeTxtColor = colors.secondary
   var zeroThreeBgColor = "#EAEDED"
   if (selectedTab3 == "0_3_D") {
     zeroThreeTextWeight = 800
     zeroThreeTxtColor = "#FFFFFF"
-    zeroThreeBgColor = "#4a5996"
+    zeroThreeBgColor = "#4c3794"
   } else {
     zeroThreeTextWeight = 200
-    zeroThreeTxtColor = "#000000"
+    zeroThreeTxtColor = colors.secondary
     zeroThreeBgColor = "#EAEDED"
   }
 
   var threeFiveTextWeight = 200
-  var threeFiveTxtColor = "#000000"
+  var threeFiveTxtColor = colors.secondary
   var threeFiveBgColor = "#EAEDED"
   if (selectedTab3 == "3_5_D") {
     threeFiveTextWeight = 800
     threeFiveTxtColor = "#FFFFFF"
-    threeFiveBgColor = "#4a5996"
+    threeFiveBgColor = "#4c3794"
   } else {
     threeFiveTextWeight = 200
-    threeFiveTxtColor = "#000000"
+    threeFiveTxtColor = colors.secondary
     threeFiveBgColor = "#EAEDED"
   }
 
   var moreFiveTextWeight = 200
-  var moreFiveTxtColor = "#000000"
+  var moreFiveTxtColor = colors.secondary
   var moreFiveBgColor = "#EAEDED"
   if (selectedTab3 == "MORE_5_D") {
     moreFiveTextWeight = 800
     moreFiveTxtColor = "#FFFFFF"
-    moreFiveBgColor = "#4a5996"
+    moreFiveBgColor = "#4c3794"
   } else {
     moreFiveTextWeight = 200
-    moreFiveTxtColor = "#000000"
+    moreFiveTxtColor = colors.secondary
     moreFiveBgColor = "#EAEDED"
   }
 
   var acTextWeight = 200
-  var acTxtColor = "#000000"
+  var acTxtColor = colors.secondary
   var acBgColor = "#EAEDED"
   if (selectedTab4 == "AUD_CNF") {
     acTextWeight = 800
     acTxtColor = "#FFFFFF"
-    acBgColor = "#4a5996"
+    acBgColor = "#4c3794"
   } else {
     acTextWeight = 200
-    acTxtColor = "#000000"
+    acTxtColor = colors.secondary
     acBgColor = "#EAEDED"
   }
 
   var vcTextWeight = 200
-  var vcTxtColor = "#000000"
+  var vcTxtColor = colors.secondary
   var vcBgColor = "#EAEDED"
   if (selectedTab4 == "VID_CNF") {
     vcTextWeight = 800
     vcTxtColor = "#FFFFFF"
-    vcBgColor = "#4a5996"
+    vcBgColor = "#4c3794"
   } else {
     vcTextWeight = 200
-    vcTxtColor = "#000000"
+    vcTxtColor = colors.secondary
     vcBgColor = "#EAEDED"
   }
 
   var cvTextWeight = 200
-  var cvTxtColor = "#000000"
+  var cvTxtColor = colors.secondary
   var cvBgColor = "#EAEDED"
   if (selectedTab4 == "CUST_VISIT") {
     cvTextWeight = 800
     cvTxtColor = "#FFFFFF"
-    cvBgColor = "#4a5996"
+    cvBgColor = "#4c3794"
   } else {
     cvTextWeight = 200
-    cvTxtColor = "#000000"
+    cvTxtColor = colors.secondary
     cvBgColor = "#EAEDED"
   }
 
   var bvTextWeight = 200
-  var bvTxtColor = "#000000"
+  var bvTxtColor = colors.secondary
   var bvBgColor = "#EAEDED"
   if (selectedTab4 == "BUS_VISIT") {
     bvTextWeight = 800
     bvTxtColor = "#FFFFFF"
-    bvBgColor = "#4a5996"
+    bvBgColor = "#4c3794"
   } else {
     bvTextWeight = 200
-    bvTxtColor = "#000000"
+    bvTxtColor = colors.secondary
     bvBgColor = "#EAEDED"
   }
 
 
   // Appointment dashboard tabs
   var intAppTextWeight = 200
-  var intAppTxtColor = "#000000"
+  var intAppTxtColor = colors.secondary
   var intAppBgColor = "#EAEDED"
   if (selectedAppTab1 == "INTXN") {
     intAppTextWeight = 800
     intAppTxtColor = "#FFFFFF"
-    intAppBgColor = "#4a5996"
+    intAppBgColor = "#4c3794"
   } else {
     intAppTextWeight = 200
-    intAppTxtColor = "#000000"
+    intAppTxtColor = colors.secondary
     intAppBgColor = "#EAEDED"
   }
 
   var infAppTextWeight = 200
-  var infAppTxtColor = "#000000"
+  var infAppTxtColor = colors.secondary
   var infAppBgColor = "#EAEDED"
   if (selectedAppTab1 == "INFO") {
     infAppTextWeight = 800
     infAppTxtColor = "#FFFFFF"
-    infAppBgColor = "#4a5996"
+    infAppBgColor = "#4c3794"
   } else {
     infAppTextWeight = 200
-    infAppTxtColor = "#000000"
+    infAppTxtColor = colors.secondary
     infAppBgColor = "#EAEDED"
   }
 
   var appOverviewTextWeight = 200
-  var appOverviewTxtColor = "#000000"
+  var appOverviewTxtColor = colors.secondary
   var appOverviewBgColor = "#EAEDED"
   if (showOverallAppointments) {
     appOverviewTextWeight = 800
     appOverviewTxtColor = "#FFFFFF"
-    appOverviewBgColor = "#4a5996"
+    appOverviewBgColor = "#4c3794"
   } else {
     appOverviewTextWeight = 200
-    appOverviewTxtColor = "#000000"
+    appOverviewTxtColor = colors.secondary
     appOverviewBgColor = "#EAEDED"
   }
 
   var appCalendarTextWeight = 200
-  var appCalendarTxtColor = "#000000"
+  var appCalendarTxtColor = colors.secondary
   var appCalendarBgColor = "#EAEDED"
   if (showCalendarAppointments) {
     appCalendarTextWeight = 800
     appCalendarTxtColor = "#FFFFFF"
-    appCalendarBgColor = "#4a5996"
+    appCalendarBgColor = "#4c3794"
   } else {
     appCalendarTextWeight = 200
-    appCalendarTxtColor = "#000000"
+    appCalendarTxtColor = colors.secondary
     appCalendarBgColor = "#EAEDED"
   }
 
   var appUpcomingTextWeight = 200
-  var appUpcomingTxtColor = "#000000"
+  var appUpcomingTxtColor = colors.secondary
   var appUpcomingBgColor = "#EAEDED"
   if (showUpcomingAppointments) {
     appUpcomingTextWeight = 800
     appUpcomingTxtColor = "#FFFFFF"
-    appUpcomingBgColor = "#4a5996"
+    appUpcomingBgColor = "#4c3794"
   } else {
     appUpcomingTextWeight = 200
-    appUpcomingTxtColor = "#000000"
+    appUpcomingTxtColor = colors.secondary
     appUpcomingBgColor = "#EAEDED"
   }
 
   var appClosedTextWeight = 200
-  var appClosedTxtColor = "#000000"
+  var appClosedTxtColor = colors.secondary
   var appClosedBgColor = "#EAEDED"
   if (showClosedAppointments) {
     appClosedTextWeight = 800
     appClosedTxtColor = "#FFFFFF"
-    appClosedBgColor = "#4a5996"
+    appClosedBgColor = "#4c3794"
   } else {
     appClosedTextWeight = 200
-    appClosedTxtColor = "#000000"
+    appClosedTxtColor = colors.secondary
     appClosedBgColor = "#EAEDED"
   }
 
   var infoOverallTextWeight = 200
-  var infoOverallTxtColor = "#000000"
+  var infoOverallTxtColor = colors.secondary
   var infoOverallBgColor = "#EAEDED"
   if (showOverallInfoApp) {
     infoOverallTextWeight = 800
     infoOverallTxtColor = "#FFFFFF"
-    infoOverallBgColor = "#4a5996"
+    infoOverallBgColor = "#4c3794"
   } else {
     infoOverallTextWeight = 200
-    infoOverallTxtColor = "#000000"
+    infoOverallTxtColor = colors.secondary
     infoOverallBgColor = "#EAEDED"
   }
 
   var infoBasedAppTypeTextWeight = 200
-  var infoBasedAppTypeTxtColor = "#000000"
+  var infoBasedAppTypeTxtColor = colors.secondary
   var infoBasedAppTypeBgColor = "#EAEDED"
   if (showBasedAppType) {
     infoBasedAppTypeTextWeight = 800
     infoBasedAppTypeTxtColor = "#FFFFFF"
-    infoBasedAppTypeBgColor = "#4a5996"
+    infoBasedAppTypeBgColor = "#4c3794"
   } else {
     infoBasedAppTypeTextWeight = 200
-    infoBasedAppTypeTxtColor = "#000000"
+    infoBasedAppTypeTxtColor = colors.secondary
     infoBasedAppTypeBgColor = "#EAEDED"
   }
 
   var infoBasedLocHistoryTextWeight = 200
-  var infoBasedLocHistoryTxtColor = "#000000"
+  var infoBasedLocHistoryTxtColor = colors.secondary
   var infoBasedLocHistoryBgColor = "#EAEDED"
   if (showBasedLocHistory) {
     infoBasedLocHistoryTextWeight = 800
     infoBasedLocHistoryTxtColor = "#FFFFFF"
-    infoBasedLocHistoryBgColor = "#4a5996"
+    infoBasedLocHistoryBgColor = "#4c3794"
   } else {
     infoBasedLocHistoryTextWeight = 200
-    infoBasedLocHistoryTxtColor = "#000000"
+    infoBasedLocHistoryTxtColor = colors.secondary
     infoBasedLocHistoryBgColor = "#EAEDED"
   }
 
+  const onFirstToggleSwitch = () => {
+    if (isMeMode) {
+      unstable_batchedUpdates(() => {
+        setShowAssignedToMe(true)
+        setShowAppointments(false)
+        setShowPooledInteractions(false)
+        setShowAssignedInteractions(false)
+        setSelectedTab2("ASGN_TO_ME")
+        setSelectedTab0("ME")
+      })
+    } else {
+      unstable_batchedUpdates(() => {
+        setShowAssignedToMe(false)
+        setShowAppointments(true)
+        setShowPooledInteractions(false)
+        setShowAssignedInteractions(false)
+        setSelectedTab2("UPC_APP")
+        setSelectedTab0("MY_TEAM")
+      })
+    }
+    setIsMeMode(!isMeMode);
+  };
 
-
-
+  const onSecondToggleSwitch = () => {
+    if (isInteractiveMode) {
+      setSelectedTab1("INTXN")
+    } else {
+      unstable_batchedUpdates(() => {
+        setShowAssignedToMe(false)
+        setShowAppointments(false)
+        setShowPooledInteractions(false)
+        setShowAssignedInteractions(false)
+        setSelectedTab1("INFO")
+      })
+    }
+    setIsInteractiveMode(!isInteractiveMode);
+  };
 
   return (
     <View style={styles.container}>
+
+
+      <View style={{
+        position: "absolute",
+        zIndex: 99999999999999,
+        bottom: 16,
+        right: 16,
+        height: 70,
+        width: 70,
+        justifyContent: "space-between",
+        borderRadius: 30,
+        borderWidth: 0,
+        marginBottom: 35
+      }}>
+        <Pressable
+          onPress={() => {
+            if (showHelpdeskDashboard) {
+              if (helpdeskFilterDialogVisible) {
+                setHelpdeskFilterDialogVisible(false)
+              } else {
+                setHelpdeskFilterDialogVisible(true)
+              }
+            }
+
+            if (showInteractionDashboard) {
+              if (intxnFilterDialogVisible) {
+                setIntxnFilterDialogVisible(false)
+              } else {
+                setIntxnFilterDialogVisible(true)
+              }
+            }
+
+            if (showOperationalDashboard) {
+              if (operationalFilterDialogVisible) {
+                setOperationalFilterDialogVisible(false)
+              } else {
+                setOperationalFilterDialogVisible(true)
+              }
+            }
+
+            if (showAppointmentDashboard) {
+              if (appointmentFilterDialogVisible) {
+                setAppointmentFilterDialogVisible(false)
+              } else {
+                setAppointmentFilterDialogVisible(true)
+              }
+            }
+          }}
+          style={{
+            marginLeft: 10,
+            alignSelf: "center",
+            justifyContent: "center",
+            backgroundColor: "#4c3794",
+            alignItems: "center",
+            height: 45, //any of height
+            width: 45, //any of width
+            borderRadius: 20   // it will be height/2
+          }}
+        >
+          <Icon
+            name="filter"
+            size={27}
+            color={"#FFF"}
+          />
+        </Pressable>
+      </View>
+
+      {/* <View style={{
+        position: "absolute",
+        zIndex: 99999999999999,
+        bottom: 16,
+        right: 16,
+        height: 70,
+        width: 70,
+        justifyContent: "space-between",
+        borderRadius: 30,
+        borderWidth: 0,
+        marginBottom: 35
+      }}>
+        <Pressable
+          onPress={() => {
+            if (openDashboardPopUp) {
+              setOpenDashboardPopUp(false)
+            } else {
+              setOpenDashboardPopUp(true)
+            }
+          }}
+          style={{
+            marginLeft: 10,
+            alignSelf: "center",
+            justifyContent: "center",
+            backgroundColor: "#4c3794",
+            alignItems: "center",
+            height: 45, //any of height
+            width: 45, //any of width
+            borderRadius: 20   // it will be height/2
+          }}
+        >
+          <Icon
+            name="home-switch"
+            size={27}
+            color={"#FFF"}
+          />
+        </Pressable> */}
+      {/* </View> */}
 
       {loader && <LoadingAnimation />}
       {openDashboardPopUp && (<ShowDashboardDialog />)}
@@ -11041,8 +12322,8 @@ export const UserHomeScreen = (props) => {
       {intxnDetDialogVisible && (<ShowInteractionDetailsDialog />)}
       {helpdeskFilterDialogVisible && (<ShowHelpdeskFiltersDialog />)}
       {intxnFilterDialogVisible && (<ShowIntxnFiltersDialog />)}
-      {operationalFilterDialogVisible && (<ShowOperationalFiltersDialog />)}
-      {appointmentFilterDialogVisible && (<ShowAppointmentFiltersDialog />)}
+      {/* {operationalFilterDialogVisible && (<ShowOperationalFiltersDialog />)} */}
+      {/* {appointmentFilterDialogVisible && (<ShowAppointmentFiltersDialog />)} */}
 
       {/* {!showOperationalDashboard && !showAppointmentDashboard && (
         <Pressable
@@ -11064,7 +12345,7 @@ export const UserHomeScreen = (props) => {
             flex: 1,
             elevation: 999,
             zIndex: 99999999,
-            backgroundColor: "#4a5996",
+            backgroundColor: "#4c3794",
             height: 50, //any of height
             width: 50, //any of width
             justifyContent: "center",
@@ -11125,7 +12406,7 @@ export const UserHomeScreen = (props) => {
           flex: 1,
           elevation: 999,
           zIndex: 99999999,
-          backgroundColor: "#4a5996",
+          backgroundColor: "#4c3794",
           height: 50, //any of height
           width: 50, //any of width
           justifyContent: "center",
@@ -11158,7 +12439,7 @@ export const UserHomeScreen = (props) => {
           flex: 1,
           elevation: 999,
           zIndex: 99999999,
-          backgroundColor: "#4a5996",
+          backgroundColor: "#4c3794",
           height: 50, //any of height
           width: 50, //any of width
           justifyContent: "center",
@@ -11176,7 +12457,7 @@ export const UserHomeScreen = (props) => {
 
 
 
-      {(currentDashboard == constVariables.HELPDESK) && (
+      {/* {(currentDashboard == constVariables.HELPDESK) && (
         <RenderDashboardTitle data={"Helpdesk Dashboard"} />
       )}
 
@@ -11190,169 +12471,249 @@ export const UserHomeScreen = (props) => {
 
       {(currentDashboard == constVariables.APPOINTMENT) && (
         <RenderDashboardTitle data={"Appointment Dashboard"} />
-      )}
+      )} */}
 
       {/* {showHelpdeskDashboard && (<RenderDashboardTitle data={"Helpdesk Dashboard"} />)}
       {showInteractionDashboard && (<RenderDashboardTitle data={"Interaction Dashboard"} />)}
       {showOperationalDashboard && (<RenderDashboardTitle data={"Operational Dashboard"} />)}
       {showAppointmentDashboard && (<RenderDashboardTitle data={"Appointment Dashboard"} />)} */}
 
-      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
-        <>
-          <View style={{
-            flex: 1, paddingTop: 0, paddingBottom: 0, marginLeft: 3, marginRight: 3,
-            borderRadius: 0, elevation: 10, marginBottom: 3, marginTop: 44,
-            borderWidth: 0, alignSelf: "center",
-            position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
-            zIndex: 99999999999999, flexDirection: "row"
-          }}>
-            <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
-              <View style={{ alignSelf: "center", width: width - 0, flexDirection: "row" }}>
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: meBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: meTxtColor, alignSelf: "center", fontWeight: meTextWeight, fontSize: 12 }}
-                    onPress={async () => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(true)
-                        setShowAppointments(false)
-                        setShowPooledInteractions(false)
-                        setShowAssignedInteractions(false)
-                        setSelectedTab2("ASGN_TO_ME")
-                        setSelectedTab0("ME")
-                      })
-                    }}>Me</Text>
-                </View>
-
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: myTeamBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: myTeamTxtColor, alignSelf: "center", fontWeight: myTeamTextWeight, fontSize: 12 }}
-                    onPress={async () => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(false)
-                        setShowAppointments(true)
-                        setShowPooledInteractions(false)
-                        setShowAssignedInteractions(false)
-                        setSelectedTab2("UPC_APP")
-                        setSelectedTab0("MY_TEAM")
-                      })
-                    }}>My Team</Text>
-                </View>
-
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: intBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: intTxtColor, alignSelf: "center", fontWeight: intTextWeight, fontSize: 12 }}
-                    onPress={async () => {
-                      setSelectedTab1("INTXN")
-                    }}>Interactive</Text>
-                </View>
-
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 4), backgroundColor: infBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: infTxtColor, alignSelf: "center", fontWeight: infTextWeight, fontSize: 12 }}
-                    onPress={async () => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(false)
-                        setShowAppointments(false)
-                        setShowPooledInteractions(false)
-                        setShowAssignedInteractions(false)
-                        setSelectedTab1("INFO")
-                      })
-                    }}>Informative</Text>
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        </>
-      )}
-
-      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
-        selectedTab1 == "INTXN" && (
+      {
+        (currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 84,
-              borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginLeft: 3, marginRight: 3,
+              borderRadius: 0, elevation: 10, marginBottom: 3, marginTop: 0,
               borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
-              opacity: 1, zIndex: 99999999999999, flexDirection: "row"
+              zIndex: 99999999999999, flexDirection: "row"
             }}>
-              {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
               <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
-                {selectedTab0 == "ME" && (
-                  <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: atmBgColor, elevation: 10, padding: 10 }}>
-                    <Text style={{ color: atmTxtColor, alignSelf: "center", fontWeight: atmTextWeight, fontSize: 12 }}
+                <View style={{ alignSelf: "center", width: width - 0, flexDirection: "row" }}>
+                  {/* <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 4), backgroundColor: meBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: meTxtColor, alignSelf: "center", fontWeight: meTextWeight, fontSize: 12 }}
                       onPress={async () => {
-                        let assignedToMeParams = {
-                          "userId": await getUserId(),
-                          "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
-                          "entityType": "all",
-                          "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
-                          "limit": 500,
-                          "page": 0
-                        }
-                        await dispatch(await getOperationalAssignedToMe(assignedToMeParams))
-                        console.log("getOperationalAssignedToMe result UI..", intDashRed?.operationalAssignedToMeData);
-
                         unstable_batchedUpdates(() => {
                           setShowAssignedToMe(true)
                           setShowAppointments(false)
                           setShowPooledInteractions(false)
                           setShowAssignedInteractions(false)
-                          // setAssignToMeData(intDashRed?.operationalAssignedToMeData?.data?.rows)
                           setSelectedTab2("ASGN_TO_ME")
+                          setSelectedTab0("ME")
                         })
-                      }}>Assigned To Me</Text>
+                      }}>Me</Text>
                   </View>
-                )}
 
-                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: uaBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: uaTxtColor, alignSelf: "center", fontWeight: uaTextWeight, fontSize: 12 }}
-                    onPress={() => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(false)
-                        setShowAppointments(true)
-                        setShowPooledInteractions(false)
-                        setShowAssignedInteractions(false)
-                        setAppointmentsData(intDashRed?.operationalAppointmentOverviewData?.data)
-                        setSelectedTab2("UPC_APP")
-                      })
-                    }}>Upcoming Appointments</Text>
+                  <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 4), backgroundColor: myTeamBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: myTeamTxtColor, alignSelf: "center", fontWeight: myTeamTextWeight, fontSize: 12 }}
+                      onPress={async () => {
+                        unstable_batchedUpdates(() => {
+                          setShowAssignedToMe(false)
+                          setShowAppointments(true)
+                          setShowPooledInteractions(false)
+                          setShowAssignedInteractions(false)
+                          setSelectedTab2("UPC_APP")
+                          setSelectedTab0("MY_TEAM")
+                        })
+                      }}>My Team</Text>
+                  </View> */}
+
+                  <View
+                    style={{
+                      width: width,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      marginTop: 0,
+                      padding: 2,
+                      backgroundColor: color.WHITE
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        marginRight: 8
+                      }}
+                    >
+                      <CustomSwitch
+                        buttonWidth={20}
+                        buttonPadding={10}
+                        switchWidth={150}
+                        onSwitch={onFirstToggleSwitch}
+                        onSwitchReverse={onFirstToggleSwitch}
+                        buttonColor="#FFF"
+                        switchBackgroundColor={"#4c3794"}
+                        switchLeftText={"Me"}
+                        switchLeftTextStyle={{
+                          color: "#FFF",
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                        switchRightText={"My Team"}
+                        switchRightTextStyle={{
+                          color: "#FFF",
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        marginLeft: 8
+                      }}
+                    >
+                      <CustomSwitch
+                        buttonWidth={20}
+                        buttonPadding={10}
+                        switchWidth={150}
+                        onSwitch={onSecondToggleSwitch}
+                        onSwitchReverse={onSecondToggleSwitch}
+                        buttonColor="#FFF"
+                        switchBackgroundColor={"#4c3794"}
+                        switchLeftText={"Interactive"}
+                        switchLeftTextStyle={{
+                          color: "#FFF",
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                        switchRightText={"Informative"}
+                        switchRightTextStyle={{
+                          color: "#FFF",
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                      />
+                    </View>
+                  </View>
+
+                  {/* <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 4), backgroundColor: intBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: intTxtColor, alignSelf: "center", fontWeight: intTextWeight, fontSize: 12 }}
+                      onPress={async () => {
+                        setSelectedTab1("INTXN")
+                      }}>Interactive</Text>
+                  </View>
+
+                  <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 4), backgroundColor: infBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: infTxtColor, alignSelf: "center", fontWeight: infTextWeight, fontSize: 12 }}
+                      onPress={async () => {
+                        unstable_batchedUpdates(() => {
+                          setShowAssignedToMe(false)
+                          setShowAppointments(false)
+                          setShowPooledInteractions(false)
+                          setShowAssignedInteractions(false)
+                          setSelectedTab1("INFO")
+                        })
+                      }}>Informative</Text>
+                  </View> */}
                 </View>
-
-                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: piBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: piTxtColor, alignSelf: "center", fontWeight: piTextWeight, fontSize: 12 }}
-                    onPress={() => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(false)
-                        setShowAppointments(false)
-                        setShowPooledInteractions(true)
-                        setShowAssignedInteractions(false)
-                        setSelectedTab2("POOL_INTXN")
-                      })
-                    }}>Pooled Interactions</Text>
-                </View>
-
-                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: aiBgColor, elevation: 10, padding: 10 }}>
-                  <Text style={{ color: aiTxtColor, alignSelf: "center", fontWeight: aiTextWeight, fontSize: 12 }}
-                    onPress={() => {
-                      unstable_batchedUpdates(() => {
-                        setShowAssignedToMe(false)
-                        setShowAppointments(false)
-                        setShowPooledInteractions(false)
-                        setShowAssignedInteractions(true)
-                        setSelectedTab2("ASGN_INTXN")
-                      })
-                    }}>Assigned Interactions</Text>
-                </View>
-
               </ScrollView>
             </View>
           </>
-        ))}
+        )
+      }
+
+      {
+        (currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard && (
+          selectedTab1 == "INTXN" && (
+            <>
+              <View style={{
+                flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
+                borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
+                borderWidth: 0, alignSelf: "center",
+                position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
+                opacity: 1, zIndex: 99999999999999, flexDirection: "row"
+              }}>
+                {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
+                <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
+                  {selectedTab0 == "ME" && (
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: atmBgColor, elevation: 10, padding: 10 }}>
+                      <Text style={{ color: atmTxtColor, alignSelf: "center", fontWeight: atmTextWeight, fontSize: 12 }}
+                        onPress={async () => {
+                          let assignedToMeParams = {
+                            "userId": await getUserId(),
+                            "roleId": await getDataFromDB(storageKeys.CURRENT_ROLE_ID),
+                            "entityType": "all",
+                            "departmentId": await getDataFromDB(storageKeys.CURRENT_DEPT_ID),
+                            "limit": 500,
+                            "page": 0
+                          }
+                          await dispatch(await getOperationalAssignedToMe(assignedToMeParams))
+                          console.log("getOperationalAssignedToMe result UI..", intDashRed?.operationalAssignedToMeData);
+
+                          unstable_batchedUpdates(() => {
+                            setShowAssignedToMe(true)
+                            setShowAppointments(false)
+                            setShowPooledInteractions(false)
+                            setShowAssignedInteractions(false)
+                            // setAssignToMeData(intDashRed?.operationalAssignedToMeData?.data?.rows)
+                            setSelectedTab2("ASGN_TO_ME")
+                          })
+                        }}>Assigned To Me</Text>
+                    </View>
+                  )}
+
+                  {console.log("currDeptId got...", currDeptId)}
+                  {(currDeptId !== "DTWOKS_APP_SUPPORT.APPSUPPORT.COMQUEST") &&
+                    (currDeptId !== "DTWOKSGLOBAL_APP_SUPPORT.APPSUPPORT.COMQUEST") && (
+                      <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: uaBgColor, elevation: 10, padding: 10 }}>
+                        <Text style={{ color: uaTxtColor, alignSelf: "center", fontWeight: uaTextWeight, fontSize: 12 }}
+                          onPress={() => {
+                            unstable_batchedUpdates(() => {
+                              setShowAssignedToMe(false)
+                              setShowAppointments(true)
+                              setShowPooledInteractions(false)
+                              setShowAssignedInteractions(false)
+                              setAppointmentsData(intDashRed?.operationalAppointmentOverviewData?.data)
+                              setSelectedTab2("UPC_APP")
+                            })
+                          }}>Upcoming Appointments</Text>
+                      </View>
+                    )}
+
+                  <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: piBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: piTxtColor, alignSelf: "center", fontWeight: piTextWeight, fontSize: 12 }}
+                      onPress={() => {
+                        unstable_batchedUpdates(() => {
+                          setShowAssignedToMe(false)
+                          setShowAppointments(false)
+                          setShowPooledInteractions(true)
+                          setShowAssignedInteractions(false)
+                          setSelectedTab2("POOL_INTXN")
+                        })
+                      }}>Pooled Interactions</Text>
+                  </View>
+
+                  <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: aiBgColor, elevation: 10, padding: 10 }}>
+                    <Text style={{ color: aiTxtColor, alignSelf: "center", fontWeight: aiTextWeight, fontSize: 12 }}
+                      onPress={() => {
+                        unstable_batchedUpdates(() => {
+                          setShowAssignedToMe(false)
+                          setShowAppointments(false)
+                          setShowPooledInteractions(false)
+                          setShowAssignedInteractions(true)
+                          setSelectedTab2("ASGN_INTXN")
+                        })
+                      }}>Assigned Interactions</Text>
+                  </View>
+
+                </ScrollView>
+              </View>
+            </>
+          ))
+      }
 
 
-      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
+      {
+        (currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
         selectedTab1 == "INTXN" &&
         selectedTab2 == "ASGN_TO_ME" &&
         showAssignedToMe && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 124,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 76,
               borderRadius: 0, elevation: 10, marginRight: 3, marginLeft: 3,
               borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -11361,7 +12722,7 @@ export const UserHomeScreen = (props) => {
               {/* <View style={{ top: 1, zIndex: 99999999999999, position: "absolute", backgroundColor: "#FFF", marginTop: 5, marginBottom: 5, flexDirection: "row" }}> */}
               <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: tiBgColor, elevation: 10, padding: 10 }}>
+                <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: tiBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: tiTxtColor, alignSelf: "center", fontWeight: tiTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       let assignedToMeParams = {
@@ -11379,7 +12740,7 @@ export const UserHomeScreen = (props) => {
                     }}>Total Interaction</Text>
                 </View>
 
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: zeroThreeBgColor, elevation: 10, padding: 10 }}>
+                <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: zeroThreeBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: zeroThreeTxtColor, alignSelf: "center", fontWeight: zeroThreeTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       var toDate = new Date();
@@ -11403,7 +12764,7 @@ export const UserHomeScreen = (props) => {
                     }}>0 to 3 Days</Text>
                 </View>
 
-                <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: threeFiveBgColor, elevation: 10, padding: 10 }}>
+                <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: threeFiveBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: threeFiveTxtColor, alignSelf: "center", fontWeight: threeFiveTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       toDate = new Date(new Date().setDate(currDate.getDate() - 3));
@@ -11427,7 +12788,7 @@ export const UserHomeScreen = (props) => {
                     }}>3 to 5 Days</Text>
                 </View>
 
-                <View style={{ borderWidth: 1, borderColor: "#FFF", backgroundColor: moreFiveBgColor, elevation: 10, padding: 10 }}>
+                <View style={{ borderWidth: .5, borderColor: "#FFF", backgroundColor: moreFiveBgColor, elevation: 10, padding: 10 }}>
                   <Text style={{ color: moreFiveTxtColor, alignSelf: "center", fontWeight: moreFiveTextWeight, fontSize: 12 }}
                     onPress={async () => {
                       toDate = new Date(new Date().setDate(currDate.getDate() - 5));
@@ -11453,15 +12814,17 @@ export const UserHomeScreen = (props) => {
               </ScrollView>
             </View>
           </>
-        )}
+        )
+      }
 
-      {(currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
+      {
+        (currentDashboard == constVariables.OPERATIONAL) && showOperationalDashboard &&
         selectedTab1 == "INTXN" &&
         selectedTab2 == "UPC_APP" &&
         showAppointments && (
           <>
             <View style={{
-              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 124,
+              flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 81,
               borderRadius: 0, elevation: 10,
               borderWidth: 0, alignSelf: "center",
               position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
@@ -11533,123 +12896,128 @@ export const UserHomeScreen = (props) => {
               </ScrollView>
             </View>
           </>
-        )}
+        )
+      }
 
 
-      {(currentDashboard == constVariables.APPOINTMENT) && showAppointmentDashboard && (
-        <View style={{
-          flex: 1, borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center", marginTop: 44,
-          position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
-          zIndex: 99999999999999, flexDirection: "row"
-        }}>
+      {operationalFilterDialogVisible && (<ShowOperationalFiltersDialog />)}
 
-          {showAppointmentDashboard && (
-            <>
-              <View style={{
-                flex: 1, borderRadius: 0, elevation: 10, marginTop: 0,
-                borderWidth: 0, alignSelf: "center",
-                position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: "#FFF",
-                zIndex: 99999999999999, flexDirection: "row"
-              }}>
-                <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                  <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 2), backgroundColor: intAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
-                    <Text style={{ color: intAppTxtColor, alignSelf: "center", fontWeight: intAppTextWeight, fontSize: 12 }}
-                      onPress={async () => {
-                        unstable_batchedUpdates(() => {
-                          setSelectedAppTab1("INTXN")
-                          setShowIntxnAppTab(true)
-                          setShowInfoAppTab(false)
-                        })
-                      }}>Interactive View</Text>
-                  </View>
+      {
+        (currentDashboard == constVariables.APPOINTMENT) && showAppointmentDashboard && (
+          <View style={{
+            flex: 1, borderRadius: 0, elevation: 10, borderWidth: 0, alignSelf: "center", marginTop: 0,
+            position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
+            zIndex: 99999999999999, flexDirection: "row"
+          }}>
 
-                  <View style={{ borderWidth: 1, borderColor: "#FFF", width: (width / 2), backgroundColor: infAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
-                    <Text style={{ color: infAppTxtColor, alignSelf: "center", fontWeight: infAppTextWeight, fontSize: 12 }}
-                      onPress={async () => {
-                        unstable_batchedUpdates(() => {
-                          setSelectedAppTab1("INFO")
-                          setShowIntxnAppTab(false)
-                          setShowInfoAppTab(true)
-                        })
-                      }}>Informative View</Text>
-                  </View>
-
-                </ScrollView>
-
-              </View>
-            </>
-          )}
-
-          {showAppointmentDashboard && selectedAppTab1 == "INTXN" &&
-            showIntxnAppTab && (
+            {showAppointmentDashboard && (
               <>
                 <View style={{
-                  flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
-                  borderRadius: 0, elevation: 10,
+                  flex: 1, borderRadius: 0, elevation: 10, marginTop: 0,
                   borderWidth: 0, alignSelf: "center",
-                  position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
-                  opacity: 1, zIndex: 99999999999999, flexDirection: "row"
+                  position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: "#FFF",
+                  zIndex: 99999999999999, flexDirection: "row"
                 }}>
                   <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appOverviewBgColor, borderRadius: 0, elevation: 10 }}>
-                      <Text style={{ marginTop: 10, color: appOverviewTxtColor, alignSelf: "center", fontWeight: appOverviewTextWeight, fontSize: 12 }}
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 2), backgroundColor: intAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
+                      <Text style={{ color: intAppTxtColor, alignSelf: "center", fontWeight: intAppTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
-                            setShowOverallAppointments(true)
-                            setShowUpcomingAppointments(false)
-                            setShowClosedAppointments(false)
-                            setShowCalendarAppointments(false)
+                            setSelectedAppTab1("INTXN")
+                            setShowIntxnAppTab(true)
+                            setShowInfoAppTab(false)
                           })
-                        }}>Overview</Text>
+                        }}>Interactive View</Text>
                     </View>
 
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appCalendarBgColor, borderRadius: 0, elevation: 10 }}>
-                      <Text style={{ marginTop: 10, color: appCalendarTxtColor, alignSelf: "center", fontWeight: appCalendarTextWeight, fontSize: 12 }}
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", width: (width / 2), backgroundColor: infAppBgColor, borderRadius: 0, elevation: 10, padding: 10 }}>
+                      <Text style={{ color: infAppTxtColor, alignSelf: "center", fontWeight: infAppTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
-                            setShowOverallAppointments(false)
-                            setShowUpcomingAppointments(false)
-                            setShowClosedAppointments(false)
-                            setShowCalendarAppointments(true)
+                            setSelectedAppTab1("INFO")
+                            setShowIntxnAppTab(false)
+                            setShowInfoAppTab(true)
                           })
-                        }}>Calendar</Text>
-                    </View>
-
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appUpcomingBgColor, borderRadius: 0, elevation: 10, padding: 0 }}>
-                      <Text style={{ marginTop: 10, color: appUpcomingTxtColor, alignSelf: "center", fontWeight: appUpcomingTextWeight, fontSize: 12 }}
-                        onPress={async () => {
-                          unstable_batchedUpdates(() => {
-                            setShowOverallAppointments(false)
-                            setShowUpcomingAppointments(true)
-                            setShowClosedAppointments(false)
-                            setShowCalendarAppointments(false)
-                          })
-                        }}>Upcoming</Text>
-                    </View>
-
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 4, backgroundColor: appClosedBgColor, borderRadius: 0, elevation: 10 }}>
-                      <Text style={{ marginTop: 10, color: appClosedTxtColor, alignSelf: "center", fontWeight: appClosedTextWeight, fontSize: 12 }}
-                        onPress={async () => {
-                          unstable_batchedUpdates(() => {
-                            setShowOverallAppointments(false)
-                            setShowClosedAppointments(true)
-                            setShowUpcomingAppointments(false)
-                            setShowCalendarAppointments(false)
-                          })
-                        }}>Closed</Text>
+                        }}>Informative View</Text>
                     </View>
 
                   </ScrollView>
+
                 </View>
               </>
             )}
 
-          {showAppointmentDashboard && selectedAppTab1 == "INFO" &&
-            showInfoAppTab && (
-              <>
-                {/* <View style={{
+            {showAppointmentDashboard && selectedAppTab1 == "INTXN" &&
+              showIntxnAppTab && (
+                <>
+                  <View style={{
+                    flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
+                    borderRadius: 0, elevation: 10,
+                    borderWidth: 0, alignSelf: "center",
+                    position: "absolute", top: 1, height: 40, width: width - 0, backgroundColor: color.BCAE_OFF_WHITE,
+                    opacity: 1, zIndex: 99999999999999, flexDirection: "row"
+                  }}>
+                    <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
+
+                      <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: appOverviewBgColor, borderRadius: 0, elevation: 10 }}>
+                        <Text style={{ marginTop: 10, color: appOverviewTxtColor, alignSelf: "center", fontWeight: appOverviewTextWeight, fontSize: 12 }}
+                          onPress={async () => {
+                            unstable_batchedUpdates(() => {
+                              setShowOverallAppointments(true)
+                              setShowUpcomingAppointments(false)
+                              setShowClosedAppointments(false)
+                              setShowCalendarAppointments(false)
+                            })
+                          }}>Overview</Text>
+                      </View>
+
+                      <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: appCalendarBgColor, borderRadius: 0, elevation: 10 }}>
+                        <Text style={{ marginTop: 10, color: appCalendarTxtColor, alignSelf: "center", fontWeight: appCalendarTextWeight, fontSize: 12 }}
+                          onPress={async () => {
+                            unstable_batchedUpdates(() => {
+                              setShowOverallAppointments(false)
+                              setShowUpcomingAppointments(false)
+                              setShowClosedAppointments(false)
+                              setShowCalendarAppointments(true)
+                            })
+                          }}>Calendar</Text>
+                      </View>
+
+                      <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: appUpcomingBgColor, borderRadius: 0, elevation: 10, padding: 0 }}>
+                        <Text style={{ marginTop: 10, color: appUpcomingTxtColor, alignSelf: "center", fontWeight: appUpcomingTextWeight, fontSize: 12 }}
+                          onPress={async () => {
+                            unstable_batchedUpdates(() => {
+                              setShowOverallAppointments(false)
+                              setShowUpcomingAppointments(true)
+                              setShowClosedAppointments(false)
+                              setShowCalendarAppointments(false)
+                            })
+                          }}>Upcoming</Text>
+                      </View>
+
+                      <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 4, backgroundColor: appClosedBgColor, borderRadius: 0, elevation: 10 }}>
+                        <Text style={{ marginTop: 10, color: appClosedTxtColor, alignSelf: "center", fontWeight: appClosedTextWeight, fontSize: 12 }}
+                          onPress={async () => {
+                            unstable_batchedUpdates(() => {
+                              setShowOverallAppointments(false)
+                              setShowClosedAppointments(true)
+                              setShowUpcomingAppointments(false)
+                              setShowCalendarAppointments(false)
+                            })
+                          }}>Closed</Text>
+                      </View>
+
+                    </ScrollView>
+                  </View>
+                </>
+              )}
+
+            {showAppointmentDashboard && selectedAppTab1 == "INFO" &&
+              showInfoAppTab && (
+                <>
+                  {/* <View style={{
                   flex: 1, paddingTop: 0, paddingBottom: 0, marginTop: 40,
                   borderRadius: 0, elevation: 10,
                   borderWidth: 0, alignSelf: "center",
@@ -11658,7 +13026,7 @@ export const UserHomeScreen = (props) => {
                 }}>
                   <ScrollView style={{ backgroundColor: color.BCAE_OFF_WHITE }} horizontal={true}>
 
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoOverallBgColor, elevation: 10 }}>
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 3, backgroundColor: infoOverallBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoOverallTxtColor, alignSelf: "center", fontWeight: infoOverallTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -11669,7 +13037,7 @@ export const UserHomeScreen = (props) => {
                         }}>Overview</Text>
                     </View>
 
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedAppTypeBgColor, elevation: 10 }}>
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedAppTypeBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoBasedAppTypeTxtColor, alignSelf: "center", fontWeight: infoBasedAppTypeTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -11680,7 +13048,7 @@ export const UserHomeScreen = (props) => {
                         }}>Type Based</Text>
                     </View>
 
-                    <View style={{ borderWidth: 1, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedLocHistoryBgColor, elevation: 10 }}>
+                    <View style={{ borderWidth: .5, borderColor: "#FFF", width: width / 3, backgroundColor: infoBasedLocHistoryBgColor, elevation: 10 }}>
                       <Text style={{ marginTop: 10, color: infoBasedLocHistoryTxtColor, alignSelf: "center", fontWeight: infoBasedLocHistoryTextWeight, fontSize: 12 }}
                         onPress={async () => {
                           unstable_batchedUpdates(() => {
@@ -11693,15 +13061,18 @@ export const UserHomeScreen = (props) => {
 
                   </ScrollView>
                 </View> */}
-              </>
-            )}
+                </>
+              )}
 
-        </View>
-      )}
+          </View>
+        )
+      }
 
+
+      {appointmentFilterDialogVisible && (<ShowAppointmentFiltersDialog />)}
 
       {/* {(!openDashboardPopUp && !helpdeskFilterDialogVisible && !intxnFilterDialogVisible && !helpdeskDetDialogVisible && !intxnDetDialogVisible) && ( */}
-      <ScrollView style={{ backgroundColor: Colors.BCAE_OFF_WHITE }}>
+      <ScrollView style={{ backgroundColor: Colors.WHITE }}>
         <>
           {(currentDashboard == constVariables.INTERACTION) && showInteractionDashboard && (
             (interactionLiveStream) && (
@@ -11721,7 +13092,7 @@ export const UserHomeScreen = (props) => {
             (!interactionLiveStream) && (
               <>
                 {/* <RenderLocationWiseData /> */}
-                <View style={{ marginTop: 50 }}>
+                <View style={{ marginTop: 5 }}>
                   <RenderOverviewData data={intDashRed} />
                   <RenderInteractionByAgeingMonthsData data={intDashRed} />
                   <RenderMttrResWaitTimeData data={intDashRed} />
@@ -11746,7 +13117,7 @@ export const UserHomeScreen = (props) => {
           {(currentDashboard == constVariables.HELPDESK) && showHelpdeskDashboard && (
             (!helpdeskLiveStream) && (
               <>
-                <View style={{ marginTop: 50 }}>
+                <View style={{ marginTop: 5 }}>
                   <RenderHelpdeskSummaryData data={intDashRed?.helpdeskSummaryData} />
                   <RenderHelpdeskByAgeing data={intDashRed?.helpdeskByAgeingData} />
                   <RenderMonthlyDailyTrends data={intDashRed?.supportMonthlyTrendData} />
@@ -11754,7 +13125,7 @@ export const UserHomeScreen = (props) => {
                   <RenderHelpdeskByStatus data={intDashRed?.helpdeskByStatusData} />
                   <RenderHelpdeskBySeverity data={intDashRed?.helpdeskBySeverityData} />
                   <RenderProjectWiseOpenHelpdesk data={intDashRed.helpdeskProjectWiseData} />
-                  <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} />
+                  {/* <RenderHourlyTicketsData data={intDashRed?.hourlyTicketsData} /> */}
                   <RenderAgentWiseHelpdesk data={intDashRed?.helpdeskAgentWiseData} />
                 </View>
               </>
@@ -11784,7 +13155,12 @@ export const UserHomeScreen = (props) => {
             selectedTab0 == "ME" && (
               <>
                 {showAssignedToMe && (<RenderOperationalAssignedToMeData data={intDashRed?.operationalAssignedToMeData} />)}
-                {showAppointments && (<RenderOperationalAppointmentsData data={intDashRed?.operationalAppointmentOverviewData} />)}
+
+                {(currDeptId !== "DTWOKS_APP_SUPPORT.APPSUPPORT.COMQUEST") &&
+                  (currDeptId !== "DTWOKSGLOBAL_APP_SUPPORT.APPSUPPORT.COMQUEST") &&
+                  showAppointments && (<RenderOperationalAppointmentsData data={intDashRed?.operationalAppointmentOverviewData} />)}
+
+
                 {showPooledInteractions && (<RenderOperationalPooledInteractionsData data={intDashRed?.operationalPooledInteractionsData} />)}
                 {showAssignedInteractions && (<RenderOperationalAssignedInteractionsData data={intDashRed?.operationalAssignedInteractionsData} />)}
               </>
@@ -11863,7 +13239,7 @@ const RenderFilterData = (props) => {
         <ClearSpace />
         <Text style={{ padding: 5, fontWeight: "900" }}>Filter</Text>
         <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
+        <Divider style={{ borderWidth: .5, borderColor: "#8E8F95", borderStyle: "solid" }}></Divider>
         <ClearSpace size={4} />
 
         <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
@@ -11911,1630 +13287,8 @@ const RenderFilterData = (props) => {
 
 
 
-const RenderMttrResWaitTimeData = (props) => {
 
-  var resolutionTime, mttrTime, waitingTime
-  var resolutionCount, mttrCount, waitingCount
 
-  props?.data?.resMttrWaitingData?.data?.rows?.avgResolutionTimeData?.map(item => {
-    resolutionTime = item.oAvgResolutionTimeInterval
-    resolutionCount = item.oCnt
-  })
-
-  props?.data?.resMttrWaitingData?.data?.rows?.mttrData?.map(item => {
-    mttrTime = item.oMttr
-    mttrCount = item.oCnt
-  })
-
-  props?.data?.resMttrWaitingData?.data?.rows?.avgWaitingData?.map(item => {
-    waitingTime = item.oAvgChatQueueWaitTimeInterval
-    waitingCount = item.oCnt
-  })
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
-          {/* <Image
-            style={{
-              height: 25,
-              width: 25,
-              tintColor: "white",
-              transform: [{ rotate: "90deg" }],
-            }}
-            source={require("../../../Assets/icons/picker_camera.png")} /> */}
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>Avg. Resolution Time</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>{resolutionTime}</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>per last month</Text>
-        </View>
-
-        <ClearSpace size={4} />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        {/* <View style={{ backgroundColor: "transparent", flexDirection: "column" }}> */}
-        {/* <Image
-            style={{
-              height: 25,
-              width: 25,
-              tintColor: "white",
-              transform: [{ rotate: "90deg" }],
-            }}
-            source={require("../../../Assets/icons/picker_camera.png")} /> */}
-        {/* <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>Avg. MTTR</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>{mttrTime}</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>{mttrCount}</Text>
-        </View>
-
-        <ClearSpace size={4} />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} /> */}
-
-        <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
-          {/* <Image
-            style={{
-              height: 25,
-              width: 25,
-              tintColor: "white",
-              transform: [{ rotate: "90deg" }],
-            }}
-            source={require("../../../Assets/icons/picker_camera.png")} /> */}
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>Avg. Wait Time</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>{waitingTime}</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>per last month</Text>
-        </View>
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-const RenderNpsCsatChampData = (props) => {
-
-  var npsTime, npsCount
-  var champTime, champCount
-
-  props?.data?.npsCsatChampData?.data?.rows?.champResponseData?.map(item => {
-    champTime = item.oAutomationPercentage
-    champCount = item.oDifference
-  })
-
-  props?.data?.npsCsatChampData?.data?.rows?.npsResponseData?.map(item => {
-    console.log("oNps....", item.oNps)
-    console.log("oPercentage....", item.oPercentage)
-
-    npsTime = item.oNps
-    npsCount = item.oPercentage
-  })
-
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>Net Promoter Score - NPS</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>{npsTime} %</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>per last month</Text>
-        </View>
-
-        <ClearSpace size={4} />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        {/* <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>CSAT</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>90%</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>23</Text>
-        </View>
-
-        <ClearSpace size={4} />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} /> */}
-
-        <View style={{ backgroundColor: "transparent", flexDirection: "column" }}>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>Automation Score By Champ</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000", fontWeight: "900" }}>{champTime} %</Text>
-          <Text style={{ alignSelf: "center", padding: 5, color: "#000000" }}>per last month</Text>
-        </View>
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-
-
-
-
-
-const RenderHelpdeskProjectWiseDataLive = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
-
-  console.log("status data new...", props?.data?.helpdeskProjectWiseDataLive?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.helpdeskProjectWiseDataLive?.data?.rows?.map(item => {
-    dateArray.push(item.createdAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.helpdeskProjectWiseDataLive?.data?.rows?.forEach(item => {
-    const description = item.projectDesc?.description;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.helpdeskProjectWiseDataLive?.data?.rows.map(item => {
-      const createdAt = moment(item.createdAt).format('hh:mm:ss a');
-      const descriptionItem = item.projectDesc?.description;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series proj status wise........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Projects</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 300,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          {dataSetArr.length > 0 && (
-            <LineChart
-              data={{
-                labels: formattedDateArr,
-                datasets: dataSetArr,
-              }}
-              width={Dimensions.get('window').width - 16}
-              height={250}
-              chartConfig={{
-                backgroundColor: '#FFF',
-                backgroundGradientFrom: '#FFF',
-                backgroundGradientTo: '#FFF',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginLeft: -35,
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-              verticalLabelRotation={30}
-            />
-          )}
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-const RenderHelpdeskByStatusDataLive = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
-
-  console.log("status data new5...", props?.data?.helpdeskByStatusListDataLive?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.helpdeskByStatusListDataLive?.data?.map(item => {
-    dateArray.push(item.oCreatedAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.helpdeskByStatusListDataLive?.data?.forEach(item => {
-    const description = item.oStatus;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  console.log("projectCounts1....", projectCounts)
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.helpdeskByStatusListDataLive?.data?.map(item => {
-      const createdAt = moment(item.oCreatedAt).format('hh:mm:ss a');
-      const descriptionItem = item.oStatus;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series helpdesk status wise........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Status</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 100,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          {dataSetArr.length > 0 && (
-            <LineChart
-              data={{
-                labels: formattedDateArr,
-                datasets: dataSetArr,
-              }}
-              width={Dimensions.get('window').width - 16}
-              height={250}
-              chartConfig={{
-                backgroundColor: '#FFF',
-                backgroundGradientFrom: '#FFF',
-                backgroundGradientTo: '#FFF',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginLeft: -35,
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-              verticalLabelRotation={30}
-            />
-          )}
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-const RenderHelpdeskByTypeDataLive = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
-
-  console.log("status data new...", props?.data?.helpdeskByTypeDataLive?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.helpdeskByTypeDataLive?.data?.rows?.map(item => {
-    dateArray.push(item.createdAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.helpdeskByTypeDataLive?.data?.rows?.forEach(item => {
-    const description = item.projectDesc?.description;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.helpdeskByTypeDataLive?.data?.rows.map(item => {
-      const createdAt = moment(item.createdAt).format('hh:mm:ss a');
-      const descriptionItem = item.projectDesc?.description;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series proj status wise........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Projects</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 300,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          {dataSetArr.length > 0 && (
-            <LineChart
-              data={{
-                labels: formattedDateArr,
-                datasets: dataSetArr,
-              }}
-              width={Dimensions.get('window').width - 16}
-              height={250}
-              chartConfig={{
-                backgroundColor: '#FFF',
-                backgroundGradientFrom: '#FFF',
-                backgroundGradientTo: '#FFF',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginLeft: -35,
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-              verticalLabelRotation={30}
-            />
-          )}
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-
-const RenderHelpdeskBySeverityDataLive = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
-
-  console.log("status data new...", props?.data?.helpdeskBySeverityDataLive?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.helpdeskBySeverityDataLive?.data?.rows?.map(item => {
-    dateArray.push(item.createdAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.helpdeskBySeverityDataLive?.data?.rows?.forEach(item => {
-    const description = item.projectDesc?.description;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.helpdeskBySeverityDataLive?.data?.rows.map(item => {
-      const createdAt = moment(item.createdAt).format('hh:mm:ss a');
-      const descriptionItem = item.projectDesc?.description;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series proj status wise........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Helpdesk by Severity</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 300,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          {dataSetArr.length > 0 && (
-            <LineChart
-              data={{
-                labels: formattedDateArr,
-                datasets: dataSetArr,
-              }}
-              width={Dimensions.get('window').width - 16}
-              height={250}
-              chartConfig={{
-                backgroundColor: '#FFF',
-                backgroundGradientFrom: '#FFF',
-                backgroundGradientTo: '#FFF',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginLeft: -35,
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-              verticalLabelRotation={30}
-            />
-          )}
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-const RenderOverviewLiveData = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ["#3498DB", "#58D68D", "#F5B041", "#E74C3C", "#8E44AD", "#34495E", "#16A085"]
-
-  console.log("status data new...", props?.data?.interactionsByStatusListDataTwo?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.interactionsByStatusListDataTwo?.data?.rows?.map(item => {
-    dateArray.push(item.createdAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.interactionsByStatusListDataTwo?.data?.rows?.forEach(item => {
-    const description = item.currStatusDesc?.description;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.interactionsByStatusListDataTwo?.data?.rows.map(item => {
-      const createdAt = moment(item.createdAt).format('hh:mm:ss a');
-      const descriptionItem = item.currStatusDesc?.description;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series proj status wise........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Overview</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 100,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          {dataSetArr.length > 0 && (
-            <LineChart
-              hidePointsAtIndex={Array.from({ length: formattedDateArr.length }, (v, k) => (k % 2 === 0) ? k : null)}
-              data={{
-                labels: formattedDateArr,
-                datasets: dataSetArr,
-              }}
-              width={Dimensions.get('window').width - 16}
-              height={250}
-              chartConfig={{
-                backgroundColor: '#FFF',
-                backgroundGradientFrom: '#FFF',
-                backgroundGradientTo: '#FFF',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginLeft: -35,
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-              verticalLabelRotation={30}
-            />
-          )}
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-
-const RenderStatusLiveData = (props) => {
-
-  var dataSetArr = []
-  var dateArray = []
-  var colors = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
-    '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
-
-  console.log("status data new2...", props?.data?.interactionsByStatusLiveListData?.data)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-  props?.data?.interactionsByStatusLiveListData?.data?.rows?.map(item => {
-    dateArray.push(item.oCreatedAt)
-  })
-
-  dateArray = dateArray.filter((item,
-    index) => dateArray.indexOf(item) === index);
-
-  const sortedDateArray = dateArray.sort(function (dateArray, b) {
-    return new Date(dateArray) - new Date(b)
-  })
-  console.log("sortedDateArray.....", sortedDateArray)
-
-  var formattedDateArr = []
-  sortedDateArray.forEach(item => {
-    formattedDateArr.push(moment(item).format("hh:mm:ss"))
-  })
-  console.log("formattedDateArr.....", formattedDateArr)
-
-  // --------------------------------------------x axis data-------------------------------------------------
-
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  const projectCounts = {};
-  props?.data?.interactionsByStatusLiveListData?.data?.rows?.forEach(item => {
-    const description = item.oStatus;
-    if (projectCounts[description]) {
-      projectCounts[description]++;
-    } else {
-      projectCounts[description] = 1;
-    }
-  });
-
-  const series = Object.keys(projectCounts).map(description => {
-    return {
-      name: description,
-      type: 'line',
-      stack: 'Total',
-      data: [],
-    };
-  });
-
-  let projectCount = 0;
-  series.forEach(serie => {
-    const description = serie.name;
-    const data = props?.data?.interactionsByStatusLiveListData?.data?.rows.map(item => {
-      const createdAt = moment(item.oCreatedAt).format('hh:mm:ss a');
-      const descriptionItem = item.oStatus;
-      if (descriptionItem === description) {
-        projectCount++;
-      } else {
-        projectCount = 0;
-      }
-      return descriptionItem === description ? projectCount : 0;
-    });
-    serie.data = data;
-  });
-  console.log("series proj status wise2........", series)
-
-  series.forEach((serie, idx) => {
-    dataSetArr.push(
-      {
-        data: serie.data,
-        strokeWidth: 2,
-        color: (opacity = 1) => colors[idx]
-      }
-    )
-  })
-
-  // --------------------------------------------y axis data-------------------------------------------------
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Status</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <View styles={{ flexDirection: "column" }}>
-          {series.map((item, idx) => {
-            return (
-              <View style={{
-                flexDirection: "row",
-                width: 100,
-                alignSelf: "center",
-                marginTop: 10,
-                marginBottom: 10
-              }}>
-                <View style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start"
-                }}>
-                  <View style={{
-                    marginRight: 2,
-                    width: 10, height: 10, borderRadius: 2,
-                    backgroundColor: colors[idx]
-                  }} />
-                  <Text style={{ fontSize: 11 }}>{item.name}</Text>
-                </View>
-              </View>
-            )
-          })}
-
-          <LineChart
-            hidePointsAtIndex={Array.from({ length: formattedDateArr.length }, (v, k) => (k % 100 === 0) ? k : null)}
-            data={{
-              labels: formattedDateArr,
-              datasets: dataSetArr,
-            }}
-            width={Dimensions.get('window').width - 16}
-            height={250}
-            chartConfig={{
-              backgroundColor: '#FFF',
-              backgroundGradientFrom: '#FFF',
-              backgroundGradientTo: '#FFF',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-            }}
-            style={{
-              marginLeft: -35,
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-            verticalLabelRotation={30}
-          />
-        </View>
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-};
-
-
-const RenderTopFiveInteractionCategoryData = (props) => {
-
-  console.log("interaction category data...", props?.data?.interactionByCategoryData)
-
-  var intCatWiseLabels = []
-  var intCatWiseValues = []
-  props?.data?.interactionByCategoryData?.data?.rows?.map(item => {
-    intCatWiseLabels.push(item.oCategoryValue)
-    intCatWiseValues.push('' + item.oIntxnCnt)
-  })
-
-  console.log("intCategoryWiseLabels data...", intCatWiseLabels)
-  console.log("intCategoryWiseValues data...", intCatWiseValues)
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Interaction By Category</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <BarChart
-          flatColor={true}
-          withCustomBarColorFromData={true}
-          yAxisInterval={10} // optional, defaults to 1
-          data={{
-            labels: intCatWiseLabels,
-            datasets: [
-              {
-                data: intCatWiseValues,
-                colors: [
-                  () => "green",
-                  () => "red",
-                  () => "blue",
-                  () => "yellow",
-                  () => "orange"
-                ]
-              },
-              {
-                data: [1] // min
-              },
-              {
-                data: [10] // max
-              }
-            ],
-          }}
-          width={Dimensions.get('window').width - 30}
-          height={550}
-          yAxisLabel={''}
-          chartConfig={{
-            backgroundColor: '#FFF',
-            backgroundGradientFrom: '#FFF',
-            backgroundGradientTo: '#FFF',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          verticalLabelRotation={90}
-        />
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-const RenderTopFiveInteractionTypeData = (props) => {
-
-  console.log("interaction type data...", props?.data?.interactionByTypeData)
-
-  var intTypeWiseLabels = []
-  var intTypeWiseValues = []
-  props?.data?.interactionByTypeData?.data?.rows?.map(item => {
-    intTypeWiseLabels.push(item.oCategoryValue)
-    intTypeWiseValues.push('' + item.oIntxnCnt)
-  })
-
-  console.log("intTypeWiseLabels data...", intTypeWiseLabels)
-  console.log("intTypeWiseValues data...", intTypeWiseValues)
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Interaction By Type</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <BarChart
-          flatColor={true}
-          withCustomBarColorFromData={true}
-          data={{
-            labels: intTypeWiseLabels,
-            datasets: [
-              {
-                data: intTypeWiseValues,
-                colors: [
-                  () => "blue",
-                  () => "red",
-                  () => "green"
-                ]
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width - 30}
-          height={400}
-          yAxisLabel={''}
-          chartConfig={{
-            backgroundColor: '#FFF',
-            backgroundGradientFrom: '#FFF',
-            backgroundGradientTo: '#FFF',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          verticalLabelRotation={90}
-        />
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-const RenderTopFiveServiceCategoryData = (props) => {
-
-  console.log("service category data...", props?.data?.interactionByServiceCategoryData)
-
-  var serviceCategoryWiseLabels = []
-  var serviceCategoryWiseValues = []
-  props?.data?.interactionByServiceCategoryData?.data?.rows?.map(item => {
-    serviceCategoryWiseLabels.push(item.oCategoryValue)
-    serviceCategoryWiseValues.push('' + item.oIntxnCnt)
-  })
-
-  console.log("serviceCategoryWiseLabels data...", serviceCategoryWiseLabels)
-  console.log("serviceCategoryWiseValues data...", serviceCategoryWiseValues)
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Service Category</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <BarChart
-          flatColor={true}
-          withCustomBarColorFromData={true}
-          data={{
-            labels: serviceCategoryWiseLabels,
-            datasets: [
-              {
-                data: serviceCategoryWiseValues,
-                colors: [
-                  () => "blue",
-                  () => "red",
-                  () => "green"
-                ]
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width - 30}
-          height={500}
-          yAxisLabel={''}
-          chartConfig={{
-            backgroundColor: '#FFF',
-            backgroundGradientFrom: '#FFF',
-            backgroundGradientTo: '#FFF',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          verticalLabelRotation={90}
-        />
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-const RenderTopFiveServiceTypeData = (props) => {
-
-  console.log("service type data...", props?.data?.interactionByServiceTypeData)
-
-  var serviceTypeWiseLabels = []
-  var serviceTypeWiseValues = []
-  props?.data?.interactionByServiceTypeData?.data?.rows?.map(item => {
-    serviceTypeWiseLabels.push(item.oCategoryValue)
-    serviceTypeWiseValues.push('' + item.oIntxnCnt)
-  })
-
-  console.log("serviceTypeWiseLabels data...", serviceTypeWiseLabels)
-  console.log("serviceTypeWiseValues data...", serviceTypeWiseValues)
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Service Type</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <BarChart
-          flatColor={true}
-          withCustomBarColorFromData={true}
-          data={{
-            labels: serviceTypeWiseLabels,
-            datasets: [
-              {
-                data: serviceTypeWiseValues,
-                colors: [
-                  () => "blue",
-                  () => "red",
-                  () => "green"
-                ]
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width - 30}
-          height={650}
-          yAxisLabel={''}
-          chartConfig={{
-            backgroundColor: '#FFF',
-            backgroundGradientFrom: '#FFF',
-            backgroundGradientTo: '#FFF',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          verticalLabelRotation={90}
-        />
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-
-
-
-
-
-
-
-
-const RenderInteractionByRolesData = (props) => {
-
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Interaction by Roles</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-        <BarChart
-          flatColor={true}
-          withCustomBarColorFromData={true}
-          data={{
-            labels: [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-            ],
-            datasets: [
-              {
-                data: [20, 45, 28, 80, 99, 43],
-                colors: [
-                  () => "blue",
-                  () => "red",
-                  () => "green"
-                ]
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width - 30}
-          height={650}
-          yAxisLabel={''}
-          chartConfig={{
-            backgroundColor: '#FFF',
-            backgroundGradientFrom: '#FFF',
-            backgroundGradientTo: '#FFF',
-            decimalPlaces: 2,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          verticalLabelRotation={90}
-        />
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-
-
-
-
-
-const RenderTopFiveInteractionStatement = (props) => {
-
-  var intStatementWiseMap = new Map("", "")
-
-  var series = []
-  props?.data?.statementWiseData?.data?.rows?.map(item => {
-    intStatementWiseMap.set(item.oCategoryValue, item.oIntxnCnt)
-    series.push(item.oIntxnCnt)
-  })
-
-  const colorsArr = ['#58D68D', '#C0392B', '#E74C3C', '#9B59B6', '#2980B9', '#3498DB', '#16A085',
-    '#F4D03F', '#F39C12', '#DC7633', '#5DADE2']
-  var colors = []
-  series.forEach((item, idx) => {
-    colors.push(colorsArr[idx])
-  })
-
-  const intStatementWiseArr = Array.from(intStatementWiseMap, ([name, value]) => ({ name, value }));
-
-  console.log("intStatementWiseArr...", intStatementWiseArr)
-
-  var widthAndHeight = 200
-
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-        <ClearSpace />
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Interaction By Statement</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-
-
-        {series.length > 0 && (
-          <PieChart
-            style={{ marginTop: 0, alignSelf: "center" }}
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={colors}
-            coverRadius={0.5}
-            coverFill={'#FFF'}
-          />
-        )}
-
-
-        {props?.data?.statementWiseData?.data?.rows?.map((item, idx) => {
-          return (
-            <View style={{
-              width: 300,
-              alignSelf: "flex-start",
-              marginTop: 20,
-              marginLeft: 10
-            }}>
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignItems: "flex-start"
-              }}>
-                <View style={{
-                  marginRight: 2,
-                  width: 10, height: 10, borderRadius: 2,
-                  backgroundColor: colors[idx]
-                }} />
-                <Text style={{ marginLeft: 10, fontSize: 11 }}>{item.oCategoryValue + " - " + item.oIntxnCnt}</Text>
-              </View>
-            </View>
-          )
-        })}
-
-
-        {/* <View styles={{ flexDirection: "column" }}>
-          {intStatementWiseArr.map(item => {
-            const project = item.name
-            const count = item.value
-
-            console.log("count...", count)
-            console.log("project...", project)
-
-            if (!(item.value == 0)) {
-              return (
-                <View style={{ marginTop: 2, flexDirection: "column", alignSelf: "center", borderWidth: 0 }}>
-                   <View style={{ flexDirection: "row", margin: 0 }}>
-                     <View style={{ marginRight: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 230, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
-                       <Text style={{ fontWeight: "normal" }}>{project}</Text>
-                     </View>
-
-                     <View style={{ marginLeft: 1, backgroundColor: color.BCAE_OFF_WHITE, padding: 10, flexDirection: "column", width: 80, marginHorizontal: 0, borderWidth: 1, borderColor: color.DISABLED_GREY }}>
-                       <Text style={{ alignSelf: "center", ontWeight: "normal" }}>{count}</Text>
-                     </View>
-                   </View>
-                </View>
-              );
-            }
-          })}
-        </View> */}
-
-
-
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
-
-
-
-// const footerModal = () => {
-
-
-//   return (
-//     <>
-//       <FooterModel
-//         open={showBottomModal}
-//         setOpen={setShowBottomModal}
-//         title={"Assign To Self"}
-//       >
-//         <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
-
-
-
-
-//         </ScrollView>
-//       </FooterModel>
-//     </>
-//   );
-
-// };
-
-
-
-const RenderTopFiveInteractionChannelData = (props) => {
-
-  console.log("channel wise data...", props?.data?.channelWiseData)
-
-  // var channelWiseMap = new Map("", "", "")
-  // props?.data?.channelWiseData?.data?.rows?.map(item => {
-  //   channelWiseMap.set(item.oMonthYear, item.oCategoryValue, item.oIntxnCnt)
-  // })
-
-  // const channelWiseArr = Array.from(channelWiseMap, ([month, channel, count]) => ({ month, channel, count }));
-  // console.log("channelWiseArr...", channelWiseArr)
-
-  const xAxisData = [...new Set(props?.data?.channelWiseData?.data?.rows?.map(item => item.oMonthYear))];
-  const category = [...new Set(props?.data?.channelWiseData?.data?.rows?.map(item => item.oCategoryValue))];
-  const series = xAxisData?.map(xAxisData => {
-    const respData = category?.map(category => {
-      const matchingItem = props?.data?.channelWiseData?.data?.rows?.find(item => item.oCategoryValue === category && item.oMonthYear === xAxisData);
-      return matchingItem ? Number(matchingItem.oIntxnCnt) : 0;
-    });
-    return respData
-  })
-
-
-  console.log("xAxisData...", xAxisData)
-  console.log("statuses...", category)
-  console.log("series...", series)
-
-  const data = {
-    labels: xAxisData,
-    legend: category,
-    data: series,
-    barColors: ["#3498DB", "#58D68D", "#F5B041"]
-  };
-
-
-  return (
-    <>
-      <Card style={{ backgroundColor: "white", padding: 5, paddingTop: 15, elevation: 10, margin: 10 }}>
-
-        <Text style={{ padding: 5, fontWeight: "900" }}>Top 5 Interaction by Channel</Text>
-        <ClearSpace />
-        <Divider style={{ borderWidth: 1, borderColor: "#8E8F95", borderStyle: "dashed" }}></Divider>
-        <ClearSpace size={4} />
-
-
-        < StackedBarChart
-          data={data}
-          width={300}
-          height={350}
-          strokeWidth={16}
-          radius={20}
-          chartConfig={{
-            backgroundColor: "#FFF",
-            backgroundGradientFrom: "#FFF",
-            backgroundGradientTo: "#FFF",
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(13, 136, 56, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0,0, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#218838"
-            }
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16
-          }}
-          hideLegend={false}
-          verticalLabelRotation={90}
-        />
-
-
-        <ClearSpace size={4} />
-      </Card>
-    </>
-  );
-
-};
 
 
 
@@ -13734,6 +13488,7 @@ const groupBy = (items, key) => items.reduce(
 // });
 
 
+
 const styles = StyleSheet.create({
   locChartContainer: {
     flex: 1,
@@ -13750,7 +13505,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: Colors.BCAE_OFF_WHITE,
+    backgroundColor: Colors.WHITE,
   },
   titleStyle: {
     fontSize: 20,
@@ -13762,7 +13517,7 @@ const styles = StyleSheet.create({
     height: 300,
     flex: 1,
     borderColor: '#000033',
-    borderWidth: 1,
+    borderWidth: .5,
   },
   buttonStyle: {
     flex: 1,
@@ -13787,7 +13542,7 @@ const styles = StyleSheet.create({
     color: "grey",
   },
   defaultText: {
-    color: "#000000",
+    color: "#000",
   },
   customDay: {
     textAlign: "center",

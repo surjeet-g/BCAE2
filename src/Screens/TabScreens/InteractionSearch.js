@@ -133,7 +133,7 @@ const InteractionSearch = ({ navigation }) => {
     ]);
 
     return (
-        <ScrollView contentContainerStyle={{ flex: 1 }} nestedScrollEnabled={true}>
+        <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: "#FFF" }} nestedScrollEnabled={true}>
 
             {/* Field View */}
             <View style={{ marginHorizontal: 20, marginTop: 60 }}>
@@ -242,7 +242,7 @@ const InteractionSearch = ({ navigation }) => {
                         <CustomButton
                             isDisabled={false}
                             // loading={loaderAdd}
-                            label={strings.close}
+                            label={strings.clear}
                             onPress={() => {
                                 setInteractionNo("")
                                 setCustomerName("")

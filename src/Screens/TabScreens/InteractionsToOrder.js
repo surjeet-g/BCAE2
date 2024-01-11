@@ -4,6 +4,7 @@ import get from "lodash.get";
 import moment from "moment";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
+  Alert,
   BackHandler,
   Dimensions,
   FlatList,
@@ -11,7 +12,7 @@ import {
   ImageBackground,
   Keyboard, Pressable,
   ScrollView,
-  StyleSheet, Switch,
+  StyleSheet,
   View,
   unstable_batchedUpdates
 } from "react-native";
@@ -118,7 +119,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
   // const [activeChatBotSec, setactiveChatBot] = useState("");
   const [activeChatBotSec, setactiveChatBot] = useState(typeOfAccrodin.resolved.title);
   const [activeService, setService] = useState("");
-  const [isEnabledsmartAssist, setSmartAssistance] = useState(true)
+  const [isEnabledsmartAssist, setSmartAssistance] = useState(false)
   //need enable screen loader
   const [loader, setLoader] = useState(true);
   //attachment
@@ -167,9 +168,11 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
 
   // For telecom
-  const [userSeachEnable, setUserSeachEnable] = useState(false);
+  const [userSeachEnable, setUserSeachEnable] = useState(true);
 
-
+  useLayoutEffect(() => {
+    Alert.alert('', 'Please use the search icon on the top right corner to search customer and create interaction for specific customer.');
+  }, [])
 
   useFocusEffect(
     React.useCallback(() => {
@@ -251,35 +254,34 @@ const InteractionsToOrder = ({ route, navigation }) => {
     // }));
   };
 
-
   const headerRightForNav = () => {
     return (
       <View style={navBar.navRightCon}>
-        {(!isEnabledsmartAssist) && (isEnabledsmartAssist) && (
-          <Pressable
-            onPress={async () => {
-              console.log("knowledgeSearchText...", knowledgeSearchText)
-              await clearAttachmentData()
-              if (knowledgeSearchText == "") {
-                resetCreateInterationForm()
-              }
-              setOpenBottomModal(true)
-            }}
-            style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
-          >
-            <Icon name="plus" size={28} color={"#4a5996"} />
-          </Pressable>
-        )}
+        {/* {(!isEnabledsmartAssist) && (isEnabledsmartAssist) && ( */}
+        <Pressable
+          onPress={async () => {
+            console.log("knowledgeSearchText...", knowledgeSearchText)
+            await clearAttachmentData()
+            if (knowledgeSearchText == "") {
+              resetCreateInterationForm()
+            }
+            setOpenBottomModal(true)
+          }}
+          style={{ ...navBar.roundIcon, backgroundColor: color.WHITE }}
+        >
+          <Icon name="plus" size={28} color={"#4c3794"} />
+        </Pressable>
+        {/* )} */}
       </View>
     );
   };
 
 
-  // useLayoutEffect(() => {
-  navigation.setOptions({
-    headerRight: headerRightForNav,
-  });
-  // }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: headerRightForNav,
+    });
+  }, []);
 
   /**
   * Reset Reducer data this function handles exception error of old data
@@ -336,14 +338,14 @@ const InteractionsToOrder = ({ route, navigation }) => {
       //   );
 
       // For telecom
-      if (role == "8") {
-        setUserSeachEnable(false)
-        setSearchOpen(false)
-      }
-      else {
-        setUserSeachEnable(true)
-        setSearchOpen(true)
-      }
+      // if (role == "8") {
+      //   setUserSeachEnable(false)
+      //   setSearchOpen(false)
+      // }
+      // else {
+      setUserSeachEnable(true)
+      setSearchOpen(true)
+      // }
 
       // }
     }
@@ -1680,26 +1682,26 @@ const InteractionsToOrder = ({ route, navigation }) => {
             async function getData() {
               var currRoleId = await getDataFromDB(storageKeys.CURRENT_ROLE_ID)
               console.log("use memo called...." + currRoleId)
-              if (currRoleId == "8") {
-                console.log("employee role id...")
-              }
-              else {
-                console.log("inside if....")
-                return userNavigationIcon({
-                  navigation,
-                  setOpenBottomModal: setOpenBottomModal,
-                  setSearchOpen: setSearchOpen,
-                  setEnableSuccessScreens: () => {
-                    //to do when user search is empty
-                    {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
-                  },
-                  setLoader,
-                  profileDispatch,
-                  headerRightForNav,
-                  headerTitle: "Interaction",
-                  profileSearchData: get(profileReducer, "profileSearchData", [])
-                });
-              }
+              // if (currRoleId == "8") {
+              //   console.log("employee role id...")
+              // }
+              // else {
+              console.log("inside if....")
+              return userNavigationIcon({
+                navigation,
+                setOpenBottomModal: setOpenBottomModal,
+                setSearchOpen: setSearchOpen,
+                setEnableSuccessScreens: () => {
+                  //to do when user search is empty
+                  {/* setEnableSuccessScreen(interactionResponseScreen.EMPTY_CUSTOMER) */ }
+                },
+                setLoader,
+                profileDispatch,
+                headerRightForNav,
+                headerTitle: "Interaction",
+                profileSearchData: get(profileReducer, "profileSearchData", [])
+              });
+              // }
             }
             getData()
           }, [setSearchOpen, setOpenBottomModal, userSeachEnable, headerRightForNav, setLoader, navigation, profileDispatch, setEnableSuccessScreen, userType]
@@ -1776,7 +1778,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
 
           <ClearSpace size={2} />
 
-          <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
+          {/* <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
             <Text variant="bodyMedium">
               Smart Assistance
             </Text>
@@ -1794,7 +1796,7 @@ const InteractionsToOrder = ({ route, navigation }) => {
               }}
               value={isEnabledsmartAssist}
             />
-          </View>
+          </View> */}
 
 
 

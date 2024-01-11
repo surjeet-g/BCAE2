@@ -17,7 +17,8 @@ export default function LoadingAnimation({ title = "" }) {
       backgroundColor: "white", opacity: .8, zIndex: 99999999999999
     }}>
       <View style={{ justifyContent: "center", alignItems: "center", flex: 1, }}>
-        <Image source={require("../Assets/icons/processing.gif")} />
+        <Image source={require("../Assets/icons/dotted_circle_progress.gif")} />
+
         <Text variant="labelLarge">Loading..</Text>
         <ClearSpace size={3} />
         <Text variant="labelMedium">{title}</Text>

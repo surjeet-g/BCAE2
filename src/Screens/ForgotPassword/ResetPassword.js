@@ -150,13 +150,17 @@ const ResetPassword = ({ route, navigation }) => {
 
   return (
     <ImageBackground
-      style={styles.container}
-      source={require("../../Assets/icons/bg_others.png")}
+      style={{
+        flex: 1,
+        backgroundColor: "#fff"
+      }}
+      // source={require("../../Assets/icons/bg_others.png")}
       resizeMode="cover"
     >
       <View
         style={{
-          ...styles.container,
+          flex: 1,
+          backgroundColor: "#fff"
           // ...{ marginTop: isChangePassword ? 15 : 45 },
         }}
       >
@@ -172,6 +176,7 @@ const ResetPassword = ({ route, navigation }) => {
         }
         <ScrollView
           style={{
+            backgroundColor: "#fff",
             flexGrow: 1,
           }}
           nestedScrollEnabled={true}
@@ -181,14 +186,12 @@ const ResetPassword = ({ route, navigation }) => {
               margin: 10,
               flex: 1,
               padding: 20,
-              backgroundColor: "#fff",
-              borderRadius: 16,
-              elevation: 5,
+              backgroundColor: "#fff"
             }}
           >
-            <View style={{ marginBottom: 30 }}>
+            {/* <View style={{ marginBottom: 30 }}>
               <Text variant="bodyMedium">Email Address : {email}</Text>
-            </View>
+            </View> */}
 
             <View style={{ marginBottom: spacing.HEIGHT_20 }}>
               <CustomInput
@@ -264,6 +267,26 @@ const ResetPassword = ({ route, navigation }) => {
                 }
               />
             </View>
+
+            <View>
+              <CustomButton
+                loading={forgot?.initForgotPassword}
+                label={
+                  isChangePassword
+                    ? strings.change_password
+                    : strings.reset_password
+                }
+                isDisabled={false}
+                onPress={onSubmitPasswordChanged}
+              />
+
+              {!forgot.initForgotPassword &&
+                forgot?.loggedProfile.status == "200" &&
+                showSuccessMessage(forgot?.loggedProfile?.message)}
+              {!forgot.initForgotPassword &&
+                forgot?.loggedProfile.status != "200" &&
+                showErrorMessage(forgot?.loggedProfile?.message)}
+            </View>
           </View>
 
           {/* {
@@ -296,7 +319,7 @@ const ResetPassword = ({ route, navigation }) => {
         </ScrollView>
 
         <StickyFooter>
-          <View>
+          {/* <View>
             <CustomButton
               loading={forgot?.initForgotPassword}
               label={
@@ -314,7 +337,7 @@ const ResetPassword = ({ route, navigation }) => {
             {!forgot.initForgotPassword &&
               forgot?.loggedProfile.status != "200" &&
               showErrorMessage(forgot?.loggedProfile?.message)}
-          </View>
+          </View> */}
         </StickyFooter>
         {!login.initLogin &&
           (login?.loggedProfile?.errorCode == "10000" ||
@@ -349,6 +372,7 @@ const ResetPassword = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
     ...HEADER_MARGIN,
   },
   toast: {

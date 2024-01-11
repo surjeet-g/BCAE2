@@ -29,7 +29,7 @@ export const CustomButton = (props) => {
   return (
     <View
       style={{
-        margin: spacing.HEIGHT_10,
+        margin: spacing.HEIGHT_20,
         // flex: 1
       }}
     >
@@ -39,7 +39,7 @@ export const CustomButton = (props) => {
         mode={mode}
         label={label}
         color={isDisabled ? colors.inverseSecondary : colors.buttonDisableColor}
-        buttonColor={isDisabled ? colors.buttonDisableColor : "#4a5996"}
+        buttonColor={isDisabled ? colors.buttonDisableColor : "#4c3794"}
         onPress={isDisabled ? () => { } : () => onPress()}
       >
         {label}

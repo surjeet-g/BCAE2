@@ -18,8 +18,8 @@ import { Modal, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../Components/CustomButton";
 import { CustomErrorText } from "../../Components/CustomErrorText";
-import { CustomInput } from "../../Components/CustomInput";
 import { CustomInputWithCC } from "../../Components/CustomInputWithCC";
+import { LoginCustomInput } from "../../Components/LoginCustomInput";
 import { Toast } from "../../Components/Toast";
 import { STACK_CREATE_CUSTOMER } from "../../Navigation/MyStack";
 import {
@@ -368,49 +368,53 @@ export const Login = ({ navigation }) => {
       resizeMode="cover"
     >
 
-      <View style={{
-        alignItems: "center",
-        justifyContent: "center",
-      }}>
-        <Image
-          source={require("../../Assets/icons/logo_new.png")}
-          // source={require("../../Assets/icons/ncrtc_logo.png")}
-          // resizeMode="cover"
-          style={{
-            marginTop: 15,
-            padding: 60,
-            // flex: 1,
-            width: 300,
-            height: 70
-          }}
-        />
-      </View>
+      <View style={styles.loginContainer}>
+        <View style={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          {/* FOR NCRTC */}
+          <Image
+            source={require("../../Assets/icons/logo_new1.png")}
+            // resizeMode="cover"
+            style={{
+              marginTop: 25,
+              padding: 0,
+              height: 100,
+              width: 400
+              // flex: 1,
+            }}
+          />
+        </View>
 
-      {/* <HeaderTitle header="Let us know dtWorks," subHeader="Who you are?" /> */}
-      <KeyboardAwareView animated={false}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <ScrollView nestedScrollEnabled={true}>
-            <View
-              style={{
-                margin: 30,
-                flex: 1,
-                padding: 20,
-                backgroundColor: "#fff",
-                borderRadius: 16,
-                elevation: 5,
-              }}
-            >
-              {/* Toggle Button View */}
-              {/* <View> */}
-              {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
+        {/* <HeaderTitle header="Let us know dtWorks," subHeader="Who you are?" /> */}
+        <KeyboardAwareView animated={false}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "space-between",
+            }}
+          >
+            <ScrollView nestedScrollEnabled={true}>
+              <View
+                style={{
+                  margin: 30,
+                  flex: 1,
+                  paddingLeft: 40,
+                  paddingRight: 40,
+                  paddingBottom: 20,
+                  paddingTop: 10,
+                  backgroundColor: "#4c3794",
+                  borderRadius: 16,
+                  elevation: 5,
+                }}
+              >
+                {/* Toggle Button View */}
+                {/* <View> */}
+                {/* <Text style={{ fontWeight: 600, marginBottom: 10 }}>
                   {strings.check_usertype}
                 </Text> */}
-              {/* <ToggleButton
+                {/* <ToggleButton
                   isFirstSelected={isRegisterFirstSelected}
                   label={{
                     first: BUSINESS,
@@ -434,38 +438,38 @@ export const Login = ({ navigation }) => {
               </View> */}
 
 
-              {/* Radio Button View */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginTop: 10
-                }}
-              >
-                <CustomSwitch
-                  buttonWidth={20}
-                  buttonPadding={10}
-                  switchWidth={120}
-                  startOnLeft={isEmailLoginMode}
-                  onSwitch={onToggleSwitch}
-                  onSwitchReverse={onToggleSwitch}
-                  buttonColor={"#4a5996"}
-                  switchBackgroundColor={"#EBEDEF"}
-                  switchLeftText={"Email"}
-                  switchLeftTextStyle={{
-                    color: "#4a5996",
-                    fontSize: 14,
-                    fontWeight: 600,
+                {/* Radio Button View */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    marginTop: 10
                   }}
-                  switchRightText={"Mobile"}
-                  switchRightTextStyle={{
-                    color: "#4a5996",
-                    fontSize: 14,
-                    fontWeight: 600,
-                  }}
-                />
+                >
+                  <CustomSwitch
+                    buttonWidth={20}
+                    buttonPadding={10}
+                    switchWidth={120}
+                    startOnLeft={isEmailLoginMode}
+                    onSwitch={onToggleSwitch}
+                    onSwitchReverse={onToggleSwitch}
+                    buttonColor="#4c3794"
+                    switchBackgroundColor={"#FFFFFF"}
+                    switchLeftText={"Email"}
+                    switchLeftTextStyle={{
+                      color: "#4c3794",
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                    switchRightText={"Mobile"}
+                    switchRightTextStyle={{
+                      color: "#4c3794",
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  />
 
-                {/* <View
+                  {/* <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -495,262 +499,263 @@ export const Login = ({ navigation }) => {
                     {capitalizeFirstLetter(MOBILE)}
                   </Text>
                 </View> */}
-              </View>
-
-              {loginMode === EMAIL ? (
-                <View>
-                  {/* Email Address Input View */}
-                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    <CustomInput
-                      caption="Email Address"
-                      value={username}
-                      onChangeText={(text) => onIDChange(text)}
-                      right={
-                        username && (
-                          <TextInput.Icon
-                            onPress={clearTextClick}
-                            style={{ width: 23, height: 23 }}
-                            icon="close"
-                          />
-                        )
-                      }
-                    />
-
-                    {!login.initLogin &&
-                      login?.loggedProfile?.errorCode == "404" && (
-                        <CustomErrorText
-                          errMessage={login?.loggedProfile?.message}
-                        />
-                      )}
-                    {usernameError !== "" && (
-                      <CustomErrorText errMessage={usernameError} />
-                    )}
-                  </View>
                 </View>
-              ) : (
-                <View>
-                  {/* Mobile Number View */}
-                  <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                    <CountryPicker
-                      show={countryPickModel}
-                      excludedCountries={excludedCountriesList()}
-                      pickerButtonOnPress={(item) => {
-                        setCountryCode(item.dial_code);
-                        setCountryPickModel(false);
-                        setNumberMaxLength(getPhoneNumberLength(item.code));
-                      }}
-                      onBackdropPress={() => setCountryPickModel(false)}
-                      style={{
-                        modal: {
-                          height: "65%",
-                        },
-                        // Country name styles [Text]
-                        countryName: {
-                          color: "#000000"
-                        },
-                        dialCode: {
-                          color: "#000000"
-                        }
-                      }}
-                    />
-                    <CustomInputWithCC
-                      onPressOnCountyCode={() => setCountryPickModel(true)}
-                      countryCode={countryCode}
-                      caption={strings.mobile_no}
-                      onChangeText={(text) => {
-                        text = text.replace(/[^0-9]/g, '')
-                        onIDChange(text)
-                      }
-                      }
-                      value={number}
-                      placeHolder={strings.mobile_no}
-                      keyboardType="numeric"
-                      maxLength={numberMaxLength}
-                    />
 
-
-                    {!login.initLogin &&
-                      login?.loggedProfile?.errorCode == "404" && (
-                        <CustomErrorText
-                          errMessage={login?.loggedProfile?.message}
-                        />
-                      )}
-                    {numberError !== "" && (
-                      <CustomErrorText errMessage={numberError} />
-                    )}
-                  </View>
-                </View>
-              )}
-
-              {/* Password Input View */}
-              <View style={{ marginBottom: spacing.HEIGHT_20 }}>
-                <CustomInput
-                  value={password}
-                  caption={strings.password}
-                  placeHolder={strings.password}
-                  onChangeText={(text) => onPasswordChange(text)}
-                  secureTextEntry={secureTextEntry}
-                  right={
-                    password && (
-                      <TextInput.Icon
-                        onPress={hideShowClick}
-                        style={{ width: 23, height: 23 }}
-                        icon={
-                          secureTextEntry
-                            ? require("../../Assets/icons/ic_password_show.png")
-                            : require("../../Assets/icons/ic_password_hide.png")
+                {loginMode === EMAIL ? (
+                  <View>
+                    {/* Email Address Input View */}
+                    <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                      <LoginCustomInput
+                        caption="Email Address"
+                        value={username}
+                        onChangeText={(text) => onIDChange(text)}
+                        right={
+                          username && (
+                            <TextInput.Icon
+                              onPress={clearTextClick}
+                              style={{ width: 23, height: 23 }}
+                              icon="close"
+                            />
+                          )
                         }
                       />
-                    )
-                  }
-                />
 
-                {!login.initLogin &&
-                  login?.loggedProfile?.errorCode &&
-                  login.loggedProfile.errorCode != "404" &&
-                  login?.loggedProfile?.errorCode != "10000" &&
-                  login?.loggedProfile?.errorCode != "10001" && (
-                    <CustomErrorText
-                      errMessage={login?.loggedProfile?.message}
-                    />
-                  )}
-                {passwordError !== "" && (
-                  <CustomErrorText errMessage={passwordError} />
+                      {!login.initLogin &&
+                        login?.loggedProfile?.errorCode == "404" && (
+                          <CustomErrorText
+                            errMessage={login?.loggedProfile?.message}
+                          />
+                        )}
+                      {usernameError !== "" && (
+                        <CustomErrorText errMessage={usernameError} />
+                      )}
+                    </View>
+                  </View>
+                ) : (
+                  <View>
+                    {/* Mobile Number View */}
+                    <View style={{ marginBottom: spacing.HEIGHT_20 }}>
+                      <CountryPicker
+                        show={countryPickModel}
+                        excludedCountries={excludedCountriesList()}
+                        pickerButtonOnPress={(item) => {
+                          setCountryCode(item.dial_code);
+                          setCountryPickModel(false);
+                          setNumberMaxLength(getPhoneNumberLength(item.code));
+                        }}
+                        onBackdropPress={() => setCountryPickModel(false)}
+                        style={{
+                          modal: {
+                            height: "65%",
+                          },
+                          // Country name styles [Text]
+                          countryName: {
+                            color: "#000000"
+                          },
+                          dialCode: {
+                            color: "#000000"
+                          }
+                        }}
+                      />
+                      <CustomInputWithCC
+                        onPressOnCountyCode={() => setCountryPickModel(true)}
+                        countryCode={countryCode}
+                        caption={strings.mobile_no}
+                        onChangeText={(text) => {
+                          text = text.replace(/[^0-9]/g, '')
+                          onIDChange(text)
+                        }
+                        }
+                        value={number}
+                        placeHolder={strings.mobile_no}
+                        keyboardType="numeric"
+                        maxLength={numberMaxLength}
+                      />
+
+
+                      {!login.initLogin &&
+                        login?.loggedProfile?.errorCode == "404" && (
+                          <CustomErrorText
+                            errMessage={login?.loggedProfile?.message}
+                          />
+                        )}
+                      {numberError !== "" && (
+                        <CustomErrorText errMessage={numberError} />
+                      )}
+                    </View>
+                  </View>
                 )}
-              </View>
-            </View>
 
-            {/* Bottom View */}
-            <View
-              style={{
-                marginVertical: 10,
-              }}
-            >
-              {/* Login with OTP View */}
-              <View>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    alignSelf: "center",
-                    marginVertical: 5,
-                    color: "#BF873A",
-                    fontWeight: 700,
-                    fontSize: fontSizes.FONT_20,
-                  }}
-                  onPress={() => {
-                    loginMode === EMAIL
-                      ? submitWithEmailOTP(OTP)
-                      : submitWithMobileOTP(OTP);
-                  }}
-                >
-                  {strings.login_with_otp}
-                </Text>
-              </View>
-
-              {/* Forgot Password View */}
-              <View
-                style={{
-                  alignSelf: "center",
-                  marginVertical: 5,
-                }}
-              >
-                <Pressable
-                  onPress={() => navigation.navigate("ForgotPassword")}
-                  style={{ flexDirection: "row" }}
-                >
-                  <Text style={styles.noAccText}>{"Trouble Sign-In? "}</Text>
-                  <Text style={styles.forgotText}>
-                    {strings.forgot_password}
-                  </Text>
-                </Pressable>
-              </View>
-
-
-              {/* Register View */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  marginVertical: 5,
-                }}
-              >
-                <Text style={styles.noAccText}>{strings.dont_account}</Text>
-                <Pressable
-                  onPress={() => navigation.navigate("Register with us", {})}
-                >
-                  <Text style={styles.rgisterText}> {strings.register}</Text>
-                </Pressable>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  marginVertical: 5,
-                }}
-              >
-                <Text style={styles.noAccText}>Customer Onboarding?</Text>
-                <Pressable
-                  onPress={() => navigation.navigate(STACK_CREATE_CUSTOMER, {})}
-                >
-                  <Text style={styles.rgisterText}> Customer Onboarding</Text>
-                </Pressable>
-              </View>
-            </View>
-
-            {!login.initLogin &&
-              (login?.loggedProfile?.errorCode == "10000" ||
-                login?.loggedProfile?.errorCode == "10001") && (
-                <View style={styles.toast}>
-                  <Toast
-                    bgColor={color.TOAST_RED}
-                    customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
-                    textPro={{
-                      color: color.WHITE,
-                      fontSize: fontSizes.FONT_14,
-                      fontWeight: "700",
-                    }}
-                    img={
-                      login?.loggedProfile?.errorCode == "10001"
-                        ? require("../../Assets/icons/ic_no_Internet.png")
-                        : require("../../Assets/icons/ci_error-warning-fill.png")
-                    }
-                    message={
-                      login?.loggedProfile?.errorCode == "10001"
-                        ? strings.no_network
-                        : strings.something_went_wrong
+                {/* Password Input View */}
+                <View style={{ marginBottom: spacing.HEIGHT_10 }}>
+                  <LoginCustomInput
+                    value={password}
+                    caption={strings.password}
+                    placeHolder={strings.password}
+                    onChangeText={(text) => onPasswordChange(text)}
+                    secureTextEntry={secureTextEntry}
+                    right={
+                      password && (
+                        <TextInput.Icon
+                          onPress={hideShowClick}
+                          style={{ width: 23, height: 23 }}
+                          icon={
+                            secureTextEntry
+                              ? require("../../Assets/icons/ic_password_show.png")
+                              : require("../../Assets/icons/ic_password_hide.png")
+                          }
+                        />
+                      )
                     }
                   />
-                </View>
-              )}
-          </ScrollView>
 
-          <KeyboardAvoidingView style={{ flex: -75 }}>
-            <StickyFooter style={{ marginBottom: 10 }}>
-              {/* Login View */}
-              {/* <View> */}
-              <CustomButton
-                loading={login.initLogin}
-                label={strings.login}
-                isDisabled={
-                  loginMode === EMAIL
-                    ? username == "" || password == ""
-                      ? true
-                      : false
-                    : number == "" || password == ""
-                      ? true
-                      : false
-                }
-                onPress={() => {
-                  // onSelectBusinessUserType()
-                  loginMode === EMAIL
-                    ? submitWithEmail(PASSWORD)
-                    : submitWithMobile(PASSWORD);
-                }}
-              />
-              {/* </View> */}
-              <Text
+                  {!login.initLogin &&
+                    login?.loggedProfile?.errorCode &&
+                    login.loggedProfile.errorCode != "404" &&
+                    login?.loggedProfile?.errorCode != "10000" &&
+                    login?.loggedProfile?.errorCode != "10001" && (
+                      <CustomErrorText
+                        errMessage={login?.loggedProfile?.message}
+                      />
+                    )}
+                  {passwordError !== "" && (
+                    <CustomErrorText errMessage={passwordError} />
+                  )}
+                </View>
+              </View>
+
+              {/* Bottom View */}
+              <View
                 style={{
-                  color: "#393939",
+                  marginVertical: 0,
+                }}
+              >
+                {/* Login with OTP View */}
+                <View>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      alignSelf: "center",
+                      marginTop: 10,
+                      marginBottom: 10,
+                      color: "#4c3794",
+                      fontWeight: 700,
+                      fontSize: fontSizes.FONT_20,
+                    }}
+                    onPress={() => {
+                      loginMode === EMAIL
+                        ? submitWithEmailOTP(OTP)
+                        : submitWithMobileOTP(OTP);
+                    }}
+                  >
+                    {strings.login_with_otp}
+                  </Text>
+                </View>
+
+                {/* Forgot Password View */}
+                <View
+                  style={{
+                    alignSelf: "center",
+                    marginVertical: 5,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => navigation.navigate("ForgotPassword")}
+                    style={{ flexDirection: "row" }}
+                  >
+                    <Text style={styles.noAccText}>{"Trouble Sign-In? "}</Text>
+                    <Text style={styles.forgotText}>
+                      {strings.forgot_password}
+                    </Text>
+                  </Pressable>
+                </View>
+
+
+                {/* Register View */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginVertical: 5,
+                  }}
+                >
+                  <Text style={styles.noAccText}>{strings.dont_account}</Text>
+                  <Pressable
+                    onPress={() => navigation.navigate("Register with us", {})}
+                  >
+                    <Text style={styles.rgisterText}> {strings.register}</Text>
+                  </Pressable>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginVertical: 5,
+                  }}
+                >
+                  <Text style={styles.noAccText}>Customer Onboarding?</Text>
+                  <Pressable
+                    onPress={() => navigation.navigate(STACK_CREATE_CUSTOMER, {})}
+                  >
+                    <Text style={styles.rgisterText}> Customer Onboarding</Text>
+                  </Pressable>
+                </View>
+              </View>
+
+              {!login.initLogin &&
+                (login?.loggedProfile?.errorCode == "10000" ||
+                  login?.loggedProfile?.errorCode == "10001") && (
+                  <View style={styles.toast}>
+                    <Toast
+                      bgColor={color.TOAST_RED}
+                      customStyle={{ paddingHorizontal: spacing.WIDTH_30 }}
+                      textPro={{
+                        color: color.WHITE,
+                        fontSize: fontSizes.FONT_14,
+                        fontWeight: "700",
+                      }}
+                      img={
+                        login?.loggedProfile?.errorCode == "10001"
+                          ? require("../../Assets/icons/ic_no_Internet.png")
+                          : require("../../Assets/icons/ci_error-warning-fill.png")
+                      }
+                      message={
+                        login?.loggedProfile?.errorCode == "10001"
+                          ? strings.no_network
+                          : strings.something_went_wrong
+                      }
+                    />
+                  </View>
+                )}
+            </ScrollView>
+
+            <KeyboardAvoidingView style={{ flex: -65 }}>
+              <StickyFooter style={{ marginBottom: 0 }}>
+                {/* Login View */}
+                {/* <View> */}
+                <CustomButton
+                  loading={login.initLogin}
+                  label={strings.login}
+                  isDisabled={
+                    loginMode === EMAIL
+                      ? username == "" || password == ""
+                        ? true
+                        : false
+                      : number == "" || password == ""
+                        ? true
+                        : false
+                  }
+                  onPress={() => {
+                    // onSelectBusinessUserType()
+                    loginMode === EMAIL
+                      ? submitWithEmail(PASSWORD)
+                      : submitWithMobile(PASSWORD);
+                  }}
+                />
+                {/* </View> */}
+                {/* <Text
+                style={{
+                  color: "#4c3794",
                   fontSize: fontSizes.FONT_14,
                   textAlign: "center",
                   fontWeight: 400,
@@ -758,100 +763,103 @@ export const Login = ({ navigation }) => {
                 }}
               >
                 By continuing, I accept and agree to Dtworks
-              </Text>
-              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              </Text> */}
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                  <Text
+                    style={{
+                      fontSize: fontSizes.FONT_14,
+                      textAlign: "center",
+                      fontWeight: 400,
+                      color: "#4c3794",
+                      marginTop: 0,
+                    }}
+                    onPress={() => navigation.navigate("TermConidtion")}
+                  >
+                    Terms & Conditions
+                  </Text>
+
+
+                  <Text
+                    style={{
+                      fontSize: fontSizes.FONT_14,
+                      textAlign: "center",
+                      fontWeight: 400,
+                      color: "#4c3794",
+                      marginTop: 0,
+
+                    }}
+                    onPress={() => alert("Navigate to Privacy Policy")}
+                  >
+                    {"\t"}Privacy Policy
+                  </Text>
+                </View>
                 <Text
                   style={{
-                    fontSize: fontSizes.FONT_14,
+                    color: "#4c3794",
+                    fontSize: fontSizes.FONT_12,
                     textAlign: "center",
-                    fontWeight: 600,
-                    color: "#4B3694",
+                    fontWeight: 400,
                     marginTop: 5,
                   }}
-                  onPress={() => navigation.navigate("TermConidtion")}
                 >
-                  Terms & Conditions of Use
+                  © {new Date().getFullYear()} NCRTC. All rights reserved.
                 </Text>
+              </StickyFooter>
+            </KeyboardAvoidingView>
 
-                <Text
-                  style={{
-                    fontSize: fontSizes.FONT_14,
-                    textAlign: "center",
-                    fontWeight: 600,
-                    color: "#4B3694",
-                    marginTop: 5,
-                  }}
-                  onPress={() => alert("Navigate to Privacy Policy")}
-                >
-                  Privacy Policy
-                </Text>
-              </View>
-              <Text
-                style={{
-                  color: "#393939",
-                  fontSize: fontSizes.FONT_12,
-                  textAlign: "center",
-                  fontWeight: 400,
-                  marginTop: 5,
-                }}
-              >
-                © {new Date().getFullYear()} dtWorks. All rights reserved.
-              </Text>
-            </StickyFooter>
-          </KeyboardAvoidingView>
-
-        </View>
-      </KeyboardAwareView>
-
-
-      {/* Modal for showing the second login alert */}
-      {/* {login?.showSecondLoginAlert && (ShowSecondLoginAlertDialog(login))} */}
-
-
-      {/* {login?.showSecondLoginAlert && (showSecondLoginAlert(login?.secondLoginAlertInfo?.data?.message))} */}
-
-      <Modal
-        visible={login?.showSecondLoginAlert}
-        dismissable={false}
-        contentContainerStyle={{ flex: 1 }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            padding: 20,
-            margin: 20,
-            borderRadius: 10,
-          }}
-        >
-          <Text style={{ fontSize: 22, color: "#000000" }}>Login Error</Text>
-          <Text style={{ marginTop: 10, fontSize: 18, color: "#000000" }}>
-            {login?.secondLoginAlertInfo?.data?.message}
-          </Text>
-
-          <View style={{ alignSelf: "center", flexDirection: "row" }}>
-            <CustomButton
-              style={{ width: 60 }}
-              label={"Cancel"}
-              onPress={() => dispatch(resetShowSecondLoginAlert())}
-            />
-
-            <CustomButton
-              style={{ width: 60 }}
-              label={"Ok"}
-              onPress={() =>
-                dispatch(
-                  callLogoutAndLogin(
-                    login?.secondLoginAlertInfo?.data?.data?.userId,
-                    navigation,
-                    params
-                  )
-                )
-              }
-            />
           </View>
+        </KeyboardAwareView>
 
-        </View>
-      </Modal>
+
+        {/* Modal for showing the second login alert */}
+        {/* {login?.showSecondLoginAlert && (ShowSecondLoginAlertDialog(login))} */}
+
+
+        {/* {login?.showSecondLoginAlert && (showSecondLoginAlert(login?.secondLoginAlertInfo?.data?.message))} */}
+
+        <Modal
+          visible={login?.showSecondLoginAlert}
+          dismissable={false}
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              margin: 20,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ fontSize: 22, color: "#000000" }}>Login Error</Text>
+            <Text style={{ marginTop: 10, fontSize: 18, color: "#000000" }}>
+              {login?.secondLoginAlertInfo?.data?.message}
+            </Text>
+
+            <View style={{ alignSelf: "center", flexDirection: "row" }}>
+              <CustomButton
+                style={{ width: 60 }}
+                label={"Cancel"}
+                onPress={() => dispatch(resetShowSecondLoginAlert())}
+              />
+
+              <CustomButton
+                style={{ width: 60 }}
+                label={"Ok"}
+                onPress={() =>
+                  dispatch(
+                    callLogoutAndLogin(
+                      login?.secondLoginAlertInfo?.data?.data?.userId,
+                      navigation,
+                      params
+                    )
+                  )
+                }
+              />
+            </View>
+
+          </View>
+        </Modal>
+      </View>
 
     </ImageBackground>
   );
@@ -862,6 +870,10 @@ export const Login = ({ navigation }) => {
 
 
 const styles = StyleSheet.create({
+  loginContainer: {
+    flex: 1,
+    backgroundColor: color.WHITE,
+  },
   container: {
     flex: 1,
     backgroundColor: color.BCAE_OFF_WHITE,
@@ -872,13 +884,13 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     fontWeight: "700",
-    color: "#4B3694",
+    color: "#4c3794",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",
   },
   noAccText: {
-    color: "#3D3D3D",
+    color: "#4c3794",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_16,
     textAlign: "center",
@@ -886,7 +898,7 @@ const styles = StyleSheet.create({
   },
   rgisterText: {
     fontWeight: "700",
-    color: "#4B3694",
+    color: "#4c3794",
     fontSize: fontSizes.FONT_16,
     lineHeight: spacing.WIDTH_17,
     textAlign: "center",

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import get from "lodash.get";
 import moment from 'moment';
 import React, { createRef, useEffect, useState } from "react";
-import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, StyleSheet, View } from "react-native";
 import EventCalendar from 'react-native-events-calendar';
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Card, Checkbox, DataTable, Divider, RadioButton, Text } from 'react-native-paper';
@@ -388,10 +388,10 @@ export const HandleResolution = ({
 
 
         const customerRowsRenderer = (header, rowsIndex, formDetails, rest) => {
-
-
             let elements = [];
-            elements = header.map((h, index) => {
+            console.log("header......", header)
+
+            elements = header?.map((h, index) => {
                 // let id = h?.id + rowsIndex + index
 
                 console.log("id......", h?.id)
@@ -400,8 +400,11 @@ export const HandleResolution = ({
 
                 return (
                     <DataTable.Cell>
-                        <View key={index} style={styles.cell}>
 
+                        {/* <Text style={{ color: "#000", textAlign: "center", padding: 10, fontWeight: "500" }}>{contentHead?.title}</Text> */}
+
+
+                        <View key={index} style={styles.cell}>
                             <Text style={{ marginTop: -10, color: "#000000", textAlign: 'left', padding: 0, fontWeight: "300" }}>{h.title}</Text>
 
                             <CustomInputSmall
@@ -418,8 +421,6 @@ export const HandleResolution = ({
                     </DataTable.Cell>
                 );
             });
-
-
             return elements;
         };
 
@@ -430,13 +431,22 @@ export const HandleResolution = ({
 
         }
 
-        const handleAddRows = (header) => {
+        // const handleAddRows = (header) => {
+        //     const headerAttributes = header?.map((r) => r?.id)
+        //     const rowAttributes = headerAttributes?.reduce((obj, key) => {
+        //         obj[key] = "";
+        //         return obj;
+        //     }, {});
+        //     setValues([...values, { ...rowAttributes }])
+        // }
+
+        const handleAddRows = (header, indx) => {
             const headerAttributes = header?.map((r) => r?.id)
             const rowAttributes = headerAttributes?.reduce((obj, key) => {
                 obj[key] = "";
                 return obj;
             }, {});
-            setValues([...values, { ...rowAttributes }])
+            setValues([...values, { ...rowAttributes, id: indx }])
         }
 
         const handleRemoveRow = (index) => {
@@ -615,7 +625,7 @@ export const HandleResolution = ({
                                 return (
                                     <View>
                                         {
-                                            item.fieldSet?.map(fieldSetItem => {
+                                            item.fieldSet?.map((fieldSetItem, fieldSetIndex) => {
                                                 console.log("id list..." + fieldSetItem.id)
 
                                                 if ((!(fieldSetItem.id === undefined)) && (!(fieldSetItem.fieldType == "button"))) {
@@ -734,7 +744,7 @@ export const HandleResolution = ({
 
                                                                         var valObj = {}
                                                                         if (values.length > 0) {
-                                                                            valObj = { ["GRID"]: values }
+                                                                            valObj = { ["grid"]: values }
                                                                             values = []
                                                                         }
 
@@ -762,12 +772,92 @@ export const HandleResolution = ({
                                                     )
                                                 }
 
+                                                // if (fieldSetItem?.fieldType === 'grid') {
+                                                //     console.log("inside grid..")
+
+                                                //     useEffect(() => {
+                                                //         async function getEvents() {
+                                                //             handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                //         }
+                                                //         getEvents()
+                                                //     }, []);
+
+                                                //     gridInputText = new Map([["", ""]]);
+
+                                                //     console.log("values4....", values)
+
+                                                //     return (
+                                                //         <>
+                                                //             <DataTable style={{ padding: 0 }}>
+                                                //                 {/* <DataTable.Header style={styles.tableHeader}>
+                                                //                     {fieldSetItem?.headers.map((header, headerIndex) => (
+                                                //                         <DataTable.Title>{header.title}</DataTable.Title>
+                                                //                     ))}
+                                                //                 </DataTable.Header> */}
+
+
+                                                //                 {values?.length > 0 &&
+                                                //                     values?.map((rows, rowsIndex) => (
+                                                //                         <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+                                                //                             {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+
+                                                //                             {/* <Pressable
+                                                //                                 onPress={() => handleRemoveRow(rowsIndex)}
+                                                //                                 style={{
+                                                //                                     marginRight: 10,
+                                                //                                     alignSelf: 'flex-end',
+                                                //                                     marginTop: 0,
+                                                //                                     marginBottom: 10,
+                                                //                                     backgroundColor: "#4a5996",
+                                                //                                     width: 50
+                                                //                                 }}
+                                                //                             >
+                                                //                                 <Icon name="close" size={19} color={Colors.BLACK} />
+                                                //                             </Pressable> */}
+
+                                                //                             {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                                                //                                 onPress={() => {
+                                                //                                     console.log("delete click rowsIndex.....", rowsIndex)
+                                                //                                     handleRemoveRow(rowsIndex)
+                                                //                                 }}>
+                                                //                                 <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                                                //                             </Card> */}
+                                                //                         </DataTable.Row>
+                                                //                     ))}
+                                                //             </DataTable>
+
+                                                //             {fieldSetItem.rows?.length > 0 && (
+                                                //                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                                //                     <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                                                //                         onPress={() => {
+                                                //                             handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                //                         }}>
+                                                //                         <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Add</Text>
+                                                //                     </Card>
+
+
+
+
+                                                //                     {/* <CustomButton
+                                                //                         label="Add Row"
+                                                //                         onPress={() => {
+                                                //                             handleAddRows(fieldSetItem?.headers);
+                                                //                         }}
+                                                //                     /> */}
+                                                //                 </View>
+                                                //             )}
+
+                                                //         </>
+                                                //     );
+                                                // }
+
+
                                                 if (fieldSetItem?.fieldType === 'grid') {
                                                     console.log("inside grid..")
 
                                                     useEffect(() => {
                                                         async function getEvents() {
-                                                            handleAddRows(fieldSetItem?.headers);
+                                                            handleAddRows(fieldSetItem?.headers, fieldSetIndex);
                                                         }
                                                         getEvents()
                                                     }, []);
@@ -776,51 +866,113 @@ export const HandleResolution = ({
 
                                                     console.log("values4....", values)
 
+                                                    var arr = []
+                                                    fieldSetItem?.headers?.map((headItem, headIdx) => {
+                                                        if (headItem?.title !== "") {
+                                                            arr.push(headItem?.title)
+                                                        }
+                                                    })
+
                                                     return (
                                                         <>
-                                                            <DataTable style={{ padding: 0 }}>
-                                                                {/* <DataTable.Header style={styles.tableHeader}>
-                                                                    {fieldSetItem?.headers.map((header, headerIndex) => (
-                                                                        <DataTable.Title>{header.title}</DataTable.Title>
-                                                                    ))}
-                                                                </DataTable.Header> */}
+                                                            {fieldSetItem?.columns === undefined && (
+                                                                <DataTable style={{ padding: 0 }}>
+                                                                    {/* <DataTable.Header style={styles.tableHeader}>
+        {fieldSetItem?.headers.map((header, headerIndex) => (
+            <DataTable.Title>{header.title}</DataTable.Title>
+        ))}
+    </DataTable.Header> */}
+
+                                                                    {values?.length > 0 &&
+                                                                        values?.map((rows, rowsIndex) => (
+                                                                            <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+                                                                                {/* grid without column headers*/}
+                                                                                {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+
+                                                                                {/* <Pressable
+                    onPress={() => handleRemoveRow(rowsIndex)}
+                    style={{
+                        marginRight: 10,
+                        alignSelf: 'flex-end',
+                        marginTop: 0,
+                        marginBottom: 10,
+                        backgroundColor: "#4a5996",
+                        width: 50
+                    }}
+                >
+                    <Icon name="close" size={19} color={Colors.BLACK} />
+                </Pressable> */}
+
+                                                                                {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                    onPress={() => {
+                        console.log("delete click rowsIndex.....", rowsIndex)
+                        handleRemoveRow(rowsIndex)
+                    }}>
+                    <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                </Card> */}
+                                                                            </DataTable.Row>
+                                                                        ))}
+
+                                                                </DataTable>
+                                                            )}
+
+                                                            {!(fieldSetItem?.columns === undefined) && (
+                                                                arr?.map((item, idx) => (
+                                                                    <DataTable style={{ padding: 0 }}>
+                                                                        {/* <DataTable.Header style={styles.tableHeader}>
+        {fieldSetItem?.headers.map((header, headerIndex) => (
+            <DataTable.Title>{header.title}</DataTable.Title>
+        ))}
+    </DataTable.Header> */}
+
+                                                                        <Text style={{ marginTop: 20, color: "#000000", textAlign: 'left', padding: 0, fontWeight: "300" }}>{item}</Text>
+
+                                                                        {values?.length > 0 &&
+                                                                            values?.map((rows, rowsIndex) => (
+                                                                                <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+
+                                                                                    {/* grid with column headers*/}
+                                                                                    {!(fieldSetItem?.columns === undefined) && (
+                                                                                        customerRowsRenderer(fieldSetItem?.columns?.[0]?.column_headers || [], rowsIndex, rows, { required: true })
+                                                                                    )}
+
+                                                                                    {/* <Pressable
+                    onPress={() => handleRemoveRow(rowsIndex)}
+                    style={{
+                        marginRight: 10,
+                        alignSelf: 'flex-end',
+                        marginTop: 0,
+                        marginBottom: 10,
+                        backgroundColor: "#4a5996",
+                        width: 50
+                    }}
+                >
+                    <Icon name="close" size={19} color={Colors.BLACK} />
+                </Pressable> */}
+
+                                                                                    {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                    onPress={() => {
+                        console.log("delete click rowsIndex.....", rowsIndex)
+                        handleRemoveRow(rowsIndex)
+                    }}>
+                    <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                </Card> */}
+                                                                                </DataTable.Row>
+                                                                            ))}
+
+                                                                    </DataTable>
+                                                                ))
+                                                            )}
 
 
-                                                                {values?.length > 0 &&
-                                                                    values?.map((rows, rowsIndex) => (
-                                                                        <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
-                                                                            {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
-
-                                                                            {/* <Pressable
-                                                                                onPress={() => handleRemoveRow(rowsIndex)}
-                                                                                style={{
-                                                                                    marginRight: 10,
-                                                                                    alignSelf: 'flex-end',
-                                                                                    marginTop: 0,
-                                                                                    marginBottom: 10,
-                                                                                    backgroundColor: "#4a5996",
-                                                                                    width: 50
-                                                                                }}
-                                                                            >
-                                                                                <Icon name="close" size={19} color={Colors.BLACK} />
-                                                                            </Pressable> */}
-
-                                                                            {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
-                                                                                onPress={() => {
-                                                                                    console.log("delete click rowsIndex.....", rowsIndex)
-                                                                                    handleRemoveRow(rowsIndex)
-                                                                                }}>
-                                                                                <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
-                                                                            </Card> */}
-                                                                        </DataTable.Row>
-                                                                    ))}
-                                                            </DataTable>
 
                                                             {fieldSetItem.rows?.length > 0 && (
                                                                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                                                                     <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
                                                                         onPress={() => {
-                                                                            handleAddRows(fieldSetItem?.headers);
+                                                                            // handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                                            handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+
                                                                         }}>
                                                                         <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Add</Text>
                                                                     </Card>
@@ -1450,100 +1602,220 @@ export const HandleResolution = ({
                                                 }
 
                                                 console.log("fieldSetItem grid..", fieldSetItem)
-                                                if (fieldSetItem?.fieldType === 'grid') {
+                                                // if (fieldSetItem?.fieldType === 'grid') {
+                                                //     console.log("inside grid..")
+                                                //     useEffect(() => {
+                                                //         async function getEvents() {
+                                                //             handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                //         }
+                                                //         getEvents()
+                                                //     }, []);
 
+                                                //     gridInputText = new Map([["", ""]]);
+
+                                                //     return (
+                                                //         <>
+                                                //             <DataTable style={styles.containers}>
+                                                //                 {/* <DataTable.Header style={styles.tableHeader}>
+                                                //                     {fieldSetItem?.headers.map((header, headerIndex) => (
+                                                //                         <DataTable.Title>{header.title}</DataTable.Title>
+                                                //                     ))}
+
+                                                //                 </DataTable.Header> */}
+
+                                                //                 {values?.length > 0 &&
+                                                //                     values?.map((rows, rowsIndex) => (
+                                                //                         <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
+                                                //                             {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+                                                //                         </DataTable.Row>
+                                                //                     ))}
+                                                //             </DataTable>
+
+                                                //             {fieldSetItem.rows?.length > 0 && (
+                                                //                 <CustomButton
+                                                //                     label="Add Row"
+                                                //                     onPress={() => {
+                                                //                         handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                //                     }}
+                                                //                 />
+                                                //             )}
+
+                                                //             <ScrollView>
+
+                                                //                 <View style={styles.table}>
+
+
+
+                                                //                     {/* {fieldSetItem.columns?.[0]?.column_headers?.map((rows, rowsIndex) => (
+
+                                                //                     <View key={rowsIndex} style={styles.row} id={'r' + rowsIndex}>
+
+                                                //                         <View key={rowsIndex} style={styles.cell}>
+
+                                                //                             <TextInput
+
+                                                //                                 style={styles.input}
+
+                                                //                                 value={rows?.title + (rows?.required && '*')}
+
+                                                //                                 editable={false}
+
+                                                //                             />
+
+                                                //                         </View>
+
+                                                //                         {customElementsRenderer(fieldSetItem?.headers?.length - 1 || 0, rowsIndex, formDataState, { required: rows?.required })}
+
+                                                //                     </View>
+
+                                                //                 ))} */}
+
+
+
+
+
+                                                //                 </View>
+
+                                                //             </ScrollView>
+                                                //         </>
+                                                //     );
+
+                                                // }
+
+                                                if (fieldSetItem?.fieldType === 'grid') {
                                                     console.log("inside grid..")
+
                                                     useEffect(() => {
                                                         async function getEvents() {
-                                                            handleAddRows(fieldSetItem?.headers);
+                                                            handleAddRows(fieldSetItem?.headers, fieldSetIndex);
                                                         }
                                                         getEvents()
                                                     }, []);
 
                                                     gridInputText = new Map([["", ""]]);
 
+                                                    console.log("values4....", values)
+
                                                     return (
                                                         <>
-                                                            <DataTable style={styles.containers}>
-                                                                {/* <DataTable.Header style={styles.tableHeader}>
-                                                                    {fieldSetItem?.headers.map((header, headerIndex) => (
-                                                                        <DataTable.Title>{header.title}</DataTable.Title>
-                                                                    ))}
 
-                                                                </DataTable.Header> */}
+                                                            {fieldSetItem?.columns === undefined && (
+                                                                <DataTable style={{ padding: 0 }}>
+                                                                    {/* <DataTable.Header style={styles.tableHeader}>
+        {fieldSetItem?.headers.map((header, headerIndex) => (
+            <DataTable.Title>{header.title}</DataTable.Title>
+        ))}
+    </DataTable.Header> */}
 
-                                                                {values?.length > 0 &&
+                                                                    {values?.length > 0 &&
+                                                                        values?.map((rows, rowsIndex) => (
+                                                                            <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+                                                                                {/* grid without column headers*/}
+                                                                                {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
 
-                                                                    values?.map((rows, rowsIndex) => (
-                                                                        <DataTable.Row key={rowsIndex} id={'r' + rowsIndex}>
+                                                                                {/* <Pressable
+                    onPress={() => handleRemoveRow(rowsIndex)}
+                    style={{
+                        marginRight: 10,
+                        alignSelf: 'flex-end',
+                        marginTop: 0,
+                        marginBottom: 10,
+                        backgroundColor: "#4a5996",
+                        width: 50
+                    }}
+                >
+                    <Icon name="close" size={19} color={Colors.BLACK} />
+                </Pressable> */}
 
-                                                                            {customerRowsRenderer(fieldSetItem?.headers || [], rowsIndex, rows, { required: true })}
+                                                                                {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                    onPress={() => {
+                        console.log("delete click rowsIndex.....", rowsIndex)
+                        handleRemoveRow(rowsIndex)
+                    }}>
+                    <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                </Card> */}
+                                                                            </DataTable.Row>
+                                                                        ))}
 
-                                                                        </DataTable.Row>
-                                                                    ))}
-
-
-                                                            </DataTable>
-
-                                                            {fieldSetItem.rows?.length > 0 && (
-
-
-                                                                <CustomButton
-                                                                    label="Add Row"
-
-                                                                    onPress={() => {
-
-                                                                        handleAddRows(fieldSetItem?.headers);
-
-                                                                    }}
-
-
-                                                                />
-
-
-
+                                                                </DataTable>
                                                             )}
 
-                                                            <ScrollView>
+                                                            {!(fieldSetItem?.columns === undefined) && (
+                                                                arr?.map((item, idx) => (
+                                                                    <DataTable style={{ padding: 0 }}>
+                                                                        {/* <DataTable.Header style={styles.tableHeader}>
+        {fieldSetItem?.headers.map((header, headerIndex) => (
+            <DataTable.Title>{header.title}</DataTable.Title>
+        ))}
+    </DataTable.Header> */}
 
-                                                                <View style={styles.table}>
+                                                                        <Text style={{ marginTop: 20, color: "#000000", textAlign: 'left', padding: 0, fontWeight: "300" }}>{item}</Text>
+
+                                                                        {values?.length > 0 &&
+                                                                            values?.map((rows, rowsIndex) => (
+                                                                                <DataTable.Row style={{ marginTop: -5 }} key={rowsIndex} id={'r' + rowsIndex}>
+
+                                                                                    {/* grid with column headers*/}
+                                                                                    {!(fieldSetItem?.columns === undefined) && (
+                                                                                        customerRowsRenderer(fieldSetItem?.columns?.[0]?.column_headers || [], rowsIndex, rows, { required: true })
+                                                                                    )}
+
+                                                                                    {/* <Pressable
+                    onPress={() => handleRemoveRow(rowsIndex)}
+                    style={{
+                        marginRight: 10,
+                        alignSelf: 'flex-end',
+                        marginTop: 0,
+                        marginBottom: 10,
+                        backgroundColor: "#4a5996",
+                        width: 50
+                    }}
+                >
+                    <Icon name="close" size={19} color={Colors.BLACK} />
+                </Pressable> */}
+
+                                                                                    {/* <Card style={{ marginRight: 10, alignSelf: 'flex-end', marginTop: 0, marginBottom: 10, backgroundColor: "#4a5996", width: 100 }}
+                    onPress={() => {
+                        console.log("delete click rowsIndex.....", rowsIndex)
+                        handleRemoveRow(rowsIndex)
+                    }}>
+                    <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Delete</Text>
+                </Card> */}
+                                                                                </DataTable.Row>
+                                                                            ))}
+
+                                                                    </DataTable>
+                                                                ))
+                                                            )}
 
 
 
-                                                                    {/* {fieldSetItem.columns?.[0]?.column_headers?.map((rows, rowsIndex) => (
 
-                                                                    <View key={rowsIndex} style={styles.row} id={'r' + rowsIndex}>
+                                                            {fieldSetItem.rows?.length > 0 && (
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                                                    <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor: "#4c3794", width: 100 }}
+                                                                        onPress={() => {
+                                                                            // handleAddRows(fieldSetItem?.headers, fieldSetIndex);
+                                                                            handleAddRows(fieldSetItem?.headers, fieldSetIndex);
 
-                                                                        <View key={rowsIndex} style={styles.cell}>
-
-                                                                            <TextInput
-
-                                                                                style={styles.input}
-
-                                                                                value={rows?.title + (rows?.required && '*')}
-
-                                                                                editable={false}
-
-                                                                            />
-
-                                                                        </View>
-
-                                                                        {customElementsRenderer(fieldSetItem?.headers?.length - 1 || 0, rowsIndex, formDataState, { required: rows?.required })}
-
-                                                                    </View>
-
-                                                                ))} */}
+                                                                        }}>
+                                                                        <Text style={{ color: "#FFF", textAlign: "center", padding: 10, fontWeight: "500" }}>Add</Text>
+                                                                    </Card>
 
 
 
 
-
+                                                                    {/* <CustomButton
+                                                                        label="Add Row"
+                                                                        onPress={() => {
+                                                                            handleAddRows(fieldSetItem?.headers);
+                                                                        }}
+                                                                    /> */}
                                                                 </View>
+                                                            )}
 
-                                                            </ScrollView>
                                                         </>
                                                     );
-
                                                 }
 
                                             })

@@ -21,18 +21,6 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
   let profile = useSelector((state) => state.profile);
   const [modal, setModal] = useState(false);
 
-  // useEffect(() => {
-  //   async function getData() {
-  //     currDeptDesc = await getDataFromDB(storageKeys.CURRENT_DEPT_DESC)
-  //     currRoleDesc = await getDataFromDB(storageKeys.CURRENT_ROLE_DESC)
-
-  //     console.log("currDeptDesc...", currDeptDesc)
-  //     console.log("currRoleDesc...", currRoleDesc)
-
-  //   }
-  //   getData()
-  // }, [])
-
   const openModal = () => {
     setModal(!modal);
   };
@@ -43,6 +31,19 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
       case "HomeScreen":
         navigation.navigate("HomeScreen", {});
         break;
+
+      case "Profile":
+        navigation.navigate("Profile", {});
+        break;
+
+      case "Search":
+        navigation.navigate("InteractionSearch")
+        break;
+
+      case "Settings":
+        navigation.navigate("Settings")
+        break;
+
       case "Interactions":
         navigation.navigate("MyTicketsStack", {});
         break;
@@ -54,10 +55,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
           contactNo: "123213",
         });
         break;
-      case "Search":
-        // navigation.navigate("Search", {}); 
-        navigation.navigate("InteractionSearch")
-        break;
+
       case "Offers":
         // navigation.navigate("Offers", {});
         break;
@@ -85,6 +83,7 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         break;
     }
   };
+
   return (
     <Pressable
       onPress={() => setModal(false)}
@@ -99,6 +98,8 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         backgroundColor: "transparent",
       }}
     >
+
+
       {/* modal create  */}
       {modal && (
         <View style={styles.buttonContainer}>
@@ -117,7 +118,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
         </View>
       )}
 
+
+
       <View style={styles.bottomcontainer}>
+
         <Pressable
           onPress={() => onNavClick("HomeScreen")}
           style={{
@@ -126,12 +130,12 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: "40%",
+            width: "20%",
             // backgroundColor: "red",
             borderColor: "transparent",
             borderWidth: state.index === 0 ? 3 : 0,
             borderTopColor:
-              state.index === 0 ? "#4a5996" : "transparent",
+              state.index === 0 ? "#FFF" : "transparent",
           }}
         >
           <Image
@@ -144,6 +148,34 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             {strings.home}
           </Text>
         </Pressable>
+
+
+        <Pressable
+          onPress={() => onNavClick("Profile")}
+          style={{
+            marginTop: spacing.HEIGHT_2,
+            marginBottom: spacing.HEIGHT_2,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "20%",
+            borderColor: "transparent",
+            borderWidth: state.index === 1 ? 3 : 0,
+            borderTopColor:
+              state.index === 1 ? color.WHITE : "transparent",
+          }}
+        >
+          <Image
+            style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
+            source={require("../Assets/icons/ic_regular.png")}
+          />
+          <Text
+            style={state.index === 1 ? styles.selectedText : styles.upperText}
+          >
+            Profile
+          </Text>
+        </Pressable>
+
 
         {/* {((currDeptDesc == "Brunei Application Support") || (currDeptDesc == "Global Application Support"))
           && (currRoleDesc == "Back Office") && (
@@ -223,26 +255,27 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: "40%",
+            width: "20%",
             borderColor: "transparent",
-            borderWidth: state.index === 1 ? 3 : 0,
+            borderWidth: state.index === 2 ? 3 : 0,
             borderTopColor:
-              state.index === 1 ? color.BCAE_PRIMARY : "transparent",
+              state.index === 2 ? color.WHITE : "transparent",
           }}
         >
           <Image
-            style={state.index === 1 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/ic_search.png")}
+            style={state.index === 2 ? styles.selectedLogo : styles.upperLogo}
+            source={require("../Assets/icons/search_intxn_icon.png")}
           />
           <Text
-            style={state.index === 1 ? styles.selectedText : styles.upperText}
+            style={state.index === 2 ? styles.selectedText : styles.upperText}
           >
             {strings.search}
           </Text>
         </Pressable>
 
-        {/* <Pressable
-          onPress={() => onNavClick("Chat")}
+
+        <Pressable
+          onPress={() => onNavClick("Settings")}
           style={{
             marginTop: spacing.HEIGHT_2,
             marginBottom: spacing.HEIGHT_2,
@@ -251,23 +284,23 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
             alignItems: "center",
             width: "20%",
             borderColor: "transparent",
-            borderWidth: state.index === 2 ? 3 : 0,
+            borderWidth: state.index === 3 ? 3 : 0,
             borderTopColor:
-              state.index === 2 ? color.BCAE_PRIMARY : "transparent",
+              state.index === 3 ? color.BCAE_PRIMARY : "transparent",
           }}
         >
           <Image
-            style={state.index === 2 ? styles.selectedLogo : styles.upperLogo}
-            source={require("../Assets/icons/ic_offers.png")}
+            style={state.index === 3 ? styles.selectedLogo : styles.upperLogo}
+            source={require("../Assets/icons/settings.png")}
           />
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
-            style={state.index === 2 ? styles.selectedText : styles.upperText}
+            style={state.index === 3 ? styles.selectedText : styles.upperText}
           >
-            Chat
+            Settings
           </Text>
-        </Pressable> */}
+        </Pressable>
 
         {/* <Pressable
           onPress={() => onNavClick("Help")}
@@ -297,6 +330,10 @@ const CustomBottomBar = ({ state, descriptors, navigation }) => {
 
 
       </View>
+
+
+
+
     </Pressable>
   );
 };
@@ -315,42 +352,43 @@ const styles = StyleSheet.create({
   bottomcontainer: {
     height: 60,
     width: "100%",
-    backgroundColor: color.WHITE,
+    backgroundColor: "#4c3794",
     flexDirection: "row",
   },
   upperText: {
-    color: color.PLACEHOLDER,
+    color: color.WHITE,
     fontSize: fontSizes.FONT_10,
     fontWeight: "500",
     marginTop: 5,
     lineHeight: spacing.WIDTH_14,
   },
   upperLogo: {
+    tintColor: "#FFF",
     width: spacing.WIDTH_20,
     height: spacing.WIDTH_20,
   },
   selectedText: {
-    color: "#4a5996",
+    color: "#FFF",
     fontSize: fontSizes.FONT_10,
     fontWeight: "500",
     marginTop: 5,
     lineHeight: spacing.WIDTH_14,
   },
   selectedLogo: {
-    tintColor: "#4a5996",
+    tintColor: "#FFF",
     width: spacing.WIDTH_20,
     height: spacing.WIDTH_20,
   },
   addLogo: {
     padding: 18,
-    backgroundColor: "#4a5996",
+    backgroundColor: "#4c3794",
     tintColor: "#FFFFFF",
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     marginBottom: 60,
     zIndex: 10,
     borderRadius: 30,
-    borderColor: "#F3F3F3",
+    borderColor: "#FFF",
     borderWidth: 5,
   },
   button: {
@@ -360,7 +398,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: "500",
     borderRadius: 15,
-    backgroundColor: color.BCAE_PRIMARY,
+    backgroundColor: color.WHITE,
   },
   buttontext: {
     fontSize: 14,

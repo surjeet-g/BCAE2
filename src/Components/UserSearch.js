@@ -93,26 +93,37 @@ export const userNavigationIcon = (props) => {
             /> */}
 
             <View style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginRight: 5 }}>
-              <Icon name={"clipboard-search"} size={28} color={Colors.BLACK} />
+              <Icon name={"clipboard-search"} size={28} color="#4c3794" />
             </View>
 
 
           </Pressable>
 
 
-          {props.profileSearchData.length > 0 && custClicked &&
-            <Pressable
-              onPress={() => {
+          {props.profileSearchData.length > 0 && custClicked && (
+            // <Pressable
+            //   onPress={() => {
+            //     {
+            //       console.log("custClicked..", custClicked);
+            //       props.setOpenBottomModal(true)
+            //     }
+            //   }
+            //   }
+            //   style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
+            // >
+            //   <Icon name="plus" size={19} color={"#4c3794"} />
+            // </Pressable>
+
+            <View style={{ ...navBar.roundIcon, backgroundColor: color.WHITE, marginRight: 5 }}>
+              <Icon name={"plus"} size={28} color="#4c3794" onPress={() => {
                 {
                   console.log("custClicked..", custClicked);
                   props.setOpenBottomModal(true)
                 }
               }
-              }
-              style={{ ...navBar.roundIcon, backgroundColor: "#D9D9D9", width: 30, height: 30, marginRight: 5 }}
-            >
-              <Icon name="plus" size={19} color={"#1231232"} />
-            </Pressable>
+              } />
+            </View>
+          )
           }
 
         </View>

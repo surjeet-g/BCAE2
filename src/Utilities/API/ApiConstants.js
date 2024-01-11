@@ -36,16 +36,20 @@ console.log('SERVER_TYE---->', SERVER_TYE)
 // Helpdesk 2.0 staging url
 // export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
 
-
-
-
+// dtWorks demo details
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
+// export const TENANT_ID = "71f65c54-3d2b-47e6-93b3-5b726e91655c";
 
 // Telecom url
 // Internal
-export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
+// export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks-int/"
 // External
 // export const BASE_URL = "https://dtworks-demo.comquest-brunei.com:9443/dtWorks/"
 
+
+
+// testing api
+export const BASE_URL = "https://dtworks-test.comquest-brunei.com:1443/dtWorks/stage/"
 
 
 

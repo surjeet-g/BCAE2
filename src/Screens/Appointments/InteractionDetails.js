@@ -1,4 +1,3 @@
-import { Colors } from "chart.js";
 import get from "lodash.get";
 import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
@@ -16,9 +15,7 @@ import {
   View,
   unstable_batchedUpdates
 } from "react-native";
-import CustomSwitch from "react-native-custom-switch-new";
-import DatePicker from "react-native-date-picker";
-import { Divider, TextInput, useTheme } from "react-native-paper";
+import { Divider, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
@@ -869,7 +866,7 @@ const InteractionDetails = (props) => {
               }}
             />
           </View>
-
+          {/* 
           {(techCompDate !== "") && (deployDate !== "") && (
             <View style={{ flexDirection: "row", marginTop: 20 }}>
               <DetailInfoItem
@@ -909,7 +906,7 @@ const InteractionDetails = (props) => {
                   value={downtimeRequired}
                   flex={1} />)}
             </View>
-          )}
+          )} */}
 
           <View style={{ flexDirection: "row", marginTop: 20 }}>
             {contactType !== "" && (
@@ -1401,7 +1398,7 @@ const InteractionDetails = (props) => {
               />
             )}
           </View>
-
+          {/* 
           <View style={{ paddingVertical: 2, marginTop: 20 }}>
             <CustomInput
               value={moment(selTechCompDate).format(
@@ -1528,9 +1525,9 @@ const InteractionDetails = (props) => {
                 })
               }}
             />
-          </View>
+          </View> */}
 
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "flex-start",
@@ -1563,7 +1560,7 @@ const InteractionDetails = (props) => {
                 fontWeight: 600,
               }}
             />
-          </View>
+          </View> */}
 
           {/* <View style={{ paddingVertical: 2, marginTop: 10 }}>
               <CustomInput
@@ -1669,9 +1666,14 @@ const InteractionDetails = (props) => {
                       moment(selBiCompDate).format("YYYY-MM-DD"),
                       moment(selQaCompDate).format("YYYY-MM-DD"),
                       downtimeRequired,
-                      _attachments
+                      _attachments,
+                      navigation
                     )
                   )
+
+
+
+
                 }
               }} />
             </View>
